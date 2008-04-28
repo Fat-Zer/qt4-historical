@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_ITEMVIEWS
@@ -117,6 +119,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void commitData(QWidget *editor);
     void closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint = NoHint);
+    void sizeHintChanged(const QModelIndex &);
 
 protected:
     QAbstractItemDelegate(QObjectPrivate &, QObject *parent = 0);
@@ -125,6 +128,8 @@ private:
 };
 
 #endif // QT_NO_ITEMVIEWS
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

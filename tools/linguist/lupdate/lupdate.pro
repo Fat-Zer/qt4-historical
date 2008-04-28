@@ -8,7 +8,8 @@ build_all:!build_pass {
 }
 
 
-HEADERS         = ../shared/metatranslator.h \
+HEADERS         = lupdate.h \
+                  ../shared/metatranslator.h \
                   ../shared/translator.h \
                   ../shared/proparser.h \
                   ../shared/profileevaluator.h \
@@ -16,7 +17,9 @@ HEADERS         = ../shared/metatranslator.h \
                   ../shared/simtexth.h \
                   ../shared/xliff.h
 
-SOURCES         = fetchtr.cpp \
+                  
+SOURCES         = lupdate.cpp \
+                  fetchtr.cpp \
                   fetchtrjava.cpp \
                   main.cpp \
                   merge.cpp \
@@ -39,17 +42,19 @@ SOURCES += $$PROPARSERPATH/proitems.cpp \
         $$PROPARSERPATH/proreader.cpp
 
 
+TARGET          = lupdate
+INCLUDEPATH     += ../shared
+DESTDIR          = ../../../bin
+
 win32:RC_FILE = winmanifest.rc
 
 embed_manifest_exe {
     # The default configuration embed_manifest_exe overrides the manifest file
     # already embedded via RC_FILE
-    QMAKE_POST_LINK += $$quote(mt.exe -updateresource:../../../bin/lupdate.exe -manifest \"$${PWD}\\lupdate.exe.manifest\")
+    # QMAKE_POST_LINK += $$quote(mt.exe -updateresource:$(DESTDIR_TARGET) -manifest lupdate.exe.manifest)
+    QMAKE_POST_LINK += $$quote(mt.exe -updateresource:$$DESTDIR/lupdate.exe -manifest \"$${PWD}\\lupdate.exe.manifest\")
 }
 
-TARGET          = lupdate
-INCLUDEPATH     += ../shared
-DESTDIR          = ../../../bin
 
 target.path=$$[QT_INSTALL_BINS]
 INSTALLS        += target

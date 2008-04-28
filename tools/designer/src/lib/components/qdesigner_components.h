@@ -45,8 +45,11 @@
 #define QDESIGNER_COMPONENTS_H
 
 #include <QtDesigner/qdesigner_components_global.h>
+#include <QtCore/qglobal.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 class QObject;
 class QWidget;
@@ -73,6 +76,8 @@ public:
     static QWidget *createResourceEditor(QDesignerFormEditorInterface *core, QWidget *parent);
     static QWidget *createSignalSlotEditor(QDesignerFormEditorInterface *core, QWidget *parent);
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -50,6 +50,7 @@ CustomSqlModel::CustomSqlModel(QObject *parent)
 {
 }
 
+//! [0]
 QVariant CustomSqlModel::data(const QModelIndex &index, int role) const
 {
     QVariant value = QSqlQueryModel::data(index, role);
@@ -63,3 +64,4 @@ QVariant CustomSqlModel::data(const QModelIndex &index, int role) const
         return qVariantFromValue(QColor(Qt::blue));
     return value;
 }
+//! [0]

@@ -52,6 +52,8 @@
 
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 class OpenedList
 {
 public:
@@ -85,5 +87,7 @@ private:
     QString pref;
     QString suff;
 };
+
+QT_END_NAMESPACE
 
 #endif

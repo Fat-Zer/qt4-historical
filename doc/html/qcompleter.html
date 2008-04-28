@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/gui/util/qcompleter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/util/qcompleter.cpp -->
 <head>
-  <title>Qt 4.3: QCompleter Class Reference</title>
+  <title>Qt 4.4: QCompleter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QCompleter Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QCompleter Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+</h1>
 <p>The QCompleter class provides completions based on an item model. <a href="#details">More...</a></p>
 <pre> #include &lt;QCompleter&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p>This class was introduced in Qt 4.2.</p>
@@ -120,18 +121,18 @@
 <a name="basic-usage"></a>
 <h3>Basic Usage</h3>
 <p>A QCompleter is used typically with a <a href="qlineedit.html">QLineEdit</a> or <a href="qcombobox.html">QComboBox</a>. For example, here's how to provide auto completions from a simple word list in a <a href="qlineedit.html">QLineEdit</a>:</p>
-<pre> QStringList wordList;
- wordList &lt;&lt; &quot;alpha&quot; &lt;&lt; &quot;omega&quot; &lt;&lt; &quot;omicron&quot; &lt;&lt; &quot;zeta&quot;;
+<pre>         QStringList wordList;
+         wordList &lt;&lt; &quot;alpha&quot; &lt;&lt; &quot;omega&quot; &lt;&lt; &quot;omicron&quot; &lt;&lt; &quot;zeta&quot;;
 
- QLineEdit *lineEdit = new QLineEdit(this);
+         QLineEdit *lineEdit = new QLineEdit(this);
 
- QCompleter *completer = new QCompleter(wordList, this);
- completer-&gt;setCaseSensitivity(Qt::CaseInsensitive);
- lineEdit-&gt;setCompleter(completer);</pre>
+         QCompleter *completer = new QCompleter(wordList, this);
+         completer-&gt;setCaseSensitivity(Qt::CaseInsensitive);
+         lineEdit-&gt;setCompleter(completer);</pre>
 <p>A <a href="qdirmodel.html">QDirModel</a> can be used to provide auto completion of file names. For example:</p>
-<pre> QCompleter *completer = new QCompleter(this);
- completer-&gt;setModel(new QDirModel(completer));
- lineEdit-&gt;setCompleter(completer);</pre>
+<pre>         QCompleter *completer = new QCompleter(this);
+         completer-&gt;setModel(new QDirModel(completer));
+         lineEdit-&gt;setCompleter(completer);</pre>
 <p>To set the model on which QCompleter should operate, call <a href="qcompleter.html#setModel">setModel</a>(). By default, QCompleter will attempt to match the <a href="qcompleter.html#completionPrefix-prop">completion prefix</a> (i.e&#x2e;, the word that the user has started typing) against the <a href="qt.html#ItemDataRole-enum">Qt::EditRole</a> data stored in column 0 in the model case sensitively. This can be changed using <a href="qcompleter.html#completionRole-prop">setCompletionRole</a>(), <a href="qcompleter.html#completionColumn-prop">setCompletionColumn</a>(), and <a href="qcompleter.html#caseSensitivity-prop">setCaseSensitivity</a>().</p>
 <p>If the model is sorted on the column and role that are used for completion, you can call <a href="qcompleter.html#modelSorting-prop">setModelSorting</a>() with either <a href="qcompleter.html#ModelSorting-enum">QCompleter::CaseSensitivelySortedModel</a> or <a href="qcompleter.html#ModelSorting-enum">QCompleter::CaseInsensitivelySortedModel</a> as the argument. On large models, this can lead to significant performance improvements, because QCompleter can then use binary search instead of linear search.</p>
 <p>The model can be a <a href="qabstractlistmodel.html">list model</a>, a <a href="qabstracttablemodel.html">table model</a>, or a <a href="qabstractitemmodel.html">tree model</a>. Completion on tree models is slightly more involved and is covered in the <a href="#handling-tree-models">Handling Tree Models</a> section below.</p>
@@ -139,8 +140,8 @@
 <a name="iterating-through-completions"></a>
 <h3>Iterating Through Completions</h3>
 <p>To retrieve a single candidate string, call <a href="qcompleter.html#completionPrefix-prop">setCompletionPrefix</a>() with the text that needs to be completed and call <a href="qcompleter.html#currentCompletion">currentCompletion</a>(). You can iterate through the list of completions as below:</p>
-<pre> for (int i = 0; completer-&gt;setCurrentRow(i); i++)
-     qDebug() &lt;&lt; completer-&gt;currentCompletion() &lt;&lt; &quot; is match number &quot; &lt;&lt; i;</pre>
+<pre>         for (int i = 0; completer-&gt;setCurrentRow(i); i++)
+             qDebug() &lt;&lt; completer-&gt;currentCompletion() &lt;&lt; &quot; is match number &quot; &lt;&lt; i;</pre>
 <p><a href="qcompleter.html#completionCount">completionCount</a>() returns the total number of completions for the current prefix. <a href="qcompleter.html#completionCount">completionCount</a>() should be avoided when possible, since it requires a scan of the entire model.</p>
 <a name="the-completion-model"></a>
 <h3>The Completion Model</h3>
@@ -355,6 +356,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

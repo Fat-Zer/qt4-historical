@@ -50,6 +50,8 @@
 #include "qfsfileengine.h"
 #include "qdiriterator.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QAbstractFileEngineHandler
     \reentrant
@@ -79,31 +81,7 @@
 
     For example:
 
-    \code
-        class ZipEngineHandler : public QAbstractFileEngineHandler
-        {
-        public:
-            QAbstractFileEngine *create(const QString &fileName) const;
-        };
-
-        QAbstractFileEngine *ZipEngineHandler::create(const QString &fileName) const
-        {
-            // ZipEngineHandler returns a ZipEngine for all .zip files
-            return fileName.toLower().endsWith(".zip") ? new ZipEngine(fileName) : 0;
-        }
-
-        int main(int argc, char **argv)
-        {
-            QApplication app(argc, argv);
-
-            ZipEngineHandler engine;
-
-            MainWindow window;
-            window.show();
-
-            return app.exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 0
 
     When the handler is destroyed, it is automatically removed from Qt.
 
@@ -170,13 +148,7 @@ QAbstractFileEngineHandler::~QAbstractFileEngineHandler()
 
     Example:
 
-    \code
-        QAbstractSocketEngine *ZipEngineHandler::create(const QString &fileName) const
-        {
-            // ZipEngineHandler returns a ZipEngine for all .zip files
-            return fileName.toLower().endsWith(".zip") ? new ZipEngine(fileName) : 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 1
 
     \sa QAbstractFileEngine::create()
 */
@@ -224,8 +196,12 @@ QAbstractFileEngine *QAbstractFileEngine::create(const QString &fileName)
     }
 #endif
 
+#ifdef QT_NO_FSFILEENGINE
+    return 0;
+#else
     // fall back to regular file engine
     return new QFSFileEngine(fileName);
+#endif
 }
 
 /*!
@@ -764,6 +740,47 @@ bool QAbstractFileEngine::atEnd() const
 }
 
 /*!
+    maps \a size bytes of the file into memory starting at \a offset.  Returns
+    a pointer to the memory or 0 if there is an error.
+
+    This function bases its behavior on calling extension() with
+    MapExtensionOption. If the engine does not support this extension, 0 is
+    returned.
+
+    \a flags is currently not used, but could be used in the future.
+
+    \sa unmap(), supportsExtension()
+ */
+
+uchar *QAbstractFileEngine::map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags)
+{
+    MapExtensionOption option;
+    option.offset = offset;
+    option.size = size;
+    option.flags = flags;
+    MapExtensionReturn r;
+    if (!extension(MapExtension, &option, &r))
+        return 0;
+    return r.address;
+}
+
+/*!
+    unmaps the memory \a address.  Returns true if the unmap succeeds; false otherwise.
+
+    This function bases its behavior on calling extension() with
+    UnMapExtensionOption. If the engine does not support this extension, false is
+    returned.
+
+    \sa map(), supportsExtension()
+ */
+bool QAbstractFileEngine::unmap(uchar *address)
+{
+    UnMapExtensionOption options;
+    options.address = address;
+    return extension(UnMapExtension, &options);
+}
+
+/*!
     \since 4.3
     \class QAbstractFileEngineIterator
     \brief The QAbstractFileEngineIterator class provides an iterator
@@ -783,13 +800,7 @@ bool QAbstractFileEngine::atEnd() const
 
     Example:
 
-    \code
-    QAbstractFileEngineIterator *
-    CustomFileEngine::beginEntryList(QDir::Filters filters, const QStringList &filterNames)
-    {
-        return new CustomFileEngineIterator(filters, filterNames);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 2
 
     QAbstractFileEngineIterator is associated with a path, name filters, and
     entry filters. The path is the directory that the iterator lists entries
@@ -814,41 +825,7 @@ bool QAbstractFileEngine::atEnd() const
     Here is an example of how to implement an interator that returns each of
     three fixed entries in sequence.
 
-    \code
-    class CustomIterator : public QAbstractFileEngineIterator
-    {
-    public:
-        CustomIterator(const QStringList &nameFilters, QDir::Filters filters)
-            : QAbstractFileEngineIterator(nameFilters, filters), index(0)
-        {
-            // In a real iterator, these entries are fetched from the
-            // file system based on the value of path().
-            entries << "entry1" << "entry2" << "entry3";
-        }
-
-        bool hasNext() const
-        {
-            return index < entries.size() - 1;
-        }
-
-        QString next()
-        {
-           if (!hasNext())
-               return QString();
-           ++index;
-           return currentFilePath();
-        }
-
-        QString currentFilePath()
-        {
-            return entries.at(index);
-        }
-
-    private:
-        QStringList entries;
-        int index;
-    };
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 3
 
     Note: QAbstractFileEngineIterator does not deal with QDir::IteratorFlags;
     it simply returns entries for a single directory.
@@ -1094,7 +1071,7 @@ qint64 QAbstractFileEngine::readLine(char *data, qint64 maxlen)
         char c;
         qint64 readResult = read(&c, 1);
         if (readResult <= 0)
-            return (readSoFar > 0) ? readSoFar : readResult;
+            return (readSoFar > 0) ? readSoFar : -1;
         ++readSoFar;
         *data++ = c;
         if (c == '\n')
@@ -1128,6 +1105,12 @@ qint64 QAbstractFileEngine::readLine(char *data, qint64 maxlen)
    internal buffer. For engines that already provide a fast readLine()
    implementation, returning false for this extension can avoid
    unnnecessary double-buffering in QIODevice.
+
+   \value MapExtension Whether the file engine provides the ability to map
+   a file to memory.
+
+   \value UnMapExtension Whether the file engine provides the ability to
+   unmap memory that was previously mapped.
 */
 
 /*!
@@ -1228,3 +1211,5 @@ void QAbstractFileEngine::setError(QFile::FileError error, const QString &errorS
     d->fileError = error;
     d->errorString = errorString;
 }
+
+QT_END_NAMESPACE

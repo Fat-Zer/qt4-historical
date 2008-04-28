@@ -117,18 +117,21 @@
 #include <private/qpnghandler_p.h>
 #endif
 
-#ifndef QT_NO_LIBRARY
+QT_BEGIN_NAMESPACE
+
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-                          (QImageIOHandlerFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/imageformats")))
+                          (QImageIOHandlerFactoryInterface_iid, QLatin1String("/imageformats")))
 #endif
 
-static QImageIOHandler *createWriteHandler(QIODevice *device, const QByteArray &format)
+static QImageIOHandler *createWriteHandlerHelper(QIODevice *device,
+    const QByteArray &format)
 {
     QByteArray form = format.toLower();
     QByteArray suffix;
     QImageIOHandler *handler = 0;
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     // check if any plugins can write the image
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
@@ -141,7 +144,7 @@ static QImageIOHandler *createWriteHandler(QIODevice *device, const QByteArray &
         // this allows plugins to override our built-in handlers.
         if (QFile *file = qobject_cast<QFile *>(device)) {
             if (!(suffix = QFileInfo(file->fileName()).suffix().toLower().toLatin1()).isEmpty()) {
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
                 int index = keys.indexOf(QString::fromLatin1(suffix));
                 if (index != -1)
                     suffixPluginIndex = index;
@@ -152,7 +155,7 @@ static QImageIOHandler *createWriteHandler(QIODevice *device, const QByteArray &
 
     QByteArray testFormat = !form.isEmpty() ? form : suffix;
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     if (suffixPluginIndex != -1) {
         // when format is missing, check if we can find a plugin for the
         // suffix.
@@ -191,7 +194,7 @@ static QImageIOHandler *createWriteHandler(QIODevice *device, const QByteArray &
         }
     }
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     if (!testFormat.isEmpty()) {
         for (int i = 0; i < keys.size(); ++i) {
             QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(l->instance(keys.at(i)));
@@ -305,10 +308,7 @@ QImageWriter::~QImageWriter()
     Sets the format QImageWriter will use when writing images, to \a
     format. \a format is a case insensitive text string. Example:
 
-    \code
-        QImageWriter writer;
-        writer.setFormat("png"); // same as writer.setFormat("PNG");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qimagewriter.cpp 0
 
     You can call supportedImageFormats() for the full list of formats
     QImageWriter supports.
@@ -507,12 +507,7 @@ QString QImageWriter::description() const
     \a text. This is useful for storing copyright information
     or other information about the image. Example:
 
-    \code
-        QImage image("some/image.jpeg");
-        QImageWriter writer("images/outimage.png", "png");
-        writer.setText("Author", "John Smith");
-        writer.write(image);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qimagewriter.cpp 1
 
     If you want to store a single block of data
     (e.g., a comment), you can pass an empty key, or use
@@ -549,7 +544,7 @@ bool QImageWriter::canWrite() const
                                            QLatin1String("Device not writable"));
         return false;
     }
-    if (!d->handler && (d->handler = ::createWriteHandler(d->device, d->format)) == 0) {
+    if (!d->handler && (d->handler = createWriteHandlerHelper(d->device, d->format)) == 0) {
         d->imageWriterError = QImageWriter::UnsupportedFormatError;
         d->errorString = QT_TRANSLATE_NOOP(QImageWriter,
                                            QLatin1String("Unsupported image format"));
@@ -619,11 +614,7 @@ QString QImageWriter::errorString() const
     example, the PNG format allows you to embed text into the image's metadata
     (see text()).
 
-    \code
-        QImageWriter writer(fileName);
-        if (writer.supportsOption(QImageIOHandler::Description))
-            writer.setText("Author", "John Smith");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qimagewriter.cpp 2
 
     Options can be tested after the writer has been associated with a format.
 
@@ -631,7 +622,7 @@ QString QImageWriter::errorString() const
 */
 bool QImageWriter::supportsOption(QImageIOHandler::ImageOption option) const
 {
-    if (!d->handler && (d->handler = ::createWriteHandler(d->device, d->format)) == 0) {
+    if (!d->handler && (d->handler = createWriteHandlerHelper(d->device, d->format)) == 0) {
         d->imageWriterError = QImageWriter::UnsupportedFormatError;
         d->errorString = QT_TRANSLATE_NOOP(QImageWriter,
                                            QLatin1String("Unsupported image format"));
@@ -658,6 +649,9 @@ bool QImageWriter::supportsOption(QImageIOHandler::ImageOption option) const
     \row    \o XPM    \o X11 Pixmap
     \endtable
 
+    Reading and writing SVG files is supported through Qt's
+    \l{QtSvg Module}{SVG Module}.
+
     \sa setFormat(), QImageReader::supportedImageFormats(), QImageIOPlugin
 */
 QList<QByteArray> QImageWriter::supportedImageFormats()
@@ -677,7 +671,7 @@ QList<QByteArray> QImageWriter::supportedImageFormats()
     formats << "png";
 #endif
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
     for (int i = 0; i < keys.count(); ++i) {
@@ -695,3 +689,4 @@ QList<QByteArray> QImageWriter::supportedImageFormats()
     return sortedFormats;
 }
 
+QT_END_NAMESPACE

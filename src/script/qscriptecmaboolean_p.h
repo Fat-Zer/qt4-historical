@@ -57,6 +57,8 @@
 
 #include "qscriptecmacore_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_SCRIPT
 
 namespace QScript { namespace Ecma {
@@ -66,8 +68,6 @@ class Boolean: public Core
 public:
     Boolean(QScriptEnginePrivate *engine);
     virtual ~Boolean();
-
-    inline QScriptClassInfo *classInfo() const { return m_classInfo; }
 
     virtual void execute(QScriptContextPrivate *context);
 
@@ -80,12 +80,12 @@ protected:
     static QScriptValueImpl method_valueOf(QScriptContextPrivate *context,
                                            QScriptEnginePrivate *eng,
                                            QScriptClassInfo *classInfo);
-
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ecma
 
 #endif // QT_NO_SCRIPT
-#endif
 
+QT_END_NAMESPACE
+
+#endif

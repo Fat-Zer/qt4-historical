@@ -43,11 +43,14 @@
 
 #include "statistics.h"
 
+QT_BEGIN_NAMESPACE
+
 Statistics::Statistics(QWidget* parent, Qt::WindowFlags fl)
 : QDialog(parent, fl)
 {
     setupUi(this);
     connect(closeBtn, SIGNAL(clicked()), this, SLOT(close()));
+    setAttribute(Qt::WA_QuitOnClose, false);
 }
 
 void Statistics::languageChange()
@@ -58,9 +61,11 @@ void Statistics::languageChange()
 void Statistics::updateStats(int sW,int sC,int sCS,int trW,int trC,int trCS)
 {
     untrWords->setText(QString::number(sW));
-    untrChars->setText(QString::number(sC)); 
+    untrChars->setText(QString::number(sC));
     untrCharsSpc->setText(QString::number(sCS));
     trWords->setText(QString::number(trW));
     trChars->setText(QString::number(trC));
     trCharsSpc->setText(QString::number(trCS));
 }
+
+QT_END_NAMESPACE

@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example dialogs/extension
     \title Extension Example
@@ -28,9 +71,7 @@
     window mostly used for short-term tasks and brief communications
     with the user.
 
-    \quotefromfile dialogs/extension/finddialog.h
-    \skipto class FindDialog
-    \printuntil /^\};/
+    \snippet examples/dialogs/extension/finddialog.h 0
 
     The \c FindDialog widget is the main application widget, and
     displays the application's search options and controlling
@@ -52,9 +93,7 @@
     of the \l {QCheckBox}{QCheckBox}es and all the \l
     {QPushButton}{QPushButton}s.
 
-    \quotefromfile dialogs/extension/finddialog.cpp
-    \skipto FindDialog
-    \printuntil setCheckable
+    \snippet examples/dialogs/extension/finddialog.cpp 0
 
     We give the options and buttons a shortcut key using the &
     character. In the \gui {Find what} option's case, we also need to
@@ -68,15 +107,13 @@
     pressed if the user presses the Enter (or Return) key. Note that a
     QDialog can only have one default button.
 
-    \skipto extension
-    \printuntil search SelectionCheckBox
+    \snippet examples/dialogs/extension/finddialog.cpp 2
 
     Then we create the extension widget, and the \l
     {QCheckBox}{QCheckBox}es associated with the advanced search
     options.
 
-    \skipto connect
-    \printuntil extension->setLayout(
+    \snippet examples/dialogs/extension/finddialog.cpp 3
 
     Now that the extension widget is created, we can connect the \gui
     More button's \l{QAbstractButton::toggled()}{toggled()} signal to
@@ -97,8 +134,7 @@
     slot, and we put the checkboxes associated with the advanced
     search options into a layout we install on the extension widget.
 
-    \skipto topLeftLayout
-    \printuntil setWindowTitle
+    \snippet examples/dialogs/extension/finddialog.cpp 4
 
     Before we create the main layout, we create several child layouts
     for the widgets: First we allign the QLabel ans its buddy, the
@@ -108,8 +144,7 @@
     for the buttons. In the end we lay out the two latter layouts and
     the extension widget using a QGridLayout.
 
-    \skipto hide
-    \printuntil /^\}/
+    \snippet examples/dialogs/extension/finddialog.cpp 5
 
     Finally, we hide the extension widget using the QWidget::hide()
     function, making the application only show the simple search

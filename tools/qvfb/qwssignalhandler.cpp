@@ -50,6 +50,8 @@
 #include <sys/sem.h>
 #include <signal.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef Q_OS_BSD4
 union semun {
     int val;
@@ -128,5 +130,7 @@ void QWSSignalHandler::handleSignal(int signum)
     h->objects.clear();
     raise(signum);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_QWS_NO_SIGNALHANDLER

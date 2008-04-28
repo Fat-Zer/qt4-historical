@@ -63,6 +63,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 enum { warnHeaderGeneration = 0 };
 
 #define CONVERT_PROPERTY(o, n) \
@@ -442,16 +444,17 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget, bool implicitIncludes)
         ui->setElementPixmapFunction(pixmapFunction);
 
     for (int i=0; i<ui_customwidget_list.size(); ++i) {
-        QString name = ui_customwidget_list.at(i)->elementClass();
+        const QString name = ui_customwidget_list.at(i)->elementClass();
         if (candidateCustomWidgets.contains(name))
             candidateCustomWidgets.remove(name);
     }
+
 
     QMapIterator<QString, bool> it(candidateCustomWidgets);
     while (it.hasNext()) {
         it.next();
 
-        QString customClass = it.key();
+        const QString customClass = it.key();
         QString baseClass;
 
         if (customClass.endsWith(QLatin1String("ListView")))
@@ -1066,11 +1069,14 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
             CONVERT_PROPERTY(QLatin1String("textLabel"), QLatin1String("text"));
 
             CONVERT_PROPERTY(QLatin1String("toggleButton"), QLatin1String("checkable"));
-            CONVERT_PROPERTY(QLatin1String("isOn"), QLatin1String("checked"));
+            CONVERT_PROPERTY(QLatin1String("on"), QLatin1String("checked"));
 
             CONVERT_PROPERTY(QLatin1String("maxValue"), QLatin1String("maximum"));
             CONVERT_PROPERTY(QLatin1String("minValue"), QLatin1String("minimum"));
             CONVERT_PROPERTY(QLatin1String("lineStep"), QLatin1String("singleStep"));
+
+            // QSlider
+            CONVERT_PROPERTY(QLatin1String("tickmarks"), QLatin1String("tickPosition"));
 
             name = prop->attributeName(); // sync the name
 
@@ -1261,3 +1267,5 @@ QString Ui3Reader::fixMethod(const QString &method) const
     result.append(normalized.mid(index));
     return QLatin1String(result);
 }
+
+QT_END_NAMESPACE

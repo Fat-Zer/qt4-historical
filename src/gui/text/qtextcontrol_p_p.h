@@ -65,6 +65,8 @@
 #include "QtCore/qpointer.h"
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QMimeData;
 class QAbstractScrollArea;
 
@@ -154,6 +156,8 @@ public:
     void showToolTip(const QPoint &globalPos, const QPointF &pos, QWidget *contextWidget);
 #endif
 
+    void append(const QString &text, Qt::TextFormat format = Qt::AutoText);
+
     QTextDocument *doc;
     bool cursorOn;
     QTextCursor cursor;
@@ -205,6 +209,10 @@ public:
 
     QString linkToCopy;
     void _q_copyLink();
+    void _q_updateBlock(const QTextBlock &);
+    void _q_documentLayoutChanged();
 };
+
+QT_END_NAMESPACE
 
 #endif // QTEXTCONTROL_P_H

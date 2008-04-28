@@ -50,6 +50,8 @@
 #include <QtGui/QStandardItemModel>
 #include "phrase.h"
 
+QT_BEGIN_NAMESPACE
+
 class MessageModel;
 
 class CheckableListModel : public QStandardItemModel
@@ -64,7 +66,7 @@ class BatchTranslationDialog : public QDialog
     Q_OBJECT
 public:
     BatchTranslationDialog(MessageModel *model, QWidget *w = 0);
-    void setPhraseBooks(const QList<PhraseBook> &phrasebooks);
+    void setPhraseBooks(const QList<PhraseBook *> &phrasebooks);
     PhraseBook *GetNamedPhraseBook(const QString &name);
 
 signals:
@@ -79,9 +81,10 @@ private:
     Ui::databaseTranslationDialog m_ui;
     CheckableListModel m_model;
     MessageModel *m_messagemodel;
-    QList<PhraseBook> m_phrasebooks;
+    QList<PhraseBook *> m_phrasebooks;
 };
 
+QT_END_NAMESPACE
 
 #endif  //BATCHTRANSLATIONDIALOG_H
 

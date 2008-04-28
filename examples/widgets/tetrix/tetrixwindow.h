@@ -47,11 +47,14 @@
 #include <QFrame>
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QLCDNumber;
 class QLabel;
 class QPushButton;
+QT_END_NAMESPACE
 class TetrixBoard;
 
+//! [0]
 class TetrixWindow : public QWidget
 {
     Q_OBJECT
@@ -71,5 +74,6 @@ private:
     QPushButton *quitButton;
     QPushButton *pauseButton;
 };
+//! [0]
 
 #endif

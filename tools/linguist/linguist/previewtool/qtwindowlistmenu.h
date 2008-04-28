@@ -48,6 +48,8 @@
 #include <QMenu>
 #include <QActionGroup>
 
+QT_BEGIN_NAMESPACE
+
 class QMenuBar;
 class QWidget;
 class QString;
@@ -65,7 +67,7 @@ public:
 	virtual bool eventFilter(QObject *obj, QEvent *e);
 
     void setWindowIcon(QWidget *widget, const QIcon &icon);
-    void setDefaultIcon(const QIcon &icon);    
+    void setDefaultIcon(const QIcon &icon);
 
     void setCloseIcon(const QIcon &icon);
     void setCloseAllIcon(const QIcon &icon);
@@ -80,7 +82,7 @@ public slots:
 
 private slots:
     void setSenderChecked(bool checked);
-   
+
 private:
 	QMenuBar *m_menubar;
 	QAction *m_my_action;
@@ -99,7 +101,9 @@ private:
     QActionGroup groupWindows;
 
 	bool isEmpty();
-    void setChecked(bool checked, QAction *a);    
+    void setChecked(bool checked, QAction *a);
 };
+
+QT_END_NAMESPACE
 
 #endif

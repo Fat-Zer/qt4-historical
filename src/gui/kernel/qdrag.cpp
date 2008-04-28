@@ -49,6 +49,8 @@
 
 #ifndef QT_NO_DRAGANDDROP
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDrag
     \brief The QDrag class provides support for MIME-based drag and drop data
@@ -63,13 +65,10 @@
     QMimeData object. This is specified with the setMimeData() function in the
     following way:
 
-    \quotefromfile snippets/dragging/mainwindow.cpp
-    \skipto mousePressEvent
-    \skipto QDrag
-    \printuntil setMimeData
+    \snippet doc/src/snippets/dragging/mainwindow.cpp 1
 
     Note that setMimeData() assigns ownership of the QMimeData object to the
-    QDrag object. The QDrag must be constructed on the heap with a parent QObject
+    QDrag object. The QDrag must be constructed on the heap with a parent QWidget
     to ensure that Qt can clean up after the drag and drop operation has been
     completed.
 
@@ -82,11 +81,9 @@
     following code positions the pixmap so that the cursor's hot spot points to
     the center of its bottom edge:
 
-    \quotefromfile snippets/separations/finalwidget.cpp
-    \skipto setHotSpot
-    \printuntil ;
+    \snippet doc/src/snippets/separations/finalwidget.cpp 2
 
-    \bold{Note:} on X11, the pixmap may not be able to keep up with the mouse
+    \note On X11, the pixmap may not be able to keep up with the mouse
     movements if the hot spot causes the pixmap to be displayed
     directly under the cursor.
 
@@ -353,5 +350,7 @@ void QDrag::setDragCursor(const QPixmap &cursor, Qt::DropAction action)
 
     \sa target(), actionChanged()
 */
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_DRAGANDDROP

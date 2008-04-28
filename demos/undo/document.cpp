@@ -41,7 +41,6 @@
 **
 ****************************************************************************/
 
-#include <math.h>
 #include <qevent.h>
 #include <QPainter>
 #include <QTextStream>

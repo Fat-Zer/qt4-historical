@@ -46,7 +46,11 @@
 
 
 #include <QtCore/QObject>
+#include <QtCore/QPoint>
+#include <QtCore/QSize>
 #include <qglobal.h>
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormWindowInterface;
 
@@ -75,8 +79,12 @@ namespace qdesigner_internal {
         QWidget *m_editorWidget;
         QWidget *m_parentWidget;
         const bool m_noChildEvent;
+        QPoint m_posOffset;
+        QSize m_sizeOffset;
     };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // INPLACE_WIDGETHELPER_H

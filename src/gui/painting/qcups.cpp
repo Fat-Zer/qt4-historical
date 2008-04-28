@@ -48,6 +48,8 @@
 #include <cups/language.h>
 #include <qtextcodec.h>
 
+QT_BEGIN_NAMESPACE
+
 typedef int (*CupsGetDests)(cups_dest_t **dests);
 typedef void (*CupsFreeDests)(int num_dests, cups_dest_t *dests);
 typedef const char* (*CupsGetPPD)(const char *printer);
@@ -62,6 +64,8 @@ typedef void (*CupsSetDests)(int num_dests, cups_dest_t *dests);
 typedef cups_lang_t* (*CupsLangGet)(const char *language);
 typedef const char* (*CupsLangEncoding)(cups_lang_t *language);
 typedef int (*CupsAddOption)(const char *name, const char *value, int num_options, cups_option_t **options);
+typedef int (*CupsTempFd)(char *name, int len);
+typedef int (*CupsPrintFile)(const char * name, const char * filename, const char * title, int num_options, cups_option_t * options);
 
 static bool cupsLoaded = false;
 static int qt_cups_num_printers = 0;
@@ -78,6 +82,8 @@ static CupsSetDests _cupsSetDests = 0;
 static CupsLangGet _cupsLangGet = 0;
 static CupsLangEncoding _cupsLangEncoding = 0;
 static CupsAddOption _cupsAddOption = 0;
+static CupsTempFd _cupsTempFd = 0;
+static CupsPrintFile _cupsPrintFile = 0;
 
 static void resolveCups()
 {
@@ -96,6 +102,8 @@ static void resolveCups()
         _cupsFreeOptions = (CupsFreeOptions) cupsLib.resolve("cupsFreeOptions");
         _cupsSetDests = (CupsSetDests) cupsLib.resolve("cupsSetDests");
         _cupsAddOption = (CupsAddOption) cupsLib.resolve("cupsAddOption");
+        _cupsTempFd = (CupsTempFd) cupsLib.resolve("cupsTempFd");
+        _cupsPrintFile = (CupsPrintFile) cupsLib.resolve("cupsPrintFile");
 
         if (_cupsGetDests && _cupsFreeDests) {
             cups_dest_t *printers;
@@ -124,7 +132,7 @@ QCUPSSupport::QCUPSSupport()
     // getting all available printers
     if (!isAvailable())
         return;
-        
+
     prnCount = _cupsGetDests(&printers);
 
     for (int i = 0; i <  prnCount; ++i) {
@@ -227,25 +235,25 @@ bool QCUPSSupport::isAvailable()
 
 const ppd_option_t* QCUPSSupport::ppdOption(const char *key) const
 {
-    for (int gr = 0; gr < currPPD->num_groups; ++gr) {
-        for (int opt = 0; opt < currPPD->groups[gr].num_options; ++opt) {
-            if (qstrcmp(currPPD->groups[gr].options[opt].keyword, key) == 0)
-                return &currPPD->groups[gr].options[opt];
+    if (currPPD) {
+        for (int gr = 0; gr < currPPD->num_groups; ++gr) {
+            for (int opt = 0; opt < currPPD->groups[gr].num_options; ++opt) {
+                if (qstrcmp(currPPD->groups[gr].options[opt].keyword, key) == 0)
+                    return &currPPD->groups[gr].options[opt];
+            }
         }
     }
     return 0;
 }
 
-#if 0
 const cups_option_t* QCUPSSupport::printerOption(const QString &key) const
 {
     for (int i = 0; i < printers[currPrinterIndex].num_options; ++i) {
-        if (printers[currPrinterIndex].options[i].name == key)
+        if (QLatin1String(printers[currPrinterIndex].options[i].name) == key)
             return &printers[currPrinterIndex].options[i];
     }
     return 0;
 }
-#endif
 
 const ppd_option_t* QCUPSSupport::pageSizes() const
 {
@@ -371,5 +379,20 @@ void QCUPSSupport::collectMarkedOptionsHelper(QStringList& list, const ppd_group
     }
 }
 
-#endif // QT_NO_CUPS
+QPair<int, QString> QCUPSSupport::tempFd()
+{
+    char filename[512];
+    int fd = _cupsTempFd(filename, 512);
+    return QPair<int, QString>(fd, QString::fromLocal8Bit(filename));
+}
 
+// Prints the given file and returns a job id.
+int QCUPSSupport::printFile(const char * printerName, const char * filename, const char * title,
+                            int num_options, cups_option_t * options)
+{
+    return _cupsPrintFile(printerName, filename, title, num_options, options);
+}
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_CUPS

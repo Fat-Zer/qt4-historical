@@ -51,6 +51,8 @@
 #endif
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QAbstractSlider
     \brief The QAbstractSlider class provides an integer value within a range.
@@ -373,7 +375,8 @@ int QAbstractSlider::maximum() const
 void QAbstractSlider::setSingleStep(int step)
 {
     Q_D(QAbstractSlider);
-    d->setSteps(step, d->pageStep);
+    if (step != d->singleStep)
+        d->setSteps(step, d->pageStep);
 }
 
 int QAbstractSlider::singleStep() const
@@ -396,7 +399,8 @@ int QAbstractSlider::singleStep() const
 void QAbstractSlider::setPageStep(int step)
 {
     Q_D(QAbstractSlider);
-    d->setSteps(d->singleStep, step);
+    if (step != d->pageStep)
+        d->setSteps(d->singleStep, step);
 }
 
 int QAbstractSlider::pageStep() const
@@ -750,7 +754,10 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
                 action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
             else
 #endif
-            action = !d->invertedAppearance ? SliderSingleStepSub : SliderSingleStepAdd;
+            if (isRightToLeft())
+                action = d->invertedAppearance ? SliderSingleStepSub : SliderSingleStepAdd;
+            else
+                action = !d->invertedAppearance ? SliderSingleStepSub : SliderSingleStepAdd;
             break;
         case Qt::Key_Right:
 #ifdef QT_KEYPAD_NAVIGATION
@@ -762,7 +769,10 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
                 action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
             else
 #endif
-            action = !d->invertedAppearance ? SliderSingleStepAdd : SliderSingleStepSub;
+            if (isRightToLeft())
+                action = d->invertedAppearance ? SliderSingleStepAdd : SliderSingleStepSub;
+            else
+                action = !d->invertedAppearance ? SliderSingleStepAdd : SliderSingleStepSub;
             break;
         case Qt::Key_Up:
 #ifdef QT_KEYPAD_NAVIGATION
@@ -835,7 +845,7 @@ bool QAbstractSlider::event(QEvent *e)
         break;
     }
 #endif
-    
+
     return QWidget::event(e);
 }
 
@@ -894,3 +904,5 @@ bool QAbstractSlider::event(QEvent *e)
     Use setSingleStep(\a single) followed by setPageStep(\a page)
     instead.
 */
+
+QT_END_NAMESPACE

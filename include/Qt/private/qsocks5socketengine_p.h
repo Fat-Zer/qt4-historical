@@ -1,1 +1,1 @@
-#include "../../../src/network/qsocks5socketengine_p.h"
+#include "../../../src/network/socket/qsocks5socketengine_p.h"

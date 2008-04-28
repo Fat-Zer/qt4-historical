@@ -50,16 +50,16 @@
 #include <QPolygonF>
 
 class HoverPoints;
-class QLineEdit;
+QT_FORWARD_DECLARE_CLASS(QLineEdit)
 
 class XFormView : public ArthurFrame
 {
     Q_OBJECT
 
     Q_PROPERTY(bool animation READ animation WRITE setAnimation)
-    Q_PROPERTY(double shear READ shear WRITE setShear)
-    Q_PROPERTY(double rotation READ rotation WRITE setRotation)
-    Q_PROPERTY(double scale READ scale WRITE setScale)
+    Q_PROPERTY(qreal shear READ shear WRITE setShear)
+    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
+    Q_PROPERTY(qreal scale READ scale WRITE setScale)
 
 public:
     XFormView(QWidget *parent);
@@ -76,12 +76,12 @@ public:
     QLineEdit *textEditor;
 
     bool animation() const { return timer.isActive(); }
-    double shear() const { return m_shear; }
-    double scale() const { return m_scale; }
-    double rotation() const { return m_rotation; }
-    void setShear(double s);
-    void setScale(double s);
-    void setRotation(double r);
+    qreal shear() const { return m_shear; }
+    qreal scale() const { return m_scale; }
+    qreal rotation() const { return m_rotation; }
+    void setShear(qreal s);
+    void setScale(qreal s);
+    void setRotation(qreal r);
 
 public slots:
     void setAnimation(bool animate);
@@ -109,9 +109,9 @@ private:
 
     QPolygonF ctrlPoints;
     HoverPoints *pts;
-    double m_rotation;
-    double m_scale;
-    double m_shear;
+    qreal m_rotation;
+    qreal m_scale;
+    qreal m_shear;
     XFormType type;
     QPixmap pixmap;
     QBasicTimer timer;

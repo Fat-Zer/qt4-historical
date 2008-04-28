@@ -1,8 +1,51 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example linguist/hellotr
     \title Hello tr() Example
 
-    This example is a reworking of the \l{tutorial/t1}{Hello World!}
+    This example is a reworking of the \l{tutorials/tutorial/t1}{Hello World!}
     example from the \l{Qt Tutorial}, with a Latin translation. The
     screenshot below shows the English version.
 
@@ -13,31 +56,28 @@
 
     \section1 Line by Line Walkthrough
 
-    \quotefromfile linguist/hellotr/main.cpp
 
-    \skipto <QTranslator>
-    \printline QTranslator
+    \snippet examples/linguist/hellotr/main.cpp 0
 
     This line includes the definition of the QTranslator class. 
     Objects of this class provide translations for user-visible text.
 
-    \skipto QTranslator
-    \printuntil tor
+    \snippet examples/linguist/hellotr/main.cpp 5
 
     Creates a QTranslator object without a parent.
 
-    \printline load
+    \snippet examples/linguist/hellotr/main.cpp 6
 
     Tries to load a file called \c hellotr_la.qm (the \c .qm file extension is
     implicit) that contains Latin translations for the source texts used in
     the program. No error will occur if the file is not found.
 
-    \printline installTranslator
+    \snippet examples/linguist/hellotr/main.cpp 7
 
     Adds the translations from \c hellotr_la.qm to the pool of translations used
     by the program.
 
-    \printline hello
+    \snippet examples/linguist/hellotr/main.cpp 8
 
     Creates a push button that displays "Hello world!". If \c hellotr_la.qm
     was found and contains a translation for "Hello world!", the
@@ -61,11 +101,8 @@
     all the source files for the project. The project file can be a qmake
     project file, or even an ordinary makefile. Any file that contains
 
-    \quotefromfile linguist/hellotr/hellotr.pro
-    \skipto SOURCES
-    \printline SOURCES
-    \skipto TRANSLATIONS
-    \printline TRANSLATIONS
+    \snippet examples/linguist/hellotr/hellotr.pro 0
+    \snippet examples/linguist/hellotr/hellotr.pro 1
 
     will work. \c TRANSLATIONS specifies the message files we want to
     maintain. In this example, we just maintain one set of translations,
@@ -102,25 +139,13 @@
 
     Try running \c lupdate right now, like this:
 
-    \code
-        lupdate -verbose hellotr.pro
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 0
 
     (The \c -verbose option instructs \c lupdate to display messages that
     explain what it is doing.) You should now have a file \c hellotr_la.ts in
     the current directory, containing this:
 
-    \code
-        <!DOCTYPE TS><TS>
-        <context>
-            <name>QPushButton</name>
-            <message>
-                <source>Hello world!</source>
-                <translation type="unfinished"></translation>
-            </message>
-        </context>
-        </TS>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 1
 
     You don't need to understand the file format since it is read and
     updated using tools (\c lupdate, \e {Qt Linguist}, \c lrelease).
@@ -133,9 +158,7 @@
 
     To start \e {Qt Linguist}, type
 
-    \code
-        linguist hellotr_la.ts
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 2
 
     You should now see the text "QPushButton" in the top left pane.
     Double-click it, then click on "Hello world!" and enter "Orbis, te
@@ -145,15 +168,11 @@
     Click the \gui Done checkbox and choose \gui File|Save from the
     menu bar. The \c .ts file will no longer contain
 
-    \code
-        <translation type='unfinished'></translation>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 3
 
     but instead will have
 
-    \code
-        <translation>Orbis, te saluto!</translation>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 4
 
     \section1 Running the Application in Latin
 

@@ -1,7 +1,7 @@
 TEMPLATE = app
 
 CONFIG += qt warn_on
-unix:contains(QT_CONFIG, qdbus):CONFIG += qdbus
+unix:contains(QT_CONFIG, dbus):QT += dbus
 
 SOURCES += main.cpp
 RESOURCES += spreadsheet.qrc
@@ -16,3 +16,4 @@ target.path = $$[QT_INSTALL_DEMOS]/spreadsheet
 sources.files = $$SOURCES $$RESOURCES *.pro images
 sources.path = $$[QT_INSTALL_DEMOS]/spreadsheet
 INSTALLS += target sources
+

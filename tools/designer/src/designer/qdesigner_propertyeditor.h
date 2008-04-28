@@ -46,13 +46,15 @@
 
 #include "qdesigner_toolwindow.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWorkbench;
 
 class QDesignerPropertyEditor: public QDesignerToolWindow
 {
     Q_OBJECT
 public:
-    QDesignerPropertyEditor(QDesignerWorkbench *workbench);
+    explicit QDesignerPropertyEditor(QDesignerWorkbench *workbench);
     virtual ~QDesignerPropertyEditor();
 
     virtual QRect geometryHint() const;
@@ -60,5 +62,7 @@ public:
 protected:
     virtual void showEvent(QShowEvent *event);
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_PROPERTYEDITOR_H

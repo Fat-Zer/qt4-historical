@@ -52,11 +52,15 @@ Receiver::Receiver(QWidget *parent)
     statusLabel = new QLabel(tr("Listening for broadcasted messages"));
     quitButton = new QPushButton(tr("&Quit"));
 
+//! [0]
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(45454);
+//! [0]
 
+//! [1]
     connect(udpSocket, SIGNAL(readyRead()),
             this, SLOT(processPendingDatagrams()));
+//! [1]
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
@@ -74,6 +78,7 @@ Receiver::Receiver(QWidget *parent)
 
 void Receiver::processPendingDatagrams()
 {
+//! [2]
     while (udpSocket->hasPendingDatagrams()) {
         QByteArray datagram;
         datagram.resize(udpSocket->pendingDatagramSize());
@@ -81,4 +86,5 @@ void Receiver::processPendingDatagrams()
         statusLabel->setText(tr("Received datagram: \"%1\"")
                              .arg(datagram.data()));
     }
+//! [2]
 }

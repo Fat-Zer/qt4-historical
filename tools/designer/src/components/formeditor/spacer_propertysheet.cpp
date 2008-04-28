@@ -49,16 +49,15 @@
 #include <QtDesigner/QExtensionManager>
 
 #include <QtGui/QLayout>
-#include <QtCore/QMetaObject>
-#include <QtCore/QMetaProperty>
-#include <QtCore/qdebug.h>
 
-using namespace qdesigner_internal;
+QT_BEGIN_NAMESPACE
 
+namespace qdesigner_internal
+{
 SpacerPropertySheet::SpacerPropertySheet(Spacer *object, QObject *parent)
     : QDesignerPropertySheet(object, parent)
 {
-    m_fakeProperties.clear();
+    clearFakeProperties();
 }
 
 SpacerPropertySheet::~SpacerPropertySheet()
@@ -67,9 +66,8 @@ SpacerPropertySheet::~SpacerPropertySheet()
 
 bool SpacerPropertySheet::isVisible(int index) const
 {
-    QString group = propertyGroup(index);
-
-    return group == QLatin1String("Spacer");
+    static const QString spacerGroup = QLatin1String("Spacer");
+    return propertyGroup(index) == spacerGroup;
 }
 
 void SpacerPropertySheet::setProperty(int index, const QVariant &value)
@@ -81,20 +79,6 @@ bool SpacerPropertySheet::dynamicPropertiesAllowed() const
 {
     return false;
 }
-
-
-SpacerPropertySheetFactory::SpacerPropertySheetFactory(QExtensionManager *parent)
-    : QExtensionFactory(parent)
-{
 }
 
-QObject *SpacerPropertySheetFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (iid != Q_TYPEID(QDesignerPropertySheetExtension))
-        return 0;
-
-    if (Spacer *o = qobject_cast<Spacer*>(object))
-        return new SpacerPropertySheet(o, parent);
-
-    return 0;
-}
+QT_END_NAMESPACE

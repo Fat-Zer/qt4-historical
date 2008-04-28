@@ -49,6 +49,8 @@
 
 #include <Qt3Support/Q3TextEdit>
 
+QT_BEGIN_NAMESPACE
+
 inline QHash<QString, DomProperty *> propertyMap(const QList<DomProperty *> &properties) // ### remove me
 {
     QHash<QString, DomProperty *> map;
@@ -112,3 +114,5 @@ QObject *Q3TextEditExtraInfoFactory::createExtension(QObject *object, const QStr
 
     return 0;
 }
+
+QT_END_NAMESPACE

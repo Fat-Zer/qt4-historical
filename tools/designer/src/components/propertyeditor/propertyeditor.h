@@ -45,23 +45,40 @@
 #define PROPERTYEDITOR_H
 
 #include "propertyeditor_global.h"
-#include "qpropertyeditor.h"
 #include <qdesigner_propertyeditor_p.h>
 
 #include <QtCore/QPointer>
+#include <QtCore/QMap>
+#include <QtCore/QVector>
+#include <QtCore/QSet>
+
+QT_BEGIN_NAMESPACE
 
 class DomProperty;
 class QDesignerMetaDataBaseItemInterface;
 class QDesignerPropertySheetExtension;
 
+class QtAbstractPropertyBrowser;
+class QtButtonPropertyBrowser;
+class QtTreePropertyBrowser;
+class QtProperty;
+class QtVariantProperty;
+class QtBrowserItem;
+
+class QStackedWidget;
+class QLabel;
+
 namespace qdesigner_internal {
+
 class StringProperty;
+class DesignerPropertyManager;
+class DesignerEditorFactory;
 
 class QT_PROPERTYEDITOR_EXPORT PropertyEditor: public QDesignerPropertyEditor
 {
     Q_OBJECT
 public:
-    PropertyEditor(QDesignerFormEditorInterface *core, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    explicit PropertyEditor(QDesignerFormEditorInterface *core, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     virtual ~PropertyEditor();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -74,35 +91,108 @@ public:
 
     virtual void setObject(QObject *object);
 
+    void reloadResourceProperties();
+
     virtual QObject *object() const
     { return m_object; }
 
     virtual QString currentPropertyName() const;
-    
+
 private slots:
-    void slotFirePropertyChanged(IProperty *property);
-    void slotResetProperty(const QString &prop_name);
-    void slotCustomContextMenuRequested(const QPoint &pos);
+    void slotResetProperty(QtProperty *property);
+    void slotValueChanged(QtProperty *property, const QVariant &value, bool enableSubPropertyHandling);
+    void slotViewTriggered(QAction *action);
+    void slotAddDynamicProperty(QAction *action);
+    void slotRemoveDynamicProperty();
+    void slotSorting(bool sort);
+    void slotColoring(bool color);
+    void slotCurrentItemChanged(QtBrowserItem*);
 
 private:
-    IProperty *propertyByName(IProperty *p, const QString &name);
-    void clearDirty(IProperty *p);
-    void createPropertySheet(PropertyCollection *root, QObject *object);
-    static IProperty *createSpecialProperty(const QVariant &value, const QString &name);
-
-private:
+    void updateBrowserValue(QtVariantProperty *property, const QVariant &value);
+    void updateToolBarLabel();
+    int toBrowserType(const QVariant &value, const QString &propertyName) const;
+    QString removeScope(const QString &value) const;
     QDesignerMetaDataBaseItemInterface *metaDataBaseItem() const;
-    StringProperty* createStringProperty(QObject *object, const QString &pname, const QVariant &value, bool isMainContainer) const;
-  
+    void setupStringProperty(QtVariantProperty *property, const QString &pname, const QVariant &value, bool isMainContainer);
+    void setupPaletteProperty(QtVariantProperty *property);
+    QString realClassName(QObject *object) const;
+    void storeExpansionState();
+    void applyExpansionState();
+    void storePropertiesExpansionState(const QList<QtBrowserItem *> &items);
+    void applyPropertiesExpansionState(const QList<QtBrowserItem *> &items);
+    void setExpanded(QtBrowserItem *item, bool expanded);
+    bool isExpanded(QtBrowserItem *item);
+    void collapseAll();
+    void clearView();
+    void fillView();
+    bool isLayoutGroup(QtProperty *group) const;
+    QColor propertyColor(QtProperty *property) const;
+    void updateActionsState();
+    QtBrowserItem *nonFakePropertyBrowserItem(QtBrowserItem *item) const;
+    void saveSettings() const;
+    void addCommentProperty(QtVariantProperty *property, const QString &propertyName);
+    void editProperty(const QString &name);
+    bool isDynamicProperty(const QtBrowserItem* item) const;
+
+    struct Strings {
+        Strings();
+        const QString m_commentName;
+        QSet<QString> m_alignmentProperties;
+        const QString m_fontProperty;
+        const QString m_qLayoutWidget;
+        const QString m_designerPrefix;
+        const QString m_layout;
+        const QString m_validationModeAttribute;
+        const QString m_fontAttribute;
+        const QString m_superPaletteAttribute;
+        const QString m_enumNamesAttribute;
+        const QString m_resettableAttribute;
+        const QString m_flagsAttribute;
+    };
+
+    const Strings m_strings;
     QDesignerFormEditorInterface *m_core;
-    QPropertyEditor *m_editor;
-    IPropertyGroup *m_properties;
-    QDesignerPropertySheetExtension *m_prop_sheet;
+    QDesignerPropertySheetExtension *m_propertySheet;
+    QtAbstractPropertyBrowser *m_currentBrowser;
+    QtButtonPropertyBrowser *m_buttonBrowser;
+    QtTreePropertyBrowser *m_treeBrowser;
+    DesignerPropertyManager *m_propertyManager;
+    DesignerEditorFactory *m_treeFactory;
+    DesignerEditorFactory *m_groupFactory;
     QPointer<QObject> m_object;
-    typedef QMap<int, IProperty *> IndexToPropertyMap;
-    IndexToPropertyMap m_indexToProperty;
+    QMap<QString, QtVariantProperty*> m_nameToProperty;
+    QMap<QtProperty*, QString> m_propertyToGroup;
+    QMap<QString, QtVariantProperty*> m_nameToGroup;
+    QMap<QtVariantProperty *, QtVariantProperty *> m_propertyToComment;
+    QMap<QtVariantProperty *, QtVariantProperty *> m_commentToProperty;
+    QList<QtProperty *> m_groups;
+    QtProperty *m_dynamicGroup;
+    QString m_recentlyAddedDynamicProperty;
+    bool m_updatingBrowser;
+
+    QStackedWidget *m_stackedWidget;
+    int m_buttonIndex;
+    int m_treeIndex;
+    QAction *m_addDynamicAction;
+    QAction *m_removeDynamicAction;
+    QAction *m_sortingAction;
+    QAction *m_coloringAction;
+    QAction *m_treeAction;
+    QAction *m_buttonAction;
+    QLabel *m_classLabel;
+
+    bool m_sorting;
+    bool m_coloring;
+
+    QMap<QString, bool> m_expansionState;
+    QVector<QColor> m_colors;
+    const QColor m_dynamicColor;
+    const QColor m_layoutColor;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // PROPERTYEDITOR_H

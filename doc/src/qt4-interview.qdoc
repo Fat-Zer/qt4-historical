@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt4-interview.html
     \title The Interview Framework
@@ -120,9 +163,7 @@
     principles involved in setting up a model and two views. We also
     share the selection between the two views:
 
-    \quotefromfile snippets/shareddirmodel/main.cpp
-    \skipto int main(
-    \printuntil }
+    \snippet doc/src/snippets/shareddirmodel/main.cpp 1
 
     In the above function, we construct a directory model to display
     the contents of a default directory. The two views are constructed
@@ -148,12 +189,10 @@
 
     The complete declaration of our model is as follows:
 
-    \quotefromfile snippets/stringlistmodel/model.h
-    \skipto class StringListModel
-    \printuntil headerData
-    \printline role
-    \skipto private:
-    \printuntil /^\};/
+    \snippet doc/src/snippets/stringlistmodel/model.h 0
+    \snippet doc/src/snippets/stringlistmodel/model.h 1
+    \codeline
+    \snippet doc/src/snippets/stringlistmodel/model.h 5
 
     The model takes a list of strings when constructed, and supplies these
     to views as required. Since this is only a simple read-only model, we
@@ -163,15 +202,12 @@
     Since the model maps each item in the list to a row in the model, the
     rowCount() function is quite simple:
 
-    \quotefromfile snippets/stringlistmodel/model.cpp
-    \skipto int StringListModel::rowCount(
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 0
 
     The data() function returns an item of data for each model index
     supplied by a view:
 
-    \skipto QVariant StringListModel::data(
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 1
 
     The data() function returns a QVariant containing the information
     referred to by the model index. Items of data are returned to the view,
@@ -183,18 +219,14 @@
     function. In this model, the value returned for these items is the row
     or column number, depending on the header:
 
-    \skipto QVariant StringListModel::headerData(
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 2
 
     We only include an excerpt from the main() function for this short
     example:
 
-    \quotefromfile snippets/stringlistmodel/main.cpp
-    \skipto QStringList numbers;
-    \printuntil QAbstractItemModel
+    \snippet doc/src/snippets/stringlistmodel/main.cpp 1
     \dots
-    \skipto QListView
-    \printuntil view->setModel(model);
+    \snippet doc/src/snippets/stringlistmodel/main.cpp 3
 
     We create a string list to use with the model, and we supply it to the
     model when it is constructed. The information in the string list is

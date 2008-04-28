@@ -61,6 +61,9 @@
 #include <QtCore/qhash.h>
 
 typedef struct _GMainContext GMainContext;
+
+QT_BEGIN_NAMESPACE
+
 class QEventDispatcherGlibPrivate;
 
 class Q_CORE_EXPORT QEventDispatcherGlib : public QAbstractEventDispatcher
@@ -97,7 +100,6 @@ protected:
 struct GPostEventSource;
 struct GSocketNotifierSource;
 struct GTimerSource;
-typedef struct _GMainContext GMainContext;
 
 class Q_CORE_EXPORT QEventDispatcherGlibPrivate : public QAbstractEventDispatcherPrivate
 {
@@ -109,5 +111,7 @@ public:
     GSocketNotifierSource *socketNotifierSource;
     GTimerSource *timerSource;
 };
+
+QT_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_GLIB_P_H

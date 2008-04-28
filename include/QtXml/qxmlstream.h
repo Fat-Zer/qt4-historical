@@ -1,1 +1,1 @@
-#include "../../src/xml/qxmlstream.h"
+#include "../../src/xml/stream/qxmlstream.h"

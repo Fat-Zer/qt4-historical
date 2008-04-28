@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QWidget;
 class QLayout;
 class QAction;
@@ -87,6 +89,8 @@ private:
     Q_DECLARE_PRIVATE(QUiLoader)
     Q_DISABLE_COPY(QUiLoader)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

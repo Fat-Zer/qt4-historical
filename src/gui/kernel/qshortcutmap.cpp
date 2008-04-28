@@ -57,6 +57,8 @@
 
 #ifndef QT_NO_SHORTCUT
 
+QT_BEGIN_NAMESPACE
+
 // To enable verbose output uncomment below
 //#define DEBUG_QSHORTCUTMAP
 
@@ -331,12 +333,14 @@ bool QShortcutMap::tryShortcutEvent(QWidget *w, QKeyEvent *e)
     Q_D(QShortcutMap);
 
     bool wasAccepted = e->isAccepted();
+    bool wasSpontaneous = e->spont;
     if (d->currentState == QKeySequence::NoMatch) {
         ushort orgType = e->t;
         e->t = QEvent::ShortcutOverride;
         e->ignore();
-        QApplication::sendSpontaneousEvent(w, e);
+        QApplication::sendEvent(w, e);
         e->t = orgType;
+        e->spont = wasSpontaneous;
         if (e->isAccepted()) {
             if (!wasAccepted)
                 e->ignore();
@@ -513,9 +517,7 @@ QKeySequence::SequenceMatch QShortcutMap::find(QKeyEvent *e)
 /*! \internal
     Clears \a seq to an empty QKeySequence.
     Same as doing (the slower)
-    \code
-        key = QKeySequence();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qshortcutmap.cpp 0
 */
 void QShortcutMap::clearSequence(QVector<QKeySequence> &ksl)
 {
@@ -636,6 +638,14 @@ bool QShortcutMap::correctContext(Qt::ShortcutContext context, QWidget *w, QWidg
     if (context == Qt::WidgetShortcut)
         return w == QApplication::focusWidget();
 
+    if (context == Qt::WidgetWithChildrenShortcut) {
+        const QWidget *tw = QApplication::focusWidget();
+        while (tw && tw != w && (tw->windowType() == Qt::Widget || tw->windowType() == Qt::Popup))
+            tw = tw->parentWidget();
+        return tw == w;
+    }
+
+    // Below is Qt::WindowShortcut context
     QWidget *tlw = w->window();
 
     /* if a floating tool window is active, keep shortcuts on the
@@ -770,5 +780,7 @@ void QShortcutMap::dumpMap() const
         qDebug().nospace() << &(d->sequences.at(i));
 }
 #endif
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SHORTCUT

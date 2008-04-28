@@ -93,7 +93,6 @@ static QT_FT_Long QT_FT_MulDiv(QT_FT_Long  a, QT_FT_Long  b, QT_FT_Long  c)
 #define QT_FT_MEM_ZERO(x, len) memset(x, 0, len);
 #include <stdio.h>
 
-
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
 #define MAX_SPANS 256
@@ -487,12 +486,12 @@ New_Profile( TRaster_Instance*  raster, TStates  aState )
     {
     case Ascending_State:
         ras.cProfile->flow = Flow_Up;
-        QT_FT_TRACE6( "\nNew ascending profile = %lx\n", (long)ras.cProfile );
+        QT_FT_TRACE6( "\nNew ascending profile = %p\n", ras.cProfile );
         break;
 
     case Descending_State:
         ras.cProfile->flow = Flow_Down;
-        QT_FT_TRACE6( "\nNew descending profile = %lx\n", (long)ras.cProfile );
+        QT_FT_TRACE6( "\nNew descending profile = %p\n", ras.cProfile );
         break;
 
     default:
@@ -543,8 +542,8 @@ End_Profile( TRaster_Instance*  raster )
 
     if ( h > 0 )
     {
-        QT_FT_TRACE6( "Ending profile %lx, start = %ld, height = %ld top=%p\n\n",
-                   (long)ras.cProfile, ras.cProfile->start, h,ras.top );
+        QT_FT_TRACE6( "Ending profile %p, start = %ld, height = %ld top=%p\n\n",
+                   ras.cProfile, ras.cProfile->start, h,ras.top );
 
         ras.cProfile->height = (long)h;
         ras.cProfile         = (PProfile)ras.top;
@@ -1945,7 +1944,8 @@ Sort( PProfileList  list )
 		}
 		p = q;
 	    }
-	    tail->link = 0;
+	    if (tail)
+		tail->link = 0;
 
 	    if (nmerges <= 1)
 		break;
@@ -2371,6 +2371,5 @@ const QT_FT_Raster_Funcs  qt_ft_standard_raster =
     (QT_FT_Raster_Render_Func)  qt_ft_black_render,
     (QT_FT_Raster_Done_Func)    qt_ft_black_done
 };
-
 
 /* END */

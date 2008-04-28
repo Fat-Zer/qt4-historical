@@ -46,9 +46,11 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QAbstractItemView;
 class QItemSelectionModel;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

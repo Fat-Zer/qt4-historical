@@ -58,6 +58,8 @@
 #include <limits.h>
 #include "qabstractslider_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QScrollBar
     \brief The QScrollBar widget provides a vertical or horizontal scroll bar.
@@ -119,7 +121,7 @@
     when the user presses the \key{Page Up} and \key{Page Down} keys, and is
     set with setPageStep(). Smaller changes to the value defined by the
     line step are made using the cursor keys, and this quantity is set with
-    setLineStep().
+    \l{QAbstractSlider::}{setSingleStep()}.
 
     Note that the range of values used is independent of the actual size
     of the scroll bar widget. You do not need to take this into account when
@@ -210,6 +212,7 @@ public:
     int clickOffset, snapBackPosition;
 
     void activateControl(uint control, int threshold = 500);
+    void stopRepeatAction();
     int pixelPosToRangeValue(int pos) const;
     void init();
     bool updateHoverControl(const QPoint &pos);
@@ -278,6 +281,22 @@ void QScrollBarPrivate::activateControl(uint control, int threshold)
         q_func()->triggerAction(action);
     }
 }
+
+void QScrollBarPrivate::stopRepeatAction()
+{
+    Q_Q(QScrollBar);
+    QStyle::SubControl tmp = pressedControl;
+    q->setRepeatAction(QAbstractSlider::SliderNoAction);
+    pressedControl = QStyle::SC_None;
+
+    if (tmp == QStyle::SC_ScrollBarSlider)
+        q->setSliderDown(false);
+
+    QStyleOptionSlider opt;
+    q->initStyleOption(&opt);
+    q->repaint(q->style()->subControlRect(QStyle::CC_ScrollBar, &opt, tmp, q));
+}
+
 /*!
     Initialize \a option with the values from this QScrollBar. This method
     is useful for subclasses when they need a QStyleOptionSlider, but don't want
@@ -531,6 +550,10 @@ void QScrollBar::paintEvent(QPaintEvent *)
 void QScrollBar::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QScrollBar);
+
+    if (d->repeatActionTimer.isActive())
+        d->stopRepeatAction();
+
     bool midButtonAbsPos = style()->styleHint(QStyle::SH_ScrollBar_MiddleClickAbsolutePosition,
                                              0, this);
     QStyleOptionSlider opt;
@@ -586,14 +609,7 @@ void QScrollBar::mouseReleaseEvent(QMouseEvent *e)
     if (e->buttons() & (~e->button())) // some other button is still pressed
         return;
 
-    QStyle::SubControl tmp = d->pressedControl;
-    setRepeatAction(SliderNoAction);
-    d->pressedControl = QStyle::SC_None;
-    if (tmp == QStyle::SC_ScrollBarSlider)
-        setSliderDown(false);
-    QStyleOptionSlider opt;
-    initStyleOption(&opt);
-    repaint(style()->subControlRect(QStyle::CC_ScrollBar, &opt, tmp, this));
+    d->stopRepeatAction();
 }
 
 
@@ -711,5 +727,7 @@ Q_GUI_EXPORT QStyleOptionSlider qt_qscrollbarStyleOption(QScrollBar *scrollbar)
     scrollbar->initStyleOption(&opt);
     return opt;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCROLLBAR

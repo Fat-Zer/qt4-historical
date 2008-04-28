@@ -48,6 +48,8 @@
 #include <qtextstream.h>
 #include <qdir.h>
 
+QT_BEGIN_NAMESPACE
+
 class MakeItem;
 
 class Configure
@@ -74,6 +76,7 @@ public:
     void generateCachefile();
     void displayConfig();
     void buildQmake();
+    void buildHostTools();
 #endif
     void generateMakefiles();
     void appendMakeItem(int inList, const QString &item);
@@ -130,6 +133,7 @@ private:
     QList<MakeItem*> makeList[3];
     QStringList qmakeIncludes;
     QStringList qmakeLibs;
+    QString opensslLibs;
 
     QMap<QString,QString> licenseInfo;
     QString outputLine;
@@ -157,6 +161,9 @@ private:
     void desc(const char *description, int startingAt = 0, int wrapIndent = 0);
     void desc(const char *option, const char *description, bool skipIndent = false, char fillChar = '.');
     void desc(const char *mark_option, const char *mark, const char *option, const char *description, char fillChar = '.');
+    void applySpecSpecifics();
+    static QString locateFile(const QString &fileName);
+    static QString locateFileInPaths(const QString &fileName, const QStringList &paths);
 };
 
 class MakeItem
@@ -175,3 +182,5 @@ public:
     Configure::ProjectType qmakeTemplate;
 };
 
+
+QT_END_NAMESPACE

@@ -48,6 +48,7 @@
 #include <QPainterPath>
 #include <QPoint>
 
+//! [0]
 class ShapeItem
 {
 public:
@@ -67,5 +68,6 @@ private:
     QColor myColor;
     QString myToolTip;
 };
+//! [0]
 
 #endif

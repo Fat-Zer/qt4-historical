@@ -63,17 +63,19 @@
 #include <qdatetime.h>
 #include <qhash.h>
 
+QT_BEGIN_NAMESPACE
+
 class QStringList;
 class QTime;
 class QProgressBar;
 
-class IconTheme
+class QIconTheme
 {
 
 public:
-    IconTheme(QHash <int, QString> dirList, QStringList parents) :
+    QIconTheme(QHash <int, QString> dirList, QStringList parents) :
           _dirList(dirList), _parents(parents), _valid(true){ }
-    IconTheme() : _valid(false){ }
+    QIconTheme() : _valid(false){ }
 
     QHash <int, QString> dirList() {return _dirList;}
     QStringList parents() {return _parents;}
@@ -111,12 +113,15 @@ public:
     QPixmap findIcon(int size, const QString &) const;
 #ifdef Q_WS_X11
     QPixmap findIconHelper(int size, const QString &, const QString &, QStringList &visited) const;
-    IconTheme parseIndexFile(const QString &themeName) const;
+    QIconTheme parseIndexFile(const QString &themeName) const;
     mutable QString themeName;
     QStringList iconDirs;
-    mutable QHash <QString, IconTheme> themeList;
+    mutable QHash <QString, QIconTheme> themeList;
 #endif
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_STYLE_WINDOWS
+
 #endif //QWINDOWSSTYLE_P_H

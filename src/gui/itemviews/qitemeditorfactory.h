@@ -44,11 +44,14 @@
 #ifndef QITEMEDITORFACTORY_H
 #define QITEMEDITORFACTORY_H
 
+#include <QtCore/qmetaobject.h>
 #include <QtCore/qbytearray.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -115,6 +118,8 @@ private:
 };
 
 #endif // QT_NO_ITEMVIEWS
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

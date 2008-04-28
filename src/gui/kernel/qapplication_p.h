@@ -66,9 +66,12 @@
 #include "QtCore/qhash.h"
 #include "private/qcoreapplication_p.h"
 #include "private/qshortcutmap_p.h"
+#include <private/qthread_p.h>
 #ifdef Q_WS_QWS
 #include "QtGui/qscreen_qws.h"
 #endif
+
+QT_BEGIN_NAMESPACE
 
 class QWidget;
 class QObject;
@@ -83,10 +86,10 @@ extern bool qt_is_gui_used;
 extern QClipboard *qt_clipboard;
 #endif
 
-#if defined (Q_OS_WIN32) || defined (Q_OS_CYGWIN)
+#if defined (Q_OS_WIN32) || defined (Q_OS_CYGWIN) || defined(Q_OS_WINCE)
 extern QSysInfo::WinVersion qt_winver;
 enum { QT_TABLET_NPACKETQSIZE = 128 };
-# ifdef Q_OS_TEMP
+# ifdef Q_OS_WINCE
   extern DWORD qt_cever;
 # endif
 #elif defined (Q_OS_MAC)
@@ -166,6 +169,17 @@ extern "C" {
 }
 #endif
 
+class QScopedLoopLevelCounter
+{
+    QThreadData *threadData;
+public:
+    QScopedLoopLevelCounter(QThreadData *threadData)
+        : threadData(threadData)
+    { ++threadData->loopLevel; }
+    ~QScopedLoopLevelCounter()
+    { --threadData->loopLevel; }
+};
+
 class Q_GUI_EXPORT QApplicationPrivate : public QCoreApplicationPrivate
 {
     Q_DECLARE_PUBLIC(QApplication)
@@ -184,6 +198,9 @@ public:
 #endif
     static bool quitOnLastWindowClosed;
     static void emitLastWindowClosed();
+#ifdef Q_OS_WINCE
+    static int autoMaximizeThreshold;
+#endif
 
     void createEventDispatcher();
     QString appName() const;
@@ -276,7 +293,9 @@ public:
     static QPalette *app_pal;
     static QPalette *sys_pal;
     static QPalette *set_pal;
-    static QFont *app_font;
+private:
+    static QFont *app_font; // private for a reason! Always use QApplication::font() instead!
+public:
     static QFont *sys_font;
     static QFont *set_font;
     static QWidget *main_widget;
@@ -298,6 +317,12 @@ public:
     static bool fade_tooltip;
     static bool animate_toolbox;
     static bool widgetCount; // Coupled with -widgetcount switch
+#ifdef Q_WS_MAC
+    static bool native_modal_dialog_active;
+#endif
+#if defined(Q_WS_WIN) && !defined(Q_OS_WINCE)
+    static bool inSizeMove;
+#endif
 
     static void setSystemPalette(const QPalette &pal);
     static void setPalette_helper(const QPalette &palette, const char* className, bool clearWidgetPaletteHash);
@@ -324,6 +349,7 @@ public:
 # endif
     QRect maxWindowRect(const QScreen *screen) const { return maxWindowRects[screen]; }
     void setMaxWindowRect(const QScreen *screen, int screenNo, const QRect &rect);
+    void setScreenTransformation(QScreen *screen, int screen, int transformation);
 #endif
 
     static QApplicationPrivate *instance() { return self; }
@@ -337,9 +363,6 @@ public:
     static QWidget *oldEditFocus;
 #endif
 
-    static bool tryEmitLastWindowClosedPending;
-    void _q_tryEmitLastWindowClosed();
-
 #if defined(Q_WS_MAC) || defined(Q_WS_X11)
     void _q_alertTimeOut();
     QHash<QWidget *, QTimer *> alertTimerHash;
@@ -347,6 +370,12 @@ public:
 #ifndef QT_NO_STYLE_STYLESHEET
     static QString styleSheet;
 #endif
+    static QPointer<QWidget> leaveAfterRelease;
+    static QWidget *pickMouseReceiver(QWidget *candidate, const QPoint &globalPos, QPoint &pos,
+                                      QEvent::Type type, Qt::MouseButtons buttons,
+                                      QWidget *buttonDown, QWidget *alienWidget);
+    static bool sendMouseEvent(QWidget *receiver, QMouseEvent *event, QWidget *alienWidget,
+                               QWidget *native, QWidget **buttonDown, QPointer<QWidget> &lastMouseReceiver);
 
 private:
 #ifdef Q_WS_QWS
@@ -355,5 +384,7 @@ private:
 
     static QApplicationPrivate *self;
 };
+
+QT_END_NAMESPACE
 
 #endif // QAPPLICATION_P_H

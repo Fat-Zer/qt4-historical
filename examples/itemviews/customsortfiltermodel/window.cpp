@@ -46,20 +46,27 @@
 #include "mysortfilterproxymodel.h"
 #include "window.h"
 
+//! [0]
 Window::Window()
 {
     proxyModel = new MySortFilterProxyModel(this);
     proxyModel->setDynamicSortFilter(true);
+//! [0]
 
+//! [1]
     sourceView = new QTreeView;
     sourceView->setRootIsDecorated(false);
     sourceView->setAlternatingRowColors(true);
+//! [1]
 
     QHBoxLayout *sourceLayout = new QHBoxLayout;
+//! [2]
     sourceLayout->addWidget(sourceView);
     sourceGroupBox = new QGroupBox(tr("Original Model"));
     sourceGroupBox->setLayout(sourceLayout);
+//! [2]
 
+//! [3]
     filterCaseSensitivityCheckBox = new QCheckBox(tr("Case sensitive filter"));
     filterCaseSensitivityCheckBox->setChecked(true);
 
@@ -93,8 +100,11 @@ Window::Window()
     connect(fromDateEdit, SIGNAL(dateChanged(const QDate &)),
             this, SLOT(dateFilterChanged()));
     connect(toDateEdit, SIGNAL(dateChanged(const QDate &)),
+//! [3] //! [4]
             this, SLOT(dateFilterChanged()));
+//! [4]
 
+//! [5]
     proxyView = new QTreeView;
     proxyView->setRootIsDecorated(false);
     proxyView->setAlternatingRowColors(true);
@@ -115,7 +125,9 @@ Window::Window()
 
     proxyGroupBox = new QGroupBox(tr("Sorted/Filtered Model"));
     proxyGroupBox->setLayout(proxyLayout);
+//! [5]
 
+//! [6]
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(sourceGroupBox);
     mainLayout->addWidget(proxyGroupBox);
@@ -124,13 +136,17 @@ Window::Window()
     setWindowTitle(tr("Custom Sort/Filter Model"));
     resize(500, 450);
 }
+//! [6]
 
+//! [7]
 void Window::setSourceModel(QAbstractItemModel *model)
 {
     proxyModel->setSourceModel(model);
     sourceView->setModel(model);
 }
+//! [7]
 
+//! [8]
 void Window::textFilterChanged()
 {
     QRegExp::PatternSyntax syntax =
@@ -143,9 +159,12 @@ void Window::textFilterChanged()
     QRegExp regExp(filterPatternLineEdit->text(), caseSensitivity, syntax);
     proxyModel->setFilterRegExp(regExp);
 }
+//! [8]
 
+//! [9]
 void Window::dateFilterChanged()
 {
     proxyModel->setFilterMinimumDate(fromDateEdit->date());
     proxyModel->setFilterMaximumDate(toDateEdit->date());
 }
+//! [9]

@@ -54,6 +54,8 @@
 
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 class Config
 {
 public:
@@ -75,10 +77,12 @@ public:
     QList<QRegExp> getRegExpList( const QString& var ) const;
     QSet<QString> subVars( const QString& var ) const;
     QStringList getAllFiles( const QString& filesVar, const QString& dirsVar,
-			     const QString& defaultNameFilter );
+			     const QString& defaultNameFilter,
+                             const QSet<QString> &excludedDirs = QSet<QString>() );
 
     static QStringList getFilesHere( const QString& dir,
-                                     const QString& nameFilter );
+                                     const QString& nameFilter,
+                                     const QSet<QString> &excludedDirs = QSet<QString>() );
     static QString findFile( const Location& location, const QStringList &files,
 			     const QStringList& dirs, const QString& fileName,
 			     QString& userFriendlyFilePath );
@@ -119,9 +123,11 @@ private:
 #define CONFIG_EDITION                  "edition"
 #define CONFIG_EXAMPLEDIRS              "exampledirs"
 #define CONFIG_EXAMPLES                 "examples"
+#define CONFIG_EXCLUDEDIRS              "excludedirs"
 #define CONFIG_EXTRAIMAGES              "extraimages"
 #define CONFIG_FALSEHOODS               "falsehoods"
 #define CONFIG_FORMATTING               "formatting"
+#define CONFIG_GENERATEINDEX            "generateindex"
 #define CONFIG_HEADERDIRS               "headerdirs"
 #define CONFIG_HEADERS                  "headers"
 #define CONFIG_IGNOREDIRECTIVES         "ignoredirectives"
@@ -132,19 +138,25 @@ private:
 #define CONFIG_LANGUAGE                 "language"
 #define CONFIG_MACRO                    "macro"
 #define CONFIG_OUTPUTDIR                "outputdir"
+#define CONFIG_OUTPUTLANGUAGE           "outputlanguage"
 #define CONFIG_OUTPUTFORMATS            "outputformats"
 #define CONFIG_PROJECT                  "project"
+#define CONFIG_QHP                      "qhp"
+#define CONFIG_QUOTINGINFORMATION       "quotinginformation"
 #define CONFIG_SLOW                     "slow"
 #define CONFIG_SOURCEDIRS               "sourcedirs"
 #define CONFIG_SOURCES                  "sources"
 #define CONFIG_SPURIOUS                 "spurious"
 #define CONFIG_STYLESHEETS              "stylesheets"
 #define CONFIG_TABSIZE                  "tabsize"
+#define CONFIG_TAGFILE                  "tagfile"
 #define CONFIG_TRANSLATORS              "translators" // ### don't document for now
 #define CONFIG_URL                      "url"
 #define CONFIG_VERSION                  "version"
 #define CONFIG_VERSIONSYM               "versionsym"
 
 #define CONFIG_FILEEXTENSIONS           "fileextensions"
+
+QT_END_NAMESPACE
 
 #endif

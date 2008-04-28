@@ -48,6 +48,8 @@
 #include <oublietteplan.h>
 #include "cursor.h"
 
+QT_BEGIN_NAMESPACE
+
 class QPaintEvent;
 class QKeyEvent;
 class QListWidgetItem;
@@ -94,5 +96,7 @@ private:
     QList<ItemEffect *> m_effects;
     int m_timerID;
 };
+
+QT_END_NAMESPACE
 
 #endif

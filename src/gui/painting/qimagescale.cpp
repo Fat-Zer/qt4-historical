@@ -46,6 +46,8 @@
 #include "qimage.h"
 #include "qcolor.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace QImageScale {
     struct QImageScaleInfo;
 }
@@ -276,8 +278,8 @@ QImageScaleInfo* QImageScale::qimageCalcScaleInfo(const QImage &img,
     QImageScaleInfo *isi;
     int scw, sch;
 
-    scw = dw * img.width() / sw;
-    sch = dh * img.height() / sh;
+    scw = dw * qlonglong(img.width()) / sw;
+    sch = dh * qlonglong(img.height()) / sh;
 
     isi = new QImageScaleInfo;
     if(!isi)
@@ -422,43 +424,43 @@ static void qt_qimageScaleAARGBA(QImageScaleInfo *isi, unsigned int *dest,
             dptr = dest + dx + ((y + dy) * dow);
             for(x = dxx; x < end; x++){
                 pix = ypoints[dyy + y] + xpoints[x];
-                r = (R_VAL(pix) * yap) >> 10;
-                g = (G_VAL(pix) * yap) >> 10;
-                b = (B_VAL(pix) * yap) >> 10;
-                a = (A_VAL(pix) * yap) >> 10;
+                r = R_VAL(pix) * yap;
+                g = G_VAL(pix) * yap;
+                b = B_VAL(pix) * yap;
+                a = A_VAL(pix) * yap;
                 for(j = (1 << 14) - yap; j > Cy; j -= Cy){
                     pix += sow;
-                    r += (R_VAL(pix) * Cy) >> 10;
-                    g += (G_VAL(pix) * Cy) >> 10;
-                    b += (B_VAL(pix) * Cy) >> 10;
-                    a += (A_VAL(pix) * Cy) >> 10;
+                    r += R_VAL(pix) * Cy;
+                    g += G_VAL(pix) * Cy;
+                    b += B_VAL(pix) * Cy;
+                    a += A_VAL(pix) * Cy;
                 }
                 if(j > 0){
                     pix += sow;
-                    r += (R_VAL(pix) * j) >> 10;
-                    g += (G_VAL(pix) * j) >> 10;
-                    b += (B_VAL(pix) * j) >> 10;
-                    a += (A_VAL(pix) * j) >> 10;
+                    r += R_VAL(pix) * j;
+                    g += G_VAL(pix) * j;
+                    b += B_VAL(pix) * j;
+                    a += A_VAL(pix) * j;
                 }
                 if(XAP > 0){
                     pix = ypoints[dyy + y] + xpoints[x] + 1;
-                    rr = (R_VAL(pix) * yap) >> 10;
-                    gg = (G_VAL(pix) * yap) >> 10;
-                    bb = (B_VAL(pix) * yap) >> 10;
-                    aa = (A_VAL(pix) * yap) >> 10;
+                    rr = R_VAL(pix) * yap;
+                    gg = G_VAL(pix) * yap;
+                    bb = B_VAL(pix) * yap;
+                    aa = A_VAL(pix) * yap;
                     for(j = (1 << 14) - yap; j > Cy; j -= Cy){
                         pix += sow;
-                        rr += (R_VAL(pix) * Cy) >> 10;
-                        gg += (G_VAL(pix) * Cy) >> 10;
-                        bb += (B_VAL(pix) * Cy) >> 10;
-                        aa += (A_VAL(pix) * Cy) >> 10;
+                        rr += R_VAL(pix) * Cy;
+                        gg += G_VAL(pix) * Cy;
+                        bb += B_VAL(pix) * Cy;
+                        aa += A_VAL(pix) * Cy;
                     }
                     if(j > 0){
                         pix += sow;
-                        rr += (R_VAL(pix) * j) >> 10;
-                        gg += (G_VAL(pix) * j) >> 10;
-                        bb += (B_VAL(pix) * j) >> 10;
-                        aa += (A_VAL(pix) * j) >> 10;
+                        rr += R_VAL(pix) * j;
+                        gg += G_VAL(pix) * j;
+                        bb += B_VAL(pix) * j;
+                        aa += A_VAL(pix) * j;
                     }
                     r = r * INV_XAP;
                     g = g * INV_XAP;
@@ -475,7 +477,7 @@ static void qt_qimageScaleAARGBA(QImageScaleInfo *isi, unsigned int *dest,
                     b >>= 4;
                     a >>= 4;
                 }
-                *dptr = qRgba(r, g, b, a);
+                *dptr = qRgba(r >> 10, g >> 10, b >> 10, a >> 10);
                 dptr++;
             }
         }
@@ -496,43 +498,43 @@ static void qt_qimageScaleAARGBA(QImageScaleInfo *isi, unsigned int *dest,
                 xap = XAP & 0xffff;
 
                 pix = ypoints[dyy + y] + xpoints[x];
-                r = (R_VAL(pix) * xap) >> 10;
-                g = (G_VAL(pix) * xap) >> 10;
-                b = (B_VAL(pix) * xap) >> 10;
-                a = (A_VAL(pix) * xap) >> 10;
+                r = R_VAL(pix) * xap;
+                g = G_VAL(pix) * xap;
+                b = B_VAL(pix) * xap;
+                a = A_VAL(pix) * xap;
                 for(j = (1 << 14) - xap; j > Cx; j -= Cx){
                     pix++;
-                    r += (R_VAL(pix) * Cx) >> 10;
-                    g += (G_VAL(pix) * Cx) >> 10;
-                    b += (B_VAL(pix) * Cx) >> 10;
-                    a += (A_VAL(pix) * Cx) >> 10;
+                    r += R_VAL(pix) * Cx;
+                    g += G_VAL(pix) * Cx;
+                    b += B_VAL(pix) * Cx;
+                    a += A_VAL(pix) * Cx;
                 }
                 if(j > 0){
                     pix++;
-                    r += (R_VAL(pix) * j) >> 10;
-                    g += (G_VAL(pix) * j) >> 10;
-                    b += (B_VAL(pix) * j) >> 10;
-                    a += (A_VAL(pix) * j) >> 10;
+                    r += R_VAL(pix) * j;
+                    g += G_VAL(pix) * j;
+                    b += B_VAL(pix) * j;
+                    a += A_VAL(pix) * j;
                 }
                 if(YAP > 0){
                     pix = ypoints[dyy + y] + xpoints[x] + sow;
-                    rr = (R_VAL(pix) * xap) >> 10;
-                    gg = (G_VAL(pix) * xap) >> 10;
-                    bb = (B_VAL(pix) * xap) >> 10;
-                    aa = (A_VAL(pix) * xap) >> 10;
+                    rr = R_VAL(pix) * xap;
+                    gg = G_VAL(pix) * xap;
+                    bb = B_VAL(pix) * xap;
+                    aa = A_VAL(pix) * xap;
                     for(j = (1 << 14) - xap; j > Cx; j -= Cx){
                         pix++;
-                        rr += (R_VAL(pix) * Cx) >> 10;
-                        gg += (G_VAL(pix) * Cx) >> 10;
-                        bb += (B_VAL(pix) * Cx) >> 10;
-                        aa += (A_VAL(pix) * Cx) >> 10;
+                        rr += R_VAL(pix) * Cx;
+                        gg += G_VAL(pix) * Cx;
+                        bb += B_VAL(pix) * Cx;
+                        aa += A_VAL(pix) * Cx;
                     }
                     if(j > 0){
                         pix++;
-                        rr += (R_VAL(pix) * j) >> 10;
-                        gg += (G_VAL(pix) * j) >> 10;
-                        bb += (B_VAL(pix) * j) >> 10;
-                        aa += (A_VAL(pix) * j) >> 10;
+                        rr += R_VAL(pix) * j;
+                        gg += G_VAL(pix) * j;
+                        bb += B_VAL(pix) * j;
+                        aa += A_VAL(pix) * j;
                     }
                     r = r * INV_YAP;
                     g = g * INV_YAP;
@@ -549,7 +551,7 @@ static void qt_qimageScaleAARGBA(QImageScaleInfo *isi, unsigned int *dest,
                     b >>= 4;
                     a >>= 4;
                 }
-                *dptr = qRgba(r, g, b, a);
+                *dptr = qRgba(r >> 10, g >> 10, b >> 10, a >> 10);
                 dptr++;
             }
         }
@@ -578,86 +580,87 @@ static void qt_qimageScaleAARGBA(QImageScaleInfo *isi, unsigned int *dest,
                 sptr = ypoints[dyy + y] + xpoints[x];
                 pix = sptr;
                 sptr += sow;
-                rx = (R_VAL(pix) * xap) >> 9;
-                gx = (G_VAL(pix) * xap) >> 9;
-                bx = (B_VAL(pix) * xap) >> 9;
-                ax = (A_VAL(pix) * xap) >> 9;
+                rx = R_VAL(pix) * xap;
+                gx = G_VAL(pix) * xap;
+                bx = B_VAL(pix) * xap;
+                ax = A_VAL(pix) * xap;
+
                 pix++;
                 for(i = (1 << 14) - xap; i > Cx; i -= Cx){
-                    rx += (R_VAL(pix) * Cx) >> 9;
-                    gx += (G_VAL(pix) * Cx) >> 9;
-                    bx += (B_VAL(pix) * Cx) >> 9;
-                    ax += (A_VAL(pix) * Cx) >> 9;
+                    rx += R_VAL(pix) * Cx;
+                    gx += G_VAL(pix) * Cx;
+                    bx += B_VAL(pix) * Cx;
+                    ax += A_VAL(pix) * Cx;
                     pix++;
                 }
                 if(i > 0){
-                    rx += (R_VAL(pix) * i) >> 9;
-                    gx += (G_VAL(pix) * i) >> 9;
-                    bx += (B_VAL(pix) * i) >> 9;
-                    ax += (A_VAL(pix) * i) >> 9;
+                    rx += R_VAL(pix) * i;
+                    gx += G_VAL(pix) * i;
+                    bx += B_VAL(pix) * i;
+                    ax += A_VAL(pix) * i;
                 }
 
-                r = (rx * yap) >> 14;
-                g = (gx * yap) >> 14;
-                b = (bx * yap) >> 14;
-                a = (ax * yap) >> 14;
+                r = (rx >> 5) * yap;
+                g = (gx >> 5) * yap;
+                b = (bx >> 5) * yap;
+                a = (ax >> 5) * yap;
 
                 for(j = (1 << 14) - yap; j > Cy; j -= Cy){
                     pix = sptr;
                     sptr += sow;
-                    rx = (R_VAL(pix) * xap) >> 9;
-                    gx = (G_VAL(pix) * xap) >> 9;
-                    bx = (B_VAL(pix) * xap) >> 9;
-                    ax = (A_VAL(pix) * xap) >> 9;
+                    rx = R_VAL(pix) * xap;
+                    gx = G_VAL(pix) * xap;
+                    bx = B_VAL(pix) * xap;
+                    ax = A_VAL(pix) * xap;
                     pix++;
                     for(i = (1 << 14) - xap; i > Cx; i -= Cx){
-                        rx += (R_VAL(pix) * Cx) >> 9;
-                        gx += (G_VAL(pix) * Cx) >> 9;
-                        bx += (B_VAL(pix) * Cx) >> 9;
-                        ax += (A_VAL(pix) * Cx) >> 9;
+                        rx += R_VAL(pix) * Cx;
+                        gx += G_VAL(pix) * Cx;
+                        bx += B_VAL(pix) * Cx;
+                        ax += A_VAL(pix) * Cx;
                         pix++;
                     }
                     if(i > 0){
-                        rx += (R_VAL(pix) * i) >> 9;
-                        gx += (G_VAL(pix) * i) >> 9;
-                        bx += (B_VAL(pix) * i) >> 9;
-                        ax += (A_VAL(pix) * i) >> 9;
+                        rx += R_VAL(pix) * i;
+                        gx += G_VAL(pix) * i;
+                        bx += B_VAL(pix) * i;
+                        ax += A_VAL(pix) * i;
                     }
 
-                    r += (rx * Cy) >> 14;
-                    g += (gx * Cy) >> 14;
-                    b += (bx * Cy) >> 14;
-                    a += (ax * Cy) >> 14;
+                    r += (rx >> 5) * Cy;
+                    g += (gx >> 5) * Cy;
+                    b += (bx >> 5) * Cy;
+                    a += (ax >> 5) * Cy;
                 }
                 if(j > 0){
                     pix = sptr;
                     sptr += sow;
-                    rx = (R_VAL(pix) * xap) >> 9;
-                    gx = (G_VAL(pix) * xap) >> 9;
-                    bx = (B_VAL(pix) * xap) >> 9;
-                    ax = (A_VAL(pix) * xap) >> 9;
+                    rx = R_VAL(pix) * xap;
+                    gx = G_VAL(pix) * xap;
+                    bx = B_VAL(pix) * xap;
+                    ax = A_VAL(pix) * xap;
                     pix++;
                     for(i = (1 << 14) - xap; i > Cx; i -= Cx){
-                        rx += (R_VAL(pix) * Cx) >> 9;
-                        gx += (G_VAL(pix) * Cx) >> 9;
-                        bx += (B_VAL(pix) * Cx) >> 9;
-                        ax += (A_VAL(pix) * Cx) >> 9;
+                        rx += R_VAL(pix) * Cx;
+                        gx += G_VAL(pix) * Cx;
+                        bx += B_VAL(pix) * Cx;
+                        ax += A_VAL(pix) * Cx;
                         pix++;
                     }
                     if(i > 0){
-                        rx += (R_VAL(pix) * i) >> 9;
-                        gx += (G_VAL(pix) * i) >> 9;
-                        bx += (B_VAL(pix) * i) >> 9;
-                        ax += (A_VAL(pix) * i) >> 9;
+                        rx += R_VAL(pix) * i;
+                        gx += G_VAL(pix) * i;
+                        bx += B_VAL(pix) * i;
+                        ax += A_VAL(pix) * i;
                     }
 
-                    r += (rx * j) >> 14;
-                    g += (gx * j) >> 14;
-                    b += (bx * j) >> 14;
-                    a += (ax * j) >> 14;
+                    r += (rx >> 5) * j;
+                    g += (gx >> 5) * j;
+                    b += (bx >> 5) * j;
+                    a += (ax >> 5) * j;
                 }
 
-                *dptr = qRgba(r >> 5, g >> 5, b >> 5, a >> 5);
+                *dptr = qRgba(r >> 23, g >> 23, b >> 23, a >> 23);
                 dptr++;
             }
         }
@@ -769,37 +772,37 @@ static void qt_qimageScaleAARGB(QImageScaleInfo *isi, unsigned int *dest,
             dptr = dest + dx + ((y + dy) * dow);
             for(x = dxx; x < end; x++){
                 pix = ypoints[dyy + y] + xpoints[x];
-                r = (R_VAL(pix) * yap) >> 10;
-                g = (G_VAL(pix) * yap) >> 10;
-                b = (B_VAL(pix) * yap) >> 10;
+                r = R_VAL(pix) * yap;
+                g = G_VAL(pix) * yap;
+                b = B_VAL(pix) * yap;
                 pix += sow;
                 for(j = (1 << 14) - yap; j > Cy; j -= Cy){
-                    r += (R_VAL(pix) * Cy) >> 10;
-                    g += (G_VAL(pix) * Cy) >> 10;
-                    b += (B_VAL(pix) * Cy) >> 10;
+                    r += R_VAL(pix) * Cy;
+                    g += G_VAL(pix) * Cy;
+                    b += B_VAL(pix) * Cy;
                     pix += sow;
                 }
                 if(j > 0){
-                    r += (R_VAL(pix) * j) >> 10;
-                    g += (G_VAL(pix) * j) >> 10;
-                    b += (B_VAL(pix) * j) >> 10;
+                    r += R_VAL(pix) * j;
+                    g += G_VAL(pix) * j;
+                    b += B_VAL(pix) * j;
                 }
                 if(XAP > 0){
                     pix = ypoints[dyy + y] + xpoints[x] + 1;
-                    rr = (R_VAL(pix) * yap) >> 10;
-                    gg = (G_VAL(pix) * yap) >> 10;
-                    bb = (B_VAL(pix) * yap) >> 10;
+                    rr = R_VAL(pix) * yap;
+                    gg = G_VAL(pix) * yap;
+                    bb = B_VAL(pix) * yap;
                     pix += sow;
                     for(j = (1 << 14) - yap; j > Cy; j -= Cy){
-                        rr += (R_VAL(pix) * Cy) >> 10;
-                        gg += (G_VAL(pix) * Cy) >> 10;
-                        bb += (B_VAL(pix) * Cy) >> 10;
+                        rr += R_VAL(pix) * Cy;
+                        gg += G_VAL(pix) * Cy;
+                        bb += B_VAL(pix) * Cy;
                         pix += sow;
                     }
                     if(j > 0){
-                        rr += (R_VAL(pix) * j) >> 10;
-                        gg += (G_VAL(pix) * j) >> 10;
-                        bb += (B_VAL(pix) * j) >> 10;
+                        rr += R_VAL(pix) * j;
+                        gg += G_VAL(pix) * j;
+                        bb += B_VAL(pix) * j;
                     }
                     r = r * INV_XAP;
                     g = g * INV_XAP;
@@ -813,7 +816,7 @@ static void qt_qimageScaleAARGB(QImageScaleInfo *isi, unsigned int *dest,
                     g >>= 4;
                     b >>= 4;
                 }
-                *dptr = qRgba(r, g, b, 0xff);
+                *dptr = qRgba(r >> 10, g >> 10, b >> 10, 0xff);
                 dptr++;
             }
         }
@@ -834,37 +837,37 @@ static void qt_qimageScaleAARGB(QImageScaleInfo *isi, unsigned int *dest,
                 xap = XAP & 0xffff;
 
                 pix = ypoints[dyy + y] + xpoints[x];
-                r = (R_VAL(pix) * xap) >> 10;
-                g = (G_VAL(pix) * xap) >> 10;
-                b = (B_VAL(pix) * xap) >> 10;
+                r = R_VAL(pix) * xap;
+                g = G_VAL(pix) * xap;
+                b = B_VAL(pix) * xap;
                 pix++;
                 for(j = (1 << 14) - xap; j > Cx; j -= Cx){
-                    r += (R_VAL(pix) * Cx) >> 10;
-                    g += (G_VAL(pix) * Cx) >> 10;
-                    b += (B_VAL(pix) * Cx) >> 10;
+                    r += R_VAL(pix) * Cx;
+                    g += G_VAL(pix) * Cx;
+                    b += B_VAL(pix) * Cx;
                     pix++;
                 }
                 if(j > 0){
-                    r += (R_VAL(pix) * j) >> 10;
-                    g += (G_VAL(pix) * j) >> 10;
-                    b += (B_VAL(pix) * j) >> 10;
+                    r += R_VAL(pix) * j;
+                    g += G_VAL(pix) * j;
+                    b += B_VAL(pix) * j;
                 }
                 if(YAP > 0){
                     pix = ypoints[dyy + y] + xpoints[x] + sow;
-                    rr = (R_VAL(pix) * xap) >> 10;
-                    gg = (G_VAL(pix) * xap) >> 10;
-                    bb = (B_VAL(pix) * xap) >> 10;
+                    rr = R_VAL(pix) * xap;
+                    gg = G_VAL(pix) * xap;
+                    bb = B_VAL(pix) * xap;
                     pix++;
                     for(j = (1 << 14) - xap; j > Cx; j -= Cx){
-                        rr += (R_VAL(pix) * Cx) >> 10;
-                        gg += (G_VAL(pix) * Cx) >> 10;
-                        bb += (B_VAL(pix) * Cx) >> 10;
+                        rr += R_VAL(pix) * Cx;
+                        gg += G_VAL(pix) * Cx;
+                        bb += B_VAL(pix) * Cx;
                         pix++;
                     }
                     if(j > 0){
-                        rr += (R_VAL(pix) * j) >> 10;
-                        gg += (G_VAL(pix) * j) >> 10;
-                        bb += (B_VAL(pix) * j) >> 10;
+                        rr += R_VAL(pix) * j;
+                        gg += G_VAL(pix) * j;
+                        bb += B_VAL(pix) * j;
                     }
                     r = r * INV_YAP;
                     g = g * INV_YAP;
@@ -878,7 +881,7 @@ static void qt_qimageScaleAARGB(QImageScaleInfo *isi, unsigned int *dest,
                     g >>= 4;
                     b >>= 4;
                 }
-                *dptr = qRgba(r, g, b, 0xff);
+                *dptr = qRgba(r >> 10, g >> 10, b >> 10, 0xff);
                 dptr++;
             }
         }
@@ -904,74 +907,74 @@ static void qt_qimageScaleAARGB(QImageScaleInfo *isi, unsigned int *dest,
                 sptr = ypoints[dyy + y] + xpoints[x];
                 pix = sptr;
                 sptr += sow;
-                rx = (R_VAL(pix) * xap) >> 9;
-                gx = (G_VAL(pix) * xap) >> 9;
-                bx = (B_VAL(pix) * xap) >> 9;
+                rx = R_VAL(pix) * xap;
+                gx = G_VAL(pix) * xap;
+                bx = B_VAL(pix) * xap;
                 pix++;
                 for(i = (1 << 14) - xap; i > Cx; i -= Cx){
-                    rx += (R_VAL(pix) * Cx) >> 9;
-                    gx += (G_VAL(pix) * Cx) >> 9;
-                    bx += (B_VAL(pix) * Cx) >> 9;
+                    rx += R_VAL(pix) * Cx;
+                    gx += G_VAL(pix) * Cx;
+                    bx += B_VAL(pix) * Cx;
                     pix++;
                 }
                 if(i > 0){
-                    rx += (R_VAL(pix) * i) >> 9;
-                    gx += (G_VAL(pix) * i) >> 9;
-                    bx += (B_VAL(pix) * i) >> 9;
+                    rx += R_VAL(pix) * i;
+                    gx += G_VAL(pix) * i;
+                    bx += B_VAL(pix) * i;
                 }
 
-                r = (rx * yap) >> 14;
-                g = (gx * yap) >> 14;
-                b = (bx * yap) >> 14;
+                r = (rx >> 5) * yap;
+                g = (gx >> 5) * yap;
+                b = (bx >> 5) * yap;
 
                 for(j = (1 << 14) - yap; j > Cy; j -= Cy){
                     pix = sptr;
                     sptr += sow;
-                    rx = (R_VAL(pix) * xap) >> 9;
-                    gx = (G_VAL(pix) * xap) >> 9;
-                    bx = (B_VAL(pix) * xap) >> 9;
+                    rx = R_VAL(pix) * xap;
+                    gx = G_VAL(pix) * xap;
+                    bx = B_VAL(pix) * xap;
                     pix++;
                     for(i = (1 << 14) - xap; i > Cx; i -= Cx){
-                        rx += (R_VAL(pix) * Cx) >> 9;
-                        gx += (G_VAL(pix) * Cx) >> 9;
-                        bx += (B_VAL(pix) * Cx) >> 9;
+                        rx += R_VAL(pix) * Cx;
+                        gx += G_VAL(pix) * Cx;
+                        bx += B_VAL(pix) * Cx;
                         pix++;
                     }
                     if(i > 0){
-                        rx += (R_VAL(pix) * i) >> 9;
-                        gx += (G_VAL(pix) * i) >> 9;
-                        bx += (B_VAL(pix) * i) >> 9;
+                        rx += R_VAL(pix) * i;
+                        gx += G_VAL(pix) * i;
+                        bx += B_VAL(pix) * i;
                     }
 
-                    r += (rx * Cy) >> 14;
-                    g += (gx * Cy) >> 14;
-                    b += (bx * Cy) >> 14;
+                    r += (rx >> 5) * Cy;
+                    g += (gx >> 5) * Cy;
+                    b += (bx >> 5) * Cy;
                 }
                 if(j > 0){
                     pix = sptr;
                     sptr += sow;
-                    rx = (R_VAL(pix) * xap) >> 9;
-                    gx = (G_VAL(pix) * xap) >> 9;
-                    bx = (B_VAL(pix) * xap) >> 9;
+                    rx = R_VAL(pix) * xap;
+                    gx = G_VAL(pix) * xap;
+                    bx = B_VAL(pix) * xap;
                     pix++;
                     for(i = (1 << 14) - xap; i > Cx; i -= Cx){
-                        rx += (R_VAL(pix) * Cx) >> 9;
-                        gx += (G_VAL(pix) * Cx) >> 9;
-                        bx += (B_VAL(pix) * Cx) >> 9;
+                        rx += R_VAL(pix) * Cx;
+                        gx += G_VAL(pix) * Cx;
+                        bx += B_VAL(pix) * Cx;
                         pix++;
                     }
                     if(i > 0){
-                        rx += (R_VAL(pix) * i) >> 9;
-                        gx += (G_VAL(pix) * i) >> 9;
-                        bx += (B_VAL(pix) * i) >> 9;
+                        rx += R_VAL(pix) * i;
+                        gx += G_VAL(pix) * i;
+                        bx += B_VAL(pix) * i;
                     }
 
-                    r += (rx * j) >> 14;
-                    g += (gx * j) >> 14;
-                    b += (bx * j) >> 14;
+                    r += (rx >> 5) * j;
+                    g += (gx >> 5) * j;
+                    b += (bx >> 5) * j;
                 }
 
-                *dptr = qRgb(r >> 5, g >> 5, b >> 5);
+                *dptr = qRgb(r >> 23, g >> 23, b >> 23);
                 dptr++;
             }
         }
@@ -1043,6 +1046,7 @@ QImage qSmoothScaleImage(const QImage &src, int dw, int dh)
                           0, 0, 0, 0, dw, dh, dw, w);
 
     qimageFreeScaleInfo(scaleinfo);
-
     return buffer;
 }
+
+QT_END_NAMESPACE

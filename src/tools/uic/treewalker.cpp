@@ -44,6 +44,8 @@
 #include "treewalker.h"
 #include "ui4.h"
 
+QT_BEGIN_NAMESPACE
+
 void TreeWalker::acceptUI(DomUI *ui)
 {
     acceptWidget(ui->elementWidget());
@@ -226,6 +228,7 @@ void TreeWalker::acceptProperty(DomProperty *property)
         case DomProperty::Double:
         case DomProperty::UInt:
         case DomProperty::ULongLong:
+        case DomProperty::Brush:
             break;
     }
 }
@@ -307,3 +310,5 @@ void TreeWalker::acceptConnectionHint(DomConnectionHint *connectionHint)
 void TreeWalker::acceptWidgetScripts(const DomScripts &, DomWidget *, const  DomWidgets &)
 {
 }
+
+QT_END_NAMESPACE

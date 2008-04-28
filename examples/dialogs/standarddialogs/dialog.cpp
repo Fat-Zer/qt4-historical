@@ -198,24 +198,29 @@ Dialog::Dialog(QWidget *parent)
 
 void Dialog::setInteger()
 {
+//! [0]
     bool ok;
     int i = QInputDialog::getInteger(this, tr("QInputDialog::getInteger()"),
                                      tr("Percentage:"), 25, 0, 100, 1, &ok);
     if (ok)
         integerLabel->setText(tr("%1%").arg(i));
+//! [0]
 }
 
 void Dialog::setDouble()
 {
+//! [1]
     bool ok;
     double d = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
                                        tr("Amount:"), 37.56, -10000, 10000, 2, &ok);
     if (ok)
         doubleLabel->setText(QString("$%1").arg(d));
+//! [1]
 }
 
 void Dialog::setItem()
 {
+//! [2]
     QStringList items;
     items << tr("Spring") << tr("Summer") << tr("Fall") << tr("Winter");
 
@@ -224,16 +229,19 @@ void Dialog::setItem()
                                          tr("Season:"), items, 0, false, &ok);
     if (ok && !item.isEmpty())
         itemLabel->setText(item);
+//! [2]
 }
 
 void Dialog::setText()
 {
+//! [3]
     bool ok;
     QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
                                          tr("User name:"), QLineEdit::Normal,
                                          QDir::home().dirName(), &ok);
     if (ok && !text.isEmpty())
         textLabel->setText(text);
+//! [3]
 }
 
 void Dialog::setColor()

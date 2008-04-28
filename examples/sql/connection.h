@@ -57,6 +57,7 @@
     below. All the examples in this directory use this function to
     connect to a database.
 */
+//! [0]
 static bool createConnection()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
@@ -132,5 +133,6 @@ static bool createConnection()
 
     return true;
 }
+//! [0]
 
 #endif

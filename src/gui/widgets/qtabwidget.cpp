@@ -57,12 +57,14 @@
 #include "qtabbar.h"
 #include "qtoolbutton.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QTabWidget
     \brief The QTabWidget class provides a stack of tabbed widgets.
 
     \ingroup organizers
-    \ingroup advanced
+    \ingroup basicwidgets
     \mainclass
 
     A tab widget provides a tab bar (see QTabBar) and a "page area"
@@ -165,7 +167,9 @@
     \fn void QTabWidget::currentChanged(int index)
 
     This signal is emitted whenever the current page index changes.
-    The parameter is the new current page \a index position.
+    The parameter is the new current page \a index position, or -1
+    if there isn't a new one (for example, if there are no widgets
+    in the QTabWidget)
 
     \sa currentWidget() currentIndex
 */
@@ -219,10 +223,6 @@ void QTabWidgetPrivate::init()
     tabBar->setDrawBase(false);
     q->setTabBar(tabBar);
 
-#ifdef Q_OS_TEMP
-    pos = QTabWidget::South;
-#endif
-
     q->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding, 
                                  QSizePolicy::TabWidget));
 #ifdef QT_KEYPAD_NAVIGATION
@@ -232,6 +232,8 @@ void QTabWidgetPrivate::init()
 #endif
     q->setFocusPolicy(Qt::TabFocus);
     q->setFocusProxy(tabs);
+    q->setTabPosition(static_cast<QTabWidget::TabPosition> (q->style()->styleHint(
+                      QStyle::SH_TabWidget_DefaultTabPosition, 0, q )));
 }
 
 /*!
@@ -254,17 +256,21 @@ void QTabWidget::initStyleOption(QStyleOptionTabWidgetFrame *option) const
     if (d->tabs->isVisibleTo(const_cast<QTabWidget *>(this)))
         t = d->tabs->sizeHint();
 
-    if (d->rightCornerWidget)
-        option->rightCornerWidgetSize
-            = d->rightCornerWidget->sizeHint().boundedTo(t - QSize(exth, exth));
-    else
+    if (d->rightCornerWidget) {
+        const QSize rightCornerSizeHint = d->rightCornerWidget->sizeHint();
+        const QSize bounds(rightCornerSizeHint.width(), t.height() - exth);
+        option->rightCornerWidgetSize = rightCornerSizeHint.boundedTo(bounds);
+    } else {
         option->rightCornerWidgetSize = QSize(0, 0);
+    }
 
-    if (d->leftCornerWidget)
-        option->leftCornerWidgetSize
-                            = d->leftCornerWidget->sizeHint().boundedTo(t - QSize(exth, exth));
-    else
+    if (d->leftCornerWidget) {
+        const QSize leftCornerSizeHint = d->leftCornerWidget->sizeHint();
+        const QSize bounds(leftCornerSizeHint.width(), t.height() - exth);
+        option->leftCornerWidgetSize = leftCornerSizeHint.boundedTo(bounds);
+    } else {
         option->leftCornerWidgetSize = QSize(0, 0);
+    }
 
     switch (d->pos) {
     case QTabWidget::North:
@@ -414,8 +420,8 @@ int QTabWidget::insertTab(int index, QWidget *w, const QIcon& icon, const QStrin
     Q_D(QTabWidget);
     if(!w)
         return -1;
-    index = d->tabs->insertTab(index, icon, label);
-    d->stack->insertWidget(index, w);
+    index = d->stack->insertWidget(index, w);
+    d->tabs->insertTab(index, icon, label);
     setUpLayout();
     tabInserted(index);
     return index;
@@ -600,6 +606,7 @@ void QTabWidget::setCurrentWidget(QWidget *widget)
     \property QTabWidget::currentIndex
     \brief the index position of the current tab page
 
+    The current index is -1 if there is no current widget.
 */
 
 int QTabWidget::currentIndex() const
@@ -679,14 +686,13 @@ QTabBar* QTabWidget::tabBar() const
 void QTabWidgetPrivate::_q_showTab(int index)
 {
     Q_Q(QTabWidget);
-    if (index < stack->count() && index >= 0) {
+    if (index < stack->count() && index >= 0)
         stack->setCurrentIndex(index);
-        emit q->currentChanged(index);
+    emit q->currentChanged(index);
 #ifdef QT3_SUPPORT
-        emit q->selected(q->tabText(index));
-        emit q->currentChanged(stack->widget(index));
+    emit q->selected(q->tabText(index));
+    emit q->currentChanged(stack->widget(index));
 #endif
-    }
 }
 
 void QTabWidgetPrivate::_q_removeTab(int index)
@@ -738,6 +744,19 @@ void QTabWidget::setUpLayout(bool onlyCheck)
 }
 
 /*!
+    \internal
+*/
+static inline QSize basicSize(
+    bool horizontal, const QSize &lc, const QSize &rc, const QSize &s, const QSize &t)
+{
+    return horizontal
+        ? QSize(qMax(s.width(), t.width() + rc.width() + lc.width()),
+                s.height() + (qMax(rc.height(), qMax(lc.height(), t.height()))))
+        : QSize(s.width() + (qMax(rc.width(), qMax(lc.width(), t.width()))),
+                qMax(s.height(), t.height() + rc.height() + lc.height()));
+}
+
+/*!
     \reimp
 */
 QSize QTabWidget::sizeHint() const
@@ -762,13 +781,9 @@ QSize QTabWidget::sizeHint() const
         t = t.boundedTo(QSize(200,200));
     else
         t = t.boundedTo(QApplication::desktop()->size());
-    QSize sz;
-    if (d->pos == North || d->pos == South)
-        sz = QSize(qMax(s.width(), t.width() + rc.width() + lc.width()),
-                   s.height() + (qMax(rc.height(), qMax(lc.height(), t.height()))));
-    else
-        sz = QSize(s.width() + (qMax(rc.width(), qMax(lc.width(), t.width()))),
-                   qMax(s.height(), t.height() + rc.height() + lc.height()));
+
+    QSize sz = basicSize(d->pos == North || d->pos == South, lc, rc, s, t);
+
     return style()->sizeFromContents(QStyle::CT_TabWidget, &opt, sz, this)
                     .expandedTo(QApplication::globalStrut());
 }
@@ -795,8 +810,8 @@ QSize QTabWidget::minimumSizeHint() const
     QSize s(d->stack->minimumSizeHint());
     QSize t(d->tabs->minimumSizeHint());
 
-    QSize sz(qMax(s.width(), t.width() + rc.width() + lc.width()),
-              s.height() + (qMax(rc.height(), qMax(lc.height(), t.height()))));
+    QSize sz = basicSize(d->pos == North || d->pos == South, lc, rc, s, t);
+
     QStyleOption opt(0);
     opt.rect = rect();
     opt.palette = palette();
@@ -1289,6 +1304,7 @@ void QTabWidget::clear()
     Use currentChanged(int) instead.
 */
 
+QT_END_NAMESPACE
 
 #include "moc_qtabwidget.cpp"
 

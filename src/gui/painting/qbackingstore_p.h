@@ -58,6 +58,8 @@
 #include "private/qpaintengine_raster_p.h"
 #include "private/qwidget_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QWindowSurface;
 
 class Q_AUTOTEST_EXPORT QWidgetBackingStore
@@ -66,7 +68,7 @@ public:
     QWidgetBackingStore(QWidget *t);
     ~QWidgetBackingStore();
     bool bltRect(const QRect &rect, int dx, int dy, QWidget *widget);
-    void dirtyRegion(const QRegion &rgn, QWidget *widget=0);
+    void dirtyRegion(const QRegion &rgn, QWidget *widget=0, bool updateImmediately = false);
 #ifdef Q_RATE_LIMIT_PAINTING
     void updateDirtyRegion(QWidget *widget);
 #endif
@@ -76,8 +78,9 @@ public:
 #endif
 
     inline QPoint topLevelOffset() const { return tlwOffset; }
-    static bool paintOnScreen(QWidget * = 0);
     static void copyToScreen(QWidget *, const QRegion &);
+    static void qt_unflushPaint(QWidget *widget, const QRegion &rgn);
+    static void qt_showYellowThing(QWidget *widget, const QRegion &rgn, int msec, bool);
 #ifdef Q_WS_WIN
     static void blitToScreen(const QRegion &rgn, QWidget *w);
 #endif
@@ -109,18 +112,13 @@ private:
 
     void copyToScreen(const QRegion &rgn, QWidget *widget, const QPoint &offset, bool recursive = true);
 
-    static void paintSiblingsRecursive(QPaintDevice *pdev, const QObjectList& children, int index, const QRegion &rgn, const QPoint &offset, int flags
-#ifdef Q_BACKINGSTORE_SUBSURFACES
-                                                 , const QWindowSurface *currentSurface
-#endif
-        );
-
     static void updateWidget(QWidget *that, const QRegion &rgn);
 
     friend void qt_syncBackingStore(QRegion, QWidget *);
 #if defined(Q_WS_X11) || defined(Q_WS_QWS) || defined(Q_WS_WIN)
     friend void qt_syncBackingStore(QWidget *);
 #endif
+    friend QRegion qt_dirtyRegion(QWidget *, bool);
     friend class QWidgetPrivate;
     friend class QWidget;
     friend class QWSManagerPrivate;
@@ -128,5 +126,7 @@ private:
     friend class QWindowSurface;
     friend class QWSWindowSurface;
 };
+
+QT_END_NAMESPACE
 
 #endif // QBACKINGSTORE_P_H

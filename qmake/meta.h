@@ -48,6 +48,8 @@
 #include <qstringlist.h>
 #include <qstring.h>
 
+QT_BEGIN_NAMESPACE
+
 class QMakeMetaInfo
 {
     bool readLibtoolFile(const QString &f);
@@ -97,5 +99,7 @@ inline QMap<QString, QStringList> &QMakeMetaInfo::variables()
 
 inline bool QMakeMetaInfo::libExists(QString lib)
 { return !findLib(lib).isNull(); }
+
+QT_END_NAMESPACE
 
 #endif // META_H

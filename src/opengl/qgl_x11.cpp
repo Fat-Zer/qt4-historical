@@ -69,6 +69,12 @@
 #include <X11/Xos.h>
 #include <X11/Xatom.h>
 
+#if defined(Q_OS_LINUX) || defined(Q_OS_BSD4)
+#include <dlfcn.h>
+#endif
+
+QT_BEGIN_NAMESPACE
+
 extern Drawable qt_x11Handle(const QPaintDevice *pd);
 extern const QX11Info *qt_x11Info(const QPaintDevice *pd);
 
@@ -431,6 +437,13 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         if (!d->gpm)
             return false;
     }
+    QString glxExt = QString(QLatin1String(glXGetClientString(QX11Info::display(), GLX_EXTENSIONS)));
+    if (glxExt.contains(QLatin1String("GLX_SGI_video_sync"))) {
+        if (d->glFormat.swapInterval() == -1)
+            d->glFormat.setSwapInterval(0);
+    } else {
+        d->glFormat.setSwapInterval(-1);
+    }
     return true;
 }
 
@@ -450,7 +463,7 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
 void *QGLContext::chooseVisual()
 {
     Q_D(QGLContext);
-    static int bufDepths[] = { 8, 4, 2, 1 };        // Try 16, 12 also?
+    static const int bufDepths[] = { 8, 4, 2, 1 };        // Try 16, 12 also?
     //todo: if pixmap, also make sure that vi->depth == pixmap->depth
     void* vis = 0;
     int i = 0;
@@ -685,9 +698,43 @@ void QGLContext::swapBuffers() const
     Q_D(const QGLContext);
     if (!d->valid)
         return;
-    if (!deviceIsPixmap())
+    if (!deviceIsPixmap()) {
+        int interval = d->glFormat.swapInterval();
+        if (interval > 0) {
+            typedef int (*qt_glXGetVideoSyncSGI)(uint *);
+            typedef int (*qt_glXWaitVideoSyncSGI)(int, int, uint *);
+            static qt_glXGetVideoSyncSGI glXGetVideoSyncSGI = 0;
+            static qt_glXWaitVideoSyncSGI glXWaitVideoSyncSGI = 0;
+            static bool resolved = false;
+            if (!resolved) {
+                QString glxExt = QString(QLatin1String(glXGetClientString(QX11Info::display(), GLX_EXTENSIONS)));
+                if (glxExt.contains(QLatin1String("GLX_SGI_video_sync"))) {
+#if defined(Q_OS_LINUX) || defined(Q_OS_BSD4)
+                    void *handle = dlopen(NULL, RTLD_LAZY);
+                    if (handle) {
+                        glXGetVideoSyncSGI = (qt_glXGetVideoSyncSGI) dlsym(handle, "glXGetVideoSyncSGI");
+                        glXWaitVideoSyncSGI = (qt_glXWaitVideoSyncSGI) dlsym(handle, "glXWaitVideoSyncSGI");
+                        dlclose(handle);
+                    } else
+#endif
+                    {
+                        extern const QString qt_gl_library_name();
+                        QLibrary lib(qt_gl_library_name());
+                        glXGetVideoSyncSGI = (qt_glXGetVideoSyncSGI) lib.resolve("glXGetVideoSyncSGI");
+                        glXWaitVideoSyncSGI = (qt_glXWaitVideoSyncSGI) lib.resolve("glXWaitVideoSyncSGI");
+                    }
+                }
+                resolved = true;
+            }
+            if (glXGetVideoSyncSGI && glXWaitVideoSyncSGI) {
+                uint counter;
+                if (!glXGetVideoSyncSGI(&counter))
+                    glXWaitVideoSyncSGI(interval + 1, (counter + interval) % (interval + 1), &counter);
+            }
+        }
         glXSwapBuffers(qt_x11Info(d->paintDevice)->display(),
                        static_cast<QWidget *>(d->paintDevice)->winId());
+    }
 }
 
 QColor QGLContext::overlayTransparentColor() const
@@ -911,9 +958,18 @@ void *QGLContext::getProcAddress(const QString &proc) const
     if (!glXGetProcAddressARB) {
         QString glxExt = QString(QLatin1String(glXGetClientString(QX11Info::display(), GLX_EXTENSIONS)));
         if (glxExt.contains(QLatin1String("GLX_ARB_get_proc_address"))) {
-            extern const QString qt_gl_library_name();
-            QLibrary lib(qt_gl_library_name());
-            glXGetProcAddressARB = (qt_glXGetProcAddressARB) lib.resolve("glXGetProcAddressARB");
+#if defined(Q_OS_LINUX) || defined(Q_OS_BSD4)
+            void *handle = dlopen(NULL, RTLD_LAZY);
+            if (handle) {
+                glXGetProcAddressARB = (qt_glXGetProcAddressARB) dlsym(handle, "glXGetProcAddressARB");
+                dlclose(handle);
+            } else
+#endif
+            {
+                extern const QString qt_gl_library_name();
+                QLibrary lib(qt_gl_library_name());
+                glXGetProcAddressARB = (qt_glXGetProcAddressARB) lib.resolve("glXGetProcAddressARB");
+            }
         }
         resolved = true;
     }
@@ -936,6 +992,7 @@ protected:
     void                initializeGL();
     void                paintGL();
     void                resizeGL(int w, int h);
+    bool                x11Event(XEvent *e) { return realWidget->x11Event(e); }
 
 private:
     QGLWidget*                realWidget;
@@ -979,7 +1036,9 @@ void QGLOverlayWidget::paintGL()
 }
 
 #undef Bool
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qgl_x11.moc"
+QT_END_INCLUDE_NAMESPACE
 
 /*****************************************************************************
   QGLWidget UNIX/GLX-specific code
@@ -1056,27 +1115,6 @@ void QGLWidgetPrivate::cleanupColormaps()
         cmap.setHandle(0);
     }
 }
-
-/*! \reimp */
-bool QGLWidget::event(QEvent *e)
-{
-    Q_D(QGLWidget);
-    // prevents X errors on some systems, where we get a flush to a
-    // hidden widget
-    if (e->type() == QEvent::Hide) {
-        makeCurrent();
-        glFinish();
-        doneCurrent();
-    } else if (e->type() == QEvent::ParentChange) {
-        if (d->glcx->d_func()->screen != d->xinfo.screen()) {
-            setContext(new QGLContext(d->glcx->requestedFormat(), this));
-            // ### recreating the overlay isn't supported atm
-        }
-    }
-
-    return QWidget::event(e);
-}
-
 
 void QGLWidget::setMouseTracking(bool enable)
 {
@@ -1390,3 +1428,5 @@ void QGLExtensions::init()
         nvidiaFboNeedsFinish = nvidiaDriverVersion >= 90.0 && nvidiaDriverVersion < 100.0;
     }
 }
+
+QT_END_NAMESPACE

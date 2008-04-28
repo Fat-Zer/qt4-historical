@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QUrl;
@@ -83,6 +85,7 @@ public:
 
     QByteArray data(const QString &mimetype) const;
     void setData(const QString &mimetype, const QByteArray &data);
+    void removeFormat(const QString &mimetype);
 
     virtual bool hasFormat(const QString &mimetype) const;
     virtual QStringList formats() const;
@@ -95,6 +98,8 @@ private:
     Q_DISABLE_COPY(QMimeData)
     Q_DECLARE_PRIVATE(QMimeData)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

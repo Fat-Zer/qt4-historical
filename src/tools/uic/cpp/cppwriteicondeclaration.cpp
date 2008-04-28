@@ -46,7 +46,9 @@
 #include "ui4.h"
 #include "uic.h"
 
-#include <QTextStream>
+#include <QtCore/QTextStream>
+
+QT_BEGIN_NAMESPACE
 
 namespace CPP {
 
@@ -76,3 +78,5 @@ void WriteIconDeclaration::acceptImage(DomImage *image)
 }
 
 } // namespace CPP
+
+QT_END_NAMESPACE

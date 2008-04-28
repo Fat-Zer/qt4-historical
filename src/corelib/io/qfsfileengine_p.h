@@ -58,6 +58,15 @@
 #include "qplatformdefs.h"
 #include "QtCore/qfsfileengine.h"
 #include "private/qabstractfileengine_p.h"
+#include <qhash.h>
+
+#ifndef QT_NO_FSFILEENGINE
+
+QT_BEGIN_NAMESPACE
+
+#if defined(Q_OS_WINCE_STD) && _WIN32_WCE < 0x600
+#define Q_USE_DEPRECATED_MAP_API 1
+#endif
 
 class QFSFileEnginePrivate : public QAbstractFileEnginePrivate
 {
@@ -68,6 +77,7 @@ public:
     static QByteArray win95Name(const QString &path);
     static QString longFileName(const QString &path);
 #endif
+    static QString canonicalized(const QString &path);
 
     QString filePath;
     QByteArray nativeFilePath;
@@ -97,10 +107,21 @@ public:
     bool nativeIsSequential() const;
     bool isSequentialFdFh() const;
 
+    uchar *map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags);
+    bool unmap(uchar *ptr);
+#ifdef Q_WS_WIN
+    QHash<uchar *, QPair<int /*offset*/, HANDLE /*handle*/> > maps;
+#else
+    QHash<uchar *, QPair<int /*offset*/, int /*handle|len*/> > maps;
+#endif
     int fd;
     FILE *fh;
 #ifdef Q_WS_WIN
     HANDLE fileHandle;
+#endif
+#ifdef Q_USE_DEPRECATED_MAP_API
+    void mapHandleClose();
+    HANDLE fileMapHandle;
 #endif
 
     mutable uint is_sequential : 2;
@@ -131,7 +152,7 @@ public:
     };
     LastIOCommand  lastIOCommand;
     bool lastFlushFailed;
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     static void resolveLibs();
     static bool resolveUNCLibs_NT();
     static bool resolveUNCLibs_9x();
@@ -143,10 +164,14 @@ protected:
 
     void init();
 
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     QAbstractFileEngine::FileFlags getPermissions() const;
     QString getLink() const;
 #endif
 };
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_FSFILEENGINE
 
 #endif // QFSFILEENGINE_P_H

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QBitRef;
@@ -166,6 +168,8 @@ Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QBitArray &);
 
 Q_DECLARE_TYPEINFO(QBitArray, Q_MOVABLE_TYPE);
 Q_DECLARE_SHARED(QBitArray)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 static const int QLAYOUTSIZE_MAX = INT_MAX/256/16;
@@ -121,6 +123,8 @@ private:
 
 class Q_GUI_EXPORT QWidgetItem : public QLayoutItem
 {
+    Q_DISABLE_COPY(QWidgetItem)
+
 public:
     explicit QWidgetItem(QWidget *w) : wid(w) { }
     QSize sizeHint() const;
@@ -135,10 +139,45 @@ public:
     bool hasHeightForWidth() const;
     int heightForWidth(int) const;
 
-private:
+protected:
     QWidget *wid;
-    Q_DISABLE_COPY(QWidgetItem)
 };
+
+class Q_GUI_EXPORT QWidgetItemV2 : public QWidgetItem
+{
+public:
+    explicit QWidgetItemV2(QWidget *widget);
+    ~QWidgetItemV2();
+
+    QSize sizeHint() const;
+    QSize minimumSize() const;
+    QSize maximumSize() const;
+    int heightForWidth(int width) const;
+
+private:
+    enum { Dirty = -123, HfwCacheMaxSize = 3 };
+
+    inline bool useSizeCache() const;
+    void updateCacheIfNecessary() const;
+    inline void invalidateSizeCache() {
+        q_cachedMinimumSize.setWidth(Dirty);
+        q_hfwCacheSize = 0;
+    }
+
+    mutable QSize q_cachedMinimumSize;
+    mutable QSize q_cachedSizeHint;
+    mutable QSize q_cachedMaximumSize;
+    mutable QSize q_cachedHfws[HfwCacheMaxSize];
+    mutable short q_firstCachedHfw;
+    mutable short q_hfwCacheSize;
+    void *d;
+
+    friend class QWidgetPrivate;
+
+    Q_DISABLE_COPY(QWidgetItemV2)
+};
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

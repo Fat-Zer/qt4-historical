@@ -41,6 +41,7 @@
 **
 ****************************************************************************/
 
+//! [0]
 #include <QtGui>
 #include <QtTest/QtTest>
 
@@ -52,7 +53,9 @@ private slots:
     void testGui();
 
 };
+//! [0]
 
+//! [1]
 void TestGui::testGui()
 {
     QLineEdit lineEdit;
@@ -61,7 +64,10 @@ void TestGui::testGui()
 
     QCOMPARE(lineEdit.text(), QString("hello world"));
 }
+//! [1]
 
+//! [2]
 QTEST_MAIN(TestGui)
 #include "testgui.moc"
+//! [2]
 

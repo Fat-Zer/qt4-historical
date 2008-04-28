@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_ACTION
@@ -71,6 +73,7 @@ public:
     
 protected:
     virtual bool event(QEvent *);
+    virtual bool eventFilter(QObject *, QEvent *);
     virtual QWidget *createWidget(QWidget *parent);
     virtual void deleteWidget(QWidget *widget);
     QList<QWidget *> createdWidgets() const;
@@ -82,6 +85,8 @@ private:
 };
 
 #endif // QT_NO_ACTION
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

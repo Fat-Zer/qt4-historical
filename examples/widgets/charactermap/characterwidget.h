@@ -50,9 +50,12 @@
 #include <QString>
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QMouseEvent;
 class QPaintEvent;
+QT_END_NAMESPACE
 
+//! [0]
 class CharacterWidget : public QWidget
 {
     Q_OBJECT
@@ -81,5 +84,6 @@ private:
     int lastKey;
     int squareSize;
 };
+//! [0]
 
 #endif

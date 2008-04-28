@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QRect
@@ -169,7 +171,7 @@ public:
 #endif
 
 private:
-#if defined(Q_WS_X11) || defined(Q_OS_TEMP)
+#if defined(Q_WS_X11)
     friend void qt_setCoords(QRect *r, int xp1, int yp1, int xp2, int yp2);
 #endif
 #if defined(Q_OS_MAC)
@@ -849,6 +851,8 @@ inline QRect QRectF::toRect() const
 #ifndef QT_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QRectF &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

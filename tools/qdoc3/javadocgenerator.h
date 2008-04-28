@@ -46,6 +46,8 @@
 
 #include "htmlgenerator.h"
 
+QT_BEGIN_NAMESPACE
+
 class JavadocGenerator : public HtmlGenerator
 {
 public:
@@ -89,5 +91,7 @@ private:
     QIODevice *oldDevice;
     int currentDepth;
 };
+
+QT_END_NAMESPACE
 
 #endif

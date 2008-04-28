@@ -58,25 +58,23 @@
 #include <errno.h>
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
+
 QMMapViewProtocol::QMMapViewProtocol(int displayid, const QSize &s,
                                      int d, QObject *parent)
     : QVFbViewProtocol(displayid, parent), hdr(0), dataCache(0)
 {
-    int actualdepth = d;
-
     switch (d) {
-    case 12:
-        actualdepth=16;
-        break;
     case 1:
     case 4:
     case 8:
+    case 12:
+    case 15:
     case 16:
     case 18:
     case 24:
     case 32:
         break;
-
     default:
         qFatal("Unsupported bit depth %d\n", d);
     }
@@ -91,12 +89,10 @@ QMMapViewProtocol::QMMapViewProtocol(int displayid, const QSize &s,
     mh = new QVFbMouseLinuxTP(displayid);
 
     int bpl;
-    if (d == 1)
-	bpl = (w *d + 7) / 8;
-    else if (d == 18)
-        bpl = ((w * 24 + 31) / 32) * 4;
+    if (d < 8)
+	bpl = (w * d + 7) / 8;
     else
-	bpl = ((w * actualdepth + 31) / 32) * 4;
+        bpl = w * ((d + 7) / 8);
 
     displaySize = bpl * h;
 
@@ -134,11 +130,12 @@ QMMapViewProtocol::QMMapViewProtocol(int displayid, const QSize &s,
     hdr = (QVFbHeader *)data;
     hdr->width = w;
     hdr->height = h;
-    hdr->depth = actualdepth;
+    hdr->depth = d;
     hdr->linestep = bpl;
     hdr->numcols = 0;
     hdr->dataoffset = data_offset_value;
     hdr->update = QRect();
+    hdr->brightness = 255;
 
     mRefreshTimer = new QTimer(this);
     connect(mRefreshTimer, SIGNAL(timeout()), this, SLOT(flushChanges()));
@@ -152,6 +149,11 @@ QMMapViewProtocol::~QMMapViewProtocol()
     free(dataCache);
     delete kh;
     delete mh;
+}
+
+int QMMapViewProtocol::brightness() const
+{
+    return hdr->brightness;
 }
 
 int QMMapViewProtocol::width() const
@@ -217,3 +219,5 @@ int QMMapViewProtocol::rate() const
     else
         return 0;
 }
+
+QT_END_NAMESPACE

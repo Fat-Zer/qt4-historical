@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PROXYMODEL
@@ -80,15 +82,22 @@ public:
     QMap<int, QVariant> itemData(const QModelIndex &index) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole);
+
 protected:
     QAbstractProxyModel(QAbstractProxyModelPrivate &, QObject *parent);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractProxyModel)
     Q_DISABLE_COPY(QAbstractProxyModel)
+    Q_PRIVATE_SLOT(d_func(), void _q_sourceModelDestroyed())
 };
 
 #endif // QT_NO_PROXYMODEL
+
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
 #endif // QABSTRACTPROXYMODEL_H

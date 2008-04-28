@@ -47,6 +47,7 @@
 #include <QPixmap>
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QGridLayout;
 class QGroupBox;
@@ -55,7 +56,9 @@ class QLabel;
 class QPushButton;
 class QSpinBox;
 class QVBoxLayout;
+QT_END_NAMESPACE
 
+//! [0]
 class Screenshot : public QWidget
 {
     Q_OBJECT
@@ -94,5 +97,6 @@ private:
     QGridLayout *optionsGroupBoxLayout;
     QHBoxLayout *buttonsLayout;
 };
+//! [0]
 
 #endif

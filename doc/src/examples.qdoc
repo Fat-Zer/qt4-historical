@@ -1,6 +1,50 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page examples.html
     \title Qt Examples
+    \brief Information about the example programs provided with Qt.
     \ingroup howto
 
     This is the list of examples in Qt's \c examples directory. The
@@ -10,10 +54,9 @@
     programming practices. You can launch any of these programs from the
     \l{Examples and Demos Launcher} application.
 
-    If you are new to Qt, you should probably
-    start by going through the \l{tutorial.html}{Tutorial} before you
-    have a look at the \l{mainwindows/application}{Application}
-    example.
+    If you are new to Qt, you should probably start by going through
+    the \l{Tutorials} before you have a look at the
+    \l{mainwindows/application}{Application} example.
 
     In addition to the examples and the tutorial, Qt includes a
     \l{Qt Demonstrations}{selection of demos} that deliberately show off
@@ -45,6 +88,15 @@
     \o \l{activeqt/simple}{Simple}\raisedaster
     \o \l{activeqt/webbrowser}{Web Browser}\raisedaster
     \o \l{activeqt/wrapper}{Wrapper}\raisedaster
+    \endlist
+
+    \section1 Concurrent Programming
+
+    \list
+    \o \l{qtconcurrent/map}{QtConcurrent Map}
+    \o \l{qtconcurrent/progressdialog}{QtConcurrent Progress Dialog}
+    \o \l{qtconcurrent/runfunction}{QtConcurrent Run Function}
+    \o \l{qtconcurrent/wordcount}{QtConcurrent Word Count}
     \endlist
 
     \section1 Desktop
@@ -91,12 +143,13 @@
     \section1 Item Views
 
     \list
+    \o \l{itemviews/addressbook}{Address Book}
     \o \l{itemviews/basicsortfiltermodel}{Basic Sort/Filter Model}
     \o \l{itemviews/chart}{Chart}
     \o \l{itemviews/coloreditorfactory}{Color Editor Factory}\raisedaster
     \o \l{itemviews/customsortfiltermodel}{Custom Sort/Filter Model}\raisedaster
-    \o \l{itemviews/editabletreemodel}{Editable Tree Model}\raisedaster
     \o \l{itemviews/dirview}{Dir View}
+    \o \l{itemviews/editabletreemodel}{Editable Tree Model}\raisedaster
     \o \l{itemviews/pixelator}{Pixelator}\raisedaster
     \o \l{itemviews/puzzle}{Puzzle}
     \o \l{itemviews/simpledommodel}{Simple DOM Model}\raisedaster
@@ -168,6 +221,13 @@
     \o \l{painting/transformations}{Transformations}\raisedaster
     \endlist
 
+    \section1 Phonon Multimedia Framework
+
+    \list
+    \o \l{phonon/capabilities}{Capabilities}\raisedaster
+    \o \l{phonon/musicplayer}{Music Player}\raisedaster
+    \endlist
+
     \section1 Qt Assistant
 
     \list
@@ -194,12 +254,13 @@
     \o \l{linguist/trollprint}{Troll Print}\raisedaster
     \endlist
 
-    \section1 Qtopia Core
+    \section1 Qt for Embedded Linux
 
     \list
-    \o \l{qtopiacore/mousecalibration}{Mouse Calibration}\raisedaster
-    \o \l{qtopiacore/svgalib}{Accelerated Graphics Driver}\raisedaster
-    \o \l{qtopiacore/ahigl}{OpenGL for Embedded Systems}\raisedaster
+    \o \l{qws/mousecalibration}{Mouse Calibration}\raisedaster
+    \o \l{qws/svgalib}{Accelerated Graphics Driver}\raisedaster
+    \o \l{qws/ahigl}{OpenGL for Embedded Systems}\raisedaster
+    \o \l{qws/dbscreen}{Double Buffered Graphics Driver}\raisedaster
     \endlist
 
     \section1 Qt Script
@@ -210,13 +271,14 @@
     \o \l{script/defaultprototypes}{Default Prototypes}
     \o \l{script/helloscript}{Hello Script}
     \o \l{script/tetrix}{Tetrix}
+    \o \l{script/customclass}{Custom Script Class}
     \endlist
 
     \section1 Rich Text
 
     \list
     \o \l{richtext/calendar}{Calendar}\raisedaster
-    \o \l{richtext/orderform}{Order Form}
+    \o \l{richtext/orderform}{Order Form}\raisedaster
     \o \l{richtext/syntaxhighlighter}{Syntax Highlighter}\raisedaster
     \endlist
 
@@ -259,8 +321,14 @@
     \section1 UiTools
 
     \list
-    \o \l{uitools/textfinder}{Text Finder}\raisedaster
     \o \l{uitools/multipleinheritance}{Multiple Inheritance}\raisedaster
+    \o \l{uitools/textfinder}{Text Finder}\raisedaster
+    \endlist
+
+    \section1 WebKit
+
+    \list
+    \o \l{webkit/previewer}{Previewer}
     \endlist
 
     \section1 Widgets
@@ -297,5 +365,21 @@
     \o \l{xml/streambookmarks}{QXmlStream Bookmarks}\raisedaster
     \o \l{xml/rsslisting}{RSS-Listing}
     \o \l{xml/xmlstreamlint}{XML Stream Lint Example}\raisedaster
+    \endlist
+
+    \section1 XML Patterns: XQuery & XPath
+
+    \list
+    \o \l{xmlpatterns/xquery/globalVariables}{C++ Source Code Analyzer Example}
+    \o \l{xmlpatterns/filetree}{File System Example}
+    \o \l{xmlpatterns/qobjectxmlmodel}{QObject XML Model Example}
+    \o \l{xmlpatterns/recipes}{Recipes}
+    \endlist
+
+    \section1 Inter-Process Communication
+    \list
+    \o \l{ipc/localfortuneclient}{Local Fortune Client}\raisedaster
+    \o \l{ipc/localfortuneserver}{Local Fortune Server}\raisedaster
+    \o \l{ipc/sharedmemory}{Shared Memory}\raisedaster
     \endlist
 */

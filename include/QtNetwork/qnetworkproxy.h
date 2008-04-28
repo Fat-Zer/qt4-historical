@@ -1,1 +1,1 @@
-#include "../../src/network/qnetworkproxy.h"
+#include "../../src/network/kernel/qnetworkproxy.h"

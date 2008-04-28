@@ -61,12 +61,10 @@
 
     Example:
 
-    \quotefromfile snippets/pointer/pointer.cpp
-    \skipto QPointer<QLabel> label
-    \printuntil setText(
+    \snippet doc/src/snippets/pointer/pointer.cpp 0
     \dots
-    \printline if (label)
-    \printline show()
+    \snippet doc/src/snippets/pointer/pointer.cpp 1
+    \snippet doc/src/snippets/pointer/pointer.cpp 2
 
     If the QLabel is deleted in the meantime, the \c label variable
     will hold 0 instead of an invalid address, and the last line will
@@ -145,6 +143,13 @@
 
     Assignment operator. This guarded pointer will now point to the
     same object that \a p points to.
+*/
+
+/*!
+    \fn T* QPointer::data() const
+    \since 4.4
+
+    Returns the pointer to the object being guarded.
 */
 
 /*!

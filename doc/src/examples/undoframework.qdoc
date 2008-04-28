@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example tools/undoframework 
     \title Undo Framework Example
@@ -51,9 +94,7 @@
 
     \section1 MainWindow Class Definition
 
-    \quotefromfile tools/undoframework/mainwindow.h
-    \skipto /class.*MainWindow/
-    \printuntil /^\};/
+    \snippet examples/tools/undoframework/mainwindow.h 0
 
     The \c MainWindow class maintains the undo stack, i.e., it creates
     \l{QUndoCommand}s and pushes and pops them from the stack when it
@@ -64,9 +105,7 @@
 
     We will start with a look at the constructor:    
 
-    \quotefromfile tools/undoframework/mainwindow.cpp
-    \skipto /::MainWindow/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 0
 
     By connecting the undo stack's \c canRedoChanged() and
     canUndoChanged() signals to our undo and redo action's
@@ -76,8 +115,7 @@
 
     Here is the \c createUndoView() function:    
 
-    \skipto /::createUndoView/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 1
 
     The QUndoView is a widget that display the text, which is set with
     the \l{QUndoCommand::}{setText()} function, for each QUndoCommand
@@ -85,15 +123,11 @@
     
     Here is the \c createActions() function:
 
-    \skipto /::createActions/
-    \printuntil /connect/
-
-    \printline
+    \snippet examples/tools/undoframework/mainwindow.cpp 2
+    \codeline
+    \snippet examples/tools/undoframework/mainwindow.cpp 3
     \dots
-    \printline    
-
-    \skipto undoAction
-    \printuntil /connect\(redoAction/
+    \snippet examples/tools/undoframework/mainwindow.cpp 5
 
     The \c createActions() function sets up all the examples actions
     in the manner shown above. We can connect our \c undoAction and \c
@@ -104,15 +138,12 @@
 
     Here is the \c createMenues() function:
 
-    \skipto /::createMenus/
-    \printuntil /^\{/
+    \snippet examples/tools/undoframework/mainwindow.cpp 6
 
     \dots
-    \skipto /editMenu/
-    \printto /itemMenu\s/
+    \snippet examples/tools/undoframework/mainwindow.cpp 7
     \dots
-    \skipto /^\}/
-    \printline }
+    \snippet examples/tools/undoframework/mainwindow.cpp 8
 
     We have to use the QMenu \c aboutToShow() and \c aboutToHide()
     signals since we only want \c deleteAction to be enabled when we
@@ -121,16 +152,14 @@
     
     Here is the \c itemMoved() slot:
 
-    \skipto /::itemMoved/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 9
 
     We simply push a MoveCommand on the stack, which calls \c redo()
     on it.
 
     Here is the \c deleteItem() slot:
 
-    \skipto /::deleteItem/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 10
 
     An item must be selected to be deleted.  We need to check if it is
     selected as the \c deleteAction may be enabled even if an item is
@@ -139,11 +168,9 @@
 
     Here is the \c itemMenuAboutToShow() and itemMenuAboutToHide() slots:
 
-    \skipto /::itemMenuAboutToHide/
-    \printuntil /^\}/
-
-    \skipto /::itemMenuAboutToShow/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 11
+    \codeline
+    \snippet examples/tools/undoframework/mainwindow.cpp 12
 
     We implement \c itemMenuAboutToShow() and \c itemMenuAboutToHide()
     to get a dynamic item menu. These slots are connected to the 
@@ -154,33 +181,28 @@
 
     Here is the \c addBox() slot:
 
-    \skipto /::addBox/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 13
 
     The \c addBox() function creates an AddCommand and pushes it on
     the undo stack.
 
     Here is the \c addTriangle() sot:
 
-    \skipto /::addTriangle/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 14
 
     The \c addTriangle() function creates an AddCommand and pushes it
     on the undo stack.    
 
     Here is the implementation of \c about():
 
-    \skipto /::about/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/mainwindow.cpp 15
     
     The about slot is triggered by the \c aboutAction and displays an
     about box for the example.
 
     \section1 AddCommand Class Definition
     
-    \quotefromfile tools/undoframework/commands.h
-    \skipto /class.*AddCommand/
-    \printuntil /^\};/
+    \snippet examples/tools/undoframework/commands.h 2
 
     The \c AddCommand class adds DiagramItem graphics items to the
     DiagramScene.  
@@ -189,41 +211,33 @@
 
     We start with the constructor:
 
-    \quotefromfile tools/undoframework/commands.cpp
-    \skipto /::AddCommand/
-    \printuntil /^\}/ 
+    \snippet examples/tools/undoframework/commands.cpp 7
 
     We first create the DiagramItem to add to the DiagramScene.  The
     \l{QUndoCommand::}{setText()} function let us set a QString that
     describes the command. We use this to get custom messages in the
     QUndoView and in the menu of the main window.
 
-    \skipto /::undo()/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 8
 
     \c undo() removes the item from the scene. We need to update the
     scene as ...(ask Andreas)
 
-    \skipto/::redo()/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 9
 
     We set the position of the item as we do not do this in the
     constructor.
 
     \section1 DeleteCommand Class Definition
     
-    \quotefromfile tools/undoframework/commands.h
-    \skipto /class.*DeleteCommand/
-    \printuntil /^\};/
+    \snippet examples/tools/undoframework/commands.h 1
 
     The DeleteCommand class implements the functionality to remove an
     item from the scene.
     
     \section1 DeleteCommand Class Implementation
 
-    \quotefromfile tools/undoframework/commands.cpp
-    \skipto /::DeleteCommand/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 4
 
     We know that there must be one selected item as it is not possible
     to create a DeleteCommand unless the item to be deleted is
@@ -231,21 +245,17 @@
     The item must be unselected if it is inserted back into the 
     scene.
 
-    \skipto /::undo()/
-    \printuntil /\}/
+    \snippet examples/tools/undoframework/commands.cpp 5
 
     The item is simply reinserted into the scene.
 
-    \skipto /::redo()/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 6
 
     The item is removed from the scene.
 
     \section1 MoveCommand Class Definition
 
-    \quotefromfile tools/undoframework/commands.h
-    \skipto /class.*MoveCommand/
-    \printuntil /^\};/
+    \snippet examples/tools/undoframework/commands.h 0
 
     The \l{QUndoCommand::}{mergeWith()} is reimplemented to make
     consecutive moves of an item one MoveCommand, i.e, the item will
@@ -253,29 +263,23 @@
 
     \section1 MoveCommand Class Implementation
 
-    \quotefromfile tools/undoframework/commands.cpp
     
     The constructor of MoveCommand looks like this:
 
-    \skipto /::MoveCommand/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 0
 
     We save both the old and new positions for undo and redo
     respectively.
 
-    \skipto /::undo()/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 2
 
     We simply set the items old position and update the scene.    
 
-    \skipto /::redo()/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 3
 
     We set the item to its new position.
     
-    \quotefromfile tools/undoframework/commands.cpp
-    \skipto /::mergeWith/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/commands.cpp 1
 
     Whenever a MoveCommand is created, this function is called to
     check if it should be merged with the previous command. It is the
@@ -289,9 +293,7 @@
 
     \section1 DiagramScene Class Definition
 
-    \quotefromfile tools/undoframework/diagramscene.h
-    \skipto /class.*DiagramScene/
-    \printuntil /^\};/
+    \snippet examples/tools/undoframework/diagramscene.h 0
 
     The DiagramScene implements the functionality to move a
     DiagramItem with the mouse. It emits a signal when a move is
@@ -303,9 +305,7 @@
     
     The \c main() function of the program looks like this:
 
-    \quotefromfile tools/undoframework/main.cpp
-    \skipto /main.*\(/
-    \printuntil /^\}/
+    \snippet examples/tools/undoframework/main.cpp 0
 
     We draw a grid in the background of the DiagramScene, so we use a
     resource file. The rest of the function creates the \c MainWindow and

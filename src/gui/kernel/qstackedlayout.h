@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QStackedLayoutPrivate;
@@ -56,10 +58,17 @@ class Q_GUI_EXPORT QStackedLayout : public QLayout
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QStackedLayout)
+    Q_ENUMS(StackingMode)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentChanged)
+    Q_PROPERTY(StackingMode stackingMode READ stackingMode WRITE setStackingMode)
     QDOC_PROPERTY(int count READ count)
 
 public:
+    enum StackingMode {
+        StackOne,
+        StackAll
+    };
+
     QStackedLayout();
     explicit QStackedLayout(QWidget *parent);
     explicit QStackedLayout(QLayout *parentLayout);
@@ -77,6 +86,9 @@ public:
 #endif
     QWidget *widget(int) const;
     int count() const;
+
+    StackingMode stackingMode() const;
+    void setStackingMode(StackingMode stackingMode);
 
     // abstract virtual functions:
     void addItem(QLayoutItem *item);
@@ -97,6 +109,8 @@ public Q_SLOTS:
 private:
     Q_DISABLE_COPY(QStackedLayout)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

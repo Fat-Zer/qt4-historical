@@ -48,8 +48,11 @@
 #include "renderarea.h"
 #include "window.h"
 
+//! [0]
 const float Pi = 3.14159f;
+//! [0]
 
+//! [1]
 Window::Window()
 {
     QPainterPath rectPath;
@@ -58,7 +61,9 @@ Window::Window()
     rectPath.lineTo(80.0, 70.0);
     rectPath.lineTo(20.0, 70.0);
     rectPath.closeSubpath();
+//! [1]
 
+//! [2]
     QPainterPath roundRectPath;
     roundRectPath.moveTo(80.0, 35.0);
     roundRectPath.arcTo(70.0, 30.0, 10.0, 10.0, 0.0, 90.0);
@@ -69,23 +74,31 @@ Window::Window()
     roundRectPath.lineTo(75.0, 70.0);
     roundRectPath.arcTo(70.0, 60.0, 10.0, 10.0, 270.0, 90.0);
     roundRectPath.closeSubpath();
+//! [2]
 
+//! [3]
     QPainterPath ellipsePath;
     ellipsePath.moveTo(80.0, 50.0);
     ellipsePath.arcTo(20.0, 30.0, 60.0, 40.0, 0.0, 360.0);
+//! [3]
 
+//! [4]
     QPainterPath piePath;
     piePath.moveTo(50.0, 50.0);
     piePath.arcTo(20.0, 30.0, 60.0, 40.0, 60.0, 240.0);
     piePath.closeSubpath();
+//! [4]
 
+//! [5]
     QPainterPath polygonPath;
     polygonPath.moveTo(10.0, 80.0);
     polygonPath.lineTo(20.0, 10.0);
     polygonPath.lineTo(80.0, 30.0);
     polygonPath.lineTo(90.0, 70.0);
     polygonPath.closeSubpath();
+//! [5]
 
+//! [6]
     QPainterPath groupPath;
     groupPath.moveTo(60.0, 40.0);
     groupPath.arcTo(20.0, 20.0, 40.0, 40.0, 0.0, 360.0);
@@ -94,16 +107,22 @@ Window::Window()
     groupPath.lineTo(80.0, 80.0);
     groupPath.lineTo(80.0, 40.0);
     groupPath.closeSubpath();
+//! [6]
 
+//! [7]
     QPainterPath textPath;
     QFont timesFont("Times", 50);
     timesFont.setStyleStrategy(QFont::ForceOutline);
     textPath.addText(10, 70, timesFont, tr("Qt"));
+//! [7]
 
+//! [8]
     QPainterPath bezierPath;
     bezierPath.moveTo(20, 30);
     bezierPath.cubicTo(80, 0, 50, 50, 80, 80);
+//! [8]
 
+//! [9]
     QPainterPath starPath;
     starPath.moveTo(90, 50);
     for (int i = 1; i < 5; ++i) {
@@ -111,7 +130,9 @@ Window::Window()
                         50 + 40 * sin(0.8 * i * Pi));
     }
     starPath.closeSubpath();
+//! [9]
 
+//! [10]
     renderAreas[0] = new RenderArea(rectPath);
     renderAreas[1] = new RenderArea(roundRectPath);
     renderAreas[2] = new RenderArea(ellipsePath);
@@ -122,14 +143,18 @@ Window::Window()
     renderAreas[7] = new RenderArea(bezierPath);
     renderAreas[8] = new RenderArea(starPath);
     Q_ASSERT(NumRenderAreas == 9);
+//! [10]
 
+//! [11]
     fillRuleComboBox = new QComboBox;
     fillRuleComboBox->addItem(tr("Odd Even"), Qt::OddEvenFill);
     fillRuleComboBox->addItem(tr("Winding"), Qt::WindingFill);
 
     fillRuleLabel = new QLabel(tr("Fill &Rule:"));
     fillRuleLabel->setBuddy(fillRuleComboBox);
+//! [11]
 
+//! [12]
     fillColor1ComboBox = new QComboBox;
     populateWithColors(fillColor1ComboBox);
     fillColor1ComboBox->setCurrentIndex(
@@ -167,7 +192,9 @@ Window::Window()
 
     rotationAngleLabel = new QLabel(tr("&Rotation Angle:"));
     rotationAngleLabel->setBuddy(rotationAngleSpinBox);
+//! [12]
 
+//! [16]
     connect(fillRuleComboBox, SIGNAL(activated(int)),
             this, SLOT(fillRuleChanged()));
     connect(fillColor1ComboBox, SIGNAL(activated(int)),
@@ -184,6 +211,7 @@ Window::Window()
                 renderAreas[i], SLOT(setRotationAngle(int)));
     }
 
+//! [16] //! [17]
     QGridLayout *topLayout = new QGridLayout;
     for (int i = 0; i < NumRenderAreas; ++i)
         topLayout->addWidget(renderAreas[i], i / 3, i % 3);
@@ -203,7 +231,9 @@ Window::Window()
     mainLayout->addWidget(rotationAngleLabel, 5, 0);
     mainLayout->addWidget(rotationAngleSpinBox, 5, 1, 1, 3);
     setLayout(mainLayout);
+//! [17]
 
+//! [18]
     fillRuleChanged();
     fillGradientChanged();
     penColorChanged();
@@ -211,7 +241,9 @@ Window::Window()
 
     setWindowTitle(tr("Painter Paths"));
 }
+//! [18]
 
+//! [19]
 void Window::fillRuleChanged()
 {
     Qt::FillRule rule = (Qt::FillRule)currentItemData(fillRuleComboBox).toInt();
@@ -219,7 +251,9 @@ void Window::fillRuleChanged()
     for (int i = 0; i < NumRenderAreas; ++i)
         renderAreas[i]->setFillRule(rule);
 }
+//! [19]
 
+//! [20]
 void Window::fillGradientChanged()
 {
     QColor color1 = qvariant_cast<QColor>(currentItemData(fillColor1ComboBox));
@@ -228,7 +262,9 @@ void Window::fillGradientChanged()
     for (int i = 0; i < NumRenderAreas; ++i)
         renderAreas[i]->setFillGradient(color1, color2);
 }
+//! [20]
 
+//! [21]
 void Window::penColorChanged()
 {
     QColor color = qvariant_cast<QColor>(currentItemData(penColorComboBox));
@@ -236,15 +272,20 @@ void Window::penColorChanged()
     for (int i = 0; i < NumRenderAreas; ++i)
         renderAreas[i]->setPenColor(color);
 }
+//! [21]
 
+//! [22]
 void Window::populateWithColors(QComboBox *comboBox)
 {
     QStringList colorNames = QColor::colorNames();
     foreach (QString name, colorNames)
         comboBox->addItem(name, QColor(name));
 }
+//! [22]
 
+//! [23]
 QVariant Window::currentItemData(QComboBox *comboBox)
 {
     return comboBox->itemData(comboBox->currentIndex());
 }
+//! [23]

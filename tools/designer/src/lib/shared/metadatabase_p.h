@@ -60,14 +60,17 @@
 #include <QtDesigner/QDesignerMetaDataBaseInterface>
 
 #include <QtCore/QHash>
+#include <QtCore/QStringList>
 #include <QtGui/QCursor>
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
 class QDESIGNER_SHARED_EXPORT MetaDataBaseItem: public QDesignerMetaDataBaseItemInterface
 {
 public:
-    MetaDataBaseItem(QObject *object);
+    explicit MetaDataBaseItem(QObject *object);
     virtual ~MetaDataBaseItem();
 
     virtual QString name() const;
@@ -93,6 +96,12 @@ public:
     QString script() const;
     void setScript(const QString &script);
 
+    QStringList fakeSlots() const;
+    void setFakeSlots(const QStringList &);
+
+    QStringList fakeSignals() const;
+    void setFakeSignals(const QStringList &);
+
 private:
     QObject *m_object;
     TabOrder m_tabOrder;
@@ -100,13 +109,15 @@ private:
     bool m_enabled;
     QString m_customClassName;
     QString m_script;
+    QStringList m_fakeSlots;
+    QStringList m_fakeSignals;
 };
 
 class QDESIGNER_SHARED_EXPORT MetaDataBase: public QDesignerMetaDataBaseInterface
 {
     Q_OBJECT
 public:
-    MetaDataBase(QDesignerFormEditorInterface *core, QObject *parent = 0);
+    explicit MetaDataBase(QDesignerFormEditorInterface *core, QObject *parent = 0);
     virtual ~MetaDataBase();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -128,7 +139,7 @@ private:
     typedef QHash<QObject *, MetaDataBaseItem*> ItemMap;
     ItemMap m_items;
 };
-    
+
     // promotion convenience
     QDESIGNER_SHARED_EXPORT bool promoteWidget(QDesignerFormEditorInterface *core,QWidget *widget,const QString &customClassName);
     QDESIGNER_SHARED_EXPORT void demoteWidget(QDesignerFormEditorInterface *core,QWidget *widget); 
@@ -140,5 +151,7 @@ private:
     QDESIGNER_SHARED_EXPORT QString propertyComment(QDesignerFormEditorInterface* core, QObject *o, const QString &propertyName);
     QDESIGNER_SHARED_EXPORT bool setPropertyComment(QDesignerFormEditorInterface* core, QObject *o, const QString &propertyName, const QString &value);
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // METADATABASE_H

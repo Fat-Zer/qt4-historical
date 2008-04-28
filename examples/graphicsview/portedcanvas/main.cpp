@@ -58,6 +58,8 @@ extern QString logo_fn;
 
 int main(int argc, char** argv)
 {
+    Q_INIT_RESOURCE(portedcanvas);
+
     QApplication app(argc,argv);
     
     if ( argc > 1 )

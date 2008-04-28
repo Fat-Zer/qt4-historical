@@ -47,6 +47,8 @@
 
 #ifndef QT_NO_ACCESSIBILITY
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \namespace QAccessible2
     \ingroup accessibility
@@ -175,5 +177,7 @@ void QAccessibleSimpleEditableTextInterface::replaceText(int startOffset, int en
     txt.replace(startOffset, endOffset - startOffset, text);
     iface->setText(QAccessible::Value, 0, txt);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_ACCESSIBILITY

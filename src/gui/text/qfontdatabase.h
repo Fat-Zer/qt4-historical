@@ -54,6 +54,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QStringList;
@@ -146,6 +148,8 @@ public:
     static bool removeApplicationFont(int id);
     static bool removeAllApplicationFonts();
 
+    static bool supportsThreadedFontRendering();
+
 private:
     static void createDatabase();
     static void parseFontName(const QString &name, QString &foundry, QString &family);
@@ -165,6 +169,8 @@ private:
 
     QFontDatabasePrivate *d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

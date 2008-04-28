@@ -1,1 +1,1 @@
-#include "../../../tools/qtestlib/src/qxmltestlogger_p.h"
+#include "../../../src/testlib/qxmltestlogger_p.h"

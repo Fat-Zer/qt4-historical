@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_SCRIPT
 
+QT_BEGIN_NAMESPACE
+
 class QScriptEngine;
 class QScriptEnginePrivate;
 class QScriptNameIdImpl;
@@ -110,6 +112,23 @@ public:
                  Other,
                  Bad };
 
+    enum Error {
+        NoError,
+        IllegalCharacter,
+        UnclosedStringLiteral,
+        IllegalEscapeSequence,
+        IllegalUnicodeEscapeSequence,
+        UnclosedComment,
+        IllegalExponentIndicator,
+        IllegalIdentifier
+    };
+
+    enum ParenthesesState {
+        IgnoreParentheses,
+        CountParentheses,
+        BalancedParentheses
+    };
+
     bool scanRegExp();
     void scanExtraIdentifiers(bool scan)
         { extraIdentifiers = scan; }
@@ -126,6 +145,11 @@ public:
         { errmsg = err; }
     void setErrorMessage(const char *err)
         { setErrorMessage(QString::fromLatin1(err)); }
+
+    Error error() const
+        { return err; }
+    void clearError()
+        { err = NoError; }
 
 private:
     QScriptEnginePrivate *driver;
@@ -178,6 +202,8 @@ private:
 
     int findReservedWord(const QChar *buffer, int size) const;
 
+    void syncProhibitAutomaticSemicolon();
+
     const QChar *code;
     uint length;
     int yycolumn;
@@ -200,13 +226,20 @@ private:
     };
 
     QString errmsg;
+    Error err;
+
     bool wantRx;
     bool check_reserved;
+
+    ParenthesesState parenthesesState;
+    int parenthesesCount;
+    bool prohibitAutomaticSemicolon;
 };
 
 } // namespace QScript
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
+
 #endif
-
-

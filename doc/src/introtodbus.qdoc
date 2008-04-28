@@ -1,5 +1,6 @@
-/** -*- mode: C++ -*-
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
@@ -144,9 +145,7 @@
     \tt{freedesktop.org} and can be found on the bus under the
     service name:
 
-    \code
-      org.freedesktop.DBus
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.introtodbus.qdoc 0
 
     \section2 Object Paths
 
@@ -155,7 +154,7 @@
     hierarchically organised, much like the parent-child
     relationship that classes derived from QObject possess. One
     difference, however, is that there is the concept of "root
-    object", that all object have as ultimate parent.
+    object", that all objects have as ultimate parent.
 
     If we continue our analogy with Web services, object paths
     equate to the path part of a URL:

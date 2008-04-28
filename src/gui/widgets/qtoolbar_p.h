@@ -59,6 +59,8 @@
 #include "QtGui/qaction.h"
 #include "private/qwidget_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TOOLBAR
 
 class QToolBarLayout;
@@ -74,6 +76,9 @@ public:
           allowedAreas(Qt::AllToolBarAreas), orientation(Qt::Horizontal),
           toolButtonStyle(Qt::ToolButtonIconOnly),
           layout(0), state(0)
+#ifdef Q_WS_MAC
+        , macWindowDragging(false)
+#endif
     { }
 
     void init();
@@ -99,17 +104,23 @@ public:
     struct DragState {
         QPoint pressPos;
         bool dragging;
+        bool moving;
         QLayoutItem *widgetItem;
     };
     DragState *state;
 
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
+#ifdef Q_WS_MAC
+    bool macWindowDragging;
+    QPoint macWindowDragPressPosition;
+#endif
+
+    bool mousePressEvent(QMouseEvent *e);
+    bool mouseReleaseEvent(QMouseEvent *e);
+    bool mouseMoveEvent(QMouseEvent *e);
 
     void setWindowState(bool floating, bool unplug = false, const QRect &rect = QRect());
     void initDrag(const QPoint &pos);
-    void startDrag();
+    void startDrag(bool moving = false);
     void endDrag();
 
     void unplug(const QRect &r);
@@ -119,5 +130,7 @@ public:
 };
 
 #endif // QT_NO_TOOLBAR
+
+QT_END_NAMESPACE
 
 #endif // QDYNAMICTOOLBAR_P_H

@@ -43,6 +43,8 @@
 
 #include "abstractformwindowcursor.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerFormWindowCursorInterface
 
@@ -68,12 +70,7 @@
     QDesignerFormWindowInterface::findFormWindow() functions. For
     example:
 
-    \code
-    QDesignerFormWindowInterface *formWindow = 0;
-    formWindow = QDesignerFormWindowInterface::findFormWindow(myWidget);
-
-    formWindow->cursor()->setProperty(myWidget, myProperty, newValue);
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindowcursor.cpp 0
 
     You can retrieve any of \QD's current form windows through
     \QD's \l {QDesignerFormWindowManagerInterface}{form window
@@ -253,3 +250,5 @@ bool QDesignerFormWindowCursorInterface::isWidgetSelected(QWidget *widget) const
 
     \sa setProperty(), setWidgetProperty()
 */
+
+QT_END_NAMESPACE

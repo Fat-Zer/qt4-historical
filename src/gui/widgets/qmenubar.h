@@ -48,12 +48,15 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_MENUBAR
 
 class QMenuBarPrivate;
 class QStyleOptionMenuItem;
+class QWindowsStyle;
 #ifdef QT3_SUPPORT
 class QMenuItem;
 #endif
@@ -108,6 +111,14 @@ public:
     MenuRef macMenu();
 #endif
 
+#ifdef Q_OS_WINCE
+    void setDefaultAction(QAction *);
+    QAction *defaultAction() const;
+
+    static void wceCommands(uint command, HWND controlHandle);
+    static void wceRefresh();
+#endif
+
 public Q_SLOTS:
     virtual void setVisible(bool visible);
 
@@ -127,6 +138,7 @@ protected:
     void actionEvent(QActionEvent *);
     void focusOutEvent(QFocusEvent *);
     void focusInEvent(QFocusEvent *);
+    void timerEvent(QTimerEvent *);
     bool eventFilter(QObject *, QEvent *);
     bool event(QEvent *);
     void initStyleOption(QStyleOptionMenuItem *option, const QAction *action) const;
@@ -313,7 +325,6 @@ protected:
     inline QT3_SUPPORT int itemAtPos(const QPoint &p) {
         return findIdForAction(actionAt(p));
     }
-
 private:
     QAction *findActionForId(int id) const;
     int insertAny(const QIcon *icon, const QString *text, const QObject *receiver, const char *member,
@@ -329,17 +340,25 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_internalShortcutActivated(int))
     Q_PRIVATE_SLOT(d_func(), void _q_updateLayout())
 
+#ifdef Q_OS_WINCE
+    Q_PRIVATE_SLOT(d_func(), void _q_updateDefaultAction())
+#endif
+
     friend class QMenu;
     friend class QMenuPrivate;
+    friend class QWindowsStyle;
 
 #ifdef Q_WS_MAC
     friend class QApplicationPrivate;
+    friend class QWidgetPrivate;
     static bool macUpdateMenuBar();
     friend bool qt_mac_activate_action(MenuRef, uint, QAction::ActionEvent, bool);
 #endif
 };
 
 #endif // QT_NO_MENUBAR
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

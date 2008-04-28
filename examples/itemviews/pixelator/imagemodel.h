@@ -47,6 +47,7 @@
 #include <QAbstractTableModel>
 #include <QImage>
 
+//! [0]
 class ImageModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -65,5 +66,6 @@ public:
 private:
     QImage modelImage;
 };
+//! [0]
 
 #endif

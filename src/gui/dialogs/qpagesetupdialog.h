@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PRINTDIALOG
@@ -60,7 +62,19 @@ class Q_GUI_EXPORT QPageSetupDialog : public QAbstractPageSetupDialog
     Q_DECLARE_PRIVATE(QPageSetupDialog)
 
 public:
+    enum PageSetupDialogOption {
+        None                    = 0x0000,
+        DontUseSheet            = 0x0001
+    };
+
+    Q_DECLARE_FLAGS(PageSetupDialogOptions, PageSetupDialogOption)
+
     explicit QPageSetupDialog(QPrinter *printer, QWidget *parent = 0);
+
+    void addEnabledOption(PageSetupDialogOption option);
+    void setEnabledOptions(PageSetupDialogOptions options);
+    PageSetupDialogOptions enabledOptions() const;
+    bool isOptionEnabled(PageSetupDialogOption option) const;
 
     virtual int exec();
 #ifdef qdoc
@@ -69,6 +83,8 @@ public:
 };
 
 #endif // QT_NO_PRINTDIALOG
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -41,10 +41,13 @@
 **
 ****************************************************************************/
 
+//! [0]
 #include <QtGui>
 
 #include "mainwindow.h"
+//! [0]
 
+//! [1]
 MainWindow::MainWindow()
 {
     textEdit = new QTextEdit;
@@ -60,7 +63,9 @@ MainWindow::MainWindow()
 
     newLetter();
 }
+//! [1]
 
+//! [2]
 void MainWindow::newLetter()
 {
     textEdit->clear();
@@ -106,9 +111,12 @@ void MainWindow::newLetter()
     cursor.insertBlock();
     cursor.insertText("ADDRESS", italicFormat);
 }
+//! [2]
 
+//! [3]
 void MainWindow::print()
 {
+#ifndef QT_NO_PRINTER
     QTextDocument *document = textEdit->document();
     QPrinter printer;
 
@@ -119,8 +127,11 @@ void MainWindow::print()
     document->print(&printer);
 
     statusBar()->showMessage(tr("Ready"), 2000);
+#endif
 }
+//! [3]
 
+//! [4]
 void MainWindow::save()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
@@ -144,13 +155,17 @@ void MainWindow::save()
 
     statusBar()->showMessage(tr("Saved '%1'").arg(fileName), 2000);
 }
+//! [4]
 
+//! [5]
 void MainWindow::undo()
 {
     QTextDocument *document = textEdit->document();
     document->undo();
 }
+//! [5]
 
+//! [6]
 void MainWindow::insertCustomer(const QString &customer)
 {
     if (customer.isEmpty())
@@ -174,7 +189,9 @@ void MainWindow::insertCustomer(const QString &customer)
             oldcursor.endEditBlock();
     }
 }
+//! [6]
 
+//! [7]
 void MainWindow::addParagraph(const QString &paragraph)
 {
     if (paragraph.isEmpty())
@@ -191,6 +208,7 @@ void MainWindow::addParagraph(const QString &paragraph)
     cursor.endEditBlock();
 
 }
+//! [7]
 
 void MainWindow::about()
 {
@@ -270,11 +288,14 @@ void MainWindow::createToolBars()
     editToolBar->addAction(undoAct);
 }
 
+//! [8]
 void MainWindow::createStatusBar()
 {
     statusBar()->showMessage(tr("Ready"));
 }
+//! [8]
 
+//! [9]
 void MainWindow::createDockWindows()
 {
     QDockWidget *dock = new QDockWidget(tr("Customers"), this);
@@ -320,3 +341,4 @@ void MainWindow::createDockWindows()
     connect(paragraphsList, SIGNAL(currentTextChanged(const QString &)),
             this, SLOT(addParagraph(const QString &)));
 }
+//! [9]

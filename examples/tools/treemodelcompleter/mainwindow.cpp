@@ -45,6 +45,7 @@
 #include "treemodelcompleter.h"
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), completer(0), lineEdit(0)
 {
@@ -75,7 +76,9 @@ MainWindow::MainWindow(QWidget *parent)
     caseCombo->addItem(tr("Case Insensitive"));
     caseCombo->addItem(tr("Case Sensitive"));
     caseCombo->setCurrentIndex(0);
+//! [0]
 
+//! [1]
     QLabel *separatorLabel = new QLabel;
     separatorLabel->setText(tr("Tree Separator"));
 
@@ -98,13 +101,17 @@ MainWindow::MainWindow(QWidget *parent)
     treeView->setModel(completer->model());
     treeView->header()->hide();
     treeView->expandAll();
+//! [1]
 
+//! [2]
     connect(modeCombo, SIGNAL(activated(int)), this, SLOT(changeMode(int)));
     connect(caseCombo, SIGNAL(activated(int)), this, SLOT(changeCase(int)));
 
     lineEdit = new QLineEdit;
     lineEdit->setCompleter(completer);
+//! [2]
 
+//! [3]
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(modelLabel, 0, 0); layout->addWidget(treeView, 0, 1);
     layout->addWidget(modeLabel, 1, 0);  layout->addWidget(modeCombo, 1, 1);
@@ -122,7 +129,9 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Tree Model Completer"));
     lineEdit->setFocus();
 }
+//! [3]
 
+//! [4]
 void MainWindow::createMenu()
 {
     QAction *exitAction = new QAction(tr("Exit"), this);
@@ -140,7 +149,9 @@ void MainWindow::createMenu()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 }
+//! [4]
 
+//! [5]
 void MainWindow::changeMode(int index)
 {
     QCompleter::CompletionMode mode;
@@ -153,6 +164,7 @@ void MainWindow::changeMode(int index)
 
     completer->setCompletionMode(mode);
 }
+//! [5]
 
 QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
 {
@@ -160,7 +172,9 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
     if (!file.open(QFile::ReadOnly))
         return new QStringListModel(completer);
 
+#ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+#endif
     QStringList words;
 
     QStandardItemModel *model = new QStandardItemModel(completer);
@@ -195,7 +209,9 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
         parents[level+1] = item;
     }
 
+#ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
+#endif
 
     return model;
 }
@@ -211,16 +227,20 @@ void MainWindow::highlight(const QModelIndex &index)
     treeView->scrollTo(index);
 }
 
+//! [6]
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About"), tr("This example demonstrates how "
         "to use a QCompleter with a custom tree model."));
 }
+//! [6]
 
+//! [7]
 void MainWindow::changeCase(int cs)
 {
     completer->setCaseSensitivity(cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
+//! [7]
 
 void MainWindow::updateContentsLabel(const QString& sep)
 {

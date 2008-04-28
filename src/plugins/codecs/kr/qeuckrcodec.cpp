@@ -63,6 +63,12 @@
 #include "cp949codetbl.h"
 #include <stdlib.h>
 
+#if defined(Q_OS_WINCE)
+#  include <qfunctions_wince.h>
+#endif
+
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TEXTCODEC
 unsigned int qt_Ksc5601ToUnicode(unsigned int code);
 
@@ -3567,3 +3573,5 @@ QString QCP949Codec::convertToUnicode(const char* chars, int len, ConverterState
 }
 
 #endif // QT_NO_TEXTCODEC
+
+QT_END_NAMESPACE

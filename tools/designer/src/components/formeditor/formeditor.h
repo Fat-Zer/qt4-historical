@@ -48,6 +48,8 @@
 
 #include <QtDesigner/QDesignerFormEditorInterface>
 
+QT_BEGIN_NAMESPACE
+
 class QObject;
 
 namespace qdesigner_internal {
@@ -61,5 +63,7 @@ public:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // FORMEDITOR_H

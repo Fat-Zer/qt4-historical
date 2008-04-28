@@ -46,6 +46,8 @@
 
 #ifndef QT_NO_THREAD
 
+QT_BEGIN_NAMESPACE
+
 // qt_global_mutexpool is here for backwards compatability only,
 // use QMutexpool::instance() in new clode.
 Q_CORE_EXPORT QMutexPool *qt_global_mutexpool = 0;
@@ -69,18 +71,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMutexPool, globalMutexPool, (true))
 
     For example, consider this simple class:
 
-    \code
-    class Number {
-    public:
-        Number(double n) : num (n) { }
-
-        void setNumber(double n) { num = n; }
-        double number() const { return num; }
-
-    private:
-        double num;
-    };
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qmutexpool.cpp 0
 
     Adding a QMutex member to the Number class does not make sense,
     because it is so small. However, in order to ensure that access to
@@ -90,13 +81,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMutexPool, globalMutexPool, (true))
     Code to calculate the square of a number would then look something
     like this:
 
-    \code
-    void calcSquare(Number *num)
-    {
-        QMutexLocker locker(mutexpool.get(num));
-        num.setNumber(num.number() * num.number());
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qmutexpool.cpp 1
 
     This function will safely calculate the square of a number, since
     it uses a mutex from a QMutexPool. The mutex is locked and
@@ -151,7 +136,7 @@ QMutexPool *QMutexPool::instance()
 QMutex *QMutexPool::get(const void *address)
 {
     Q_ASSERT_X(address != 0, "QMutexPool::get()", "'address' argument cannot be zero");
-    int index = int((ulong(address) >> (sizeof(address) >> 1)) % count);
+    int index = int((quintptr(address) >> (sizeof(address) >> 1)) % count);
 
     if (!mutexes[index]) {
         // mutex not created, create one
@@ -176,5 +161,7 @@ QMutex *QMutexPool::globalInstanceGet(const void *address)
         return 0;
     return globalInstance->get(address);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_THREAD

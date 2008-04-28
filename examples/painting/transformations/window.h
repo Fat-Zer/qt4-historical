@@ -50,8 +50,11 @@
 
 #include "renderarea.h"
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
+QT_END_NAMESPACE
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -62,7 +65,9 @@ public:
 public slots:
     void operationChanged();
     void shapeSelected(int index);
+//! [0]
 
+//! [1]
 private:
     void setupShapes();
 
@@ -73,5 +78,6 @@ private:
     QComboBox *operationComboBoxes[NumTransformedAreas];
     QList<QPainterPath> shapes;
 };
+//! [1]
 
 #endif

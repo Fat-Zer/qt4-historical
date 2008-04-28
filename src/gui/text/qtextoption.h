@@ -45,8 +45,13 @@
 #define QTEXTOPTION_H
 
 #include <QtCore/qnamespace.h>
+#include <QtCore/qchar.h>
+#include <QtCore/qmetatype.h>
+
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -56,6 +61,31 @@ struct QTextOptionPrivate;
 class Q_GUI_EXPORT QTextOption
 {
 public:
+    enum TabType {
+        LeftTab,
+        RightTab,
+        CenterTab,
+        DelimiterTab
+    };
+
+    struct Q_GUI_EXPORT Tab {
+        inline Tab() : position(80), type(QTextOption::LeftTab) { }
+
+        inline bool operator==(const Tab &other) const {
+            return type == other.type
+                   && qFuzzyCompare(position, other.position)
+                   && delimiter == other.delimiter;
+        }
+
+        inline bool operator!=(const Tab &other) const {
+            return !operator==(other);
+        }
+
+        qreal position;
+        TabType type;
+        QChar delimiter;
+    };
+
     QTextOption();
     QTextOption(Qt::Alignment alignment);
     ~QTextOption();
@@ -92,6 +122,9 @@ public:
     void setTabArray(QList<qreal> tabStops);
     QList<qreal> tabArray() const;
 
+    void setTabs(QList<Tab> tabStops);
+    QList<Tab> tabs() const;
+
     void setUseDesignMetrics(bool b) { design = b; }
     bool useDesignMetrics() const { return design; }
 
@@ -116,6 +149,10 @@ inline void QTextOption::setFlags(Flags aflags)
 
 inline void QTextOption::setTabStop(qreal atabStop)
 { tab = atabStop; }
+
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE( QTextOption::Tab )
 
 QT_END_HEADER
 

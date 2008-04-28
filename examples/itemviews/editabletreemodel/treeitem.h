@@ -48,6 +48,7 @@
 #include <QVariant>
 #include <QVector>
 
+//! [0]
 class TreeItem
 {
 public:
@@ -71,5 +72,6 @@ private:
     QVector<QVariant> itemData;
     TreeItem *parentItem;
 };
+//! [0]
 
 #endif

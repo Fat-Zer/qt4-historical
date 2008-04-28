@@ -57,6 +57,8 @@
 
 #include <private/qwidget_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class Q3MainWindowLayout;
 
 class Q3MainWindowPrivate : public QWidgetPrivate
@@ -110,5 +112,7 @@ public:
     QMap<Q3DockWindow*, bool> appropriate;
     mutable QMap<Q3PopupMenu*, Q3MainWindow::DockWindows> dockWindowModes;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3MAINWINDOW_P_H

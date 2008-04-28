@@ -51,14 +51,14 @@ class GuideCircle : public Guide
 {
 public:
     enum DIRECTION {CW = 1, CCW = -1};
-    
+
     GuideCircle(const QRectF &rect, float startAngle = 0, float span = 360, DIRECTION dir = CCW, Guide *follows = 0);
-    
+
     void guide(DemoItem *item, float moveSpeed); // overridden
     QPointF startPos();
     QPointF endPos();
     float length();
-    
+
 private:
     float posX;
     float posY;

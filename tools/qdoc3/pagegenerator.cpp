@@ -51,6 +51,8 @@
 #include "pagegenerator.h"
 #include "tree.h"
 
+QT_BEGIN_NAMESPACE
+
 PageGenerator::PageGenerator()
 {
 }
@@ -74,15 +76,18 @@ QString PageGenerator::fileBase(const Node *node)
 	node = node->parent();
 
     QString base = node->doc().baseName();
-    if (base.isEmpty()) {
+    if (!base.isEmpty())
+        return base;
+
 	const Node *p = node;
 
         forever {
             base.prepend(p->name());
-            if (!p->parent() || p->parent()->name().isEmpty() || p->parent()->type() == Node::Fake)
+        const Node *pp = p->parent();
+        if (!pp || pp->name().isEmpty() || pp->type() == Node::Fake)
                 break;
-            base.prepend("-");
-            p = p->parent();
+        base.prepend(QLatin1Char('-'));
+        p = pp;
         }
 
         if (node->type() == Node::Fake) {
@@ -92,17 +97,44 @@ QString PageGenerator::fileBase(const Node *node)
 #endif
         }
 
-	base.replace(QRegExp("[^A-Za-z0-9]+"), " ");
-	base = base.trimmed();
-	base.replace(" ", "-");
-	base = base.toLower();
+    // the code below is effectively equivalent to:
+    //   base.replace(QRegExp("[^A-Za-z0-9]+"), " ");
+    //   base = base.trimmed();
+    //   base.replace(" ", "-");
+    //   base = base.toLower();
+    // as this function accounted for ~8% of total running time
+    // we optimize a bit...
+
+    QString res;
+    // +5 prevents realloc in fileName() below
+    res.reserve(base.size() + 5);
+    bool begun = false;
+    for (int i = 0; i != base.size(); ++i) {
+        QChar c = base.at(i);
+        uint u = c.unicode();
+        if (u >= 'A' && u <= 'Z')
+            u -= 'A' - 'a';
+        if ((u >= 'a' &&  u <= 'z') || (u >= '0' && u <= '9')) {
+            res += QLatin1Char(u);
+            begun = true;
+        } else if (begun) {
+            res += QLatin1Char('-');
+        }
     }
-    return base;
+    while (res.endsWith(QLatin1Char('-')))
+        res.chop(1);
+    return res;
 }
 
 QString PageGenerator::fileName( const Node *node )
 {
-    return fileBase(node) + "." + fileExtension(node);
+    if (!node->url().isEmpty())
+        return node->url();
+
+    QString name = fileBase(node);
+    name += QLatin1Char('.');
+    name += fileExtension(node);
+    return name;
 }
 
 QString PageGenerator::outFileName()
@@ -163,3 +195,5 @@ void PageGenerator::generateInnerNode( const InnerNode *node,
 	++c;
     }
 }
+
+QT_END_NAMESPACE

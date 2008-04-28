@@ -67,6 +67,8 @@
 #include <private/qwidgetresizehandler_p.h>
 #include <private/qlayoutengine_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QWorkspaceTitleBarPrivate;
 
 
@@ -662,7 +664,7 @@ bool QWorkspaceTitleBar::isTool() const
 }
 
 // from qwidget.cpp
-extern QString qt_setWindowTitle_helperHelper(const QString &, QWidget*);
+extern QString qt_setWindowTitle_helperHelper(const QString &, const QWidget*);
 
 void QWorkspaceTitleBar::paintEvent(QPaintEvent *)
 {
@@ -848,14 +850,7 @@ QSize QWorkspaceTitleBar::sizeHint() const
     Workspaces can be placed in any layout, but are typically given
     as the central widget in a QMainWindow:
 
-    \code
-    MainWindow::MainWindow()
-    {
-        workspace = new QWorkspace;
-        setCentralWidget(workspace);
-        ...
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qworkspace.cpp 0
 
     Child windows (MDI windows) are standard Qt widgets that are
     inserted into the workspace with addWindow(). As with top-level
@@ -1090,15 +1085,15 @@ QWorkspacePrivate::init()
     popup->setObjectName(QLatin1String("qt_internal_mdi_popup"));
     toolPopup->setObjectName(QLatin1String("qt_internal_mdi_tool_popup"));
 
-    actions[QWorkspacePrivate::RestoreAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarNormalButton)),
+    actions[QWorkspacePrivate::RestoreAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarNormalButton, 0, q)),
                                                          QWorkspace::tr("&Restore"), q);
     actions[QWorkspacePrivate::MoveAct] = new QAction(QWorkspace::tr("&Move"), q);
     actions[QWorkspacePrivate::ResizeAct] = new QAction(QWorkspace::tr("&Size"), q);
-    actions[QWorkspacePrivate::MinimizeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarMinButton)),
+    actions[QWorkspacePrivate::MinimizeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarMinButton, 0, q)),
                                                           QWorkspace::tr("Mi&nimize"), q);
-    actions[QWorkspacePrivate::MaximizeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarMaxButton)),
+    actions[QWorkspacePrivate::MaximizeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarMaxButton, 0, q)),
                                                           QWorkspace::tr("Ma&ximize"), q);
-    actions[QWorkspacePrivate::CloseAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarCloseButton)),
+    actions[QWorkspacePrivate::CloseAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarCloseButton, 0, q)),
                                                           QWorkspace::tr("&Close")
 #ifndef QT_NO_SHORTCUT
                                                           +QLatin1Char('\t')+(QString)QKeySequence(Qt::CTRL+Qt::Key_F4)
@@ -1107,7 +1102,7 @@ QWorkspacePrivate::init()
     QObject::connect(actions[QWorkspacePrivate::CloseAct], SIGNAL(triggered()), q, SLOT(closeActiveWindow()));
     actions[QWorkspacePrivate::StaysOnTopAct] = new QAction(QWorkspace::tr("Stay on &Top"), q);
     actions[QWorkspacePrivate::StaysOnTopAct]->setChecked(true);
-    actions[QWorkspacePrivate::ShadeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarShadeButton)),
+    actions[QWorkspacePrivate::ShadeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarShadeButton, 0, q)),
                                                           QWorkspace::tr("Sh&ade"), q);
 
     QObject::connect(popup, SIGNAL(aboutToShow()), q, SLOT(_q_updateActions()));
@@ -1251,6 +1246,27 @@ QWidget * QWorkspace::addWindow(QWidget *w, Qt::WindowFlags flags)
     QWorkspaceChild* child = new QWorkspaceChild(w, this, flags);
     child->setObjectName(QLatin1String("qt_workspacechild"));
     child->installEventFilter(this);
+
+    bool hasNativeChildWindows = false;
+    if (!isWindow()) {
+        hasNativeChildWindows = internalWinId() != 0;
+    } else {
+        foreach (QWorkspaceChild *childWindow, d->windows) {
+            if (childWindow->testAttribute(Qt::WA_NativeWindow)) {
+                hasNativeChildWindows = true;
+                break;
+            }
+        }
+    }
+
+    // Enforce native sub-window if other sub-windows are native.
+    if (hasNativeChildWindows) {
+        child->setAttribute(Qt::WA_NativeWindow);
+    // We just added a native sub-window, which means all other sub-windows must be native.
+    } else if (w->testAttribute(Qt::WA_NativeWindow)) {
+        foreach (QWorkspaceChild *childWindow, d->windows)
+            childWindow->setAttribute(Qt::WA_NativeWindow);
+    }
 
     connect(child, SIGNAL(popupOperationMenu(QPoint)),
             this, SLOT(_q_popupOperationMenu(QPoint)));
@@ -2005,7 +2021,7 @@ void QWorkspacePrivate::showMaximizeControls()
                 int iconSize = maxcontrols->size().height();
                 maxtools->setPixmap(icon.pixmap(QSize(iconSize, iconSize)));
             } else {
-                QPixmap pm = q->style()->standardPixmap(QStyle::SP_TitleBarMenuButton);
+                QPixmap pm = q->style()->standardPixmap(QStyle::SP_TitleBarMenuButton, 0, q);
                 if (pm.isNull()) {
                     pm = QPixmap(14,14);
                     pm.fill(Qt::black);
@@ -2162,11 +2178,11 @@ void QWorkspacePrivate::_q_updateActions()
     }
     if (active->shademode) {
         actions[QWorkspacePrivate::ShadeAct]->setIcon(
-            QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarUnshadeButton)));
+            QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarUnshadeButton, 0, q)));
         actions[QWorkspacePrivate::ShadeAct]->setText(QWorkspace::tr("&Unshade"));
     } else {
         actions[QWorkspacePrivate::ShadeAct]->setIcon(
-            QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarShadeButton)));
+            QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarShadeButton, 0, q)));
         actions[QWorkspacePrivate::ShadeAct]->setText(QWorkspace::tr("Sh&ade"));
     }
     actions[QWorkspacePrivate::StaysOnTopAct]->setEnabled(!active->shademode && canResize);
@@ -2618,13 +2634,10 @@ QWorkspaceChild::QWorkspaceChild(QWidget* window, QWorkspace *parent, Qt::Window
 
 QWorkspaceChild::~QWorkspaceChild()
 {
-    QWorkspace *workspace = qobject_cast<QWorkspace*>(parentWidget());
-    if (iconw) {
-        if (workspace)
-            workspace->d_func()->removeIcon(iconw->parentWidget());
+    if (iconw)
         delete iconw->parentWidget();
-    }
 
+    QWorkspace *workspace = qobject_cast<QWorkspace*>(parentWidget());
     if (workspace) {
         workspace->d_func()->focus.removeAll(this);
         if (workspace->d_func()->active == this)
@@ -3373,7 +3386,10 @@ void QWorkspace::changeEvent(QEvent *ev)
     QWidget::changeEvent(ev);
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qworkspace.cpp"
+
 #include "qworkspace.moc"
 
 #endif // QT_NO_WORKSPACE

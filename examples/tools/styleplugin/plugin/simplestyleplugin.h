@@ -46,9 +46,12 @@
 
 #include <QStylePlugin>
 
+QT_BEGIN_NAMESPACE
 class QStringList;
 class QStyle;
+QT_END_NAMESPACE
 
+//! [0]
 class SimpleStylePlugin : public QStylePlugin
 {
     Q_OBJECT
@@ -59,5 +62,6 @@ public:
     QStringList keys() const;
     QStyle *create(const QString &key);
 };
+//! [0]
 
 #endif

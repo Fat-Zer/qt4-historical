@@ -50,6 +50,8 @@
 
 #include "codechunk.h"
 
+QT_BEGIN_NAMESPACE
+
 enum { Other, Alnum, Gizmo, Comma, LParen, RParen, RAngle, Colon };
 
 // entries 128 and above are Other
@@ -102,67 +104,28 @@ static int category( QChar ch )
 }
 
 CodeChunk::CodeChunk()
-    : s( "" ), bstart( -1 ), blen( 0 ), hotspot( -1 )
+    : hotspot( -1 )
 {
 }
 
 CodeChunk::CodeChunk( const QString& str )
-    : s( str ), bstart( 0 ), hotspot( -1 )
+    : s( str ), hotspot( -1 )
 {
-    /*
-      That's good enough for base class names.
-    */
-    blen = str.indexOf( QChar('<') );
-    if ( blen == -1 )
-	blen = str.length();
-    b = str.left( blen );
-}
-
-CodeChunk::CodeChunk( const CodeChunk& chk )
-    : s( chk.s ), b( chk.b ), bstart( chk.bstart ), blen( chk.blen ),
-      hotspot( chk.hotspot )
-{
-}
-
-CodeChunk& CodeChunk::operator=( const CodeChunk& chk )
-{
-    s = chk.s;
-    b = chk.b;
-    bstart = chk.bstart;
-    blen = chk.blen;
-    hotspot = chk.hotspot;
-    return *this;
 }
 
 void CodeChunk::append( const QString& lexeme )
 {
     if ( !s.isEmpty() && !lexeme.isEmpty() ) {
-	/*
-	  Should there be a space or not between the code chunk so far and the
-	  new lexeme?
-	*/
-        int cat1 = category(s.right(1)[0]);
+        /*
+          Should there be a space or not between the code chunk so far and the
+          new lexeme?
+        */
+        int cat1 = category(s.at(s.size() - 1));
         int cat2 = category(lexeme[0]);
-	if ( needSpace[cat1][cat2] )
-	    s += QChar( ' ' );
+        if ( needSpace[cat1][cat2] )
+            s += QLatin1Char( ' ' );
     }
     s += lexeme;
-}
-
-void CodeChunk::appendBase( const QString& lexeme )
-{
-    append( lexeme );
-
-    /*
-      The first base is the right one.  If many bases follow each other, they
-      form the base together.
-    */
-    if ( bstart == -1 )
-	bstart = s.length() - lexeme.length();
-    if ( bstart + blen + lexeme.length() == s.length() ) {
-	blen += lexeme.length();
-	b = s.mid( bstart, blen );
-    }
 }
 
 void CodeChunk::appendHotspot()
@@ -171,7 +134,7 @@ void CodeChunk::appendHotspot()
       The first hotspot is the right one.
     */
     if ( hotspot == -1 )
-	hotspot = s.length();
+        hotspot = s.length();
 }
 
 QString CodeChunk::toString() const
@@ -182,6 +145,8 @@ QString CodeChunk::toString() const
 QStringList CodeChunk::toPath() const
 {
     QString t = s;
-    t.remove(QRegExp("<([^<>]|<([^<>]|<[^<>]*>)*>)*>"));
-    return t.split("::");
+    t.remove(QRegExp(QLatin1String("<([^<>]|<([^<>]|<[^<>]*>)*>)*>")));
+    return t.split(QLatin1String("::"));
 }
+
+QT_END_NAMESPACE

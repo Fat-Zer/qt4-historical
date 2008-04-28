@@ -48,16 +48,22 @@
 
 #include <QtGui/QWidget>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowToolInterface;
+
+class QStackedLayout;
 
 namespace qdesigner_internal {
 
-class QT_FORMEDITOR_EXPORT FormWindowWidgetStack: public QWidget
+class QT_FORMEDITOR_EXPORT FormWindowWidgetStack: public QObject
 {
     Q_OBJECT
 public:
-    FormWindowWidgetStack(QWidget *parent = 0);
+    FormWindowWidgetStack(QObject *parent = 0);
     virtual ~FormWindowWidgetStack();
+
+    QLayout *layout() const;
 
     int count() const;
     QDesignerFormWindowToolInterface *tool(int index) const;
@@ -65,8 +71,7 @@ public:
     int currentIndex() const;
     int indexOf(QDesignerFormWindowToolInterface *tool) const;
 
-    virtual QSize sizeHint() const;
-    virtual QSize minimumSizeHint() const;
+    void setMainContainer(QWidget *w = 0);
 
 signals:
     void currentToolChanged(int index);
@@ -78,15 +83,16 @@ public slots:
     void setSenderAsCurrentTool();
 
 protected:
-    virtual void resizeEvent(QResizeEvent *event);
-
     QWidget *defaultEditor() const;
 
 private:
     QList<QDesignerFormWindowToolInterface*> m_tools;
-    int m_current_index;
+    QStackedLayout *m_layout;
+    bool m_dummyMainContainer;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // FORMWINDOW_WIDGETSTACK_H

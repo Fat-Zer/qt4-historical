@@ -49,6 +49,8 @@
 
 #include "command.h"
 
+QT_BEGIN_NAMESPACE
+
 void executeCommand( const Location& location, const QString& format,
 		     const QStringList& args )
 {
@@ -63,12 +65,13 @@ void executeCommand( const Location& location, const QString& format,
     }
 
     QString toolName = actualCommand;
-    int space = toolName.indexOf( " " );
+    int space = toolName.indexOf( QLatin1Char(' ') );
     if ( space != -1 )
 	toolName.truncate( space );
 
     QProcess process;
-    process.start("sh", QStringList() << "-c" << actualCommand );
+    process.start(QLatin1String("sh"),
+        QStringList() << QLatin1String("-c") << actualCommand );
     process.waitForFinished();
 
     if (process.exitCode() == 127)
@@ -77,9 +80,9 @@ void executeCommand( const Location& location, const QString& format,
 			tr("Make sure the tool is installed and in the"
 			   " path.") );
 
-    QString errors = process.readAllStandardError();
-    while ( errors.endsWith("\n") )
-	errors.truncate( errors.length() - 1 );
+    QString errors = QString::fromLocal8Bit(process.readAllStandardError());
+    while ( errors.endsWith(QLatin1Char('\n')) )
+        errors.truncate( errors.length() - 1 );
     if ( !errors.isEmpty() )
 	location.fatal( tr("The '%1' tool encountered some problems")
 			.arg(toolName),
@@ -87,3 +90,5 @@ void executeCommand( const Location& location, const QString& format,
 			   "It emitted these errors:\n%2")
 			.arg(actualCommand).arg(errors) );
 }
+
+QT_END_NAMESPACE

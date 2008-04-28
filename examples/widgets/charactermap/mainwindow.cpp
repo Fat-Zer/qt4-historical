@@ -46,6 +46,7 @@
 #include "characterwidget.h"
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     QWidget *centralWidget = new QWidget;
@@ -63,15 +64,23 @@ MainWindow::MainWindow()
     scrollArea = new QScrollArea;
     characterWidget = new CharacterWidget;
     scrollArea->setWidget(characterWidget);
+//! [0]
 
+//! [1]
     findStyles(fontCombo->currentFont());
+//! [1]
     findSizes(fontCombo->currentFont());
 
+//! [2]
     lineEdit = new QLineEdit;
     QPushButton *clipboardButton = new QPushButton(tr("&To clipboard"));
+//! [2]
 
+//! [3]
     clipboard = QApplication::clipboard();
+//! [3]
 
+//! [4]
     connect(fontCombo, SIGNAL(currentFontChanged(const QFont &)),
             this, SLOT(findStyles(const QFont &)));
     connect(fontCombo, SIGNAL(currentFontChanged(const QFont &)),
@@ -82,11 +91,14 @@ MainWindow::MainWindow()
             characterWidget, SLOT(updateSize(const QString &)));
     connect(styleCombo, SIGNAL(currentIndexChanged(const QString &)),
             characterWidget, SLOT(updateStyle(const QString &)));
+//! [4] //! [5]
     connect(characterWidget, SIGNAL(characterSelected(const QString &)),
             this, SLOT(insertCharacter(const QString &)));
     connect(clipboardButton, SIGNAL(clicked()), this, SLOT(updateClipboard()));
+//! [5]
     connect(fontMerging, SIGNAL(toggled(bool)), characterWidget, SLOT(updateFontMerging(bool)));
 
+//! [6]
     QHBoxLayout *controlsLayout = new QHBoxLayout;
     controlsLayout->addWidget(fontLabel);
     controlsLayout->addWidget(fontCombo, 1);
@@ -113,13 +125,17 @@ MainWindow::MainWindow()
     setCentralWidget(centralWidget);
     setWindowTitle(tr("Character Map"));
 }
+//! [6]
 
+//! [7]
 void MainWindow::findStyles(const QFont &font)
 {
     QFontDatabase fontDatabase;
     QString currentItem = styleCombo->currentText();
     styleCombo->clear();
+//! [7]
 
+//! [8]
     QString style;
     foreach (style, fontDatabase.styles(font.family()))
         styleCombo->addItem(style);
@@ -131,6 +147,7 @@ void MainWindow::findStyles(const QFont &font)
     else
         styleCombo->setCurrentIndex(styleIndex);
 }
+//! [8]
 
 void MainWindow::findSizes(const QFont &font)
 {
@@ -163,13 +180,19 @@ void MainWindow::findSizes(const QFont &font)
         sizeCombo->setCurrentIndex(sizeIndex);
 }
 
+//! [9]
 void MainWindow::insertCharacter(const QString &character)
 {
     lineEdit->insert(character);
 }
+//! [9]
 
+//! [10]
 void MainWindow::updateClipboard()
 {
+//! [11]
     clipboard->setText(lineEdit->text(), QClipboard::Clipboard);
+//! [11]
     clipboard->setText(lineEdit->text(), QClipboard::Selection);
 }
+//! [10]

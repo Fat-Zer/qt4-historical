@@ -46,6 +46,8 @@
 
 #ifndef QT_NO_CODECS
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QIsciiCodec
     \brief The QIsciiCodec class provides conversion to and from the ISCII encoding.
@@ -282,5 +284,7 @@ QString QIsciiCodec::convertToUnicode(const char* chars, int len, ConverterState
     }
     return result;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_CODECS

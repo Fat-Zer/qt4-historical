@@ -45,6 +45,8 @@
 
 #include "proitems.h"
 #include "abstractproitemvisitor.h"
+
+QT_BEGIN_NAMESPACE
 // --------------- ProItem ------------
 void ProItem::setComment(const QByteArray &comment)
 {
@@ -176,7 +178,7 @@ QByteArray ProValue::value() const
 
 void ProValue::setVariable(ProVariable *variable)
 {
-    m_variable = variable;    
+    m_variable = variable;
 }
 
 ProVariable *ProValue::variable() const
@@ -279,7 +281,7 @@ ProFile::ProFile(const QString &fileName)
     m_modified = false;
     setBlockKind(ProBlock::ProFileKind);
     m_fileName = fileName;
-    
+
     QFileInfo fi(fileName);
     m_displayFileName = fi.fileName();
 }
@@ -319,3 +321,5 @@ bool ProFile::Accept(AbstractProItemVisitor *visitor)
     }
     return visitor->visitEndProFile(this);
 }
+
+QT_END_NAMESPACE

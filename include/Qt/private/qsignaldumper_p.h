@@ -1,1 +1,1 @@
-#include "../../../tools/qtestlib/src/qsignaldumper_p.h"
+#include "../../../src/testlib/qsignaldumper_p.h"

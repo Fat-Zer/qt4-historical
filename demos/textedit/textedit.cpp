@@ -42,7 +42,6 @@
 ****************************************************************************/
 
 #include "textedit.h"
-#include "printpreview.h"
 
 #include <QAction>
 #include <QApplication>
@@ -66,6 +65,7 @@
 #include <QtDebug>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QPrintPreviewDialog>
 
 #ifdef Q_WS_MAC
 const QString rsrcPath = ":/images/mac";
@@ -83,7 +83,7 @@ TextEdit::TextEdit(QWidget *parent)
     {
         QMenu *helpMenu = new QMenu(tr("Help"), this);
         menuBar()->addMenu(helpMenu);
-        helpMenu->addAction(tr("About"), this, SLOT(about())); 
+        helpMenu->addAction(tr("About"), this, SLOT(about()));
         helpMenu->addAction(tr("About &Qt"), qApp, SLOT(aboutQt()));
     }
 
@@ -451,7 +451,6 @@ void TextEdit::filePrint()
 {
 #ifndef QT_NO_PRINTER
     QPrinter printer(QPrinter::HighResolution);
-    printer.setFullPage(true);
     QPrintDialog *dlg = new QPrintDialog(&printer, this);
     if (textEdit->textCursor().hasSelection())
         dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
@@ -465,15 +464,26 @@ void TextEdit::filePrint()
 
 void TextEdit::filePrintPreview()
 {
-    PrintPreview *preview = new PrintPreview(textEdit->document(), this);
-    preview->setWindowModality(Qt::WindowModal);
-    preview->setAttribute(Qt::WA_DeleteOnClose);
-    preview->show();
+#ifndef QT_NO_PRINTER
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintPreviewDialog preview(&printer, this);
+    connect(&preview, SIGNAL(paintRequested(QPrinter *)), SLOT(printPreview(QPrinter *)));
+    preview.exec();
+#endif
 }
+
+void TextEdit::printPreview(QPrinter *printer)
+{
+#ifndef QT_NO_PRINTER
+    textEdit->print(printer);
+#endif
+}
+
 
 void TextEdit::filePrintPdf()
 {
 #ifndef QT_NO_PRINTER
+//! [0]
     QString fileName = QFileDialog::getSaveFileName(this, "Export PDF",
                                                     QString(), "*.pdf");
     if (!fileName.isEmpty()) {
@@ -484,6 +494,7 @@ void TextEdit::filePrintPdf()
         printer.setOutputFileName(fileName);
         textEdit->document()->print(&printer);
     }
+//! [0]
 #endif
 }
 

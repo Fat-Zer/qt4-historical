@@ -46,17 +46,21 @@
 
 #include "qdesigner_toolwindow.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWorkbench;
 
 class QDesignerWidgetBox: public QDesignerToolWindow
 {
     Q_OBJECT
 public:
-    QDesignerWidgetBox(QDesignerWorkbench *workbench);
+    explicit QDesignerWidgetBox(QDesignerWorkbench *workbench);
     virtual ~QDesignerWidgetBox();
 
     virtual Qt::DockWidgetArea dockWidgetAreaHint() const;
     virtual QRect geometryHint() const;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_WIDGETBOX_H

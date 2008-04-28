@@ -47,8 +47,10 @@
 #include <QList>
 #include <QDebug>
 
+#include <qmath.h>
 #include <limits.h>
-#include <private/qmath_p.h>
+
+QT_BEGIN_NAMESPACE
 
 //#define DEBUG
 #ifdef DEBUG
@@ -1038,12 +1040,14 @@ bool QTessellatorPrivate::edgeInChain(Intersection i, int edge)
 
         Intersection i2 = i;
         i2.edge = l.next;
-        IntersectionLink l2 = intersections.value(i2);
 
+#ifndef QT_NO_DEBUG
+        IntersectionLink l2 = intersections.value(i2);
         Q_ASSERT(l2.next != -1);
         Q_ASSERT(l2.prev != -1);
         Q_ASSERT(l.next == i2.edge);
         Q_ASSERT(l2.prev == i.edge);
+#endif
         i = i2;
     }
     return false;
@@ -1433,7 +1437,7 @@ void QTessellator::tessellateRect(const QPointF &a_, const QPointF &b_, qreal wi
         QPointF perp(pb.y() - pa.y(), pa.x() - pb.x());
         qreal length = qSqrt(perp.x() * perp.x() + perp.y() * perp.y());
 
-        if (qFuzzyCompare(length, static_cast<qreal>(0)))
+        if (qFuzzyCompare(length + 1, static_cast<qreal>(1)))
             return;
 
         // need the half of the width
@@ -1492,3 +1496,5 @@ void QTessellator::tessellateRect(const QPointF &a_, const QPointF &b_, qreal wi
         }
     }
 }
+
+QT_END_NAMESPACE

@@ -51,6 +51,8 @@
 #include "qscriptmember_p.h"
 #include "qscriptobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 static void dfs(QScriptObject *instance, QHash<QScriptObject*, int> &dfn, int n)
 {
     bool found = dfn.contains(instance);
@@ -59,10 +61,10 @@ static void dfs(QScriptObject *instance, QHash<QScriptObject*, int> &dfn, int n)
     if (found)
         return;
 
-    if (instance->m_prototype.isValid() && instance->m_prototype.isObject())
+    if (instance->m_prototype.isObject())
         dfs (instance->m_prototype.m_object_value, dfn, n + 1);
 
-    if (instance->m_scope.isValid() && instance->m_scope.isObject())
+    if (instance->m_scope.isObject())
         dfs (instance->m_scope.m_object_value, dfn, n + 1);
 }
 
@@ -71,12 +73,12 @@ static bool checkCycle(QScriptObject *instance, const QHash<QScriptObject*, int>
 {
     int n = dfn.value(instance);
 
-    if (instance->m_prototype.isValid() && instance->m_prototype.isObject()) {
+    if (instance->m_prototype.isObject()) {
         if (n >= dfn.value(instance->m_prototype.m_object_value))
             return true;
     }
 
-    if (instance->m_scope.isValid() && instance->m_scope.isObject()) {
+    if (instance->m_scope.isObject()) {
         if (n >= dfn.value(instance->m_scope.m_object_value))
             return true;
     }
@@ -144,46 +146,18 @@ bool QScriptValueImpl::resolve_helper(QScriptNameIdImpl *nameId, QScript::Member
     }
 
     // If not found anywhere else, search in the extra members.
-    if (QScriptClassData *odata = classInfo()->data()) {
+    if (QScriptClassData *odata = classInfo()->data().data()) {
         *object = *this;
 
         if (odata->resolve(*this, nameId, member, object))
             return true;
     }
 
-    if (isFunction()) {
-        if (nameId == eng_p->idTable()->id_length) {
-            member->native(nameId, 0,
-                           QScriptValue::Undeletable
-                           | QScriptValue::ReadOnly
-                           | QScriptValue::SkipInEnumeration);
-            *object = *this;
-            return true;
-        } else if (nameId == eng_p->idTable()->id_arguments) {
-            member->native(nameId, 0,
-                           QScriptValue::Undeletable
-                           | QScriptValue::ReadOnly
-                           | QScriptValue::SkipInEnumeration);
-            *object = *this;
-            return true;
-        }/* else if (nameId == eng_p->idTable()->id___fileName__) {
-            QScriptFunction *foo = toFunction();
-            if (foo->fileName().isEmpty())
-                return false;
-            member->native(nameId, 0,
-                           QScriptValue::Undeletable
-                           | QScriptValue::ReadOnly
-                           | QScriptValue::SkipInEnumeration);
-            *object = *this;
-            return true;
-        }*/
-    }
-
     if (mode & QScriptValue::ResolvePrototype) {
         // For values and other non object based types, search in class's prototype
         const QScriptValueImpl &proto = object_data->m_prototype;
 
-        if (proto.isValid() && proto.isObject()
+        if (proto.isObject()
             && proto.resolve(nameId, member, object, mode)) {
             return true;
         }
@@ -303,6 +277,54 @@ void QScriptValueImpl::setProperty(QScriptNameIdImpl *nameId,
     base.put(member, value);
 }
 
+QVariant QScriptValueImpl::toVariant() const
+{
+    if (!isValid())
+        return QVariant();
+    switch (m_type->type()) {
+
+    case QScript::UndefinedType:
+    case QScript::NullType:
+    case QScript::PointerType:
+    case QScript::ReferenceType:
+        break;
+
+    case QScript::BooleanType:
+        return QVariant(m_bool_value);
+
+    case QScript::IntegerType:
+        return QVariant(m_int_value);
+
+    case QScript::NumberType:
+        return QVariant(m_number_value);
+
+    case QScript::StringType:
+        return QVariant(m_string_value->s);
+
+    case QScript::ObjectType:
+        if (isDate())
+            return QVariant(toDateTime());
+
+#ifndef QT_NO_REGEXP
+        if (isRegExp())
+            return QVariant(toRegExp());
+#endif
+        if (isVariant())
+            return variantValue();
+
+#ifndef QT_NO_QOBJECT
+        if (isQObject())        
+            return qVariantFromValue(toQObject());
+#endif
+
+        QScriptValue v = toPrimitive();
+        if (!v.isObject())
+            return v.toVariant();
+        break;
+    } // switch
+    return QVariant();
+}
+
 QDebug &operator<<(QDebug &d, const QScriptValueImpl &object)
 {
     d.nospace() << "QScriptValue(";
@@ -329,56 +351,75 @@ QDebug &operator<<(QDebug &d, const QScriptValueImpl &object)
         d.nospace() << "string=" << object.toString();
         break;
 
-    case QScript::FunctionType:
-        d.nospace() << "function=" << object.toString();
-        break;
-
-    case QScript::VariantType:
-        d.nospace() << "variant=" << object.toString();
-        break;
-
     case QScript::ReferenceType:
         d.nospace() << "reference";
         break;
 
-    default:
-        if (object.isObject()) {
-            d.nospace() << object.classInfo()->name() << ",{";
-            QScriptObject *od = object.objectValue();
-            for (int i=0; i<od->memberCount(); ++i) {
-                if (i != 0)
-                    d << ",";
+    case QScript::NullType:
+        d.nospace() << "null";
+        break;
 
-                QScript::Member m;
-                od->member(i, &m);
+    case QScript::UndefinedType:
+        d.nospace() << "undefined";
+        break;
 
-                if (m.isValid() && m.isObjectProperty()) {
-                    d << QScriptEnginePrivate::get(object.engine())->toString(m.nameId());
-                    QScriptValueImpl o;
-                    od->get(m, &o);
-                    d.nospace() << QLatin1String(":")
-                                << (o.classInfo()
-                                    ? o.classInfo()->name()
-                                    : QLatin1String("?"));
-                }
+    case QScript::PointerType:
+        d.nospace() << "pointer";
+        break;
+
+    case QScript::ObjectType:
+        d.nospace() << object.classInfo()->name() << ",{";
+        QScriptObject *od = object.objectValue();
+        for (int i=0; i<od->memberCount(); ++i) {
+            if (i != 0)
+                d << ",";
+
+            QScript::Member m;
+            od->member(i, &m);
+
+            if (m.isValid() && m.isObjectProperty()) {
+                d << QScriptEnginePrivate::get(object.engine())->toString(m.nameId());
+                QScriptValueImpl o;
+                od->get(m, &o);
+                d.nospace() << QLatin1String(":")
+                            << (o.classInfo()
+                                ? o.classInfo()->name()
+                                : QLatin1String("?"));
             }
-
-            d.nospace() << "} scope={";
-            QScriptValueImpl scope = object.scope();
-            while (scope.isValid()) {
-                Q_ASSERT(scope.isObject());
-                d.nospace() << " " << scope.objectValue();
-                scope = scope.scope();
-            }
-            d.nospace() << "}";
-        } else {
-            d << "n/a";
         }
+
+        d.nospace() << "} scope={";
+        QScriptValueImpl scope = object.scope();
+        while (scope.isValid()) {
+            Q_ASSERT(scope.isObject());
+            d.nospace() << " " << scope.objectValue();
+            scope = scope.scope();
+        }
+        d.nospace() << "}";
         break;
     }
 
     d << ")";
     return d;
 }
+
+void QScriptValueImpl::destroyObjectData()
+{
+    Q_ASSERT(isObject());
+    m_object_value->finalizeData(engine());
+}
+
+bool QScriptValueImpl::isMarked(int generation) const
+{
+    if (isString())
+        return (m_string_value->used != 0);
+    else if (isObject()) {
+        QScript::GCBlock *block = QScript::GCBlock::get(m_object_value);
+        return (block->generation == generation);
+    }
+    return false;
+}
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

@@ -1,6 +1,8 @@
+#! [0]
 CONFIG      += uitools
 SOURCES     = main.cpp
 RESOURCES   = worldtimeclockbuilder.qrc
+#! [0]
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/designer/worldtimeclockbuilder

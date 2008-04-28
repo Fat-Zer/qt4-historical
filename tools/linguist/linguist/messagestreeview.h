@@ -46,6 +46,8 @@
 
 #include <QtGui/QTreeView>
 
+QT_BEGIN_NAMESPACE
+
 class MessagesTreeView : public QTreeView
 {
     Q_OBJECT
@@ -54,6 +56,6 @@ public:
     virtual void setModel(QAbstractItemModel * model);
 };
 
+QT_END_NAMESPACE
 
 #endif // MESSAGESTREEVIEW_H
-

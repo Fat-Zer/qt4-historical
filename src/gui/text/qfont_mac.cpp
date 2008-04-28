@@ -57,6 +57,8 @@
 #include "qtextengine_p.h"
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 extern float qt_mac_defaultDpi_x(); //qpaintdevice_mac.cpp
 
 int qt_mac_pixelsize(const QFontDef &def, int dpi)
@@ -90,7 +92,7 @@ void QFont::setRawName(const QString &name)
 
 void QFont::cleanup()
 {
-    delete QFontCache::instance;
+    QFontCache::cleanup();
 }
 
 /*!
@@ -100,7 +102,7 @@ quint32 QFont::macFontID() const
 {
 #if 1
     QFontEngine *fe = d->engineForScript(QUnicodeTables::Common);
-    if (fe && fe->type() == QFontEngine::Mac)
+    if (fe && fe->type() == QFontEngine::Multi)
         return static_cast<QFontEngineMacMulti*>(fe)->macFontID();
 #else
     Str255 name;
@@ -125,10 +127,7 @@ Qt::HANDLE QFont::handle() const
 }
 
 void QFont::initialize()
-{
-    if(!QFontCache::instance)
-        new QFontCache();
-}
+{ }
 
 QString QFont::defaultFamily() const
 {
@@ -155,3 +154,5 @@ QString QFont::lastResortFont() const
 {
     return QString::fromLatin1("Geneva");
 }
+
+QT_END_NAMESPACE

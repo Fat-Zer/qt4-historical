@@ -67,14 +67,17 @@
 #include <QDebug>
 #include <private/qwidget_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QVBoxLayout;
 class QMouseEvent;
 
+namespace QMdi {
 template<typename T>
 class ControlElement : public T
 {
 public:
-    ControlElement(QMdiSubWindow *child) : T(0)
+    ControlElement(QMdiSubWindow *child) : T(child, 0)
     {
         Q_ASSERT(child);
         mdiChild = child;
@@ -115,6 +118,7 @@ private:
     QPointer<QWidget> m_menuLabel;
     QPointer<QMdiSubWindow> mdiChild;
 };
+} // namespace QMdi
 
 class QMdiSubWindowPrivate : public QWidgetPrivate
 {
@@ -174,7 +178,7 @@ public:
     // Variables.
     QPointer<QWidget> baseWidget;
     QPointer<QWidget> restoreFocusWidget;
-    QPointer<ControlContainer> controlContainer;
+    QPointer<QMdi::ControlContainer> controlContainer;
 #ifndef QT_NO_SIZEGRIP
     QPointer<QSizeGrip> sizeGrip;
 #endif
@@ -220,6 +224,7 @@ public:
     QFont font;
     QIcon menuIcon;
     QStyleOptionTitleBar cachedStyleOptions;
+    QString originalTitle;
 
     // Slots.
     void _q_updateStaysOnTopHint();
@@ -251,6 +256,7 @@ public:
     void sizeParameters(int *margin, int *minWidth) const;
     bool drawTitleBarWhenMaximized() const;
 #ifndef QT_NO_MENUBAR
+    QMenuBar *menuBar() const;
     void showButtonsInMenuBar(QMenuBar *menuBar);
     void removeButtonsFromMenuBar();
 #endif
@@ -277,6 +283,8 @@ public:
     void setSizeGripVisible(bool visible = true) const;
 #endif
     void updateInternalWindowTitle();
+    QString originalWindowTitle();
+    void setNewWindowTitle();
 
     inline int titleBarHeight() const
     {
@@ -336,5 +344,7 @@ public:
 };
 
 #endif // QT_NO_MDIAREA
+
+QT_END_NAMESPACE
 
 #endif // QMDISUBWINDOW_P_H

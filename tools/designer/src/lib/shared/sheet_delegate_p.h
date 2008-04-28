@@ -58,8 +58,10 @@
 
 #include "shared_global_p.h"
 
-#include <QItemDelegate>
-#include <QTreeView>
+#include <QtGui/QItemDelegate>
+#include <QtGui/QTreeView>
+
+QT_BEGIN_NAMESPACE
 
 class QTreeView;
 
@@ -79,5 +81,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // SHEET_DELEGATE_H

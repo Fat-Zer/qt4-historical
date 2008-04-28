@@ -44,6 +44,8 @@
 #include "qstyleplugin.h"
 #include "qstyle.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QStylePlugin
     \brief The QStylePlugin class provides an abstract base for custom QStyle plugins.
@@ -81,12 +83,10 @@
     The style key is usually the class name of the required
     style. Note that the keys are case insensitive. For example:
 
-    \quotefromfile snippets/qstyleplugin/main.cpp
-    \skipto MyStylePlugin::keys
-    \printuntil }
-    \skipto MyStylePlugin::create
-    \printuntil return 0
-    \printuntil }
+    \snippet doc/src/snippets/qstyleplugin/main.cpp 0
+    \codeline
+    \snippet doc/src/snippets/qstyleplugin/main.cpp 1
+    \snippet doc/src/snippets/qstyleplugin/main.cpp 2
 
     \sa keys()
 */
@@ -112,3 +112,5 @@ QStylePlugin::QStylePlugin(QObject *parent)
 QStylePlugin::~QStylePlugin()
 {
 }
+
+QT_END_NAMESPACE

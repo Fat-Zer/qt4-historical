@@ -46,7 +46,9 @@
 
 #include <QWindowsStyle>
 
+QT_BEGIN_NAMESPACE
 class QPalette;
+QT_END_NAMESPACE
 
 class SimpleStyle : public QWindowsStyle
 {

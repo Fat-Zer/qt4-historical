@@ -47,6 +47,7 @@
 #include <QStringList>
 #include <QTcpServer>
 
+//! [0]
 class FortuneServer : public QTcpServer
 {
     Q_OBJECT
@@ -60,5 +61,6 @@ protected:
 private:
     QStringList fortunes;
 };
+//! [0]
 
 #endif

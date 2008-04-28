@@ -58,6 +58,7 @@
 #include <unistd.h>
 #endif
 
+QT_BEGIN_NAMESPACE
 
 QVFbViewProtocol::QVFbViewProtocol(int display_id, QObject *parent) :
     QObject(parent), mDisplayId(display_id) { }
@@ -190,3 +191,5 @@ void QVFbMouseLinuxTP::repeatLastPress()
 {
     writeToPipe(lastPos, 1);
 }
+
+QT_END_NAMESPACE

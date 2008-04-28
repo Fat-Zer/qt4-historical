@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_TABLEVIEW
 
+QT_BEGIN_NAMESPACE
+
 class QTableViewPrivate : public QAbstractItemViewPrivate
 {
     Q_DECLARE_PUBLIC(QTableView)
@@ -103,8 +105,8 @@ public:
     bool spansIntersectColumns(const QList<int> &columns) const;
     bool spansIntersectRows(const QList<int> &rows) const;
     QBitArray drawAndClipSpans(const QRect &area, QPainter *painter,
-                               const QStyleOptionViewItemV3 &option);
-    void drawCell(QPainter *painter, const QStyleOptionViewItemV3 &option, const QModelIndex &index);
+                               const QStyleOptionViewItemV4 &option);
+    void drawCell(QPainter *painter, const QStyleOptionViewItemV4 &option, const QModelIndex &index);
 
     bool showGrid;
     Qt::PenStyle gridStyle;
@@ -130,6 +132,24 @@ public:
             : m_top(-1), m_left(-1), m_bottom(-1), m_right(-1) { }
         Span(int row, int column, int rowCount, int columnCount)
             : m_top(row), m_left(column), m_bottom(row+rowCount-1), m_right(column+columnCount-1) { }
+        bool operator<(const Span &other) const
+        {
+            if (m_top < other.m_top)
+                return true;
+            if (m_top == other.m_top) {
+                if (m_bottom < other.m_bottom)
+                    return true;
+                if (m_bottom == other.m_bottom) {
+                    if (m_left < other.m_left)
+                        return true;
+                    if (m_left == other.m_left) {
+                        if (m_right < other.m_right)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
         inline int top() const { return m_top; }
         inline int left() const { return m_left; }
         inline int bottom() const { return m_bottom; }
@@ -181,6 +201,8 @@ public:
     void selectRow(int row, bool anchor);
     void selectColumn(int column, bool anchor);
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TABLEVIEW
 

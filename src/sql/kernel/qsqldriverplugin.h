@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Sql)
 
 class QSqlDriver;
@@ -73,6 +75,8 @@ public:
     virtual QSqlDriver *create(const QString &key) = 0;
 
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

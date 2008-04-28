@@ -53,6 +53,8 @@
 #include <QByteArray>
 #include <QPair>
 
+QT_BEGIN_NAMESPACE
+
 class DomUI;
 class DomFont;
 class DomWidget;
@@ -227,5 +229,7 @@ private:
     QString m_qrcOutputFile;
     QMap<QString, QString> m_imageMap;
 };
+
+QT_END_NAMESPACE
 
 #endif // UI3READER_H

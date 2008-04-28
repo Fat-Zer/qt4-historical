@@ -46,6 +46,8 @@
 
 #include <private/qpainter_p.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3Painter q3painter.h
     \brief The Q3Painter class is a Qt 3 compatibility wrapper for QPainter.
@@ -187,10 +189,7 @@ QRect Q3Painter::adjustedRectangle(const QRect &r)
     direction. Zero degrees is at the 3 o'clock position.
 
     Example:
-    \code
-        QPainter p(myWidget);
-        p.drawArc(QRect(10,10, 70,100), 100*16, 160*16); // draws a "(" arc
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.painting.q3painter.cpp 0
 
     \sa drawPie(), drawChord()
 */
@@ -239,3 +238,5 @@ QRect Q3Painter::adjustedRectangle(const QRect &r)
     and \a h using the current pen and brush. The parameters \a xrnd
     and \a yrnd specifies the roundness in x and y direction.
 */
+
+QT_END_NAMESPACE

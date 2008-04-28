@@ -58,6 +58,8 @@
 
 #include "qframe_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QToolBoxButton : public QAbstractButton
 {
     Q_OBJECT
@@ -84,8 +86,6 @@ private:
     bool selected;
     int indexInPage;
 };
-
-#include "qtoolbox.moc"
 
 
 class QToolBoxPrivate : public QFramePrivate
@@ -187,7 +187,7 @@ QSize QToolBoxButton::sizeHint() const
 {
     QSize iconSize(8, 8);
     if (!icon().isNull()) {
-        int icone = style()->pixelMetric(QStyle::PM_SmallIconSize);
+        int icone = style()->pixelMetric(QStyle::PM_SmallIconSize, 0, parentWidget() /* QToolBox */);
         iconSize += QSize(icone + 2, icone);
     }
     QSize textSize = fontMetrics().size(Qt::TextShowMnemonic, text()) + QSize(0, 8);
@@ -200,7 +200,7 @@ QSize QToolBoxButton::minimumSizeHint() const
 {
     if (icon().isNull())
         return QSize();
-    int icone = style()->pixelMetric(QStyle::PM_SmallIconSize);
+    int icone = style()->pixelMetric(QStyle::PM_SmallIconSize, 0, parentWidget() /* QToolBox */);
     return QSize(icone + 8, icone + 8);
 }
 
@@ -255,7 +255,7 @@ void QToolBoxButton::paintEvent(QPaintEvent *)
     \brief The QToolBox class provides a column of tabbed widget items.
 
     \mainclass
-    \ingroup advanced
+    \ingroup basicwidgets
 
     A toolbox is a widget that displays a column of tabs one above the
     other, with the current item displayed below the current tab.
@@ -370,6 +370,7 @@ int QToolBox::insertItem(int index, QWidget *widget, const QIcon &icon, const QS
     QToolBoxPrivate::Page c;
     c.widget = widget;
     c.button = new QToolBoxButton(this);
+    c.button->setObjectName(QLatin1String("qt_toolbox_toolboxbutton"));
     connect(c.button, SIGNAL(clicked()), this, SLOT(_q_buttonClicked()));
 
     c.sv = new QScrollArea(this);
@@ -411,7 +412,7 @@ int QToolBox::insertItem(int index, QWidget *widget, const QIcon &icon, const QS
 void QToolBoxPrivate::_q_buttonClicked()
 {
     Q_Q(QToolBox);
-    QToolBoxButton *tb = ::qobject_cast<QToolBoxButton*>(q->sender());
+    QToolBoxButton *tb = qobject_cast<QToolBoxButton*>(q->sender());
     QWidget* item = 0;
     for (QToolBoxPrivate::PageList::ConstIterator i = pageList.constBegin(); i != pageList.constEnd(); ++i)
         if ((*i).button == tb) {
@@ -810,6 +811,9 @@ bool QToolBox::event(QEvent *e)
     return QFrame::event(e);
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qtoolbox.cpp"
+#include "qtoolbox.moc"
 
 #endif //QT_NO_TOOLBOX

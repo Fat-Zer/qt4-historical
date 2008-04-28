@@ -45,6 +45,8 @@
 #include <formwindowbase_p.h>
 #include <QtGui/QStyle>
 
+QT_BEGIN_NAMESPACE
+
 FormWindowSettings::FormWindowSettings(QDesignerFormWindowInterface *parent) :
     QDialog(parent),
     m_formWindow(qobject_cast<qdesigner_internal::FormWindowBase*>(parent))
@@ -134,3 +136,5 @@ void FormWindowSettings::accept()
 
     QDialog::accept();
 }
+
+QT_END_NAMESPACE

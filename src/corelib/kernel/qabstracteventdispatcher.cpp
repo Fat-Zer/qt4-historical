@@ -48,8 +48,9 @@
 #include <private/qthread_p.h>
 #include <private/qcoreapplication_p.h>
 
+QT_BEGIN_NAMESPACE
 
-static QBasicAtomic timerId = Q_ATOMIC_INIT(1);
+static QBasicAtomicInt timerId = Q_BASIC_ATOMIC_INITIALIZER(1);
 
 
 void QAbstractEventDispatcherPrivate::init()
@@ -208,7 +209,7 @@ QAbstractEventDispatcher *QAbstractEventDispatcher::instance(QThread *thread)
 */
 int QAbstractEventDispatcher::registerTimer(int interval, QObject *object)
 {
-    int id = timerId.fetchAndAdd(1);
+    int id = timerId.fetchAndAddRelaxed(1);
     registerTimer(id, interval, object);
     return id;
 }
@@ -291,9 +292,7 @@ void QAbstractEventDispatcher::closingDown()
 
     Typedef for a function with the signature
 
-    \code
-        bool myEventFilter(void *message);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qabstracteventdispatcher.cpp 0
 
     \sa setEventFilter(), filterEvent()
 */
@@ -358,3 +357,5 @@ bool QAbstractEventDispatcher::filterEvent(void *message)
 
     \sa awake()
 */
+
+QT_END_NAMESPACE

@@ -52,7 +52,9 @@
 #include "databaseinfo.h"
 #include "customwidgetsinfo.h"
 
-#include <QTextStream>
+#include <QtCore/QTextStream>
+
+QT_BEGIN_NAMESPACE
 
 namespace {
     void openNameSpaces(const QStringList &namespaceList, QTextStream &output) {
@@ -141,6 +143,17 @@ void WriteDeclaration::acceptUI(DomUI *node)
         namespaceList.removeLast();
     }
 
+    // This is a bit of the hack but covers the cases Qt in/without namespaces
+    // and User defined classes in/without namespaces. The "strange" case
+    // is a User using Qt-in-namespace having his own classes not in a namespace.
+    // In this case the generated Ui helper classes will also end up in
+    // the Qt namespace (which is harmless, but not "pretty")
+    const bool needsMacro = namespaceList.count() == 0
+        || namespaceList[0] == QLatin1String("qdesigner_internal");
+
+    if (needsMacro)
+        m_output << "QT_BEGIN_NAMESPACE\n\n";
+
     openNameSpaces(namespaceList, m_output);
 
     if (namespaceList.count())
@@ -207,6 +220,9 @@ void WriteDeclaration::acceptUI(DomUI *node)
         if (namespaceList.count())
             m_output << "\n";
     }
+
+    if (needsMacro)
+        m_output << "QT_END_NAMESPACE\n\n";
 }
 
 void WriteDeclaration::acceptWidget(DomWidget *node)
@@ -252,3 +268,5 @@ void WriteDeclaration::acceptAction(DomAction *node)
 }
 
 } // namespace CPP
+
+QT_END_NAMESPACE

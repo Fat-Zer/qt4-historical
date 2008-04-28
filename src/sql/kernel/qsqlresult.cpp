@@ -51,6 +51,8 @@
 #include "qvector.h"
 #include "qsqldriver.h"
 
+QT_BEGIN_NAMESPACE
+
 struct QHolder {
     QHolder(const QString& hldr = QString(), int index = -1): holderName(hldr), holderPos(index) {}
     bool operator==(const QHolder& h) const { return h.holderPos == holderPos && h.holderName == holderName; }
@@ -925,25 +927,7 @@ void QSqlResult::virtual_hook(int, void *)
 
     Example:
 
-    \code
-    QSqlQuery q;
-    q.prepare("insert into test (i1, i2, s) values (?, ?, ?)");
-
-    QVariantList col1;
-    QVariantList col2;
-    QVariantList col3;
-
-    col1 << 1 << 3;
-    col2 << 2 << 4;
-    col3 << "hello" << "world";
-
-    q.bindValue(0, col1);
-    q.bindValue(1, col2);
-    q.bindValue(2, col3);
-
-    if (!q.execBatch())
-        qDebug() << q.lastError();
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlresult.cpp 0
 
     Here, we insert two rows into a SQL table, with each row containing three values.
 
@@ -974,7 +958,8 @@ bool QSqlResult::execBatch(bool arrayBind)
  */
 void QSqlResult::detachFromResultSet()
 {
-    if (driver()->hasFeature(QSqlDriver::SimpleLocking))
+    if (driver()->hasFeature(QSqlDriver::FinishQuery) 
+            || driver()->hasFeature(QSqlDriver::SimpleLocking))
         virtual_hook(DetachFromResultSet, 0);
 }
 
@@ -984,6 +969,18 @@ void QSqlResult::setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy poli
 {
     if (driver()->hasFeature(QSqlDriver::LowPrecisionNumbers))
         virtual_hook(SetNumericalPrecision, &policy);
+}
+
+/*! \internal
+*/
+bool QSqlResult::nextResult()
+{
+    if (driver()->hasFeature(QSqlDriver::MultipleResultSets)) {
+        bool result = false;
+        virtual_hook(NextResult, &result);
+        return result;
+    }
+    return false;
 }
 
 /*!
@@ -1002,31 +999,11 @@ void QSqlResult::setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy poli
 
     This example retrieves the handle for a sqlite result:
 
-    \code
-    QSqlQuery query = ...
-    QVariant v = query.result()->handle();
-    if (v.isValid() && qstrcmp(v.typeName(), "sqlite3_stmt*")) {
-        // v.data() returns a pointer to the handle
-        sqlite3_stmt *handle = *static_cast<sqlite3_stmt **>(v.data());
-        if (handle != 0) { // check that it is not NULL
-            ...
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlresult.cpp 1
 
     This snippet returns the handle for PostgreSQL or MySQL:
 
-    \code
-    if (v.typeName() == "PGresult*") {
-        PGresult *handle = *static_cast<PGresult **>(v.data());
-        if (handle != 0) ...
-    }
-
-    if (v.typeName() == "MYSQL_STMT*") {
-        MYSQL_STMT *handle = *static_cast<MYSQL_STMT **>(v.data());
-        if (handle != 0) ...
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlresult.cpp 2
 
     \sa QSqlDriver::handle()
 */
@@ -1035,3 +1012,4 @@ QVariant QSqlResult::handle() const
     return QVariant();
 }
 
+QT_END_NAMESPACE

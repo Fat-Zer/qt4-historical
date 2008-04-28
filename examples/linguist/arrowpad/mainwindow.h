@@ -46,13 +46,18 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
+QT_END_NAMESPACE
 class ArrowPad;
 
+//! [0]
 class MainWindow : public QMainWindow
+//! [0] //! [1]
 {
     Q_OBJECT
+//! [1]
 
 public:
     MainWindow();

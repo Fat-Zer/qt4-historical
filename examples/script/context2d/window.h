@@ -46,7 +46,9 @@
 
 #include <QWidget>
 class QContext2DCanvas;
+QT_BEGIN_NAMESPACE
 class QListWidgetItem;
+QT_END_NAMESPACE
 
 class Window : public QWidget
 {

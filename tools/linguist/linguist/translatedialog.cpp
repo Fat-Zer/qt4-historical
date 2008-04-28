@@ -43,6 +43,8 @@
 
 #include "translatedialog.h"
 
+QT_BEGIN_NAMESPACE
+
 TranslateDialog::TranslateDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -53,7 +55,7 @@ TranslateDialog::TranslateDialog(QWidget *parent)
     connect(m_ui.ledFindWhat, SIGNAL(textChanged(const QString &)), this, SLOT(verifyText(const QString &)));
 
     m_ui.ledFindWhat->setFocus();
-    
+
     // disable all buttons except 'cancel'
     verifyText(QLatin1String(""));
 }
@@ -86,7 +88,7 @@ void TranslateDialog::translateAndFindNext_helper(int mode)
     bool markFinished = m_ui.ckMarkFinished->isChecked() ? true : false;
     int matchOption = m_ui.ckMatchCase->isChecked() ? MatchCase : 0;
 
-    emit translateAndFindNext(m_ui.ledFindWhat->text(), m_ui.ledTranslateTo->text(), matchOption, 
+    emit translateAndFindNext(m_ui.ledFindWhat->text(), m_ui.ledTranslateTo->text(), matchOption,
         mode, markFinished);
 }
 
@@ -94,3 +96,5 @@ void TranslateDialog::setFindWhat(const QString &str)
 {
     m_ui.ledFindWhat->setText(str);
 }
+
+QT_END_NAMESPACE

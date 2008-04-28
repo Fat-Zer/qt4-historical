@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QThreadStorageData
@@ -147,6 +149,8 @@ public:
     inline void setLocalData(T t)
     { qThreadStorage_setLocalData(d, &t); }
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

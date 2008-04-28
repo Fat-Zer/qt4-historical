@@ -47,9 +47,12 @@
 #include <QtGui/QLayout>
 #include <QtCore/qplugin.h>
 
-Q3ButtonGroupPlugin::Q3ButtonGroupPlugin(QObject *parent)
+QT_BEGIN_NAMESPACE
+
+Q3ButtonGroupPlugin::Q3ButtonGroupPlugin(const QIcon &icon, QObject *parent)
     : QObject(parent),
-      m_initialized(false)
+      m_initialized(false),
+      m_icon(icon)
 {
 }
 
@@ -85,7 +88,7 @@ QString Q3ButtonGroupPlugin::includeFile() const
 
 QIcon Q3ButtonGroupPlugin::icon() const
 {
-    return QIcon();
+    return m_icon;
 }
 
 bool Q3ButtonGroupPlugin::isContainer() const
@@ -112,3 +115,5 @@ void Q3ButtonGroupPlugin::initialize(QDesignerFormEditorInterface *core)
     Q_UNUSED(core);
     m_initialized = true;
 }
+
+QT_END_NAMESPACE

@@ -47,12 +47,15 @@
 #include <QMainWindow>
 #include <QPrinter>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QLabel;
 class QMenu;
 class QScrollArea;
 class QScrollBar;
+QT_END_NAMESPACE
 
+//! [0]
 class ImageViewer : public QMainWindow
 {
     Q_OBJECT
@@ -80,7 +83,9 @@ private:
     QScrollArea *scrollArea;
     double scaleFactor;
 
+#ifndef QT_NO_PRINTER
     QPrinter printer;
+#endif
 
     QAction *openAct;
     QAction *printAct;
@@ -96,5 +101,6 @@ private:
     QMenu *viewMenu;
     QMenu *helpMenu;
 };
+//! [0]
 
 #endif

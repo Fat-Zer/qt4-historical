@@ -46,7 +46,7 @@
 
 #include <QtGui>
 
-class QBypassWidget;
+QT_FORWARD_DECLARE_CLASS(QBypassWidget)
 
 class HoverPoints : public QObject
 {
@@ -144,10 +144,10 @@ private:
 inline QRectF HoverPoints::pointBoundingRect(int i) const
 {
     QPointF p = m_points.at(i);
-    double w = m_pointSize.width();
-    double h = m_pointSize.height();
-    double x = p.x() - w / 2;
-    double y = p.y() - h / 2;
+    qreal w = m_pointSize.width();
+    qreal h = m_pointSize.height();
+    qreal x = p.x() - w / 2;
+    qreal y = p.y() - h / 2;
     return QRectF(x, y, w, h);
 }
 

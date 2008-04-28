@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt4-network.html
     \title The Network Module in Qt 4
@@ -94,24 +137,20 @@
     QTcpSocket. The client talks to a fortune server that provides
     fortune to the user. Here's how to set up the socket:
 
-    \quotefile network/fortuneclient/client.cpp
-    \skipto tcpSocket =
-    \printline tcpSocket =
-    \skipto connect(tcpSocket
-    \printline SLOT(readFortune(
-    \printuntil SLOT(displayError(
+    \snippet examples/network/fortuneclient/client.cpp 1
+    \codeline
+    \snippet examples/network/fortuneclient/client.cpp 2
+    \snippet examples/network/fortuneclient/client.cpp 4
 
     When the user requests a new fortune, the client establishes a
     connection to the server:
 
-    \skipto tcpSocket->connectToHost(
-    \printuntil ;
+    \snippet examples/network/fortuneclient/client.cpp 7
 
     When the server answers, the following code is executed to read
     the data from the socket:
 
-    \skipto QDataStream in(tcpSocket)
-    \printuntil currentFortune = nextFortune
+    \snippet examples/network/fortuneclient/client.cpp 9
 
     The server's answer starts with a \e size field (which we store
     in \c blockSize), followed by \e size bytes of data. If the
@@ -121,9 +160,7 @@
     An alternative approach is to use a blocking socket. The code can
     then be concentrated in one function:
 
-    \quotefile network/blockingfortuneclient/fortunethread.cpp
-    \skipto const int Timeout
-    \printuntil emit newFortune
+    \snippet examples/network/blockingfortuneclient/fortunethread.cpp 7
 
     \section2 TCP Server
 
@@ -131,40 +168,31 @@
     using QTcpServer and QTcpSocket. Here's how to set up a TCP
     server:
 
-    \quotefile network/fortuneserver/server.cpp
-    \skipto tcpServer =
-    \printuntil }
-    \skipto connect(tcpServer
-    \printline connect(tcpServer
+    \snippet examples/network/fortuneserver/server.cpp 0
+    \codeline
+    \snippet examples/network/fortuneserver/server.cpp 3
 
     When a client tries to connect to the server, the following code
     in the sendFortune() slot is executed:
 
-    \skipto QByteArray block;
-    \printuntil clientConnection->disconnectFromHost()
+    \snippet examples/network/fortuneserver/server.cpp 5
 
     \section2 UDP Senders and Receivers
 
     Here's how to broadcast a UDP datagram:
 
-    \quotefile network/broadcastsender/sender.cpp
-    \skipto udpSocket = new QUdpSocket
-    \printline udpSocket
-    \skipto QByteArray datagram
-    \printuntil QHostAddress::Broadcast
+    \snippet examples/network/broadcastsender/sender.cpp 0
+    \snippet examples/network/broadcastsender/sender.cpp 1
 
     Here's how to receive a UDP datagram:
 
-    \quotefile network/broadcastreceiver/receiver.cpp
-    \skipto udpSocket = new QUdpSocket
-    \printuntil udpSocket->bind
-    \skipto connect(udpSocket
-    \printuntil );
+    \snippet examples/network/broadcastreceiver/receiver.cpp 0
+    \codeline
+    \snippet examples/network/broadcastreceiver/receiver.cpp 1
 
     Then in the processPendingDatagrams() slot:
 
-    \skipto hasPendingDatagrams
-    \printuntil }
+    \snippet examples/network/broadcastreceiver/receiver.cpp 2
 
     \section1 Comparison with Qt 3
 

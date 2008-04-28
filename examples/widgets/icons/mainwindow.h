@@ -49,15 +49,18 @@
 #include <QMainWindow>
 #include <QPixmap>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QGroupBox;
 class QMenu;
 class QRadioButton;
 class QTableWidget;
+QT_END_NAMESPACE
 class IconPreviewArea;
 class IconSizeSpinBox;
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -111,5 +114,6 @@ private:
     QAction *aboutAct;
     QAction *aboutQtAct;
 };
+//! [0]
 
 #endif

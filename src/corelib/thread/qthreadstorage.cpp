@@ -50,25 +50,27 @@
 
 #include <string.h>
 
+QT_BEGIN_NAMESPACE
+
 // #define THREADSTORAGE_DEBUG
 #ifdef THREADSTORAGE_DEBUG
-#  define DEBUG qDebug
+#  define DEBUG_MSG qDebug
 #else
-#  define DEBUG if(false)qDebug
+#  define DEBUG_MSG if(false)qDebug
 #endif
 
-static QBasicAtomic idCounter = Q_ATOMIC_INIT(0);
+static QBasicAtomicInt idCounter = Q_BASIC_ATOMIC_INITIALIZER(INT_MAX);
 Q_GLOBAL_STATIC(QMutex, mutex)
-typedef QHash<int, void (*)(void *)> DestructorHash;
-Q_GLOBAL_STATIC(DestructorHash, destructors)
+typedef QMap<int, void (*)(void *)> DestructorMap;
+Q_GLOBAL_STATIC(DestructorMap, destructors)
 
 QThreadStorageData::QThreadStorageData(void (*func)(void *))
-    : id(idCounter.fetchAndAdd(1))
+    : id(idCounter.fetchAndAddRelaxed(-1))
 {
     QMutexLocker locker(mutex());
     destructors()->insert(id, func);
 
-    DEBUG("QThreadStorageData: Allocated id %d, destructor %p", id, func);
+    DEBUG_MSG("QThreadStorageData: Allocated id %d, destructor %p", id, func);
 }
 
 QThreadStorageData::~QThreadStorageData()
@@ -77,7 +79,7 @@ QThreadStorageData::~QThreadStorageData()
     if (destructors())
         destructors()->remove(id);
 
-    DEBUG("QThreadStorageData: Released id %d", id);
+    DEBUG_MSG("QThreadStorageData: Released id %d", id);
 }
 
 void **QThreadStorageData::get() const
@@ -87,8 +89,8 @@ void **QThreadStorageData::get() const
         qWarning("QThreadStorage::get: QThreadStorage can only be used with threads started with QThread");
         return 0;
     }
-    QHash<int, void *>::iterator it = data->tls.find(id);
-    DEBUG("QThreadStorageData: Returning storage %d, data %p, for thread %p",
+    QMap<int, void *>::iterator it = data->tls.find(id);
+    DEBUG_MSG("QThreadStorageData: Returning storage %d, data %p, for thread %p",
           id,
           it != data->tls.end() ? it.value() : 0,
           data->thread);
@@ -103,11 +105,11 @@ void **QThreadStorageData::set(void *p)
         return 0;
     }
 
-    QHash<int, void *>::iterator it = data->tls.find(id);
+    QMap<int, void *>::iterator it = data->tls.find(id);
     if (it != data->tls.end()) {
         // delete any previous data
         if (it.value() != 0) {
-            DEBUG("QThreadStorageData: Deleting previous storage %d, data %p, for thread %p",
+            DEBUG_MSG("QThreadStorageData: Deleting previous storage %d, data %p, for thread %p",
                   id,
                   it.value(),
                   data->thread);
@@ -124,10 +126,10 @@ void **QThreadStorageData::set(void *p)
 
         // store new data
         it.value() = p;
-        DEBUG("QThreadStorageData: Set storage %d for thread %p to %p", id, data->thread, p);
+        DEBUG_MSG("QThreadStorageData: Set storage %d for thread %p to %p", id, data->thread, p);
     } else {
         it = data->tls.insert(id, p);
-        DEBUG("QThreadStorageData: Inserted storage %d, data %p, for thread %p", id, p, data->thread);
+        DEBUG_MSG("QThreadStorageData: Inserted storage %d, data %p, for thread %p", id, p, data->thread);
     }
 
     return &it.value();
@@ -135,13 +137,13 @@ void **QThreadStorageData::set(void *p)
 
 void QThreadStorageData::finish(void **p)
 {
-    QHash<int, void *> *tls = reinterpret_cast<QHash<int, void *> *>(p);
+    QMap<int, void *> *tls = reinterpret_cast<QMap<int, void *> *>(p);
     if (!tls || tls->isEmpty() || !mutex())
         return; // nothing to do
 
-    DEBUG("QThreadStorageData: Destroying storage for thread %p", QThread::currentThread());
+    DEBUG_MSG("QThreadStorageData: Destroying storage for thread %p", QThread::currentThread());
 
-    QHash<int, void *>::iterator it = tls->begin();
+    QMap<int, void *>::iterator it = tls->begin();
     while (it != tls->end()) {
         int id = it.key();
         void *q = it.value();
@@ -198,11 +200,9 @@ void QThreadStorageData::finish(void **p)
     removeFromCache() functions. The cache is automatically
     deleted when the calling thread exits.
 
-    \quotefromfile snippets/threads/threads.cpp
-    \skipto QThreadStorage<
-    \printuntil cacheObject
-    \printuntil removeFromCache
-    \printuntil /^\}$/
+    \snippet doc/src/snippets/threads/threads.cpp 7
+    \snippet doc/src/snippets/threads/threads.cpp 8
+    \snippet doc/src/snippets/threads/threads.cpp 9
 
     \section1 Caveats
 
@@ -303,3 +303,5 @@ void QThreadStorageData::finish(void **p)
 */
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE

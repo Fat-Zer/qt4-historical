@@ -55,8 +55,16 @@ QStatusBar::item {
 
 QComboBox, QLineEdit, QSpinBox, QTextEdit, QListView {
     background-color: cornsilk;
-    selection-color: #0a214c;
-    selection-background-color: wheat;
+    selection-color: #0a214c; 
+    selection-background-color: #C19A6B;
+}
+
+QListView {
+    show-decoration-selected: 1;
+}
+
+QListView::item:hover {
+    background-color: wheat;
 }
 
 /* We reserve 1 pixel space in padding. When we get the focus,

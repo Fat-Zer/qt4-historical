@@ -86,6 +86,8 @@
 #define LOGOFFSET(i) d->logOffset + i
 #endif
 
+QT_BEGIN_NAMESPACE
+
 struct QUndoRedoInfoPrivate
 {
     Q3TextString text;
@@ -336,20 +338,7 @@ static bool block_set_alignment = false;
 
     Loading and saving text is achieved using setText() and text(),
     for example:
-    \code
-    QFile file(fileName); // Read the text from a file
-    if (file.open(IO_ReadOnly)) {
-        QTextStream stream(&file);
-        textEdit->setText(stream.read());
-    }
-
-    QFile file(fileName); // Write the text to a file
-    if (file.open(IO_WriteOnly)) {
-        QTextStream stream(&file);
-        stream << textEdit->text();
-        textEdit->setModified(false);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textedit.cpp 0
 
     By default the text edit wraps words at whitespace to fit within
     the text edit widget. The setWordWrap() function is used to
@@ -445,22 +434,11 @@ static bool block_set_alignment = false;
     color="#223344">}. Bold, italic and underline settings can be
     specified by the tags \c {<b>}, \c <i> and \c {<u>}. Note that a
     tag does not necessarily have to be closed. A valid example:
-    \code
-    This is <font color=red>red</font> while <b>this</b> is <font color=blue>blue</font>.
-    <font color=green><font color=yellow>Yellow,</font> and <u>green</u>.
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textedit.cpp 1
 
     Stylesheets can also be used in Qt::LogText mode. To create and use a
     custom tag, you could do the following:
-    \code
-    Q3TextEdit * log = new Q3TextEdit(this);
-    log->setTextFormat(Qt::LogText);
-    Q3StyleSheetItem * item = new Q3StyleSheetItem(log->styleSheet(), "mytag");
-    item->setColor("red");
-    item->setFontWeight(QFont::Bold);
-    item->setFontUnderline(true);
-    log->append("This is a <mytag>custom tag</mytag>!");
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textedit.cpp 2
     Note that only the color, bold, underline and italic attributes of
     a Q3StyleSheetItem is used in Qt::LogText mode.
 
@@ -7263,5 +7241,7 @@ Q3SyntaxHighlighter * Q3TextEdit::syntaxHighlighter() const
     else
         return 0;
 }
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_TEXTEDIT

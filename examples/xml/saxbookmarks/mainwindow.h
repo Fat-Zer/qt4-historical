@@ -46,7 +46,9 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QTreeWidget;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
@@ -55,7 +57,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
 
-private slots:
+public slots:
     void open();
     void saveAs();
     void about();

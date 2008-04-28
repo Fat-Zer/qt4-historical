@@ -52,6 +52,8 @@
 #include <QtCore/qalgorithms.h>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace {
     const bool debugMetaDatabase = false;
 }
@@ -89,7 +91,7 @@ void MetaDataBaseItem::setName(const QString &name)
     Q_ASSERT(m_object);
     m_object->setObjectName(name);
 }
-    
+
 QString MetaDataBaseItem::customClassName() const
 {
     return m_customClassName;
@@ -120,7 +122,7 @@ void MetaDataBaseItem::setEnabled(bool b)
     m_enabled = b;
 }
 
-QString MetaDataBaseItem::script() const 
+QString MetaDataBaseItem::script() const
 {
     return m_script;
 }
@@ -129,6 +131,27 @@ void MetaDataBaseItem::setScript(const QString &script)
 {
     m_script = script;
 }
+
+QStringList MetaDataBaseItem::fakeSlots() const
+{
+    return m_fakeSlots;
+}
+
+void MetaDataBaseItem::setFakeSlots(const QStringList &fs)
+{
+    m_fakeSlots = fs;
+}
+
+QStringList MetaDataBaseItem::fakeSignals() const
+{
+     return m_fakeSignals;
+}
+
+void MetaDataBaseItem::setFakeSignals(const QStringList &fs)
+{
+    m_fakeSignals = fs;
+}
+
 // -----------------------------------------------------
 MetaDataBase::MetaDataBase(QDesignerFormEditorInterface *core, QObject *parent)
     : QDesignerMetaDataBaseInterface(parent),
@@ -141,7 +164,6 @@ MetaDataBase::~MetaDataBase()
     qDeleteAll(m_items);
 }
 
-    
 MetaDataBaseItem *MetaDataBase::metaDataBaseItem(QObject *object) const
 {
     MetaDataBaseItem *i = m_items.value(object);
@@ -309,5 +331,6 @@ QDESIGNER_SHARED_EXPORT bool setPropertyComment(QDesignerFormEditorInterface* co
     return true;
 }    
 
-
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

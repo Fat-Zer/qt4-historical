@@ -51,17 +51,17 @@ class DockItem : public DemoItem
 {
 public:
     enum ORIENTATION {UP, DOWN, LEFT, RIGHT};
-    
+
     DockItem(ORIENTATION orien, qreal x, qreal y, qreal width, qreal length, QGraphicsScene *scene = 0, QGraphicsItem *parent = 0);
     virtual ~DockItem();
-    
+
     virtual QRectF boundingRect() const; // overridden
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0); // overridden
-    
+
     qreal length;
     qreal width;
     ORIENTATION orientation;
-    
+
 private:
     void setupPixmap();
     QPixmap *pixmap;

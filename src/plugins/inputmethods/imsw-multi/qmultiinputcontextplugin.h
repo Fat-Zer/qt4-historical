@@ -64,6 +64,8 @@
 #include <QtGui/qinputcontextplugin.h>
 #include <QtCore/qstringlist.h>
 
+QT_BEGIN_NAMESPACE
+
 class QMultiInputContextPlugin : public QInputContextPlugin
 {
     Q_OBJECT
@@ -79,5 +81,7 @@ public:
 };
 
 #endif // QT_NO_IM
+
+QT_END_NAMESPACE
 
 #endif // QMULTIINPUTCONTEXTPLUGIN_H

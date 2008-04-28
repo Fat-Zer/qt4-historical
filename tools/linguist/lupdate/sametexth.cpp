@@ -46,8 +46,10 @@
 #include <QMap>
 #include <stdio.h>
 
-typedef QMap<QByteArray, MetaTranslatorMessage> TMM;
-typedef QList<MetaTranslatorMessage> TML;
+QT_BEGIN_NAMESPACE
+
+typedef QMap<QByteArray, TranslatorMessage> TMM;
+typedef QList<TranslatorMessage> TML;
 
 /*
   Augments a MetaTranslator with trivially derived translations.
@@ -71,7 +73,7 @@ int applySameTextHeuristic( MetaTranslator *tor )
     int inserted = 0;
 
     for ( it = all.begin(); it != all.end(); ++it ) {
-        if ( (*it).type() == MetaTranslatorMessage::Unfinished ) {
+        if ( (*it).type() == TranslatorMessage::Unfinished ) {
             if ( !(*it).isTranslated() )
                 untranslated.append( *it );
         } else {
@@ -96,7 +98,7 @@ int applySameTextHeuristic( MetaTranslator *tor )
         QByteArray key = (*u).sourceText();
         t = translated.find( key );
         if ( t != translated.end() ) {
-            MetaTranslatorMessage m( *u );
+            TranslatorMessage m( *u );
             m.setTranslations( (*t).translations() );
             tor->insert( m );
             inserted++;
@@ -104,3 +106,5 @@ int applySameTextHeuristic( MetaTranslator *tor )
     }
     return inserted;
 }
+
+QT_END_NAMESPACE

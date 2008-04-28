@@ -47,6 +47,8 @@
 #include <QtCore/QPointer>
 #include <QtGui/QWidget>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 class QDesignerFormEditorInterface;
 class QModelIndex;
@@ -63,7 +65,7 @@ class SignalSlotEditorWindow : public QWidget
 {
     Q_OBJECT
 public:
-    SignalSlotEditorWindow(QDesignerFormEditorInterface *core, QWidget *parent = 0);
+    explicit SignalSlotEditorWindow(QDesignerFormEditorInterface *core, QWidget *parent = 0);
 
 public slots:
     void setActiveFormWindow(QDesignerFormWindowInterface *form);
@@ -72,7 +74,7 @@ private slots:
     void updateDialogSelection(Connection *con);
     void updateEditorSelection(const QModelIndex &index);
 
-    void objectNameChanged(QDesignerFormWindowInterface *formWindow, QObject *object, const QString &name);
+    void objectNameChanged(QDesignerFormWindowInterface *formWindow, QObject *object, const QString &newName, const QString &oldName);
 
     void addConnection();
     void removeConnection();
@@ -83,11 +85,12 @@ private:
     QPointer<SignalSlotEditor> m_editor;
     QToolButton *m_add_button, *m_remove_button;
     QDesignerFormEditorInterface *m_core;
-
+    ConnectionModel *m_model;
     bool m_handling_selection_change;
 };
 
 } // namespace qdesigner_internal
 
-#endif // SIGNALSLOTEDITORWINDOW_H
+QT_END_NAMESPACE
 
+#endif // SIGNALSLOTEDITORWINDOW_H

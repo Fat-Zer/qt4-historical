@@ -1,1 +1,1 @@
-#include "../../src/network/qurlinfo.h"
+#include "../../src/network/kernel/qurlinfo.h"

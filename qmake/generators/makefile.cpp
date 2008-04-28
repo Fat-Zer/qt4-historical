@@ -67,6 +67,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+QT_BEGIN_NAMESPACE
+
 // Well, Windows doesn't have this, so here's the macro
 #ifndef S_ISDIR
 #  define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
@@ -2332,7 +2334,7 @@ MakefileGenerator::writeSubTargets(QTextStream &t, QList<MakefileGenerator::SubT
 
         QString mkfile = subtarget->makefile;
         if(!in_directory.isEmpty())
-            mkfile.prepend(out_directory + Option::dir_sep);
+            mkfile.prepend(out_directory);
 
         QString in_directory_cdin, in_directory_cdout, out_directory_cdin, out_directory_cdout;
 #define MAKE_CD_IN_AND_OUT(directory) \
@@ -3013,3 +3015,5 @@ MakefileGenerator::openOutput(QFile &file, const QString &build) const
     }
     return false;
 }
+
+QT_END_NAMESPACE

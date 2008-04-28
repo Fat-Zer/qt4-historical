@@ -53,6 +53,8 @@
 
 #include <qevent.h>
 
+QT_BEGIN_NAMESPACE
+
 // ### review
 
 QDesignerServer::QDesignerServer(QObject *parent)
@@ -154,3 +156,5 @@ void QDesignerClient::readFromSocket()
         }
     }
 }
+
+QT_END_NAMESPACE

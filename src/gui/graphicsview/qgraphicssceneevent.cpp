@@ -216,6 +216,40 @@
     drops with \l{QGraphicsItem::}{setAcceptDrops()}.
 */
 
+/*!
+    \class QGraphicsSceneResizeEvent
+    \brief The QGraphicsSceneResizeEvent class provides events for widget
+    resizing in the graphics view framework.
+    \since 4.4
+    \ingroup multimedia
+
+    A QGraphicsWidget sends itself a QGraphicsSceneResizeEvent immediately
+    when its geometry changes.
+
+    It's similar to QResizeEvent, but its sizes, oldSize() and newSize(), use
+    QSizeF instead of QSize.
+
+    \sa QGraphicsWidget::setGeometry(), QGraphicsWidget::resize()
+*/
+
+/*!
+    \class QGraphicsSceneMoveEvent
+    \brief The QGraphicsSceneMoveEvent class provides events for widget
+    moving in the graphics view framework.
+    \since 4.4
+    \ingroup multimedia
+
+    A QGraphicsWidget sends itself a QGraphicsSceneMoveEvent immediately when
+    its local position changes. The delivery is implemented as part of
+    QGraphicsItem::itemChange().
+
+    It's similar to QMoveEvent, but its positions, oldPos() and newPos(), use
+    QPointF instead of QPoint.
+
+    \sa QGraphicsItem::setPos(), QGraphicsItem::ItemPositionChange,
+    QGraphicsItem::ItemPositionHasChanged
+*/
+
 #include "qgraphicssceneevent.h"
 
 #ifndef QT_NO_GRAPHICSVIEW
@@ -224,7 +258,11 @@
 #include <QtCore/qdebug.h>
 #endif
 #include <QtCore/qmap.h>
+#include <QtCore/qpoint.h>
+#include <QtCore/qsize.h>
 #include <QtCore/qstring.h>
+
+QT_BEGIN_NAMESPACE
 
 class QGraphicsSceneEventPrivate
 {
@@ -641,7 +679,7 @@ void QGraphicsSceneWheelEvent::setPos(const QPointF &pos)
 }
 
 /*!
-    Returns the position of the cursor in item coordinates when the wheel
+    Returns the position of the cursor in scene coordinates when the wheel
     event occurred.
 
     \sa pos(), screenPos()
@@ -922,6 +960,10 @@ public:
     QPointF pos;
     QPointF scenePos;
     QPoint screenPos;
+    QPointF lastPos;
+    QPointF lastScenePos;
+    QPoint lastScreenPos;
+    Qt::KeyboardModifiers modifiers;
 };
 
 /*!
@@ -1014,6 +1056,91 @@ void QGraphicsSceneHoverEvent::setScreenPos(const QPoint &pos)
 {
     Q_D(QGraphicsSceneHoverEvent);
     d->screenPos = pos;
+}
+
+/*!
+    Returns the last recorded mouse cursor position in item coordinates.
+
+    \sa lastScenePos(), lastScreenPos(), pos()
+*/
+QPointF QGraphicsSceneHoverEvent::lastPos() const
+{
+    Q_D(const QGraphicsSceneHoverEvent);
+    return d->lastPos;
+}
+
+/*!
+    \internal
+*/
+void QGraphicsSceneHoverEvent::setLastPos(const QPointF &pos)
+{
+    Q_D(QGraphicsSceneHoverEvent);
+    d->lastPos = pos;
+}
+
+/*!
+    Returns the last recorded, the scene coordinates of the previous mouse or
+    hover event received by the view, that created the event mouse cursor
+    position in scene coordinates.
+
+    \sa lastPos(), lastScreenPos(), scenePos()
+*/
+QPointF QGraphicsSceneHoverEvent::lastScenePos() const
+{
+    Q_D(const QGraphicsSceneHoverEvent);
+    return d->lastScenePos;
+}
+
+/*!
+    \internal
+*/
+void QGraphicsSceneHoverEvent::setLastScenePos(const QPointF &pos)
+{
+    Q_D(QGraphicsSceneHoverEvent);
+    d->lastScenePos = pos;
+}
+
+/*!
+    Returns the last recorded mouse cursor position in screen coordinates. The
+    last recorded position is the position of the previous mouse or hover
+    event received by the view that created the event.
+
+    \sa lastPos(), lastScenePos(), screenPos()
+*/
+QPoint QGraphicsSceneHoverEvent::lastScreenPos() const
+{
+    Q_D(const QGraphicsSceneHoverEvent);
+    return d->lastScreenPos;
+}
+
+/*!
+    \internal
+*/
+void QGraphicsSceneHoverEvent::setLastScreenPos(const QPoint &pos)
+{
+    Q_D(QGraphicsSceneHoverEvent);
+    d->lastScreenPos = pos;
+}
+
+/*!
+    Returns the keyboard modifiers at the moment the the hover event was sent.
+*/
+Qt::KeyboardModifiers QGraphicsSceneHoverEvent::modifiers() const
+{
+    Q_D(const QGraphicsSceneHoverEvent);
+    return d->modifiers;
+}
+
+/*!
+    \fn void QGraphicsSceneHoverEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+    \internal
+
+    Sets the modifiers for the current hover event to \a modifiers.
+*/
+void QGraphicsSceneHoverEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+{
+    Q_D(QGraphicsSceneHoverEvent);
+    d->modifiers = modifiers;
 }
 
 class QGraphicsSceneHelpEventPrivate : public QGraphicsSceneEventPrivate
@@ -1314,11 +1441,7 @@ void QGraphicsSceneDragDropEvent::setProposedAction(Qt::DropAction action)
     Sets the proposed action as accepted, i.e, the drop action
     is set to the proposed action. This is equal to:
 
-    \code
-
-    setDropAction(proposedAction());
-
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicssceneevent.cpp 0
 
     When using this function, one should not call \c accept().
 
@@ -1400,5 +1523,141 @@ void QGraphicsSceneDragDropEvent::setMimeData(const QMimeData *data)
     Q_D(QGraphicsSceneDragDropEvent);
     d->mimeData = data;
 }
+
+class QGraphicsSceneResizeEventPrivate : public QGraphicsSceneEventPrivate
+{
+    Q_DECLARE_PUBLIC(QGraphicsSceneResizeEvent)
+public:
+    inline QGraphicsSceneResizeEventPrivate()
+    { }
+
+    QSizeF oldSize;
+    QSizeF newSize;
+};
+
+/*!
+    Constructs a QGraphicsSceneResizeEvent.
+*/
+QGraphicsSceneResizeEvent::QGraphicsSceneResizeEvent()
+    : QGraphicsSceneEvent(*new QGraphicsSceneResizeEventPrivate, QEvent::GraphicsSceneResize)
+{
+}
+
+/*!
+    Destroys the QGraphicsSceneResizeEvent.
+*/
+QGraphicsSceneResizeEvent::~QGraphicsSceneResizeEvent()
+{
+}
+
+/*!
+    Returns the old size (i.e., the size immediately before the widget was
+    resized).
+
+    \sa newSize(), QGraphicsWidget::resize()
+*/
+QSizeF QGraphicsSceneResizeEvent::oldSize() const
+{
+    Q_D(const QGraphicsSceneResizeEvent);
+    return d->oldSize;
+}
+
+/*!
+    \internal
+*/
+void QGraphicsSceneResizeEvent::setOldSize(const QSizeF &size)
+{
+    Q_D(QGraphicsSceneResizeEvent);
+    d->oldSize = size;
+}
+
+/*!
+    Returns the new size (i.e., the current size).
+
+    \sa oldSize(), QGraphicsWidget::resize()
+*/
+QSizeF QGraphicsSceneResizeEvent::newSize() const
+{
+    Q_D(const QGraphicsSceneResizeEvent);
+    return d->newSize;
+}
+
+/*!
+    \internal
+*/
+void QGraphicsSceneResizeEvent::setNewSize(const QSizeF &size)
+{
+    Q_D(QGraphicsSceneResizeEvent);
+    d->newSize = size;
+}
+
+class QGraphicsSceneMoveEventPrivate : public QGraphicsSceneEventPrivate
+{
+    Q_DECLARE_PUBLIC(QGraphicsSceneMoveEvent)
+public:
+    inline QGraphicsSceneMoveEventPrivate()
+    { }
+
+    QPointF oldPos;
+    QPointF newPos;
+};
+
+/*!
+    Constructs a QGraphicsSceneMoveEvent.
+*/
+QGraphicsSceneMoveEvent::QGraphicsSceneMoveEvent()
+    : QGraphicsSceneEvent(*new QGraphicsSceneMoveEventPrivate, QEvent::GraphicsSceneMove)
+{
+}
+
+/*!
+    Destroys the QGraphicsSceneMoveEvent.
+*/
+QGraphicsSceneMoveEvent::~QGraphicsSceneMoveEvent()
+{
+}
+
+/*!
+    Returns the old position (i.e., the position immediatly before the widget
+    was moved).
+
+    \sa newPos(), QGraphicsItem::setPos()
+*/
+QPointF QGraphicsSceneMoveEvent::oldPos() const
+{
+    Q_D(const QGraphicsSceneMoveEvent);
+    return d->oldPos;
+}
+
+/*!
+    \internal
+*/
+void QGraphicsSceneMoveEvent::setOldPos(const QPointF &pos)
+{
+    Q_D(QGraphicsSceneMoveEvent);
+    d->oldPos = pos;
+}
+
+/*!
+    Returns the new position (i.e., the current position).
+
+    \sa oldPos(), QGraphicsItem::setPos()
+*/
+QPointF QGraphicsSceneMoveEvent::newPos() const
+{
+    Q_D(const QGraphicsSceneMoveEvent);
+    return d->newPos;
+}
+
+/*!
+    \internal
+*/
+void QGraphicsSceneMoveEvent::setNewPos(const QPointF &pos)
+{
+    Q_D(QGraphicsSceneMoveEvent);
+    d->newPos = pos;
+}
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_GRAPHICSVIEW

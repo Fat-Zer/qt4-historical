@@ -58,6 +58,11 @@
 #include "QtCore/qglobal.h"
 #include "QtGui/qpainter.h"
 
+#include <private/qdrawhelper_p.h>
+#include <private/qrasterdefs_p.h>
+
+QT_BEGIN_NAMESPACE
+
 struct QSpanData;
 class QRasterBuffer;
 class QRasterizerPrivate;
@@ -68,9 +73,13 @@ public:
     QRasterizer();
     ~QRasterizer();
 
-    void initialize(bool antialiased, QRasterBuffer *rb);
-    void setSpanData(QSpanData *data);
-    void setDeviceRect(const QRect &deviceRect);
+    void setAntialiased(bool antialiased);
+    void setClipRect(const QRect &clipRect);
+
+    void initialize(ProcessSpans blend, void *data);
+
+    void rasterize(const QT_FT_Outline *outline, Qt::FillRule fillRule);
+    void rasterize(const QPainterPath &path, Qt::FillRule fillRule);
 
     // width should be in units of |a-b|
     void rasterizeLine(const QPointF &a, const QPointF &b, qreal width, bool squareCap = false);
@@ -78,5 +87,7 @@ public:
 private:
     QRasterizerPrivate *d;
 };
+
+QT_END_NAMESPACE
 
 #endif

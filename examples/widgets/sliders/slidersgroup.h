@@ -46,10 +46,13 @@
 
 #include <QGroupBox>
 
+QT_BEGIN_NAMESPACE
 class QDial;
 class QScrollBar;
 class QSlider;
+QT_END_NAMESPACE
 
+//! [0]
 class SlidersGroup : public QGroupBox
 {
     Q_OBJECT
@@ -73,5 +76,6 @@ private:
     QScrollBar *scrollBar;
     QDial *dial;
 };
+//! [0]
 
 #endif

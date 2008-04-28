@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QDirIteratorPrivate;
@@ -89,6 +91,8 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDirIterator::IteratorFlags)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Sql)
 
 class QVariant;
@@ -116,13 +118,14 @@ public:
     QMap<QString, QVariant> boundValues() const;
     QString executedQuery() const;
     QVariant lastInsertId() const;
-#ifdef QT_44_API_QSQLQUERY_FINISH
     void finish();
-#endif
+    bool nextResult();
 
 private:
     QSqlQueryPrivate* d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

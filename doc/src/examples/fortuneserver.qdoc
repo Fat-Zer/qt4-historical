@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example network/fortuneserver
     \title Fortune Server Example
@@ -14,37 +57,30 @@
     connecting client (from the \l{network/fortuneclient}{Fortune Client}
     example), before closing the connection.
 
-    \quotefromfile network/fortuneserver/server.h
-    \skipto class Server
-    \printuntil };
+    \snippet examples/network/fortuneserver/server.h 0
 
     The server is implemented using a simple class with only one slot, for
     handling incoming connections.
 
-    \quotefromfile network/fortuneserver/server.cpp
-    \skipto tcpServer = new QTcpServer(this)
-    \printuntil .arg(tcpServer->serverPort
+    \snippet examples/network/fortuneserver/server.cpp 1
 
     In its constructor, our Server object calls QTcpServer::listen() to set up
     a QTcpServer to listen on all addresses, on an arbitrary port. In then
     displays the port QTcpServer picked in a label, so that user knows which
     port the fortune client should connect to.
 
-    \skipto fortunes <<
-    \printuntil ;
+    \snippet examples/network/fortuneserver/server.cpp 2
 
     Our server generates a list of random fortunes that is can send to
     connecting clients.
 
-    \skipto connect(tcpServer
-    \printuntil ;
+    \snippet examples/network/fortuneserver/server.cpp 3
 
     When a client connects to our server, QTcpServer will emit
     QTcpServer::newConnection(). In turn, this will invoke our
     sendFortune() slot:
 
-    \skipto sendFortune()
-    \printuntil Qt_4_0
+    \snippet examples/network/fortuneserver/server.cpp 4
 
     The purpose of this slot is to select a random line from our list of
     fortunes, encode it into a QByteArray using QDataStream, and then write it
@@ -55,7 +91,7 @@
     we can communicate with clients from future versions of Qt. (See
     QDataStream::setVersion().)
 
-    \printuntil sizeof
+    \snippet examples/network/fortuneserver/server.cpp 6
 
     At the start of our QByteArray, we reserve space for a 16 bit integer that
     will contain the total size of the data block we are sending. We continue
@@ -64,14 +100,14 @@
     total size of the array. By doing this, we provide a way for clients to
     verify how much data they can expect before reading the whole packet.
 
-    \printuntil deleteLater()
+    \snippet examples/network/fortuneserver/server.cpp 7
 
     We then call QTcpServer::newPendingConnection(), which returns the
     QTcpSocket representing the server side of the connection. By connecting
     QTcpSocket::disconnected() to QObject::deleteLater(), we ensure that the
     socket will be deleted after disconnecting.
 
-    \printuntil /^\}/
+    \snippet examples/network/fortuneserver/server.cpp 8
 
     The encoded fortune is written using QTcpSocket::write(), and we finally
     call QTcpSocket::disconnectFromHost(), which will close the connection

@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class QAbstractButton;
@@ -101,6 +103,9 @@ protected Q_SLOTS:
 protected:
     bool event(QEvent * e);
 
+private Q_SLOTS:
+    void buttonDestroyed();
+
 private:
     Q_DISABLE_COPY(Q3ButtonGroup)
 
@@ -140,6 +145,8 @@ public:
 private:
     Q_DISABLE_COPY(Q3HButtonGroup)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -45,10 +45,13 @@
 #include "multipagewidgetcontainerextension.h"
 #include "multipagewidget.h"
 
+//! [0]
 MultiPageWidgetExtensionFactory::MultiPageWidgetExtensionFactory(QExtensionManager *parent)
     : QExtensionFactory(parent)
 {}
+//! [0]
 
+//! [1]
 QObject *MultiPageWidgetExtensionFactory::createExtension(QObject *object,
                                                           const QString &iid,
                                                           QObject *parent) const
@@ -61,3 +64,4 @@ QObject *MultiPageWidgetExtensionFactory::createExtension(QObject *object,
         return 0;
     }
 }
+//! [1]

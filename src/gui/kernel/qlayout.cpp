@@ -47,11 +47,15 @@
 #include "qlayoutengine_p.h"
 #include "qmenubar.h"
 #include "qtoolbar.h"
+#include "qsizegrip.h"
 #include "qevent.h"
 #include "qstyle.h"
 #include "qvariant.h"
 #include "qwidget_p.h"
 #include "qlayout_p.h"
+#include "qformlayout.h"
+
+QT_BEGIN_NAMESPACE
 
 static int menuBarHeightForWidth(QWidget *menubar, int w)
 {
@@ -74,7 +78,7 @@ static int menuBarHeightForWidth(QWidget *menubar, int w)
     \ingroup geomanagement
 
     This is an abstract base class inherited by the concrete classes
-    QBoxLayout, QGridLayout, and QStackedLayout.
+    QBoxLayout, QGridLayout, QFormLayout, and QStackedLayout.
 
     For users of QLayout subclasses or of QMainWindow there is seldom
     any need to use the basic functions provided by QLayout, such as
@@ -170,6 +174,27 @@ void QLayoutPrivate::getMargin(int *result, int userMargin, QStyle::PixelMetric 
     } else {
         *result = 0;
     }
+}
+
+// Static item factory functions that allow for hooking things in Designer
+
+QLayoutPrivate::QWidgetItemFactoryMethod QLayoutPrivate::widgetItemFactoryMethod = 0;
+QLayoutPrivate::QSpacerItemFactoryMethod QLayoutPrivate::spacerItemFactoryMethod = 0;
+
+QWidgetItem *QLayoutPrivate::createWidgetItem(const QLayout *layout, QWidget *widget)
+{
+    if (widgetItemFactoryMethod)
+        if (QWidgetItem *wi = (*widgetItemFactoryMethod)(layout, widget))
+            return wi;
+    return new QWidgetItemV2(widget);
+}
+
+QSpacerItem *QLayoutPrivate::createSpacerItem(const QLayout *layout, int w, int h, QSizePolicy::Policy hPolicy, QSizePolicy::Policy vPolicy)
+{
+    if (spacerItemFactoryMethod)
+        if (QSpacerItem *si = (*spacerItemFactoryMethod)(layout, w, h, hPolicy, vPolicy))
+            return si;
+    return new QSpacerItem(w, h,  hPolicy, vPolicy);
 }
 
 #ifdef QT3_SUPPORT
@@ -283,7 +308,7 @@ bool QLayout::autoAdd() const { Q_D(const QLayout); return d->autoNewChild; }
 void QLayout::addWidget(QWidget *w)
 {
     addChildWidget(w);
-    addItem(new QWidgetItem(w));
+    addItem(QLayoutPrivate::createWidgetItem(this, w));
 }
 
 
@@ -379,7 +404,7 @@ int QLayout::margin() const
     from the parent layout, or from the style settings for the parent
     widget.
 
-    For QGridLayout, it is possible to set different horizontal and
+    For QGridLayout and QFormLayout, it is possible to set different horizontal and
     vertical spacings using \l{QGridLayout::}{setHorizontalSpacing()}
     and \l{QGridLayout::}{setVerticalSpacing()}. In that case,
     spacing() returns -1.
@@ -394,6 +419,8 @@ int QLayout::spacing() const
         return boxlayout->spacing();
     } else if (const QGridLayout* gridlayout = qobject_cast<const QGridLayout*>(this)) {
         return gridlayout->spacing();
+    } else if (const QFormLayout* formlayout = qobject_cast<const QFormLayout*>(this)) {
+        return formlayout->spacing();
     } else {
         Q_D(const QLayout);
         if (d->insideSpacing >=0) {
@@ -419,6 +446,8 @@ void QLayout::setSpacing(int spacing)
         boxlayout->setSpacing(spacing);
     } else if (QGridLayout* gridlayout = qobject_cast<QGridLayout*>(this)) {
         gridlayout->setSpacing(spacing);
+    } else if (QFormLayout* formlayout = qobject_cast<QFormLayout*>(this)) {
+        formlayout->setSpacing(spacing);
     } else {
         Q_D(QLayout);
         d->insideSpacing = spacing;
@@ -444,6 +473,11 @@ void QLayout::setSpacing(int spacing)
 void QLayout::setContentsMargins(int left, int top, int right, int bottom)
 {
     Q_D(QLayout);
+
+    if (d->userLeftMargin == left && d->userTopMargin == top &&
+        d->userRightMargin == right && d->userBottomMargin == bottom)
+        return;
+
     d->userLeftMargin = left;
     d->userTopMargin = top;
     d->userRightMargin = right;
@@ -514,7 +548,7 @@ QWidget *QLayout::parentWidget() const
     Q_D(const QLayout);
     if (!d->topLevel) {
         if (parent()) {
-            QLayout *parentLayout = ::qobject_cast<QLayout*>(parent());
+            QLayout *parentLayout = qobject_cast<QLayout*>(parent());
             Q_ASSERT(parentLayout);
             return parentLayout->parentWidget();
         } else {
@@ -649,12 +683,17 @@ void QLayout::widgetEvent(QEvent *e)
                 QWidget *w = (QWidget *)c->child();
                 if (!w->isWindow()) {
 #if !defined(QT_NO_MENUBAR) && !defined(QT_NO_TOOLBAR)
-                    if (qobject_cast<QMenuBar*>(w) && !::qobject_cast<QToolBar*>(w->parentWidget())) {
+                    if (qobject_cast<QMenuBar*>(w) && !qobject_cast<QToolBar*>(w->parentWidget())) {
                         d->menubar = (QMenuBar *)w;
                         invalidate();
                     } else
 #endif
-                        addItem(new QWidgetItem(w));
+#ifndef QT_NO_SIZEGRIP
+                    if (qobject_cast<QSizeGrip*>(w) ) {
+                        //SizeGrip is handled by the dialog itself.
+                    } else
+#endif
+                        addItem(QLayoutPrivate::createWidgetItem(this, w));
                 }
             }
         }
@@ -664,7 +703,8 @@ void QLayout::widgetEvent(QEvent *e)
         // fall through
 #endif
     case QEvent::LayoutRequest:
-        activate();
+        if (static_cast<QWidget *>(parent())->isVisible())
+            activate();
         break;
     default:
         break;
@@ -1081,8 +1121,7 @@ void QLayout::update()
         if (layout->d_func()->topLevel) {
             Q_ASSERT(layout->parent()->isWidgetType());
             QWidget *mw = static_cast<QWidget*>(layout->parent());
-            if (mw->isVisible())
-                QApplication::postEvent(mw, new QEvent(QEvent::LayoutRequest));
+            QApplication::postEvent(mw, new QEvent(QEvent::LayoutRequest));
             break;
         }
         layout = static_cast<QLayout*>(layout->parent());
@@ -1185,24 +1224,7 @@ bool QLayout::activate()
     This function can be used to iterate over a layout. The following
     code will draw a rectangle for each layout item in the layout structure of the widget.
 
-    \code
-        static void paintLayout(QPainter *painter, QLayoutItem *item)
-        {
-            QLayout *layout = item->layout();
-            if (layout) {
-                for (int i = 0; i < layout->count(); ++i)
-                    paintLayout(painter, layout->itemAt(i));
-            }
-            painter->drawRect(layout->geometry());
-        }
-
-        void MyWidget::paintEvent(QPaintEvent *)
-        {
-            QPainter painter(this);
-            if (layout())
-                paintLayout(&painter, layout());
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qlayout.cpp 0
 
     \sa count(), takeAt()
 */
@@ -1219,13 +1241,7 @@ bool QLayout::activate()
     The following code fragment shows a safe way to remove all items
     from a layout:
 
-    \code
-        QLayoutItem *child;
-        while ((child = layout->takeAt(0)) != 0) {
-            ...
-            delete child;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qlayout.cpp 1
 
     \sa itemAt(), count()
 */
@@ -1559,3 +1575,5 @@ QDataStream &operator>>(QDataStream &stream, QSizePolicy &policy)
 
 #endif
 
+
+QT_END_NAMESPACE

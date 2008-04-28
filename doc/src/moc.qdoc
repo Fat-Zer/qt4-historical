@@ -1,9 +1,40 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,9 +71,7 @@
     \c moc is typically used with an input file containing class
     declarations like this:
 
-    \quotefromfile snippets/moc/myclass1.h
-    \skipto class
-    \printuntil /^\};/
+    \snippet doc/src/snippets/moc/myclass1.h 0
 
     In addition to the signals and slots shown above, \c moc also
     implements object properties as in the next example. The
@@ -56,18 +85,14 @@
     has a get function \c priority() and a set function \c
     setPriority().
 
-    \quotefromfile snippets/moc/myclass2.h
-    \skipto class
-    \printuntil /^\};/
+    \snippet doc/src/snippets/moc/myclass2.h 0
 
     The Q_FLAGS() macro declares enums that are to be used
     as flags, i.e. OR'd together. Another macro, Q_CLASSINFO(),
     allows you to attach additional name/value pairs to the class's
     meta-object:
 
-    \quotefromfile snippets/moc/myclass3.h
-    \skipto class
-    \printuntil /^\};/
+    \snippet doc/src/snippets/moc/myclass3.h 0
 
     The output produced by \c moc must be compiled and linked, just
     like the other C++ code in your program; otherwise, the build
@@ -100,18 +125,12 @@
     For Q_OBJECT class declarations in header files, here is a
     useful makefile rule if you only use GNU make:
 
-    \code
-        moc_%.cpp: %.h
-                moc $(DEFINES) $(INCPATH) $< -o $@
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 0
 
     If you want to write portably, you can use individual rules of
     the following form:
 
-    \code
-        moc_foo.cpp: foo.h
-                moc $(DEFINES) $(INCPATH) $< -o $@
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 1
 
     You must also remember to add \c moc_foo.cpp to your \c SOURCES
     (substitute your favorite name) variable and \c moc_foo.o or \c
@@ -129,19 +148,12 @@
     For Q_OBJECT class declarations in implementation (\c .cpp)
     files, we suggest a makefile rule like this:
 
-    \code
-        foo.o: foo.moc
-
-        foo.moc: foo.cpp
-                moc $(DEFINES) $(INCPATH) -i $< -o $@
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 2
 
     This guarantees that make will run the moc before it compiles
     \c foo.cpp. You can then put
 
-    \code
-        #include "foo.moc"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 3
 
     at the end of \c foo.cpp, where all the classes declared in that
     file are fully known.
@@ -210,11 +222,7 @@
     file. \c moc defines the preprocessor symbol \c Q_MOC_RUN. Any
     code surrounded by
 
-    \code
-        #ifndef Q_MOC_RUN
-            ... 
-        #endif
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 4
 
     is skipped by the \c moc.
 
@@ -236,16 +244,7 @@
     \c moc does not handle all of C++. The main problem is that class
     templates cannot have signals or slots. Here is an example:
 
-    \code
-        class SomeTemplate<int> : public QFrame
-        {
-            Q_OBJECT
-            ...
-
-        signals:
-            void mySignal(int);
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 5
 
     Another limitation is that moc does not expand macros, so you
     for example cannot use a macro to declare a signal/slot
@@ -261,13 +260,7 @@
     first inherited class is a subclass of QObject. Also, be sure
     that only the first inherited class is a QObject.
 
-    \code
-        // correct
-        class SomeClass : public QObject, public OtherClass
-        {
-            ...
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 6
 
     Virtual inheritance with QObject is \e not supported.
 
@@ -277,29 +270,11 @@
     signal or slot parameters, we think inheritance is a better
     alternative. Here is an example of illegal syntax:
 
-    \code
-        class SomeClass : public QObject
-        {
-            Q_OBJECT
-
-        public slots:
-            void apply(void (*apply)(List *, void *), char *); // WRONG
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 7
 
     You can work around this restriction like this:
 
-    \code
-        typedef void (*ApplyFunction)(List *, void *);
-
-        class SomeClass : public QObject
-        {
-            Q_OBJECT
-
-        public slots:
-            void apply(ApplyFunction, char *);
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 8
 
     It may sometimes be even better to replace the function pointer
     with inheritance and virtual functions.
@@ -313,21 +288,7 @@
     fully qualify the data types when declaring signals and slots,
     and when establishing connections. For example:
 
-    \code
-        class MyClass : public QObject
-        {
-            Q_OBJECT
-
-            enum Error {
-                ConnectionRefused,
-                RemoteHostClosed,
-                UnknownError
-            };
-
-        signals:
-            void stateChanged(MyClass::Error error);
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 9
 
     \section2 Type Macros Cannot Be Used for Signal and Slot Parameters
 
@@ -335,21 +296,7 @@
     an argument will not work in signals and slots. Here is an
     illegal example:
 
-    \code
-        #ifdef ultrix
-        #define SIGNEDNESS(a) unsigned a
-        #else
-        #define SIGNEDNESS(a) a
-        #endif
-
-        class Whatever : public QObject
-        {
-            Q_OBJECT
-
-        signals:
-            void someSignal(SIGNEDNESS(int));
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 10
 
     A macro without parameters will work.
 
@@ -357,19 +304,7 @@
 
     Here's an example of the offending construct:
 
-    \code
-        class A
-        {
-        public:
-            class B
-            {
-                Q_OBJECT
-
-            public slots:   // WRONG
-                void b();
-            };
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.moc.qdoc 11
 
     \section2 Signal/Slot return types cannot be references
 

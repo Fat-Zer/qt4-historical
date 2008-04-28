@@ -46,11 +46,16 @@
 
 #include "ui_listwidgeteditor.h"
 
+QT_BEGIN_NAMESPACE
+
 class QListWidget;
 class QComboBox;
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
+
+class FormWindowBase;
+class PropertySheetIconValue;
 
 class ListWidgetEditor: public QDialog
 {
@@ -63,7 +68,7 @@ public:
     void fillContentsFromComboBox(QComboBox *comboBox);
 
     int count() const;
-    QIcon icon(int row) const;
+    PropertySheetIconValue icon(int row) const;
     QString text(int row) const;
 
 private slots:
@@ -73,16 +78,17 @@ private slots:
     void on_moveItemDownButton_clicked();
     void on_listWidget_currentRowChanged(int currentRow);
     void on_listWidget_itemChanged(QListWidgetItem *item);
-    void on_itemTextLineEdit_textEdited(const QString &text);
-    void on_previewPixmapItemButton_clicked();
-    void on_deletePixmapItemButton_clicked();
+    void on_itemIconSelector_iconChanged(const PropertySheetIconValue &icon);
+    void cacheReloaded();
 
 private:
     void updateEditor();
     Ui::ListWidgetEditor ui;
-    QDesignerFormWindowInterface *m_form;
+    FormWindowBase *m_form;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // LISTWIDGETEDITOR_H

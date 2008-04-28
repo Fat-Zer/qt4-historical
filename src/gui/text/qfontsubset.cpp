@@ -60,6 +60,8 @@
 
 #ifndef QT_NO_PRINTER
 
+QT_BEGIN_NAMESPACE
+
 static const char * const agl =
 ".notdef\0space\0exclam\0quotedbl\0numbersign\0dollar\0percent\0ampersand\0"
 "quotesingle\0parenleft\0parenright\0asterisk\0plus\0comma\0hyphen\0period\0"
@@ -1726,7 +1728,7 @@ QByteArray QFontSubset::type1AddedGlyphs() const
         QPainterPath path;
         glyph_metrics_t metric;
         fontEngine->getUnscaledGlyph(g, &path, &metric);
-        QByteArray charstring = ::charString(path, metric.xoff.toReal(), metric.x.toReal(),
+        QByteArray charstring = charString(path, metric.xoff.toReal(), metric.x.toReal(),
                                              properties.emSquare.toReal());
         s << glyphName(i, reverseMap);
         if (!standard_font)
@@ -1736,5 +1738,6 @@ QByteArray QFontSubset::type1AddedGlyphs() const
     return glyphs;
 }
 
-#endif
+QT_END_NAMESPACE
 
+#endif // QT_NO_PRINTER

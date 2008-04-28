@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QIODevice;
@@ -97,6 +99,14 @@ public:
         Format_ARGB32,
         Format_ARGB32_Premultiplied,
         Format_RGB16,
+        Format_ARGB8565_Premultiplied,
+        Format_RGB666,
+        Format_ARGB6666_Premultiplied,
+        Format_RGB555,
+        Format_ARGB8555_Premultiplied,
+        Format_RGB888,
+        Format_RGB444,
+        Format_ARGB4444_Premultiplied,
 #if 0
         // reserved for future use
         Format_RGB15,
@@ -305,7 +315,7 @@ private:
     friend class QWSOnScreenSurface;
     QImageData *d;
 
-    friend class QPixmap;
+    friend class QRasterPixmapData;
     friend class QDetachedPixmap;
     friend Q_GUI_EXPORT qint64 qt_image_id(const QImage &image);
     friend const QVector<QRgb> *qt_image_colortable(const QImage &image);
@@ -336,6 +346,8 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QImage &);
 Q_GUI_EXPORT QT3_SUPPORT void bitBlt(QImage* dst, int dx, int dy, const QImage* src,
                                      int sx=0, int sy=0, int sw=-1, int sh=-1, Qt::ImageConversionFlags flags = Qt::AutoColor);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

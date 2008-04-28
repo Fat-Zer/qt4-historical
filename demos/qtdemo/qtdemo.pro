@@ -1,11 +1,16 @@
-CONFIG += assistant x11inc
+CONFIG += assistant help x11inc
 TARGET = qtdemo
 DESTDIR = $$QT_BUILD_TREE/bin
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 INSTALLS += target sources
 QT += xml network
-contains(QT_CONFIG, opengl): QT += opengl
+
+contains(QT_CONFIG, opengl) {
+    DEFINES += QT_OPENGL_SUPPORT
+    QT += opengl
+}
+
 build_all:!build_pass {
     CONFIG -= build_all
     CONFIG += release
@@ -55,9 +60,13 @@ SOURCES = main.cpp \
     imageitem.cpp
 
 win32:RC_FILE = qtdemo.rc
-mac:ICON = qtdemo.icns
+mac {
+ICON = qtdemo.icns
+QMAKE_INFO_PLIST = Info_mac.plist
+}
 
 # install
 target.path = $$[QT_INSTALL_BINS]
-sources.files = $$SOURCES $$HEADERS $$RESOURCES qtdemo.pro images xml *.ico *.icns *.rc
+sources.files = $$SOURCES $$HEADERS $$FORMS $$RESOURCES qtdemo.pro images xml *.ico *.icns *.rc *.plist
 sources.path = $$[QT_INSTALL_DEMOS]/qtdemo
+

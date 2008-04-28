@@ -49,6 +49,8 @@
 #include <QImage>
 #include <QPixmap>
 
+QT_BEGIN_NAMESPACE
+
 /*
  *  Constructs a MainWindowBase as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -87,6 +89,8 @@ MainWindowBase::MainWindowBase(QWidget* parent, const char* name, Qt::WindowFlag
     connect(wslspin, SIGNAL(valueChanged(int)), this, SLOT(somethingModified()));
     connect(menueffect, SIGNAL(activated(int)), this, SLOT(somethingModified()));
     connect(comboeffect, SIGNAL(activated(int)), this, SLOT(somethingModified()));
+    connect(audiosinkCombo, SIGNAL(activated(int)), this, SLOT(somethingModified()));
+    connect(videomodeCombo, SIGNAL(activated(int)), this, SLOT(somethingModified()));
     connect(tooltipeffect, SIGNAL(activated(int)), this, SLOT(somethingModified()));
     connect(strutwidth, SIGNAL(valueChanged(int)), this, SLOT(somethingModified()));
     connect(strutheight, SIGNAL(valueChanged(int)), this, SLOT(somethingModified()));
@@ -243,3 +247,5 @@ void MainWindowBase::upSubstitute()
 {
     qWarning("MainWindowBase::upSubstitute(): Not implemented yet");
 }
+
+QT_END_NAMESPACE

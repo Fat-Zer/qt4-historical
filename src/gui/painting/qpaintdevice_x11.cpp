@@ -49,6 +49,8 @@
 #include <private/qt_x11_p.h>
 #include "qx11info_x11.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QPaintDevice
     \brief The QPaintDevice class is the base class of objects that
@@ -151,6 +153,8 @@ QPaintDevice::QPaintDevice()
     painters = 0;
 }
 
+extern void qt_painter_removePaintDevice(QPaintDevice *); //qpainter.cpp
+
 /*!
     Destroys the paint device and frees window system resources.
 */
@@ -160,7 +164,6 @@ QPaintDevice::~QPaintDevice()
     if (paintingActive())
         qWarning("QPaintDevice: Cannot destroy paint device that is being "
                   "painted");
-    extern void qt_painter_removePaintDevice(QPaintDevice *); //qpainter.cpp
     qt_painter_removePaintDevice(this);
 }
 
@@ -623,8 +626,7 @@ int QPaintDevice::x11AppDpiY(int screen)
 
     Returns the horizontal resolution of the device in dots per inch,
     which is used when computing font sizes. For X11, this is usually
-    the same as could be computed from widthMM(), but it varies on
-    Windows.
+    the same as could be computed from widthMM().
 
     Note that if the logicalDpiX() doesn't equal the physicalDpiX(),
     the corresponding QPaintEngine must handle the resolution mapping.
@@ -637,8 +639,7 @@ int QPaintDevice::x11AppDpiY(int screen)
 
     Returns the vertical resolution of the device in dots per inch,
     which is used when computing font sizes. For X11, this is usually
-    the same as could be computed from heightMM(), but it varies on
-    Windows.
+    the same as could be computed from heightMM().
 
     Note that if the logicalDpiY() doesn't equal the physicalDpiY(),
     the corresponding QPaintEngine must handle the resolution mapping.
@@ -650,6 +651,9 @@ int QPaintDevice::x11AppDpiY(int screen)
     \fn int QPaintDevice::physicalDpiX() const
 
     Returns the horizontal resolution of the device in dots per inch.
+    For example, when printing, this resolution refers to the physical
+    printer's resolution. The logical DPI on the other hand, refers to
+    the resolution used by the actual paint engine.
 
     Note that if the physicalDpiX() doesn't equal the logicalDpiX(),
     the corresponding QPaintEngine must handle the resolution mapping.
@@ -661,6 +665,9 @@ int QPaintDevice::x11AppDpiY(int screen)
     \fn int QPaintDevice::physicalDpiY() const
 
     Returns the horizontal resolution of the device in dots per inch.
+    For example, when printing, this resolution refers to the physical
+    printer's resolution. The logical DPI on the other hand, refers to
+    the resolution used by the actual paint engine.
 
     Note that if the physicalDpiY() doesn't equal the logicalDpiY(),
     the corresponding QPaintEngine must handle the resolution mapping.
@@ -668,3 +675,4 @@ int QPaintDevice::x11AppDpiY(int screen)
     \sa  physicalDpiX(),  logicalDpiY()
 */
 
+QT_END_NAMESPACE

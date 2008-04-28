@@ -98,10 +98,11 @@
 #include "qhash.h"
 #include <stdlib.h>
 
-#ifndef QT_NO_LIBRARY
+QT_BEGIN_NAMESPACE
+
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
                           (QSqlDriverFactoryInterface_iid,
-                           QCoreApplication::libraryPaths(),
                            QLatin1String("/sqldrivers")))
 #endif
 
@@ -142,7 +143,7 @@ public:
     void copy(const QSqlDatabasePrivate *other);
     void disable();
 
-    QAtomic ref;
+    QAtomicInt ref;
     QSqlDriver* driver;
     QString dbname;
     QString uname;
@@ -151,6 +152,7 @@ public:
     QString drvName;
     int port;
     QString connOptions;
+    QString connName;
 
     static QSqlDatabasePrivate *shared_null();
     static QSqlDatabase database(const QString& name, bool open);
@@ -226,6 +228,7 @@ void QSqlDatabasePrivate::invalidateDb(const QSqlDatabase &db, const QString &na
         qWarning("QSqlDatabasePrivate::removeDatabase: connection '%s' is still in use, "
                  "all queries will cease to work.", name.toLocal8Bit().constData());
         db.d->disable();
+        db.d->connName = QString();
     }
 }
 
@@ -253,6 +256,7 @@ void QSqlDatabasePrivate::addDatabase(const QSqlDatabase &db, const QString &nam
                  "connection removed.", name.toLocal8Bit().data());
     }
     dict->insert(name, db);
+    db.d->connName = name;
 }
 
 /*! \internal
@@ -361,10 +365,7 @@ void QSqlDatabasePrivate::disable()
 
     The following code shows how to initialize a connection:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto QSqlDatabase_snippet
-    \skipto QSqlDatabase db =
-    \printuntil db.open()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 0
 
     Once a QSqlDatabase object has been created you can set the
     connection parameters with setDatabaseName(), setUserName(),
@@ -375,8 +376,7 @@ void QSqlDatabasePrivate::disable()
     The connection defined above is a nameless connection. It is the
     default connection and can be accessed using database() later on:
 
-    \skipto QSqlDatabase db =
-    \printline QSqlDatabase db =
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 1
 
     To make programming more convenient, QSqlDatabase is a value
     class. Any changes done to a database connection through one
@@ -482,28 +482,19 @@ QSqlDatabase QSqlDatabase::database(const QString& connectionName, bool open)
 
     Example:
 
-    \code
-    // WRONG
-    QSqlDatabase db = QSqlDatabase::database("sales");
-    QSqlQuery query("SELECT NAME, DOB FROM EMPLOYEES", db);
-    QSqlDatabase::removeDatabase("sales"); // will output a warning
-
-    // "db" is now a dangling invalid database connection,
-    // "query" contains an invalid result set
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 0
 
     The correct way to do it:
 
-    \code
-    {
-        QSqlDatabase db = QSqlDatabase::database("sales");
-        QSqlQuery query("SELECT NAME, DOB FROM EMPLOYEES", db);
-    }
-    // Both "db" and "query" are destroyed because they are out of scope
-    QSqlDatabase::removeDatabase("sales"); // correct
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 1
 
-    \sa database() {Threads and the SQL Module}
+    To remove the default connection, which may have been created with a
+    call to addDatabase() not specifying a connection name, you can
+    retrieve the default connection name by calling connectionName() on
+    the database returned by database(). Note that if a default database
+    hasn't been created an invalid database will be returned.
+
+    \sa database() connectionName() {Threads and the SQL Module}
 */
 
 void QSqlDatabase::removeDatabase(const QString& connectionName)
@@ -554,7 +545,7 @@ QStringList QSqlDatabase::drivers()
     list << QLatin1String("QIBASE");
 #endif
 
-#ifndef QT_NO_LIBRARY
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     if (QFactoryLoader *fl = loader()) {
         QStringList keys = fl->keys();
         for (QStringList::const_iterator i = keys.constBegin(); i != keys.constEnd(); ++i) {
@@ -579,11 +570,7 @@ QStringList QSqlDatabase::drivers()
     and don't want to compile it as a plugin.
 
     Example:
-    \code
-    QSqlDatabase::registerSqlDriver("MYDRIVER",
-                                    new QSqlDriverCreator<MyDatabaseDriver>);
-    QSqlDatabase db = QSqlDatabase::addDatabase("MYDRIVER");
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 2
 
     QSqlDatabase takes ownership of the \a creator pointer, so you
     mustn't delete it yourself.
@@ -756,7 +743,7 @@ void QSqlDatabasePrivate::init(const QString &type)
         }
     }
 
-#ifndef QT_NO_LIBRARY
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     if (!driver && loader()) {
         if (QSqlDriverFactoryInterface *factory = qobject_cast<QSqlDriverFactoryInterface*>(loader()->instance(type)))
             driver = factory->create(type);
@@ -767,6 +754,8 @@ void QSqlDatabasePrivate::init(const QString &type)
         qWarning("QSqlDatabase: %s driver not loaded", type.toLatin1().data());
         qWarning("QSqlDatabase: available drivers: %s",
                         QSqlDatabase::drivers().join(QLatin1String(" ")).toLatin1().data());
+        if (QCoreApplication::instance() == 0)
+            qWarning("QSqlDatabase: an instance of QCoreApplication is required for loading driver plugins");
         driver = shared_null()->driver;
     }
 }
@@ -945,15 +934,7 @@ bool QSqlDatabase::rollback()
     connection string to open an \c .mdb file directly, instead of
     having to create a DSN entry in the ODBC manager:
 
-    \code
-    ...
-    db = QSqlDatabase::addDatabase("QODBC");
-    db.setDatabaseName("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=myaccessfile.mdb");
-    if (db.open()) {
-        // success!
-    }
-    ...
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 3
 
     There is no default value.
 
@@ -1071,7 +1052,7 @@ QString QSqlDatabase::password() const
 }
 
 /*!
-    Returns the connection's host name. It may be empty.
+    Returns the connection's host name; it may be empty.
 
     \sa setHostName()
 */
@@ -1191,6 +1172,7 @@ QSqlRecord QSqlDatabase::record(const QString& tablename) const
     \i SQL_ATTR_TRACEFILE
     \i SQL_ATTR_TRACE
     \i SQL_ATTR_CONNECTION_POOLING
+    \i SQL_ATTR_ODBC_VERSION
     \endlist
 
     \i
@@ -1249,29 +1231,7 @@ QSqlRecord QSqlDatabase::record(const QString& tablename) const
     \endtable
 
     Examples:
-    \code
-    ...
-    // MySQL connection
-    db.setConnectOptions("CLIENT_SSL=1;CLIENT_IGNORE_SPACE=1"); // use an SSL connection to the server
-    if (!db.open()) {
-        db.setConnectOptions(); // clears the connect option string
-        ...
-    }
-    ...
-    // PostgreSQL connection
-    db.setConnectOptions("requiressl=1"); // enable PostgreSQL SSL connections
-    if (!db.open()) {
-        db.setConnectOptions(); // clear options
-        ...
-    }
-    ...
-    // ODBC connection
-    db.setConnectOptions("SQL_ATTR_ACCESS_MODE=SQL_MODE_READ_ONLY;SQL_ATTR_TRACE=SQL_OPT_TRACE_ON"); // set ODBC options
-    if (!db.open()) {
-        db.setConnectOptions(); // don't try to set this option
-        ...
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 4
 
     Refer to the client library documentation for more information
     about the different options.
@@ -1317,9 +1277,7 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
     connection and instantiating the QPSQL driver can be done like
     this:
 
-    \code
-        #include "qtdir/src/sql/drivers/psql/qsql_psql.cpp"
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 5
 
     (We assume that \c qtdir is the directory where Qt is installed.)
     This will pull in the code that is needed to use the PostgreSQL
@@ -1327,14 +1285,7 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
     that you have the PostgreSQL headers somewhere in your include
     search path.
 
-    \code
-        PGconn *con = PQconnectdb("host=server user=bart password=simpson dbname=springfield");
-        QPSQLDriver *drv =  new QPSQLDriver(con);
-        QSqlDatabase db = QSqlDatabase::addDatabase(drv); // becomes the new default connection
-        QSqlQuery query;
-        query.exec("SELECT NAME, ID FROM STAFF");
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 6
 
     The above code sets up a PostgreSQL connection and instantiates a
     QPSQLDriver object. Next, addDatabase() is called to add the
@@ -1347,10 +1298,7 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
     client library as well. The simplest way to do this is to add
     lines like the ones below to your \c .pro file:
 
-    \code
-        unix:LIBS += -lpq
-        win32:LIBS += libpqdll.lib
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 7
 
     You will need to have the client library in your linker's search
     path.
@@ -1429,16 +1377,7 @@ QSqlDatabase QSqlDatabase::addDatabase(QSqlDriver* driver, const QString& connec
     Returns true if the QSqlDatabase has a valid driver.
 
     Example:
-    \code
-        QSqlDatabase db;
-        qDebug() << db.isValid();    // Returns false
-
-        db = QSqlDatabase::database("sales");
-        qDebug() << db.isValid();    // Returns true if "sales" connection exists
-
-        QSqlDatabase::removeDatabase("sales");
-        qDebug() << db.isValid();    // Returns false
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldatabase.cpp 8
 */
 bool QSqlDatabase::isValid() const
 {
@@ -1486,6 +1425,16 @@ QSqlDatabase QSqlDatabase::cloneDatabase(const QSqlDatabase &other, const QStrin
     return db;
 }
 
+/*!
+    Returns the connection's name; it may be empty.
+
+    \sa addDatabase()
+*/
+QString QSqlDatabase::connectionName() const
+{
+    return d->connName;
+}
+
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSqlDatabase &d)
 {
@@ -1500,3 +1449,5 @@ QDebug operator<<(QDebug dbg, const QSqlDatabase &d)
     return dbg.space();
 }
 #endif
+
+QT_END_NAMESPACE

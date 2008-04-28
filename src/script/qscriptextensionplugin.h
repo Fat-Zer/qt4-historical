@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Script)
 
 class QScriptValue;
@@ -70,6 +72,8 @@ public:
 
     QScriptValue setupPackage(const QString &key, QScriptEngine *engine) const;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -46,12 +46,14 @@
 
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
+QT_BEGIN_NAMESPACE
+
 class Q3ListBoxPlugin: public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
-    Q3ListBoxPlugin(QObject *parent = 0);
+    Q3ListBoxPlugin(const QIcon &icon, QObject *parent = 0);
 
     virtual QString name() const;
     virtual QString group() const;
@@ -68,6 +70,9 @@ public:
 
 private:
     bool m_initialized;
+    QIcon m_icon;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3LISTBOX_PLUGIN_H

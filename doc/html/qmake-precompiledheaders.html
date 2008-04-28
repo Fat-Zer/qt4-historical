@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qmake-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qmake-manual.qdoc -->
 <head>
-  <title>Qt 4.3: Using Precompiled Headers</title>
+  <title>Qt 4.4: Using Precompiled Headers</title>
   <link rel="prev" href="qmake-advanced-usage.html" />
   <link rel="contents" href="qmake-manual.html" />
   <link rel="next" href="qmake-reference.html" />
@@ -20,7 +20,8 @@
 [<a href="qmake-manual.html">Contents</a>]
 [Next: <a href="qmake-reference.html">qmake Reference</a>]
 </p>
-<h1 align="center">Using Precompiled Headers<br /><small></small></h1>
+<h1 class="title">Using Precompiled Headers<br /><span class="subtitle"></span>
+</h1>
 <a name="introduction"></a><p>Precompiled headers are a performance feature supported by some compilers to compile a stable body of code, and store the compiled state of the code in a binary file. During subsequent compilations, the compiler will load the stored state, and continue compiling the specified file. Each subsequent compilation is faster because the stable code does not need to be recompiled.</p>
 <p><tt>qmake</tt> supports the use of precompiled headers (PCH) on some platforms and build environments, including:</p>
 <ul>
@@ -47,35 +48,35 @@
 <p>The precompiled header must contain code which is <i>stable</i> and <i>static</i> throughout your project. A typical PCH might look like this:</p>
 <a name="example"></a>
 <h4>Example: <tt>stable.h</tt></h4>
-<pre><span class="comment"> //</span> Add C includes here
+<pre>     // Add C includes here
 
- #if defined __cplusplus
-<span class="comment"> //</span> Add C++ includes here
- #include &lt;stdlib&gt;
- #include &lt;iostream&gt;
- #include &lt;vector&gt;
- #include &lt;QApplication&gt; <span class="comment">//</span> Qt includes
- #include &lt;QPushButton&gt;
- #include &lt;QLabel&gt;
- #include &quot;thirdparty/include/libmain.h&quot;
- #include &quot;my_stable_class.h&quot;
- ...
- #endif</pre>
+     #if defined __cplusplus
+     // Add C++ includes here
+     #include &lt;stdlib&gt;
+     #include &lt;iostream&gt;
+     #include &lt;vector&gt;
+     #include &lt;QApplication&gt; // Qt includes
+     #include &lt;QPushButton&gt;
+     #include &lt;QLabel&gt;
+     #include &quot;thirdparty/include/libmain.h&quot;
+     #include &quot;my_stable_class.h&quot;
+     ...
+     #endif</pre>
 <p>Note that a precompiled header file needs to separate C includes from C++ includes, since the precompiled header file for C files may not contain C++ code.</p>
 <a name="project-options"></a><a name="project-options"></a>
 <h3>Project Options</h3>
 <p>To make your project use PCH, you only need to define the <tt>PRECOMPILED_HEADER</tt> variable in your project file:</p>
-<pre>     PRECOMPILED_HEADER = stable.h</pre>
+<pre>         PRECOMPILED_HEADER = stable.h</pre>
 <p><tt>qmake</tt> will handle the rest, to ensure the creation and use of the precompiled header file. You do not need to include the precompiled header file in <tt>HEADERS</tt>, as <tt>qmake</tt> will do this if the configuration supports PCH.</p>
 <p>All platforms that support precompiled headers have the configuration option <tt>precompile_header</tt> set. Using this option, you may trigger conditional blocks in your project file to add settings when using PCH. For example:</p>
-<pre>     precompile_header:!isEmpty(PRECOMPILED_HEADER) {
-     DEFINES += USING_PCH
-     }</pre>
+<pre>         precompile_header:!isEmpty(PRECOMPILED_HEADER) {
+         DEFINES += USING_PCH
+         }</pre>
 <a name="notes-on-possible-issues"></a>
 <h2>Notes on Possible Issues</h2>
 <p>On some platforms, the file name suffix for precompiled header files is the same as that for other object files. For example, the following declarations may cause two different object files with the same name to be generated:</p>
-<pre>     PRECOMPILED_HEADER = window.h
-     SOURCES            = window.cpp</pre>
+<pre>         PRECOMPILED_HEADER = window.h
+         SOURCES            = window.cpp</pre>
 <p>To avoid potential conflicts like these, it is good practice to ensure that header files that will be precompiled are given distinctive names.</p>
 <a name="example-project"></a><a name="example-project"></a>
 <h2>Example Project</h2>
@@ -193,12 +194,7 @@
  }</pre>
 <a name=""></a>
 <h3><tt>precompile.pro</tt></h3>
-<pre> #############################################
- #
- # Example for using Precompiled Headers
- #
- #############################################
- TEMPLATE  = app
+<pre> TEMPLATE  = app
  LANGUAGE  = C++
  CONFIG   += console precompile_header
 
@@ -222,6 +218,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

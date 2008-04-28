@@ -61,6 +61,7 @@ static qreal normalizeAngle(qreal angle)
     return angle;
 }
 
+//! [0]
 Mouse::Mouse()
     : angle(0), speed(0), mouseEyeDirection(0),
       color(qrand() % 256, qrand() % 256, qrand() % 256)
@@ -68,21 +69,27 @@ Mouse::Mouse()
     rotate(qrand() % (360 * 16));
     startTimer(1000 / 33);
 }
+//! [0]
 
+//! [1]
 QRectF Mouse::boundingRect() const
 {
     qreal adjust = 0.5;
     return QRectF(-18 - adjust, -22 - adjust,
                   36 + adjust, 60 + adjust);
 }
+//! [1]
 
+//! [2]
 QPainterPath Mouse::shape() const
 {
     QPainterPath path;
     path.addRect(-10, -20, 20, 40);
     return path;
 }
+//! [2]
 
+//! [3]
 void Mouse::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     // Body
@@ -115,10 +122,14 @@ void Mouse::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     painter->setBrush(Qt::NoBrush);
     painter->drawPath(path);
 }
+//! [3]
 
+//! [4]
 void Mouse::timerEvent(QTimerEvent *)
 {
+//! [4]
     // Don't move too far away
+//! [5]
     QLineF lineToCenter(QPointF(0, 0), mapFromScene(0, 0));
     if (lineToCenter.length() > 150) {
         qreal angleToCenter = ::acos(lineToCenter.dx() / lineToCenter.length());
@@ -137,9 +148,12 @@ void Mouse::timerEvent(QTimerEvent *)
         angle += 0.25;
     } else if (::sin(angle) > 0) {
         angle -= 0.25;
+//! [5] //! [6]
     }
+//! [6]
 
     // Try not to crash with any other mice
+//! [7]
     QList<QGraphicsItem *> dangerMice = scene()->items(QPolygonF()
                                                        << mapToScene(0, 0)
                                                        << mapToScene(-30, -50)
@@ -160,17 +174,23 @@ void Mouse::timerEvent(QTimerEvent *)
         } else if (angleToMouse <= TwoPi && angleToMouse > (TwoPi - Pi / 2)) {
             // Rotate left
             angle -= 0.5;
+//! [7] //! [8]
         }
+//! [8] //! [9]
     }
+//! [9]
 
     // Add some random movement
+//! [10]
     if (dangerMice.size() > 1 && (qrand() % 10) == 0) {
         if (qrand() % 1)
             angle += (qrand() % 100) / 500.0;
         else
             angle -= (qrand() % 100) / 500.0;
     }
+//! [10]
 
+//! [11]
     speed += (-50 + qrand() % 100) / 100.0;
 
     qreal dx = ::sin(angle) * 10;
@@ -179,3 +199,4 @@ void Mouse::timerEvent(QTimerEvent *)
     rotate(dx);
     setPos(mapToParent(0, -(3 + sin(speed) * 3)));
 }
+//! [11]

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QTimeLinePrivate;
@@ -75,7 +77,8 @@ public:
         EaseOutCurve,
         EaseInOutCurve,
         LinearCurve,
-        SineCurve
+        SineCurve,
+        CosineCurve
     };
 
     explicit QTimeLine(int duration = 1000, QObject *parent = 0);
@@ -132,6 +135,8 @@ private:
     Q_DISABLE_COPY(QTimeLine)
     Q_DECLARE_PRIVATE(QTimeLine)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

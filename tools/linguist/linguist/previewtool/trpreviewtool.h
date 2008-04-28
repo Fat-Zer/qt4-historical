@@ -54,6 +54,8 @@
 
 #include "ui_trpreviewtool.h"
 
+QT_BEGIN_NAMESPACE
+
 class FormHolder : public QWidget
 {
     Q_OBJECT
@@ -83,9 +85,9 @@ class TrPreviewTool : public QMainWindow
 public:
     TrPreviewTool(QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~TrPreviewTool();
-    bool addFormFile(const QString &path);
+    void addFormFile(const QString &path);
     bool loadTranslation(const QString &path, const QString &displayName = QString());
-    bool addTranslator(QTranslator *translator, const QString &displayName);
+    void addTranslator(QTranslator *translator, const QString &displayName);
     void cascade();
 
 public slots:
@@ -98,7 +100,7 @@ public slots:
 
 private:
     virtual bool event(QEvent *e);  // override from QWidget
-    bool addTranslator(QTranslator *translator, const QString &path, const QString &displayName);
+    void addTranslator(QTranslator *translator, const QString &path, const QString &displayName);
     FormHolder* createFormFromFile(const QString& path);
     void recreateForms();
     void showWarning(const QString& warning);
@@ -110,5 +112,6 @@ private:
     QStandardItemModel *m_uiFilesModel;
 };
 
+QT_END_NAMESPACE
 
 #endif // TRPREVIEWTOOL_H

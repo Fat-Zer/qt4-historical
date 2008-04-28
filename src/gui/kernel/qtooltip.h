@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLTIP
@@ -59,6 +61,9 @@ public:
     static void showText(const QPoint &pos, const QString &text, QWidget *w = 0);
     static void showText(const QPoint &pos, const QString &text, QWidget *w, const QRect &rect);
     static inline void hideText() { showText(QPoint(), QString()); }
+
+    static bool isVisible();
+    static QString text();
 
     static QPalette palette();
     static void setPalette(const QPalette &);
@@ -73,6 +78,8 @@ public:
 };
 
 #endif // QT_NO_TOOLTIP
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

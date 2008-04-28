@@ -67,6 +67,8 @@
 #include "private/qwidget_p.h"
 #include "private/qdatetime_p.h"
 
+QT_BEGIN_NAMESPACE
+
 QVariant operator+(const QVariant &arg1, const QVariant &arg2);
 QVariant operator-(const QVariant &arg1, const QVariant &arg2);
 QVariant operator*(const QVariant &arg1, double multiplier);
@@ -101,8 +103,8 @@ public:
     void updateState(bool up);
     QString stripped(const QString &text, int *pos = 0) const;
     bool specialValue() const;
-    QVariant getZeroVariant() const;
-    void setRange(const QVariant &min, const QVariant &max);
+    virtual QVariant getZeroVariant() const;
+    virtual void setRange(const QVariant &min, const QVariant &max);
     void setValue(const QVariant &val, EmitPolicy ep, bool updateEdit = true);
     virtual QVariant bound(const QVariant &val, const QVariant &old = QVariant(), int steps = 0) const;
     QLineEdit *lineEdit();
@@ -119,7 +121,7 @@ public:
     virtual QStyle::SubControl newHoverControl(const QPoint &pos);
     bool updateHoverControl(const QPoint &pos);
 
-    void clearCache() const;
+    virtual void clearCache() const;
     virtual void updateEditFieldGeometry();
 
     static int variantCompare(const QVariant &arg1, const QVariant &arg2);
@@ -134,6 +136,7 @@ public:
     mutable QString cachedText;
     mutable QVariant cachedValue;
     mutable QValidator::State cachedState;
+    mutable QSize cachedSizeHint, cachedMinimumSizeHint;
     uint pendingEmit : 1;
     uint spindownEnabled : 1;
     uint spinupEnabled : 1;
@@ -143,6 +146,7 @@ public:
     uint frame : 1;
     uint accelerate : 1;
     uint keyboardTracking : 1;
+    uint cleared : 1;
     QAbstractSpinBox::CorrectionMode correctionMode;
     int acceleration;
     QStyle::SubControl hoverControl;
@@ -161,6 +165,8 @@ private:
     QAbstractSpinBox *qptr;
     QAbstractSpinBoxPrivate *dptr;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SPINBOX
 

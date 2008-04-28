@@ -52,7 +52,7 @@
 #include <propertyeditor/propertyeditor.h>
 #include <objectinspector/objectinspector.h>
 #include <taskmenu/taskmenu_component.h>
-#include <resourceeditor_p.h>
+#include "qtresourceview_p.h"
 #include <qdesigner_integration_p.h>
 #include <signalsloteditor/signalsloteditorwindow.h>
 
@@ -66,26 +66,52 @@
 
 #include <QtCore/qplugin.h>
 #include <QtCore/QDir>
+#include <QtCore/QTextStream>
+#include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 
 // ### keep it in sync with Q_IMPORT_PLUGIN in qplugin.h
 #define DECLARE_PLUGIN_INSTANCE(PLUGIN) \
-        class Static##PLUGIN##PluginInstance{ \
-        public: \
-                Static##PLUGIN##PluginInstance() {                      \
-                extern void qRegisterStaticPluginInstanceFunction(QtPluginInstanceFunction); \
-                extern QObject *qt_plugin_instance_##PLUGIN(); \
-                qRegisterStaticPluginInstanceFunction(qt_plugin_instance_##PLUGIN); \
-                } \
-        };
+    extern QT_PREPEND_NAMESPACE(QObject) *qt_plugin_instance_##PLUGIN(); \
+    class Static##PLUGIN##PluginInstance { public: \
+        Static##PLUGIN##PluginInstance() {                      \
+            QT_PREPEND_NAMESPACE(qRegisterStaticPluginInstanceFunction) \
+                (&qt_plugin_instance_##PLUGIN); \
+        } \
+    };
 
 #define INIT_PLUGIN_INSTANCE(PLUGIN) \
-        do { \
-            Static##PLUGIN##PluginInstance instance; Q_UNUSED(instance); \
-        } while (0)
+    do { \
+        Static##PLUGIN##PluginInstance instance; \
+        Q_UNUSED(instance); \
+    } while (0)
 
 DECLARE_PLUGIN_INSTANCE(SignalSlotEditorPlugin)
 DECLARE_PLUGIN_INSTANCE(BuddyEditorPlugin)
 DECLARE_PLUGIN_INSTANCE(TabOrderEditorPlugin)
+
+static void initResources()
+{
+    // Q_INIT_RESOURCE only usable in functions in global namespace
+    Q_INIT_RESOURCE(formeditor);
+    Q_INIT_RESOURCE(widgetbox);
+}
+
+
+static void initInstances()
+{
+    static bool plugins_initialized = false;
+
+    if (!plugins_initialized) {
+        INIT_PLUGIN_INSTANCE(SignalSlotEditorPlugin);
+        INIT_PLUGIN_INSTANCE(BuddyEditorPlugin);
+        INIT_PLUGIN_INSTANCE(TabOrderEditorPlugin);
+        plugins_initialized = true;
+    }
+}
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QDesignerComponents
@@ -107,8 +133,7 @@ DECLARE_PLUGIN_INSTANCE(TabOrderEditorPlugin)
     Initializes the resources used by the components.*/
 void QDesignerComponents::initializeResources()
 {
-    Q_INIT_RESOURCE(formeditor);
-    Q_INIT_RESOURCE(widgetbox);
+    initResources();
 }
 
 /*!
@@ -122,16 +147,7 @@ void QDesignerComponents::initializePlugins(QDesignerFormEditorInterface *core)
     Constructs a form editor interface with the given \a parent.*/
 QDesignerFormEditorInterface *QDesignerComponents::createFormEditor(QObject *parent)
 {
-    static bool plugins_initialized = false;
-
-    if (!plugins_initialized) {
-        INIT_PLUGIN_INSTANCE(SignalSlotEditorPlugin);
-        INIT_PLUGIN_INSTANCE(BuddyEditorPlugin);
-        INIT_PLUGIN_INSTANCE(TabOrderEditorPlugin);
-
-        plugins_initialized = true;
-    }
-
+    initInstances();
     return new qdesigner_internal::FormEditor(parent);
 }
 
@@ -140,6 +156,34 @@ QDesignerFormEditorInterface *QDesignerComponents::createFormEditor(QObject *par
 QObject *QDesignerComponents::createTaskMenu(QDesignerFormEditorInterface *core, QObject *parent)
 {
     return new qdesigner_internal::TaskMenuComponent(core, parent);
+}
+
+static inline int qtMajorVersion(int qtVersion) { return qtVersion >> 16; }
+static inline int qtMinorVersion(int qtVersion) { return (qtVersion >> 8) & 0xFF; }
+static inline void setMinorVersion(int minorVersion, int *qtVersion)
+{
+    *qtVersion &= ~0xFF00;
+    *qtVersion |= minorVersion << 8;
+}
+
+// Build the version-dependent name of the user widget box file, '$HOME.designer/widgetbox4.4.xml'
+static inline QString widgetBoxFileName(int qtVersion, const QDesignerLanguageExtension *lang = 0)
+{
+    QString rc; {
+        const QChar dot = QLatin1Char('.');
+        QTextStream str(&rc);
+        str << QDir::homePath() << QDir::separator() << QLatin1String(".designer") << QDir::separator()
+            << QLatin1String("widgetbox");
+        // The naming convention using the version was introduced with 4.4
+        const int major = qtMajorVersion(qtVersion);
+        const int minor = qtMinorVersion(qtVersion);
+        if (major >= 4 &&  minor >= 4)
+            str << major << dot << minor;
+        if (lang)
+            str << dot << lang->uiExtension();
+        str << QLatin1String(".xml");
+    }
+    return rc;
 }
 
 /*!
@@ -163,16 +207,20 @@ QDesignerWidgetBoxInterface *QDesignerComponents::createWidgetBox(QDesignerFormE
         widgetBox->load();
     } while (false);
 
-    QString rc = QDir::homePath();
-    rc += QLatin1String("/.designer");
-    rc += QLatin1String("/widgetbox");
-    if (lang) {
-        rc += QLatin1Char('.');
-        rc += lang->uiExtension();
-    }
-    rc += QLatin1String(".xml");
+    const QString userWidgetBoxFile = widgetBoxFileName(QT_VERSION, lang);
 
-    widgetBox->setFileName(rc);
+    widgetBox->setFileName(userWidgetBoxFile);
+    if (!QFileInfo(userWidgetBoxFile).exists()) {
+        // check previous version, that is, are we running the new version for the first time
+        // If so, try to copy the old widget box file
+        if (const int minv = qtMinorVersion(QT_VERSION)) {
+            int oldVersion = QT_VERSION;
+            setMinorVersion(minv - 1, &oldVersion);
+            const QString oldWidgetBoxFile = widgetBoxFileName(oldVersion, lang);
+            if (QFileInfo(oldWidgetBoxFile).exists())
+                QFile::copy(oldWidgetBoxFile, userWidgetBoxFile);
+        }
+    }
     widgetBox->load();
 
     return widgetBox;
@@ -208,7 +256,9 @@ QWidget *QDesignerComponents::createResourceEditor(QDesignerFormEditorInterface 
         if (w)
             return w;
     }
-    return new qdesigner_internal::ResourceEditor(core, true, parent);
+    QtResourceView *resourceView = new QtResourceView(core, parent);
+    resourceView->setResourceModel(core->resourceModel());
+    return resourceView;
 }
 
 /*!
@@ -217,4 +267,6 @@ QWidget *QDesignerComponents::createSignalSlotEditor(QDesignerFormEditorInterfac
 {
     return new qdesigner_internal::SignalSlotEditorWindow(core, parent);
 }
+
+QT_END_NAMESPACE
 

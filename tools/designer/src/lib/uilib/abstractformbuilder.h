@@ -54,6 +54,8 @@
 #include <QtGui/QPalette>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 #if 0
 // pragma for syncqt, don't remove.
 
@@ -98,6 +100,8 @@ class DomUI;
 class DomWidget;
 class DomResourcePixmap;
 
+class QResourceBuilder;
+
 #ifndef QT_FORMBUILDER_NO_SCRIPT
 class QFormScriptRunner;
 #endif 
@@ -116,6 +120,8 @@ public:
 
     void setScriptingEnabled(bool enabled);
     bool isScriptingEnabled() const;
+
+    static int resourceRole();
 
 protected:
 //
@@ -193,6 +199,9 @@ protected:
     void saveTableWidgetExtraInfo(QTableWidget *tablWidget, DomWidget *ui_widget, DomWidget *ui_parentWidget);
     void saveComboBoxExtraInfo(QComboBox *widget, DomWidget *ui_widget, DomWidget *ui_parentWidget);
 
+    void setResourceBuilder(QResourceBuilder *builder);
+    QResourceBuilder *resourceBuilder() const;
+    DomProperty *saveResource(const QVariant &v) const;
 //
 // utils
 //
@@ -209,6 +218,8 @@ protected:
     DomBrush *saveBrush(const QBrush &brush);
 
     void reset();
+    void initialize(const DomUI *ui);
+
 #ifndef QT_FORMBUILDER_NO_SCRIPT
     QFormScriptRunner *formScriptRunner() const;
 #endif
@@ -259,6 +270,8 @@ private:
 #ifdef QFORMINTERNAL_NAMESPACE
 }
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

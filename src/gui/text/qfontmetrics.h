@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifdef Q_WS_QWS
@@ -189,6 +191,8 @@ public:
 private:
     QFontPrivate *d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

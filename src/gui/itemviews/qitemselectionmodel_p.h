@@ -57,6 +57,8 @@
 
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_ITEMVIEWS
 class QItemSelectionModelPrivate: public QObjectPrivate
 {
@@ -99,5 +101,7 @@ public:
 };
 
 #endif // QT_NO_ITEMVIEWS
+
+QT_END_NAMESPACE
 
 #endif // QITEMSELECTIONMODEL_P_H

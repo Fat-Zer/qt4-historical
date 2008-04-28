@@ -57,6 +57,8 @@
 
 #include "private/qeventdispatcher_unix_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QEventDispatcherX11Private;
 
 class QEventDispatcherX11 : public QEventDispatcherUNIX
@@ -80,5 +82,7 @@ protected:
     int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
                timeval *timeout);
 };
+
+QT_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_X11_P_H

@@ -59,6 +59,8 @@
 
 #include <private/qwidget_p.h>
 
+QT_BEGIN_NAMESPACE
+
 //### a rubberband window type would be a more elegant solution
 #define RUBBERBAND_WINDOW_TYPE Qt::ToolTip
 
@@ -112,28 +114,7 @@ void QRubberBand::initStyleOption(QStyleOptionRubberBand *option) const
     setGeometry(), move() or resize() to position and size it. A common
     pattern is to do this in conjunction with mouse events. For example:
 
-    \code
-        void Widget::mousePressEvent(QMouseEvent *event)
-        {
-            origin = event->pos();
-            if (!rubberBand)
-                rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-            rubberBand->setGeometry(QRect(origin, QSize()));
-            rubberBand->show();
-        }
-
-        void Widget::mouseMoveEvent(QMouseEvent *event)
-        {
-            rubberBand->setGeometry(QRect(origin, event->pos()).normalized());
-        }
-
-        void Widget::mouseReleaseEvent(QMouseEvent *event)
-        {
-            rubberBand->hide();
-            // determine selection, for example using QRect::intersects()
-            // and QRect::contains().
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qrubberband.cpp 0
 
     If you pass a parent to QRubberBand's constructor, the rubber band will
     display only inside its parent, but stays on top of other child widgets.
@@ -353,5 +334,7 @@ bool QRubberBand::event(QEvent *e)
 {
     return QWidget::event(e);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_RUBBERBAND

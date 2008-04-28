@@ -1,11 +1,40 @@
 /****************************************************************************
 **
-** Explanation of moc and the meta-object system.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** This file is part of the documentation of the Qt Toolkit.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -100,18 +129,14 @@
 
     A minimal C++ class declaration might read:
 
-    \quotefromfile snippets/signalsandslots/signalsandslots.h
-    \skipto PlainCounter
-    \skipto class Counter
-    \printuntil };
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.h 0
 
     A small QObject-based class might read:
 
-    \skipto ObjectCounter
-    \skipto include <QObject>
-    \printline include
-    \printline class Counter
-    \printuntil };
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.h 1
+    \codeline
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.h 2
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.h 3
 
     The QObject-based version has the same internal state, and provides
     public methods to access the state, but in addition it has support
@@ -128,9 +153,7 @@
     Here is a possible implementation of the \c{Counter::setValue()}
     slot:
 
-    \quotefromfile snippets/signalsandslots/signalsandslots.cpp
-    \skipto ::setValue
-    \printuntil /^\}/
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 0
 
     The \c{emit} line emits the signal \c valueChanged() from the
     object, with the new value as argument.
@@ -139,11 +162,11 @@
     and connect the first object's \c valueChanged() signal to the
     second object's \c setValue() slot using QObject::connect():
 
-    \skipto Counter a
-    \printline Counter a
-    \printuntil SLOT
-    \printline a.setValue
-    \printline b.setValue
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 1
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 2
+    \codeline
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 3
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 4
 
     Calling \c{a.setValue(12)} makes \c{a} emit a
     \c{valueChanged(12)} signal, which \c{b} will receive in its
@@ -210,7 +233,7 @@
     QScrollBar::valueChanged() were to use a special type such as the
     hypothetical QScrollBar::Range, it could only be connected to
     slots designed specifically for QScrollBar. Something as simple as
-    the program in \l{tutorial/t5}{Tutorial 5} would be impossible.
+    the program in \l{tutorials/tutorial/t5}{Tutorial 5} would be impossible.
 
     \section1 Slots
 
@@ -270,15 +293,13 @@
     also check if an object \link QObject::inherits()
     inherits\endlink a specific class, for example:
 
-    \skipto inherits(
-    \printuntil toggle
-    \printline }
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 5
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 6
 
     The meta-object information is also used by qobject_cast<T>(), which
     is similar to QObject::inherits() but is less error-prone:
 
-    \skipto qobject_cast
-    \printuntil toggle
+    \snippet doc/src/snippets/signalsandslots/signalsandslots.cpp 7
 
     See \l{Meta-Object System} for more information.
 
@@ -286,14 +307,14 @@
 
     Here is a simple commented example of a widget.
 
-    \quotefromfile snippets/signalsandslots/lcdnumber.h
-    \skipto #ifndef
-    \printline #ifndef
-    \printline #define
-    \printline #include <QFrame>
-    \printline class LcdNumber
-    \printline {
-    \printline Q_OBJECT
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 0
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 1
+    \codeline
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 2
+    \codeline
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 3
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 4
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 5
 
     \c LcdNumber inherits QObject, which has most of the signal-slot
     knowledge, via QFrame and QWidget. It is somewhat similar to the
@@ -306,8 +327,8 @@
     \l{moc}{run the moc} or to include the moc output in the link
     command.
 
-    \printline public
-    \printline LcdNumber
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 6
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 7
 
     It's not obviously relevant to the moc, but if you inherit
     QWidget you almost certainly want to have the \c parent argument
@@ -316,9 +337,8 @@
     Some destructors and member functions are omitted here; the \c
     moc ignores member functions.
 
-    \skipto signals
-    \printline signals
-    \printline overflow()
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 8
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 9
 
     \c LcdNumber emits a signal when it is asked to show an impossible
     value.
@@ -331,10 +351,11 @@
     functions when the number overflows, simply connect the signal to
     two different slots. Qt will call both (in arbitrary order).
 
-    \printline public slots:
-    \printuntil setSmallDecimalPoint
-    \printline };
-    \printline #endif
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 10
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 11
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 12
+    \codeline
+    \snippet doc/src/snippets/signalsandslots/lcdnumber.h 13
 
     A slot is a receiving function used to get information about
     state changes in other widgets. \c LcdNumber uses it, as the code
@@ -355,5 +376,44 @@
     Some irrelevant member functions have been omitted from this
     example.
 
+    \section1 Advanced Signals and Slots Usage
+
+    For cases where you may require information on the sender of the
+    signal, Qt provides the QObject::sender() function, which returns
+    a pointer to the object that sent the signal.
+
+    The QSignalMapper class is also provided for situations where
+    many signals are connected to the same slot and the slot needs
+    to handle each signal differently. Suppose you have three
+    QPushButton objects that determine which file you will open, and
+    you connect their QPushButton::clicked() signal to \c{mySlot()},
+    you can use QSignalMapper's \l{QSignalMapper::}{setMapping()} to
+    map all the \l{QPushButton::}{clicked()} signals to a
+    QSignalMapper object.
+
+    \snippet doc/src/snippets/signalsandslots/signalmapper.cpp 0
+
+    Then, you connect the \l{QSignalMapper::}{mapped()} signal to
+    \c{mySlot()} where a different file will be opened, depending on
+    which push button is pressed.
+
+    \snippet doc/src/snippets/signalsandslots/signalmapper.cpp 1
+
     \sa {Meta-Object System}, {Qt's Property System}
+
+    \target 3rd Party Signals and Slots
+    \section2 Using Qt with 3rd Party Signals and Slots
+
+    It is possible to use Qt with a 3rd party signal/slot mechanism.
+    You can even use both mechanisms in the same project. Just add the
+    following line to your qmake project (.pro) file.
+
+    \snippet doc/src/snippets/code/doc.src.containers.qdoc 22
+
+    It tells Qt not to define the moc keywords \c{signals}, \c{slots},
+    and \c{emit}, because these names will be used by a 3rd party
+    library, e.g. Boost. Then to continue using Qt signals and slots
+    with the \c{no_keywords} flag, simply replace all uses of the Qt
+    moc keywords in your sources with the corresponding Qt macros
+    Q_SIGNALS, Q_SLOTS, and Q_EMIT.
 */

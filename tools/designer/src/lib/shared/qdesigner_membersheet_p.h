@@ -59,6 +59,11 @@
 
 #include <QtDesigner/membersheet.h>
 #include <QtDesigner/default_extensionfactory.h>
+#include <QtCore/QStringList>
+
+QT_BEGIN_NAMESPACE
+
+class QDesignerMemberSheetPrivate;
 
 class QDESIGNER_SHARED_EXPORT QDesignerMemberSheet: public QObject, public QDesignerMemberSheetExtension
 {
@@ -66,7 +71,7 @@ class QDESIGNER_SHARED_EXPORT QDesignerMemberSheet: public QObject, public QDesi
     Q_INTERFACES(QDesignerMemberSheetExtension)
 
 public:
-    QDesignerMemberSheet(QObject *object, QObject *parent = 0);
+    explicit QDesignerMemberSheet(QObject *object, QObject *parent = 0);
     virtual ~QDesignerMemberSheet();
 
     virtual int indexOf(const QString &name) const;
@@ -92,20 +97,8 @@ public:
     virtual QList<QByteArray> parameterTypes(int index) const;
     virtual QList<QByteArray> parameterNames(int index) const;
 
-protected:
-    const QMetaObject *m_meta;
-
-    class Info
-    {
-    public:
-        QString group;
-        uint visible: 1;
-
-        inline Info()
-            : visible(1) {}
-    };
-
-    QHash<int, Info> m_info;
+private:
+    QDesignerMemberSheetPrivate *d;
 };
 
 class QDESIGNER_SHARED_EXPORT QDesignerMemberSheetFactory: public QExtensionFactory
@@ -119,5 +112,7 @@ public:
 protected:
     virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_MEMBERSHEET_H

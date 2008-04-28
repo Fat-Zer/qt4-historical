@@ -46,6 +46,7 @@
 #include "slidersgroup.h"
 #include "window.h"
 
+//! [0]
 Window::Window()
 {
     horizontalSliders = new SlidersGroup(Qt::Horizontal, tr("Horizontal"));
@@ -56,8 +57,11 @@ Window::Window()
     stackedWidget->addWidget(verticalSliders);
 
     createControls(tr("Controls"));
+//! [0]
 
+//! [1]
     connect(horizontalSliders, SIGNAL(valueChanged(int)),
+//! [1] //! [2]
             verticalSliders, SLOT(setValue(int)));
     connect(verticalSliders, SIGNAL(valueChanged(int)),
             valueSpinBox, SLOT(setValue(int)));
@@ -75,8 +79,11 @@ Window::Window()
 
     setWindowTitle(tr("Sliders"));
 }
+//! [2]
 
+//! [3]
 void Window::createControls(const QString &title)
+//! [3] //! [4]
 {
     controlsGroup = new QGroupBox(title);
 
@@ -87,7 +94,9 @@ void Window::createControls(const QString &title)
     invertedAppearance = new QCheckBox(tr("Inverted appearance"));
     invertedKeyBindings = new QCheckBox(tr("Inverted key bindings"));
 
+//! [4] //! [5]
     minimumSpinBox = new QSpinBox;
+//! [5] //! [6]
     minimumSpinBox->setRange(-100, 100);
     minimumSpinBox->setSingleStep(1);
 
@@ -103,7 +112,9 @@ void Window::createControls(const QString &title)
     orientationCombo->addItem(tr("Horizontal slider-like widgets"));
     orientationCombo->addItem(tr("Vertical slider-like widgets"));
 
+//! [6] //! [7]
     connect(orientationCombo, SIGNAL(activated(int)),
+//! [7] //! [8]
             stackedWidget, SLOT(setCurrentIndex(int)));
     connect(minimumSpinBox, SIGNAL(valueChanged(int)),
             horizontalSliders, SLOT(setMinimum(int)));
@@ -134,3 +145,4 @@ void Window::createControls(const QString &title)
     controlsLayout->addWidget(orientationCombo, 3, 0, 1, 3);
     controlsGroup->setLayout(controlsLayout);
 }
+//! [8]

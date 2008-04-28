@@ -46,6 +46,8 @@
 
 #include "moc.h"
 
+QT_BEGIN_NAMESPACE
+
 class Generator
 {
     FILE *out;
@@ -74,5 +76,7 @@ private:
     QByteArray purestSuperClass;
     QList<QByteArray> metaTypes;
 };
+
+QT_END_NAMESPACE
 
 #endif // GENERATOR_H

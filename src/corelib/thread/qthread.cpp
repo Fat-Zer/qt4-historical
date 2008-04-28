@@ -71,12 +71,15 @@
 #endif
 */
 
+QT_BEGIN_NAMESPACE
+
 /*
   QThreadData
 */
 
 QThreadData::QThreadData(int initialRefCount)
-    : _ref(initialRefCount), thread(0), quitNow(false), eventDispatcher(0), canWait(true)
+    : _ref(initialRefCount), thread(0),
+      quitNow(false), loopLevel(0), eventDispatcher(0), canWait(true)
 {
     // fprintf(stderr, "QThreadData %p created\n", this);
 }
@@ -182,6 +185,12 @@ QThread *QAdoptedThread::createThreadForAdoption()
     return t;
 }
 
+void QAdoptedThread::run()
+{
+    // this function should never be called
+    qFatal("QAdoptedThread::run(): Internal error, this implementation should never be called.");
+}
+
 /*!
     \class QThread
     \brief The QThread class provides platform-independent threads.
@@ -194,26 +203,12 @@ QThread *QAdoptedThread::createThreadForAdoption()
     program; it shares data with all the other threads within the
     process but executes independently in the way that a separate
     program does on a multitasking operating system. Instead of
-    starting in \c main(), QThreads begin executing in run().
-    To create your own threads, subclass QThread and reimplement
-    run(). For example:
+    starting in \c main(), QThreads begin executing in run().  By
+    default, run() starts the event loop by calling exec() (see
+    below). To create your own threads, subclass QThread and
+    reimplement run(). For example:
 
-    \code
-        class MyThread : public QThread
-        {
-        public:
-            void run();
-        };
-
-        void MyThread::run()
-        {
-            QTcpSocket socket;
-            // connect QTcpSocket's signals somewhere meaningful
-            ...
-            socket.connectToHost(hostName, portNumber);
-            exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qthread.cpp 0
 
     This will create a QTcpSocket in the thread and then execute the
     thread's event loop. Use the start() method to begin execution.
@@ -231,11 +226,12 @@ QThread *QAdoptedThread::createThreadForAdoption()
     Each QThread can have its own event loop. You can start the event
     loop by calling exec(); you can stop it by calling exit() or
     quit(). Having an event loop in a thread makes it possible to
-    connect signals from other threads to slots in this threads,
-    using a mechanism called \l{Qt::QueuedConnection}{queued
+    connect signals from other threads to slots in this threads, using
+    a mechanism called \l{Qt::QueuedConnection}{queued
     connections}. It also makes it possible to use classes that
     require the event loop, such as QTimer and QTcpSocket, in the
-    thread.
+    thread. Note, however, that is is not possible to use any widget
+    classes in the thread.
 
     In extreme cases, you may want to forcibly terminate() an
     executing thread. However, doing so is dangerous and discouraged.
@@ -481,19 +477,28 @@ void QThread::quit()
 { exit(); }
 
 /*!
-    \fn void QThread::run()
+    The starting point for the thread. After calling start(), the
+    newly created thread calls this function. The default
+    implementation simply calls exec().
 
-    This method is pure virtual and must be implemented in derived
-    classes in order to do useful work. Returning from this method
-    will end the execution of the thread.
+    You can reimplemented this function to do other useful
+    work. Returning from this method will end the execution of the
+    thread.
 
-    \sa wait()
+    \sa start() wait()
 */
-
+void QThread::run()
+{
+    (void) exec();
+}
 
 /*! \internal
     Initializes the QThread system.
 */
+#if defined (Q_OS_WIN)
+void qt_create_tls();
+#endif
+
 void QThread::initialize()
 {
     if (qt_global_mutexpool)
@@ -501,7 +506,6 @@ void QThread::initialize()
     qt_global_mutexpool = QMutexPool::instance();
 
 #if defined (Q_OS_WIN)
-    extern void qt_create_tls();
     qt_create_tls();
 #endif
 }
@@ -558,7 +562,9 @@ QThread::Priority QThread::priority() const
 
 #else // QT_NO_THREAD
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <private/qcoreapplication_p.h>
+QT_END_INCLUDE_NAMESPACE
 
 QThread* QThread::instance = 0;
 
@@ -577,3 +583,5 @@ QThreadData* QThreadData::current()
 }
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE

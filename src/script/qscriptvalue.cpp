@@ -51,9 +51,13 @@
 #include "qscriptcontext_p.h"
 #include "qscriptmember_p.h"
 #include "qscriptobject_p.h"
+#include "qscriptclass.h"
+#include "qscriptclass_p.h"
 
 #include <QtCore/QDateTime>
 #include <QtCore/QRegExp>
+
+QT_BEGIN_NAMESPACE
 
 /*!
   \since 4.3
@@ -84,18 +88,30 @@
   QScriptValues. Use setProperty() to set a property of an object, and
   call property() to retrieve the value of a property.
 
-  Note that a QScriptValue for which isObject() is true only carries a
-  reference to an actual object; copying the QScriptValue will only
-  copy the object reference, not the object itself. If you want to
-  clone an object (i.e. copy an object's properties to another
-  object), you can do so with the help of a \c{for-in} statement in
-  script code, or QScriptValueIterator in C++.
+  \snippet doc/src/snippets/code/src.script.qscriptvalue.cpp 0
+
+  Each property can have a set of attributes; these are specified as
+  the third (optional) argument to setProperty(). The attributes of a
+  property can be queried by calling the propertyFlags() function. The
+  following code snippet creates a property that cannot be modified by
+  script code:
+
+  \snippet doc/src/snippets/code/src.script.qscriptvalue.cpp 1
+
+  If you want to iterate over the properties of a script object, use
+  the QScriptValueIterator class.
 
   Object values have an internal \c{prototype} property, which can be
   accessed with prototype() and setPrototype(). Properties added to a
   prototype are shared by all objects having that prototype; this is
-  referred to as prototype-based inheritance. For more information,
-  see the \l{QtScript} documentation.
+  referred to as prototype-based inheritance. In practice, it means
+  that (by default) the property() function will automatically attempt
+  to look up look the property in the prototype() (and in the
+  prototype of the prototype(), and so on), if the object itself does
+  not have the requested property. Note that this prototype-based
+  lookup is not performed by setProperty(); setProperty() will always
+  create the property in the script object itself.  For more
+  information, see the \l{QtScript} documentation.
 
   Function objects (objects for which isFunction() returns true) can
   be invoked by calling call(). Constructor functions can be used to
@@ -103,6 +119,20 @@
 
   Use equals(), strictlyEquals() and lessThan() to compare a QScriptValue
   to another.
+
+  Object values can have custom data associated with them; see the
+  setData() and data() functions. By default, this data is not
+  accessible to scripts; it can be used to store any data you want to
+  associate with the script object. Typically this is used by custom
+  class objects (see QScriptClass) to store a C++ type that contains
+  the "native" object data.
+
+  Note that a QScriptValue for which isObject() is true only carries a
+  reference to an actual object; copying the QScriptValue will only
+  copy the object reference, not the object itself. If you want to
+  clone an object (i.e. copy an object's properties to another
+  object), you can do so with the help of a \c{for-in} statement in
+  script code, or QScriptValueIterator in C++.
 
   \sa QScriptEngine, QScriptValueIterator
 */
@@ -449,8 +479,14 @@ void QScriptValue::setScope(const QScriptValue &scope)
 */
 bool QScriptValue::instanceOf(const QScriptValue &other) const
 {
-    if (!other.isValid())
+    if (!isValid() || !other.isValid())
         return false;
+    if (other.engine() != engine()) {
+        qWarning("QScriptValue::instanceof: "
+                 "cannot perform operation on a value created in "
+                 "a different engine");
+        return false;
+    }
     return QScriptValuePrivate::valueOf(*this)
         .instanceOf(QScriptValuePrivate::valueOf(other));
 }
@@ -486,6 +522,16 @@ bool QScriptValue::lessThan(const QScriptValue &other) const
   \l{ECMA-262} section 11.9.3, "The Abstract Equality Comparison
   Algorithm".
 
+  This function can return true even if the type of this QScriptValue
+  is different from the type of the \a other value; i.e. the
+  comparison is not strict.  For example, comparing the number 9 to
+  the string "9" returns true; comparing an undefined value to a null
+  value returns true; comparing a \c{Number} object whose primitive
+  value is 6 to a \c{String} object whose primitive value is "6"
+  returns true; and comparing the number 1 to the boolean value
+  \c{true} returns true. If you want to perform a comparison
+  without such implicit value conversion, use strictlyEquals().
+
   Note that if this QScriptValue or the \a other value are objects,
   calling this function has side effects on the script engine, since
   the engine will call the object's valueOf() function (and possibly
@@ -511,6 +557,20 @@ bool QScriptValue::equals(const QScriptValue &other) const
   follows the behavior described in \l{ECMA-262} section 11.9.6, "The
   Strict Equality Comparison Algorithm".
 
+  If the type of this QScriptValue is different from the type of the
+  \a other value, this function returns false. If the types are equal,
+  the result depends on the type, as shown in the following table:
+
+    \table
+    \header \o Type \o Result
+    \row    \o Undefined  \o true
+    \row    \o Null       \o true
+    \row    \o Boolean    \o true if both values are true, false otherwise
+    \row    \o Number     \o false if either value is NaN (Not-a-Number); true if values are equal, false otherwise
+    \row    \o String     \o true if both values are exactly the same sequence of characters, false otherwise
+    \row    \o Object     \o true if both values refer to the same object, false otherwise
+    \endtable
+  
   \sa equals()
 */
 bool QScriptValue::strictlyEquals(const QScriptValue &other) const
@@ -693,10 +753,9 @@ QScriptValue QScriptValue::toObject() const
 }
 
 /*!
-  Returns the QDateTime representation of this value.
-  If this QScriptValue is not a date, or the value of the
-  date is NaN (Not-a-Number), an invalid QDateTime is
-  returned.
+  Returns a QDateTime representation of this value, in local time.
+  If this QScriptValue is not a date, or the value of the date is NaN
+  (Not-a-Number), an invalid QDateTime is returned.
 
   \sa isDate()
 */
@@ -778,7 +837,8 @@ void QScriptValue::setProperty(const QString &name, const QScriptValue &value,
                  qPrintable(name));
         return;
     }
-    QScriptValuePrivate::valueOf(*this).setProperty(name, QScriptValuePrivate::valueOf(value), flags);
+    QScriptValuePrivate::valueOf(*this).setProperty(
+        name, QScriptValuePrivate::valueOf(value), flags);
 }
 
 /*!
@@ -841,7 +901,54 @@ void QScriptValue::setProperty(quint32 arrayIndex, const QScriptValue &value,
                  "cannot set value created in a different engine");
         return;
     }
-    QScriptValuePrivate::valueOf(*this).setProperty(arrayIndex, QScriptValuePrivate::valueOf(value), flags);
+    QScriptValuePrivate::valueOf(*this).setProperty(
+        arrayIndex, QScriptValuePrivate::valueOf(value), flags);
+}
+
+/*! 
+  Returns the value of this QScriptValue's property with the given \a name,
+  using the given \a mode to resolve the property.
+
+  This overload of property() is useful when you need to look up the
+  same property repeatedly, since the lookup can be performed faster
+  when the name is represented as an interned string.
+
+  \sa QScriptEngine::toStringHandle(), setProperty()
+*/
+QScriptValue QScriptValue::property(const QScriptString &name,
+                                    const ResolveFlags &mode) const
+{
+    if (!name.isValid())
+        return QScriptValue();
+    QScriptStringPrivate *s = QScriptStringPrivate::get(name);
+    return QScriptValuePrivate::valueOf(*this).property(s->nameId, mode);
+}
+
+/*!
+  Sets the value of this QScriptValue's property with the given \a
+  name to the given \a value. The given \a flags specify how this
+  property may be accessed by script code.
+
+  This overload of setProperty() is useful when you need to set the
+  same property repeatedly, since the operation can be performed
+  faster when the name is represented as an interned string.
+
+  \sa QScriptEngine::toStringHandle()
+*/
+void QScriptValue::setProperty(const QScriptString &name,
+                               const QScriptValue &value,
+                               const PropertyFlags &flags)
+{
+    if (!name.isValid())
+        return;
+    if (isValid() && value.isValid() && (value.engine() != engine())) {
+        qWarning("QScriptValue::setProperty() failed: "
+                 "cannot set value created in a different engine");
+        return;
+    }
+    QScriptStringPrivate *s = QScriptStringPrivate::get(name);
+    QScriptValuePrivate::valueOf(*this).setProperty(
+        s->nameId, QScriptValuePrivate::valueOf(value), flags);
 }
 
 /*!
@@ -854,6 +961,21 @@ QScriptValue::PropertyFlags QScriptValue::propertyFlags(const QString &name,
                                                         const ResolveFlags &mode) const
 {
     return QScriptValuePrivate::valueOf(*this).propertyFlags(name, mode);
+}
+
+/*!
+  Returns the flags of the property with the given \a name, using the
+  given \a mode to resolve the property.
+
+  \sa property()
+*/
+QScriptValue::PropertyFlags QScriptValue::propertyFlags(const QScriptString &name,
+                                                        const ResolveFlags &mode) const
+{
+    if (!name.isValid())
+        return 0;
+    QScriptStringPrivate *s = QScriptStringPrivate::get(name);
+    return QScriptValuePrivate::valueOf(*this).propertyFlags(s->nameId, mode);
 }
 
 /*!
@@ -874,6 +996,8 @@ QScriptValue::PropertyFlags QScriptValue::propertyFlags(const QString &name,
   \c{Error} object). You can call
   QScriptEngine::hasUncaughtException() to determine if an exception
   occurred.
+
+  \snippet doc/src/snippets/code/src.script.qscriptvalue.cpp 2
 
   \sa construct()
 */
@@ -906,6 +1030,11 @@ QScriptValue QScriptValue::call(const QScriptValue &thisObject,
   (see \l{QScriptEngine::globalObject()}) will be used as the
   `this' object.
 
+  One common usage of this function is to forward native function
+  calls to another function:
+
+  \snippet doc/src/snippets/code/src.script.qscriptvalue.cpp 3
+
   \sa construct(), QScriptContext::argumentsObject()
 */
 QScriptValue QScriptValue::call(const QScriptValue &thisObject,
@@ -922,17 +1051,14 @@ QScriptValue QScriptValue::call(const QScriptValue &thisObject,
 }
 
 /*!
-  Creates a new \c{Object} and calls this QScriptValue as a constructor,
-  using the created object as the `this' object and passing \a args
-  as arguments. If the return value from the constructor call is an
-  object, then that object is returned; otherwise the created object
-  is returned.
+  Creates a new \c{Object} and calls this QScriptValue as a
+  constructor, using the created object as the `this' object and
+  passing \a args as arguments. If the return value from the
+  constructor call is an object, then that object is returned;
+  otherwise the default constructed object is returned.
 
   If this QScriptValue is not a function, construct() does nothing
   and returns an invalid QScriptValue.
-
-  \a args can be an arguments object, an array, null or
-  undefined; any other type will cause a TypeError to be thrown.
 
   Calling construct() can cause an exception to occur in the script
   engine; in that case, construct() returns the value that was thrown
@@ -948,11 +1074,11 @@ QScriptValue QScriptValue::construct(const QScriptValueList &args)
 }
 
 /*!
-  Creates a new \c{Object} and calls this QScriptValue as a constructor,
-  using the created object as the `this' object and passing \a arguments
-  as arguments. If the return value from the constructor call is an
-  object, then that object is returned; otherwise the created object
-  is returned.
+  Creates a new \c{Object} and calls this QScriptValue as a
+  constructor, using the created object as the `this' object and
+  passing \a arguments as arguments. If the return value from the
+  constructor call is an object, then that object is returned;
+  otherwise the default constructed object is returned.
 
   If this QScriptValue is not a function, construct() does nothing
   and returns an invalid QScriptValue.
@@ -1100,5 +1226,96 @@ bool QScriptValue::isValid() const
 {
     return QScriptValuePrivate::valueOf(*this).isValid();
 }
+
+/*!
+  \since 4.4
+
+  Returns the internal data of this QScriptValue object. QtScript uses
+  this property to store the primitive value of Date, String, Number
+  and Boolean objects. For other types of object, custom data may be
+  stored using setData().
+*/
+QScriptValue QScriptValue::data() const
+{
+    if (!isObject())
+        return QScriptValue();
+    return QScriptValuePrivate::valueOf(*this).internalValue();
+}
+
+/*!
+  \since 4.4
+
+  Sets the internal \a data of this QScriptValue object. You can use
+  this function to set object-specific data that won't be directly
+  accessible to scripts, but may be retrieved in C++ using the data()
+  function.
+*/
+void QScriptValue::setData(const QScriptValue &data)
+{
+    if (!isObject())
+        return;
+    QScriptValueImpl self = QScriptValuePrivate::valueOf(*this);
+    QScriptValueImpl data_p = QScriptValuePrivate::valueOf(data);
+    self.setInternalValue(data_p);
+}
+
+/*!
+  \since 4.4
+
+  Returns the custom script class that this script object is an
+  instance of, or 0 if the object is not of a custom class.
+
+  \sa setScriptClass()
+*/
+QScriptClass *QScriptValue::scriptClass() const
+{
+    if (!isObject())
+        return 0;
+    QScriptValueImpl self = QScriptValuePrivate::valueOf(*this);
+    QScriptClassInfo *info = self.classInfo();
+    if ((info->type() & QScriptClassInfo::TypeMask) < QScriptClassInfo::CustomType)
+        return 0;
+    return QScriptClassPrivate::classFromInfo(info);
+}
+
+/*!
+  \since 4.4
+
+  Sets the custom script class of this script object to \a scriptClass.
+  This can be used to "promote" a plain script object (e.g. created
+  by the "new" operator in a script, or by QScriptEngine::newObject() in C++)
+  to an object of a custom type.
+
+  \sa scriptClass(), setData()
+*/
+void QScriptValue::setScriptClass(QScriptClass *scriptClass)
+{
+    if (!isObject() || !scriptClass)
+        return;
+    QScriptClassPrivate *cls_p = QScriptClassPrivate::get(scriptClass);
+    QScriptClassInfo *info = cls_p->classInfo();
+    if ((info->type() & QScriptClassInfo::TypeMask) < QScriptClassInfo::CustomType)
+        return;
+    QScriptValueImpl self = QScriptValuePrivate::valueOf(*this);
+    self.setClassInfo(info);
+}
+
+/*!
+  \internal
+
+  Returns the ID of this object, or -1 if this QScriptValue is not an
+  object.
+
+  \sa QScriptEngine::objectById()
+*/
+qint64 QScriptValue::objectId() const
+{
+    if (!isObject())
+        return -1;
+    QScriptValueImpl self = QScriptValuePrivate::valueOf(*this);
+    return self.m_object_value->m_id;
+}
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

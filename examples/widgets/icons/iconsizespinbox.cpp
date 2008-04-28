@@ -45,11 +45,14 @@
 
 #include "iconsizespinbox.h"
 
+//! [0]
 IconSizeSpinBox::IconSizeSpinBox(QWidget *parent)
     : QSpinBox(parent)
 {
 }
+//! [0]
 
+//! [1]
 int IconSizeSpinBox::valueFromText(const QString &text) const
 {
     QRegExp regExp(tr("(\\d+)(\\s*[xx]\\s*\\d+)?"));
@@ -60,8 +63,11 @@ int IconSizeSpinBox::valueFromText(const QString &text) const
         return 0;
     }
 }
+//! [1]
 
+//! [2]
 QString IconSizeSpinBox::textFromValue(int value) const
 {
     return tr("%1 x %1").arg(value);
 }
+//! [2]

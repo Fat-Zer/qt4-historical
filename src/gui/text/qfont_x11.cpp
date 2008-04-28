@@ -71,6 +71,8 @@
 #define QFONTLOADER_DEBUG
 #define QFONTLOADER_DEBUG_VERBOSE
 
+QT_BEGIN_NAMESPACE
+
 double qt_pixelSize(double pointSize, int dpi)
 {
     if (pointSize < 0)
@@ -138,9 +140,6 @@ int QFontPrivate::defaultEncodingID = -1;
 */
 void QFont::initialize()
 {
-    // create global font cache
-    if (! QFontCache::instance) (void) new QFontCache;
-
     extern int qt_encoding_id_for_mib(int mib); // from qfontdatabase_x11.cpp
     QTextCodec *codec = QTextCodec::codecForLocale();
     // determine the default encoding id using the locale, otherwise
@@ -193,8 +192,7 @@ void QFont::initialize()
 */
 void QFont::cleanup()
 {
-    // delete the global font cache
-    delete QFontCache::instance;
+    QFontCache::cleanup();
 }
 
 /*!
@@ -266,12 +264,8 @@ FT_Face QFont::freetypeFace() const
 /*!
     Returns the name of the font within the underlying window system.
 
-    On Windows and Mac OS X, this is usually just the family name of a TrueType
-    font.
-
-    On X11, depending on whether Qt was built with FontConfig support, it is an
-    XLFD (X Logical Font Description) or a FontConfig pattern. An XLFD may be
-    returned even if FontConfig support is enabled.
+    Only on X11 when Qt was built without FontConfig support the XLFD (X Logical Font Description)
+    is returned; otherwise an empty string.
 
     Using the return value of this function is usually \e not \e
     portable.
@@ -282,8 +276,13 @@ QString QFont::rawName() const
 {
     QFontEngine *engine = d->engineForScript(QUnicodeTables::Common);
     Q_ASSERT(engine != 0);
-    return QString::fromLatin1(engine->name());
+    if (engine->type() == QFontEngine::Multi)
+        engine = static_cast<QFontEngineMulti *>(engine)->engine(0);
+    if (engine->type() == QFontEngine::XLFD)
+        return QString::fromLatin1(engine->name());
+    return QString();
 }
+struct QtFontDesc;
 
 /*!
     Sets a font by its system specific name. The function is
@@ -310,15 +309,15 @@ void QFont::setRawName(const QString &name)
     detach();
 
     // from qfontdatabase_x11.cpp
-    extern bool qt_fillFontDef(const QByteArray &xlfd, QFontDef *fd, int dpi);
+    extern bool qt_fillFontDef(const QByteArray &xlfd, QFontDef *fd, int dpi, QtFontDesc *desc);
 
-    if (!qt_fillFontDef(qt_fixXLFD(name.toLatin1()), &d->request, d->dpi)) {
+    if (!qt_fillFontDef(qt_fixXLFD(name.toLatin1()), &d->request, d->dpi, 0)) {
         qWarning("QFont::setRawName: Invalid XLFD: \"%s\"", name.toLatin1().constData());
 
         setFamily(name);
         setRawMode(true);
     } else {
-        resolve_mask = QFontPrivate::Complete;
+        resolve_mask = QFont::AllPropertiesResolved;
     }
 }
 
@@ -442,6 +441,7 @@ QString QFont::lastResortFont() const
 #if defined(CHECK_NULL)
     qFatal("QFontPrivate::lastResortFont: Cannot find any reasonable font");
 #endif
-
     return last;
 }
+
+QT_END_NAMESPACE

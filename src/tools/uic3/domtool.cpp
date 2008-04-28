@@ -54,6 +54,8 @@
 #include <QByteArray>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 /*
   \class DomTool domtool.h
   \brief The DomTool class provides static functions for Qt Designer
@@ -583,3 +585,5 @@ void DomTool::fixAttribute(QDomNode &node, double version)
             }
     }
 }
+
+QT_END_NAMESPACE

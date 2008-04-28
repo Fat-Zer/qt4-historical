@@ -53,6 +53,8 @@
 
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 class Atom;
 class CodeMarker;
 class Config;
@@ -96,6 +98,7 @@ public:
     bool hasKeywords() const;
     bool hasTargets() const;
     const QList<Atom *> &tableOfContents() const;
+    const QList<int> &tableOfContentsLevels() const;
     const QList<Atom *> &keywords() const;
     const QList<Atom *> &targets() const;
     const QMap<QString, QString> &metaTagMap() const;
@@ -113,5 +116,7 @@ private:
 
     DocPrivate *priv;
 };
+
+QT_END_NAMESPACE
 
 #endif

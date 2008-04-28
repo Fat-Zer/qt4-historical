@@ -46,10 +46,13 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QFileInfo;
 class QTabWidget;
+QT_END_NAMESPACE
 
+//! [0]
 class GeneralTab : public QWidget
 {
     Q_OBJECT
@@ -57,8 +60,10 @@ class GeneralTab : public QWidget
 public:
     GeneralTab(const QFileInfo &fileInfo, QWidget *parent = 0);
 };
+//! [0]
 
 
+//! [1]
 class PermissionsTab : public QWidget
 {
     Q_OBJECT
@@ -66,8 +71,10 @@ class PermissionsTab : public QWidget
 public:
     PermissionsTab(const QFileInfo &fileInfo, QWidget *parent = 0);
 };
+//! [1]
 
 
+//! [2]
 class ApplicationsTab : public QWidget
 {
     Q_OBJECT
@@ -75,8 +82,10 @@ class ApplicationsTab : public QWidget
 public:
     ApplicationsTab(const QFileInfo &fileInfo, QWidget *parent = 0);
 };
+//! [2]
 
 
+//! [3]
 class TabDialog : public QDialog
 {
     Q_OBJECT
@@ -88,5 +97,6 @@ private:
     QTabWidget *tabWidget;
     QDialogButtonBox *buttonBox;
 };
+//! [3]
 
 #endif

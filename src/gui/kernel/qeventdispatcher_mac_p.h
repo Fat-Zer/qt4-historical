@@ -60,6 +60,8 @@
 #include "private/qeventdispatcher_unix_p.h"
 #include "private/qt_mac_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QEventDispatcherMacPrivate;
 
 class QEventDispatcherMac : public QEventDispatcherUNIX
@@ -97,7 +99,6 @@ struct MacTimerInfo {
     QObject *obj;
     bool pending;
     EventLoopTimerRef mac_timer;
-    
     bool operator==(const MacTimerInfo &other)
     {
         return (id == other.id);
@@ -127,6 +128,12 @@ public:
 
     MacSocketHash macSockets;
     QList<EventRef> queuedUserInputEvents;
+    CFRunLoopSourceRef postedEventsSource;
+private:
+    static Boolean postedEventSourceEqualCallback(const void *info1, const void *info2);
+    static void postedEventsSourcePerformCallback(void *info);
 };
+
+QT_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_MAC_P_H

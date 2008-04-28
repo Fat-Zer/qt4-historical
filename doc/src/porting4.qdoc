@@ -1,9 +1,40 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -12,9 +43,12 @@
 
 /*!
     \page porting4.html
-
     \title Porting to Qt 4
+    \contentspage {Porting Guides}{Contents}
+    \previouspage Porting Guides
+    \nextpage Porting to Qt 4 - Virtual Functions
     \ingroup porting
+    \brief An overview of issues and techniques to consider when porting from Qt 3 to Qt 4.
 
 \omit
     ### QFileInfo::PermissionSpec -> QFile::Permission(s?)
@@ -61,7 +95,7 @@
     \bold{Other porting guides:}
 
     \list
-    \o \l{Porting to Qt 4 (Drag and Drop)}
+    \o \l{Porting to Qt 4 - Drag and Drop}
     \o \l{Porting .ui Files to Qt 4}
     \o \l{Porting to Graphics View}
     \o \l{qt3to4 - The Qt 3 to 4 Porting Tool}
@@ -546,9 +580,9 @@
     its subclasses (QAccessibleObject, QAccessibleWidget, etc.), you
     must port them the new QAccessibleInterface API.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QAccessibleInterface virtual member functions in Qt 3 that are
-    no longer virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions}
+    for a list of QAccessibleInterface virtual member functions in
+    Qt 3 that are no longer virtual in Qt 4.
 
     \section1 QAccessibleTitleBar
 
@@ -570,9 +604,9 @@
     transition to Qt 4. Note that when using Q3ToolBar and
     Q3PopupMenu, their actions must be \l {Q3Action}s.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QAction virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions}
+    for a list of QAction virtual member functions in Qt 3 that are
+    no longer virtual in Qt 4.
 
     \section1 QActionGroup
 
@@ -612,7 +646,7 @@
         \newcode
             QWidgetList list = QApplication::topLevelWidgets();
             for (int i = 0; i < list.size(); ++i) {
-                if (MainWindow *mainWin = qobject_cast<MainWindow>(list.at(i)))
+                if (MainWindow *mainWin = qobject_cast<MainWindow *>(list.at(i)))
                     mainWin->updateRecentFileItems();
             }
         \endcode
@@ -705,13 +739,7 @@
     function. The solution is to reimplement QWidget::paintEvent() in
     your QAbstractButton subclass as follows:
 
-    \code
-        void MyButton::paintEvent(QPaintEvent *)
-        {
-            QPainter painter(this);
-            drawButton(&painter);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 0
 
     \table
     \header \o Q3Button function \o QAbstractButton equivalent
@@ -742,9 +770,9 @@
        4, this mechanism has been moved to QCheckBox.
     \endlist
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    \c QButton virtual member functions in Qt 3 that aren't virtual
-    in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of \c QButton virtual member functions in Qt 3 that aren't
+    virtual in Qt 4.
 
     See \l{#properties}{Properties} for a list of \c QButton properties
     in Qt 3 that have changed in Qt 4.
@@ -783,9 +811,9 @@
     need to do anything else. See also the
     \l{#qgroupbox.section}{section on QGroupBox} below.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QButtonGroup virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QButtonGroup virtual member functions in Qt 3 that are no
+    longer virtual in Qt 4.
 
     \target qbytearray.section
     \section1 QByteArray
@@ -811,15 +839,11 @@
     \o  QMemArray::at() returned a non-const reference, whereas the
         new QByteArray::at() returns a const value. Code like
 
-        \code
-        ba.at(0) = 'X';
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 1
 
         will no longer compile. Instead, use QByteArray::operator[]:
 
-        \code
-        ba[0] = 'X';
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 2
 
     \o  The QMemArray::contains(char) function has been renamed
         QByteArray::count(char). In addition, there now exists a
@@ -840,8 +864,8 @@
         deep copy of the data.
 
     \o  QMemArray::bsearch() and QMemArray::sort() have no equivalent
-        in the new QByteArray class. Use \l qBinaryFind() and \l
-        qSort() if you need that functionality.
+        in the new QByteArray class. Use \l qBinaryFind() and \l qSort()
+        if you need that functionality.
     \endlist
 
     QByteArray was an explicitly shared class in Qt 3. See
@@ -890,16 +914,11 @@
         function returns \c void and either adds it to the cache or
         deletes it right away. Old code like
 
-        \code
-        if (!cache.insert(key, object))
-            delete object;
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 3
 
     becomes
 
-        \code
-        cache.insert(key, object);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 4
 
     \o  The new QCache class \e always takes ownership of the items
         it stores (i.e. auto-delete is always on). If you use Q3Cache
@@ -910,29 +929,11 @@
         pointers, not the objects that the pointers refer to. For
         example,
 
-        \code
-            Q3Cache<QWidget> cache;
-            cache.insert(widget->name(), widget);
-            ...
-            QWidget *foo = cache.take("foo");
-            if (foo)
-                foo->show();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 5
 
         becomes
 
-        \code
-            typedef QWidget *QWidgetPtr;
-            QCache<QString, QWidgetPtr> cache;
-            cache.insert(widget->name(), new QWidgetPtr(widget));
-            ...
-            QWidgetPtr *ptr = cache.take("foo");
-            if (ptr) {
-                QWidget *foo = *ptr;
-                delete ptr;
-                foo->show();
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 6
 
         An alternative is to stick to using Q3Cache.
     \endlist
@@ -977,6 +978,12 @@
 
     The \c QColor::numBitPlanes() function has been replaced
     by QColormap::depth().
+
+    The \c QColor::setNamedColor() function no longer supports
+    the named color in the same way as Qt 3. Qt 4's
+    \l{QColor::}{setNamedColor()} uses the new W3C convention
+    as stated 
+    \l{http://www.w3.org/TR/SVG/types.html#ColorKeywords}{here}.
 
     \table
     \header \o{4,1} Predefined Qt Colors
@@ -1023,9 +1030,7 @@
 
     you can simply replace colorGroup() with palette():
 
-    \code
-        painter.setBrush(palette().brush(QPalette::Text));
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 7
 
     \section1 QColorDrag
 
@@ -1042,8 +1047,8 @@
 
     \omit ### \endomit
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QComboBox virtual member functions in Qt 3 that are no longer
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QComboBox virtual member functions in Qt 3 that are no longer
     virtual in Qt 4.
 
     \section1 QCString
@@ -1063,12 +1068,7 @@
     '\\0' issue is handled by having QByteArray allocate one extra
     byte that it always sets to '\\0'. For example:
 
-    \code
-        QByteArray ba("Hello");
-        ba.size();             // returns 5 (the '\0' is not counted)
-        ba.length();           // returns 5
-        ba.data()[5];          // returns '\0'
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 8
 
     The Qt3Support library contains a class called
     Q3CString that inherits from the new QByteArray class and that
@@ -1235,9 +1235,9 @@
     QDateTimeEdit. The old class has been renamed Q3DateEdit and moved
     to the Qt3Support library.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of \c
-    QDateEdit virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of \c QDateEdit virtual member functions in Qt 3 that are
+    no longer virtual in Qt 4.
 
     \section1 QDateTimeEditBase
 
@@ -1252,8 +1252,8 @@
     in Qt 4 has been rewritten from scratch to provide a more
     flexible and powerful API.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QDateTimeEdit virtual member functions in Qt 3 that are no
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QDateTimeEdit virtual member functions in Qt 3 that are no
     longer virtual in Qt 4.
 
     \section1 QDeepCopy<T>
@@ -1279,8 +1279,8 @@
 
     \section1 QDial
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QDial virtual member functions in Qt 3 that are no longer
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QDial virtual member functions in Qt 3 that are no longer
     virtual in Qt 4.
 
     See \l{#properties}{Properties} for a list of QDial properties in
@@ -1390,46 +1390,26 @@
     \header \o Q3Dict idiom \o QMultiHash idiom
     \row
         \o
-        \code
-        dict.replace(key, value);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 9
         \o
-        \code
-        delete hash.take(key);
-        hash.insert(key, value);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 10
     \row
         \o
-        \code
-        dict.remove(key, value);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 11
         \o
-        \code
-        delete hash.take(key);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 12
     \row
         \o
-        \code
-        dict.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 13
 
         (also called from Q3Dict's destructor)
 
         \o
-        \code
-        while (!hash.isEmpty()) {
-            T *value = *hash.begin();
-            hash.erase(hash.begin());
-            delete value;
-        }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 14
 
         In 99% of cases, the following idiom also works:
 
-        \code
-        qDeleteAll(hash);
-        hash.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 15
 
         However, it may lead to crashes if \c hash is referenced from
         the value type's destructor, because \c hash contains
@@ -1465,23 +1445,11 @@
     Be aware that QHashIterator has a different way of iterating than
     Q3DictIterator. A typical loop with Q3DictIterator looks like this:
 
-    \code
-        Q3DictIterator<QWidget> i(dict);
-        while (i.current() != 0) {
-            do_something(i.currentKey(), i.current());
-            ++i;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 16
 
     Here's the equivalent QHashIterator loop:
 
-    \code
-        QHashIterator<QString, QWidget *> i(hash);
-        while (i.hasNext()) {
-            i.next();                   // must come first
-            do_something(i.key(), i.value());
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 17
 
     See \l{Java-style iterators} for details.
 
@@ -1535,8 +1503,8 @@
     and not a QPtrList<QFileInfo> *. Code using these methods will not work with
     the Qt3Support library and must be adapted instead.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QDir virtual member functions in Qt 3 that are no longer
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QDir virtual member functions in Qt 3 that are no longer
     virtual in Qt 4.
 
     QDir::match() now always matches case insensitively.
@@ -1571,9 +1539,9 @@
     new QDockWidget class with a different API. See the class
     documentation for details.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QDockWidget virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QDockWidget virtual member functions in Qt 3 that are no
+    longer virtual in Qt 4.
 
     \note \l{Q3DockWindow}'s
     \l{Q3DockWindow::setHorizontallyStretchable()}{horizontallyStretchable}
@@ -1594,7 +1562,7 @@
     In Qt 4, a copy operation is performed by default; the user has to
     hold down the \key{Shift} key to perform a move operation.
 
-    See \l{Porting to Qt 4 (Drag and Drop)} for a comparison between
+    See \l{Porting to Qt 4 - Drag and Drop} for a comparison between
     the drag and drop APIs in Qt 3 and Qt 4.
 
     \section1 QDropSite
@@ -1628,7 +1596,7 @@
     }
     \endcode
 
-    See \l{Porting to Qt 4 (Drag and Drop)} for a comparison between
+    See \l{Porting to Qt 4 - Drag and Drop} for a comparison between
     the drag and drop APIs in Qt 3 and Qt 4.
 
     \section1 QEditorFactory
@@ -1739,9 +1707,9 @@
         \endcode
     \endlist
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QFileDialog virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QFileDialog virtual member functions in Qt 3 that are no
+    longer virtual in Qt 4.
 
     \section1 QFocusData
 
@@ -1792,8 +1760,8 @@
     might want to use Q3Frame as a base class as a first step in the
     porting process, and later move on to the new QFrame class.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QFrame virtual member functions in Qt 3 that are no longer
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QFrame virtual member functions in Qt 3 that are no longer
     virtual in Qt 4.
 
     \section1 QFtp
@@ -1845,9 +1813,9 @@
 
     \section1 QGridLayout
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QGridLayout virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QGridLayout virtual member functions in Qt 3 that are no
+    longer virtual in Qt 4.
 
     \section1 QGridView
 
@@ -1885,9 +1853,9 @@
     application, you can use Q3GroupBox instead of QGroupBox as a
     help to porting.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of
-    QGroupBox virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of QGroupBox virtual member functions in Qt 3 that are no
+    longer virtual in Qt 4.
 
     \section1 QHBox
 
@@ -1981,7 +1949,7 @@
     the Qt3Support library. In Qt 4, use QMimeData
     instead and call QMimeData::setImage() to set the image.
 
-    See \l{Porting to Qt 4 (Drag and Drop)} for a comparison between
+    See \l{Porting to Qt 4 - Drag and Drop} for a comparison between
     the drag and drop APIs in Qt 3 and Qt 4.
 
     \section1 QImageIO
@@ -2131,9 +2099,9 @@
     QLabel::sizeHint() as the argument, whenever you change the
     contents of the QLabel.
 
-    See also \l{#virtual.functions}{Virtual Functions} for a list of
-    QLabel virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See also \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions}
+    for a list of QLabel virtual member functions in Qt 3 that are no
+    longer virtual in Qt 4.
 
     \section1 QLayout
 
@@ -2374,9 +2342,7 @@
     Use QObject::findChildren() (or qFindChildren() if you need MSVC 6
     compatibility) instead of QObject::queryList(). For example:
 
-    \code
-        QList<QWidget *> myWidgets = qFindChildren<QWidget *>(myParent);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 18
 
     QObject::killTimers() has been removed because it was unsafe to
     use in subclass. (A subclass normally doesn't know whether the
@@ -2536,11 +2502,11 @@
 
     For most purposes, QPopupMenu has been replaced by QMenu in Qt
     4. For compatibility with older applications, Q3PopupMenu provides
-    the old API and features that are specific to popup menus. Note
+    the old API and features that are specific to pop-up menus. Note
     that, when using Q3PopupMenu, the menu's actions must be \l
     {Q3Action}s.
 
-    In Qt 3, it was common practice to add entries to popup menus using the
+    In Qt 3, it was common practice to add entries to pop-up menus using the
     insertItem() function, maintaining identifiers for future use; for
     example, to dynamically change menu items.
     In Qt 4, menu entries are completely represented
@@ -2677,7 +2643,7 @@
         \endcode
 
     \o  QPtrList::sort() relied on the virtual comparedItems() to
-        sort items. In Qt 4, you can use qSort() instead and pass
+        sort items. In Qt 4, you can use \l qSort() instead and pass
         your "compare item" function as an argument.
 
     \o  QPtrList::find(const T *) returns an iterator, whereas
@@ -2710,86 +2676,48 @@
     \header \o QPtrList idiom \o QList idiom
     \row
         \o
-        \code
-        list.replace(index, value);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 19
         \o
-        \code
-        delete list[index];
-        list[index] = value;
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 20
     \row
         \o
-        \code
-        list.removeFirst();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 21
         \o
-        \code
-        delete list.takeFirst();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 22
     \row
         \o
-        \code
-        list.removeLast();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 23
         \o
-        \code
-        delete list.takeLast();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 24
     \row
         \o
-        \code
-        list.remove(index);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 25
         \o
-        \code
-        delete list.takeAt(index);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 26
     \row
         \o
-        \code
-        list.remove(value);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 27
         \o
-        \code
-        int i = list.indexOf(value);
-        if (i != -1)
-            delete list.takeAt(i);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 28
     \row
         \o
-        \code
-        list.remove();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 29
         (removes the current item)
 
         \o
-        \code
-        QMutableListIterator<T *> i;
-        ...
-        delete i.value();
-        i.remove();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 30
     \row
         \o
-        \code
-        list.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 31
 
         (also called from QPtrList's destructor)
 
         \o
-        \code
-        while (!list.isEmpty())
-            delete list.takeFirst();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 32
 
         In 99% of cases, the following idiom also works:
 
-        \code
-        qDeleteAll(list);
-        list.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 33
 
         However, it may lead to crashes if \c list is referenced from
         the value type's destructor, because \c list contains
@@ -2826,24 +2754,11 @@
     Be aware that QListIterator has a different way of iterating than
     QPtrList. A typical loop with QPtrList looks like this:
 
-    \code
-        QPtrList<QWidget> list;
-        ...
-        while (list.current() != 0) {
-            do_something(list.current());
-            list.next();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 34
 
     Here's the equivalent QListIterator loop:
 
-    \code
-        QList<QWidget *> list;
-        ...
-        QListIterator<QWidget *> i(list);
-        while (i.hasNext())
-            do_something(i.next());
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 35
 
     Finally, QPtrListIterator<T> must also be ported. There are no
     fewer than four iterator classes that can be used as a
@@ -2870,25 +2785,11 @@
     iterating than QPtrList. A typical loop with QPtrList looks like
     this:
 
-    \code
-        QPtrList<QWidget> list;
-        ...
-        QPtrListIterator<QWidget> i;
-        while (i.current() != 0) {
-            do_something(i.current());
-            i.next();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 36
 
     Here's the equivalent QListIterator loop:
 
-    \code
-        QList<QWidget *> list;
-        ...
-        QListIterator<QWidget *> i(list);
-        while (i.hasNext())
-            do_something(i.next());
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 37
 
     Finally, QPtrListStdIterator<T> must also be ported. This is
     easy, because QList also provides STL-style iterators
@@ -2927,42 +2828,26 @@
     \header \o QPtrQueue idiom \o QQueue idiom
     \row
         \o
-        \code
-        queue.dequeue();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 38
         \o
-        \code
-        delete queue.dequeue();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 39
     \row
         \o
-        \code
-        queue.remove();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 40
         \o
-        \code
-        delete queue.dequeue();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 41
     \row
         \o
-        \code
-        queue.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 42
 
         (also called from QPtrQueue's destructor)
 
         \o
-        \code
-        while (!queue.isEmpty())
-            delete queue.dequeue();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 43
 
         In 99% of cases, the following idiom also works:
 
-        \code
-        qDeleteAll(queue);
-        queue.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 44
 
         However, it may lead to crashes if \c queue is referenced
         from the value type's destructor, because \c queue contains
@@ -3002,42 +2887,26 @@
     \header \o QPtrStack idiom \o QStack idiom
     \row
         \o
-        \code
-        stack.pop();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 45
         \o
-        \code
-        delete stack.pop();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 46
     \row
         \o
-        \code
-        stack.remove();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 47
         \o
-        \code
-        delete stack.pop();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 48
     \row
         \o
-        \code
-        stack.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 49
 
         (also called from QPtrStack's destructor)
 
         \o
-        \code
-        while (!stack.isEmpty())
-            delete stack.pop();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 50
 
         In 99% of cases, the following idiom also works:
 
-        \code
-        qDeleteAll(stack);
-        stack.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 51
 
         However, it may lead to crashes if \c stack is referenced
         from the value type's destructor, because \c stack contains
@@ -3065,7 +2934,7 @@
     \table
     \header \o QPtrVector function \o QVector equivalent
     \row \o QPtrVector::autoDelete() \o See discussion below
-    \row \o QPtrVector::bsearch(const T *) \o qBinaryFind()
+    \row \o QPtrVector::bsearch(const T *) \o \l qBinaryFind()
     \row \o QPtrVector::contains(const T *) \o QVector::count(T *)
     \row \o QPtrVector::containsRef(const T *) \o QVector::count(T *)
     \row \o QPtrVector::count() \o See remark below
@@ -3073,7 +2942,7 @@
     \row \o QPtrVector::isNull() \o N/A
     \row \o QPtrVector::remove(uint) \o See remark below
     \row \o QPtrVector::setAutoDelete() \o See discussion below
-    \row \o QPtrVector::sort() \o qSort()
+    \row \o QPtrVector::sort() \o \l qSort()
     \row \o QPtrVector::take(uint) \o See remark below
     \row \o QPtrVector::toList(QGList *) \o QList::QList(const QVector &)
     \endtable
@@ -3119,72 +2988,36 @@
     \header \o QPtrVector idiom \o QVector idiom
     \row
         \o
-        \code
-        vect.insert(i, ptr);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 52
         \o
-        \code
-        delete vect[i];
-        vect[i] = ptr;
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 53
     \row
         \o
-        \code
-        vect.remove(i);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 54
         \o
-        \code
-        delete vect[i];
-        vect[i] = 0;
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 55
     \row
         \o
-        \code
-        T *ptr = vect.take(i);
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 56
         \o
-        \code
-        T *ptr = vect[i];
-        vect[i] = 0;
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 57
     \row
         \o
-        \code
-        vect.resize(n)
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 58
         \o
-        \code
-        while (n > vect.size())
-            vect.append(0);
-        while (n < vect.size() {
-            T *ptr = vect.last();
-            vect.remove(vect.size() - 1);
-            delete ptr;
-        }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 59
     \row
         \o
-        \code
-        vect.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 60
 
         (also called from QPtrVector's destructor)
 
         \o
-        \code
-        for (int i = 0; i < vect.size(); ++i)
-            T *ptr = vect[i];
-            vect[i] = 0;
-            delete ptr;
-        }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 61
 
         In 99% of cases, the following idiom also works:
 
-        \code
-        qDeleteAll(vect);
-        vect.clear();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 62
 
         However, it may lead to crashes if \c vect is referenced from
         the value type's destructor, because \c vect contains
@@ -3324,15 +3157,7 @@
     An easy way of porting to Qt 4 is to include this class into your
     project and to use it instead of \c QShared:
 
-    \code
-        struct Shared
-        {
-            Shared() : count(1) {}
-            void ref() { ++count; }
-            bool deref() { return !--count; }
-            uint count;
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 63
 
     If possible, we recommend that you use QSharedData and
     QSharedDataPointer instead. They provide thread-safe reference
@@ -3350,8 +3175,17 @@
 
     \section1 QSimpleRichText
 
-    The \c QSimpleRichText class has been renamed Q3SimpleRichText
-    and moved to the Qt3Support library.
+    QSimpleRichText has been obsoleted by QTextDocument. It has
+    bene renamed Q3SimpleRichText and moved to the Qt3Support
+    library.
+
+    Previously, you would do the following with Q3SimpleRichText:
+
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 63a
+
+    However, with QTextDocument, you use the following code instead:
+
+    \snippet doc/src/snippets/code/doc.src.porting4.qdoc 63b
 
     See \l{Rich Text Processing} for an overview of the Qt 4 rich
     text classes.
@@ -3407,7 +3241,7 @@
     4, it has been moved to the Qt3Support library.
 
     In new code, we recommend that you use QList<T> instead and use
-    \l{qSort()} to sort the items.
+    \l qSort() to sort the items.
 
     \section1 QSplitter
 
@@ -3511,7 +3345,7 @@
     to the Qt3Support library. In Qt 4, use QMimeData
     instead and call QMimeData::setData() to set the data.
 
-    See \l{Porting to Qt 4 (Drag and Drop)} for a comparison between
+    See \l{Porting to Qt 4 - Drag and Drop} for a comparison between
     the drag and drop APIs in Qt 3 and Qt 4.
 
     \section1 QStr(I)List
@@ -3581,12 +3415,7 @@
         byte array; you should avoid taking a pointer to the data
         contained in temporary objects.
 
-        \code
-        QString greeting = "Hello";
-        const char *badData = greeting.toAscii().constData(); // data is invalid
-        QByteArray asciiData = greeting.toAscii();
-        const char *goodData = asciiData.constData();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 64
 
         In the above example, the \c goodData pointer is valid for the lifetime
         of the \c asciiData byte array. If you need to keep a copy of the data
@@ -3596,15 +3425,11 @@
     \o  QString::at() returned a non-const reference, whereas the
         new QString::at() returns a const value. Code like
 
-        \code
-        str.at(0) = 'X';
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 65
 
         will no longer compile. Instead, use QString::operator[]:
 
-        \code
-        str[0] = 'X';
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4.qdoc 66
 
     \o  The QString::contains(\e x) function (where \e x is a
         character or a string) has been renamed QString::count(\e x).
@@ -3831,7 +3656,7 @@
     the Qt3Support library. In Qt 4, use QMimeData
     instead and call QMimeData::setText() to set the data.
 
-    See \l{Porting to Qt 4 (Drag and Drop)} for a comparison between
+    See \l{Porting to Qt 4 - Drag and Drop} for a comparison between
     the drag and drop APIs in Qt 3 and Qt 4.
 
     \section1 QTextEdit
@@ -3904,9 +3729,9 @@
     QDateTimeEdit. The old class has been renamed Q3TimeEdit and moved
     to the Qt3Support library.
 
-    See \l{#virtual.functions}{Virtual Functions} for a list of \c
-    QTimeEdit virtual member functions in Qt 3 that are no longer
-    virtual in Qt 4.
+    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
+    a list of \c QTimeEdit virtual member functions in Qt 3 that are no
+    longer virtual in Qt 4.
 
     \section1 QTimer
 
@@ -3938,7 +3763,7 @@
 
     \section1 QToolButton
 
-    See \l{#properties}{Properties} for a list of QToolBar properties
+    See \l{#properties}{Properties} for a list of QToolButton properties
     in Qt 3 that have changed in Qt 4.
 
     Note that many of the properties that could previously be set in
@@ -3957,7 +3782,7 @@
     Qt3Support library. In Qt 4, use QMimeData instead
     and call QMimeData::setUrl() to set the URL.
 
-    See \l{Porting to Qt 4 (Drag and Drop)} for a comparison between
+    See \l{Porting to Qt 4 - Drag and Drop} for a comparison between
     the drag and drop APIs in Qt 3 and Qt 4.
 
     \section1 QUrl
@@ -4296,25 +4121,25 @@
 
     \section1 QWizard
 
-    The \c QWizard class is no longer part of the Qt public API. It
-    has been renamed Q3Wizard and moved to Qt3Support. In Qt 4
-    applications, you can obtain the same result by combining a
-    QStackedWidget with a QDialog and provide \l{QPushButton}s
-    yourself.
-
-    There is also a \l{QtWizard} solution available from Trolltech.
-    The new class was designed to work both for linear wizards and
-    for wizards with more complex structures which let users reach
-    different pages depending on the options they select. Based on
-    the feedback we get, \l{QtWizard} may be considered for inclusion
-    in a future Qt release.
+    The \c QWizard class was reintroduced in Qt 4.3. See the
+    \l{Trivial Wizard Example}, \l{License Wizard Example} and
+    \l{Class Wizard Example} for more details.
 
     \section1 QWorkspace
 
     The \c QWorkspace in Qt 4 class requires explicit adding of MDI
     windows with QWorkspace::addWindow().
+*/
 
-    \target virtual.functions
+/*!
+    \page porting4-virtual-functions.html
+    \title Porting to Qt 4 - Virtual Functions
+    \contentspage {Porting Guides}{Contents}
+    \previouspage Porting to Qt 4
+    \nextpage Porting to Qt 4 - Drag and Drop
+    \ingroup porting
+    \brief An overview of changes to virtual functions in Qt 4.
+
     \section1 Virtual Functions
 
     Virtual functions that changed their signature in Qt 4:

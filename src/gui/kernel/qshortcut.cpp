@@ -52,6 +52,8 @@
 #include <private/qapplication_p.h>
 #include <private/qshortcutmap_p.h>
 
+QT_BEGIN_NAMESPACE
+
 #define QAPP_CHECK(functionName) \
     if (!qApp) { \
         qWarning("QShortcut: Initialize QApplication before calling '" functionName "'."); \
@@ -95,10 +97,7 @@
     The simplest way to create a shortcut for a particular widget is
     to construct the shortcut with a key sequence. For example:
 
-    \code
-        shortcut = new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")),
-                                 parent);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qshortcut.cpp 0
 
     When the user types the \l{QKeySequence}{key sequence}
     for a given shortcut, the shortcut's activated() signal is
@@ -235,15 +234,7 @@ QShortcut::~QShortcut()
     This is a key sequence with an optional combination of Shift, Ctrl,
     and Alt. The key sequence may be supplied in a number of ways:
 
-    \code
-        setKey(0);                  // no signal emitted
-        setKey(QKeySequence());     // no signal emitted
-        setKey(0x3b1);              // Greek letter alpha
-        setKey(Qt::Key_D);              // 'd', e.g. to delete
-        setKey('q');                // 'q', e.g. to quit
-        setKey(Qt::CTRL + Qt::Key_P);       // Ctrl+P, e.g. to print document
-        setKey("Ctrl+P");           // Ctrl+P, e.g. to print document
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qshortcut.cpp 1
 */
 void QShortcut::setKey(const QKeySequence &key)
 {
@@ -403,3 +394,5 @@ bool QShortcut::event(QEvent *e)
     return handled;
 }
 #endif // QT_NO_SHORTCUT
+
+QT_END_NAMESPACE

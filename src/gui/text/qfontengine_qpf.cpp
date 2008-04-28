@@ -52,7 +52,6 @@
 #include <QtCore/qbuffer.h>
 #if !defined(QT_NO_FREETYPE)
 #include "private/qfontengine_ft_p.h"
-#include "qopentype_p.h"
 #endif
 
 // for mmap
@@ -64,20 +63,26 @@
 #include <fcntl.h>
 #include <errno.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_QWS_QPF
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qpfutil.cpp"
 
 #if defined(Q_WS_QWS)
-#include "private/qwscommand_qws_p.h"
-#include "qwsdisplay_qws.h"
-#include "qabstractfontengine_p.h"
+#   include "private/qwscommand_qws_p.h"
+#   include "qwsdisplay_qws.h"
+#   include "qabstractfontengine_p.h"
 #endif
 #include "qplatformdefs.h"
+QT_END_INCLUDE_NAMESPACE
 
 #ifdef QT_LSB
 
-#include <dlfcn.h>
+QT_BEGIN_INCLUDE_NAMESPACE
+#   include <dlfcn.h>
+QT_END_INCLUDE_NAMESPACE
 
 #  ifdef QT_NO_MREMAP
 #    undef QT_NO_MREMAP
@@ -252,9 +257,7 @@ QVariant QFontEngineQPF::extractHeaderField(const uchar *data, HeaderTag request
 
 QString qws_fontCacheDir()
 {
-    static QString dir;
-    if (!dir.isEmpty())
-        return dir;
+    QString dir;
 #if defined(Q_WS_QWS)
     extern QString qws_dataDir();
     dir = qws_dataDir();
@@ -319,7 +322,6 @@ QFontEngineQPF::QFontEngineQPF(const QFontDef &def, int fileDescriptor, QFontEng
     fontDef = def;
     cache_cost = 100;
     freetype = 0;
-    _openType = 0;
     externalCMap = 0;
     cmapOffset = 0;
     cmapSize = 0;
@@ -441,15 +443,17 @@ QFontEngineQPF::QFontEngineQPF(const QFontDef &def, int fileDescriptor, QFontEng
     }
     if (freetype) {
         const quint32 qpfTtfRevision = extractHeaderField(fontData, Tag_FontRevision).toUInt();
-        const QByteArray head = freetype->getSfntTable(MAKE_TAG('h', 'e', 'a', 'd'));
-        if (head.size() < 8
-            || qFromBigEndian<quint32>(reinterpret_cast<const uchar *>(head.constData()) + 4) != qpfTtfRevision) {
+        uchar data[4];
+        uint length = 4;
+        bool ok = freetype->getSfntTable(MAKE_TAG('h', 'e', 'a', 'd'), data, &length);
+        if (!ok || length != 4
+            || qFromBigEndian<quint32>(data) != qpfTtfRevision) {
             freetype->release(face_id);
             freetype = 0;
         }
     }
     if (!cmapOffset && freetype) {
-        freetypeCMapTable = freetype->getSfntTable(MAKE_TAG('c', 'm', 'a', 'p'));
+        freetypeCMapTable = getSfntTable(MAKE_TAG('c', 'm', 'a', 'p'));
         externalCMap = reinterpret_cast<const uchar *>(freetypeCMapTable.constData());
         cmapSize = freetypeCMapTable.size();
     }
@@ -509,22 +513,21 @@ QFontEngineQPF::~QFontEngineQPF()
     if (fd != -1)
         ::close(fd);
 #if !defined(QT_NO_FREETYPE)
-    delete _openType;
-    _openType = 0;
     if (freetype)
         freetype->release(face_id);
 #endif
 }
 
-QByteArray QFontEngineQPF::getSfntTable(uint tag) const
+bool QFontEngineQPF::getSfntTableData(uint tag, uchar *buffer, uint *length) const
 {
 #if !defined(QT_NO_FREETYPE)
     if (freetype)
-        return freetype->getSfntTable(tag);
-#else
-    Q_UNUSED(tag);
+        return freetype->getSfntTable(tag, buffer, length);
 #endif
-    return QByteArray();
+    Q_UNUSED(tag);
+    Q_UNUSED(buffer);
+    *length = 0;
+    return false;
 }
 
 bool QFontEngineQPF::stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const
@@ -798,36 +801,42 @@ void QFontEngineQPF::unlockFace() const
     freetype->unlock();
 }
 
-QOpenType *QFontEngineQPF::openType() const
-{
-    if (!freetype)
-        return 0;
-    if (_openType)
-         return _openType;
-
-    FT_Face face = lockFace();
-    if (!face || !FT_IS_SFNT(face)) {
-        unlockFace();
-        return 0;
-    }
-
-    _openType = new QOpenType(const_cast<QFontEngineQPF *>(this), face);
-    unlockFace();
-    return _openType;
-}
-
 void QFontEngineQPF::doKerning(int num_glyphs, QGlyphLayout *g, QTextEngine::ShaperFlags flags) const
 {
     if (!kerning_pairs_loaded) {
         kerning_pairs_loaded = true;
-        if (freetype && freetype->face->size->metrics.x_ppem != 0) {
+        if (freetype) {
             lockFace();
-            QFixed scalingFactor(freetype->face->units_per_EM/freetype->face->size->metrics.x_ppem);
-            unlockFace();
-            const_cast<QFontEngineQPF *>(this)->loadKerningPairs(scalingFactor);
+            if (freetype->face->size->metrics.x_ppem != 0) {
+                QFixed scalingFactor(freetype->face->units_per_EM/freetype->face->size->metrics.x_ppem);
+                unlockFace();
+                const_cast<QFontEngineQPF *>(this)->loadKerningPairs(scalingFactor);
+            } else {
+                unlockFace();
+            }
         }
     }
     QFontEngine::doKerning(num_glyphs, g, flags);
+}
+
+HB_Error QFontEngineQPF::getPointInOutline(HB_Glyph glyph, int flags, hb_uint32 point, HB_Fixed *xpos, HB_Fixed *ypos, hb_uint32 *nPoints)
+{
+    if (!freetype)
+        return HB_Err_Not_Covered;
+    lockFace();
+    HB_Error result = freetype->getPointInOutline(glyph, flags, point, xpos, ypos, nPoints);
+    unlockFace();
+    return result;
+}
+
+QFixed QFontEngineQPF::emSquareSize() const
+{
+    if (!freetype)
+        return QFontEngine::emSquareSize();
+    if (FT_IS_SCALABLE(freetype->face))
+        return freetype->face->units_per_EM;
+    else
+        return freetype->face->size->metrics.y_ppem;
 }
 
 void QFontEngineQPF::ensureGlyphsLoaded(const QGlyphLayout *glyphs, int len)
@@ -1025,9 +1034,13 @@ void QPFGenerator::writeHeader()
     writeTaggedUInt32(QFontEngineQPF::Tag_FileIndex, face.index);
 
     {
-        const QByteArray head = fe->getSfntTable(MAKE_TAG('h', 'e', 'a', 'd'));
-        const quint32 revision = qFromBigEndian<quint32>(reinterpret_cast<const uchar *>(head.constData()) + 4);
-        writeTaggedUInt32(QFontEngineQPF::Tag_FontRevision, revision);
+        uchar data[4];
+        uint len = 4;
+        bool ok = fe->getSfntTableData(MAKE_TAG('h', 'e', 'a', 'd'), data, &len);
+        if (ok) {
+            const quint32 revision = qFromBigEndian<quint32>(data);
+            writeTaggedUInt32(QFontEngineQPF::Tag_FontRevision, revision);
+        }
     }
 
     writeTaggedQFixed(QFontEngineQPF::Tag_Ascent, fe->ascent());
@@ -1143,3 +1156,4 @@ void QFontEngineMultiQWS::draw(QPaintEngine */*p*/, qreal /*x*/, qreal /*y*/, co
     qFatal("QFontEngineMultiQWS::draw should never be called!");
 }
 
+QT_END_NAMESPACE

@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextListPrivate;
@@ -86,6 +88,8 @@ private:
 
 inline void QTextList::setFormat(const QTextListFormat &aformat)
 { QTextObject::setFormat(aformat); }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -44,6 +44,7 @@
 #include "qcolormap.h"
 #include "qcolor.h"
 
+QT_BEGIN_NAMESPACE
 
 class QColormapPrivate
 {
@@ -52,7 +53,7 @@ public:
         : ref(1)
     { }
 
-    QAtomic ref;
+    QAtomicInt ref;
 };
 static QColormap *qt_mac_global_map = 0;
 
@@ -108,3 +109,5 @@ const QVector<QColor> QColormap::colormap() const
 
 QColormap &QColormap::operator=(const QColormap &colormap)
 { qAtomicAssign(d, colormap.d); return *this; }
+
+QT_END_NAMESPACE

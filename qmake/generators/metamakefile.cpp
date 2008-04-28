@@ -52,6 +52,8 @@
 #define BUILDSMETATYPE 1
 #define SUBDIRSMETATYPE 2
 
+QT_BEGIN_NAMESPACE
+
 MetaMakefileGenerator::~MetaMakefileGenerator()
 {
     if(own_project)
@@ -417,6 +419,7 @@ SubdirsMetaMakefileGenerator::~SubdirsMetaMakefileGenerator()
 }
 
 //Factory things
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "unixmake.h"
 #include "mingw_make.h"
 #include "projectgenerator.h"
@@ -425,6 +428,7 @@ SubdirsMetaMakefileGenerator::~SubdirsMetaMakefileGenerator()
 #include "borland_bmake.h"
 #include "msvc_dsp.h"
 #include "msvc_vcproj.h"
+QT_END_INCLUDE_NAMESPACE
 
 MakefileGenerator *
 MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
@@ -454,7 +458,7 @@ MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
             mkfile = new NmakeMakefileGenerator;
     } else if(gen == "MSVC.NET") {
         // Visual Studio >= v7.0
-        if(proj->first("TEMPLATE").indexOf(QRegExp("^vc.*")) != -1)
+        if(proj->first("TEMPLATE").indexOf(QRegExp("^vc.*")) != -1 || proj->first("TEMPLATE").indexOf(QRegExp("^ce.*")) != -1)
             mkfile = new VcprojGenerator;
         else
             mkfile = new NmakeMakefileGenerator;
@@ -484,3 +488,5 @@ MetaMakefileGenerator::createMetaGenerator(QMakeProject *proj, const QString &na
     ret->init();
     return ret;
 }
+
+QT_END_NAMESPACE

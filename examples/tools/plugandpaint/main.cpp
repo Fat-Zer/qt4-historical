@@ -41,11 +41,14 @@
 **
 ****************************************************************************/
 
+//! [0]
 #include "mainwindow.h"
 #include <QtPlugin>
 #include <QApplication>
 
+QT_BEGIN_NAMESPACE
 Q_IMPORT_PLUGIN(pnp_basictools)
+QT_END_NAMESPACE
 
 int main(int argc, char *argv[])
 {
@@ -54,3 +57,4 @@ int main(int argc, char *argv[])
     window.show();
     return app.exec();
 }
+//! [0]

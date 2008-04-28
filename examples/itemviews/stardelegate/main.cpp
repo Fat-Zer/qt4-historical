@@ -47,6 +47,7 @@
 #include "stareditor.h"
 #include "starrating.h"
 
+//! [0]
 void populateTableWidget(QTableWidget *tableWidget)
 {
     static const struct {
@@ -55,12 +56,17 @@ void populateTableWidget(QTableWidget *tableWidget)
         const char *artist;
         int rating;
     } staticData[] = {
+//! [0] //! [1]
         { "Mass in B-Minor", "Baroque", "J.S. Bach", 5 },
+//! [1]
         { "Three More Foxes", "Jazz", "Maynard Ferguson", 4 },
         { "Sex Bomb", "Pop", "Tom Jones", 3 },
         { "Barbie Girl", "Pop", "Aqua", 5 },
+//! [2]
         { 0, 0, 0, 0 }
+//! [2] //! [3]
     };
+//! [3] //! [4]
 
     for (int row = 0; staticData[row].title != 0; ++row) {
         QTableWidgetItem *item0 = new QTableWidgetItem(staticData[row].title);
@@ -76,7 +82,9 @@ void populateTableWidget(QTableWidget *tableWidget)
         tableWidget->setItem(row, 3, item3);
     }
 }
+//! [4]
 
+//! [5]
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -99,3 +107,4 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+//! [5]

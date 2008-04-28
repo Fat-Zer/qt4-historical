@@ -47,6 +47,7 @@
 #include "tictactoe.h"
 #include "tictactoedialog.h"
 
+//! [0]
 TicTacToeDialog::TicTacToeDialog(TicTacToe *tic, QWidget *parent)
     : QDialog(parent)
 {
@@ -70,22 +71,31 @@ TicTacToeDialog::TicTacToeDialog(TicTacToe *tic, QWidget *parent)
     setLayout(mainLayout);
     setWindowTitle(tr("Edit State"));
 }
+//! [0]
 
+//! [1]
 QSize TicTacToeDialog::sizeHint() const
 {
     return QSize(250, 250);
 }
+//! [1]
 
+//! [2]
 void TicTacToeDialog::resetState()
 {
     editor->clearBoard();
 }
+//! [2]
 
+//! [3]
 void TicTacToeDialog::saveState()
 {
+//! [3] //! [4]
     if (QDesignerFormWindowInterface *formWindow
             = QDesignerFormWindowInterface::findFormWindow(ticTacToe)) {
         formWindow->cursor()->setProperty("state", editor->state());
     }
+//! [4] //! [5]
     accept();
 }
+//! [5]

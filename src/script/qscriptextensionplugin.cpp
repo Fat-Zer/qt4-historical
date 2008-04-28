@@ -48,6 +48,8 @@
 #include "qscriptvalue.h"
 #include "qscriptengine.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \since 4.3
     \class QScriptExtensionPlugin
@@ -141,5 +143,7 @@ QScriptValue QScriptExtensionPlugin::setupPackage(
     }
     return o;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

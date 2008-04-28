@@ -46,19 +46,22 @@
 #include <private/qobject_p.h>
 #include <QtCore/qdatetime.h>
 #include <QtCore/qcoreevent.h>
-#include <math.h>
+#include <QtCore/qmath.h>
 
-static const qreal pi = 3.14159265359;
-static const qreal halfPi = pi / 2.0;
+QT_BEGIN_NAMESPACE
+
+static const qreal pi = qreal(3.14159265359);
+static const qreal halfPi = pi / qreal(2.0);
+
 
 static inline qreal qt_sinProgress(qreal value)
 {
-    return ::sin((value * pi) - halfPi) / 2.0 + 0.5;
+    return qSin((value * pi) - halfPi) / 2 + qreal(0.5);
 }
 
 static inline qreal qt_smoothBeginEndMixFactor(qreal value)
 {
-    return qMin(qMax((1.0 - value * 2.0 + 0.3), 0.0), 1.0);
+    return qMin(qMax(1 - value * 2 + qreal(0.3), qreal(0.0)), qreal(1.0));
 }
 
 class QTimeLinePrivate : public QObjectPrivate
@@ -196,21 +199,7 @@ void QTimeLinePrivate::setCurrentTime(int msecs)
 
     Example:
 
-    \code
-        ...
-        progressBar = new QProgressBar(this);
-        progressBar->setRange(0, 100);
-
-        // Construct a 1-second timeline with a frame range of 0 - 100
-        QTimeLine *timeLine = new QTimeLine(1000, this);
-        timeLine->setFrameRange(0, 100);
-        connect(timeLine, SIGNAL(frameChanged(int)), progressBar, SLOT(setValue(int)));
-
-        // Clicking the push button will start the progress bar animation
-        pushButton = new QPushButton(tr("Start animation"), this);
-        connect(pushButton, SIGNAL(clicked()), timeLine, SLOT(start()));
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qtimeline.cpp 0
 
     You can also use QTimeLine with the
     \l{Graphics View}{Graphics View framework} for
@@ -289,10 +278,11 @@ void QTimeLinePrivate::setCurrentTime(int msecs)
 
     \value EaseInCurve The value starts growing slowly, then increases in speed.
     \value EaseOutCurve The value starts growing steadily, then ends slowly.
-    \value EaseInOutCurve The value starts growing slowly, the runs steadily, then grows slowly again.
+    \value EaseInOutCurve The value starts growing slowly, then runs steadily, then grows slowly again.
     \value LinearCurve The value grows linearly (e.g., if the duration is 1000 ms,
            the value at time 500 ms is 0.5).
     \value SineCurve The value grows sinusoidally.
+    \value CosineCurve The value grows cosinusoidally.
 
     \sa setCurveShape()
 */
@@ -592,7 +582,7 @@ int QTimeLine::frameForTime(int msec) const
     Q_D(const QTimeLine);
     if (d->direction == Forward)
         return d->startFrame + int((d->endFrame - d->startFrame) * valueForTime(msec));
-    return d->startFrame + int(::ceil(double((d->endFrame - d->startFrame) * valueForTime(msec))));
+    return d->startFrame + qCeil((d->endFrame - d->startFrame) * valueForTime(msec));
 }
 
 /*!
@@ -625,18 +615,21 @@ qreal QTimeLine::valueForTime(int msec) const
         const qreal sinProgress = qt_sinProgress(value);
         const qreal linearProgress = value;
         const qreal mix = qt_smoothBeginEndMixFactor(value);
-        value = sinProgress * mix + linearProgress * (1.0 - mix);
+        value = sinProgress * mix + linearProgress * (1 - mix);
         break;
     }
     case EaseOutCurve: {
         const qreal sinProgress = qt_sinProgress(value);
         const qreal linearProgress = value;
-        const qreal mix = qt_smoothBeginEndMixFactor(1.0 - value);
-        value = sinProgress * mix + linearProgress * (1.0 - mix);
+        const qreal mix = qt_smoothBeginEndMixFactor(1 - value);
+        value = sinProgress * mix + linearProgress * (1 - mix);
         break;
     }
     case SineCurve:
-        value = (::sin(((msec * pi * 2) / d->duration) - pi/2.0) + 1.0) / 2.0;
+        value = (qSin(((msec * pi * 2) / d->duration) - pi/2) + 1) / 2;
+        break;
+    case CosineCurve:
+        value = (qCos(((msec * pi * 2) / d->duration) - pi/2) + 1) / 2;
         break;
     default:
         break;
@@ -646,10 +639,10 @@ qreal QTimeLine::valueForTime(int msec) const
 }
 
 /*!
-    Starts or restarts the timeline. QTimeLine will enter Running state, and
-    once it enters the event loop, it will update its current time, frame and
-    value at regular intervals. The default interval is 40 ms (i.e., 25 times
-    per second). You can change the update interval by calling
+    Starts the timeline. QTimeLine will enter Running state, and once it
+    enters the event loop, it will update its current time, frame and value at
+    regular intervals. The default interval is 40 ms (i.e., 25 times per
+    second). You can change the update interval by calling
     setUpdateInterval().
 
     If you want to resume a stopped timeline without restarting, you can call
@@ -770,3 +763,5 @@ void QTimeLine::timerEvent(QTimerEvent *event)
         d->setCurrentTime(d->startTime - d->timer.elapsed());
     }
 }
+
+QT_END_NAMESPACE

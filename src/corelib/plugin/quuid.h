@@ -47,9 +47,8 @@
 #include <QtCore/qstring.h>
 
 QT_BEGIN_HEADER
-QT_MODULE(Core)
 
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN)
 #ifndef GUID_DEFINED
 #define GUID_DEFINED
 typedef struct _GUID
@@ -61,6 +60,11 @@ typedef struct _GUID
 } GUID, *REFGUID, *LPGUID;
 #endif
 #endif
+
+
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Core)
 
 struct Q_CORE_EXPORT QUuid
 {
@@ -132,7 +136,7 @@ struct Q_CORE_EXPORT QUuid
     bool operator<(const QUuid &other) const;
     bool operator>(const QUuid &other) const;
 
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN)
     // On Windows we have a type GUID that is used by the platform API, so we
     // provide convenience operators to cast from and to this type.
     QUuid(const GUID &guid)
@@ -181,5 +185,8 @@ Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QUuid &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QUuid &);
 #endif
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
+
 #endif // QUUID_H

@@ -46,6 +46,7 @@
 
 #include <stdlib.h>
 
+//! [0]
 FortuneServer::FortuneServer(QObject *parent)
     : QTcpServer(parent)
 {
@@ -57,7 +58,9 @@ FortuneServer::FortuneServer(QObject *parent)
              << tr("You cannot kill time without injuring eternity.")
              << tr("Computers are not intelligent. They only think they are.");
 }
+//! [0]
 
+//! [1]
 void FortuneServer::incomingConnection(int socketDescriptor)
 {
     QString fortune = fortunes.at(qrand() % fortunes.size());
@@ -65,3 +68,4 @@ void FortuneServer::incomingConnection(int socketDescriptor)
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
 }
+//! [1]

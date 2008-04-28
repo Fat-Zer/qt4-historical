@@ -46,6 +46,7 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QCheckBox;
 class QComboBox;
@@ -54,8 +55,10 @@ class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QTreeView;
+QT_END_NAMESPACE
 class MySortFilterProxyModel;
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -85,5 +88,6 @@ private:
     QDateEdit *fromDateEdit;
     QDateEdit *toDateEdit;
 };
+//! [0]
 
 #endif

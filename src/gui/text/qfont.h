@@ -47,7 +47,13 @@
 #include <QtGui/qwindowdefs.h>
 #include <QtCore/qstring.h>
 
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+typedef struct FT_FaceRec_* FT_Face;
+#endif
+
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -55,10 +61,6 @@ class QFontPrivate;                                     /* don't touch */
 class QStringList;
 class QVariant;
 class Q3TextFormatCollection;
-
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
-typedef struct FT_FaceRec_* FT_Face;
-#endif
 
 class Q_GUI_EXPORT QFont
 {
@@ -114,6 +116,38 @@ public:
         UltraExpanded  = 200
     };
 
+    enum Capitalization {
+        MixedCase,
+        AllUppercase,
+        AllLowercase,
+        SmallCaps,
+        Capitalize
+    };
+
+    enum SpacingType {
+        PercentageSpacing,
+        AbsoluteSpacing
+    };
+
+    enum ResolveProperties {
+        FamilyResolved         = 0x0001,
+        SizeResolved           = 0x0002,
+        StyleHintResolved      = 0x0004,
+        StyleStrategyResolved  = 0x0008,
+        WeightResolved         = 0x0010,
+        StyleResolved          = 0x0020,
+        UnderlineResolved      = 0x0040,
+        OverlineResolved       = 0x0080,
+        StrikeOutResolved      = 0x0100,
+        FixedPitchResolved     = 0x0200,
+        StretchResolved        = 0x0400,
+        KerningResolved        = 0x0800,
+        CapitalizationResolved = 0x1000,
+        LetterSpacingResolved  = 0x2000,
+        WordSpacingResolved    = 0x4000,
+        AllPropertiesResolved  = 0x7fff
+    };
+
     QFont();
     QFont(const QString &family, int pointSize = -1, int weight = -1, bool italic = false);
     QFont(const QFont &, QPaintDevice *pd);
@@ -165,6 +199,16 @@ public:
 
     int stretch() const;
     void setStretch(int);
+
+    qreal letterSpacing() const;
+    SpacingType letterSpacingType() const;
+    void setLetterSpacing(SpacingType type, qreal spacing);
+
+    qreal wordSpacing() const;
+    void setWordSpacing(qreal spacing);
+
+    void setCapitalization(Capitalization);
+    Capitalization capitalization() const;
 
     // is raw mode still needed?
     bool rawMode() const;
@@ -242,6 +286,7 @@ private:
     int x11Screen() const;
 #endif
 
+    friend class QFontPrivate;
     friend class QFontMetrics;
     friend class QFontMetricsF;
     friend class QFontInfo;
@@ -298,6 +343,12 @@ inline void QFont::setItalic(bool b) {
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QFont &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QFont &);
 #endif
+
+#ifndef QT_NO_DEBUG_STREAM
+Q_GUI_EXPORT QDebug operator<<(QDebug, const QFont &);
+#endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

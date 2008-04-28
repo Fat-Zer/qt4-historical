@@ -50,6 +50,8 @@
 #include "qstring.h"
 #include "qvector.h"
 
+QT_BEGIN_NAMESPACE
+
 class QSqlRecordPrivate
 {
 public:
@@ -60,7 +62,7 @@ public:
     QString createField(int index, const QString &prefix) const;
 
     QVector<QSqlField> fields;
-    QAtomic ref;
+    QAtomicInt ref;
 };
 
 QSqlRecordPrivate::QSqlRecordPrivate()
@@ -602,3 +604,5 @@ QDebug operator<<(QDebug dbg, const QSqlRecord &r)
 
     Use indexOf() instead.
 */
+
+QT_END_NAMESPACE

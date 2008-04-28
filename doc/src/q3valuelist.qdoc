@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \class Q3ValueList
     \brief The Q3ValueList class is a value-based template class that
@@ -44,49 +87,7 @@
     prefer to use the STL-compatible functions.
 
     Example:
-    \code
-    class Employee
-    {
-    public:
-	Employee(): sn(0) {}
-	Employee( const QString& forename, const QString& surname, int salary )
-	    : fn(forename), sn(surname), sal(salary)
-	{}
-
-	QString forename() const { return fn; }
-	QString surname() const { return sn; }
-	int salary() const { return sal; }
-	void setSalary( int salary ) { sal = salary; }
-
-    private:
-	QString fn;
-	QString sn;
-	int sal;
-    };
-
-    typedef Q3ValueList<Employee> EmployeeList;
-    EmployeeList list;
-
-    list.append( Employee("John", "Doe", 50000) );
-    list.append( Employee("Jane", "Williams", 80000) );
-    list.append( Employee("Tom", "Jones", 60000) );
-
-    Employee mary( "Mary", "Hawthorne", 90000 );
-    list.append( mary );
-    mary.setSalary( 100000 );
-
-    EmployeeList::iterator it;
-    for ( it = list.begin(); it != list.end(); ++it )
-	cout << (*it).surname().latin1() << ", " <<
-		(*it).forename().latin1() << " earns " <<
-		(*it).salary() << endl;
-
-    // Output:
-    // Doe, John earns 50000
-    // Williams, Jane earns 80000
-    // Hawthorne, Mary earns 90000
-    // Jones, Tom earns 60000
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 0
 
 
     Notice that the latest changes to Mary's salary did not affect the
@@ -114,21 +115,7 @@
     (your application will crash or do unpredictable things). Use
     last() and first() with caution, for example:
 
-    \code
-    Q3ValueList<int> list;
-    list.append( 1 );
-    list.append( 2 );
-    list.append( 3 );
-    ...
-    if ( !list.empty() ) {
-	// OK, modify the first item
-	int& i = list.first();
-	i = 18;
-    }
-    ...
-    Q3ValueList<double> dlist;
-    double d = dlist.last(); // undefined
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 1
 
     Because Q3ValueList is value-based there is no need to be careful
     about deleting items in the list. The list holds its own copies
@@ -381,14 +368,7 @@
 
     Use the end() function instead. For example:
 
-    \code
-    Q3ValueList<int> l;
-    ...
-    Q3ValueList<int>::iterator it = l.end();
-    --it;
-    if ( it != end() )
-	// ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 2
 
 */
 
@@ -400,14 +380,7 @@
 
     Use the end() function instead. For example:
 
-    \code
-    Q3ValueList<int> l;
-    ...
-    Q3ValueList<int>::iterator it = l.end();
-    --it;
-    if ( it != end() )
-	// ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 3
 
 */
 
@@ -486,19 +459,7 @@
     iterator.
 
     Example (see Q3ValueList for the complete code):
-    \code
-    EmployeeList::iterator it;
-    for ( it = list.begin(); it != list.end(); ++it )
-	cout << (*it).surname().latin1() << ", " <<
-		(*it).forename().latin1() << " earns " <<
-		(*it).salary() << endl;
-
-    // Output:
-    // Doe, John earns 50000
-    // Williams, Jane earns 80000
-    // Hawthorne, Mary earns 90000
-    // Jones, Tom earns 60000
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 4
 
     Q3ValueList is highly optimized for performance and memory usage.
     This means that you must be careful: Q3ValueList does not know

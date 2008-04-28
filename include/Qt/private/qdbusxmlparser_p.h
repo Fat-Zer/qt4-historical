@@ -1,1 +1,1 @@
-#include "../../../tools/qdbus/src/qdbusxmlparser_p.h"
+#include "../../../src/dbus/qdbusxmlparser_p.h"

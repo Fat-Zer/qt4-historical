@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt4-scribe.html
     \title The Scribe Classes
@@ -127,9 +170,7 @@
     below imports HTML into a document, and displays the document using a
     text edit widget.
 
-    \quotefromfile snippets/scribe-overview/main.cpp
-    \skipto QTextEdit *editor = 
-    \printuntil show()
+    \snippet doc/src/snippets/scribe-overview/main.cpp 1
 
     You can retrieve the document from the text edit using the
     document() function. The document can then be edited programmatically
@@ -139,9 +180,7 @@
     other font properties untouched. The editor will be automatically
     updated to reflect the changes made to the underlying document data.
 
-    \quotefromfile snippets/scribe-overview/main.cpp
-    \skipto QTextDocument *document
-    \printuntil cursor.mergeCharFormat
+    \snippet doc/src/snippets/scribe-overview/main.cpp 0
 
     Note that the cursor was moved from the start of the first line to the
     end, but that it retained an anchor at the start of the line. This
@@ -152,13 +191,11 @@
     approach. The following example shows a simple calendar in a
     QTextEdit widget with bold headers for the days of the week:
 
-    \quotefromfile snippets/textdocument-blocks/mainwindow.cpp
-    \skipto editor = new QTextEdit(this);
-    \printuntil editor = new QTextEdit(this);
-    \skipto QTextCursor cursor(editor->textCursor());
-    \printuntil for (int day = 1; day <= date.daysInMonth(); ++day) {
-    \printuntil }
-    \printuntil }
+    \snippet doc/src/snippets/textdocument-blocks/mainwindow.cpp 0
+    \codeline
+    \snippet doc/src/snippets/textdocument-blocks/mainwindow.cpp 1
+    \snippet doc/src/snippets/textdocument-blocks/mainwindow.cpp 2
+    \snippet doc/src/snippets/textdocument-blocks/mainwindow.cpp 3
 
     The above example demonstrates how simple it is to quickly generate new
     rich text documents using a minimum amount of code. Although we have
@@ -179,10 +216,7 @@
     The example below will lay out a paragraph of text, using a single
     font, around the right hand edge of a circle.
 
-    \quotefromfile snippets/plaintextlayout/window.cpp
-    \skipto paintEvent
-    \skipto QTextLayout
-    \printto /^\}/
+    \snippet doc/src/snippets/plaintextlayout/window.cpp 0
 
     We create a text layout, specifying the text string we want to display
     and the font to use. We ensure that the text we supplied is formatted
@@ -200,18 +234,12 @@
     printing. The printing process is performed by QPrinter and controlled by
     the user via options displayed in a QPrintDialog:
 
-    \quotefromfile snippets/textdocument-printing/mainwindow.cpp
-    \skipto MainWindow::printFile()
-    \skipto QTextDocument
-    \printuntil document->print
+    \snippet doc/src/snippets/textdocument-printing/mainwindow.cpp 0
 
     Rich text documents can also be exported as PDF files using QPrinter and
     the appropriate print engine:
 
-    \quotefromfile demos/textedit/textedit.cpp
-    \skipto TextEdit::filePrintPdf()
-    \skipto QFileDialog
-    \printuntil }
+    \snippet demos/textedit/textedit.cpp 0
 
     \section1 Comparison with Qt 3
 

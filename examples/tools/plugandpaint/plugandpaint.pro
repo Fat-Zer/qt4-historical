@@ -1,3 +1,4 @@
+#! [0]
 HEADERS        = interfaces.h \
                  mainwindow.h \
                  paintarea.h \
@@ -12,6 +13,7 @@ if(!debug_and_release|build_pass):CONFIG(debug, debug|release) {
    mac:LIBS = $$member(LIBS, 0) $$member(LIBS, 1)_debug
    win32:LIBS = $$member(LIBS, 0) $$member(LIBS, 1)d
 }
+#! [0]
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/tools/plugandpaint

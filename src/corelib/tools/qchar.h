@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QString;
@@ -56,8 +58,13 @@ struct QLatin1Char
 {
 public:
     inline explicit QLatin1Char(char c) : ch(c) {}
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
     inline const char toLatin1() const { return ch; }
     inline const ushort unicode() const { return ushort(uchar(ch)); }
+#else
+    inline char toLatin1() const { return ch; }
+    inline ushort unicode() const { return ushort(uchar(ch)); }
+#endif
 
 private:
     char ch;
@@ -236,9 +243,15 @@ public:
 
     UnicodeVersion unicodeVersion() const;
 
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
     const char toAscii() const;
     inline const char toLatin1() const;
     inline const ushort unicode() const { return ucs; }
+#else
+    char toAscii() const;
+    inline char toLatin1() const;
+    inline ushort unicode() const { return ucs; }
+#endif
 #ifdef Q_NO_PACKED_REFERENCE
     inline ushort &unicode() { return const_cast<ushort&>(ucs); }
 #else
@@ -323,8 +336,13 @@ public:
     static inline QT3_SUPPORT bool networkOrdered() {
         return QSysInfo::ByteOrder == QSysInfo::BigEndian;
     }
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
     inline QT3_SUPPORT const char latin1() const { return toLatin1(); }
     inline QT3_SUPPORT const char ascii() const { return toAscii(); }
+#else
+    inline QT3_SUPPORT char latin1() const { return toLatin1(); }
+    inline QT3_SUPPORT char ascii() const { return toAscii(); }
+#endif
 #endif
 
 private:
@@ -333,13 +351,21 @@ private:
     QChar(uchar c);
 #endif
     ushort ucs;
-} Q_PACKED;
+}
+#if (defined(__arm__) || defined(__ARMEL__))
+    Q_PACKED
+#endif
+    ;
 
 Q_DECLARE_TYPEINFO(QChar, Q_MOVABLE_TYPE);
 
 inline QChar::QChar() : ucs(0) {}
 
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
 inline const char QChar::toLatin1() const { return ucs > 0xff ? '\0' : char(ucs); }
+#else
+inline char QChar::toLatin1() const { return ucs > 0xff ? '\0' : char(ucs); }
+#endif
 inline QChar QChar::fromLatin1(char c) { return QChar(ushort(uchar(c))); }
 
 inline QChar::QChar(uchar c, uchar r) : ucs((r << 8) | c){}
@@ -365,6 +391,8 @@ inline bool operator>(QChar c1, QChar c2) { return c1.unicode() > c2.unicode(); 
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QChar &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QChar &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

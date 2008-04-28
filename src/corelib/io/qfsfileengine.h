@@ -46,7 +46,11 @@
 
 #include <QtCore/qabstractfileengine.h>
 
+#ifndef QT_NO_FSFILEENGINE
+
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Core)
 
@@ -89,7 +93,7 @@ public:
 
     Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
     Iterator *endEntryList();
-    
+
     qint64 read(char *data, qint64 maxlen);
     qint64 readLine(char *data, qint64 maxlen);
     qint64 write(const char *data, qint64 len);
@@ -110,6 +114,10 @@ protected:
     QFSFileEngine(QFSFileEnginePrivate &dd);
 };
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
+
+#endif // QT_NO_FSFILEENGINE
 
 #endif // QFSFILEENGINE_H

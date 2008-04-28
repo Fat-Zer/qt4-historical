@@ -64,6 +64,8 @@
 #include <qrubberband.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifdef Q_WS_MAC
 static bool default_opaque = true;
 #else
@@ -790,10 +792,7 @@ void Q3DockWindowTitleBar::mouseDoubleClickEvent(QMouseEvent *)
     or a Q3MainWindow as its parent if you want it docked. Pass 0 for
     the parent if you want it floated.
 
-    \code
-    Q3ToolBar *fileTools = new Q3ToolBar(this, "File Actions");
-    moveDockWindow(fileTools, Left);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3dockwindow.cpp 0
 
     In the example above we create a new Q3ToolBar in the constructor
     of a Q3MainWindow subclass (so that the \e this pointer points to
@@ -1355,7 +1354,7 @@ void Q3DockWindow::updateGui()
                 }
             }
         }
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
         if (moveEnabled)
             setLineWidth(1);
         else
@@ -2108,6 +2107,8 @@ void Q3DockWindow::contextMenuEvent(QContextMenuEvent *e)
     if (!o || ! ((Q3MainWindow*)o)->showDockMenu(e->globalPos()))
         e->ignore();
 }
+
+QT_END_NAMESPACE
 
 #include "q3dockwindow.moc"
 

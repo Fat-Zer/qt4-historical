@@ -59,7 +59,9 @@ Sender::Sender(QWidget *parent)
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     timer = new QTimer(this);
+//! [0]
     udpSocket = new QUdpSocket(this);
+//! [0]
     messageNo = 1;
 
     connect(startButton, SIGNAL(clicked()), this, SLOT(startBroadcasting()));
@@ -83,8 +85,10 @@ void Sender::startBroadcasting()
 void Sender::broadcastDatagram()
 {
     statusLabel->setText(tr("Now broadcasting datagram %1").arg(messageNo));
+//! [1]
     QByteArray datagram = "Broadcast message " + QByteArray::number(messageNo);
     udpSocket->writeDatagram(datagram.data(), datagram.size(),
                              QHostAddress::Broadcast, 45454);
+//! [1]
     ++messageNo;
 }

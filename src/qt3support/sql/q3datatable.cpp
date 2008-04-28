@@ -61,6 +61,8 @@
 #include "qtimer.h"
 #include "qpointer.h"
 
+QT_BEGIN_NAMESPACE
+
 //#define QT_DEBUG_DATATABLE
 
 class Q3DataTablePrivate
@@ -458,14 +460,7 @@ void Q3DataTable::setFilter( const QString& filter )
 
     Note that if you want to iterate over the sort list, you should
     iterate over a copy, e.g.
-    \code
-    QStringList list = myDataTable.sort();
-    QStringList::Iterator it = list.begin();
-    while( it != list.end() ) {
-	myProcessing( *it );
-	++it;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.sql.q3datatable.cpp 0
 
     \sa filter() refresh()
 */
@@ -2336,3 +2331,5 @@ void  Q3DataTable::selectRow(int row)
 */
 
 #endif
+
+QT_END_NAMESPACE

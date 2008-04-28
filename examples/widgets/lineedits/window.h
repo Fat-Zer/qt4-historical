@@ -46,9 +46,12 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QLineEdit;
+QT_END_NAMESPACE
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -70,5 +73,6 @@ private:
     QLineEdit *inputMaskLineEdit;
     QLineEdit *accessLineEdit;
 };
+//! [0]
 
 #endif

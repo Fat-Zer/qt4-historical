@@ -54,7 +54,11 @@
 # include "qcoreapplication.h"
 #endif
 
+#if !defined(Q_OS_WINCE)
 #include <errno.h>
+#endif
+
+QT_BEGIN_NAMESPACE
 
 static const int QFILE_WRITEBUFFER_SIZE = 16384;
 
@@ -97,21 +101,33 @@ QFilePrivate::~QFilePrivate()
 bool
 QFilePrivate::openExternalFile(int flags, int fd)
 {
+#ifdef QT_NO_FSFILEENGINE
+    Q_UNUSED(flags);
+    Q_UNUSED(fd);
+    return false;
+#else
     delete fileEngine;
     QFSFileEngine *fe = new QFSFileEngine;
     fe->setFileName(fileName);
     fileEngine = fe;
     return fe->open(QIODevice::OpenMode(flags), fd);
+#endif
 }
 
 bool
 QFilePrivate::openExternalFile(int flags, FILE *fh)
 {
+#ifdef QT_NO_FSFILEENGINE
+    Q_UNUSED(flags);
+    Q_UNUSED(fh);
+    return false;
+#else
     delete fileEngine;
     QFSFileEngine *fe = new QFSFileEngine;
     fe->setFileName(fileName);
     fileEngine = fe;
     return fe->open(QIODevice::OpenMode(flags), fh);
+#endif
 }
 
 inline bool QFilePrivate::ensureFlushed() const
@@ -189,10 +205,7 @@ QFilePrivate::setError(QFile::FileError err, int errNum)
 
     The following example reads a text file line by line:
 
-    \quotefromfile snippets/file/file.cpp
-    \skipto noStream_snippet
-    \skipto QFile
-    \printto /^\}/
+    \snippet doc/src/snippets/file/file.cpp 0
 
     The QIODevice::Text flag passed to open() tells Qt to convert
     Windows-style line terminators ("\\r\\n") into C++-style
@@ -204,9 +217,7 @@ QFilePrivate::setError(QFile::FileError err, int errNum)
     The next example uses QTextStream to read a text file
     line by line:
 
-    \skipto readTextStream_snippet
-    \skipto QFile
-    \printto /^\}/
+    \snippet doc/src/snippets/file/file.cpp 1
 
     QTextStream takes care of converting the 8-bit data stored on
     disk into a 16-bit Unicode QString. By default, it assumes that
@@ -218,9 +229,7 @@ QFilePrivate::setError(QFile::FileError err, int errNum)
     take a QTextStream on the left and various data types (including
     QString) on the right:
 
-    \skipto writeTextStream_snippet
-    \skipto QFile
-    \printto /^\}/
+    \snippet doc/src/snippets/file/file.cpp 2
 
     QDataStream is similar, in that you can use operator<<() to write
     data and operator>>() to read it back. See the class
@@ -243,9 +252,7 @@ QFilePrivate::setError(QFile::FileError err, int errNum)
     read() or readLine() repeatedly until no more data can be read. The next
     example uses QTextStream to read \c /proc/modules line by line:
 
-    \skipto readRegularEmptyFile_snippet
-    \skipto QFile
-    \printto /^\}/
+    \snippet doc/src/snippets/file/file.cpp 3
 
     \section1 Signals
 
@@ -407,13 +414,7 @@ QString QFile::fileName() const
     \e{at the time of the open()} call.
 
     Example:
-    \code
-        QFile file;
-        QDir::setCurrent("/tmp");
-        file.setFileName("readme.txt");
-        QDir::setCurrent("/home");
-        file.open(QIODevice::ReadOnly);      // opens "/home/readme.txt" under Unix
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 0
 
     Note that the directory separator "/" works for all operating
     systems supported by Qt.
@@ -466,9 +467,7 @@ QFile::encodeName(const QString &fileName)
     This is a typedef for a pointer to a function with the following
     signature:
 
-    \code
-        QByteArray myEncoderFunc(const QString &fileName);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 1
 
     \sa setEncodingFunction(), encodeName()
 */
@@ -510,9 +509,7 @@ QFile::setEncodingFunction(EncoderFn f)
     This is a typedef for a pointer to a function with the following
     signature:
 
-    \code
-        QString myDecoderFunc(const QByteArray &localFileName);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 2
 
     \sa setDecodingFunction()
 */
@@ -973,17 +970,7 @@ bool QFile::open(OpenMode mode)
     Returns true if successful; otherwise returns false.
 
     Example:
-    \code
-        #include <stdio.h>
-
-        void printError(const char* msg)
-        {
-            QFile file;
-            file.open(stderr, QIODevice::WriteOnly);
-            file.write(msg, qstrlen(msg));        // write to stderr
-            file.close();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 3
 
     When a QFile is opened using this function, close() does not actually
     close the file, but only flushes it.
@@ -996,15 +983,16 @@ bool QFile::open(OpenMode mode)
     in order to use the stdin, stdout and stderr streams at the console. To do
     this, add the following declaration to your application's project file:
 
-    \code
-    CONFIG += console
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 4
 
     \note On Windows, \a fh must be opened in binary mode (i.e., the mode
     string must contain 'b', as in "rb" or "wb") when accessing files and
     other random-access devices. Qt will translate the end-of-line characters
     if you pass QIODevice::Text to \a mode. Sequential devices, such as stdin
     and stdout, are unaffected by this limitation.
+
+    \warning For Windows CE you may not be able to call seek(), setSize(), 
+    fileTime(). Also, size() is set to \c 0.
 
     \sa close(), {qmake Variable Reference#CONFIG}{qmake Variable Reference}
 */
@@ -1059,6 +1047,9 @@ bool QFile::open(FILE *fh, OpenMode mode)
     stderr), you may not be able to seek(). size() is set to \c
     LLONG_MAX (in \c <climits>).
 
+    \warning For Windows CE you may not be able to call seek(), setSize(), 
+    fileTime(). size() is set to \c 0.
+
     \sa close()
 */
 bool QFile::open(int fd, OpenMode mode)
@@ -1094,6 +1085,8 @@ bool QFile::open(int fd, OpenMode mode)
 
   If the file is not open, or there is an error, handle() returns -1.
 
+  This function is not supported on Windows CE.
+
   \sa QSocketNotifier
 */
 
@@ -1106,6 +1099,69 @@ QFile::handle() const
     if (QAbstractFileEngine *engine = fileEngine())
         return engine->handle();
     return -1;
+}
+
+/*!
+    \enum QFile::MemoryMapFlags
+
+    This enum describes special options that may be used by the map()
+    function.
+
+    \value NoOptions        No options.
+*/
+
+/*!
+    \since 4.4
+    Maps \a size bytes of the file into memory starting at \a offset.  A file
+    should be open for a map to succeed but the file does not need to stay
+    open after the memory has been mapped.  When the QFile is destroyed
+    or a new file is opened with this object, any maps that have not been
+    unmapped will automatically be unmapped.
+
+    Any mapping options can be passed through \a flags.
+
+    Returns a pointer to the memory or 0 if there is an error.
+
+    \note On Windows CE 5.0 the file will be closed before mapping occurs.
+
+    \sa unmap(), QAbstractFileEngine::supportsExtension()
+ */
+uchar *QFile::map(qint64 offset, qint64 size, MemoryMapFlags flags)
+{
+    Q_D(QFile);
+    QAbstractFileEngine *engine = fileEngine();
+    if (engine
+        && engine->supportsExtension(QAbstractFileEngine::MapExtension)) {
+        unsetError();
+        uchar *address = engine->map(offset, size, flags);
+        if (address == 0)
+            d->setError(engine->error(), engine->errorString());
+        return address;
+    }
+    return 0;
+}
+
+/*!
+    \since 4.4
+    Unmaps the memory \a address.
+
+    Returns true if the unmap succeeds; false otherwise.
+
+    \sa map(), QAbstractFileEngine::supportsExtension()
+ */
+bool QFile::unmap(uchar *address)
+{
+    Q_D(QFile);
+    QAbstractFileEngine *engine = fileEngine();
+    if (engine
+        && engine->supportsExtension(QAbstractFileEngine::UnMapExtension)) {
+        unsetError();
+        bool success = engine->unmap(address);
+        if (!success)
+            d->setError(engine->error(), engine->errorString());
+        return success;
+    }
+    return false;
 }
 
 /*!
@@ -1239,8 +1295,9 @@ QFile::flush()
 {
     Q_D(QFile);
     if (!d->writeBuffer.isEmpty()) {
-        if (!_qfile_writeData(d->fileEngine ? d->fileEngine : fileEngine(),
-                              &d->writeBuffer)) {
+        qint64 size = d->writeBuffer.size();
+        if (_qfile_writeData(d->fileEngine ? d->fileEngine : fileEngine(),
+                             &d->writeBuffer) != size) {
             QFile::FileError err = fileEngine()->error();
             if(err == QFile::UnspecifiedError)
                 err = QFile::WriteError;
@@ -1542,3 +1599,5 @@ QFile::unsetError()
     Q_D(QFile);
     d->setError(QFile::NoError);
 }
+
+QT_END_NAMESPACE

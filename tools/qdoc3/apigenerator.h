@@ -48,6 +48,8 @@
 
 #include "generator.h"
 
+QT_BEGIN_NAMESPACE
+
 class ApiGenerator : public Generator
 {
 public:
@@ -59,5 +61,7 @@ private:
 
     QTextStream out;
 };
+
+QT_END_NAMESPACE
 
 #endif

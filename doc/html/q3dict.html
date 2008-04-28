@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/q3dict.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/q3dict.qdoc -->
 <head>
-  <title>Qt 4.3: Q3Dict Class Reference</title>
+  <title>Qt 4.4: Q3Dict Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3Dict Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3Dict Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
+</h1>
 <p>The Q3Dict class is a template class that provides a dictionary based on <a href="qstring.html">QString</a> keys. <a href="#details">More...</a></p>
 <pre> #include &lt;Q3Dict&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="q3ptrcollection.html">Q3PtrCollection</a>.</p>
@@ -128,11 +129,11 @@
 <p>If the item does not already exist, it will be inserted.</p>
 <p><i>item</i> may not be 0.</p>
 <p>Equivalent to:</p>
-<pre> Q3Dict&lt;char&gt; dict;
-     ...
- if ( dict.find( key ) )
-     dict.remove( key );
- dict.insert( key, item );</pre>
+<pre>         Q3Dict&lt;char&gt; dict;
+             ...
+         if ( dict.find( key ) )
+             dict.remove( key );
+         dict.insert( key, item );</pre>
 <p>If there are two or more items with equal keys, then the last item that was inserted will be replaced.</p>
 <p>See also <a href="q3dict.html#insert">insert</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Dict/resize" />
@@ -170,6 +171,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

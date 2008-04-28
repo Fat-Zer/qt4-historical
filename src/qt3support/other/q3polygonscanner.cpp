@@ -45,6 +45,7 @@
 #include "q3pointarray.h"
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
 
 // Based on Xserver code miFillGeneralPoly...
 /*
@@ -937,4 +938,4 @@ void Q3PolygonScanner::scan(const Q3PointArray& pa, bool winding, int index, int
 }
 /***** END OF X11-based CODE *****/
 
-
+QT_END_NAMESPACE

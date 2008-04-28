@@ -49,7 +49,9 @@
 
 #include <string.h>
 
-typedef QList<MetaTranslatorMessage> TML;
+QT_BEGIN_NAMESPACE
+
+typedef QList<TranslatorMessage> TML;
 
 /*
   How similar are two texts?  The approach used here relies on co-occurrence
@@ -162,7 +164,7 @@ struct CoMatrix
 
     void setCoocc( char c, char d ) {
         int k = indexOf[(uchar) c] + 20 * indexOf[(uchar) d];
-        b[k >> 3] |= k & 0x7;
+        b[k >> 3] |= (1 << (k & 0x7));
     }
 
     int worth() const {
@@ -200,7 +202,7 @@ int StringSimilarityMatcher::getSimilarityScore(const QString &strCandidate)
     CoMatrix cmTarget( strCandidate.toLatin1().constData() );
     int targetLen = strCandidate.length();
     int delta = qAbs( m_length - targetLen );
-    
+
     int score = ( (intersection(*m_cm, cmTarget).worth() + 1) << 10 ) /
         ( reunion(*m_cm, cmTarget).worth() + (delta << 1) + 1 );
 
@@ -240,8 +242,8 @@ CandidateList similarTextHeuristicCandidates( const MetaTranslator *tor,
 
     TML all = tor->translatedMessages();
 
-    foreach ( MetaTranslatorMessage mtm, all ) {
-        if ( mtm.type() == MetaTranslatorMessage::Unfinished ||
+    foreach (const TranslatorMessage &mtm, all ) {
+        if ( mtm.type() == TranslatorMessage::Unfinished ||
              mtm.translation().isEmpty() )
             continue;
 
@@ -273,3 +275,5 @@ CandidateList similarTextHeuristicCandidates( const MetaTranslator *tor,
     }
     return candidates;
 }
+
+QT_END_NAMESPACE

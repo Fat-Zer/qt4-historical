@@ -43,6 +43,8 @@
 
 #include "q3membuf_p.h"
 
+QT_BEGIN_NAMESPACE
+
 // *******************************************************************
 // QMembuf declaration and implementation
 // *******************************************************************
@@ -167,3 +169,5 @@ int Q3Membuf::ungetch(int ch)
     }
     return ch;
 }
+
+QT_END_NAMESPACE

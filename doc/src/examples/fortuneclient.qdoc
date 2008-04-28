@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example network/fortuneclient
     \title Fortune Client Example
@@ -13,7 +56,7 @@
     request a line of text from a fortune server (from the
     \l{network/fortuneserver}{Fortune Server} example). The client requests a
     fortune by simply connecting to the server. The server then responds with
-    a 16-bit (\l quint16) integer containing the length of the fortune text,
+    a 16-bit (quint16) integer containing the length of the fortune text,
     followed by a QString.
 
     QTcpSocket supports two general approaches to network programming:
@@ -40,9 +83,7 @@
 
     Our class contains some data and a few private slots:
 
-    \quotefromfile network/fortuneclient/client.h
-    \skipto class Client
-    \printuntil };
+    \snippet examples/network/fortuneclient/client.h 0
 
     Other than the widgets that make up the GUI, the data members include a
     QTcpSocket pointer, a copy of the fortune text currently displayed, and
@@ -52,29 +93,23 @@
     widget as parent, so that we won't have to worry about deleting the
     socket:
 
-    \quotefromfile network/fortuneclient/client.cpp
-    \skipto Client::Client
-    \printuntil {
+    \snippet examples/network/fortuneclient/client.cpp 0
     \dots
-    \skipto tcpSocket = new QTcpSocket(this)
-    \printuntil ;
+    \snippet examples/network/fortuneclient/client.cpp 1
 
     The only QTcpSocket signals we need in this example are
     QTcpSocket::readyRead(), signifying that data has been received, and
     QTcpSocket::error(), which we will use to catch any connection errors:
 
     \dots
-    \skipto connect(tcpSocket,
-    \printuntil connect(tcpSocket, SIGNAL(error(
+    \snippet examples/network/fortuneclient/client.cpp 3
     \dots
-    \skipto }
-    \printline }
+    \snippet examples/network/fortuneclient/client.cpp 5
 
     Clicking the \gui{Get Fortune} button will invoke the \c
     requestNewFortune() slot:
 
-    \skipto requestNewFortune()
-    \printuntil }
+    \snippet examples/network/fortuneclient/client.cpp 6
 
     In this slot, we initialize \c blockSize to 0, preparing to read a new block
     of data.  Because we allow the user to click \gui{Get Fortune} before the
@@ -100,8 +135,7 @@
 
     Let's go through the \l{QTcpSocket::error()}{error()} case first:
 
-    \skipto void Client::displayError(
-    \printuntil /^\}/
+    \snippet examples/network/fortuneclient/client.cpp 13
 
     We pop up all errors in a dialog using
     QMessageBox::information(). QTcpSocket::RemoteHostClosedError is silently
@@ -111,10 +145,9 @@
     Now for the \l{QTcpSocket::readyRead()}{readyRead()} alternative. This
     signal is connected to \c Client::readFortune():
 
-    \quotefromfile network/fortuneclient/client.cpp
-    \skipto void Client::readFortune()
-    \printuntil return;
-    \printuntil return;
+    \snippet examples/network/fortuneclient/client.cpp 8
+    \codeline
+    \snippet examples/network/fortuneclient/client.cpp 10
 
     The protocol is based on QDataStream, so we start by creating a stream
     object, passing the socket to QDataStream's constructor. We then
@@ -131,8 +164,9 @@
     with the size of the packet, so first we need to ensure that we can read
     the size, then we will wait until QTcpSocket has received the full packet.
 
-    \printuntil }
-    \printuntil }
+    \snippet examples/network/fortuneclient/client.cpp 11
+    \codeline
+    \snippet examples/network/fortuneclient/client.cpp 12
 
     We proceed by using QDataStream's streaming operator to read the fortune
     from the socket into a QString. Once read, we can call QLabel::setText()

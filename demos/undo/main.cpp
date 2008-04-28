@@ -46,6 +46,8 @@
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(undo);
+
     QApplication app(argc, argv);
 
     MainWindow win;

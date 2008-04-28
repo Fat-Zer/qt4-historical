@@ -45,9 +45,11 @@
 #define QREADWRITELOCK_H
 
 #include <QtCore/qglobal.h>
-#include <limits.h>
+#include <limits.h> // ### Qt 5: remove
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Core)
 
@@ -58,7 +60,10 @@ struct QReadWriteLockPrivate;
 class Q_CORE_EXPORT QReadWriteLock
 {
 public:
-    QReadWriteLock();
+    enum RecursionMode { NonRecursive, Recursive };
+
+    QReadWriteLock(); // ### Qt 5: merge with below
+    QReadWriteLock(RecursionMode recursionMode);
     ~QReadWriteLock();
 
     void lockForRead();
@@ -74,7 +79,14 @@ public:
 private:
     Q_DISABLE_COPY(QReadWriteLock)
     QReadWriteLockPrivate *d;
+
+    friend class QWaitCondition;
 };
+
+#if defined(Q_CC_MSVC)
+#pragma warning( push )
+#pragma warning( disable : 4312 ) // ignoring the warning from /Wp64
+#endif
 
 class Q_CORE_EXPORT QReadLocker
 {
@@ -117,7 +129,11 @@ private:
 
 inline QReadLocker::QReadLocker(QReadWriteLock *areadWriteLock)
     : q_lock(areadWriteLock)
-{ relock(); }
+{
+    Q_ASSERT_X((q_val & quintptr(1u)) == quintptr(0),
+               "QReadLocker", "QReadWriteLock pointer is misaligned");
+    relock();
+}
 
 class Q_CORE_EXPORT QWriteLocker
 {
@@ -150,6 +166,7 @@ public:
     inline QReadWriteLock *readWriteLock() const
     { return reinterpret_cast<QReadWriteLock *>(q_val & ~quintptr(1u)); }
 
+
 private:
     Q_DISABLE_COPY(QWriteLocker)
     union{
@@ -160,7 +177,15 @@ private:
 
 inline QWriteLocker::QWriteLocker(QReadWriteLock *areadWriteLock)
     : q_lock(areadWriteLock)
-{ relock(); }
+{
+    Q_ASSERT_X((q_val & quintptr(1u)) == quintptr(0),
+               "QWriteLocker", "QReadWriteLock pointer is misaligned");
+    relock();
+}
+
+#if defined(Q_CC_MSVC)
+#pragma warning( pop )
+#endif
 
 #else // QT_NO_THREAD
 
@@ -213,6 +238,8 @@ private:
 };
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

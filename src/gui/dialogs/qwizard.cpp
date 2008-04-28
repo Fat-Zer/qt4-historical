@@ -45,6 +45,7 @@
 
 #ifndef QT_NO_WIZARD
 
+#include "qabstractspinbox.h"
 #include "qalgorithms.h"
 #include "qapplication.h"
 #include "qboxlayout.h"
@@ -70,7 +71,13 @@
 #include "private/qdialog_p.h"
 #include <qdebug.h>
 
+#ifdef Q_OS_WINCE
+extern bool qt_wince_is_mobile();     //defined in qguifunctions_wce.cpp
+#endif
+
 #include <string.h>     // for memset()
+
+QT_BEGIN_NAMESPACE
 
 // These fudge terms were needed a few places to obtain pixel-perfect results
 const int GapBetweenLogoAndRightEdge = 5;
@@ -119,6 +126,30 @@ static bool objectInheritsXAndXIsCloserThanY(const QObject *object, const QByteA
         metaObject = metaObject->superClass();
     }
     return false;
+}
+
+static QString buttonDefaultText(int wstyle, int which)
+{
+    const bool macStyle = (wstyle == QWizard::MacStyle);
+    switch(which) {
+    case QWizard::BackButton: 
+        return macStyle ? QWizard::tr("Go Back") : QWizard::tr("< &Back");
+    case QWizard::NextButton: 
+        if(macStyle)
+            return QWizard::tr("Continue");
+        else
+            return wstyle == QWizard::AeroStyle ? QWizard::tr("&Next") : QWizard::tr("&Next >");
+    case QWizard::CommitButton: 
+        return QWizard::tr("Commit");
+    case QWizard::FinishButton:
+        return macStyle ? QWizard::tr("Done") : QWizard::tr("&Finish");
+    case QWizard::CancelButton: 
+        return macStyle ? QWizard::tr("Quit") : QWizard::tr("Cancel");
+    case QWizard::HelpButton:  
+        return macStyle ? QWizard::tr("Help") : QWizard::tr("&Help");
+    default:
+        return QString();
+    }
 }
 
 const int NFallbackDefaultProperties = 7;
@@ -205,12 +236,20 @@ class QWizardLayoutInfo
 {
 public:
     inline QWizardLayoutInfo()
-        : topLevelMargin(-1), childMargin(-1), hspacing(-1), vspacing(-1),
+    : topLevelMarginLeft(-1), topLevelMarginRight(-1), topLevelMarginTop(-1),
+      topLevelMarginBottom(-1), childMarginLeft(-1), childMarginRight(-1),
+      childMarginTop(-1), childMarginBottom(-1), hspacing(-1), vspacing(-1),
           wizStyle(QWizard::ClassicStyle), header(false), watermark(false), title(false),
           subTitle(false), extension(false) {}
 
-    int topLevelMargin;
-    int childMargin;
+    int topLevelMarginLeft;
+    int topLevelMarginRight;
+    int topLevelMarginTop;
+    int topLevelMarginBottom;
+    int childMarginLeft;
+    int childMarginRight;
+    int childMarginTop;
+    int childMarginBottom;
     int hspacing;
     int vspacing;
     int buttonSpacing;
@@ -227,8 +266,14 @@ public:
 
 bool QWizardLayoutInfo::operator==(const QWizardLayoutInfo &other)
 {
-    return topLevelMargin == other.topLevelMargin
-           && childMargin == other.childMargin
+    return topLevelMarginLeft == other.topLevelMarginLeft
+           && topLevelMarginRight == other.topLevelMarginRight
+           && topLevelMarginTop == other.topLevelMarginTop
+           && topLevelMarginBottom == other.topLevelMarginBottom 
+           && childMarginLeft == other.childMarginLeft
+           && childMarginRight == other.childMarginRight
+           && childMarginTop == other.childMarginTop
+           && childMarginBottom == other.childMarginBottom
            && hspacing == other.hspacing
            && vspacing == other.vspacing
            && buttonSpacing == other.buttonSpacing
@@ -306,12 +351,12 @@ void QWizardHeader::setup(const QWizardLayoutInfo &info, const QString &title,
     bool modern = (info.wizStyle == QWizard::ModernStyle);
 
     layout->setRowMinimumHeight(0, modern ? ModernHeaderTopMargin : 0);
-    layout->setRowMinimumHeight(1, modern ? info.topLevelMargin - ModernHeaderTopMargin - 1 : 0);
+    layout->setRowMinimumHeight(1, modern ? info.topLevelMarginTop - ModernHeaderTopMargin - 1 : 0);
     layout->setRowMinimumHeight(6, (modern ? 3 : GapBetweenLogoAndRightEdge) + 2);
 
-    int minColumnWidth0 = modern ? 2 * info.topLevelMargin : 0;
-    int minColumnWidth1 = modern ? 2 * info.topLevelMargin + 1
-                                 : info.topLevelMargin + ClassicHMargin;
+    int minColumnWidth0 = modern ? info.topLevelMarginLeft + info.topLevelMarginRight : 0;
+    int minColumnWidth1 = modern ? info.topLevelMarginLeft + info.topLevelMarginRight + 1
+                                 : info.topLevelMarginLeft + ClassicHMargin;
     layout->setColumnMinimumWidth(0, minColumnWidth0);
     layout->setColumnMinimumWidth(1, minColumnWidth1);
 
@@ -474,7 +519,9 @@ public:
 #if !defined(QT_NO_STYLE_WINDOWSVISTA)
           , wasCompositionEnabled(false)
 #endif
-          , aeroStyleOverride(false)
+          , aeroStyleOverride(false),
+          minimumWidth(0), minimumHeight(0),
+          maximumWidth(QWIDGETSIZE_MAX), maximumHeight(QWIDGETSIZE_MAX)
     {
         for (int i = 0; i < QWizard::NButtons; ++i)
             btns[i] = 0;
@@ -503,7 +550,6 @@ public:
     void enableUpdates();
     void _q_emitCustomButtonClicked();
     void _q_updateButtonStates();
-
 #ifdef Q_WS_MAC
     static QPixmap findDefaultBackgroundPixmap();
 #endif
@@ -525,7 +571,6 @@ public:
 
     QWizard::WizardStyle wizStyle;
     QWizard::WizardOptions opts;
-    QMap<int, QMap<int, QString> > buttonDefaultTexts;
     QMap<int, QString> buttonCustomTexts;
     bool buttonsHaveCustomLayout;
     QList<QWizard::WizardButton> buttonsCustomLayout;
@@ -564,6 +609,10 @@ public:
     bool wasCompositionEnabled;
 #endif
     bool aeroStyleOverride;
+    int minimumWidth;
+    int minimumHeight;
+    int maximumWidth;
+    int maximumHeight;
 };
 
 void QWizardPrivate::init()
@@ -575,29 +624,7 @@ void QWizardPrivate::init()
     if (wizStyle == QWizard::MacStyle) {
         opts = (QWizard::NoDefaultButton | QWizard::NoCancelButton);
     } else if (wizStyle == QWizard::ModernStyle) {
-          opts = QWizard::HelpButtonOnRight;
-    }
-
-    for (int wstyle = 0; wstyle < QWizard::NStyles; ++wstyle) {
-        QMap<int, QString> texts; // keep in sync with QWizard::WizardButton
-        if (wstyle == QWizard::MacStyle) {
-            texts.insert(QWizard::BackButton,   QWizard::tr("Go Back"));
-            texts.insert(QWizard::NextButton,   QWizard::tr("Continue"));
-            texts.insert(QWizard::CommitButton, QWizard::tr("Commit"));
-            texts.insert(QWizard::FinishButton, QWizard::tr("Done"));
-            texts.insert(QWizard::CancelButton, QWizard::tr("Quit"));
-            texts.insert(QWizard::HelpButton,   QWizard::tr("Help"));
-        } else {
-            texts.insert(QWizard::BackButton,   QWizard::tr("< &Back"));
-            texts.insert(
-                QWizard::NextButton,
-                wstyle == QWizard::AeroStyle ? QWizard::tr("&Next") : QWizard::tr("&Next >"));
-            texts.insert(QWizard::CommitButton, QWizard::tr("Commit"));
-            texts.insert(QWizard::FinishButton, QWizard::tr("&Finish"));
-            texts.insert(QWizard::CancelButton, QWizard::tr("Cancel"));
-            texts.insert(QWizard::HelpButton,   QWizard::tr("&Help"));
-        }
-        buttonDefaultTexts.insert(wstyle, texts);
+        opts = QWizard::HelpButtonOnRight;
     }
 
 #if !defined(QT_NO_STYLE_WINDOWSVISTA)
@@ -638,6 +665,8 @@ void QWizardPrivate::init()
     handleAeroStyleChange();
 #endif
 }
+
+
 
 void QWizardPrivate::reset()
 {
@@ -778,8 +807,14 @@ QWizardLayoutInfo QWizardPrivate::layoutInfoForCurrentPage()
     QWizardLayoutInfo info;
 
     const int layoutHorizontalSpacing = style->pixelMetric(QStyle::PM_LayoutHorizontalSpacing);
-    info.topLevelMargin = style->pixelMetric(QStyle::PM_LayoutBottomMargin, 0, q);
-    info.childMargin = style->pixelMetric(QStyle::PM_LayoutLeftMargin, 0, titleLabel);
+    info.topLevelMarginLeft = style->pixelMetric(QStyle::PM_LayoutLeftMargin, 0, q);
+    info.topLevelMarginRight = style->pixelMetric(QStyle::PM_LayoutRightMargin, 0, q);
+    info.topLevelMarginTop = style->pixelMetric(QStyle::PM_LayoutTopMargin, 0, q);
+    info.topLevelMarginBottom = style->pixelMetric(QStyle::PM_LayoutBottomMargin, 0, q);
+    info.childMarginLeft = style->pixelMetric(QStyle::PM_LayoutLeftMargin, 0, titleLabel);
+    info.childMarginRight = style->pixelMetric(QStyle::PM_LayoutRightMargin, 0, titleLabel);
+    info.childMarginTop = style->pixelMetric(QStyle::PM_LayoutTopMargin, 0, titleLabel);
+    info.childMarginBottom = style->pixelMetric(QStyle::PM_LayoutBottomMargin, 0, titleLabel);
     info.hspacing = (layoutHorizontalSpacing == -1)
         ? style->layoutSpacing(QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Horizontal)
         : layoutHorizontalSpacing;
@@ -846,8 +881,11 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
     bool classic = (info.wizStyle == QWizard::ClassicStyle);
     bool modern = (info.wizStyle == QWizard::ModernStyle);
     bool aero = (info.wizStyle == QWizard::AeroStyle);
-    int deltaMargin = info.topLevelMargin - info.childMargin;
-    int deltaVSpacing = info.topLevelMargin - info.vspacing;
+    int deltaMarginLeft = info.topLevelMarginLeft - info.childMarginLeft;
+    int deltaMarginRight = info.topLevelMarginRight - info.childMarginRight;
+    int deltaMarginTop = info.topLevelMarginTop - info.childMarginTop;
+    int deltaMarginBottom = info.topLevelMarginBottom - info.childMarginBottom;
+    int deltaVSpacing = info.topLevelMarginBottom - info.vspacing;
 
     int row = 0;
     int numColumns;
@@ -869,14 +907,17 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
         if (modern) {
             mainLayout->setMargin(0);
             mainLayout->setSpacing(0);
-            pageVBoxLayout->setMargin(deltaMargin);
-            buttonLayout->setMargin(info.topLevelMargin);
+            pageVBoxLayout->setContentsMargins(deltaMarginLeft, deltaMarginTop, 
+                                               deltaMarginRight, deltaMarginBottom);
+            buttonLayout->setContentsMargins(info.topLevelMarginLeft, info.topLevelMarginTop, 
+                                             info.topLevelMarginRight, info.topLevelMarginBottom);
         } else {
-            mainLayout->setMargin(info.topLevelMargin);
+            mainLayout->setContentsMargins(info.topLevelMarginLeft, info.topLevelMarginTop, 
+                                           info.topLevelMarginRight, info.topLevelMarginBottom);
             mainLayout->setHorizontalSpacing(info.hspacing);
             mainLayout->setVerticalSpacing(info.vspacing);
-            pageVBoxLayout->setMargin(0);
-            buttonLayout->setMargin(0);
+            pageVBoxLayout->setContentsMargins(0, 0, 0, 0);
+            buttonLayout->setContentsMargins(0, 0, 0, 0);
         }
     }
     buttonLayout->setSpacing(info.buttonSpacing);
@@ -917,13 +958,20 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
 
         titleLabel->setFont(titleFont);
         const int aeroTitleIndent = 25; // ### hardcoded for now - should be calculated somehow
-        titleLabel->setIndent(aero ? aeroTitleIndent : mac ? 2 : classic ? info.childMargin : info.topLevelMargin);
+        if (aero)
+            titleLabel->setIndent(aeroTitleIndent);
+        else if (mac)
+            titleLabel->setIndent(2);
+        else if (classic)
+            titleLabel->setIndent(info.childMarginLeft);
+        else
+            titleLabel->setIndent(info.topLevelMarginLeft);
         if (modern) {
             if (!placeholderWidget1) {
                 placeholderWidget1 = new QWidget(antiFlickerWidget);
                 placeholderWidget1->setBackgroundRole(QPalette::Base);
             }
-            placeholderWidget1->setFixedHeight(info.topLevelMargin + 2);
+            placeholderWidget1->setFixedHeight(info.topLevelMarginLeft + 2);
             mainLayout->addWidget(placeholderWidget1, row++, pageColumn);
         }
         mainLayout->addWidget(titleLabel, row++, pageColumn);
@@ -948,15 +996,15 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
             subTitleLabel = new QLabel(pageFrame);
             subTitleLabel->setWordWrap(true);
 
-            // ideally, the same margin should be used on the right side as well
-            subTitleLabel->setIndent(info.childMargin + 1); // ###
+            subTitleLabel->setContentsMargins(info.childMarginLeft , 0,
+                                              info.childMarginRight , 0);
 
             pageVBoxLayout->insertWidget(1, subTitleLabel);
         }
     }
 
     // ### try to replace with margin.
-    changeSpacerSize(pageVBoxLayout, 0, 0, info.subTitle ? info.childMargin : 0);
+    changeSpacerSize(pageVBoxLayout, 0, 0, info.subTitle ? info.childMarginLeft : 0);
 
     int hMargin = mac ? 1 : 0;
     int vMargin = hMargin;
@@ -967,10 +1015,10 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
 
     if (info.header) {
         if (modern) {
-            hMargin = info.topLevelMargin;
-            vMargin = deltaMargin;
+            hMargin = info.topLevelMarginLeft;
+            vMargin = deltaMarginBottom;
         } else if (classic) {
-            hMargin = deltaMargin + ClassicHMargin;
+            hMargin = deltaMarginLeft + ClassicHMargin;
             vMargin = 0;
         }
     }
@@ -1099,6 +1147,15 @@ void QWizardPrivate::updateLayout()
 
     QWizardPage *page = q->currentPage();
 
+    // If the page can expand vertically, let it stretch "infinitely" more than the
+    // QSpacerItem at the bottom (which has a stretch factor of 1). Otherwise, let the
+    // QSpacerItem stretch "infinitely" more than the page. (here, 32768/1 and 1/0 both
+    // qualify as "infinity"!)
+    if (page)
+        pageVBoxLayout->setStretchFactor(
+            page, pageVBoxLayout->itemAt(
+                pageVBoxLayout->indexOf(page))->expandingDirections() & Qt::Vertical ? 32768 : 0);
+
     if (info.header) {
         Q_ASSERT(page);
         headerWidget->setup(info, page->title(), page->subTitle(),
@@ -1134,16 +1191,36 @@ void QWizardPrivate::updateMinMaxSizes(const QWizardLayoutInfo &info)
     if (wizStyle == QWizard::AeroStyle)
         extraHeight = vistaHelper->titleBarSize() + vistaHelper->topOffset();
 #endif
-    q->setMinimumSize(mainLayout->totalMinimumSize() + QSize(0, extraHeight));
-
+    QSize minimumSize = mainLayout->totalMinimumSize() + QSize(0, extraHeight);
+    QSize maximumSize;
 #if defined(Q_WS_WIN)
-    if (QSysInfo::WindowsVersion > QSysInfo::WV_98) // ### See Tasks 164078 and 161660
+    if (QSysInfo::WindowsVersion > QSysInfo::WV_Me) // ### See Tasks 164078 and 161660
 #endif
-    q->setMaximumSize(mainLayout->totalMaximumSize());
-    if (info.header && headerWidget->maximumWidth() != QWIDGETSIZE_MAX)
-        q->setFixedWidth(headerWidget->maximumWidth());
-    if (info.watermark)
-        q->setFixedHeight(mainLayout->totalSizeHint().height());
+    maximumSize = mainLayout->totalMaximumSize();
+    if (info.header && headerWidget->maximumWidth() != QWIDGETSIZE_MAX) {
+        minimumSize.setWidth(headerWidget->maximumWidth());
+        maximumSize.setWidth(headerWidget->maximumWidth());
+    }
+    if (info.watermark) {
+        minimumSize.setHeight(mainLayout->totalSizeHint().height());
+        maximumSize.setHeight(mainLayout->totalSizeHint().height());
+    }
+    if (q->minimumWidth() == minimumWidth) {
+        minimumWidth = minimumSize.width();
+        q->setMinimumWidth(minimumWidth);
+    }
+    if (q->minimumHeight() == minimumHeight) {
+        minimumHeight = minimumSize.height();
+        q->setMinimumHeight(minimumHeight);
+    }
+    if (q->maximumWidth() == maximumWidth) {
+        maximumWidth = maximumSize.width();
+        q->setMaximumWidth(maximumWidth);
+    }
+    if (q->maximumHeight() == maximumHeight) {
+        maximumHeight = maximumSize.height();
+        q->setMaximumHeight(maximumHeight);
+    }
 }
 
 bool QWizardPrivate::ensureButton(QWizard::WizardButton which) const
@@ -1163,7 +1240,7 @@ bool QWizardPrivate::ensureButton(QWizard::WizardButton which) const
         btns[which] = pushButton;
 #endif
         if (which < QWizard::NStandardButtons)
-            pushButton->setText(buttonDefaultTexts.value(wizStyle).value(which));
+            pushButton->setText(buttonDefaultText(wizStyle, which));
         connectButton(which);
     }
     return true;
@@ -1189,7 +1266,7 @@ void QWizardPrivate::updateButtonTexts()
             else if (buttonCustomTexts.contains(i))
                 btns[i]->setText(buttonCustomTexts.value(i));
             else if (i < QWizard::NStandardButtons)
-                btns[i]->setText(buttonDefaultTexts.value(wizStyle).value(i));
+                btns[i]->setText(buttonDefaultText(wizStyle, i));
         }
     }
 }
@@ -1395,7 +1472,9 @@ void QWizardPrivate::_q_updateButtonStates()
 #ifdef Q_WS_MAC
 
 #ifdef Q_WS_MAC32
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <QuickTime/QuickTime.h>
+QT_END_INCLUDE_NAMESPACE
 typedef OSErr (*PtrQTNewDataReferenceFromCFURL)(CFURLRef, UInt32, Handle*, OSType*);
 typedef OSErr (*PtrGetGraphicsImporterForDataRefWithFlags)(Handle, OSType, ComponentInstance*, long);
 typedef ComponentResult (*PtrGraphicsImportSetFlags)(GraphicsImportComponent, long);
@@ -1532,20 +1611,17 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     \l{dialogs/classwizard}{Class Wizard} and \l{dialogs/licensewizard}{License
     Wizard}.
 
-    \quotefromfile dialogs/trivialwizard/trivialwizard.cpp
-    \skipto createIntroPage()
-    \printuntil createRegistrationPage()
-    \printline {
+    \snippet examples/dialogs/trivialwizard/trivialwizard.cpp 1
+    \snippet examples/dialogs/trivialwizard/trivialwizard.cpp 3
     \dots
-    \skipto /^\}/
-    \printline }
-    \printuntil createConclusionPage()
-    \printline {
+    \snippet examples/dialogs/trivialwizard/trivialwizard.cpp 4
+    \codeline
+    \snippet examples/dialogs/trivialwizard/trivialwizard.cpp 5
+    \snippet examples/dialogs/trivialwizard/trivialwizard.cpp 7
     \dots
-    \skipto /^\}/
-    \printline /^\}/
-    \printline main(
-    \printuntil /^\}/
+    \snippet examples/dialogs/trivialwizard/trivialwizard.cpp 8
+    \codeline
+    \snippet examples/dialogs/trivialwizard/trivialwizard.cpp 10
 
     \section1 Wizard Look and Feel
 
@@ -1594,9 +1670,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     or HaveCustomButton3 options. Whenever the user clicks a custom
     button, customButtonClicked() is emitted. For example:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto setButtonText
-    \printuntil printButtonClicked
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 29
 
     \section1 Elements of a Wizard Page
 
@@ -1664,17 +1738,12 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     To register a field, call QWizardPage::registerField() field.
     For example:
 
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto ::ClassInfoPage
-    \printuntil {
+    \snippet examples/dialogs/classwizard/classwizard.cpp 8
     \dots
-    \skipto classNameLabel
-    \printto groupBox =
-    \skipto className
-    \printuntil qobjectMacro
+    \snippet examples/dialogs/classwizard/classwizard.cpp 10
+    \snippet examples/dialogs/classwizard/classwizard.cpp 11
     \dots
-    \skipto /^\}/
-    \printline }
+    \snippet examples/dialogs/classwizard/classwizard.cpp 13
 
     The above code registers three fields, \c className, \c
     baseClass, and \c qobjectMacro, which are associated with three
@@ -1685,8 +1754,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     The fields of any page are accessible from any other page. For
     example:
 
-    \skipto OutputFilesPage::initializePage
-    \printuntil /^\}/
+    \snippet examples/dialogs/classwizard/classwizard.cpp 17
 
     Here, we call QWizardPage::field() to access the contents of the
     \c className field (which was defined in the \c ClassInfoPage)
@@ -1710,8 +1778,8 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
 
     To consider a field "filled", QWizard simply checks that the
     field's current value doesn't equal the original value (the value
-    it had when initializePage() was called). For QLineEdit, QWizard
-    also checks that
+    it had when initializePage() was called). For QLineEdit and
+    QAbstractSpinBox subclasses, QWizard also checks that
     \l{QLineEdit::hasAcceptableInput()}{hasAcceptableInput()} returns
     true, to honor any validator or mask.
 
@@ -1739,12 +1807,9 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     them using addPage(). By default, the pages are shown in the
     order in which they were added. For example:
 
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto ::ClassWizard
-    \printuntil addPage(new Conclu
+    \snippet examples/dialogs/classwizard/classwizard.cpp 0
     \dots
-    \skipto /^\}/
-    \printline }
+    \snippet examples/dialogs/classwizard/classwizard.cpp 2
 
     When a page is about to be shown, QWizard calls initializePage()
     (which in turn calls QWizardPage::initializePage()) to fill the
@@ -1774,74 +1839,37 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     In complex wizards, pages are identified by IDs. These IDs are
     typically defined using an enum. For example:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.h
-    \skipto : public QWizard
-    \printuntil {
+    \snippet examples/dialogs/licensewizard/licensewizard.h 0
     \dots
-    \skipto enum {
-    \printuntil };
+    \snippet examples/dialogs/licensewizard/licensewizard.h 2
     \dots
-    \skipto /^\};/
-    \printline }
+    \snippet examples/dialogs/licensewizard/licensewizard.h 3
 
     The pages are inserted using setPage(), which takes an ID and an
     instance of QWizardPage (or of a subclass):
 
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto ::LicenseWizard
-    \printuntil setPage(Page_Conclusion
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 1
     \dots
-    \skipto /^\}/
-    \printline }
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 8
 
     By default, the pages are shown in increasing ID order. To
     provide a dynamic order that depends on the options chosen by the
     user, we must reimplement QWizardPage::nextId(). For example:
 
-    \skipto IntroPage::nextId
-    \printuntil /^\}/
-
-    \skipto EvaluatePage::nextId
-    \printuntil /^\}/
-
-    \skipto RegisterPage::nextId
-    \printuntil /^\}/
-
-    \skipto DetailsPage::nextId
-    \printuntil /^\}/
-
-    \skipto ConclusionPage::nextId
-    \printuntil /^\}/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 18
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 23
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 24
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 25
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 26
 
     It would also be possible to put all the logic in one place, in a
     QWizard::nextId() reimplementation. For example:
 
-    \code
-        int LicenseWizard::nextId() const
-        {
-            switch (currentId()) {
-            case Page_Intro:
-                if (field("intro.evaluate").toBool()) {
-                    return Page_Evaluate;
-                } else {
-                    return Page_Register;
-                }
-            case Page_Evaluate:
-                return Page_Conclusion;
-            case Page_Register:
-                if (field("register.upgradeKey").toString().isEmpty()) {
-                    return Page_Details;
-                } else {
-                    return Page_Conclusion;
-                }
-            case Page_Details:
-                return Page_Conclusion;
-            case Page_Conclusion:
-            default:
-                return -1;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.dialogs.qwizard.cpp 0
 
     To start at another page than the page with the lowest ID, call
     setStartId().
@@ -1849,8 +1877,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     To test whether a page has been visited or not, call
     hasVisitedPage(). For example:
 
-    \skipto ConclusionPage::initializePage
-    \printuntil /^\}/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 27
 
     \sa QWizardPage, {Class Wizard Example}, {License Wizard Example}
 */
@@ -1953,6 +1980,10 @@ QWizard::QWizard(QWidget *parent, Qt::WindowFlags flags)
 {
     Q_D(QWizard);
     d->init();
+#ifdef Q_OS_WINCE
+    if (!qt_wince_is_mobile())
+        setWindowFlags(windowFlags() & ~Qt::WindowOkButtonHint);
+#endif
 }
 
 /*!
@@ -2025,14 +2056,6 @@ void QWizard::setPage(int id, QWizardPage *page)
     d->pageVBoxLayout->setEnabled(false);
 
     d->pageVBoxLayout->insertWidget(n - 1, page);
-
-    /*
-        If the page can stretch, let it stretch; otherwise, we stretch
-        "infinitely" more than the page itself.
-    */
-    int stretch = 32768
-                  * int(d->pageVBoxLayout->itemAt(n - 1)->expandingDirections() & Qt::Vertical);
-    d->pageVBoxLayout->setStretchFactor(page, stretch);
 
     // hide new page and reset layout to old status
     page->hide();
@@ -2291,7 +2314,7 @@ bool QWizard::testOption(WizardOption option) const
     \list
     \o Windows: HelpButtonOnRight.
     \o Mac OS X: NoDefaultButton and NoCancelButton.
-    \o X11 and QWS (Qtopia Core): none.
+    \o X11 and QWS (Qt for Embedded Linux): none.
     \endlist
 
     \sa wizardStyle
@@ -2386,8 +2409,9 @@ QString QWizard::buttonText(WizardButton which) const
     if (d->buttonCustomTexts.contains(which))
         return d->buttonCustomTexts.value(which);
 
-    if (d->buttonDefaultTexts.value(d->wizStyle).contains(which))
-        return d->buttonDefaultTexts.value(d->wizStyle).value(which);
+    const QString defText = buttonDefaultText(d->wizStyle, which);
+    if(!defText.isNull())
+        return defText;
 
     return d->btns[which]->text();
 }
@@ -2406,18 +2430,7 @@ QString QWizard::buttonText(WizardButton which) const
 
     Example:
 
-    \code
-        MyWizard::MyWizard(QWidget *parent)
-            : QWizard(parent)
-        {
-            ...
-            QList<QWizard::WizardButton> layout;
-            layout << QWizard::Stretch << QWizard::BackButton << QWizard::CloseButton
-                   << QWizard::NextButton << QWizard::FinishButton;
-            setButtonLayout(layout);
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.dialogs.qwizard.cpp 1
 
     \sa setButton(), setButtonText(), setOptions()
 */
@@ -2678,26 +2691,20 @@ QSize QWizard::sizeHint() const
 
     Example:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto ::LicenseWizard
-    \printuntil {
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 0
     \dots
-    \skipto HaveHelpButton
-    \printline HaveHelpButton
-    \skipto helpRequested
-    \printuntil ;
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 5
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 7
     \dots
-    \skipto /^\}/
-    \printline }
-    \skipto ::showHelp
-    \printuntil break;
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 8
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 10
     \dots
-    \skipto default:
-    \printuntil }
-    \skipto QMessageBox::information
-    \printuntil ;
-    \skipto /^\}/
-    \printline }
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 12
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 14
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 15
 
     \sa customButtonClicked()
 */
@@ -2883,7 +2890,7 @@ void QWizard::done(int result)
 
 /*!
     This virtual function is called by QWizard to prepare page \a id
-    just before it is shown. (However, if the \l
+    just before it is shown as a result of the user clicking \gui Next. (However, if the \l
     QWizard::IndependentPages option is set, this function is only
     called the first time the page is shown.)
 
@@ -2904,8 +2911,8 @@ void QWizard::initializePage(int id)
 }
 
 /*!
-    This virtual function is called by QWizard when the user clicks
-    \gui Back (unless the QWizard::IndependentPages option is set).
+    This virtual function is called by QWizard to clean up page \a id just before the
+    user leaves it by clicking \gui Back (unless the \l QWizard::IndependentPages option is set).
 
     The default implementation calls QWizardPage::cleanupPage() on
     page(\a id).
@@ -3148,17 +3155,15 @@ QPixmap QWizardPage::pixmap(QWizard::WizardPixmap which) const
 
 /*!
     This virtual function is called by QWizard::initializePage() to
-    prepare the page just before it is shown. (However, if the \l
-    QWizard::IndependentPages option is set, this function is only
+    prepare the page just before it is shown as a result of the user clicking \gui Next.
+    (However, if the \l QWizard::IndependentPages option is set, this function is only
     called the first time the page is shown.)
 
     By reimplementing this function, you can ensure that the page's
     fields are properly initialized based on fields from previous
     pages. For example:
 
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto OutputFilesPage::initializePage
-    \printuntil }
+    \snippet examples/dialogs/classwizard/classwizard.cpp 17
 
     The default implementation does nothing.
 
@@ -3170,7 +3175,7 @@ void QWizardPage::initializePage()
 
 /*!
     This virtual function is called by QWizard::cleanupPage() when
-    the user clicks \gui Back (unless the QWizard::IndependentPages
+    the user leaves the page by clicking \gui Back (unless the \l QWizard::IndependentPages
     option is set).
 
     The default implementation resets the page's fields to their
@@ -3247,6 +3252,12 @@ bool QWizardPage::isComplete() const
                     return false;
             }
 #endif
+#ifndef QT_NO_SPINBOX
+            if (QAbstractSpinBox *spinBox = qobject_cast<QAbstractSpinBox *>(field.object)) {
+                if (!spinBox->hasAcceptableInput())
+                    return false;
+            }
+#endif
         }
     }
     return true;
@@ -3285,7 +3296,16 @@ void QWizardPage::setFinalPage(bool finalPage)
 bool QWizardPage::isFinalPage() const
 {
     Q_D(const QWizardPage);
-    return d->explicitlyFinal || nextId() == -1;
+    if (d->explicitlyFinal)
+        return true;
+
+    QWizard *wizard = this->wizard();
+    if (wizard && wizard->currentPage() == this) {
+        // try to use the QWizard implementation if possible
+        return wizard->nextId() == -1;
+    } else {
+        return nextId() == -1;
+    }
 }
 
 /*!
@@ -3371,9 +3391,7 @@ QString QWizardPage::buttonText(QWizard::WizardButton which) const
     By reimplementing this function, you can specify a dynamic page
     order. For example:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto IntroPage::nextId
-    \printuntil /^\}/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 18
 
     \sa QWizard::nextId()
 */
@@ -3440,9 +3458,7 @@ void QWizardPage::setField(const QString &name, const QVariant &value)
 
     Example:
 
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto OutputFilesPage::initializePage
-    \printuntil }
+    \snippet examples/dialogs/classwizard/classwizard.cpp 17
 
     \sa QWizard::field(), setField(), registerField()
 */
@@ -3523,6 +3539,8 @@ QWizard *QWizardPage::wizard() const
     Q_D(const QWizardPage);
     return d->wizard;
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qwizard.cpp"
 

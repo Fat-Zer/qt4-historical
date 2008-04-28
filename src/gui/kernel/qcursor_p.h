@@ -62,11 +62,16 @@
 
 # if defined (Q_WS_MAC)
 #  include "private/qt_mac_p.h"
-   class QMacAnimateCursor;
 # elif defined(Q_WS_X11)
 #  include "private/qt_x11_p.h"
 # elif defined(Q_WS_WIN)
 #  include "QtCore/qt_windows.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
+#if defined (Q_WS_MAC)
+class QMacAnimateCursor;
 #endif
 
 class QBitmap;
@@ -77,7 +82,7 @@ struct QCursorData {
     static void initialize();
     static void cleanup();
 
-    QAtomic ref;
+    QAtomicInt ref;
     Qt::CursorShape cshape;
     QBitmap  *bm, *bmm;
     QPixmap pixmap;
@@ -112,5 +117,7 @@ struct QCursorData {
     void update();
     static QCursorData *setBitmap(const QBitmap &bitmap, const QBitmap &mask, int hotX, int hotY);
 };
+
+QT_END_NAMESPACE
 
 #endif // QCURSOR_P_H

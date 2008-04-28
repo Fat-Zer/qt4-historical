@@ -57,6 +57,10 @@
 
 #include <windows.h>
 
+#ifdef Q_OS_WINCE
+#include "QtCore/qfunctions_wince.h"
+#endif
+
 // already defined when compiled with WINVER >= 0x0500
 // and we only use them in Qt::WV_2000 and Qt::WV_98
 #ifndef SPI_SETMENUANIMATION
@@ -106,14 +110,6 @@
 #endif
 #ifndef ETO_PDY
 #define ETO_PDY 0x2000
-#endif
-
-// Added here to shut syncqt up
-#ifdef QT_BEGIN_HEAD
-QT_BEGIN_HEADER
-#endif
-#ifdef QT_END_HEADER
-QT_END_HEADER
 #endif
 
 #endif // QT_WINDOWS_H

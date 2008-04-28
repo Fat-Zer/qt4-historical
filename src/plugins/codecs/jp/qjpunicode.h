@@ -75,6 +75,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_NAMESPACE
+
 class QJpUnicodeConv {
 public:
     virtual ~QJpUnicodeConv() {}
@@ -152,6 +154,8 @@ public:
     uint unicodeToSjis(uint h, uint l) const;
     uint sjisibmvdcToUnicode(uint h, uint l) const;
     uint unicodeToSjisibmvdc(uint h, uint l) const;
+    uint cp932ToUnicode(uint h, uint l) const;
+    uint unicodeToCp932(uint h, uint l) const;
 
     uint sjisToUnicode(uint sjis) const {
         return sjisToUnicode((sjis & 0xff00) >> 8, (sjis & 0x00ff));
@@ -166,5 +170,7 @@ protected:
 private:
     int rule;
 };
+
+QT_END_NAMESPACE
 
 #endif // QJPUNICODE_H

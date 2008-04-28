@@ -610,8 +610,6 @@ void TorrentClient::fullVerificationDone()
     d->setState(d->completedPieces.count(true) == d->pieceCount ? Seeding : Searching);
 
     // Start the tracker client
-    d->trackerClient.setUploadCount(d->uploadedBytes);
-    d->trackerClient.setDownloadCount(d->downloadedBytes);
     d->trackerClient.start(d->metaInfo);
 }
 
@@ -672,7 +670,7 @@ void TorrentClient::pieceVerified(int pieceIndex, bool ok)
     if (completed == d->pieceCount) {
         if (d->state != Seeding) {
             d->setState(Seeding);
-            d->trackerClient.start(d->metaInfo);
+            d->trackerClient.startSeeding();
         }
     } else {
         if (completed == 1)

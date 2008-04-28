@@ -46,14 +46,17 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QComboBox;
 class QGroupBox;
 class QLabel;
 class QSpinBox;
 class QStackedWidget;
+QT_END_NAMESPACE
 class SlidersGroup;
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -79,5 +82,6 @@ private:
     QSpinBox *valueSpinBox;
     QComboBox *orientationCombo;
 };
+//! [0]
 
 #endif

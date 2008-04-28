@@ -48,6 +48,8 @@
 #include <QtCore/QList>
 #include <QtCore/QTextStream>
 
+QT_BEGIN_NAMESPACE
+
 class ProBlock;
 class ProItem;
 class ProFile;
@@ -87,5 +89,7 @@ private:
     int m_currentLineNumber;
     bool m_contNextLine;
 };
+
+QT_END_NAMESPACE
 
 #endif //PROREADER_H

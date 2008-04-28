@@ -45,23 +45,31 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTextEdit>
 
 class ToolBar;
-class QMenu;
-class QSignalMapper;
+QT_FORWARD_DECLARE_CLASS(QMenu)
+QT_FORWARD_DECLARE_CLASS(QSignalMapper)
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    QTextEdit *center;
     QList<ToolBar*> toolBars;
     QMenu *dockWidgetMenu;
     QMenu *mainWindowMenu;
     QSignalMapper *mapper;
+    QList<QDockWidget*> extraDockWidgets;
+    QAction *createDockWidgetAction;
+    QMenu *destroyDockWidgetMenu;
 
 public:
     MainWindow(const QMap<QString, QSize> &customSizeHints,
                 QWidget *parent = 0, Qt::WindowFlags flags = 0);
+
+protected:
+    void showEvent(QShowEvent *event);
 
 public slots:
     void actionTriggered(QAction *action);
@@ -70,6 +78,9 @@ public slots:
     void setCorner(int id);
     void switchLayoutDirection();
     void setDockOptions();
+
+    void createDockWidget();
+    void destroyDockWidget(QAction *action);
 
 private:
     void setupToolBar();

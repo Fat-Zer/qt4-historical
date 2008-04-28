@@ -46,6 +46,7 @@
 #include "circlewidget.h"
 #include "window.h"
 
+//! [0]
 Window::Window()
 {
     aliasedLabel = createLabel(tr("Aliased"));
@@ -58,7 +59,9 @@ Window::Window()
     layout->addWidget(antialiasedLabel, 0, 2);
     layout->addWidget(intLabel, 1, 0);
     layout->addWidget(floatLabel, 2, 0);
+//! [0]
 
+//! [1]
     QTimer *timer = new QTimer(this);
 
     for (int i = 0; i < 2; ++i) {
@@ -73,12 +76,15 @@ Window::Window()
             layout->addWidget(circleWidgets[i][j], i + 1, j + 1);
         }
     }
+//! [1] //! [2]
     timer->start(100);
     setLayout(layout);
 
     setWindowTitle(tr("Concentric Circles"));
 }
+//! [2]
 
+//! [3]
 QLabel *Window::createLabel(const QString &text)
 {
     QLabel *label = new QLabel(text);
@@ -87,3 +93,4 @@ QLabel *Window::createLabel(const QString &text)
     label->setFrameStyle(QFrame::Box | QFrame::Sunken);
     return label;
 }
+//! [3]

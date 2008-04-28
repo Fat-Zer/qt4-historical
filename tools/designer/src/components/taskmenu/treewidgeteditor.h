@@ -46,10 +46,15 @@
 
 #include "ui_treewidgeteditor.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTreeWidget;
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
+
+class FormWindowBase;
+class PropertySheetIconValue;
 
 class TreeWidgetEditor: public QDialog
 {
@@ -75,34 +80,33 @@ private slots:
             QTreeWidgetItem *previous);
     void on_treeWidget_itemChanged(QTreeWidgetItem *current);
 
-    void on_itemTextLineEdit_textEdited(const QString &text);
-    void on_previewPixmapItemButton_clicked();
-    void on_deletePixmapItemButton_clicked();
+    void on_itemIconSelector_iconChanged(const PropertySheetIconValue &icon);
 
     void on_listWidget_currentRowChanged(int currentRow);
     void on_listWidget_itemChanged(QListWidgetItem *item);
 
     void on_newColumnButton_clicked();
-    void on_renameColumnButton_clicked();
     void on_deleteColumnButton_clicked();
     void on_moveColumnUpButton_clicked();
     void on_moveColumnDownButton_clicked();
 
-    void on_previewPixmapColumnButton_clicked();
-    void on_deletePixmapColumnButton_clicked();
+    void on_columnIconSelector_iconChanged(const PropertySheetIconValue &icon);
+
+    void cacheReloaded();
 private:
     void copyContents(QTreeWidget *sourceWidget, QTreeWidget *destWidget);
-    void copyContents(QTreeWidgetItem *sourceItem, QTreeWidgetItem *destItem);
     void updateEditor();
     void moveColumnsLeft(int fromColumn, int toColumn);
     void moveColumnsRight(int fromColumn, int toColumn);
     void closeEditors();
 
     Ui::TreeWidgetEditor ui;
-    QDesignerFormWindowInterface *m_form;
+    FormWindowBase *m_form;
     bool m_updating;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TREEWIDGETEDITOR_H

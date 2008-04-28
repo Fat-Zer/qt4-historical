@@ -41,6 +41,7 @@
 **
 ****************************************************************************/
 
+//! [0]
 #include <iostream>
 #include <QDebug>
 #include <QObject>
@@ -51,6 +52,7 @@ MyObject::MyObject()
 {
     std::cout << "MyObject::MyObject()\n";
 }
+//! [0]
 
 MyObject::~MyObject()
 {

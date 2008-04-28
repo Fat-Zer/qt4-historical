@@ -57,12 +57,16 @@
 
 #include "qsvgstructure_p.h"
 
+#ifndef QT_NO_SVG
+
 #include "QtCore/qrect.h"
 #include "QtCore/qlist.h"
 #include "QtCore/qhash.h"
 #include "QtCore/qdatetime.h"
 #include "qsvgstyle_p.h"
 #include "qsvgfont_p.h"
+
+QT_BEGIN_NAMESPACE
 
 class QPainter;
 class QByteArray;
@@ -92,7 +96,7 @@ public:
     void setViewBox(const QRectF &rect);
 
     virtual void draw(QPainter *p);//from the QSvgNode
-    
+
     void draw(QPainter *p, const QRectF &bounds);
     void draw(QPainter *p, const QString &id,
               const QRectF &bounds=QRectF());
@@ -113,11 +117,9 @@ public:
     void setCurrentFrame(int);
     void setFramesPerSecond(int num);
 private:
-    void adjustWindowBounds(QPainter *p, 
-                            const QRectF &desired,
-                            const QRectF &current);
+    void mapSourceToTarget(QPainter *p, const QRectF &targetRect, const QRectF &sourceRect = QRectF());
 private:
-    mutable QSize  m_size;
+    QSize  m_size;
     bool   m_widthPercent;
     bool   m_heightPercent;
 
@@ -133,27 +135,21 @@ private:
 
 inline QSize QSvgTinyDocument::size() const
 {
-    //if the size is busted we need to resolve it
-    if (m_size.width() <= 0 ||
-        m_size.height() <= 0) {
-        QMatrix matx = QMatrix();
-        QRectF rect = transformedBounds(matx);
-        if (m_viewBox.isNull())
-            m_viewBox = rect;
-        m_size = rect.size().toSize();
+    if (m_size.isEmpty()) {
+        return viewBox().size().toSize();
+    } else {
+        return m_size;
     }
-        
-    return m_size;
 }
 
 inline int QSvgTinyDocument::width() const
 {
-    return m_size.width();
+    return size().width();
 }
 
 inline int QSvgTinyDocument::height() const
 {
-    return m_size.height();
+    return size().height();
 }
 
 inline bool QSvgTinyDocument::widthPercent() const
@@ -168,6 +164,10 @@ inline bool QSvgTinyDocument::heightPercent() const
 
 inline QRectF QSvgTinyDocument::viewBox() const
 {
+    if (m_viewBox.isNull()) {
+        m_viewBox = transformedBounds(QMatrix());
+    }
+
     return m_viewBox;
 }
 
@@ -186,4 +186,7 @@ inline int QSvgTinyDocument::animationDuration() const
     return m_animationDuration;
 }
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG
 #endif // QSVGTINYDOCUMENT_P_H

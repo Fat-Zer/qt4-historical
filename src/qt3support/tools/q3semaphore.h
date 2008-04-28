@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class Q3SemaphorePrivate;
@@ -75,6 +77,8 @@ private:
 
     Q3SemaphorePrivate *d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

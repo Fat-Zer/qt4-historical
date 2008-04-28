@@ -46,6 +46,7 @@
 
 #include "tableeditor.h"
 
+//! [0]
 TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     : QDialog(parent)
 {
@@ -58,9 +59,12 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     model->setHeaderData(1, Qt::Horizontal, tr("First name"));
     model->setHeaderData(2, Qt::Horizontal, tr("Last name"));
 
+//! [0] //! [1]
     QTableView *view = new QTableView;
     view->setModel(model);
+//! [1]
 
+//! [2]
     submitButton = new QPushButton(tr("Submit"));
     submitButton->setDefault(true);
     revertButton = new QPushButton(tr("&Revert"));
@@ -70,11 +74,15 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     buttonBox->addButton(submitButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(revertButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
+//! [2]
 
+//! [3]
     connect(submitButton, SIGNAL(clicked()), this, SLOT(submit()));
     connect(revertButton, SIGNAL(clicked()), model, SLOT(revertAll()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+//! [3]
 
+//! [4]
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(view);
     mainLayout->addWidget(buttonBox);
@@ -82,7 +90,9 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
 
     setWindowTitle(tr("Cached Table"));
 }
+//! [4]
 
+//! [5]
 void TableEditor::submit()
 {
     model->database().transaction();
@@ -95,3 +105,4 @@ void TableEditor::submit()
                              .arg(model->lastError().text()));
     }
 }
+//! [5]

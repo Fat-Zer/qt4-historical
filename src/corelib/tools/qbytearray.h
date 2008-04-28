@@ -56,6 +56,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 /*****************************************************************************
@@ -81,6 +83,10 @@ Q_CORE_EXPORT char *qstrcpy(char *dst, const char *src);
 Q_CORE_EXPORT char *qstrncpy(char *dst, const char *src, uint len);
 
 Q_CORE_EXPORT int qstrcmp(const char *str1, const char *str2);
+Q_CORE_EXPORT int qstrcmp(const QByteArray &str1, const QByteArray &str2);
+Q_CORE_EXPORT int qstrcmp(const QByteArray &str1, const char *str2);
+static inline int qstrcmp(const char *str1, const QByteArray &str2)
+{ return -qstrcmp(str2, str1); }
 
 inline int qstrncmp(const char *str1, const char *str2, uint len)
 {
@@ -148,10 +154,16 @@ public:
     bool isDetached() const;
     void clear();
 
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
     const char at(int i) const;
     const char operator[](int i) const;
-    QByteRef operator[](int i);
     const char operator[](uint i) const;
+#else
+    char at(int i) const;
+    char operator[](int i) const;
+    char operator[](uint i) const;
+#endif
+    QByteRef operator[](int i);
     QByteRef operator[](uint i);
 
     int indexOf(char c, int from = 0) const;
@@ -192,10 +204,10 @@ public:
     QByteArray rightJustified(int width, char fill = ' ', bool truncate = false) const;
 
 #ifdef QT3_SUPPORT
-    inline QT3_SUPPORT QByteArray leftJustify(uint width, char fill = ' ', bool truncate = false) const
-    { return leftJustified(int(width), fill, truncate); }
-    inline QT3_SUPPORT QByteArray rightJustify(uint width, char fill = ' ', bool truncate = false) const
-    { return rightJustified(int(width), fill, truncate); }
+    inline QT3_SUPPORT QByteArray leftJustify(uint width, char aFill = ' ', bool aTruncate = false) const
+    { return leftJustified(int(width), aFill, aTruncate); }
+    inline QT3_SUPPORT QByteArray rightJustify(uint width, char aFill = ' ', bool aTruncate = false) const
+    { return rightJustified(int(width), aFill, aTruncate); }
 #endif
 
     QByteArray &prepend(char c);
@@ -255,6 +267,9 @@ public:
     double toDouble(bool *ok = 0) const;
     QByteArray toBase64() const;
     QByteArray toHex() const;
+    QByteArray toPercentEncoding(const QByteArray &exclude = QByteArray(),
+                                 const QByteArray &include = QByteArray(),
+                                 char percent = '%') const;
 
     QByteArray &setNum(short, int base = 10);
     QByteArray &setNum(ushort, int base = 10);
@@ -273,6 +288,8 @@ public:
     static QByteArray fromRawData(const char *, int size);
     static QByteArray fromBase64(const QByteArray &base64);
     static QByteArray fromHex(const QByteArray &hexEncoded);
+    static QByteArray fromPercentEncoding(const QByteArray &pctEncoded, char percent = '%');
+
 
     typedef char *iterator;
     typedef const char *const_iterator;
@@ -327,8 +344,11 @@ public:
 private:
     operator QNoImplicitBoolCast() const;
     struct Data {
-        QBasicAtomic ref;
+        QBasicAtomicInt ref;
         int alloc, size;
+	// ### Qt 5.0: We need to add the missing capacity bit
+	// (like other tool classes have), to maintain the
+	// reserved memory on resize.
         char *data;
         char array[1];
     };
@@ -350,12 +370,23 @@ inline QByteArray::QByteArray(): d(&shared_null) { d->ref.ref(); }
 inline QByteArray::~QByteArray() { if (!d->ref.deref()) qFree(d); }
 inline int QByteArray::size() const
 { return d->size; }
+
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
 inline const char QByteArray::at(int i) const
 { Q_ASSERT(i >= 0 && i < size()); return d->data[i]; }
 inline const char QByteArray::operator[](int i) const
 { Q_ASSERT(i >= 0 && i < size()); return d->data[i]; }
 inline const char QByteArray::operator[](uint i) const
 { Q_ASSERT(i < uint(size())); return d->data[i]; }
+#else
+inline char QByteArray::at(int i) const
+{ Q_ASSERT(i >= 0 && i < size()); return d->data[i]; }
+inline char QByteArray::operator[](int i) const
+{ Q_ASSERT(i >= 0 && i < size()); return d->data[i]; }
+inline char QByteArray::operator[](uint i) const
+{ Q_ASSERT(i < uint(size())); return d->data[i]; }
+#endif
+
 inline bool QByteArray::isEmpty() const
 { return d->size == 0; }
 inline QByteArray::operator const char *() const
@@ -375,8 +406,8 @@ inline bool QByteArray::isDetached() const
 inline QByteArray::QByteArray(const QByteArray &a) : d(a.d)
 { d->ref.ref(); }
 #ifdef QT3_SUPPORT
-inline QByteArray::QByteArray(int size) : d(&shared_null)
-{ d->ref.ref(); if (size > 0) fill('\0', size); }
+inline QByteArray::QByteArray(int aSize) : d(&shared_null)
+{ d->ref.ref(); if (aSize > 0) fill('\0', aSize); }
 #endif
 
 inline int QByteArray::capacity() const
@@ -395,8 +426,13 @@ class Q_CORE_EXPORT QByteRef {
         : a(array),i(idx) {}
     friend class QByteArray;
 public:
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
     inline operator const char() const
         { return i < a.d->size ? a.d->data[i] : 0; }
+#else
+    inline operator char() const
+        { return i < a.d->size ? a.d->data[i] : 0; }
+#endif
     inline QByteRef &operator=(char c)
         { if (a.d->ref != 1 || i >= a.d->size) a.expand(i);
           a.d->data[i] = c;  return *this; }
@@ -458,35 +494,35 @@ inline QBool QByteArray::contains(char c) const
 inline bool operator==(const QByteArray &a1, const QByteArray &a2)
 { return (a1.size() == a2.size()) && (memcmp(a1, a2, a1.size())==0); }
 inline bool operator==(const QByteArray &a1, const char *a2)
-{ return a2 ? strcmp(a1,a2) == 0 : a1.isEmpty(); }
+{ return a2 ? qstrcmp(a1,a2) == 0 : a1.isEmpty(); }
 inline bool operator==(const char *a1, const QByteArray &a2)
-{ return a1 ? strcmp(a1,a2) == 0 : a2.isEmpty(); }
+{ return a1 ? qstrcmp(a1,a2) == 0 : a2.isEmpty(); }
 inline bool operator!=(const QByteArray &a1, const QByteArray &a2)
 { return !(a1==a2); }
 inline bool operator!=(const QByteArray &a1, const char *a2)
-{ return a2 ? strcmp(a1,a2) != 0 : !a1.isEmpty(); }
+{ return a2 ? qstrcmp(a1,a2) != 0 : !a1.isEmpty(); }
 inline bool operator!=(const char *a1, const QByteArray &a2)
-{ return a1 ? strcmp(a1,a2) != 0 : !a2.isEmpty(); }
+{ return a1 ? qstrcmp(a1,a2) != 0 : !a2.isEmpty(); }
 inline bool operator<(const QByteArray &a1, const QByteArray &a2)
-{ return strcmp(a1, a2) < 0; }
+{ return qstrcmp(a1, a2) < 0; }
  inline bool operator<(const QByteArray &a1, const char *a2)
 { return qstrcmp(a1, a2) < 0; }
 inline bool operator<(const char *a1, const QByteArray &a2)
 { return qstrcmp(a1, a2) < 0; }
 inline bool operator<=(const QByteArray &a1, const QByteArray &a2)
-{ return strcmp(a1, a2) <= 0; }
+{ return qstrcmp(a1, a2) <= 0; }
 inline bool operator<=(const QByteArray &a1, const char *a2)
 { return qstrcmp(a1, a2) <= 0; }
 inline bool operator<=(const char *a1, const QByteArray &a2)
 { return qstrcmp(a1, a2) <= 0; }
 inline bool operator>(const QByteArray &a1, const QByteArray &a2)
-{ return strcmp(a1, a2) > 0; }
+{ return qstrcmp(a1, a2) > 0; }
 inline bool operator>(const QByteArray &a1, const char *a2)
 { return qstrcmp(a1, a2) > 0; }
 inline bool operator>(const char *a1, const QByteArray &a2)
 { return qstrcmp(a1, a2) > 0; }
 inline bool operator>=(const QByteArray &a1, const QByteArray &a2)
-{ return strcmp(a1, a2) >= 0; }
+{ return qstrcmp(a1, a2) >= 0; }
 inline bool operator>=(const QByteArray &a1, const char *a2)
 { return qstrcmp(a1, a2) >= 0; }
 inline bool operator>=(const char *a1, const QByteArray &a2)
@@ -546,6 +582,8 @@ inline QByteArray qUncompress(const QByteArray& data)
 
 Q_DECLARE_TYPEINFO(QByteArray, Q_MOVABLE_TYPE);
 Q_DECLARE_SHARED(QByteArray)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

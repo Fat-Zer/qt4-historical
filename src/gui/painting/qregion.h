@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 template <class T> class QVector;
@@ -93,12 +95,16 @@ public:
 
     // ### Qt 5: make these four functions QT4_SUPPORT
     QRegion unite(const QRegion &r) const;
+    QRegion unite(const QRect &r) const;
     QRegion intersect(const QRegion &r) const;
+    QRegion intersect(const QRect &r) const;
     QRegion subtract(const QRegion &r) const;
     QRegion eor(const QRegion &r) const;
 
     inline QRegion united(const QRegion &r) const { return unite(r); }
+    inline QRegion united(const QRect &r) const { return unite(r); }
     inline QRegion intersected(const QRegion &r) const { return intersect(r); }
+    inline QRegion intersected(const QRect &r) const { return intersect(r); }
     inline QRegion subtracted(const QRegion &r) const { return subtract(r); }
     inline QRegion xored(const QRegion &r) const { return eor(r); }
 
@@ -108,15 +114,20 @@ public:
     QRect boundingRect() const;
     QVector<QRect> rects() const;
     void setRects(const QRect *rect, int num);
+    int numRects() const;
 
     const QRegion operator|(const QRegion &r) const;
     const QRegion operator+(const QRegion &r) const;
+    const QRegion operator+(const QRect &r) const;
     const QRegion operator&(const QRegion &r) const;
+    const QRegion operator&(const QRect &r) const;
     const QRegion operator-(const QRegion &r) const;
     const QRegion operator^(const QRegion &r) const;
     QRegion& operator|=(const QRegion &r);
     QRegion& operator+=(const QRegion &r);
+    QRegion& operator+=(const QRect &r);
     QRegion& operator&=(const QRegion &r);
+    QRegion& operator&=(const QRect &r);
     QRegion& operator-=(const QRegion &r);
     QRegion& operator^=(const QRegion &r);
 
@@ -129,14 +140,13 @@ public:
 #endif
 #ifndef qdoc
 #if defined(Q_WS_WIN)
-    inline HRGN    handle() const { return d->rgn; }
+    inline HRGN    handle() const { ensureHandle(); return d->rgn; }
 #elif defined(Q_WS_X11)
     inline Region handle() const { if(!d->rgn) updateX11Region(); return d->rgn; }
 #elif defined(Q_WS_MAC)
     inline RgnHandle handle() const { return handle(false); }
     RgnHandle handle(bool require_rgn) const;
 #elif defined(Q_WS_QWS)
-    // QGfx_QWS needs this for region drawing
     inline void *handle() const { return d->qt_rgn; }
 #endif
 #endif
@@ -149,6 +159,7 @@ private:
     QRegion copy() const;   // helper of detach.
     void detach();
 #if defined(Q_WS_WIN)
+    void ensureHandle() const;
     QRegion winCombine(const QRegion &r, int num) const;
 #elif defined(Q_WS_X11)
     void updateX11Region() const;
@@ -163,7 +174,7 @@ private:
 
     void exec(const QByteArray &ba, int ver = 0);
     struct QRegionData {
-        QBasicAtomic ref;
+        QBasicAtomicInt ref;
 #if defined(Q_WS_WIN)
         HRGN   rgn;
 #elif defined(Q_WS_X11)
@@ -196,6 +207,8 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QRegion &);
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRegion &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

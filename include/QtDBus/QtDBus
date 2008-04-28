@@ -1,3 +1,5 @@
+#include <QtCore/QtCore>
+#include <QtXml/QtXml>
 #include "qdbusabstractadaptor.h"
 #include "qdbusabstractinterface.h"
 #include "qdbusargument.h"

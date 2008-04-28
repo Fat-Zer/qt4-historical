@@ -55,11 +55,14 @@
 #include <private/qt_mac_p.h>
 #import <AppKit/AppKit.h>
 
+QT_BEGIN_NAMESPACE
 extern bool qt_mac_execute_apple_script(const QString &script, AEDesc *ret); //qapplication_mac.cpp
 extern void qtsystray_sendActivated(QSystemTrayIcon *i, int r); //qsystemtrayicon.cpp
 extern void qt_mac_get_accel(quint32 accel_key, quint32 *modif, quint32 *key); //qmenu_mac.cpp
 extern QString qt_mac_no_ampersands(QString str); //qmenu_mac.cpp
+QT_END_NAMESPACE
 
+QT_USE_NAMESPACE
 
 @class QNSImageView;
 
@@ -97,6 +100,7 @@ extern QString qt_mac_no_ampersands(QString str); //qmenu_mac.cpp
 -(void)selectedAction:(id)item;
 @end
 
+QT_BEGIN_NAMESPACE
 void qt_mac_trayicon_activate_action(QMenu *menu, QAction *action)
 {
     emit menu->triggered(action);
@@ -265,6 +269,7 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &title, const QString
 #endif
     }
 }
+QT_END_NAMESPACE
 
 @implementation NSStatusItem (Qt)
 @end
@@ -425,10 +430,12 @@ private:
             continue;
 
         NSMenuItem *item = 0;
+        bool needRelease = false;
         if(action->isSeparator()) {
             item = [NSMenuItem separatorItem];
         } else {
             item = [[NSMenuItem alloc] init];
+            needRelease = true;
             QString text = action->text();
             QKeySequence accel = action->shortcut();
             {
@@ -468,6 +475,8 @@ private:
         }
         if(item)
             [menu addItem:item];
+        if (needRelease)
+            [item release];
     }
 }
 -(void)selectedAction:(id)a {

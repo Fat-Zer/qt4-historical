@@ -55,7 +55,15 @@
 // We mean it.
 //
 
-#include "qscriptecmacore_p.h"
+#include "qscriptobjectdata_p.h"
+#include "qscriptfunction_p.h"
+
+QT_BEGIN_NAMESPACE
+
+class QScriptEnginePrivate;
+class QScriptContextPrivate;
+class QScriptClassInfo;
+class QScriptValueImpl;
 
 #ifndef QT_NO_SCRIPT
 
@@ -130,6 +138,10 @@ protected:
                                        QScriptClassInfo *classInfo);
 
 private:
+    static void addFunction(QScriptValueImpl &object, const QString &name,
+                            QScriptInternalFunctionSignature fun, int length,
+                            const QScriptValue::PropertyFlags flags);
+
     QScriptEnginePrivate *m_engine;
     QScriptClassInfo *m_classInfo;
 };
@@ -141,5 +153,7 @@ inline QScriptEnginePrivate *Math::engine() const
 } } // namespace QScript::Ecma
 
 #endif // QT_NO_SCRIPT
-#endif
 
+QT_END_NAMESPACE
+
+#endif

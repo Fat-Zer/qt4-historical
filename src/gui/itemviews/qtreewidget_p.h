@@ -61,6 +61,8 @@
 
 #ifndef QT_NO_TREEWIDGET
 
+QT_BEGIN_NAMESPACE
+
 class QTreeWidgetItem;
 class QTreeWidgetItemIterator;
 class QTreeModelPrivate;
@@ -162,7 +164,9 @@ private:
     Q_DECLARE_PRIVATE(QTreeModel)
 };
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "private/qabstractitemmodel_p.h"
+QT_END_INCLUDE_NAMESPACE
 
 class QTreeModelPrivate : public QAbstractItemModelPrivate
 {
@@ -173,13 +177,18 @@ class QTreeWidgetItemPrivate
 {
 public:
     QTreeWidgetItemPrivate(QTreeWidgetItem *item)
-        : q(item), disabled(false), policy(QTreeWidgetItem::DontShowIndicatorWhenChildless) {}
+        : q(item), disabled(false), selected(false), rowGuess(-1), policy(QTreeWidgetItem::DontShowIndicatorWhenChildless) {}
     void propagateDisabled(QTreeWidgetItem *item);
     QTreeWidgetItem *q;
     QVariantList display;
     uint disabled : 1;
+    uint selected : 1;
+    int rowGuess;
     QTreeWidgetItem::ChildIndicatorPolicy policy;
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_TREEWIDGET
+
 #endif // QTREEWIDGET_P_H

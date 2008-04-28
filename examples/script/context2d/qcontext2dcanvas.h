@@ -51,9 +51,11 @@
 #include <QWidget>
 #include <QTimer>
 
+QT_BEGIN_NAMESPACE
 class QPaintEvent;
 class QResizeEvent;
 class QMouseEvent;
+QT_END_NAMESPACE
 class Context2D;
 
 class QContext2DCanvas : public QWidget

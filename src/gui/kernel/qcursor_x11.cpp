@@ -48,6 +48,8 @@
 #include <qcursor.h>
 #include <X11/cursorfont.h>
 
+#include <qlibrary.h>
+
 #ifndef QT_NO_XCURSOR
 #  include <X11/Xcursor/Xcursor.h>
 #endif // QT_NO_XCURSOR
@@ -57,6 +59,8 @@
 #endif // QT_NO_XFIXES
 
 #include "qx11info_x11.h"
+
+QT_BEGIN_NAMESPACE
 
 // Define QT_USE_APPROXIMATE_CURSORS when compiling if you REALLY want to
 // use the ugly X11 cursors.
@@ -282,7 +286,8 @@ void QCursorData::update()
     };
 
 #ifndef QT_NO_XCURSOR
-    hcurs = XcursorLibraryLoadCursor(dpy, cursorNames[cshape]);
+    if (X11->ptrXcursorLibraryLoadCursor)
+        hcurs = X11->ptrXcursorLibraryLoadCursor(dpy, cursorNames[cshape]);
     if (hcurs)
         return;
 #endif // QT_NO_XCURSOR
@@ -452,7 +457,7 @@ void QCursorData::update()
         0x08,0x20,0x10,0x10,0x20,0x10,0x00,0x00};
     static const char openhandm_bits[] = {
        0x80,0x01,0xd8,0x0f,0xfc,0x1f,0xfc,0x5f,0xf8,0xff,0xf8,0xff,
-       0xfe,0xff,0xff,0xff,0xff,0x7f,0xfe,0x7f,0xfc,0x7f,0xfc,0x3f,
+       0xf6,0xff,0xff,0xff,0xff,0x7f,0xfe,0x7f,0xfc,0x7f,0xfc,0x3f,
        0xf8,0x3f,0xf0,0x1f,0xe0,0x1f,0x00,0x00};
     static const char closedhand_bits[] = {
         0x00,0x00,0x00,0x00,0x00,0x00,0xb0,0x0d,0x48,0x32,0x08,0x50,
@@ -525,7 +530,7 @@ void QCursorData::update()
     {
 #ifndef QT_NO_XFIXES
         if (X11->use_xfixes)
-            XFixesSetCursorName(dpy, hcurs, cursorNames[cshape]);
+            X11->ptrXFixesSetCursorName(dpy, hcurs, cursorNames[cshape]);
 #endif /* ! QT_NO_XFIXES */
         return;
     }
@@ -601,6 +606,8 @@ void QCursorData::update()
 
 #ifndef QT_NO_XFIXES
     if (X11->use_xfixes)
-        XFixesSetCursorName(dpy, hcurs, cursorNames[cshape]);
+        X11->ptrXFixesSetCursorName(dpy, hcurs, cursorNames[cshape]);
 #endif /* ! QT_NO_XFIXES */
 }
+
+QT_END_NAMESPACE

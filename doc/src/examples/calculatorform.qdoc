@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example designer/calculatorform
     \title Calculator Form Example
@@ -24,9 +67,7 @@
     To ensure that the example can use this file, we need to include a \c FORMS
     declaration in the example's project file:
 
-    \quotefromfile designer/calculatorform/calculatorform.pro
-    \skipto FORMS
-    \printuntil FORMS
+    \snippet examples/designer/calculatorform/calculatorform.pro 1
 
     When the project is built, \c uic will create a header file that lets us
     construct the form.
@@ -38,15 +79,12 @@
     to include the \c ui_calculatorform.h header file created by \c uic
     during the build process:
 
-    \quotefromfile designer/calculatorform/calculatorform.h
-    \skipto #include
-    \printuntil #include
+    \snippet examples/designer/calculatorform/calculatorform.h 0
 
     We define the \c CalculatorForm class by subclassing QWidget because the
     form itself is based on QWidget:
 
-    \skipto class CalculatorForm
-    \printuntil /^\};/
+    \snippet examples/designer/calculatorform/calculatorform.h 1
 
     Apart from the constructor, the class contains two private slots that
     are named according to the auto-connection naming convention required
@@ -59,9 +97,7 @@
     The constructor simply calls the base class's constructor and
     sets up the form's user interface.
 
-    \quotefromfile designer/calculatorform/calculatorform.cpp
-    \skipto CalculatorForm::CalculatorForm
-    \printuntil /^\}/
+    \snippet examples/designer/calculatorform/calculatorform.cpp 0
 
     The user interface is set up with the \c setupUI() function. We pass
     \c this as the argument to this function to use the \c CalculatorForm
@@ -74,8 +110,7 @@
     "inputSpinBox1" in the user interface emits the
     \l{QSpinBox::valueChanged()}{valueChanged()} signal:
 
-    \skipto on_inputSpinBox1_valueChanged
-    \printuntil /^\}/
+    \snippet examples/designer/calculatorform/calculatorform.cpp 1
 
     When this occurs, we use the value supplied by the signal to update the
     output label by setting its new text directly. We access the output label
@@ -85,8 +120,7 @@
     "inputSpinBox2", emits the \l{QSpinBox::valueChanged()}{valueChanged()}
     signal:
 
-    \skipto on_inputSpinBox2_valueChanged
-    \printuntil /^\}/
+    \snippet examples/designer/calculatorform/calculatorform.cpp 2
 
     In this case, the value from the first spin box is read and combined
     with the value supplied by the signal. Again, the output label is

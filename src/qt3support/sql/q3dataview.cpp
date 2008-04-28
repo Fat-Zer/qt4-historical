@@ -47,6 +47,8 @@
 
 #include "private/q3sqlmanager_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3DataViewPrivate
 {
 public:
@@ -191,10 +193,7 @@ void Q3DataView::writeFields()
     the default record for all subsequent calls to readFields() and
     writefields(). This slot is equivalant to calling:
 
-    \code
-    myView.setRecord(record);
-    myView.readFields();
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.sql.q3dataview.cpp 0
 
     \sa setRecord() readFields()
 */
@@ -206,4 +205,6 @@ void Q3DataView::refresh(QSqlRecord* buf)
     readFields();
 }
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_SQL_VIEW_WIDGETS

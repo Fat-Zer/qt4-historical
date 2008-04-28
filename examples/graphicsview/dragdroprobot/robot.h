@@ -46,8 +46,10 @@
 
 #include <QGraphicsItem>
 
+QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
 class QTimeLine;
+QT_END_NAMESPACE
 
 class RobotPart : public QGraphicsItem
 {

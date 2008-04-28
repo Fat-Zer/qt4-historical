@@ -57,9 +57,11 @@
 
 #include "qscriptecmacore_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_SCRIPT
 
-#include <QtCore/QSet>
+class QScriptValueIteratorImpl;
 
 namespace QScript { namespace Ext {
 
@@ -83,49 +85,44 @@ public:
     Enumeration(QScriptEnginePrivate *engine);
     virtual ~Enumeration();
 
-    inline QScriptClassInfo *classInfo() const
-        { return m_classInfo; }
-
     virtual void execute(QScriptContextPrivate *context);
 
     class Instance: public QScriptObjectData {
     public:
         Instance() {}
-        virtual ~Instance() {}
+        virtual ~Instance();
 
         static Instance *get(const QScriptValueImpl &object,
                              QScriptClassInfo *klass);
 
-        void toFirst();
+        void toFront();
         void hasNext(QScriptContextPrivate *context, QScriptValueImpl *result);
         void next(QScriptContextPrivate *context, QScriptValueImpl *result);
 
     public: // attributes
+        QScriptValueIteratorImpl *it;
         QScriptValueImpl object;
-        QScriptValueImpl value;
-        int index;
     };
 
     void newEnumeration(QScriptValueImpl *result, const QScriptValueImpl &value);
 
     inline Instance *get(const QScriptValueImpl &object) const
     {
-        return Instance::get(object, m_classInfo);
+        return Instance::get(object, classInfo());
     }
 
 protected:
-    static QScriptValueImpl method_toFirst(QScriptContextPrivate *context, QScriptEnginePrivate *eng,
+    static QScriptValueImpl method_toFront(QScriptContextPrivate *context, QScriptEnginePrivate *eng,
                                            QScriptClassInfo *classInfo);
     static QScriptValueImpl method_hasNext(QScriptContextPrivate *context, QScriptEnginePrivate *eng,
                                            QScriptClassInfo *classInfo);
     static QScriptValueImpl method_next(QScriptContextPrivate *context, QScriptEnginePrivate *eng,
                                         QScriptClassInfo *classInfo);
-
-private:
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ext
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT
 #endif

@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example itemviews/editabletreemodel
     \title Editable Tree Model
@@ -104,18 +147,14 @@
     In the case shown in the diagram, the piece of information represented
     by \bold{a} can be obtained using the standard model/view API:
 
-    \code
-    QVariant a = model->index(0, 0, QModelIndex()).data();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.editabletreemodel.qdoc 0
 
     Since each items holds pieces of data for each column in a given row,
     there can be many model indexes that map to the same \c TreeItem object.
     For example, the information represented by \bold{b} can be obtained
     using the following code:
 
-    \code
-    QVariant b = model->index(1, 0, QModelIndex()).data();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.editabletreemodel.qdoc 1
 
     The same underlying \c TreeItem would be accessed to obtain information
     for the other model indexes in the same row as \bold{b}.
@@ -206,9 +245,7 @@
     pieces of data, and which can provide information about their parent
     and child items:
 
-    \quotefromfile itemviews/editabletreemodel/treeitem.h
-    \skipto class TreeItem
-    \printuntil };
+    \snippet examples/itemviews/editabletreemodel/treeitem.h 0
 
     We have designed the API to be similar to that provided by
     QAbstractItemModel by giving each item functions to return the number
@@ -225,9 +262,7 @@
     Each \c TreeItem is constructed with a list of data and an optional
     parent item:
 
-    \quotefromfile itemviews/editabletreemodel/treeitem.cpp
-    \skipto TreeItem::TreeItem
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 0
 
     Initially, each item has no children. These are added to the item's
     internal \c childItems member using the \c insertChildren() function
@@ -236,35 +271,29 @@
     The destructor ensures that each child added to the item is deleted
     when the item itself is deleted:
 
-    \skipto ~TreeItem
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 1
 
     \target TreeItem::parent
     Since each item stores a pointer to its parent, the \c parent() function
     is trivial:
 
-    \skipto ::parent
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 9
 
     \target TreeItem::child
     Three functions provide information about the children of an item.
     \c child() returns a specific child from the internal list of children:
 
-    \quotefromfile itemviews/editabletreemodel/treeitem.cpp
-    \skipto ::child
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 2
 
     The \c childCount() function returns the total number of children:
 
-    \skipto ::childCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 3
 
     The \c childNumber() function is used to determine the index of the child
     in its parent's list of children. It accesses the parent's \c childItems
     member directly to obtain this information:
 
-    \skipto ::childNumber
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 4
 
     The root item has no parent item; for this item, we return zero to be
     consistent with the other items.
@@ -272,23 +301,20 @@
     The \c columnCount() function simply returns the number of elements in
     the internal \c itemData list of QVariant objects:
 
-    \skipto ::columnCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 5
 
     \target TreeItem::data
     Data is retrieved using the \c data() function, which accesses the
     appropriate element in the \c itemData list:
 
-    \skipto ::data
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 6
 
     \target TreeItem::setData
     Data is set using the \c setData() function, which only stores values
     in the \c itemData list for valid list indexes, corresponding to column
     values in the model:
 
-    \skipto ::setData
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 11
 
     To make implementation of the model easier, we return true to indicate
     whether the data was set successfully, or false if an invalid column
@@ -298,25 +324,20 @@
     in the model leads to the insertion of new child items in the corresponding
     item, handled by the \c insertChildren() function:
 
-    \quotefromfile itemviews/editabletreemodel/treeitem.cpp
-    \skipto ::insertChildren
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 7
 
     This ensures that new items are created with the required number of columns
     and inserted at a valid position in the internal \c childItems list.
     Items are removed with the \c removeChildren() function:
 
-    \skipto ::removeChildren
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 10
 
     As discussed above, the functions for inserting and removing columns are
     used differently to those for inserting and removing child items because
     they are expected to be called on every item in the tree. We do this by
     recursively calling this function on each child of the item:
 
-    \quotefromfile itemviews/editabletreemodel/treeitem.cpp
-    \skipto ::insertColumns
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treeitem.cpp 8
 
     \section1 TreeModel Class Definition
 
@@ -324,19 +345,16 @@
     class, exposing the necessary interface for a model that can be edited and
     resized.
 
-    \quotefromfile itemviews/editabletreemodel/treemodel.h
-    \skipto class TreeModel
-    \printuntil ~TreeModel
+    \snippet examples/itemviews/editabletreemodel/treemodel.h 0
 
     The constructor and destructor are specific to this model.
 
-    \printuntil columnCount
+    \snippet examples/itemviews/editabletreemodel/treemodel.h 1
 
     Read-only tree models only need to provide the above functions. The
     following public functions provide support for editing and resizing:
 
-    \skipto flags
-    \printuntil };
+    \snippet examples/itemviews/editabletreemodel/treemodel.h 2
 
     To simplify this example, the data exposed by the model is organized into
     a data structure by the model's \l{#TreeModel::setupModelData}{setupModelData()}
@@ -348,9 +366,7 @@
     The constructor creates a root item and initializes it with the header
     data supplied:
 
-    \quotefromfile itemviews/editabletreemodel/treemodel.cpp
-    \skipto TreeModel::TreeModel
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 0
 
     We call the internal \l{#TreeModel::setupModelData}{setupModelData()}
     function to convert the textual data supplied to a data structure we can
@@ -360,8 +376,7 @@
     The destructor only has to delete the root item; all child items will
     be recursively deleted by the \c TreeItem destructor.
 
-    \skipto TreeModel::~TreeModel
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 1
 
     \target TreeModel::getItem
     Since the model's interface to the other model/view components is based
@@ -371,8 +386,7 @@
     consistency, we have defined a \c getItem() function to perform this
     repetitive task:
 
-    \skipto TreeModel::getItem
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 4
 
     This function assumes that each model index it is passed corresponds to
     a valid item in memory. If the index is invalid, or its internal pointer
@@ -382,16 +396,13 @@
     \c getItem() function to obtain the relevant item, then returns the
     number of children it contains:
 
-    \skipto TreeModel::rowCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 8
 
     By contrast, the \c columnCount() implementation does not need to look
     for a particular item because all items are defined to have the same
     number of columns associated with them.
 
-    \quotefromfile itemviews/editabletreemodel/treemodel.cpp
-    \skipto TreeModel::columnCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 2
 
     As a result, the number of columns can be obtained directly from the root
     item.
@@ -401,8 +412,7 @@
     the Qt::ItemIsEditable and Qt::ItemIsSelectable flags as well as
     Qt::ItemIsEnabled:
 
-    \skipto TreeModel::flags
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 3
 
     \target TreeModel::index
     The model needs to be able to generate model indexes to allow other
@@ -410,8 +420,7 @@
     is performed by the \c index() function, which is used to obtain model
     indexes corresponding to children of a given parent item:
 
-    \skipto TreeModel::index
-    \printuntil return
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 5
 
     In this model, we only return model indexes for child items if the parent
     index is invalid (corresponding to the root item) or if it has a zero
@@ -421,8 +430,7 @@
     a \c TreeItem instance that corresponds to the model index supplied, and
     request its child item that corresponds to the specified row.
 
-    \skipto parentItem
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 6
 
     Since each item contains information for an entire row of data, we create
     a model index to uniquely identify it by calling
@@ -439,8 +447,7 @@
     then creating a model index to represent the parent. (See
     \l{#Relating-items-using-model-indexes}{the above diagram}).
 
-    \skipto TreeModel::parent
-    \printuntil /^\}/
+    \snippet examples/itemviews/editabletreemodel/treemodel.cpp 7
 
     Items without parents, including the root item, are handled by returning
     a null model index. Otherwise, a model index is created and returned as

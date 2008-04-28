@@ -49,21 +49,9 @@
 #include "qthread.h"
 #include "qwaitcondition.h"
 
-struct QReadWriteLockPrivate
-{
-    QReadWriteLockPrivate()
-        : accessCount(0), currentWriter(0), waitingReaders(0), waitingWriters(0)
-    { }
+#include "qreadwritelock_p.h"
 
-    QMutex mutex;
-    QWaitCondition readerWait;
-    QWaitCondition writerWait;
-
-    int accessCount;
-    Qt::HANDLE currentWriter;
-    int waitingReaders;
-    int waitingWriters;
-};
+QT_BEGIN_NAMESPACE
 
 /*! \class QReadWriteLock
     \brief The QReadWriteLock class provides read-write locking.
@@ -86,27 +74,7 @@ struct QReadWriteLockPrivate
 
     Example:
 
-    \code
-        QReadWriteLock lock;
-
-        void ReaderThread::run()
-        {
-            ...
-            lock.lockForRead();
-            read_file();
-            lock.unlock();
-            ...
-        }
-
-        void WriterThread::run()
-        {
-            ...
-            lock.lockForWrite();
-            write_file();
-            lock.unlock();
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 0
 
     To ensure that writers aren't blocked forever by readers, readers
     attempting to obtain a lock will not succeed if there is a blocked
@@ -116,24 +84,46 @@ struct QReadWriteLockPrivate
     priority over any readers that might also be waiting.
 
     Like QMutex, a QReadWriteLock can be recursively locked by the
-    same thread. In such cases, unlock() must be called the same
-    number of times lockForWrite() or lockForRead() was called. Note
-    that the lock type cannot be changed when trying to lock
-    recursively, i.e. it is not possible to lock for reading in a
-    thread that already has locked for writing (and vice versa).
+    same thread when constructed in
+    \l{QReadWriteLock::RecursionMode}recursive mode}.  In such cases,
+    unlock() must be called the same number of times lockForWrite() or
+    lockForRead() was called. Note that the lock type cannot be
+    changed when trying to lock recursively, i.e. it is not possible
+    to lock for reading in a thread that already has locked for
+    writing (and vice versa).
 
     \sa QReadLocker, QWriteLocker, QMutex, QSemaphore
 */
 
+/*! \enum QReadWriteLock::RecursionMode
+
+    \value Recursive In this mode, a thread can lock the same
+    QReadWriteLock multiple times and the mutex won't be unlocked
+    until a corresponding number of unlock() calls have been made.
+
+    \value NonRecursive In this mode, a thread may only lock a
+    QReadWriteLock once.
+
+    \sa QReadWriteLock()
+*/
+
 /*!
-    Constructs a QReadWriteLock object.
+    Constructs a QReadWriteLock object in NonRecursive mode.
 
     \sa lockForRead(), lockForWrite()
 */
 QReadWriteLock::QReadWriteLock()
-    :d(new QReadWriteLockPrivate())
-{
-}
+    :d(new QReadWriteLockPrivate(NonRecursive))
+{ }
+
+/*!
+    Constructs a QReadWriteLock object in the given \a recursionMode.
+
+    \sa lockForRead(), lockForWrite(), RecursionMode
+*/
+QReadWriteLock::QReadWriteLock(RecursionMode recursionMode)
+    : d(new QReadWriteLockPrivate(recursionMode))
+{ }
 
 /*!
     Destroys the QReadWriteLock object.
@@ -157,11 +147,27 @@ void QReadWriteLock::lockForRead()
 {
     QMutexLocker lock(&d->mutex);
 
+    Qt::HANDLE self = 0;
+    if (d->recursive) {
+        self = QThread::currentThreadId();
+
+        QHash<Qt::HANDLE, int>::iterator it = d->currentReaders.find(self);
+        if (it != d->currentReaders.end()) {
+            ++it.value();
+            ++d->accessCount;
+            Q_ASSERT_X(d->accessCount > 0, "QReadWriteLock::lockForRead()",
+                       "Overflow in lock counter");
+            return;
+        }
+    }
+
     while (d->accessCount < 0 || d->waitingWriters) {
         ++d->waitingReaders;
         d->readerWait.wait(&d->mutex);
         --d->waitingReaders;
-     }
+    }
+    if (d->recursive)
+        d->currentReaders.insert(self, 1);
 
     ++d->accessCount;
     Q_ASSERT_X(d->accessCount > 0, "QReadWriteLock::lockForRead()", "Overflow in lock counter");
@@ -182,13 +188,29 @@ void QReadWriteLock::lockForRead()
 */
 bool QReadWriteLock::tryLockForRead()
 {
-   QMutexLocker lock(&d->mutex);
+    QMutexLocker lock(&d->mutex);
+
+    Qt::HANDLE self = 0;
+    if (d->recursive) {
+        self = QThread::currentThreadId();
+
+        QHash<Qt::HANDLE, int>::iterator it = d->currentReaders.find(self);
+        if (it != d->currentReaders.end()) {
+            ++it.value();
+            ++d->accessCount;
+            Q_ASSERT_X(d->accessCount > 0, "QReadWriteLock::tryLockForRead()",
+                       "Overflow in lock counter");
+            return true;
+        }
+    }
 
     if (d->accessCount < 0)
         return false;
+    if (d->recursive)
+        d->currentReaders.insert(self, 1);
 
     ++d->accessCount;
-    Q_ASSERT_X(d->accessCount > 0, "QReadWriteLock::lockForRead()", "Overflow in lock counter");
+    Q_ASSERT_X(d->accessCount > 0, "QReadWriteLock::tryLockForRead()", "Overflow in lock counter");
 
     return true;
 }
@@ -213,13 +235,29 @@ bool QReadWriteLock::tryLockForRead(int timeout)
 {
     QMutexLocker lock(&d->mutex);
 
+    Qt::HANDLE self = 0;
+    if (d->recursive) {
+        self = QThread::currentThreadId();
+
+        QHash<Qt::HANDLE, int>::iterator it = d->currentReaders.find(self);
+        if (it != d->currentReaders.end()) {
+            ++it.value();
+            ++d->accessCount;
+            Q_ASSERT_X(d->accessCount > 0, "QReadWriteLock::tryLockForRead()",
+                       "Overflow in lock counter");
+            return true;
+        }
+    }
+
     while (d->accessCount < 0 || d->waitingWriters) {
         ++d->waitingReaders;
         bool success = d->readerWait.wait(&d->mutex, timeout < 0 ? ULONG_MAX : timeout);
         --d->waitingReaders;
         if (!success)
             return false;
-     }
+    }
+    if (d->recursive)
+        d->currentReaders.insert(self, 1);
 
     ++d->accessCount;
     Q_ASSERT_X(d->accessCount > 0, "QReadWriteLock::tryLockForRead()", "Overflow in lock counter");
@@ -237,23 +275,28 @@ void QReadWriteLock::lockForWrite()
 {
     QMutexLocker lock(&d->mutex);
 
-    Qt::HANDLE self = QThread::currentThreadId();
+    Qt::HANDLE self = 0;
+    if (d->recursive) {
+        self = QThread::currentThreadId();
+
+        if (d->currentWriter == self) {
+            --d->accessCount;
+            Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::lockForWrite()",
+                       "Overflow in lock counter");
+            return;
+        }
+    }
 
     while (d->accessCount != 0) {
-        if (d->accessCount < 0 && self == d->currentWriter) {
-            // recursive write lock
-            break;
-        }
-
         ++d->waitingWriters;
         d->writerWait.wait(&d->mutex);
         --d->waitingWriters;
     }
+    if (d->recursive)
+        d->currentWriter = self;
 
-    d->currentWriter = self;
     --d->accessCount;
     Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::lockForWrite()", "Overflow in lock counter");
-
 }
 
 /*!
@@ -272,18 +315,26 @@ bool QReadWriteLock::tryLockForWrite()
 {
     QMutexLocker lock(&d->mutex);
 
-    Qt::HANDLE self = QThread::currentThreadId();
+    Qt::HANDLE self = 0;
+    if (d->recursive) {
+        self = QThread::currentThreadId();
 
-    if (d->accessCount != 0) {
-        if (d->accessCount > 0 || self != d->currentWriter) {
-            // either locked for reading, or another thread has locked for writing
-            return false;
+        if (d->currentWriter == self) {
+            --d->accessCount;
+            Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::lockForWrite()",
+                       "Overflow in lock counter");
+            return true;
         }
     }
 
-    d->currentWriter = self;
+    if (d->accessCount != 0)
+        return false;
+    if (d->recursive)
+        d->currentWriter = self;
+
     --d->accessCount;
-    Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::lockForWrite()", "Overflow in lock counter");
+    Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::tryLockForWrite()",
+               "Overflow in lock counter");
 
     return true;
 }
@@ -308,14 +359,19 @@ bool QReadWriteLock::tryLockForWrite(int timeout)
 {
     QMutexLocker lock(&d->mutex);
 
-    Qt::HANDLE self = QThread::currentThreadId();
+    Qt::HANDLE self = 0;
+    if (d->recursive) {
+        self = QThread::currentThreadId();
+
+        if (d->currentWriter == self) {
+            --d->accessCount;
+            Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::lockForWrite()",
+                       "Overflow in lock counter");
+            return true;
+        }
+    }
 
     while (d->accessCount != 0) {
-        if (d->accessCount < 0 && self == d->currentWriter) {
-            // recursive write lock
-            break;
-        }
-
         ++d->waitingWriters;
         bool success = d->writerWait.wait(&d->mutex, timeout < 0 ? ULONG_MAX : timeout);
         --d->waitingWriters;
@@ -323,10 +379,12 @@ bool QReadWriteLock::tryLockForWrite(int timeout)
         if (!success)
             return false;
     }
+    if (d->recursive)
+        d->currentWriter = self;
 
-    d->currentWriter = self;
     --d->accessCount;
-    Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::lockForWrite()", "Overflow in lock counter");
+    Q_ASSERT_X(d->accessCount < 0, "QReadWriteLock::tryLockForWrite()",
+               "Overflow in lock counter");
 
     return true;
 }
@@ -345,14 +403,32 @@ void QReadWriteLock::unlock()
 
     Q_ASSERT_X(d->accessCount != 0, "QReadWriteLock::unlock()", "Cannot unlock an unlocked lock");
 
-    if ((d->accessCount > 0 && --d->accessCount == 0) || (d->accessCount < 0 && ++d->accessCount == 0)) {
+    bool unlocked = false;
+    if (d->accessCount > 0) {
+        // releasing a read lock
+        if (d->recursive) {
+            Qt::HANDLE self = QThread::currentThreadId();
+            QHash<Qt::HANDLE, int>::iterator it = d->currentReaders.find(self);
+            if (it != d->currentReaders.end()) {
+                if (--it.value() <= 0)
+                    d->currentReaders.erase(it);
+            }
+        }
+
+        unlocked = --d->accessCount == 0;
+    } else if (d->accessCount < 0 && ++d->accessCount == 0) {
+        // released a write lock
+        unlocked = true;
         d->currentWriter = 0;
+    }
+
+    if (unlocked) {
         if (d->waitingWriters) {
             d->writerWait.wakeOne();
         } else if (d->waitingReaders) {
             d->readerWait.wakeAll();
         }
-   }
+    }
 }
 
 /*!
@@ -374,30 +450,11 @@ void QReadWriteLock::unlock()
     Here's an example that uses QReadLocker to lock and unlock a
     read-write lock for reading:
 
-    \code
-        QReadWriteLock lock;
-
-        QByteArray readData()
-        {
-            QReadLocker locker(&lock);
-            ...
-            return data;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 1
 
     It is equivalent to the following code:
 
-    \code
-        QReadWriteLock lock;
-
-        QByteArray readData()
-        {
-            locker.lockForRead();
-            ...
-            locker.unlock();
-            return data;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 2
 
     The QMutexLocker documentation shows examples where the use of a
     locker object greatly simplifies programming.
@@ -466,28 +523,11 @@ void QReadWriteLock::unlock()
     Here's an example that uses QWriteLocker to lock and unlock a
     read-write lock for writing:
 
-    \code
-        QReadWriteLock lock;
-
-        void writeData(const QByteArray &data)
-        {
-            QWriteLocker locker(&lock);
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 3
 
     It is equivalent to the following code:
 
-    \code
-        QReadWriteLock lock;
-
-        void writeData(const QByteArray &data)
-        {
-            locker.lockForWrite();
-            ...
-            locker.unlock();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 4
 
     The QMutexLocker documentation shows examples where the use of a
     locker object greatly simplifies programming.
@@ -536,5 +576,7 @@ void QReadWriteLock::unlock()
     Returns a pointer to the read-write lock that was passed
     to the constructor.
 */
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_THREAD

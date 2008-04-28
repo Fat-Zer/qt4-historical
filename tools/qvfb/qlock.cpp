@@ -49,44 +49,49 @@
 #include <unistd.h>
 #include <sys/types.h>
 #if defined(Q_OS_DARWIN)
-#define Q_NO_SEMAPHORE
-#include <sys/stat.h>
-#include <sys/file.h>
-#else
-#include <sys/sem.h>
-#if (defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED) && !defined(QT_LSB)) \
+#   define Q_NO_SEMAPHORE
+#   include <sys/stat.h>
+#   include <sys/file.h>
+#else // Q_OS_DARWIN
+#   include <sys/sem.h>
+#   if (defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED) && !defined(QT_LSB)) \
     || defined(Q_OS_FREEBSD) || defined(Q_OS_OPENBSD) || defined(Q_OS_NETBSD) \
     || defined(Q_OS_BSDI)
-/* union semun is defined by including <sys/sem.h> */
-#else
+        /* union semun is defined by including <sys/sem.h> */
+#   else
 /* according to X/OPEN we have to define it ourselves */
 union semun {
     int val;                    /* value for SETVAL */
     struct semid_ds *buf;       /* buffer for IPC_STAT, IPC_SET */
     unsigned short *array;      /* array for GETALL, SETALL */
 };
-#endif
-#endif
+#   endif
+#endif // Q_OS_DARWIN
 #include <sys/ipc.h>
 #include <string.h>
 #include <errno.h>
 #include <qdebug.h>
 #include <signal.h>
 
+#endif // QT_NO_QWS_MULTIPROCESS
+
 #define MAX_LOCKS   200            // maximum simultaneous read locks
 
+QT_BEGIN_NAMESPACE
+
+
+#ifndef QT_NO_QWS_MULTIPROCESS
 class QLockData
 {
 public:
 #ifdef Q_NO_SEMAPHORE
     QByteArray file;
-#endif
+#endif // Q_NO_SEMAPHORE
     int id;
     int count;
     bool owned;
 };
-
-#endif
+#endif // QT_NO_QWS_MULTIPROCESS
 
 /*!
     \class QLock qlock_p.h
@@ -97,7 +102,7 @@ public:
 
     \internal
 
-    It is used by \l {Qtopia Core} for synchronizing access to the graphics
+    It is used by \l{Qt for Embedded Linux} for synchronizing access to the graphics
     card and shared memory region between processes.
 */
 
@@ -112,10 +117,10 @@ public:
     \fn QLock::QLock(const QString &filename, char id, bool create)
 
     Creates a lock. \a filename is the file path of the Unix-domain
-    socket the \l {Qtopia Core} client is using. \a id is the name of the
+    socket the \l{Qt for Embedded Linux} client is using. \a id is the name of the
     particular lock to be created on that socket. If \a create is true
-    the lock is to be created (as the \l {Qtopia Core} server does); if \a
-    create is false the lock should exist already (as the \l {Qtopia Core}
+    the lock is to be created (as the Qt for Embedded Linux server does); if \a
+    create is false the lock should exist already (as the Qt for Embedded Linux
     client expects).
 */
 
@@ -311,3 +316,5 @@ bool QLock::locked() const
     return false;
 #endif
 }
+
+QT_END_NAMESPACE

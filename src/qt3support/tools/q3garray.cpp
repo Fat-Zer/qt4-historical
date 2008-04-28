@@ -48,6 +48,9 @@
 #elif defined(Q_WS_WIN)
     // needed for bsearch on some platforms
 #   include "qt_windows.h"
+#if defined(Q_OS_WINCE)
+#   include "qfunctions_wince.h"
+#endif
 #endif
 
 #define	 Q3GARRAY_CPP
@@ -58,6 +61,8 @@
 #ifndef QT_NO_THREAD
 #  include "private/qmutexpool_p.h"
 #endif
+
+QT_BEGIN_NAMESPACE
 
 /*
   If USE_MALLOC isn't defined, we use new[] and delete[] to allocate
@@ -513,26 +518,10 @@ void Q3GArray::store(const char *d, uint len)
   allocating memory or copying data.
 
   Example of intended use:
-  \code
-    static uchar bindata[] = { 231, 1, 44, ... };
-    QByteArray	a;
-    a.setRawData(bindata, sizeof(bindata));	// a points to bindata
-    QDataStream s(a, IO_ReadOnly);		// open on a's data
-    s >> <something>;				// read raw bindata
-    s.close();
-    a.resetRawData(bindata, sizeof(bindata)); // finished
-  \endcode
+  \snippet doc/src/snippets/code/src.qt3support.tools.q3garray.cpp 0
 
   Example of misuse (do not do this):
-  \code
-    static uchar bindata[] = { 231, 1, 44, ... };
-    QByteArray	a, b;
-    a.setRawData(bindata, sizeof(bindata));	// a points to bindata
-    a.resize(8);				// will crash
-    b = a;					// will crash
-    a[2] = 123;					// might crash
-      // forget to resetRawData - will crash
-  \endcode
+  \snippet doc/src/snippets/code/src.qt3support.tools.q3garray.cpp 1
 
   \warning If you do not call resetRawData(), Q3GArray will attempt to
   deallocate or reallocate the raw data, which might not be too good.
@@ -688,7 +677,7 @@ static int cmp_item_size = 0;
 extern "C" {
 #endif
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 static int __cdecl cmp_arr(const void *n1, const void *n2)
 #else
 static int cmp_arr(const void *n1, const void *n2)
@@ -806,3 +795,5 @@ void Q3GArray::deleteData(array_data *p)
 {
     delete p;
 }
+
+QT_END_NAMESPACE

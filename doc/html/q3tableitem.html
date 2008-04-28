@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/qt3support/itemviews/q3table.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/itemviews/q3table.cpp -->
 <head>
-  <title>Qt 4.3: Q3TableItem Class Reference</title>
+  <title>Qt 4.4: Q3TableItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3TableItem Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3TableItem Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
+</h1>
 <p>The Q3TableItem class provides the cell content for <a href="q3table.html">Q3Table</a> cells. <a href="#details">More...</a></p>
 <pre> #include &lt;Q3TableItem&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
@@ -70,24 +71,24 @@
 <p>When sorting table items the <a href="q3tableitem.html#key">key</a>() function is used; by default this returns the table item's <a href="q3tableitem.html#text">text</a>(). Reimplement <a href="q3tableitem.html#key">key</a>() to customize how your table items will sort.</p>
 <p>Table items are inserted into a table using <a href="q3table.html#setItem">Q3Table::setItem</a>(). If you insert an item into a cell that already contains a table item the original item will be deleted.</p>
 <p>Example:</p>
-<pre> for (int row = 0; row &lt; table-&gt;numRows(); row++) {
-     for (int col = 0; col &lt; table-&gt;numCols(); col++) {
-         table-&gt;setItem(row, col,
-             new Q3TableItem(table, Q3TableItem::WhenCurrent, QString::number(row * col)));
-     }
- }</pre>
+<pre>     for (int row = 0; row &lt; table-&gt;numRows(); row++) {
+         for (int col = 0; col &lt; table-&gt;numCols(); col++) {
+             table-&gt;setItem(row, col,
+                 new Q3TableItem(table, Q3TableItem::WhenCurrent, QString::number(row * col)));
+         }
+     }</pre>
 <p>You can move a table item from one cell to another, in the same or a different table, using <a href="q3table.html#takeItem">Q3Table::takeItem</a>() and <a href="q3table.html#setItem">Q3Table::setItem</a>() but see also <a href="q3table.html#swapCells">Q3Table::swapCells</a>().</p>
 <p>Table items can be deleted with delete in the standard way; the table and cell will be updated accordingly.</p>
 <p>Note, that if you have a table item that is not currently in a table then anything you do to that item other than insert it into a table will result in undefined behaviour.</p>
 <p>Reimplement <a href="q3tableitem.html#createEditor">createEditor</a>() and <a href="q3tableitem.html#setContentFromEditor">setContentFromEditor</a>() if you want to use your own widget instead of a <a href="qlineedit.html">QLineEdit</a> for editing cell contents. Reimplement <a href="q3tableitem.html#paint">paint</a>() if you want to display custom content.</p>
 <p>It is important to ensure that your custom widget can accept the keyboard focus, so that the user can use the tab key to navigate the table as normal. Therefore, if the widget returned by <a href="q3tableitem.html#createEditor">createEditor</a>() does not itself accept the keyboard focus, it is necessary to nominate a child widget to do so on its behalf. For example, a <a href="porting4.html#qhbox">QHBox</a> with two child <a href="qlineedit.html">QLineEdit</a> widgets may use one of them to accept the keyboard focus:</p>
-<pre> QWidget* MyTableItem::createEditor() const
- {
-     QHBox* hbox = new QHBox(table()-&gt;viewport());
-     hbox-&gt;setFocusProxy(new QLineEdit(hbox));
-     new QLineEdit(hbox);
-     return hbox;
- }</pre>
+<pre>     QWidget* MyTableItem::createEditor() const
+     {
+         QHBox* hbox = new QHBox(table()-&gt;viewport());
+         hbox-&gt;setFocusProxy(new QLineEdit(hbox));
+         new QLineEdit(hbox);
+         return hbox;
+     }</pre>
 <p>By default, table items may be replaced by new Q3TableItems during the lifetime of a <a href="q3table.html">Q3Table</a>. Therefore, if you create your own subclass of Q3TableItem, and you want to ensure that this does not happen, you must call setReplaceable(false) in the constructor of your subclass.</p>
 <p align="center"><img src="images/qtableitems.png" alt="Table Items" /></p><p>See also <a href="q3checktableitem.html">Q3CheckTableItem</a> and <a href="q3combotableitem.html">Q3ComboTableItem</a>.</p>
 <hr />
@@ -180,9 +181,9 @@
 <p>You don't usually need to use this function but if you want to draw custom content in a cell you will need to reimplement it.</p>
 <p>The painter passed to this function is translated so that 0, 0 is the top-left corner of the item that is being painted.</p>
 <p>Note that the painter is not clipped by default in order to get maximum efficiency. If you want clipping, use</p>
-<pre> p-&gt;setClipRect(table()-&gt;cellRect(row, col), QPainter::ClipPainter);
-<span class="comment"> //</span>... your drawing code
- p-&gt;setClipping(false);</pre>
+<pre>     p-&gt;setClipRect(table()-&gt;cellRect(row, col), QPainter::ClipPainter);
+     //... your drawing code
+     p-&gt;setClipping(false);</pre>
 <a name="//apple_ref/cpp/instm/Q3TableItem/pixmap" />
 <h3 class="fn"><a name="pixmap"></a><a href="qpixmap.html">QPixmap</a> Q3TableItem::pixmap () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the table item's pixmap or a null pixmap if no pixmap has been set.</p>
@@ -271,6 +272,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

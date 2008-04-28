@@ -1,25 +1,68 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
-    \example qtopiacore/ahigl
+    \example qws/ahigl
     \title OpenGL for Embedded Systems Example
 
     \section1 Introduction
 
     This example demonstrates how you can use OpenGL for Embedded
-    Systems (ES) in your own screen driver and \l {add your graphics
-    driver to Qtopia Core}. In \l {Qtopia Core}, painting is done in
+    Systems (ES) in your own screen driver and \l{add your graphics
+    driver to Qt for Embedded Linux}. In \l{Qt for Embedded Linux}, painting is done in
     software, normally performed in two steps: First, each client
     renders its windows onto its window surface in memory using a
     paint engine. Then the server uses the screen driver to compose
     the window surface images and copy the composition to the screen.
-    (See the \l {Qtopia Core Architecture} documentation for details.)
+    (See the \l{Qt for Embedded Linux Architecture} documentation for details.)
 
     This example is not for the novice. It assumes the reader is
     familiar with both OpenGL and the screen driver framework
     demonstrated in the \l {Accelerated Graphics Driver Example}.
 
-    An OpenGL screen driver for Qtopia Core can use OpenGL ES in three
-    ways. First, the \l {QWSServer} {Qtopia Core server} can use the
-    driver to compose multiple window images and then show the
+    An OpenGL screen driver for Qt for Embedded Linux can use OpenGL ES
+    in three ways. First, the \l{QWSServer}{Qt for Embedded Linux server}
+    can use the driver to compose multiple window images and then show the
     composition on the screen. Second, clients can use the driver to
     accelerate OpenGL painting operations using the QOpenGLPaintEngine
     class. Finally, clients can use the driver to do OpenGL operations
@@ -43,9 +86,7 @@
     application, or just start the application with the \c -display
     switch, as follows:
 
-    \code
-        myApplication -qws -display ahigl
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.ahigl.qdoc 0
 
     The example driver also implements an animated transition effect
     for use when showing new windows or reshowing windows that have
@@ -68,9 +109,7 @@
 
     The screen driver plugin is class QAhiGLScreenPlugin.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahiglplugin.cpp
-    \skipto class QAhiGLScreenPlugin
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahiglplugin.cpp 0
 
     QAhiGLScreenPlugin is derived from class QScreenDriverPlugin,
     which in turn is derived from QObject.
@@ -87,16 +126,14 @@
     handle instances of class QGLWidget, then you must derive your
     screen driver class from QGLScreen.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.h
-    \skipto class QAhiGLScreen :
-    \printuntil };
+    \snippet examples/qws/ahigl/qscreenahigl_qws.h 0
 
     All functions in the public API of class QAhiGLScreen are virtual
     functions declared in its base classes. hasOpenGL() is declared in
     QGLScreen. It simply returns true indicating our example screen
     driver does support OpenGL operations.  The other functions in the
-    public API are declared in QScreen.  They are called by the \l
-    {QWSServer} {Qtopia Core server} at the appropriate times.
+    public API are declared in QScreen.  They are called by the
+    \l{QWSServer}{Qt for Embedded Linux server} at the appropriate times.
 
     Note that class QScreen is a documented class but class QGLScreen
     is not. This is because the design of class QGLScreen is not yet
@@ -109,9 +146,7 @@
     you to make changes to the driver's internal design without
     breaking binary compatibility.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto class QAhiGLScreenPrivate :
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 0
 
     Class QAhiGLScreenPrivate is derived from QObject so that it can
     use the Qt signal/slot mechanism. QAhiGLScreen is not a QObject,
@@ -129,9 +164,7 @@
     OpenGL window surface class, QWSGLWindowSurface, which is derived
     from QWSWindowSurface.
 
-    \quotefromfile qtopiacore/ahigl/qwindowsurface_ahigl_p.h
-    \skipto class QAhiGLWindowSurface :
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qwindowsurface_ahigl_p.h 0
 
     In addition to implementing the standard functionality required by
     any new subclass of QWSWindowSurface, QAhiGLWindowSurface also
@@ -142,11 +175,7 @@
     allows making changes to the state variables of the window surface
     without breaking binary compatibility.
 
-    \quotefromfile qtopiacore/ahigl/qwindowsurface_ahigl.cpp
-    \skipto class QAhiGLWindowSurfacePrivate
-    \skipto internal
-    \skipto class QAhiGLWindowSurfacePrivate
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qwindowsurface_ahigl.cpp 0
 
     In this case, our private implementation class has no member
     functions except for its constructor. It contains only public data
@@ -158,9 +187,7 @@
     all the \l {QWSWindow} {windows} it is showing on the screen.
     Each window is mapped to an instance of struct WindowInfo.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto struct WindowInfo
-    \printuntil windowMap;
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 2
 
     As each new window is created, an instance of struct WindowInfo is
     allocated and inserted into the window map. WindowInfo uses a
@@ -181,9 +208,7 @@
     when a window is shown the first time and again later, when the
     window is reshown after having been minimized.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto class ShowAnimation
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 1
 
     Class ShowAnimation is derived from the QTimeLine class, which is
     used for controlling animations. QTimeLine is a QObject, so
@@ -201,17 +226,15 @@
     \section2 The Plugin Class Implementation
 
     QAhiGLScreenPlugin is a straightforward derivation of
-    QScreenDriverPlugin.  It reimplements \l {QScreenDriverPlugin::}
-    {keys()} and \l {QScreenDriverPlugin::} {create()}. They are
-    called as needed by the \l {QWSServer} {Qtopia Core server.}
+    QScreenDriverPlugin.  It reimplements \l{QScreenDriverPlugin::}{keys()}
+    and \l{QScreenDriverPlugin::}{create()}. They are
+    called as needed by the \l{QWSServer}{Qt for Embedded Linux server.}
     Recall that the server detects that the ahigl screen driver has
     been requested, either by including "ahigl" in the value for the
     environment variable QWS_DISPLAY, or by running your application
     with a command line like the following.
 
-    \code
-        myApplication -qws -display ahigl
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.ahigl.qdoc 1
 
     The server calls \l {QScreenDriverPlugin::} {keys()}, which
     returns a \l {QStringList} containing the singleton "ahigl"
@@ -220,9 +243,7 @@
     {QScreenDriverPlugin::} {create()}, which creates the instance of
     QAhiGLScreen.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahiglplugin.cpp
-    \skipto Q_EXPORT_PLUGIN2
-    \printuntil )
+    \snippet examples/qws/ahigl/qscreenahiglplugin.cpp 1
 
     In the code snippet above, the macro Q_EXPORT_PLUGIN2 is used to export
     the plugin class, QAhiGLScreen, for the qahiglscreen plugin.
@@ -253,9 +274,7 @@
     whether the screen driver was started with the \c effects option
     and sets the \c doEffects flag accordingly.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto QAhiGLScreen::connect
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 7
 
     The \l {QScreen::}{initDevice()} function is called by the server
     after \l {QScreen::}{connect()}. It uses EGL library functions to
@@ -263,8 +282,7 @@
     in this example are specific to the EGL implementation used, e.g.,
     the DummyScreen structure.
 
-    \skipto initDevice
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 8
 
     Note the signal/slot connection at the bottom of initDevice(). We
     connect the server's QWSServer::windowEvent() signal to the
@@ -272,9 +290,7 @@
     class.  The windowEvent() slot handles three window events,
     QWSServer::Create, QWSServer::Destroy, and QWSServer::Show.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto QAhiGLScreenPrivate::windowEvent
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 5
 
     The function manages instances of the helper classes associated
     with each window.  When a QWSServer::Create event occurs, it means
@@ -293,9 +309,7 @@
     automatically \l {QTimeLine::start()} {starts} the animation of
     the transition effect.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto ShowAnimation::ShowAnimation
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 3
 
     To ensure that a ShowAnimation is not deleted until its animation
     ends, the \l {QTimeLine::finished()} {finished()} signal is
@@ -312,8 +326,7 @@
     QTimeLine is reimplemented in ShowAnimation to return time values
     that represent a curved path for the window transition effect.
 
-    \skipto ShowAnimation::valueForTime
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 4
 
     valueForTime() is called internally, when the time interval it
     computed during the previous call has elapsed. If it computes a
@@ -336,8 +349,7 @@
     by a single call to redrawScreen(). Thus updateTimer can be used
     to limit the frequency of screen updates.
 
-    \skipto QAhiGLScreen::exposeRegion
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 13
 
     The call to the private function invalidateTexture() destroys
     the window's existing texture (image). This ensures that a new
@@ -365,9 +377,7 @@
     the window compositions. It is called only by the function of the
     same name in the screen driver's private implementation class.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto  QAhiGLScreenPrivate::redrawScreen()
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 6
 
     Recall that this redrawScreen() in the private implementation
     class is a slot function connected to two signals, the \c
@@ -384,9 +394,7 @@
     The redrawScreen() in QAhiGLScreen begins by using standard
     OpenGL to fill the screen with the background color.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto void QAhiGLScreen::redrawScreen()
-    \printuntil glClear(GL_COLOR_BUFFER_BIT);
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 10
 
     Next it iterates over the list of all \l {QWSWindow} {client
     windows} obtained from the \l {QWSServer} {server}, extracting
@@ -395,8 +403,7 @@
     the helper function drawWindow() to draw the texture on the
     screen.
 
-    \skipto QList<QWSWindow*> windows
-    \printuntil for i
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 11
 
     Note the call to glBindTexture() immediately before the call to
     drawWindow(). This call binds the identifer \c GL_TEXTURE_2D to
@@ -408,7 +415,7 @@
     Finally, the cursor is added to the window composition, and in the
     last statement, the whole thing is displayed on the screen.
 
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 12
 
     The call to \c drawWindow(win,progress), in addition to passing a
     pointer to the window to be redrawn, also passes the \c progress
@@ -449,8 +456,7 @@
     instantiating new window surfaces. The overloading with the widget 
     parameter is called in the client.
 
-    \skipto  QAhiGLScreen::createSurface
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 14
 
     If the parameter is an \l {QGLWidget} {OpenGL widget}, or, when it
     isn't an OpenGL widget but its size is no bigger than 256 x 256,
@@ -472,8 +478,7 @@
     server to create a window surface that will hold a copy of a
     client side window surface.
 
-    \skipto  QAhiGLScreen::createSurface
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 15
 
     This overloading accepts a QString parameter identifying the type
     of window surface to instantiate. QAhiGLWindowSurface is
@@ -497,9 +502,7 @@
     {shutdownDevice()} to release the hardware resources. This is also
     done using EGL library functions.
 
-    \quotefromfile qtopiacore/ahigl/qscreenahigl_qws.cpp
-    \skipto shutdownDevice
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qscreenahigl_qws.cpp 9
 
     The server will also call \l {QScreen::}{disconnect()}, but this
     function is only a stub in this example.
@@ -516,12 +519,9 @@
     constructed on the server side for each one constructed on the
     client side.
 
-    \quotefromfile qtopiacore/ahigl/qwindowsurface_ahigl.cpp
-    \skipto QAhiGLWindowSurface::QAhiGLWindowSurface
-    \printuntil /^\}/
-
-    \skipto QAhiGLWindowSurface::QAhiGLWindowSurface
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qwindowsurface_ahigl.cpp 1
+    \codeline
+    \snippet examples/qws/ahigl/qwindowsurface_ahigl.cpp 2
 
     The constructors create an instance of QAhiGLWindowSurfacePrivate,
     the private implementation class, which contains all the state
@@ -556,21 +556,18 @@
     extension is supported by your OpenGL library, and use a different
     approach if it is not.
 
-    \skipto QAhiGLWindowSurface::setGeometry
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qwindowsurface_ahigl.cpp 3
 
     Since there can be several instances of the QAhiGLWindowSurface, we need
     to make sure that the correct framebuffer object is active before painting.
     This is done by reimplementing \l QWindowSurface::beginPaint():
 
-    \skipto QAhiGLWindowSurface::beginPaint
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qwindowsurface_ahigl.cpp 4
 
     Finally we need to make sure that whenever a widget grows beyond the size
     supported by this driver (256 x 256), the surface is deleted and a new
     standard surface is created instead. This is handled by reimplementing
     \l QWSWindowSurface::isValid():    
 
-    \skipto QAhiGLWindowSurface::isValid
-    \printuntil /^\}/
+    \snippet examples/qws/ahigl/qwindowsurface_ahigl.cpp 5
 */

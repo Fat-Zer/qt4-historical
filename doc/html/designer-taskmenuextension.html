@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/examples/taskmenuextension.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/taskmenuextension.qdoc -->
 <head>
-  <title>Qt 4.3: Task Menu Extension Example</title>
+  <title>Qt 4.4: Task Menu Extension Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -12,7 +12,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Task Menu Extension Example<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Task Menu Extension Example<br /><span class="subtitle"></span>
+</h1>
 <p>Files:</p>
 <ul>
 <li><a href="designer-taskmenuextension-tictactoe-cpp.html">designer/taskmenuextension/tictactoe.cpp</a></li>
@@ -23,6 +24,7 @@
 <li><a href="designer-taskmenuextension-tictactoeplugin-h.html">designer/taskmenuextension/tictactoeplugin.h</a></li>
 <li><a href="designer-taskmenuextension-tictactoetaskmenu-cpp.html">designer/taskmenuextension/tictactoetaskmenu.cpp</a></li>
 <li><a href="designer-taskmenuextension-tictactoetaskmenu-h.html">designer/taskmenuextension/tictactoetaskmenu.h</a></li>
+<li><a href="designer-taskmenuextension-taskmenuextension-pro.html">designer/taskmenuextension/taskmenuextension.pro</a></li>
 </ul>
 <p>The Task Menu Extension example shows how to create a custom widget plugin for <a href="designer-manual.html"><i>Qt Designer</i></a>, and how to to use the <a href="qdesignertaskmenuextension.html">QDesignerTaskMenuExtension</a> class to provide custom task menu entries associated with the plugin.</p>
 <p align="center"><img src="images/taskmenuextension-example-faded.png" /></p><p>To provide a custom widget that can be used with <i>Qt Designer</i>, we need to supply a self-contained implementation. In this example we use a custom widget designed to show the task menu extension feature: The TicTacToe widget.</p>
@@ -68,8 +70,8 @@
             tictactoetaskmenu.cpp</pre>
 <p>We provide an implementation of the plugin interface so that <i>Qt Designer</i> can use the custom widget. In this particular example we also provide implementations of the task menu extension and the extension factory as well as a dialog implementation.</p>
 <p>It is important to ensure that the plugin is installed in a location that is searched by <i>Qt Designer</i>. We do this by specifying a target path for the project and adding it to the list of items to install:</p>
-<pre> target.path = $$[QT_INSTALL_PLUGINS]/designer
- INSTALLS += target</pre>
+<pre>         target.path = $$[QT_INSTALL_PLUGINS]/designer
+         INSTALLS += target</pre>
 <p>The task menu extension is created as a library, and will be installed alongside the other <i>Qt Designer</i> plugins when the project is installed (using <tt>make install</tt> or an equivalent installation procedure).</p>
 <p>Note that if you want the plugins to appear in a Visual Studio integration, the plugins must be built in release mode and their libraries must be copied into the plugin directory in the install path of the integration (for an example, see <tt>C:/program files/trolltech as/visual studio integration/plugins</tt>).</p>
 <p>For more information about plugins, see the <a href="plugins-howto.html">How to Create Qt Plugins</a> documentation.</p>
@@ -387,6 +389,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

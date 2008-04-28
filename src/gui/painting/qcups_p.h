@@ -62,6 +62,10 @@
 #include <QtCore/qlibrary.h>
 #include <cups/cups.h>
 
+QT_BEGIN_NAMESPACE
+
+Q_DECLARE_TYPEINFO(cups_option_t, Q_MOVABLE_TYPE | Q_PRIMITIVE_TYPE);
+
 class QCUPSSupport
 {
 public:
@@ -78,7 +82,7 @@ public:
     const ppd_file_t* currentPPD() const;
     const ppd_option_t* ppdOption(const char *key) const;
 
-//     const cups_option_t* printerOption(const QString &key) const;
+    const cups_option_t* printerOption(const QString &key) const;
     const ppd_option_t* pageSizes() const;
 
     int markOption(const char* name, const char* value);
@@ -92,6 +96,10 @@ public:
     static bool printerHasPPD(const char *printerName);
 
     QString unicodeString(const char *s);
+
+    QPair<int, QString> tempFd();
+    int printFile(const char * printerName, const char * filename, const char * title,
+                  int num_options, cups_option_t * options);
 
 private:
     void collectMarkedOptions(QStringList& list, const ppd_group_t* group = 0) const;
@@ -107,5 +115,8 @@ private:
 #endif
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_CUPS
+
 #endif

@@ -1,11 +1,40 @@
 /****************************************************************************
 **
-** Qt/Mac documentation.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** This file is part of the documentation of the Qt Toolkit.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -77,9 +106,7 @@
 
     If you use \c qmake and Makefiles, use the \c QMAKE_LFLAGS_SONAME setting:
 
-    \code
-        QMAKE_LFLAGS_SONAME  = -Wl,-install_name,@executable_path/../Frameworks/
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.mac-differences.qdoc 0
 
     Alternatively you can modify the intall name using the install_name_tool(1)
     command line tool. See its manpage for more information.
@@ -133,18 +160,7 @@
     bundle. You will then you need to find out where the bundle resides on the
     disk. The following code will return the path of the application bundle:
 
-    \code
-    #ifdef Q_WS_MAC
-        CFURLRef appUrlRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-        CFStringRef macPath = CFURLCopyFileSystemPath(appUrlRef,
-                                               kCFURLPOSIXPathStyle);
-        const char *pathPtr = CFStringGetCStringPtr(macPath,
-                                               CFStringGetSystemEncoding());
-        qDebug("Path = %s", pathPtr);
-        CFRelease(appUrlRef);
-        CFRelease(macPath);
-    #endif
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.mac-differences.qdoc 1
 
     More information about using the CFBundle API is available on
     \l{http://developer.apple.com/documentation/CoreFoundation/Reference/CFBundleRef/index.html}{Apple's
@@ -161,23 +177,7 @@
     The main thing you need to do is create a file called locversion.plist.
     Here is an example one for Norwegian:
 
-    \code
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
-        "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>LprojCompatibleVersion</key>
-            <string>123</string>
-            <key>LprojLocale</key>
-            <string>no</string>
-            <key>LprojRevisionLevel</key>
-            <string>1</string>
-            <key>LprojVersion</key>
-            <string>123</string>
-        </dict>
-        </plist>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.mac-differences.qdoc 2
 
     Then when you run the application with your preferred language set to Norwegian
     you should see menu items like "Avslutt" instead of "Quit".
@@ -188,7 +188,7 @@
 
     If you want to provide right-mouse click support for Mac OS X, use the
     QContextMenuEvent class. This will map to a context menu event, in other
-    words a menu that will display a popup selection. This is the most common
+    words a menu that will display a pop-up selection. This is the most common
     use of right-mouse clicks, and maps to a control-click with the Mac OS X
     one-button mouse support.
 

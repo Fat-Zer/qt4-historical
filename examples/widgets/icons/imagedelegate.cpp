@@ -45,11 +45,14 @@
 
 #include "imagedelegate.h"
 
+//! [0]
 ImageDelegate::ImageDelegate(QObject *parent)
     : QItemDelegate(parent)
 {
 }
+//! [0]
 
+//! [1]
 QWidget *ImageDelegate::createEditor(QWidget *parent,
                                      const QStyleOptionViewItem & /* option */,
                                      const QModelIndex &index) const
@@ -69,7 +72,9 @@ QWidget *ImageDelegate::createEditor(QWidget *parent,
 
     return comboBox;
 }
+//! [1]
 
+//! [2]
 void ImageDelegate::setEditorData(QWidget *editor,
                                   const QModelIndex &index) const
 {
@@ -81,7 +86,9 @@ void ImageDelegate::setEditorData(QWidget *editor,
                                  Qt::MatchExactly);
     comboBox->setCurrentIndex(pos);
 }
+//! [2]
 
+//! [3]
 void ImageDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                  const QModelIndex &index) const
 {
@@ -91,8 +98,11 @@ void ImageDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 
     model->setData(index, comboBox->currentText());
 }
+//! [3]
 
+//! [4]
 void ImageDelegate::emitCommitData()
 {
     emit commitData(qobject_cast<QWidget *>(sender()));
 }
+//! [4]

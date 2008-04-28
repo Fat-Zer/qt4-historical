@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QVariant;
@@ -87,17 +89,19 @@ Q_DECLARE_SHARED(QBitmap)
 
 #ifdef QT3_SUPPORT
 inline QBitmap::QBitmap(int w, int h, bool clear)
-    : QPixmap(QSize(w, h), BitmapType)
+    : QPixmap(QSize(w, h), 1)
 {
     if (clear) this->clear();
 }
 
 inline QBitmap::QBitmap(const QSize &size, bool clear)
-    : QPixmap(size, BitmapType)
+    : QPixmap(size, 1)
 {
     if (clear) this->clear();
 }
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

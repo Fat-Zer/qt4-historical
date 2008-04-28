@@ -68,9 +68,11 @@
 #  include <private/qt_mac_p.h>
 #endif
 
-class QHideDock;
-
 #include <private/q3mainwindow_p.h>
+
+QT_BEGIN_NAMESPACE
+
+class QHideDock;
 
 /* Q3MainWindowLayout, respects widthForHeight layouts (like the left
   and right docks are)
@@ -458,14 +460,7 @@ void QHideToolTip::maybeTip(const QPoint &pos)
     toolbar buttons then describe the facilities of Q3MainWindow
     itself.
 
-    \code
-        Q3MainWindow *mw = new Q3MainWindow;
-        QTextEdit *edit = new QTextEdit(mw, "editor");
-        edit->setFocus();
-        mw->setWindowTitle("Main Window");
-        mw->setCentralWidget(edit);
-        mw->show();
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 0
 
     Q3MainWindows may be created in their own right as shown above.
     The central widget is set with setCentralWidget(). Popup menus can
@@ -566,15 +561,7 @@ void QHideToolTip::maybeTip(const QPoint &pos)
     widget inside its own movable dock window and restrict this dock
     window to only live within the \c Top or \c Bottom dock:
 
-    \code
-    Q3ToolBar *tb = new Q3ToolBar(this);
-    addDockWindow(tb, tr("Menubar"), Top, false);
-    QMenuBar *mb = new QMenuBar(tb);
-    mb->setFrameStyle(QFrame::NoFrame);
-    tb->setStretchableWidget(mb);
-    setDockEnabled(tb, Left, false);
-    setDockEnabled(tb, Right, false);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 1
 
     An application with multiple dock windows can choose to save the
     current dock window layout in order to restore it later, e.g. in
@@ -583,26 +570,12 @@ void QHideToolTip::maybeTip(const QPoint &pos)
 
     To save the layout and positions of all the dock windows do this:
 
-    \code
-    QFile file(filename);
-    if (file.open(IO_WriteOnly)) {
-        QTextStream stream(&file);
-        stream << *mainWindow;
-        file.close();
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 2
 
     To restore the dock window positions and sizes (normally when the
     application is next started), do the following:
 
-    \code
-    QFile file(filename);
-    if (file.open(IO_ReadOnly)) {
-        QTextStream stream(&file);
-        stream >> *mainWindow;
-        file.close();
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 3
 
     The QSettings class can be used in conjunction with the streaming
     operators to store the application's settings.
@@ -976,7 +949,7 @@ bool Q3MainWindow::isDockEnabled(Q3DockArea *area) const
 void Q3MainWindow::setDockEnabled(Q3DockWindow *dw, Qt::Dock dock, bool enable)
 {
     Q_D(Q3MainWindow);
-    if (d->dockWindows.contains(dw)) {
+    if (!d->dockWindows.contains(dw)) {
         d->dockWindows.append(dw);
         connect(dw, SIGNAL(placeChanged(Q3DockWindow::Place)),
                  this, SLOT(slotPlaceChanged()));
@@ -1706,10 +1679,7 @@ void Q3MainWindow::triggerLayout(bool deleteLayout)
     implemented as a main window object's slot. This way it can easily
     be used for popup menus, for example:
 
-    \code
-    Q3PopupMenu * help = new Q3PopupMenu(this);
-    help->insertItem("What's &This", this , SLOT(enterWhatsThis()), Qt::SHIFT+Qt::Key_F1);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 4
 
     \sa Q3WhatsThis::enterWhatsThisMode()
 */
@@ -2448,6 +2418,8 @@ QTextStream &operator>>(QTextStream &ts, Q3MainWindow &mainWindow)
     return ts;
 }
 #endif
+
+QT_END_NAMESPACE
 
 #include "q3mainwindow.moc"
 

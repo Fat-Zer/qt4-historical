@@ -46,12 +46,15 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QComboBox;
 class QLabel;
 class QSpinBox;
+QT_END_NAMESPACE
 class RenderArea;
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -82,5 +85,6 @@ private:
     QCheckBox *antialiasingCheckBox;
     QCheckBox *transformationsCheckBox;
 };
+//! [0]
 
 #endif

@@ -100,9 +100,12 @@ int main(int argc, char *argv[])
         return WriteError;
     }
 
+//! [0]
     QXmlStreamReader reader(&inputFile);
     QXmlStreamWriter writer(&outputFile);
+//! [0]
 
+//! [1]
     while (!reader.atEnd())
     {
         reader.readNext();
@@ -115,10 +118,13 @@ int main(int argc, char *argv[])
                                QString::number(reader.lineNumber()),
                                QString::number(reader.columnNumber()));
             return ParseFailure;
+//! [1]
 
+//! [2]
         } else
             writer.writeCurrentToken(reader);
     }
+//! [2]
 
     return Success;
 }

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QVariant;
@@ -217,6 +219,8 @@ inline void QSizePolicy::transpose() {
     setHorizontalStretch(vStretch);
     setVerticalStretch(hStretch);
 }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

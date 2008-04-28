@@ -42,6 +42,9 @@
 ****************************************************************************/
 
 #include "qsvggraphics_p.h"
+
+#ifndef QT_NO_SVG
+
 #include "qsvgfont_p.h"
 
 #include "qpainter.h"
@@ -52,6 +55,8 @@
 
 #include <math.h>
 #include <limits.h>
+
+QT_BEGIN_NAMESPACE
 
 void QSvgAnimation::draw(QPainter *)
 {
@@ -75,7 +80,7 @@ QSvgCircle::QSvgCircle(QSvgNode *parent, const QRectF &rect)
 QRectF QSvgCircle::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0))
+    if (qFuzzyCompare(sw + 1, 1))
         return m_bounds;
     else {
         QPainterPath path;
@@ -112,7 +117,7 @@ QSvgEllipse::QSvgEllipse(QSvgNode *parent, const QRectF &rect)
 QRectF QSvgEllipse::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0))
+    if (qFuzzyCompare(sw + 1, 1))
         return m_bounds;
     else {
         QPainterPath path;
@@ -177,7 +182,7 @@ void QSvgPath::draw(QPainter *p)
 QRectF QSvgPath::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0))
+    if (qFuzzyCompare(sw + 1, 1))
         return m_cachedBounds;
     else {
         return boundsOnStroke(m_path, sw);
@@ -193,7 +198,7 @@ QSvgPolygon::QSvgPolygon(QSvgNode *parent, const QPolygonF &poly)
 QRectF QSvgPolygon::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0))
+    if (qFuzzyCompare(sw + 1, 1))
         return m_poly.boundingRect();
     else {
         QPainterPath path;
@@ -238,7 +243,7 @@ QSvgRect::QSvgRect(QSvgNode *node, const QRectF &rect, int rx, int ry)
 QRectF QSvgRect::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0))
+    if (qFuzzyCompare(sw + 1, 1))
         return m_rect;
     else {
         QPainterPath path;
@@ -250,9 +255,9 @@ QRectF QSvgRect::bounds() const
 void QSvgRect::draw(QPainter *p)
 {
     applyStyle(p);
-    
+
     if (m_rx || m_ry)
-        p->drawRoundRect(m_rect, m_rx, m_ry);
+        p->drawRoundedRect(m_rect, m_rx, m_ry, Qt::RelativeSize);
     else
         p->drawRect(m_rect);
     revertStyle(p);
@@ -382,12 +387,12 @@ void QSvgUse::draw(QPainter *p)
 
     if (!m_start.isNull()) {
         p->translate(m_start);
-    }   
+    }
     m_link->draw(p);
     if (!m_start.isNull()) {
         p->translate(-m_start);
     }
-    
+
     revertStyle(p);
 }
 
@@ -476,7 +481,7 @@ QRectF QSvgUse::bounds() const
                           m_bounds.y()+m_start.y(),
                           m_bounds.width(),
                           m_bounds.height());
-        
+
         return m_bounds;
     }
     return m_bounds;
@@ -486,8 +491,8 @@ QRectF QSvgUse::transformedBounds(const QMatrix &mat) const
 {
     QRectF bounds;
     QMatrix m = mat;
-    
-    if (m_link)  {       
+
+    if (m_link)  {
         QSvgTransformStyle *trans = m_style.transform;
         if (trans) {
             m = trans->qmatrix() * m;
@@ -495,7 +500,7 @@ QRectF QSvgUse::transformedBounds(const QMatrix &mat) const
         m.translate(m_start.x(), m_start.y());
 
         bounds = m_link->transformedBounds(m);
-        
+
         return bounds;
     }
     return bounds;
@@ -504,7 +509,7 @@ QRectF QSvgUse::transformedBounds(const QMatrix &mat) const
 QRectF QSvgPolyline::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0))
+    if (qFuzzyCompare(sw + 1, 1))
         return m_poly.boundingRect();
     else {
         QPainterPath path;
@@ -516,7 +521,7 @@ QRectF QSvgPolyline::bounds() const
 QRectF QSvgArc::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0))
+    if (qFuzzyCompare(sw + 1, 1))
         return m_cachedBounds;
     else {
         return boundsOnStroke(cubic, sw);
@@ -531,7 +536,7 @@ QRectF QSvgImage::bounds() const
 QRectF QSvgLine::bounds() const
 {
     qreal sw = strokeWidth();
-    if (qFuzzyCompare(sw, 0)) {
+    if (qFuzzyCompare(sw + 1, 1)) {
         qreal minX = qMin(m_bounds.x1(), m_bounds.x2());
         qreal minY = qMin(m_bounds.y1(), m_bounds.y2());
         qreal maxX = qMax(m_bounds.x1(), m_bounds.x2());
@@ -545,3 +550,6 @@ QRectF QSvgLine::bounds() const
     }
 }
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG

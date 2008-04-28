@@ -48,6 +48,8 @@
 #include <QList>
 #include <QPair>
 
+QT_BEGIN_NAMESPACE
+
 class Porting
 {
 public:
@@ -76,5 +78,7 @@ private:
     RuleList m_renamedClasses;
     RuleList m_renamedEnums;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT3TO4_H

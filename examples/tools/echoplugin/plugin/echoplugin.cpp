@@ -45,9 +45,13 @@
 
 #include "echoplugin.h"
 
+//! [0]
 QString EchoPlugin::echo(const QString &message)
 {
     return message;
 }
+//! [0]
 
+//! [1]
 Q_EXPORT_PLUGIN2(echoplugin, EchoPlugin);
+//! [1]

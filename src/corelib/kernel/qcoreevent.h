@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QEventPrivate;
@@ -249,6 +251,21 @@ public:
 
         MacGLWindowChange = 179,                // Internal! the window of the GLWidget has changed
 
+        FutureCallOut = 180,
+
+        GraphicsSceneResize  = 181,
+        GraphicsSceneMove  = 182,
+
+        CursorChange = 183,
+        ToolTipChange = 184,
+
+        NetworkReplyUpdated = 185,              // Internal for QNetworkReply
+
+        GrabMouse = 186,
+        UngrabMouse = 187,
+        GrabKeyboard = 188,
+        UngrabKeyboard = 189,
+
         User = 1000,                            // first user event id
         MaxUser = 65535                         // last user event id
     };
@@ -263,6 +280,8 @@ public:
 
     inline void accept() { m_accept = true; }
     inline void ignore() { m_accept = false; }
+
+    static int registerEventType(int hint = -1);
 
 protected:
     QEventPrivate *d;
@@ -319,7 +338,7 @@ public:
     QT3_SUPPORT_CONSTRUCTOR QCustomEvent(int type, void *data = 0);
     ~QCustomEvent();
     QT3_SUPPORT void *data()  const { return d; }
-    QT3_SUPPORT void setData(void* data) { d = reinterpret_cast<QEventPrivate *>(data); }
+    QT3_SUPPORT void setData(void* aData) { d = reinterpret_cast<QEventPrivate *>(aData); }
 };
 #endif
 
@@ -334,6 +353,8 @@ public:
 private:
     QByteArray n;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -45,6 +45,7 @@
 
 #include "mainwindow.h"
 
+//! [0]
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -54,3 +55,4 @@ int main(int argc, char *argv[])
     window.createSample();
     return app.exec();
 }
+//! [0]

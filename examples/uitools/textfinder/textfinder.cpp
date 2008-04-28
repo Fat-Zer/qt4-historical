@@ -45,17 +45,23 @@
 #include <QtGui>
 #include "textfinder.h"
 
+//! [0]
 TextFinder::TextFinder(QWidget *parent)
     : QWidget(parent)
 {
     QWidget *formWidget = loadUiFile();
 
+//! [1]
     ui_findButton = qFindChild<QPushButton*>(this, "findButton");
     ui_textEdit = qFindChild<QTextEdit*>(this, "textEdit");
     ui_lineEdit = qFindChild<QLineEdit*>(this, "lineEdit");
+//! [0] //! [1]
 
+//! [2]
     QMetaObject::connectSlotsByName(this);
+//! [2]
 
+//! [3]
     loadTextFile();
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -65,7 +71,9 @@ TextFinder::TextFinder(QWidget *parent)
 
     isFirstTime = true;
 }
+//! [3]
 
+//! [4]
 QWidget* TextFinder::loadUiFile()
 {
     QUiLoader loader;
@@ -78,7 +86,9 @@ QWidget* TextFinder::loadUiFile()
 
     return formWidget;
 }
+//! [4]
 
+//! [5]
 void TextFinder::loadTextFile()
 {
     QFile inputFile(":/forms/input.txt");
@@ -91,7 +101,9 @@ void TextFinder::loadTextFile()
     ui_textEdit->setUndoRedoEnabled(false);
     ui_textEdit->setUndoRedoEnabled(true);
 }
+//! [5]
 
+//! [6] //! [7]
 void TextFinder::on_findButton_clicked()
 {
     QString searchString = ui_lineEdit->text();
@@ -111,6 +123,7 @@ void TextFinder::on_findButton_clicked()
         QTextCursor cursor(document);
         
         cursor.beginEditBlock();
+//! [6]
 
         QTextCharFormat plainFormat(highlightCursor.charFormat());
         QTextCharFormat colorFormat = plainFormat;
@@ -127,7 +140,9 @@ void TextFinder::on_findButton_clicked()
             }
         }
 
+//! [8]
         cursor.endEditBlock();
+//! [7] //! [9]
         isFirstTime = false;
 
         if (found == false) {
@@ -136,3 +151,4 @@ void TextFinder::on_findButton_clicked()
         }    
     }
 }
+//! [8] //! [9]

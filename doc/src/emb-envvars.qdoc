@@ -42,12 +42,12 @@
 ****************************************************************************/
 
 /*!
-    \page qtopiacore-envvars.html
+    \page qt-embedded-envvars.html
 
-    \title Qtopia Core Environment Variables
-    \ingroup qtopiacore
+    \title Qt for Embedded Linux Environment Variables
+    \ingroup qt-embedded
 
-    These environment variables are relevant to \l {Qtopia Core}
+    These environment variables are relevant to \l{Qt for Embedded Linux}
     users.
 
     \table
@@ -59,7 +59,7 @@
     \o Specifies the file containing the data used to calibrate the
     pointer device.
 
-    See also QWSCalibratedMouseHandler and \l {Qtopia Core Pointer
+    See also QWSCalibratedMouseHandler and \l{Qt for Embedded Linux Pointer
     Handling}.
 
     \row
@@ -74,7 +74,7 @@
     Qt::WA_PaintOnScreen attribute for all the widgets in the
     application.
 
-    See also the Qtopia Core \l {Qtopia Core Architecture#Graphics
+    See also the Qt for Embedded Linux \l{Qt for Embedded Linux Architecture#Graphics
     Rendering}{graphics rendering} documentation.
 
     \row
@@ -89,33 +89,28 @@
     Specifies the display type and framebuffer. For example, if the
     current shell is bash, ksh, zsh or sh:
 
-    \code
-         export QWS_DISPLAY=<driver>[:<driver specific options>]...
-                 [:<display num>]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-envvars.qdoc 0
 
     The valid values for the \c <driver> argument are \c LinuxFb, \c
     QVFb, \c VNC, \c Transformed, \c Multi and \l
     {QScreenDriverPlugin::keys()}{keys} identifying custom drivers,
     and the \c {<display num>} argument is used to separate screens
     that are using the same screen driver and to enable multiple
-    displays (see the \l {Running Qtopia Core Applications}
+    displays (see the \l {Running Qt for Embedded Linux Applications}
     documentation for more details).
 
-    The driver specific options are described in the \l {Qtopia Core
+    The driver specific options are described in the \l{Qt for Embedded Linux
     Display Management}{display management} documentation.
 
     \row
     \o \bold QWS_SIZE \target QWS_SIZE
     \o
 
-    Specifies the size of \l {Qtopia Core}'s window which is centered
+    Specifies the size of the \l{Qt for Embedded Linux} window which is centered
     within the screen. For example, if the current shell is bash, ksh,
     zsh or sh:
 
-    \code
-        export QWS_SIZE=<width>x<height>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-envvars.qdoc 1
 
     \row
     \o \bold QWS_MOUSE_PROTO \target QWS_MOUSE_PROTO
@@ -124,9 +119,7 @@
     Specifies the driver for pointer handling. For example, if the
     current shell is bash, ksh, zsh or sh:
 
-    \code
-        export QWS_MOUSE_PROTO=<driver>[:<driver specific options>]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-envvars.qdoc 2
 
     The valid values for the \c <driver> argument are \c MouseMan, \c
     IntelliMouse, \c Microsoft, \c VR41xx, \c LinuxTP, \c Yopy. \c
@@ -137,11 +130,7 @@
 
     Multiple keyboard drivers can be specified in one go:
 
-    \code
-         export QWS_MOUSE_PROTO="<driver>[:<driver specific options>]
-                 <driver>[:<driver specific options>]
-                 <driver>[:<driver specific options>]"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-envvars.qdoc 3
 
     Input will be read from all specified drivers.
     Note that the \c Vr41xx driver also accepts two optional
@@ -150,11 +139,9 @@
     filter used to eliminate noise (the default length is 3). For
     example:
 
-    \code
-        export QWS_MOUSE_PROTO="Vr41xx:press=500:/dev/misc/ts"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-envvars.qdoc 4
 
-    See also \l {Qtopia Core Pointer Handling}.
+    See also \l {Qt for Embedded Linux Pointer Handling}.
 
     \row
     \o \bold QWS_KEYBOARD \target QWS_KEYBOARD
@@ -163,9 +150,7 @@
     Specifies the driver and device for character input. For example, if the
     current shell is bash, ksh, zsh or sh:
 
-    \code
-         export QWS_KEYBOARD=<driver>[:<driver specific options>]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-envvars.qdoc 5
 
     The valid values for the \c <driver> argument are \c SL5000, \c
     Yopy, \c VR41xx, \c TTY, \c USB and \l
@@ -175,15 +160,11 @@
 
     Multiple keyboard drivers can be specified in one go:
 
-    \code
-         export QWS_KEYBOARD="<driver>[:<driver specific options>]
-                 <driver>[:<driver specific options>]
-                 <driver>[:<driver specific options>]"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-envvars.qdoc 6
 
     Input will be read from all specified drivers.
 
-    See also \l {Qtopia Core Character Input}.
+    See also \l {Qt for Embedded Linux Character Input}.
 
     \endtable
 */

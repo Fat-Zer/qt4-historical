@@ -47,6 +47,8 @@
 
 #include "ccodeparser.h"
 
+QT_BEGIN_NAMESPACE
+
 CCodeParser::CCodeParser()
 {
 }
@@ -57,15 +59,17 @@ CCodeParser::~CCodeParser()
 
 QString CCodeParser::language()
 {
-    return "C";
+    return QLatin1String("C");
 }
 
 QString CCodeParser::headerFileNameFilter()
 {
-    return "*.ch *.h";
+    return QLatin1String("*.ch *.h");
 }
 
 QString CCodeParser::sourceFileNameFilter()
 {
-    return "*.c";
+    return QLatin1String("*.c");
 }
+
+QT_END_NAMESPACE

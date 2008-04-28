@@ -45,8 +45,11 @@
 #define QMDIAREA_H
 
 #include <QtGui/qabstractscrollarea.h>
+#include <QtGui/qtabwidget.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -58,7 +61,15 @@ class QMdiAreaPrivate;
 class Q_GUI_EXPORT QMdiArea : public QAbstractScrollArea
 {
     Q_OBJECT
+    Q_ENUMS(ViewMode)
     Q_PROPERTY(QBrush background READ background WRITE setBackground)
+    Q_PROPERTY(WindowOrder activationOrder READ activationOrder WRITE setActivationOrder)
+    Q_PROPERTY(ViewMode viewMode READ viewMode WRITE setViewMode)
+#ifndef QT_NO_TABWIDGET
+    Q_PROPERTY(QTabWidget::TabShape tabShape READ tabShape WRITE setTabShape)
+    Q_PROPERTY(QTabWidget::TabPosition tabPosition READ tabPosition WRITE setTabPosition)
+#endif
+    Q_ENUMS(WindowOrder)
 public:
     enum AreaOption {
         DontMaximizeSubWindowOnActivation = 0x1
@@ -67,7 +78,13 @@ public:
 
     enum WindowOrder {
         CreationOrder,
-        StackingOrder
+        StackingOrder,
+        ActivationHistoryOrder
+    };
+
+    enum ViewMode {
+        SubWindowView,
+        TabbedView
     };
 
     QMdiArea(QWidget *parent = 0);
@@ -86,8 +103,22 @@ public:
     QBrush background() const;
     void setBackground(const QBrush &background);
 
+    WindowOrder activationOrder() const;
+    void setActivationOrder(WindowOrder order);
+
     void setOption(AreaOption option, bool on = true);
     bool testOption(AreaOption opton) const;
+
+    void setViewMode(ViewMode mode);
+    ViewMode viewMode() const;
+
+#ifndef QT_NO_TABWIDGET
+    void setTabShape(QTabWidget::TabShape shape);
+    QTabWidget::TabShape tabShape() const;
+
+    void setTabPosition(QTabWidget::TabPosition position);
+    QTabWidget::TabPosition tabPosition() const;
+#endif
 
 Q_SIGNALS:
     void subWindowActivated(QMdiSubWindow *);
@@ -120,9 +151,12 @@ private:
     Q_DECLARE_PRIVATE(QMdiArea)
     Q_PRIVATE_SLOT(d_func(), void _q_deactivateAllWindows())
     Q_PRIVATE_SLOT(d_func(), void _q_processWindowStateChanged(Qt::WindowStates, Qt::WindowStates))
+    Q_PRIVATE_SLOT(d_func(), void _q_currentTabChanged(int index))
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMdiArea::AreaOptions)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

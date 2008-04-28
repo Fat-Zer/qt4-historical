@@ -67,6 +67,15 @@
 #include "qdockarealayout_p.h"
 #include "qtoolbararealayout_p.h"
 
+//#define Q_DEBUG_MAINWINDOW_LAYOUT
+
+#ifdef Q_DEBUG_MAINWINDOW_LAYOUT
+QT_BEGIN_NAMESPACE
+class QTextStream;
+Q_GUI_EXPORT void qt_dumpLayout(QTextStream &qout, QMainWindow *window);
+QT_END_NAMESPACE
+#endif // Q_DEBUG_MAINWINDOW_LAYOUT
+
 #ifdef Q_WS_MAC
 // Forward defs to make avoid including Carbon.h (faster compile you know ;).
 struct OpaqueHIObjectRef;
@@ -76,6 +85,8 @@ typedef const void * CFTypeRef;
 typedef const struct __CFString * CFStringRef;
 
 #endif
+
+QT_BEGIN_NAMESPACE
 
 class QToolBar;
 class QWidgetAnimator;
@@ -130,13 +141,15 @@ public:
     QList<int> gapIndex(QWidget *widget, const QPoint &pos) const;
     bool insertGap(QList<int> path, QLayoutItem *item);
     void remove(QList<int> path);
+    void remove(QLayoutItem *item);
     void clear();
     bool isValid() const;
 
     QLayoutItem *plug(QList<int> path);
-    QLayoutItem *unplug(QList<int> path);
+    QLayoutItem *unplug(QList<int> path, QMainWindowLayoutState *savedState = 0);
 
     void saveState(QDataStream &stream) const;
+    bool checkFormat(QDataStream &stream, bool pre43);
     bool restoreState(QDataStream &stream, const QMainWindowLayoutState &oldState);
 };
 
@@ -182,6 +195,7 @@ public:
     void getStyleOptionInfo(QStyleOptionToolBar *option, QToolBar *toolBar) const;
     void removeToolBar(QToolBar *toolbar);
     void toggleToolBarsVisible();
+    void moveToolBar(QToolBar *toolbar, int pos); 
 #endif
 
     // dock widgets
@@ -199,6 +213,7 @@ public:
     Qt::DockWidgetArea dockWidgetArea(QDockWidget *dockwidget) const;
     void raise(QDockWidget *widget);
     void setVerticalTabsEnabled(bool enabled);
+    bool restoreDockWidget(QDockWidget *dockwidget);
 
 #ifndef QT_NO_TABBAR
     QTabBar *getTabBar();
@@ -294,9 +309,11 @@ private:
     bool useHIToolBar;
 #endif
 };
+QT_END_NAMESPACE
 
 #endif // QT_NO_MAINWINDOW
 
+QT_BEGIN_NAMESPACE
 static inline int pick(Qt::Orientation o, const QPoint &pos)
 { return o == Qt::Horizontal ? pos.x() : pos.y(); }
 
@@ -323,5 +340,7 @@ static inline int &rperp(Qt::Orientation o, QPoint &pos)
 
 static inline int &rperp(Qt::Orientation o, QSize &size)
 { return o == Qt::Vertical ? size.rwidth() : size.rheight(); }
+
+QT_END_NAMESPACE
 
 #endif // QDYNAMICMAINWINDOWLAYOUT_P_H

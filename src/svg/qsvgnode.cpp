@@ -44,7 +44,11 @@
 #include "qsvgnode_p.h"
 #include "qsvgtinydocument_p.h"
 
+#ifndef QT_NO_SVG
+
 #include "qdebug.h"
+
+QT_BEGIN_NAMESPACE
 
 QSvgNode::QSvgNode(QSvgNode *parent)
     : m_parent(parent),
@@ -318,7 +322,11 @@ qreal QSvgNode::strokeWidth() const
 {
     QSvgStrokeStyle *stroke = static_cast<QSvgStrokeStyle*>(
         styleProperty(QSvgStyleProperty::STROKE));
-    if (!stroke)
+    if (!stroke || stroke->qpen().style() == Qt::NoPen)
         return 0;
     return stroke->qpen().widthF();
 }
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG

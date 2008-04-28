@@ -44,9 +44,11 @@
 #ifndef QSCRIPTOBJECTDATA_P_H
 #define QSCRIPTOBJECTDATA_P_H
 
-#include <QtCore/qshareddata.h>
+#include <QtCore/qglobal.h>
 
 #ifndef QT_NO_SCRIPT
+
+QT_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
@@ -59,17 +61,23 @@
 // We mean it.
 //
 
-class QScriptObjectData: public QSharedData
+class QScriptEngine;
+
+class QScriptObjectData
 {
 protected:
     inline QScriptObjectData() {}
 
 public:
+    virtual void finalize(QScriptEngine *) {}
     virtual ~QScriptObjectData() {}
 
 private:
     Q_DISABLE_COPY(QScriptObjectData)
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
+
 #endif

@@ -57,7 +57,7 @@
 #include <qvarlengtharray.h>
 #include <qvector.h>
 
-#include <string.h>
+QT_BEGIN_NAMESPACE
 
 // undefine this to prevent initial check of the ODBC driver
 #define ODBC_CHECK_DRIVER
@@ -90,7 +90,7 @@ class QODBCDriverPrivate
 {
 public:
     QODBCDriverPrivate()
-    : hEnv(0), hDbc(0), useSchema(false), disconnectCount(0), isMySqlServer(false)
+    : hEnv(0), hDbc(0), useSchema(false), disconnectCount(0), isMySqlServer(false), hasSQLFetchScroll(true), hasMultiResultSets(false)
     {
         sql_char_type = sql_varchar_type = sql_longvarchar_type = QVariant::ByteArray;
         unicode = false;
@@ -106,10 +106,14 @@ public:
     QVariant::Type sql_longvarchar_type;
     int disconnectCount;
     bool isMySqlServer;
+    bool hasSQLFetchScroll;
+    bool hasMultiResultSets;
 
     bool checkDriver() const;
     void checkUnicode();
     void checkMySqlServer();
+    void checkHasSQLFetchScroll();
+    void checkHasMultiResults();
     void checkSchemaUsage();
     bool setConnectionOptions(const QString& connOpts);
     void splitTableQualifier(const QString &qualifier, QString &catalog,
@@ -120,7 +124,7 @@ class QODBCPrivate
 {
 public:
     QODBCPrivate()
-    : hEnv(0), hDbc(0), hStmt(0), useSchema(false)
+    : hEnv(0), hDbc(0), hStmt(0), useSchema(false), hasSQLFetchScroll(true)
     {
         sql_char_type = sql_varchar_type = sql_longvarchar_type = QVariant::ByteArray;
         unicode = false;
@@ -143,6 +147,7 @@ public:
     QVector<QVariant> fieldCache;
     int fieldCacheIdx;
     int disconnectCount;
+    bool hasSQLFetchScroll;
 
     bool isStmtHandleValid(const QSqlDriver *driver);
     void updateStmtHandleState(const QSqlDriver *driver);
@@ -288,6 +293,7 @@ static QVariant::Type qDecodeODBCType(SQLSMALLINT sqltype, const T* p, bool isSi
         type = p->sql_char_type;
         break;
     case SQL_VARCHAR:
+    case SQL_GUID:
         type = p->sql_varchar_type;
         break;
     case SQL_LONGVARCHAR:
@@ -551,6 +557,15 @@ static QSqlField qMakeFieldInfo(const QODBCPrivate* p, int i )
     return f;
 }
 
+static int qGetODBCVersion(const QString &connOpts)
+{
+#ifndef Q_ODBC_VERSION_2
+    if (connOpts.contains(QLatin1String("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3"), Qt::CaseInsensitive))
+        return SQL_OV_ODBC3;
+#endif 
+    return SQL_OV_ODBC2;
+}
+
 bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
 {
     // Set any connection attributes
@@ -569,10 +584,10 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
         SQLUINTEGER v = 0;
 
         r = SQL_SUCCESS;
-        if (opt == QLatin1String("SQL_ATTR_ACCESS_MODE")) {
-            if (val == QLatin1String("SQL_MODE_READ_ONLY")) {
+        if (opt.toUpper() == QLatin1String("SQL_ATTR_ACCESS_MODE")) {
+            if (val.toUpper() == QLatin1String("SQL_MODE_READ_ONLY")) {
                 v = SQL_MODE_READ_ONLY;
-            } else if (val == QLatin1String("SQL_MODE_READ_WRITE")) {
+            } else if (val.toUpper() == QLatin1String("SQL_MODE_READ_WRITE")) {
                 v = SQL_MODE_READ_WRITE;
             } else {
                 qWarning("QODBCDriver::open: Unknown option value '%s'",
@@ -580,13 +595,13 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
                 continue;
             }
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER) v, 0);
-        } else if (opt == QLatin1String("SQL_ATTR_CONNECTION_TIMEOUT")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_CONNECTION_TIMEOUT")) {
             v = val.toUInt();
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_CONNECTION_TIMEOUT, (SQLPOINTER) v, 0);
-        } else if (opt == QLatin1String("SQL_ATTR_LOGIN_TIMEOUT")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_LOGIN_TIMEOUT")) {
             v = val.toUInt();
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER) v, 0);
-        } else if (opt == QLatin1String("SQL_ATTR_CURRENT_CATALOG")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_CURRENT_CATALOG")) {
             val.utf16(); // 0 terminate
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_CURRENT_CATALOG,
 #ifdef UNICODE
@@ -595,10 +610,10 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
                                     (SQLCHAR*) val.toLatin1().constData(),
 #endif
                                     SQL_NTS);
-        } else if (opt == QLatin1String("SQL_ATTR_METADATA_ID")) {
-            if (val == QLatin1String("SQL_TRUE")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_METADATA_ID")) {
+            if (val.toUpper() == QLatin1String("SQL_TRUE")) {
                 v = SQL_TRUE;
-            } else if (val == QLatin1String("SQL_FALSE")) {
+            } else if (val.toUpper() == QLatin1String("SQL_FALSE")) {
                 v = SQL_FALSE;
             } else {
                 qWarning("QODBCDriver::open: Unknown option value '%s'",
@@ -606,10 +621,10 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
                 continue;
             }
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_METADATA_ID, (SQLPOINTER) v, 0);
-        } else if (opt == QLatin1String("SQL_ATTR_PACKET_SIZE")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_PACKET_SIZE")) {
             v = val.toUInt();
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_PACKET_SIZE, (SQLPOINTER) v, 0);
-        } else if (opt == QLatin1String("SQL_ATTR_TRACEFILE")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_TRACEFILE")) {
             val.utf16(); // 0 terminate
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_TRACEFILE,
 #ifdef UNICODE
@@ -618,10 +633,10 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
                                     (SQLCHAR*) val.toLatin1().constData(),
 #endif
                                     SQL_NTS);
-        } else if (opt == QLatin1String("SQL_ATTR_TRACE")) {
-            if (val == QLatin1String("SQL_OPT_TRACE_OFF")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_TRACE")) {
+            if (val.toUpper() == QLatin1String("SQL_OPT_TRACE_OFF")) {
                 v = SQL_OPT_TRACE_OFF;
-            } else if (val == QLatin1String("SQL_OPT_TRACE_ON")) {
+            } else if (val.toUpper() == QLatin1String("SQL_OPT_TRACE_ON")) {
                 v = SQL_OPT_TRACE_ON;
             } else {
                 qWarning("QODBCDriver::open: Unknown option value '%s'",
@@ -630,14 +645,14 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
             }
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_TRACE, (SQLPOINTER) v, 0);
 #ifndef Q_ODBC_VERSION_2
-        } else if (opt == QLatin1String("SQL_ATTR_CONNECTION_POOLING")) {
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_CONNECTION_POOLING")) {
             if (val == QLatin1String("SQL_CP_OFF"))
                 v = SQL_CP_OFF;
-            else if (val == QLatin1String("SQL_CP_ONE_PER_DRIVER"))
+            else if (val.toUpper() == QLatin1String("SQL_CP_ONE_PER_DRIVER"))
                 v = SQL_CP_ONE_PER_DRIVER;
-            else if (val == QLatin1String("SQL_CP_ONE_PER_HENV"))
+            else if (val.toUpper() == QLatin1String("SQL_CP_ONE_PER_HENV"))
                 v = SQL_CP_ONE_PER_HENV;
-            else if (val == QLatin1String("SQL_CP_DEFAULT"))
+            else if (val.toUpper() == QLatin1String("SQL_CP_DEFAULT"))
                 v = SQL_CP_DEFAULT;
             else {
                 qWarning("QODBCDriver::open: Unknown option value '%s'",
@@ -645,12 +660,12 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
                 continue;
             }
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_CONNECTION_POOLING, (SQLPOINTER)v, 0);
-        } else if (opt == QLatin1String("SQL_ATTR_CP_MATCH")) {
-            if (val == QLatin1String("SQL_CP_STRICT_MATCH"))
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_CP_MATCH")) {
+            if (val.toUpper() == QLatin1String("SQL_CP_STRICT_MATCH"))
                 v = SQL_CP_STRICT_MATCH;
-            else if (val == QLatin1String("SQL_CP_RELAXED_MATCH"))
+            else if (val.toUpper() == QLatin1String("SQL_CP_RELAXED_MATCH"))
                 v = SQL_CP_RELAXED_MATCH;
-            else if (val == QLatin1String("SQL_CP_MATCH_DEFAULT"))
+            else if (val.toUpper() == QLatin1String("SQL_CP_MATCH_DEFAULT"))
                 v = SQL_CP_MATCH_DEFAULT;
             else {
                 qWarning("QODBCDriver::open: Unknown option value '%s'",
@@ -659,6 +674,9 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
             }
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_CP_MATCH, (SQLPOINTER)v, 0);
 #endif
+        } else if (opt.toUpper() == QLatin1String("SQL_ATTR_ODBC_VERSION")) {
+            // Already handled in QODBCDriver::open()
+            continue;
         } else {
                 qWarning("QODBCDriver::open: Unknown connection attribute '%s'",
                          opt.toLocal8Bit().constData());
@@ -719,6 +737,7 @@ QODBCResult::QODBCResult(const QODBCDriver * db, QODBCDriverPrivate* p)
     d->sql_varchar_type = p->sql_varchar_type;
     d->sql_longvarchar_type = p->sql_longvarchar_type;
     d->disconnectCount = p->disconnectCount;
+    d->hasSQLFetchScroll = p->hasSQLFetchScroll;
 }
 
 QODBCResult::~QODBCResult()
@@ -737,13 +756,13 @@ bool QODBCResult::reset (const QString& query)
 {
     setActive(false);
     setAt(QSql::BeforeFirstRow);
-    SQLRETURN r;
-
     d->rInf.clear();
     d->fieldCache.clear();
     d->fieldCacheIdx = 0;
+
     // Always reallocate the statement handle - the statement attributes
     // are not reset if SQLFreeStmt() is called which causes some problems.
+    SQLRETURN r;
     if (d->hStmt && d->isStmtHandleValid(driver())) {
         r = SQLFreeHandle(SQL_HANDLE_STMT, d->hStmt);
         if (r != SQL_SUCCESS) {
@@ -794,8 +813,9 @@ bool QODBCResult::reset (const QString& query)
                      "Unable to execute statement"), QSqlError::StatementError, d));
         return false;
     }
+
     SQLSMALLINT count;
-    r = SQLNumResultCols(d->hStmt, &count);
+    SQLNumResultCols(d->hStmt, &count);
     if (count) {
         setSelect(true);
         for (int i = 0; i < count; ++i) {
@@ -806,11 +826,15 @@ bool QODBCResult::reset (const QString& query)
         setSelect(false);
     }
     setActive(true);
+
     return true;
 }
 
 bool QODBCResult::fetch(int i)
 {
+    if (!driver()->isOpen())
+        return false;
+
     if (isForwardOnly() && i < at())
         return false;
     if (i == at())
@@ -832,7 +856,10 @@ bool QODBCResult::fetch(int i)
                             SQL_FETCH_ABSOLUTE,
                             actualIdx);
     }
-    if (r != SQL_SUCCESS){
+    if (r != SQL_SUCCESS) {
+        if (r != SQL_NO_DATA)
+            setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
+                "Unable to fetch"), QSqlError::ConnectionError, d));
         return false;
     }
     setAt(i);
@@ -843,9 +870,14 @@ bool QODBCResult::fetchNext()
 {
     SQLRETURN r;
     d->clearValues();
-    r = SQLFetchScroll(d->hStmt,
-                       SQL_FETCH_NEXT,
-                       0);
+
+    if (d->hasSQLFetchScroll)
+        r = SQLFetchScroll(d->hStmt,
+                           SQL_FETCH_NEXT,
+                           0);
+    else
+        r = SQLFetch(d->hStmt);
+
     if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO) {
         if (r != SQL_NO_DATA)
             setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
@@ -868,8 +900,12 @@ bool QODBCResult::fetchFirst()
     r = SQLFetchScroll(d->hStmt,
                        SQL_FETCH_FIRST,
                        0);
-    if (r != SQL_SUCCESS)
+    if (r != SQL_SUCCESS) { 
+        if (r != SQL_NO_DATA)
+            setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
+                "Unable to fetch first"), QSqlError::ConnectionError, d));
         return false;
+    }
     setAt(0);
     return true;
 }
@@ -883,8 +919,12 @@ bool QODBCResult::fetchPrevious()
     r = SQLFetchScroll(d->hStmt,
                        SQL_FETCH_PRIOR,
                        0);
-    if (r != SQL_SUCCESS)
+    if (r != SQL_SUCCESS) { 
+        if (r != SQL_NO_DATA)
+            setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
+                "Unable to fetch previous"), QSqlError::ConnectionError, d));
         return false;
+    }
     setAt(at() - 1);
     return true;
 }
@@ -910,7 +950,10 @@ bool QODBCResult::fetchLast()
     r = SQLFetchScroll(d->hStmt,
                        SQL_FETCH_LAST,
                        0);
-    if (r != SQL_SUCCESS) {
+    if (r != SQL_SUCCESS) { 
+        if (r != SQL_NO_DATA)
+            setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
+                "Unable to fetch last"), QSqlError::ConnectionError, d));
         return false;
     }
     SQLINTEGER currRow;
@@ -1110,26 +1153,28 @@ bool QODBCResult::prepare(const QString& query)
 
 bool QODBCResult::exec()
 {
-    SQLRETURN r;
-    QList<QByteArray> tmpStorage; // holds temporary buffers
-    QVarLengthArray<QSQLLEN, 32> indicators(boundValues().count());
-
-    memset(indicators.data(), 0, indicators.size() * sizeof(QSQLLEN));
     setActive(false);
     setAt(QSql::BeforeFirstRow);
     d->rInf.clear();
+    d->fieldCache.clear();
     d->fieldCacheIdx = 0;
 
     if (!d->hStmt) {
         qSqlWarning(QLatin1String("QODBCResult::exec: No statement handle available"), d);
         return false;
     }
+
     if (isSelect())
         SQLCloseCursor(d->hStmt);
+
+    QList<QByteArray> tmpStorage; // holds temporary buffers
+    QVarLengthArray<QSQLLEN, 32> indicators(boundValues().count());
+    memset(indicators.data(), 0, indicators.size() * sizeof(QSQLLEN));
 
     // bind parameters - only positional binding allowed
     QVector<QVariant>& values = boundValues();
     int i;
+    SQLRETURN r;
     for (i = 0; i < values.count(); ++i) {
         if (bindValueType(i) & QSql::Out)
             values[i].detach();
@@ -1220,7 +1265,7 @@ bool QODBCResult::exec()
                                       qParamType[(QFlag)(bindValueType(i)) & QSql::InOut],
                                       SQL_C_ULONG,
                                       SQL_NUMERIC,
-                                      0,
+                                      15,
                                       0,
                                       (void *) val.constData(),
                                       0,
@@ -1276,6 +1321,18 @@ bool QODBCResult::exec()
                                       (void *) val.toByteArray().constData(),
                                       val.toByteArray().size(),
                                       ind);
+                break;
+            case QVariant::Bool:
+                r = SQLBindParameter(d->hStmt,
+                                      i + 1,
+                                      qParamType[(QFlag)(bindValueType(i)) & QSql::InOut],
+                                      SQL_C_BIT,
+                                      SQL_BIT,
+                                      0,
+                                      0,
+                                      (void *) val.constData(),
+                                      0,
+                                      *ind == SQL_NULL_DATA ? ind : NULL);
                 break;
 #ifndef Q_ODBC_VERSION_2
             case QVariant::String:
@@ -1349,18 +1406,20 @@ bool QODBCResult::exec()
                      "Unable to execute statement"), QSqlError::StatementError, d));
         return false;
     }
+
     SQLSMALLINT count;
-    r = SQLNumResultCols(d->hStmt, &count);
+    SQLNumResultCols(d->hStmt, &count);
     if (count) {
         setSelect(true);
         for (int i = 0; i < count; ++i) {
             d->rInf.append(qMakeFieldInfo(d, i));
         }
-	d->fieldCache.resize(count);
+        d->fieldCache.resize(count);
     } else {
         setSelect(false);
     }
     setActive(true);
+
 
     //get out parameters
     if (!hasOutValues())
@@ -1421,6 +1480,58 @@ QVariant QODBCResult::handle() const
     return QVariant(qRegisterMetaType<SQLHANDLE>("SQLHANDLE"), &d->hStmt);
 }
 
+bool QODBCResult::nextResult()
+{
+    setActive(false);
+    setAt(QSql::BeforeFirstRow);
+    d->rInf.clear();
+    d->fieldCache.clear();
+    d->fieldCacheIdx = 0;
+    setSelect(false);
+
+    SQLRETURN r = SQLMoreResults(d->hStmt);
+    if (r != SQL_SUCCESS) {
+        if (r == SQL_SUCCESS_WITH_INFO) {
+            int nativeCode = -1;
+            QString message = qODBCWarn(d, &nativeCode);
+            qWarning("QODBCResult::nextResult(): %s", message.toLocal8Bit().constData());
+        } else {
+            if (r != SQL_NO_DATA)
+                setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
+                    "Unable to fetch last"), QSqlError::ConnectionError, d));
+            return false;
+        }
+    }
+
+    SQLSMALLINT count;
+    SQLNumResultCols(d->hStmt, &count);
+    if (count) {
+        setSelect(true);
+        for (int i = 0; i < count; ++i) {
+            d->rInf.append(qMakeFieldInfo(d, i));
+        }
+        d->fieldCache.resize(count);
+    } else {
+        setSelect(false);
+    }
+    setActive(true);
+
+    return true;
+}
+
+void QODBCResult::virtual_hook(int id, void *data)
+{
+    if (id == DetachFromResultSet) {
+        if (d->hStmt)
+            SQLCloseCursor(d->hStmt);
+        return;
+    } else if (id == NextResult) {
+        *static_cast<bool*>(data) = nextResult();
+        return;
+    }
+    QSqlResult::virtual_hook(id, data);
+}
+
 ////////////////////////////////////////
 
 
@@ -1476,6 +1587,7 @@ bool QODBCDriver::hasFeature(DriverFeature f) const
     case PreparedQueries:
     case BLOB:
     case PositionalPlaceholders:
+    case FinishQuery:
         return true;
     case QuerySize:
     case NamedPlaceholders:
@@ -1483,7 +1595,10 @@ bool QODBCDriver::hasFeature(DriverFeature f) const
     case BatchOperations:
     case SimpleLocking:
     case LowPrecisionNumbers:
+    case EventNotifications:
         return false;
+    case MultipleResultSets:
+        return d->hasMultiResultSets;
     }
     return false;
 }
@@ -1508,7 +1623,7 @@ bool QODBCDriver::open(const QString & db,
     }
     r = SQLSetEnvAttr(d->hEnv,
                        SQL_ATTR_ODBC_VERSION,
-                       (SQLPOINTER)SQL_OV_ODBC2,
+                       (SQLPOINTER)qGetODBCVersion(connOpts),
                        SQL_IS_UINTEGER);
     r = SQLAllocHandle(SQL_HANDLE_DBC,
                         d->hEnv,
@@ -1525,13 +1640,19 @@ bool QODBCDriver::open(const QString & db,
     // Create the connection string
     QString connQStr;
     // support the "DRIVER={SQL SERVER};SERVER=blah" syntax
-    if (db.contains(QLatin1String(".dsn")))
+    if (db.contains(QLatin1String(".dsn"), Qt::CaseInsensitive))
         connQStr = QLatin1String("FILEDSN=") + db;
-    else if (db.contains(QLatin1String("DRIVER")) || db.contains(QLatin1String("SERVER")))
+    else if (db.contains(QLatin1String("DRIVER="), Qt::CaseInsensitive) 
+            || db.contains(QLatin1String("SERVER="), Qt::CaseInsensitive))
         connQStr = db;
     else
         connQStr = QLatin1String("DSN=") + db;
-    connQStr += QLatin1String(";UID=") + user + QLatin1String(";PWD=") + password;
+
+    if (!user.isEmpty())
+        connQStr += QLatin1String(";UID=") + user;
+    if (!password.isEmpty())
+        connQStr += QLatin1String(";PWD=") + password;
+    
     SQLSMALLINT cb;
     SQLTCHAR connOut[1024];
     r = SQLDriverConnect(d->hDbc,
@@ -1562,7 +1683,8 @@ bool QODBCDriver::open(const QString & db,
     d->checkUnicode();
     d->checkSchemaUsage();
     d->checkMySqlServer();
-
+    d->checkHasSQLFetchScroll();
+    d->checkHasMultiResults();
     setOpen(true);
     setOpenError(false);
     return true;
@@ -1609,6 +1731,10 @@ void QODBCDriver::cleanup()
 // as two byte unicode characters
 void QODBCDriverPrivate::checkUnicode()
 {
+#if defined(Q_ODBC_VERSION_2)
+    unicode = false;
+    return;
+#endif
 #if defined(Q_WS_WIN)
     QT_WA(
     {},
@@ -1655,7 +1781,6 @@ void QODBCDriverPrivate::checkUnicode()
 bool QODBCDriverPrivate::checkDriver() const
 {
 #ifdef ODBC_CHECK_DRIVER
-    // do not query for SQL_API_SQLFETCHSCROLL because it can't be used at this time
     static const SQLUSMALLINT reqFunc[] = {
                 SQL_API_SQLDESCRIBECOL, SQL_API_SQLGETDATA, SQL_API_SQLCOLUMNS,
                 SQL_API_SQLGETSTMTATTR, SQL_API_SQLGETDIAGREC, SQL_API_SQLEXECDIRECT,
@@ -1669,7 +1794,6 @@ bool QODBCDriverPrivate::checkDriver() const
 
     SQLRETURN r;
     SQLUSMALLINT sup;
-
 
     int i;
     // check the required functions
@@ -1737,6 +1861,33 @@ void QODBCDriverPrivate::checkMySqlServer()
         isMySqlServer = QString(reinterpret_cast<const QChar*>(serverString), t/sizeof(QChar)).contains(QLatin1String("mysql"), Qt::CaseInsensitive);
 #else
         isMySqlServer = QString::fromLocal8Bit(serverString, t).contains(QLatin1String("mysql"), Qt::CaseInsensitive);
+#endif
+}
+
+void QODBCDriverPrivate::checkHasSQLFetchScroll()
+{
+    SQLUSMALLINT sup;
+    SQLRETURN r = SQLGetFunctions(hDbc, SQL_API_SQLFETCHSCROLL, &sup);
+    if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO || sup != SQL_TRUE) {
+        hasSQLFetchScroll = false;
+        qWarning("QODBCDriver::checkHasSQLFetchScroll: Warning - Driver doesn't support scrollable result sets, use forward only mode for queries");
+    }
+}
+
+void QODBCDriverPrivate::checkHasMultiResults()
+{
+    char driverResponse[4];
+    SQLSMALLINT length;
+    SQLRETURN r = SQLGetInfo(hDbc,
+                             SQL_MULT_RESULT_SETS,
+                             driverResponse,
+                             sizeof(driverResponse),
+                             &length);
+    if (r == SQL_SUCCESS || r == SQL_SUCCESS_WITH_INFO)
+#ifdef UNICODE
+        hasMultiResultSets = QString(reinterpret_cast<const QChar*>(driverResponse), length/sizeof(QChar)).startsWith(QLatin1Char('Y'));
+#else
+        hasMultiResultSets = QString::fromLocal8Bit(driverResponse, length).startsWith(QLatin1Char('Y'));
 #endif
 }
 
@@ -1857,15 +2008,24 @@ QStringList QODBCDriver::tables(QSql::TableType type) const
 
     if (r != SQL_SUCCESS)
         qSqlWarning(QLatin1String("QODBCDriver::tables Unable to execute table list"), d);
-    r = SQLFetchScroll(hStmt,
-                        SQL_FETCH_NEXT,
-                        0);
+
+    if (d->hasSQLFetchScroll)
+        r = SQLFetchScroll(hStmt,
+                           SQL_FETCH_NEXT,
+                           0);
+    else
+        r = SQLFetch(hStmt);
+
     while (r == SQL_SUCCESS) {
         QString fieldVal = qGetStringData(hStmt, 2, -1, d->unicode);
         tl.append(fieldVal);
-        r = SQLFetchScroll(hStmt,
-                            SQL_FETCH_NEXT,
-                            0);
+
+        if (d->hasSQLFetchScroll)
+            r = SQLFetchScroll(hStmt,
+                               SQL_FETCH_NEXT,
+                               0);
+        else
+            r = SQLFetch(hStmt);
     }
 
     r = SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
@@ -1949,9 +2109,14 @@ QSqlIndex QODBCDriver::primaryIndex(const QString& tablename) const
                 usingSpecialColumns = true;
             }
     }
-    r = SQLFetchScroll(hStmt,
-                        SQL_FETCH_NEXT,
-                        0);
+
+    if (d->hasSQLFetchScroll)
+        r = SQLFetchScroll(hStmt,
+                           SQL_FETCH_NEXT,
+                           0);
+    else
+        r = SQLFetch(hStmt);
+
     int fakeId = 0;
     QString cName, idxName;
     // Store all fields in a StringList because some drivers can't detail fields in this FETCH loop
@@ -1965,9 +2130,14 @@ QSqlIndex QODBCDriver::primaryIndex(const QString& tablename) const
         }
         index.append(rec.field(cName));
         index.setName(idxName);
-        r = SQLFetchScroll(hStmt,
-                            SQL_FETCH_NEXT,
-                            0);
+
+        if (d->hasSQLFetchScroll)
+            r = SQLFetchScroll(hStmt,
+                               SQL_FETCH_NEXT,
+                               0);
+        else
+            r = SQLFetch(hStmt);
+
     }
     r = SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     if (r!= SQL_SUCCESS)
@@ -2018,17 +2188,25 @@ QSqlRecord QODBCDriver::record(const QString& tablename) const
                      0);
     if (r != SQL_SUCCESS)
         qSqlWarning(QLatin1String("QODBCDriver::record: Unable to execute column list"), d);
-    r = SQLFetchScroll(hStmt,
-                        SQL_FETCH_NEXT,
-                        0);
+
+    if (d->hasSQLFetchScroll)
+        r = SQLFetchScroll(hStmt,
+                           SQL_FETCH_NEXT,
+                           0);
+    else
+        r = SQLFetch(hStmt);
+
     // Store all fields in a StringList because some drivers can't detail fields in this FETCH loop
     while (r == SQL_SUCCESS) {
 
         fil.append(qMakeFieldInfo(hStmt, d));
 
-        r = SQLFetchScroll(hStmt,
-                            SQL_FETCH_NEXT,
-                            0);
+        if (d->hasSQLFetchScroll)
+            r = SQLFetchScroll(hStmt,
+                               SQL_FETCH_NEXT,
+                               0);
+        else
+            r = SQLFetch(hStmt);
     }
 
     r = SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
@@ -2083,12 +2261,16 @@ QVariant QODBCDriver::handle() const
 
 QString QODBCDriver::escapeIdentifier(const QString &identifier, IdentifierType) const
 {
-    if (d->isMySqlServer)
-        return identifier;
-
     QString res = identifier;
-    res.replace(QLatin1Char('"'), QLatin1String("\"\""));
-    res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
-    res.replace(QLatin1Char('.'), QLatin1String("\".\""));
+    if (d->isMySqlServer) {
+        res.prepend(QLatin1Char('`')).append(QLatin1Char('`'));
+        res.replace(QLatin1Char('.'), QLatin1String("`.`"));
+    } else {
+        res.replace(QLatin1Char('"'), QLatin1String("\"\""));
+        res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
+        res.replace(QLatin1Char('.'), QLatin1String("\".\""));
+    }
     return res;
 }
+
+QT_END_NAMESPACE

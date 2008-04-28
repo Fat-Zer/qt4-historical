@@ -58,6 +58,8 @@
 #include "QtCore/qabstractfileengine.h"
 #include "QtCore/qfile.h"
 
+QT_BEGIN_NAMESPACE
+
 class QAbstractFileEnginePrivate
 {
 public:
@@ -73,5 +75,7 @@ public:
     QAbstractFileEngine *q_ptr;
     Q_DECLARE_PUBLIC(QAbstractFileEngine)
 };
+
+QT_END_NAMESPACE
 
 #endif // QABSTRACTFILEENGINE_P_H

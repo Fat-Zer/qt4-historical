@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_PROGRESSBAR
@@ -140,6 +142,8 @@ inline bool Q3ProgressBar::percentageVisible() const
 }
 
 #endif // QT_NO_PROGRESSBAR
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

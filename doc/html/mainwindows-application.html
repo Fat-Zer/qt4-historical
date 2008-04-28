@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/examples/application.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/application.qdoc -->
 <head>
-  <title>Qt 4.3: Application Example</title>
+  <title>Qt 4.4: Application Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -12,12 +12,14 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Application Example<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Application Example<br /><span class="subtitle"></span>
+</h1>
 <p>Files:</p>
 <ul>
 <li><a href="mainwindows-application-mainwindow-cpp.html">mainwindows/application/mainwindow.cpp</a></li>
 <li><a href="mainwindows-application-mainwindow-h.html">mainwindows/application/mainwindow.h</a></li>
 <li><a href="mainwindows-application-main-cpp.html">mainwindows/application/main.cpp</a></li>
+<li><a href="mainwindows-application-application-pro.html">mainwindows/application/application.pro</a></li>
 <li><a href="mainwindows-application-application-qrc.html">mainwindows/application/application.qrc</a></li>
 </ul>
 <p>The Application example shows how to implement a standard GUI application with menus, toolbars, and a status bar. The example itself is a simple text editor program built around <a href="qtextedit.html">QTextEdit</a>.</p>
@@ -215,9 +217,9 @@
  }</pre>
 <p>Creating actions isn't sufficient to make them available to the user; we must also add them to the menu system. This is what <tt>createMenus()</tt> does. We create a <b>File</b>, an <b>Edit</b>, and a <b>Help</b> menu. <a href="qmainwindow.html#menuBar">QMainWindow::menuBar</a>() lets us access the window's menu bar widget. We don't have to worry about creating the menu bar ourselves; the first time we call this function, the <a href="qmenubar.html">QMenuBar</a> is created.</p>
 <p>Just before we create the <b>Help</b> menu, we call <a href="qmenubar.html#addSeparator">QMenuBar::addSeparator</a>(). This has no effect for most widget styles (e.g&#x2e;, Windows and Mac OS X styles), but for Motif-based styles this makes sure that <b>Help</b> is pushed to the right side of the menu bar. Try running the application with various styles and see the results:</p>
-<pre> application -style=windows
- application -style=motif
- application -style=cde</pre>
+<pre>         application -style=windows
+         application -style=motif
+         application -style=cde</pre>
 <p>Let's now review the toolbars:</p>
 <pre> void MainWindow::createToolBars()
  {
@@ -376,6 +378,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

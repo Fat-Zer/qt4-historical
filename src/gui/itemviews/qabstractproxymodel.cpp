@@ -48,6 +48,8 @@
 #include "qitemselectionmodel.h"
 #include <private/qabstractproxymodel_p.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \since 4.1
     \class QAbstractProxyModel
@@ -68,6 +70,11 @@
     \sa QSortFilterProxyModel, QAbstractItemModel, {Model/View Programming}
 */
 
+//detects the deletion of the source model
+void QAbstractProxyModelPrivate::_q_sourceModelDestroyed()
+{
+    model = QAbstractItemModelPrivate::staticEmptyModel();
+}
 
 /*!
     Constructs a proxy model with the given \a parent.
@@ -103,10 +110,15 @@ QAbstractProxyModel::~QAbstractProxyModel()
 void QAbstractProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
     Q_D(QAbstractProxyModel);
-    if (sourceModel)
+    if (d->model)
+        disconnect(d->model, SIGNAL(destroyed()), this, SLOT(_q_sourceModelDestroyed()));
+
+    if (sourceModel) {
         d->model = sourceModel;
-    else
+        connect(d->model, SIGNAL(destroyed()), this, SLOT(_q_sourceModelDestroyed()));
+    } else {
         d->model = QAbstractItemModelPrivate::staticEmptyModel();
+    }
 }
 
 /*!
@@ -200,7 +212,15 @@ QVariant QAbstractProxyModel::data(const QModelIndex &proxyIndex, int role) cons
 QVariant QAbstractProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     Q_D(const QAbstractProxyModel);
-    return d->model->headerData(section, orientation, role);
+    int sourceSection;
+    if (orientation == Qt::Horizontal) {
+        const QModelIndex proxyIndex = index(0, section);
+        sourceSection = mapToSource(proxyIndex).column();
+    } else {
+        const QModelIndex proxyIndex = index(section, 0);
+        sourceSection = mapToSource(proxyIndex).row();
+    }
+    return d->model->headerData(sourceSection, orientation, role);
 }
 
 /*!
@@ -220,5 +240,35 @@ Qt::ItemFlags QAbstractProxyModel::flags(const QModelIndex &index) const
     Q_D(const QAbstractProxyModel);
     return d->model->flags(mapToSource(index));
 }
+
+/*!
+    \reimp
+ */
+bool QAbstractProxyModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    Q_D(QAbstractProxyModel);
+    return d->model->setData(mapToSource(index), value, role);
+}
+
+/*!
+    \reimp
+ */
+bool QAbstractProxyModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+{
+    Q_D(QAbstractProxyModel);
+    int sourceSection;
+    if (orientation == Qt::Horizontal) {
+        const QModelIndex proxyIndex = index(0, section);
+        sourceSection = mapToSource(proxyIndex).column();
+    } else {
+        const QModelIndex proxyIndex = index(section, 0);
+        sourceSection = mapToSource(proxyIndex).row();
+    }
+    return d->model->setHeaderData(sourceSection, orientation, value, role);
+}
+
+QT_END_NAMESPACE
+
+#include "moc_qabstractproxymodel.cpp"
 
 #endif // QT_NO_PROXYMODEL

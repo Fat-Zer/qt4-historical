@@ -51,6 +51,8 @@
 #endif
 #include "qtiffhandler.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTiffPlugin : public QImageIOPlugin
 {
 public:
@@ -86,10 +88,12 @@ QImageIOHandler* QTiffPlugin::create(QIODevice *device, const QByteArray &format
 
 QStringList QTiffPlugin::keys() const
 {
-    return QStringList() << "tiff" << "tif";
+    return QStringList() << QLatin1String("tiff") << QLatin1String("tif");
 }
 
 Q_EXPORT_STATIC_PLUGIN(QTiffPlugin)
 Q_EXPORT_PLUGIN2(qtiff, QTiffPlugin)
+
+QT_END_NAMESPACE
 
 #endif /* QT_NO_IMAGEFORMATPLUGIN */

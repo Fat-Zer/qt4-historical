@@ -46,14 +46,17 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QToolBar;
 class QMenu;
 class QUndoStack;
 class QUndoView;
+QT_END_NAMESPACE
 class DiagramScene;
 class DiagramItem;
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -94,5 +97,6 @@ private:
     QUndoStack *undoStack;
     QUndoView *undoView;
 };
+//! [0]
 
 #endif

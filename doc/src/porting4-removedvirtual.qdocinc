@@ -546,7 +546,7 @@
 \row \o QWaitCondition::~QWaitCondition() \o Value type.
 \row \o bool QWhatsThis::clicked(const QString &) \o Port to the new QWhatsThis API.
 \row \o QString QWhatsThis::text(const QPoint &) \o Port to the new QWhatsThis API.
-\row \o QWhatsThis::~QWhatsThis() \o Port to the new QSpinBox API.
+\row \o QWhatsThis::~QWhatsThis() \o Port to the new QWhatsThis API.
 \row \o void QWidget::adjustSize() \o Reimplement QWidget::sizeHint() instead.
 \row \o bool QWidget::close(bool) \o Reimplement QWidget::closeEvent().
 \row \o void QWidget::create(WId, bool, bool) \o Not supported in Qt 4.

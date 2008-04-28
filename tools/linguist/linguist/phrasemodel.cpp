@@ -42,10 +42,8 @@
 ****************************************************************************/
 
 #include "phrasemodel.h"
-#include <QtAlgorithms>
 
-static Qt::SortOrder sSortOrder = Qt::AscendingOrder;
-static int sSortColumn = 1;
+QT_BEGIN_NAMESPACE
 
 void PhraseModel::removePhrases()
 {
@@ -56,24 +54,24 @@ void PhraseModel::removePhrases()
     }
 }
 
-Phrase PhraseModel::phrase(const QModelIndex &index) const
+Phrase *PhraseModel::phrase(const QModelIndex &index) const
 {
     return plist.at(index.row());
 }
 
-void PhraseModel::setPhrase(const QModelIndex &indx, Phrase ph)
+void PhraseModel::setPhrase(const QModelIndex &indx, Phrase *ph)
 {
     int r = indx.row();
 
     plist[r] = ph;
 
     // update item in view
-    QModelIndex si = QAbstractTableModel::index(r, 0);
-    QModelIndex ei = QAbstractTableModel::index(r, 2);
+    const QModelIndex &si = index(r, 0);
+    const QModelIndex &ei = index(r, 2);
     emit dataChanged(si, ei);
 }
 
-QModelIndex PhraseModel::addPhrase(Phrase p)
+QModelIndex PhraseModel::addPhrase(Phrase *p)
 {
     int r = plist.count();
 
@@ -81,7 +79,7 @@ QModelIndex PhraseModel::addPhrase(Phrase p)
 
     // update phrases as we add them
     beginInsertRows(QModelIndex(), r, r);
-    QModelIndex i = QAbstractTableModel::index(r, 0);
+    QModelIndex i = index(r, 0);
     endInsertRows();
     return i;
 }
@@ -94,32 +92,13 @@ void PhraseModel::removePhrase(const QModelIndex &index)
     endRemoveRows();
 }
 
-bool PhraseModel::sortParameters(Qt::SortOrder &so, int &sc) const
-{
-    if (sortColumn == -1)
-        return false;
-
-    so = sortOrder;
-    sc = sortColumn;
-
-    return true;
-}
-
-void PhraseModel::resort()
-{
-    if (sortColumn == -1)
-        return;
-
-    sort(sortColumn, sortOrder);
-}
-
-QModelIndex PhraseModel::index(const Phrase phr) const
+QModelIndex PhraseModel::index(Phrase * const phr) const
 {
     int row;
     if ((row = plist.indexOf(phr)) == -1)
         return QModelIndex();
 
-    return QAbstractTableModel::index(row,0);
+    return index(row, 0);
 }
 
 int PhraseModel::rowCount(const QModelIndex &) const
@@ -148,6 +127,46 @@ QVariant PhraseModel::headerData(int section, Qt::Orientation orientation, int r
     return QVariant();
 }
 
+Qt::ItemFlags PhraseModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return 0;
+    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    // Edit is allowed for source & translation if item is from phrasebook
+    if (plist.at(index.row())->phraseBook()
+        && (index.column() != 2))
+        flags |= Qt::ItemIsEditable;
+    return flags;
+}
+
+bool PhraseModel::setData(const QModelIndex & index, const QVariant & value, int role)
+{
+    int row = index.row();
+    int column = index.column();
+
+    if (!index.isValid() || row >= plist.count() || role != Qt::EditRole)
+        return false;
+
+    Phrase *phrase = plist.at(row);
+
+    switch (column) {
+    case 0:
+        phrase->setSource(value.toString());
+        break;
+    case 1:
+        phrase->setTarget(value.toString());
+        break;
+    case 2:
+        phrase->setDefinition(value.toString());
+        break;
+    default:
+        return false;
+    }
+
+    emit dataChanged(index, index);
+    return true;
+}
+
 QVariant PhraseModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
@@ -156,62 +175,28 @@ QVariant PhraseModel::data(const QModelIndex &index, int role) const
     if (row >= plist.count() || !index.isValid())
         return QVariant();
 
-    Phrase phrase = plist.at(row);
+    Phrase *phrase = plist.at(row);
 
-    if (role == Qt::DisplayRole) {
-        switch(column) {
+    if (role == Qt::DisplayRole || (role == Qt::ToolTipRole && column != 2)) {
+        switch (column) {
         case 0: // source phrase
-            return phrase.source().simplified();
+            return phrase->source().simplified();
         case 1: // translation
-            return phrase.target().simplified();
+            return phrase->target().simplified();
         case 2: // definition
-            return phrase.definition();
+            return phrase->definition();
+        }
+    }
+    else if (role == Qt::EditRole && column != 2) {
+        switch (column) {
+        case 0: // source phrase
+            return phrase->source();
+        case 1: // translation
+            return phrase->target();
         }
     }
 
     return QVariant();
 }
 
-void PhraseModel::sort(int column, Qt::SortOrder order)
-{
-    if (plist.count() <= 0)
-        return;
-
-    sortOrder = sSortOrder = order;
-    sortColumn = sSortColumn = column;
-
-    qSort(plist.begin(), plist.end(), PhraseModel::compare);
-    emit dataChanged(QAbstractTableModel::index(0,0),
-        QAbstractTableModel::index(plist.count()-1, 2));
-}
-
-bool PhraseModel::compare(const Phrase &left, const Phrase &right)
-{
-    int res;
-    switch (sSortColumn) {
-    case 0:
-        res = QString::localeAwareCompare(left.source().remove(QLatin1Char('&')),
-            right.source().remove(QLatin1Char('&')));
-        if ((sSortOrder == Qt::AscendingOrder) ? (res < 0) : !(res < 0))
-            return true;
-        break;
-    case 1:
-        res = QString::localeAwareCompare(left.target().remove(QLatin1Char('&')),
-            right.target().remove(QLatin1Char('&')));
-        if ((sSortOrder == Qt::AscendingOrder) ? (res < 0) : !(res < 0))
-            return true;
-        break;
-    case 2:
-        // handle the shortcuts when sorting
-        if ((left.shortcut() != -1) && (right.shortcut() == -1))
-            return (sSortOrder == Qt::AscendingOrder);
-        else if ((left.shortcut() == -1) && (right.shortcut() != -1))
-            return (sSortOrder != Qt::AscendingOrder);
-        res = QString::localeAwareCompare(left.definition(), right.definition());
-        if ((sSortOrder == Qt::AscendingOrder) ? (res < 0) : !(res < 0))
-            return true;
-        break;
-    }
-
-    return false;
-}
+QT_END_NAMESPACE

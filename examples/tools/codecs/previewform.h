@@ -47,11 +47,13 @@
 #include <QDialog>
 #include <QList>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QDialogButtonBox;
 class QLabel;
 class QTextCodec;
 class QTextEdit;
+QT_END_NAMESPACE
 
 class PreviewForm : public QDialog
 {

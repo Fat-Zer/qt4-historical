@@ -53,6 +53,8 @@
 #include "qscriptcontext.h"
 #include "qscriptvalue.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
   \since 4.3
   \class QScriptable
@@ -91,18 +93,7 @@
   The following is what subclassing QScriptable typically looks
   like:
 
-  \code
-  class MyScriptableObject: public QObject,
-        protected QScriptable
-  {
-    Q_OBJECT
-  ...
-
-  public Q_SLOTS:
-    void doSomething();
-    double doSomethingElse();
-  }
-  \endcode
+  \snippet doc/src/snippets/code/src.script.qscriptable.cpp 0
 
   The only difference from regular QObject subclassing is that you
   also inherit from QScriptable.
@@ -110,17 +101,7 @@
   In the implementation of your slots, you can then use the functions
   inherited from QScriptable:
 
-  \code
-    void MyScriptableObject::doSomething()
-    {
-      context()->throwError("Threw an error from a slot");
-    }
-
-    double MyScriptableObject::doSomethingElse()
-    {
-      return qscriptvalue_cast<double>(thisObject());
-    }
-  \endcode
+  \snippet doc/src/snippets/code/src.script.qscriptable.cpp 1
 
   \sa {Default Prototypes Example}, QScriptEngine::newFunction()
 */
@@ -212,3 +193,5 @@ QScriptValue QScriptable::argument(int index) const
 
 #endif // QT_NO_SCRIPT
 #endif // QT_NO_QOBJECT
+
+QT_END_NAMESPACE

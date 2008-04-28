@@ -52,6 +52,8 @@
 #include <qhash.h>
 #include <qfileinfo.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifdef Q_OS_WIN32
 #define QT_POPEN _popen
 #else
@@ -180,7 +182,10 @@ protected:
     virtual bool doDepends() const { return Option::mkfile::do_deps; }
 
     void filterIncludedFiles(const QString &);
-    virtual void processSources() { filterIncludedFiles("SOURCES"); filterIncludedFiles("GENERATED_SOURCES"); }
+    virtual void processSources() {
+	filterIncludedFiles("SOURCES");
+	filterIncludedFiles("GENERATED_SOURCES");
+    }
 
     //for cross-platform dependent directories
     virtual void usePlatformDir();
@@ -256,5 +261,7 @@ inline bool MakefileGenerator::findLibraries()
 
 inline MakefileGenerator::~MakefileGenerator()
 { }
+
+QT_END_NAMESPACE
 
 #endif // MAKEFILE_H

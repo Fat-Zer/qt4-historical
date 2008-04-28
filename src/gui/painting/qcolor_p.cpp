@@ -42,6 +42,10 @@
 ****************************************************************************/
 
 #include "qglobal.h"
+#if defined(Q_OS_WINCE)
+#include "qguifunctions_wince.h"
+#endif
+
 #if defined(Q_CC_BOR)
 // needed for qsort() because of a std namespace problem on Borland
 #include "qplatformdefs.h"
@@ -49,6 +53,8 @@
 
 #include "qrgb.h"
 #include "qstringlist.h"
+
+QT_BEGIN_NAMESPACE
 
 static inline int h2i(char hex)
 {
@@ -286,13 +292,15 @@ static const int rgbTblSize = sizeof(rgbTbl) / sizeof(RGBData);
 
 #undef rgb
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <stdlib.h>
+QT_END_INCLUDE_NAMESPACE
 
 #if defined(Q_C_CALLBACKS)
 extern "C" {
 #endif
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 static int __cdecl rgb_cmp(const void *d1, const void *d2)
 #else
 static int rgb_cmp(const void *d1, const void *d2)
@@ -379,3 +387,5 @@ QStringList qt_get_colornames()
     return QStringList();
 }
 #endif // QT_NO_COLORNAMES
+
+QT_END_NAMESPACE

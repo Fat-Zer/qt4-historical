@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example desktop/screenshot
     \title Screenshot Example
@@ -24,9 +67,7 @@
 
     \section1 Screenshot Class Definition
 
-    \quotefromfile desktop/screenshot/screenshot.h
-    \skipto class Screenshot
-    \printuntil /^\};/
+    \snippet examples/desktop/screenshot/screenshot.h 0
 
     The \c Screenshot class inherits QWidget and is the application's
     main widget. It displays the application options and a preview of
@@ -59,9 +100,7 @@
 
     \section1 Screenshot Class Implementation
 
-    \quotefromfile desktop/screenshot/screenshot.cpp
-    \skipto Screenshot
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 0
 
     In the constructor we first create the QLabel displaying the
     screenshot preview.
@@ -80,8 +119,7 @@
     delay and the window title, before we resize the widget to a
     suitable size.
 
-    \skipto resizeEvent
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 1
 
     The \c resizeEvent() function is reimplemented to receive the
     resize events dispatched to the widget. The purpose is to scale
@@ -99,8 +137,7 @@
     only is repainted (using the private \c updateScreenshotLabel()
     function) when it actually changes its size.
 
-    \skipto newScreenshot
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 2
 
     The private \c newScreenshot() slot is called when the user
     requests a new screenshot; but the slot only prepares a new
@@ -118,8 +155,7 @@
     specified by the \gui {Screenshot Delay} option. It is \c
     shootScreen() that actually performs the screenshot.
 
-    \skipto saveScreenshot
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 3
 
     The \c saveScreenshot() slot is called when the user push the \gui
     Save button, and it presents a file dialog using the QFileDialog
@@ -138,8 +174,7 @@
     name is valid, we use the QPixmap::save() function to save the
     screenshot's original pixmap in that file.
 
-    \skipto shootScreen
-    \printuntil beep
+    \snippet examples/desktop/screenshot/screenshot.cpp 4
 
     The \c shootScreen() slot is called to take the screenshot. If the
     user has chosen to delay the screenshot, we make the application
@@ -151,8 +186,7 @@
     events from the window system and other sources are processed and
     dispatched.
 
-    \skipto grabWindow
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 5
 
     We take the screenshot using the static QPixmap::grabWindow()
     function. The function grabs the contents of the window passed as
@@ -170,8 +204,7 @@
     Screenshot} button, and finally we make the \c Screenshot widget
     visible if it was hidden during the screenshot.
 
-    \skipto updateCheckBox
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 6
 
     The \gui {Hide This Window} option is enabled or disabled
     depending on the delay of the screenshot. If there is no delay,
@@ -181,8 +214,7 @@
     The \c updateCheckBox() slot is called whenever the user changes
     the delay using the \gui {Screenshot Delay} option.
 
-    \skipto createOptionsGroupBox
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 7
 
     The private \c createOptionsGroupBox() function is called from the
     constructor.
@@ -200,23 +232,20 @@
     widgets are automatically reparented to the widget the layout is
     installed on.
 
-    \skipto createButtonsLayout
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 8
 
     The private \c createButtonsLayout() function is called from the
     constructor. We create the application's buttons using the private
     \c createButton() function, and add them to a QHBoxLayout.
 
-    \skipto createButton
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 9
 
     The private \c createButton() function is called from the \c
     createButtonsLayout() function. It simply creates a QPushButton
     with the provided text, connects it to the provided receiver and
     slot, and returns a pointer to the button.
 
-    \skipto updateScreenshotLabel
-    \printuntil /^\}/
+    \snippet examples/desktop/screenshot/screenshot.cpp 10
 
     The private \c updateScreenshotLabel() function is called whenever
     the screenshot changes, or when a resize event changes the size of

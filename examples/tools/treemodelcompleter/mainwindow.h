@@ -47,15 +47,18 @@
 #include <QMainWindow>
 #include <QModelIndex>
 
+class TreeModelCompleter;
+QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QComboBox;
-class TreeModelCompleter;
 class QLabel;
 class QLineEdit;
 class QProgressBar;
 class QCheckBox;
 class QTreeView;
+QT_END_NAMESPACE
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -69,7 +72,9 @@ private slots:
     void changeMode(int);
     void highlight(const QModelIndex&);
     void updateContentsLabel(const QString&);
+//! [0]
 
+//! [1]
 private:
     void createMenu();
     QAbstractItemModel *modelFromFile(const QString& fileName);
@@ -81,5 +86,6 @@ private:
     TreeModelCompleter *completer;
     QLineEdit *lineEdit;
 };
+//! [1]
 
 #endif // MAINWINDOW_H

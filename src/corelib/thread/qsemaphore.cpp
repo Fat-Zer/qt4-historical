@@ -47,6 +47,8 @@
 #include "qmutex.h"
 #include "qwaitcondition.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QSemaphore
     \brief The QSemaphore class provides a general counting semaphore.
@@ -77,17 +79,7 @@
 
     Example:
 
-    \code
-        QSemaphore sem(5);      // sem.available() == 5
-
-        sem.acquire(3);         // sem.available() == 2
-        sem.acquire(2);         // sem.available() == 0
-        sem.release(5);         // sem.available() == 5
-        sem.release(5);         // sem.available() == 10
-
-        sem.tryAcquire(1);      // sem.available() == 9, returns true
-        sem.tryAcquire(250);    // sem.available() == 9, returns false
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qsemaphore.cpp 0
 
     A typical application of semaphores is for controlling access to
     a circular buffer shared by a producer thread and a consumer
@@ -160,12 +152,7 @@ void QSemaphore::acquire(int n)
     This function can be used to "create" resources as well. For
     example:
 
-    \code
-        QSemaphore sem(5);      // a semaphore that guards 5 resources
-        sem.acquire(5);         // acquire all 5 resources
-        sem.release(5);         // release the 5 resources
-        sem.release(10);        // "create" 10 new resources
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qsemaphore.cpp 1
 
     \sa acquire(), available()
 */
@@ -196,11 +183,7 @@ int QSemaphore::available() const
 
     Example:
 
-    \code
-        QSemaphore sem(5);      // sem.available() == 5
-        sem.tryAcquire(250);    // sem.available() == 5, returns false
-        sem.tryAcquire(3);      // sem.available() == 2, returns true
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qsemaphore.cpp 2
 
     \sa acquire()
 */
@@ -226,11 +209,7 @@ bool QSemaphore::tryAcquire(int n)
 
     Example:
 
-    \code
-        QSemaphore sem(5);            // sem.available() == 5
-        sem.tryAcquire(250, 1000);    // sem.available() == 5, waits 1000 milliseconds and returns false
-        sem.tryAcquire(3, 30000);     // sem.available() == 2, returns true without waiting
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.thread.qsemaphore.cpp 3
 
     \sa acquire()
 */
@@ -252,5 +231,7 @@ bool QSemaphore::tryAcquire(int n, int timeout)
 
 
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_THREAD

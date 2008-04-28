@@ -48,6 +48,8 @@
 #include "smallobject.h"
 #include "list.h"
 
+QT_BEGIN_NAMESPACE
+
 class AST;
 class NameAST;
 class TypeIdAST;
@@ -1592,5 +1594,7 @@ SNOC(List<ParameterDeclarationAST *>, ParameterDeclarationAST)
 SNOC(List<InitDeclaratorAST *>, InitDeclaratorAST)
 SNOC(List<TemplateParameterAST *>, TemplateParameterAST)
 SNOC(List<StatementAST *>, StatementAST)
+
+QT_END_NAMESPACE
 
 #endif // AST_H

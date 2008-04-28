@@ -47,6 +47,8 @@
 
 #include <QtGui>
 
+QT_BEGIN_NAMESPACE
+
 static QString defaultPath;
 
 class FeatureTextBrowser : public QTextBrowser {
@@ -523,8 +525,11 @@ void Main::aboutQt()
     QMessageBox::aboutQt( this, tr("qconfig") );
 }
 
+QT_END_NAMESPACE
+
 int main(int argc, char** argv)
 {
+    QT_USE_NAMESPACE
     QApplication app(argc,argv);
     app.setOrganizationDomain("trolltech.com");
     app.setOrganizationName("Trolltech");

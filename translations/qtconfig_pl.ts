@@ -1,74 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="pl_PL">
+<defaultcodec></defaultcodec>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="324"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="326"/>
         <source>On The Spot</source>
         <translation>W oknie dokumentu (On-The-Spot)</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="401"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="403"/>
         <source>Over The Spot</source>
         <translation>Nad oknem dokumentu (Over-The-Spot)</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="403"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="405"/>
         <source>Off The Spot</source>
         <translation>Na pasku stanu (Off-The-Spot)</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="405"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="407"/>
         <source>Root</source>
         <translation>W dodatkowym oknie (Root)</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="852"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="854"/>
         <source>Select a Directory</source>
         <translation>Wybierz katalog</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="871"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="873"/>
         <source>&lt;h3&gt;%1&lt;/h3&gt;&lt;br/&gt;Version %2</source>
         <translation>&lt;h3&gt;%1&lt;/h3&gt;&lt;br/&gt;Wersja %2</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="898"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="900"/>
         <source>Qt Configuration</source>
         <translation>Konfiguracja Qt</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="918"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="920"/>
         <source>Save Changes</source>
         <translation>Zapisz zmiany</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="919"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="921"/>
         <source>Save changes to settings?</source>
         <translation>Zapisać zmiany do ustawień?</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="920"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="922"/>
         <source>&amp;Yes</source>
         <translation>&amp;Tak</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="920"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="922"/>
         <source>&amp;No</source>
         <translation>&amp;Nie</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="920"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="922"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Anuluj</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="353"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="355"/>
         <source>No changes to be saved.</source>
         <translation>Brak zmian do zapisania.</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindow.cpp" line="357"/>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="359"/>
         <source>Saving changes...</source>
         <translation>Zapisywanie zmian...</translation>
     </message>
@@ -183,7 +184,7 @@
     <message>
         <location filename="../tools/qtconfig/mainwindowbase.ui" line="429"/>
         <source>Current Substitutions:</source>
-        <translation>Bierzące zamiany:</translation>
+        <translation>Bieżące zamiany:</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/mainwindowbase.ui" line="948"/>
@@ -278,12 +279,12 @@
     <message>
         <location filename="../tools/qtconfig/mainwindowbase.ui" line="677"/>
         <source>C&amp;omboBox Effect:</source>
-        <translation>Efekty listy &amp;kombi:</translation>
+        <translation>Efekty c&amp;ombobox&apos;a:</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/mainwindowbase.ui" line="687"/>
         <source>&amp;ToolTip Effect:</source>
-        <translation>Efekt &amp;etykietki narzędzi:</translation>
+        <translation>Efekt &amp;chmurki:</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/mainwindowbase.ui" line="697"/>
@@ -308,7 +309,7 @@
     <message>
         <location filename="../tools/qtconfig/mainwindowbase.ui" line="785"/>
         <source>Global Strut</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalny rozmiar widżetów</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/mainwindowbase.ui" line="797"/>
@@ -391,47 +392,47 @@
         <translation>&amp;Pomoc</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1085"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1082"/>
         <source>&amp;Save</source>
         <translation>&amp;Zapisz</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1088"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1085"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1091"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1088"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1096"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1093"/>
         <source>E&amp;xit</source>
         <translation>&amp;Zakończ</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1099"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1096"/>
         <source>Exit</source>
         <translation>Zakończ</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1107"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1104"/>
         <source>&amp;About</source>
         <translation>&amp;Informacje o</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1110"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1107"/>
         <source>About</source>
         <translation>Informacje o</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1118"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1115"/>
         <source>About &amp;Qt</source>
         <translation>Informacje o &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1121"/>
+        <location filename="../tools/qtconfig/mainwindowbase.ui" line="1118"/>
         <source>About Qt</source>
         <translation>Informacje o Qt</translation>
     </message>
@@ -446,7 +447,7 @@
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="39"/>
         <source>&lt;b&gt;Edit Palette&lt;/b&gt;&lt;p&gt;Change the palette of the current widget or form.&lt;/p&gt;&lt;p&gt;Use a generated palette or select colors for each color group and each color role.&lt;/p&gt;&lt;p&gt;The palette can be tested with different widget layouts in the preview section.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Edycja palety&lt;/b&gt;&lt;p&gt;Zmień paletę bieżącego widżetu lub formularza.&lt;/p&gt;&lt;p&gt;Użyj wygenerowanej palety lub wybierz kolory dla każdej grupy i roli koloru.&lt;/p&gt;&lt;p&gt;Paleta może być przetestowana z różnymi rozmieszczeniami widżetów w sekcji podglądu.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="68"/>
@@ -486,17 +487,17 @@
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="160"/>
         <source>Central color &amp;roles</source>
-        <translation type="unfinished"></translation>
+        <translation>Główne &amp;role koloru</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="178"/>
         <source>Choose central color role</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz główną rolę koloru</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="181"/>
         <source>&lt;b&gt;Select a color role.&lt;/b&gt;&lt;p&gt;Available central roles are: &lt;ul&gt; &lt;li&gt;Window - general background color.&lt;/li&gt; &lt;li&gt;WindowText - general foreground color. &lt;/li&gt; &lt;li&gt;Base - used as background color for e.g. text entry widgets, usually white or another light color. &lt;/li&gt; &lt;li&gt;Text - the foreground color used with Base. Usually this is the same as WindowText, in what case it must provide good contrast both with Window and Base. &lt;/li&gt; &lt;li&gt;Button - general button background color, where buttons need a background different from Window, as in the Macintosh style. &lt;/li&gt; &lt;li&gt;ButtonText - a foreground color used with the Button color. &lt;/li&gt; &lt;li&gt;Highlight - a color to indicate a selected or highlighted item. &lt;/li&gt; &lt;li&gt;HighlightedText - a text color that contrasts to Highlight. &lt;/li&gt; &lt;li&gt;BrightText - a text color that is very different from WindowText and contrasts well with e.g. black. &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Wybierz rolę koloru.&lt;/b&gt;&lt;p&gt;Dostępne role główne: &lt;ul&gt; &lt;li&gt;Okno - główny kolor tła.&lt;/li&gt; &lt;li&gt;Tekst Okna - główny kolor pierwszoplanowy. &lt;/li&gt; &lt;li&gt;Bazowy - używany jako kolor tła dla np. widżetów wejściowych, zwykle biały lub inny jasny kolor. &lt;/li&gt; &lt;li&gt;Tekst - kolor pierwszoplanowy używany z Bazowym. Zwykle jest on taki sam jak Tekst Okna i wtedy powinien dobrze kontrastować jednocześnie z Oknem i Bazowym &lt;/li&gt; &lt;li&gt;Przycisk - główny kolor tła przycisku, gdy przyciski potrzebują innego tła niż Okno, jak np. w stylu Macintosh. &lt;/li&gt; &lt;li&gt;Tekst Przycisku - kolor pierwszoplanowy używany z Przyciskiem. &lt;/li&gt; &lt;li&gt;Podświetlony - kolor użyty w zaznaczonych lub podświetlonych elementach. &lt;/li&gt; &lt;li&gt;Podświetlony Tekst - kolor tekstu który kontrastuje z Podświetlonym. &lt;/li&gt; &lt;li&gt;Jasny Tekst - kolor teksty który znacznie różni się od Tekstu Okna i dobrze kontrastuje z np. czarnym. &lt;/li&gt; &lt;/ul&gt; &lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="185"/>
@@ -506,7 +507,7 @@
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="190"/>
         <source>WindowText</source>
-        <translation>Tekst okna</translation>
+        <translation>Tekst Okna</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="195"/>
@@ -526,7 +527,7 @@
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="210"/>
         <source>BrightText</source>
-        <translation type="unfinished"></translation>
+        <translation>Jasny tekst</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="215"/>
@@ -556,7 +557,7 @@
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="304"/>
         <source>Choose a color for the selected central color role.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor dla zaznaczonej głównej roli koloru.</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="319"/>
@@ -566,47 +567,47 @@
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="348"/>
         <source>Build &amp;from button color</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zbuduj w oparciu o kolor przycisku</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="354"/>
         <source>Generate shadings</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygeneruj cienie</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="357"/>
         <source>Check to let 3D-effect colors be calculated from button-color.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaznacz aby kolory efektów trójwymiarowych były obliczone na podstawie koloru przycisku.</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="367"/>
         <source>Choose 3D-effect color role</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz rolę koloru efektu trójwymiarowego</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="370"/>
         <source>&lt;b&gt;Select a color role.&lt;/b&gt;&lt;p&gt;Available effect roles are: &lt;ul&gt; &lt;li&gt;Light - lighter than Button color. &lt;/li&gt; &lt;li&gt;Midlight - between Button and Light. &lt;/li&gt; &lt;li&gt;Mid - between Button and Dark. &lt;/li&gt; &lt;li&gt;Dark - darker than Button. &lt;/li&gt; &lt;li&gt;Shadow - a very dark color. &lt;/li&gt; &lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Wybierz rolę koloru.&lt;/b&gt;&lt;p&gt;Dostępne role kolorów: &lt;ul&gt; &lt;li&gt;Jasny - jaśniejszy od koloru Przycisku. &lt;/li&gt; &lt;li&gt;Średnio Jasny - pomiędzy kolorem Przycisku i Jasnym. &lt;/li&gt; &lt;li&gt;Średni - pomiędzy kolorem Przycisku i Ciemnym. &lt;/li&gt; &lt;li&gt;Ciemny - ciemniejszy od koloru Przycisku. &lt;/li&gt; &lt;li&gt;Cień - bardzo ciemny kolor. &lt;/li&gt; &lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="374"/>
         <source>Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Jasny</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="379"/>
         <source>Midlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Średnio jasny</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="384"/>
         <source>Mid</source>
-        <translation type="unfinished"></translation>
+        <translation>Średni</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="389"/>
         <source>Dark</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciemny</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="394"/>
@@ -621,7 +622,7 @@
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="475"/>
         <source>Choose a color for the selected effect color role.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kolor dla zaznaczonej roli koloru dla efektu.</translation>
     </message>
     <message>
         <location filename="../tools/qtconfig/paletteeditoradvancedbase.ui" line="517"/>

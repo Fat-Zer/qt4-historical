@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 template <class T>
@@ -344,6 +346,8 @@ public:
     { while (c->constBegin() != i) if (*(n = --i) == t) return true;
       n = c->end(); return false;  }
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

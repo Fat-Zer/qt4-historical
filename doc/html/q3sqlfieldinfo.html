@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/q3sqlfieldinfo.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/q3sqlfieldinfo.qdoc -->
 <head>
-  <title>Qt 4.3: Q3SqlFieldInfo Class Reference</title>
+  <title>Qt 4.4: Q3SqlFieldInfo Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3SqlFieldInfo Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3SqlFieldInfo Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
+</h1>
 <p>The Q3SqlFieldInfo class stores meta data associated with a SQL field. <a href="#details">More...</a></p>
 <pre> #include &lt;Q3SqlFieldInfo&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qsqlfieldinfo">Porting to Qt 4</a> for more information.</p>
 <p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
@@ -60,7 +61,7 @@
 <tr valign="top" class="odd"><td><i>required</i></td><td>greater than 0 if the field is required, 0 if its value can be NULL and less than 0 if it cannot be determined whether the field is required or not.</td></tr>
 <tr valign="top" class="even"><td><i>len</i></td><td>the length of the field. Note that for non-character types some databases return either the length in bytes or the number of digits. -1 signifies that the length cannot be determined.</td></tr>
 <tr valign="top" class="odd"><td><i>prec</i></td><td>the precision of the field, or -1 if the field has no precision or it cannot be determined.</td></tr>
-<tr valign="top" class="even"><td><i>defValue</i></td><td>the default value that is inserted into the table if none is specified by the user. <a href="porting4.html#qvariant">QVariant</a>() if there is no default value or it cannot be determined.</td></tr>
+<tr valign="top" class="even"><td><i>defValue</i></td><td>the default value that is inserted into the table if none is specified by the user. QVariant() if there is no default value or it cannot be determined.</td></tr>
 <tr valign="top" class="odd"><td><i>typeID</i></td><td>the internal typeID of the database system (only useful for low-level programming). 0 if unknown.</td></tr>
 <tr valign="top" class="even"><td><i>generated</i></td><td>TRUE indicates that this field should be included in auto-generated SQL statments, e.g&#x2e; in <a href="q3sqlcursor.html">Q3SqlCursor</a>.</td></tr>
 <tr valign="top" class="odd"><td><i>trim</i></td><td>TRUE indicates that widgets should remove trailing whitespace from character fields. This does not affect the field value but only its representation inside widgets.</td></tr>
@@ -126,6 +127,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

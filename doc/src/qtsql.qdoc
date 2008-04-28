@@ -1,8 +1,51 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \module QtSql
     \title QtSql Module
     \contentspage Qt's Modules
-    \previouspage QtOpenGL
+    \previouspage QtScript
     \nextpage QtSvg
     \ingroup modules
 
@@ -40,16 +83,12 @@
     must have been instantiated first. To include the definitions of
     the module's classes, use the following directive:
 
-    \code
-        #include <QtSql>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtsql.qdoc 0
 
     To link against the module, add this line to your \l qmake \c
     .pro file:
 
-    \code
-        QT += sql
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtsql.qdoc 1
 
     The QtSql module is part of the \l{Qt Console Edition}, the \l{Qt
     Desktop Edition}, and the \l{Qt Open Source Edition}.
@@ -81,10 +120,7 @@
     The following code establishes a connection to a MySQL database
     called \c flightdb on host \c{bigblue}:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto sql_intro_snippets
-    \skipto QSqlDatabase db =
-    \printuntil ok = db.open()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 26
 
     The first argument to QSqlDatabase::addDatabase() is the name of
     the driver. See the
@@ -100,8 +136,7 @@
     serves as the default connection. To specify a name, pass it as
     the second argument to QSqlDatabase::addDatabase(). For example:
 
-    \skipto firstDB
-    \printuntil secondDB
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 27
 
     Once the connection is initialized, we must call
     QSqlDatabase::open() to open the database and give us access to
@@ -115,10 +150,9 @@
     for a connection, it will return a reference to the specified
     connection. For example:
 
-    \skipto ::database()
-    \printline defaultDB =
-    \printline firstDB =
-    \printline secondDB =
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 28
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 29
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 30
 
     To remove a database connection, first close the database using
     QSqlDatabase::close(), then remove it using the static method
@@ -139,9 +173,7 @@
     To execute an SQL statement, simply create a QSqlQuery object and
     call QSqlQuery::exec() like this:
 
-    \skipto SELECT1
-    \skipline SELECT1
-    \printuntil exec(
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 31
 
     The QSqlQuery constructor accepts an optional QSqlDatabase object
     that specifies which database connection to use. In the example
@@ -161,8 +193,7 @@
     to access the other records, until it returns false. Here's a
     typical loop that iterates over all the records in order:
 
-    \skipto while (query.next())
-    \printuntil }
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 32
 
     The QSqlQuery::value() function returns the value of a field in
     the current record. Fields are specified as zero-based indexes.
@@ -186,9 +217,7 @@
     navigate to the last record and use the query's position to tell
     us how many records there are.
 
-    \skipto FEATURE
-    \skipline FEATURE
-    \printuntil /\}$/
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 33
 
     If you iterate through a result set only using next() and seek()
     with positive values, you can call
@@ -202,9 +231,7 @@
     \c{SELECT}s. The following example inserts a record into a table
     using \c{INSERT}:
 
-    \skipto INSERT1
-    \skipto query;
-    \printuntil );
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 34
 
     If you want to insert many records at the same time, it is often
     more efficient to separate the query from the actual values being
@@ -212,15 +239,11 @@
     placeholder syntaxes: named binding and positional binding.
     Here's an example of named binding:
 
-    \skipto NAMED BINDING
-    \skipto query;
-    \printuntil exec();
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 35
 
     Here's an example of positional binding:
 
-    \skipto POSITIONAL BINDING
-    \skipto query;
-    \printuntil exec();
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 36
 
     Both syntaxes work with all database drivers provided by Qt. If
     the database supports the syntax natively, Qt simply forwards the
@@ -240,18 +263,14 @@
 
     Updating a record is similar to inserting it into a table:
 
-    \skipto UPDATE1
-    \skipto query;
-    \printuntil );
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 37
 
     You can also use named or positional binding to associate
     parameters to actual values.
 
     Finally, here's an example of a \c DELETE statement:
 
-    \skipto DELETE1
-    \skipto query;
-    \printuntil );
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 38
 
     \section2 Transactions
 
@@ -266,9 +285,7 @@
 
     Example:
 
-    \skipto TRANSACTION
-    \skipto transaction()
-    \printuntil commit()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 39
 
     Transactions can be used to ensure that a complex operation is
     atomic (for example, looking up a foreign key and creating a
@@ -313,10 +330,7 @@
 
     Example:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto SQLQUERYMODEL1
-    \skipto QSqlQueryModel model;
-    \printuntil }
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 40
 
     After setting the query using QSqlQueryModel::setQuery(), you can
     use QSqlQueryModel::record(int) to access the individual records.
@@ -335,9 +349,7 @@
 
     Example:
 
-    \skipto SQLTABLEMODEL1
-    \skipto QSqlTableModel model;
-    \printuntil }
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 41
 
     QSqlTableModel is a high-level alternative to QSqlQuery for
     navigating and modifying individual SQL tables. It typically
@@ -348,9 +360,7 @@
     following code will increase every employee's salary by 10 per
     cent:
 
-    \skipto SQLTABLEMODEL2
-    \skipto for (int i
-    \printuntil submit
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 42
 
     You can also use QSqlTableModel::data() and
     QSqlTableModel::setData(), which are inherited from
@@ -358,20 +368,16 @@
     to update a record using
     \l{QSqlTableModel::setData()}{setData()}:
 
-    \skipto SQLTABLEMODEL3
-    \skipto setData
-    \printuntil submit
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 43
 
     Here's how to insert a row and populate it:
 
-    \skipto SQLTABLEMODEL4
-    \skipto insertRows(
-    \printuntil submit
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 44
 
     Here's how to delete five consecutive rows:
 
-    \printline removeRows(
-    \printline submit
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 45
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 46
 
     The first argument to QSqlTableModel::removeRows() is the index
     of the first row to delete.
@@ -423,12 +429,10 @@
     The following code snippet shows how the QSqlRelationalTableModel
     was set up:
 
-    \quotefromfile sql/relationaltablemodel/relationaltablemodel.cpp
-    \skipto model->setTable
-    \printline model->setTable
-    \skipto setRelation
-    \printline setRelation
-    \printline setRelation
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 0
+    \codeline
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 1
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 2
 
     See the QSqlRelationalTableModel documentation for details.
 
@@ -444,17 +448,15 @@
 
     The following example creates a view based on an SQL data model:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto QTableView *view =
-    \printline view =
-    \printline setModel
-    \printline show()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 17
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 18
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 19
 
     If the model is a read-write model (e.g., QSqlTableModel), the
     view lets the user edit the fields. You can disable this by
     calling
 
-    \printline setEditTriggers
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 20
 
     You can use the same model as a data source for multiple views.
     If the user edits the model through one of the views, the other
@@ -467,9 +469,7 @@
     model. The header's labels default to the table's field names.
     For example:
 
-    \quotefromfile sql/relationaltablemodel/relationaltablemodel.cpp
-    \skipto setHeaderData(
-    \printuntil setHeaderData(3
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 3
 
     QTableView also has a vertical header on the left with numbers
     identifying the rows. If you insert rows programmatically using
@@ -503,16 +503,13 @@
     read-write. The following two functions make fields 1 and 2 of a
     query model editable:
 
-    \quotefromfile sql/querymodel/editablesqlmodel.cpp
-    \skipto ::flags(
-    \printuntil /^\}/
-    \skipto ::setData(
-    \printuntil /^\}/
+    \snippet examples/sql/querymodel/editablesqlmodel.cpp 0
+    \codeline
+    \snippet examples/sql/querymodel/editablesqlmodel.cpp 1
 
     The setFirstName() helper function is defined as follows:
 
-    \skipto ::setFirstName(
-    \printuntil /^\}/
+    \snippet examples/sql/querymodel/editablesqlmodel.cpp 2
 
     The setLastName() function is similar. See the
     \l{sql/querymodel}{Query Model} example for the complete source code.

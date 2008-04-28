@@ -55,7 +55,8 @@
 #include "hoverpoints.h"
 #include "composition.h"
 
-class QDesignerFormEditorInterface;
+QT_FORWARD_DECLARE_CLASS(QDesignerFormEditorInterface)
+
 class PathDeformRendererEx : public PathDeformRenderer
 {
     Q_OBJECT
@@ -220,21 +221,25 @@ class ArthurPlugins : public QObject, public QDesignerCustomWidgetCollectionInte
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
-        public:
-    QList<QDesignerCustomWidgetInterface*> customWidgets() const
-    {
-        QList<QDesignerCustomWidgetInterface *> plugins;
-        plugins
-            << new DeformPlugin
-            << new XFormPlugin
-            << new GradientEditorPlugin
-            << new GradientRendererPlugin
-            << new StrokeRenderPlugin
-            << new CompositionModePlugin;
-        return plugins;
-    }
+
+public:
+    ArthurPlugins(QObject *parent = 0);
+    QList<QDesignerCustomWidgetInterface*> customWidgets() const { return m_plugins; }
+
+private:
+    QList<QDesignerCustomWidgetInterface *> m_plugins;
 };
 
+ArthurPlugins::ArthurPlugins(QObject *parent) :
+    QObject(parent)
+{
+    m_plugins << new DeformPlugin(this)
+              << new XFormPlugin(this)
+              << new GradientEditorPlugin(this)
+              << new GradientRendererPlugin(this)
+              << new StrokeRenderPlugin(this)
+              << new CompositionModePlugin(this);
+}
 
 #include "plugin.moc"
 

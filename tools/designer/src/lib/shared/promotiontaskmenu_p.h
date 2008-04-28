@@ -61,6 +61,8 @@
 #include <QtCore/QPointer>
 #include <QtCore/QList>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 class QDesignerFormEditorInterface;
 
@@ -79,7 +81,7 @@ class QDESIGNER_SHARED_EXPORT PromotionTaskMenu: public QObject
 public:
     enum Mode { ModeSingleWidget, ModeMultiSelection };
 
-    PromotionTaskMenu(QWidget *widget,Mode mode = ModeMultiSelection, QObject *parent = 0);
+    explicit PromotionTaskMenu(QWidget *widget,Mode mode = ModeMultiSelection, QObject *parent = 0);
 
     void setWidget(QWidget *widget);
 
@@ -109,6 +111,7 @@ private slots:
     void slotDemoteFromCustomWidget();
     void slotEditPromotedWidgets();
     void slotEditPromoteTo();
+    void slotEditSignalsSlots();
 
 private:
     void promoteTo(QDesignerFormWindowInterface *fw, const QString &customClassName);
@@ -125,15 +128,19 @@ private:
     QPointer<QWidget> m_widget;
 
     QSignalMapper *m_promotionMapper;
+    // Per-Widget actions
     QList<QAction *> m_promotionActions;
 
     QAction *m_globalEditAction;
     QAction *m_EditPromoteToAction;
+    QAction *m_EditSignalsSlotsAction;
 
     QString m_promoteLabel;
     QString m_demoteLabel;
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // PROMOTIONTASKMENU_H

@@ -56,6 +56,7 @@
 #include <qcoreapplication.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
 
 #ifndef QT_NO_LINEEDIT
 
@@ -341,9 +342,7 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     editing data. A property is set as the user property with the USER
     keyword:
 
-    \code
-        Q_PROPERTY(QColor color READ color WRITE setColor USER true)
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qitemeditorfactory.cpp 0
 
     If the editor does not provide a user property, it must return the
     name of the property from valuePropertyName(); delegates will then
@@ -408,12 +407,7 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     This way, it is not necessary to subclass
     QItemEditorCreatorBase.
 
-    \code
-    QItemEditorCreator<MyEditor> *itemCreator =
-        new QItemEditorCreator<MyEditor>("myProperty");
-
-    QItemEditorFactory *factory = new QItemEditorFactory;
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qitemeditorfactory.cpp 1
 
     The constructor takes the name of the property that contains the
     editing data. QItemDelegate can then access the property by name
@@ -463,11 +457,7 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
 
     Example:
 
-    \code
-    QItemEditorFactory *editorFactory = new QItemEditorFactory;
-    QItemEditorCreatorBase *creator = new QStandardItemEditorCreator<MyFancyDateTimeEdit>();
-    editorFactory->registerEditor(QVariant::DateType, creator);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qitemeditorfactory.cpp 2
 
     Setting the \c editorFactory created above in an item delegate via
     QItemDelegate::setItemEditorFactory() makes sure that all values of type
@@ -479,9 +469,7 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     System}{meta-object system}). You set the user property with
     the USER keyword:
 
-    \code
-	Q_PROPERTY(QColor color READ color WRITE setColor USER true)	
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qitemeditorfactory.cpp 3
 
     \sa QItemEditorCreatorBase, QItemEditorCreator,
 	QItemEditorFactory, QItemDelegate, {Color Editor Factory Example}
@@ -557,6 +545,8 @@ bool QBooleanComboBox::value() const
 }
 
 #endif // QT_NO_COMBOBOX
+
+QT_END_NAMESPACE
 
 #if !defined(QT_NO_LINEEDIT) || !defined(QT_NO_COMBOBOX)
 #include "qitemeditorfactory.moc"

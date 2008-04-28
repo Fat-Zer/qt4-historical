@@ -44,6 +44,10 @@
 #ifndef QSCRIPTBUFFER_P_H
 #define QSCRIPTBUFFER_P_H
 
+#include <QtCore/qglobal.h>
+
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -199,6 +203,6 @@ template <typename T> typename QScript::Buffer<T>::const_iterator QScript::Buffe
     return m_data + m_size;
 }
 
+QT_END_NAMESPACE
 
 #endif
-

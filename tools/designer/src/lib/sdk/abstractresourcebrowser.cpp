@@ -43,6 +43,8 @@
 
 #include "abstractresourcebrowser.h"
 
+QT_BEGIN_NAMESPACE
+
 QDesignerResourceBrowserInterface::QDesignerResourceBrowserInterface(QWidget *parent)
     : QWidget(parent)
 {
@@ -53,3 +55,5 @@ QDesignerResourceBrowserInterface::~QDesignerResourceBrowserInterface()
 {
 
 }
+
+QT_END_NAMESPACE

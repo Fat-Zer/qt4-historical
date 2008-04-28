@@ -12,6 +12,7 @@ DEFINES	       += QT_BOOTSTRAPPED QT_MOC QT_NO_CODECS QT_LITE_UNICODE QT_NO_LIBR
 		  QT_NO_STL QT_NO_COMPRESS QT_NO_DATASTREAM QT_NO_TEXTSTREAM \
 		  QT_NO_TEXTCODEC QT_NO_UNICODETABLES QT_NO_THREAD \
 		  QT_NO_REGEXP QT_NO_QOBJECT QT_NO_SYSTEMLOCALE QT_NO_GEOM_VARIANT
+DEFINES   += QT_NO_USING_NAMESPACE
 win32:DEFINES  += QT_NODLL
 DESTDIR         = ../../../bin
 
@@ -30,6 +31,7 @@ SOURCES += main.cpp
 
 # Qt tools needed to link moc
 SOURCES	+= ../../corelib/global/qglobal.cpp \
+           ../../corelib/global/qmalloc.cpp \
            ../../corelib/global/qnumeric.cpp \
 	   ../../corelib/io/qbuffer.cpp \
 	   ../../corelib/io/qdir.cpp		\

@@ -49,6 +49,9 @@
 #include "../../3rdparty/md4/md4.cpp"
 #include "../../3rdparty/sha1/sha1.cpp"
 
+
+QT_BEGIN_NAMESPACE
+
 class QCryptographicHashPrivate
 {
 public:
@@ -58,6 +61,7 @@ public:
         md4_context md4Context;
         Sha1State sha1Context;
     };
+    QByteArray result;
 };
 
 /*!
@@ -117,6 +121,7 @@ void QCryptographicHash::reset()
         sha1InitState(&d->sha1Context);
         break;
     }
+    d->result.clear();
 }
 
 /*!
@@ -136,6 +141,7 @@ void QCryptographicHash::addData(const char *data, int length)
         sha1Update(&d->sha1Context, (const unsigned char *)data, length);
         break;
     }    
+    d->result.clear();
 }
 
 /*!
@@ -151,22 +157,24 @@ void QCryptographicHash::addData(const QByteArray &data)
 */
 QByteArray QCryptographicHash::result() const
 {
-    QByteArray result;
+    if (!d->result.isEmpty()) 
+        return d->result;
+    
     switch (d->method) {
     case Md4:
-        result.resize(MD4_RESULTLEN);
-        md4_final(&d->md4Context, (unsigned char *)result.data());
+        d->result.resize(MD4_RESULTLEN);
+        md4_final(&d->md4Context, (unsigned char *)d->result.data());
         break;
     case Md5:
-        result.resize(16);
-        MD5Final(&d->md5Context, (unsigned char *)result.data());
+        d->result.resize(16);
+        MD5Final(&d->md5Context, (unsigned char *)d->result.data());
         break;
     case Sha1:
-        result.resize(20);
+        d->result.resize(20);
         sha1FinalizeState(&d->sha1Context);
-        sha1ToHash(&d->sha1Context, (unsigned char *)result.data());
+        sha1ToHash(&d->sha1Context, (unsigned char *)d->result.data());
     }
-    return result;
+    return d->result;
 }
 
 /*!
@@ -178,3 +186,5 @@ QByteArray QCryptographicHash::hash(const QByteArray &data, Algorithm method)
     hash.addData(data);
     return hash.result();
 }
+
+QT_END_NAMESPACE

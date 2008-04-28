@@ -54,6 +54,7 @@ Node::Node(GraphWidget *graphWidget)
     : graph(graphWidget)
 {
     setFlag(ItemIsMovable);
+    setCacheMode(DeviceCoordinateCache);
     setZValue(1);
 }
 

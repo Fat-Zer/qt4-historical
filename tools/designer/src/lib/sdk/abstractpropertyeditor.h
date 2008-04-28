@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QString;
 class QVariant;
@@ -76,6 +78,8 @@ public Q_SLOTS:
     virtual void setPropertyValue(const QString &name, const QVariant &value, bool changed = true) = 0;
     virtual void setReadOnly(bool readOnly) = 0;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

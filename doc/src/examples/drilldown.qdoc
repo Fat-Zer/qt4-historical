@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example sql/drilldown
     \title Drill Down Example
@@ -39,9 +82,7 @@
     The \c InformationWindow class is a custom widget inheriting
     QWidget:
 
-    \quotefromfile sql/drilldown/informationwindow.h
-    \skipto class InformationWindow
-    \printuntil imageChanged
+    \snippet examples/sql/drilldown/informationwindow.h 0
 
     When we create an information window, we pass the associated
     location ID, a parent, and a pointer to the database, to the
@@ -56,16 +97,14 @@
     we will emit a signal carrying the ID and file name as parameters
     whenever the users changes the associated image.
 
-    \skipto private slots
-    \printuntil enableButtons
+    \snippet examples/sql/drilldown/informationwindow.h 1
 
     Since we allow the users to alter some of the location data, we
     must provide functionality for reverting and submitting their
     changes. The \c enableButtons() slot is provided for convenience
     to enable and disable the various buttons when required.
 
-    \skipto private
-    \printuntil };
+    \snippet examples/sql/drilldown/informationwindow.h 2
 
     The \c createButtons() function is also a convenience function,
     provided to simplify the constructor. As mentioned above we store
@@ -91,19 +130,15 @@
     pointer to a QSqlRelationalTableModel object providing an editable
     data model (with foreign key support) for our database table.
 
-    \quotefromfile sql/drilldown/informationwindow.cpp
-    \skipto InformationWindow::InformationWindow
-    \printuntil {
-    \skipto QLabel
-    \printuntil descriptionEditor
+    \snippet examples/sql/drilldown/informationwindow.cpp 0
+    \snippet examples/sql/drilldown/informationwindow.cpp 1
 
     First we create the various widgets required to display the data
     contained in the database. Most of the widgets are created in a
     straight forward manner. But note the combobox displaying the
     name of the image file:
 
-    \skipto imageFileEditor
-    \printuntil setModelColumn
+    \snippet examples/sql/drilldown/informationwindow.cpp 2
 
     In this example, the information about the offices are stored in a
     database table called "trolltechoffices". When creating the model,
@@ -124,8 +159,7 @@
     column we want to be visible using the QComboBox::setModelColumn()
     function.
 
-    \skipto mapper
-    \printuntil mapper->setCurrentIndex
+    \snippet examples/sql/drilldown/informationwindow.cpp 3
 
     Then we create the mapper. The QDataWidgetMapper class allows us
     to create data-aware widgets by mapping them to sections of an
@@ -151,8 +185,7 @@
     combobox functionality for fields that are foreign keys into other
     tables (like "imagefile" in our "trolltechoffices" table).
 
-    \skipto connect
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/informationwindow.cpp 4
 
     Finally, we connect the "something's changed" signals in the
     editors to our custom \c enableButtons() slot, enabling the users
@@ -165,8 +198,7 @@
     our widget is in fact a window, with a window system frame and a
     title bar.
 
-    \skipto id()
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/informationwindow.cpp 5
 
     When a window is created, it is not deleted until the main
     application exits (i.e., if the user closes the information
@@ -176,8 +208,7 @@
     determine whether a window already exists for a given location
     when the user requests information about it.
 
-    \skipto revert()
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/informationwindow.cpp 6
 
     The \c revert() slot is triggered whenever the user hits the \gui
     Revert button.
@@ -189,8 +220,7 @@
     slot to reset the editor widgets, repopulating all widgets with
     the current data of the model.
 
-    \skipto submit()
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/informationwindow.cpp 7
 
     Likewise, the \c submit() slot is triggered whenever the users
     decide to submit their changes by pressing the \gui Submit button.
@@ -209,8 +239,7 @@
     file names differ, we store the new file name and emit the \c
     imageChanged() signal.
 
-    \skipto createButtons
-    \printuntil submit()
+    \snippet examples/sql/drilldown/informationwindow.cpp 8
 
     The \c createButtons() function is provided for convenience, i.e.,
     to simplify the constructor.
@@ -223,8 +252,7 @@
     Submit and \gui Revert buttons to the corresponding \c submit()
     and \c revert() slots.
 
-    \skipto QDialogButtonBox
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/informationwindow.cpp 9
 
     The QDialogButtonBox class is a widget that presents buttons in a
     layout that is appropriate to the current widget style. Dialogs
@@ -246,8 +274,7 @@
     the user has made wil be preserved until the user expliclity
     revert or submit them.
 
-    \skipto enableButtons
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/informationwindow.cpp 10
 
     The \c enableButtons() slot is called to enable the buttons
     whenever the user changes the presented data. Likewise, when the
@@ -263,11 +290,9 @@
     The \c View class represents the main application window and
     inherits QGraphicsView:
 
-    \quotefromfile sql/drilldown/view.h
-    \skipto class View
-    \printuntil mouseReleaseEvent
-    \skipto slots
-    \printuntil updateImage
+    \snippet examples/sql/drilldown/view.h 0
+    \codeline
+    \snippet examples/sql/drilldown/view.h 1
 
     The QGraphicsView class is part of the \l {The Graphics View
     Framework} which we will use to display the images of Trolltech's
@@ -283,8 +308,7 @@
     {InformationWindow}'s \c imageChanged() signal that is emitted
     whenever the user changes a location's image.
 
-    \skipto private
-    \printuntil informationWindows
+    \snippet examples/sql/drilldown/view.h 2
 
     The \c addItems() function is a convenience function provided to
     simplify the constructor. It is called only once, creating the
@@ -298,8 +322,7 @@
     latter function is in turn called from our custom \c
     mouseReleaseEvent() implementation.
 
-    \skipto officeTable
-    \printuntil };
+    \snippet examples/sql/drilldown/view.h 3
 
     Finally we declare a QSqlRelationalTableModel pointer. As
     previously mentioned, the QSqlRelationalTableModel class provides
@@ -320,9 +343,7 @@
     names of the available image files, we only have to create a
     QSqlRelationalTableModel object for the office table:
 
-    \quotefromfile sql/drilldown/view.cpp
-    \skipto View::View
-    \printuntil select()
+    \snippet examples/sql/drilldown/view.cpp 0
 
     The reason is that once we have a model with the office details,
     we can create a relation to the available image files using
@@ -338,10 +359,7 @@
     {QSqlRelationalTableModel::}{select()} function to populate our
     model.
 
-    \skipto scene
-    \printuntil logo->setPos
-    \skipto setMinimumSize
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/view.cpp 1
 
     Then we create the contents of our view, i.e., the scene and its
     items. The location labels are regular QGraphicsTextItem objects,
@@ -353,10 +371,7 @@
     Finally, we set the main application widget's size constraints and
     window title.
 
-    \skipto View::addItems
-    \printuntil QString location
-    \skipto columnOffset
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/view.cpp 3
 
     The \c addItems() function is called only once, i.e., when
     creating the main application window. For each row in the database
@@ -379,8 +394,7 @@
     \l{Qt Examples#Graphics View}{Graphics View examples} for more
     details.
 
-    \skipto View::mouseReleaseEvent
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/view.cpp 5
 
     We reimplement QGraphicsView's \l
     {QGraphicsView::}{mouseReleaseEvent()} event handler to respond to
@@ -393,8 +407,7 @@
     of a given type. Note that if the event is not related to any of
     our image items, we pass it on to the base class implementation.
 
-    \skipto View::showInformation
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/view.cpp 6
 
     The \c showInformation() function is given an \c ImageItem object
     as argument, and starts off by extracting the item's location
@@ -411,16 +424,14 @@
     this widget's \c updateImage() slot, before we give it a suitable
     position and add it to the list of existing windows.
 
-    \skipto View::updateImage
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/view.cpp 7
 
     The \c updateImage() slot takes a location ID and the name of an
     image files as arguments. It filters out the image items, and
     updates the one that correspond to the given location ID, with the
     provided image file.
 
-    \skipto View::findWindow
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/view.cpp 8
 
     The \c findWindow() function simply searches through the list of
     existing windows, returning a pointer to the window that matches
@@ -434,11 +445,7 @@
     image items. It inherits QGraphicsPixmapItem and reimplements its
     hover event handlers:
 
-    \quotefromfile sql/drilldown/imageitem.h
-    \skipto class ImageItem
-    \printuntil id()
-    \skipto protected
-    \printuntil };
+    \snippet examples/sql/drilldown/imageitem.h 0
 
     In addition, we implement a public \c id() function to be able to
     identify the associated location and a public \c adjust() function
@@ -466,9 +473,7 @@
     constructor's arguments (the pixmap, parent and scene) on to the
     base class constructor:
 
-    \quotefromfile sql/drilldown/imageitem.cpp
-    \skipto ImageItem::ImageItem
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/imageitem.cpp 0
 
     Then we store the ID for future reference, and ensure that our
     item will accept hover events. Hover events are delivered when
@@ -494,11 +499,9 @@
     Finally, we call \c adjust() to ensure that the item is given the
     preferred size.
 
-    \skipto ImageItem::hoverEnterEvent
-    \printuntil /^\}/
-
-    \skipto ImageItem::hoverLeaveEvent
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/imageitem.cpp 1
+    \codeline
+    \snippet examples/sql/drilldown/imageitem.cpp 2
 
     Whenever the mouse cursor enters or leave the image item, the
     corresponding event handlers are triggered: We first set the time
@@ -517,8 +520,7 @@
     item stack once the animation is completed. Finally, if the time
     line is not already running, we start it.
 
-    \skipto ImageItem::setFrame
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/imageitem.cpp 3
 
     When the time line is running, it triggers the \c setFrame() slot
     whenever the current frame changes due to the connection we
@@ -535,12 +537,11 @@
 
     In the end, only the following convenience functions remain:
 
-    \skipto ImageItem::adjust
-    \printuntil /^\}/
-    \skipto ImageItem::id
-    \printuntil /^\}/
-    \skipto ImageItem::updateItemPosition
-    \printuntil /^\}/
+    \snippet examples/sql/drilldown/imageitem.cpp 4
+    \codeline
+    \snippet examples/sql/drilldown/imageitem.cpp 5
+    \codeline
+    \snippet examples/sql/drilldown/imageitem.cpp 6
 
     The \c adjust() function defines and applies a transformation
     matrix, ensuring that our image item appears with the preferred

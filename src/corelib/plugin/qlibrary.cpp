@@ -63,6 +63,8 @@
 #include <qdebug.h>
 #include <qvector.h>
 
+QT_BEGIN_NAMESPACE
+
 //#define QT_DEBUG_COMPONENT
 
 #ifdef QT_NO_DEBUG
@@ -125,13 +127,7 @@ Q_GLOBAL_STATIC(QMutex, qt_library_mutex)
     symbol is not defined, the function pointer will be 0 and won't be
     called.
 
-    \code
-        QLibrary myLib("mylib");
-        typedef void (*MyPrototype)();
-        MyPrototype myFunction = (MyPrototype) myLib.resolve("mysymbol");
-        if (myFunction)
-            myFunction();
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 0
 
     The symbol must be exported as a C function from the library for
     resolve() to work. This means that the function must be wrapped in
@@ -142,13 +138,7 @@ Q_GLOBAL_STATIC(QMutex, qt_library_mutex)
     use if you just want to call a function in a library without
     explicitly loading the library first:
 
-    \code
-        typedef void (*MyPrototype)();
-        MyPrototype myFunction =
-                (MyPrototype) QLibrary::resolve("mylib", "mysymbol");
-        if (myFunction)
-            myFunction();
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 1
 
     \sa QPluginLoader
 */
@@ -289,7 +279,7 @@ static bool qt_parse_pattern(const char *s, uint *version, bool *debug, QByteArr
         } else if (qstrncmp("buildkey", pinfo.results[0],
                               pinfo.lengths[0]) == 0){
             // save buildkey
-            *key = QByteArray(pinfo.results[1], pinfo.lengths[1] + 1);
+            *key = QByteArray(pinfo.results[1], pinfo.lengths[1]);
         }
     } while (parse == 1 && parselen > 0);
 
@@ -300,8 +290,10 @@ static bool qt_parse_pattern(const char *s, uint *version, bool *debug, QByteArr
 
 #if defined(Q_OS_FREEBSD) || defined(Q_OS_LINUX)
 #  define USE_MMAP
+QT_BEGIN_INCLUDE_NAMESPACE
 #  include <sys/types.h>
 #  include <sys/mman.h>
+QT_END_INCLUDE_NAMESPACE
 #endif // Q_OS_FREEBSD || Q_OS_LINUX
 
 static long qt_find_pattern(const char *s, ulong s_len,
@@ -424,12 +416,12 @@ static bool qt_unix_query(const QString &library, uint *version, bool *debug, QB
 typedef QMap<QString, QLibraryPrivate*> LibraryMap;
 Q_GLOBAL_STATIC(LibraryMap, libraryMap)
 
-QLibraryPrivate::QLibraryPrivate(const QString &canonicalFileName, int verNum)
-    :pHnd(0), fileName(canonicalFileName), majorVerNum(verNum), instance(0), qt_version(0),
+QLibraryPrivate::QLibraryPrivate(const QString &canonicalFileName, const QString &version)
+    :pHnd(0), fileName(canonicalFileName), fullVersion(version), instance(0), qt_version(0),
      libraryRefCount(1), libraryUnloadCount(0), pluginState(MightBeAPlugin)
 { libraryMap()->insert(canonicalFileName, this); }
 
-QLibraryPrivate *QLibraryPrivate::findOrCreate(const QString &fileName, int verNum)
+QLibraryPrivate *QLibraryPrivate::findOrCreate(const QString &fileName, const QString &version)
 {
     QMutexLocker locker(qt_library_mutex());
     if (QLibraryPrivate *lib = libraryMap()->value(fileName)) {
@@ -437,7 +429,7 @@ QLibraryPrivate *QLibraryPrivate::findOrCreate(const QString &fileName, int verN
         return lib;
     }
 
-    return new QLibraryPrivate(fileName, verNum);
+    return new QLibraryPrivate(fileName, version);
 }
 
 QLibraryPrivate::~QLibraryPrivate()
@@ -510,7 +502,7 @@ bool QLibraryPrivate::loadPlugin()
     \row \i Windows     \i \c .dll
     \row \i Unix/Linux  \i \c .so
     \row \i AIX  \i \c .a
-    \row \i HP-UX       \i \c .sl
+    \row \i HP-UX       \i \c .sl, \c .so (HP-UXi)
     \row \i Mac OS X    \i \c .dylib, \c .bundle, \c .so
     \endtable
 
@@ -518,14 +510,13 @@ bool QLibraryPrivate::loadPlugin()
  */
 bool QLibrary::isLibrary(const QString &fileName)
 {
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     return fileName.endsWith(QLatin1String(".dll"));
 #else
     QString completeSuffix = QFileInfo(fileName).completeSuffix();
     if (completeSuffix.isEmpty())
         return false;
     QStringList suffixes = completeSuffix.split(QLatin1Char('.'));
-    QString suffix = suffixes.first();
 # if defined(Q_OS_DARWIN)
 
     // On Mac, libs look like libmylib.1.0.0.dylib
@@ -537,33 +528,50 @@ bool QLibrary::isLibrary(const QString &fileName)
             || firstSuffix == QLatin1String("bundle"));
 
     return valid;
-# elif defined(Q_OS_HPUX)
+# else  // Generic Unix
+    QStringList validSuffixList;
+
+#  if defined(Q_OS_HPUX)
 /*
     See "HP-UX Linker and Libraries User's Guide", section "Link-time Differences between PA-RISC and IPF":
     "In PA-RISC (PA-32 and PA-64) shared libraries are suffixed with .sl. In IPF (32-bit and 64-bit),
     the shared libraries are suffixed with .so. For compatibility, the IPF linker also supports the .sl suffix."
  */
-    bool valid = (suffix == QLatin1String("sl"));
-#  if defined __ia64
-    valid = valid || (suffix == QLatin1String("so"));
+    validSuffixList << QLatin1String("sl");
+#   if defined __ia64
+    validSuffixList << QLatin1String("so");
+#   endif
+#  elif defined(Q_OS_AIX)
+    validSuffixList << QLatin1String("a") << QLatin1String("so");
+#  elif defined(Q_OS_UNIX)
+    validSuffixList << QLatin1String("so");
 #  endif
-# elif defined(Q_OS_AIX)
-    bool valid = (suffix == QLatin1String("a") || suffix == QLatin1String("so"));
-# elif defined(Q_OS_UNIX)
-    bool valid = (suffix == QLatin1String("so"));
-# else
-    bool valid = false;
-# endif
 
-    for (int i = 1; i < suffixes.count() && valid; ++i)
-        suffixes.at(i).toInt(&valid);
+    // Examples of valid library names:
+    //  libfoo.so
+    //  libfoo.so.0
+    //  libfoo.so.0.3
+    //  libfoo-0.3.so
+    //  libfoo-0.3.so.0.3.0
+
+    int suffix;
+    int suffixPos = -1;
+    for (suffix = 0; suffix < validSuffixList.count() && suffixPos == -1; ++suffix)
+        suffixPos = suffixes.indexOf(validSuffixList.at(suffix));
+
+    bool valid = suffixPos != -1;
+    for (int i = suffixPos + 1; i < suffixes.count() && valid; ++i)
+        if (i != suffixPos)
+            suffixes.at(i).toInt(&valid);
     return valid;
+# endif
 #endif
 
 }
 
-bool QLibraryPrivate::isPlugin()
+bool QLibraryPrivate::isPlugin(QSettings *settings)
 {
+    errorString.clear();
     if (pluginState != MightBeAPlugin)
         return pluginState == IsAPlugin;
 
@@ -583,9 +591,14 @@ bool QLibraryPrivate::isPlugin()
                      .arg(QLIBRARY_AS_DEBUG ? QLatin1String("debug") : QLatin1String("false"))
                      .arg(fileName);
     QStringList reg;
-
-    QSettings settings(QSettings::UserScope, QLatin1String("Trolltech"));
-    reg = settings.value(regkey).toStringList();
+#ifndef QT_NO_SETTINGS
+    bool madeSettings = false;
+    if (!settings) {
+        settings = new QSettings(QSettings::UserScope, QLatin1String("Trolltech"));
+        madeSettings = true;
+    }
+    reg = settings->value(regkey).toStringList();
+#endif
     if (reg.count() == 4 && lastModified == reg.at(3)) {
         qt_version = reg.at(0).toUInt(0, 16);
         debug = bool(reg.at(1).toInt());
@@ -626,14 +639,21 @@ bool QLibraryPrivate::isPlugin()
                 << QString::number((int)debug)
                 << QLatin1String(key)
                 << lastModified;
-        settings.setValue(regkey, queried);
+#ifndef QT_NO_SETTINGS
+        settings->setValue(regkey, queried);
+#endif
     }
+#ifndef QT_NO_SETTINGS
+    if (madeSettings)
+        delete settings;
+#endif
 
     if (!success) {
-        if (fileName.isEmpty()) {
-            errorString = QLibrary::tr("The shared library was not found.");
-        } else {
-            errorString = QLibrary::tr("The file '%1' is not a valid Qt plugin.").arg(fileName);
+        if (errorString.isEmpty()){
+            if (fileName.isEmpty())
+                errorString = QLibrary::tr("The shared library was not found.");
+            else
+                errorString = QLibrary::tr("The file '%1' is not a valid Qt plugin.").arg(fileName);
         }
         return false;
     }
@@ -781,6 +801,22 @@ QLibrary::QLibrary(const QString& fileName, int verNum, QObject *parent)
 }
 
 /*!
+    Constructs a library object with the given \a parent that will
+    load the library specified by \a fileName and full version number \a version.
+    Currently, the version number is ignored on Windows.
+
+    We recommend omitting the file's suffix in \a fileName, since
+    QLibrary will automatically look for the file with the appropriate
+    suffix in accordance with the platform, e.g. ".so" on Unix,
+    ".dylib" on Mac OS X, and ".dll" on Windows. (See \l{fileName}.)
+ */
+QLibrary::QLibrary(const QString& fileName, const QString &version, QObject *parent)
+    :QObject(parent), d(0), did_load(false)
+{
+    setFileNameAndVersion(fileName, version);
+}
+
+/*!
     Destroys the QLibrary object.
 
     Unless unload() was called explicitly, the library stays in memory
@@ -818,12 +854,15 @@ QLibrary::~QLibrary()
 
 void QLibrary::setFileName(const QString &fileName)
 {
+    QLibrary::LoadHints lh;
     if (d) {
+        lh = d->loadHints;
         d->release();
         d = 0;
         did_load = false;
     }
     d = QLibraryPrivate::findOrCreate(fileName);
+    d->loadHints = lh;
 }
 
 QString QLibrary::fileName() const
@@ -843,12 +882,34 @@ QString QLibrary::fileName() const
 */
 void QLibrary::setFileNameAndVersion(const QString &fileName, int verNum)
 {
+    QLibrary::LoadHints lh;
     if (d) {
+        lh = d->loadHints;
         d->release();
         d = 0;
         did_load = false;
     }
-    d = QLibraryPrivate::findOrCreate(fileName, verNum);
+    d = QLibraryPrivate::findOrCreate(fileName, verNum >= 0 ? QString::number(verNum) : QString());
+    d->loadHints = lh;
+}
+
+/*!
+    Sets the fileName property and full version number to \a fileName
+    and \a version respectively.
+    The \a version parameter is ignored on Windows.
+    \sa setFileName()
+*/
+void QLibrary::setFileNameAndVersion(const QString &fileName, const QString &version)
+{
+    QLibrary::LoadHints lh;
+    if (d) {
+        lh = d->loadHints;
+        d->release();
+        d = 0;
+        did_load = false;
+    }
+    d = QLibraryPrivate::findOrCreate(fileName, version);
+    d->loadHints = lh;
 }
 
 /*!
@@ -857,15 +918,7 @@ void QLibrary::setFileNameAndVersion(const QString &fileName, int verNum)
     not be resolved or if the library could not be loaded.
 
     Example:
-    \code
-        typedef int (*AvgFunction)(int, int);
-
-        AvgFunction avg = (AvgFunction) library->resolve("avg");
-        if (avg)
-            return avg(5, 8);
-        else
-            return -1;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 2
 
     The symbol must be exported as a C function from the library. This
     means that the function must be wrapped in an \c{extern "C"} if
@@ -873,22 +926,11 @@ void QLibrary::setFileNameAndVersion(const QString &fileName, int verNum)
     also explicitly export the function from the DLL using the
     \c{__declspec(dllexport)} compiler directive, for example:
 
-    \code
-        extern "C" MY_EXPORT int avg(int a, int b)
-        {
-            return (a + b) / 2;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 3
 
     with \c MY_EXPORT defined as
 
-    \code
-        #ifdef Q_WS_WIN
-        #define MY_EXPORT __declspec(dllexport)
-        #else
-        #define MY_EXPORT
-        #endif
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 4
 
 */
 void *QLibrary::resolve(const char *symbol)
@@ -934,6 +976,26 @@ void *QLibrary::resolve(const QString &fileName, const char *symbol)
 void *QLibrary::resolve(const QString &fileName, int verNum, const char *symbol)
 {
     QLibrary library(fileName, verNum);
+    return library.resolve(symbol);
+}
+
+/*!
+    \overload
+
+    Loads the library \a fileName with full version number \a version and
+    returns the address of the exported symbol \a symbol.
+    Note that \a fileName should not include the platform-specific file suffix;
+    (see \l{fileName}). The library remains loaded until the application exits.
+    \a version is ignored on Windows.
+
+    The function returns 0 if the symbol could not be resolved or if
+    the library could not be loaded.
+
+    \sa resolve()
+*/
+void *QLibrary::resolve(const QString &fileName, const QString &version, const char *symbol)
+{
+    QLibrary library(fileName, version);
     return library.resolve(symbol);
 }
 
@@ -991,12 +1053,16 @@ QString QLibrary::errorString() const
 */
 void QLibrary::setLoadHints(LoadHints hints)
 {
+    if (!d) {
+        d = QLibraryPrivate::findOrCreate(QString());   // ugly, but we need a d-ptr
+        d->errorString.clear();
+    }
     d->loadHints = hints;
 }
 
 QLibrary::LoadHints QLibrary::loadHints() const
 {
-    return d->loadHints;
+    return d ? d->loadHints : (QLibrary::LoadHints)0;
 }
 
 /* Internal, for debugging */
@@ -1007,10 +1073,12 @@ bool qt_debug_component()
 #else
     static int debug_env = -1;
     if (debug_env == -1)
-       debug_env = ::qgetenv("QT_DEBUG_PLUGINS").toInt();
+       debug_env = QT_PREPEND_NAMESPACE(qgetenv)("QT_DEBUG_PLUGINS").toInt();
 
     return debug_env != 0;
 #endif
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_LIBRARY

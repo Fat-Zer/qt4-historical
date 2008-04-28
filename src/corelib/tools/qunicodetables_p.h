@@ -59,6 +59,8 @@
 
 #include <QtCore/qchar.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace QUnicodeTables {
     struct Properties {
         ushort category : 8;
@@ -77,6 +79,9 @@ namespace QUnicodeTables {
         signed short upperCaseDiff : 16;
         signed short titleCaseDiff : 16;
         signed short caseFoldDiff : 16;
+        ushort graphemeBreak : 8;
+        ushort wordBreak : 8;
+        ushort sentenceBreak : 8;
     };
     Q_CORE_EXPORT const Properties * QT_FASTCALL properties(uint ucs4);
     Q_CORE_EXPORT const Properties * QT_FASTCALL properties(ushort ucs2);
@@ -180,5 +185,49 @@ namespace QUnicodeTables {
     }
 
 
+    enum GraphemeBreak {
+        GraphemeBreakOther, 
+        GraphemeBreakCR,
+        GraphemeBreakLF,
+        GraphemeBreakControl,
+        GraphemeBreakExtend,
+        GraphemeBreakL,
+        GraphemeBreakV,
+        GraphemeBreakT,
+        GraphemeBreakLV,
+        GraphemeBreakLVT
+    };
+
+
+    enum WordBreak {
+        WordBreakOther,
+        WordBreakFormat,
+        WordBreakKatakana,
+        WordBreakALetter,
+        WordBreakMidLetter,
+        WordBreakMidNum,
+        WordBreakNumeric,
+        WordBreakExtendNumLet
+    };
+
+
+    enum SentenceBreak {
+        SentenceBreakOther,
+        SentenceBreakSep,
+        SentenceBreakFormat,
+        SentenceBreakSp,
+        SentenceBreakLower,
+        SentenceBreakUpper,
+        SentenceBreakOLetter,
+        SentenceBreakNumeric,
+        SentenceBreakATerm,
+        SentenceBreakSTerm,
+        SentenceBreakClose
+    };
+
+
 }
+
+QT_END_NAMESPACE
+
 #endif

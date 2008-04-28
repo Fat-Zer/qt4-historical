@@ -48,6 +48,8 @@
 #include <QtGui/QStyle>
 #include <QtGui/QPainter>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 SheetDelegate::SheetDelegate(QTreeView *view, QWidget *parent)
@@ -108,3 +110,5 @@ QSize SheetDelegate::sizeHint(const QStyleOptionViewItem &opt, const QModelIndex
 }
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qt4-sql.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qt4-sql.qdoc -->
 <head>
-  <title>Qt 4.3: The Qt 4 Database GUI Layer</title>
+  <title>Qt 4.4: The Qt 4 Database GUI Layer</title>
   <link rel="prev" href="qt4-accessibility.html" />
   <link rel="contents" href="qt4-intro.html" />
   <link rel="next" href="qt4-network.html" />
@@ -20,7 +20,8 @@
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-network.html">The Network Module in Qt 4</a>]
 </p>
-<h1 align="center">The Qt 4 Database GUI Layer<br /><small></small></h1>
+<h1 class="title">The Qt 4 Database GUI Layer<br /><span class="subtitle"></span>
+</h1>
 <p>The GUI layer of the SQL module in Qt 4 has been entirely redesigned to work with <a href="qt4-interview.html">Interview</a> (Qt's new model/view classes). It consists of three model classes (<a href="qsqlquerymodel.html">QSqlQueryModel</a>, <a href="qsqltablemodel.html">QSqlTableModel</a>, and <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>) that can be used with Qt's view classes, notably <a href="qtableview.html">QTableView</a>.</p>
 <a name="general-overview"></a>
 <h2>General Overview</h2>
@@ -46,20 +47,20 @@
 <a name="example-code"></a>
 <h2>Example Code</h2>
 <p>The simplest way to present data from a database is to simply combine a <a href="qsqlquerymodel.html">QSqlQueryModel</a> with a <a href="qtableview.html">QTableView</a>:</p>
-<pre> QSqlQueryModel model;
- model.setQuery(&quot;select * from person&quot;);
+<pre>         QSqlQueryModel model;
+         model.setQuery(&quot;select * from person&quot;);
 
- QTableView view;
- view.setModel(&amp;model);
- view.show();</pre>
+         QTableView view;
+         view.setModel(&amp;model);
+         view.show();</pre>
 <p>To present the contents of a single table, we can use <a href="qsqltablemodel.html">QSqlTableModel</a> instead:</p>
-<pre> QSqlTableModel model;
- model.setTable(&quot;person&quot;);
- model.select();
+<pre>         QSqlTableModel model;
+         model.setTable(&quot;person&quot;);
+         model.select();
 
- QTableView view;
- view.setModel(&amp;model);
- view.show();</pre>
+         QTableView view;
+         view.setModel(&amp;model);
+         view.show();</pre>
 <p>In practice, it's common that we need to customize the rendering of a field in the database. In that case, we can create our own model based on <a href="qsqlquerymodel.html">QSqlQueryModel</a>. The next code snippet shows a custom model that prepends '#' to the value in field 0 and converts the value in field 2 to uppercase:</p>
 <pre> class CustomSqlModel : public QSqlQueryModel
  {
@@ -132,6 +133,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

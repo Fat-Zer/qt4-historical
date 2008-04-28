@@ -51,6 +51,8 @@
 #include <QtCore/QPointer>
 #include <QtCore/QHash>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
@@ -86,5 +88,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // SIGNALSLOTEDITOR_PLUGIN_H

@@ -1,6 +1,52 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page graphicsview-porting.html
     \title Porting to Graphics View
+    \contentspage {Porting Guides}{Contents}
+    \previouspage Porting .ui Files to Qt 4
+    \nextpage qt3to4 - The Qt 3 to 4 Porting Tool
     \ingroup porting
     \ingroup multimedia
     \brief Hints and tips to assist with porting canvas applications to the
@@ -123,9 +169,7 @@
         \row \o Q3Canvas::onCanvas() \o The is no equivalent to this
         function in Graphics View. However, you can combine
         QGraphicsScene::sceneRect() and QRectF::intersects():
-        \code
-        item->scene().sceneRect().intersects(item->sceneBoundingRect());
-        item->mapToScene(item->shape()).intersects(item->scene().sceneRect());\endcode
+        \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 0
 
         \row \o Q3Canvas::rect() \o The equivalent,
         QGraphicsScene::sceneRect(), returns a QRectF (double
@@ -224,26 +268,7 @@
         out the public tile API can then be declared as new members of
         this class. Here is one example of how to implement tile support:
 
-        \code
-            class TileScene : public QGraphicsScene
-            {
-            public:
-                ...
-
-                void setTiles(const QPixmap &pixmap, int h, int v,
-                              int tileHeight, int tileWidth);
-                void setTile(int x, int y, int tilenum);
-
-            private:
-                QRect tileRect(int x, int y) const;
-                QRect tileRect(int tileNum) const;
-
-                QVector<QVector<int> > tiles;
-                QPixmap tilePixmap;
-                int tileW, tileH;
-                int hTiles, vTiles;
-            };
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 1
 
         Depending on how your scene uses tiles, you may be able to
         simplify this approach. In this example, we will try to mimic the behavior
@@ -256,75 +281,30 @@
         two-dimensional vector of ints to keep track of what tiles should
         be used at what parts of the scene.
 
-        \code
-            void TileScene::setTiles(const QPixmap &pixmap, int h, int v,
-                                     int tileHeight, int tileWidth)
-            {
-                tilePixmap = pixmap;
-                tileW = tileWidth;
-                tileH = tileHeight;
-                hTiles = h;
-                vTiles = v;
-
-                tiles.resize(v);
-                for (int y = 0; y < v; ++y)
-                    tiles[y].resize(h);
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 2
 
         In setTiles(), we store the pixmap and tile properties as
         members of the class. Then we resize the tiles vector
         to match the width and height of our tile grid.
 
-        \code
-            void TileScene::setTile(int x, int y, int tilenum)
-            {
-                tiles[y][x] = tilenum;
-                update(tileRect(x, y));
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 3
 
         The setTile() function updates the tiles index, and then
         updates the corresponding rect in the scene by calling
         tileRect().
 
-        \code
-            QRect TileScene::tileRect(int x, int y) const
-            {
-                return QRect(x * tileW, y * tileH, tileW, tileH);
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 4
 
         The first tileRect() function returns a QRect for the tile at
         position (x, y).
 
-        \code
-            QRect TileScene::tileRect(int tileNum) const
-            {
-                int numHTiles = tilePixmap.width() / tileW;
-                int numVTiles = tilePixmap.height() / tileH;
-                return tileRect(tileNum % numHTiles, tileNum / numHTiles);
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 5
 
         The second tileRect() function returns a QRect for a tile number.
         With these functions in place, we can implement the drawBackground()
         function.
 
-        \code
-            void drawBackground(QPainter *painter, const QRectF &exposed)
-            {
-                for (int y = 0; y < vTiles; ++y) {
-                    for (int x = 0; x < hTiles; ++x) {
-                        QRect destRect = tileRect(x, y);
-                        if (exposed.intersects(destRect)) {
-                            painter->drawPixmap(destRect, tilePixmap,
-                                                tileRect(tiles[y][x]));
-                        }
-                    }
-                }
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 6
 
         In drawBackground(), we redraw all tiles that have been
         exposed by intersecting each tile rect with the exposed background
@@ -553,13 +533,7 @@
             For compatibility, you may want to shift the ellipse up and to the
             left to keep the ellipse centered. Example:
 
-            \code
-                // Before
-                Q3CanvasEllipse ellipse(10, 10);
-
-                // After
-                QGraphicsEllipseItem ellipse(-5, -5, 10, 10);
-            \endcode
+            \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 7
 
             Note: QGraphicsEllipseItem uses QAbstractGraphicsShapeItem::pen()
             for outlines, whereas Q3CanvasEllipse did not use
@@ -625,16 +599,7 @@
             QPainterPath::moveTo() and QPainterPath::cubicTo(). Here is how
             you can convert a bezier curve Q3PointArray to a QPainterPath:
 
-            \code
-            static QPainterPath fromControlPoints(const Q3PointArray &pa)
-            {
-                QPainterPath path;
-                path.moveTo(pa[0]);
-                for (int i = 1; i < pa.size(); i += 3)
-                    path.cubicTo(pa[i], pa[(i + 1) % pa.size()], pa[(i + 2) % pa.size()]);
-                return path;
-            }
-            \endcode
+            \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 8
 
             Note: QGraphicsPathItem uses QAbstractGraphicsShapeItem::pen() for
             outlines, whereas Q3CanvasSpline did not use
@@ -699,14 +664,7 @@
                 functionality using Graphics View, you can load the images by
                 using QDir:
 
-                \code
-                    wildcardPath.replace("%1", "*");
-                    QFileInfo fi(wildcardPath);
-
-                    QList<QPixmap> frames;
-                    foreach (QString entry, QDir(fi.path(), fi.fileName()).entryList())
-                        frames << QPixmap(fi.path() + "/" + entry);
-                \endcode
+                \snippet doc/src/snippets/code/doc.src.porting4-canvas.qdoc 9
 
         \section2 Q3CanvasText
 

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TREEVIEW
@@ -67,6 +69,8 @@ class Q_GUI_EXPORT QTreeView : public QAbstractItemView
     Q_PROPERTY(bool animated READ isAnimated WRITE setAnimated)
     Q_PROPERTY(bool allColumnsShowFocus READ allColumnsShowFocus WRITE setAllColumnsShowFocus)
     Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
+    Q_PROPERTY(bool headerHidden READ isHeaderHidden WRITE setHeaderHidden)
+    Q_PROPERTY(bool expandsOnDoubleClick READ expandsOnDoubleClick WRITE setExpandsOnDoubleClick)
 
 public:
     explicit QTreeView(QWidget *parent = 0);
@@ -94,6 +98,9 @@ public:
     bool itemsExpandable() const;
     void setItemsExpandable(bool enable);
 
+    bool expandsOnDoubleClick() const;
+    void setExpandsOnDoubleClick(bool enable);
+
     int columnViewportPosition(int column) const;
     int columnWidth(int column) const;
     void setColumnWidth(int column, int width);
@@ -101,6 +108,9 @@ public:
 
     bool isColumnHidden(int column) const;
     void setColumnHidden(int column, bool hide);
+
+    bool isHeaderHidden() const;
+    void setHeaderHidden(bool hide);
 
     bool isRowHidden(int row, const QModelIndex &parent) const;
     void setRowHidden(int row, const QModelIndex &parent, bool hide);
@@ -222,6 +232,8 @@ private:
 };
 
 #endif // QT_NO_TREEVIEW
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

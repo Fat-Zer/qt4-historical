@@ -47,6 +47,10 @@
 #include <QtGui/qiconengine.h>
 #include <QtCore/qshareddata.h>
 
+#ifndef QT_NO_SVG
+
+QT_BEGIN_NAMESPACE
+
 class QSvgIconEnginePrivate;
 
 class QSvgIconEngine : public QIconEngineV2
@@ -76,4 +80,7 @@ private:
     QSharedDataPointer<QSvgIconEnginePrivate> d;
 };
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG
 #endif

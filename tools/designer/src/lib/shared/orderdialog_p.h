@@ -41,9 +41,6 @@
 **
 ****************************************************************************/
 
-#ifndef ORDERDIALOG_P_H
-#define ORDERDIALOG_P_H
-
 //
 //  W A R N I N G
 //  -------------
@@ -55,34 +52,65 @@
 // We mean it.
 //
 
-#include <QDialog>
-#include "ui_orderdialog.h"
+#ifndef ORDERDIALOG_P_H
+#define ORDERDIALOG_P_H
 
-class QDesignerFormWindowInterface;
+#include "shared_global_p.h"
+
+#include <QtGui/QDialog>
+#include <QtCore/QMap>
+
+QT_BEGIN_NAMESPACE
+
+class QDesignerFormEditorInterface;
 
 namespace qdesigner_internal {
 
-class OrderDialog: public QDialog
+namespace Ui {
+    class OrderDialog;
+}
+
+class QDESIGNER_SHARED_EXPORT OrderDialog: public QDialog
 {
     Q_OBJECT
 public:
-    OrderDialog(QDesignerFormWindowInterface *form, QWidget *parent);
+    OrderDialog(QWidget *parent);
     virtual ~OrderDialog();
 
-    void setPageList(QList<QWidget*> *pages);
+    static QWidgetList pagesOfContainer(const QDesignerFormEditorInterface *core, QWidget *container);
+
+    void setPageList(const QWidgetList &pages);
+    QWidgetList pageList() const;
+
+    void setDescription(const QString &d);
+
+    enum Format {        // Display format
+        PageOrderFormat, // Container pages, ranging 0..[n-1]
+        TabOrderFormat   // List of widgets,  ranging 1..1
+    };
+
+    void setFormat(Format f)  { m_format = f; }
+    Format format() const     { return m_format; }
 
 private slots:
-    void accept();
     void on_upButton_clicked();
     void on_downButton_clicked();
     void on_pageList_currentRowChanged(int row);
+    void slotEnableButtonsAfterDnD();
+    void slotReset();
 
 private:
-    Ui::OrderDialog ui;
-    QDesignerFormWindowInterface *m_form;
-    QList<QWidget*> *m_pages;
+    void buildList();
+    void enableButtons(int r);
+
+    typedef QMap<int, QWidget*> OrderMap;
+    OrderMap m_orderMap;
+    Ui::OrderDialog* m_ui;
+    Format m_format;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // ORDERDIALOG_P_H

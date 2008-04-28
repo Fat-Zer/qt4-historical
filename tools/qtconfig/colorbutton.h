@@ -46,6 +46,8 @@
 
 #include <QAbstractButton>
 
+QT_BEGIN_NAMESPACE
+
 class ColorButton : public QAbstractButton
 {
     Q_OBJECT
@@ -84,5 +86,7 @@ private:
     QPoint presspos;
     bool mousepressed;
 };
+
+QT_END_NAMESPACE
 
 #endif // COLORBUTTON_H

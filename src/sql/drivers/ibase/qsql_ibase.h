@@ -50,6 +50,8 @@
 #include <ibase.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 class QIBaseDriverPrivate;
 class QIBaseResultPrivate;
 class QIBaseDriver;
@@ -79,6 +81,7 @@ private:
 
 class QIBaseDriver : public QSqlDriver
 {
+    Q_OBJECT
     friend class QIBaseDriverPrivate;
     friend class QIBaseResultPrivate;
 public:
@@ -110,9 +113,19 @@ public:
     QString formatValue(const QSqlField &field, bool trimStrings) const;
     QVariant handle() const;
 
+protected Q_SLOTS:
+    bool subscribeToNotificationImplementation(const QString &name);
+    bool unsubscribeFromNotificationImplementation(const QString &name);
+    QStringList subscribedToNotificationsImplementation() const;
+
+private Q_SLOTS:
+    void qHandleEventNotification(void* updatedResultBuffer);
+
 private:
     QIBaseDriverPrivate* d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 #endif // QSQL_IBASE_H

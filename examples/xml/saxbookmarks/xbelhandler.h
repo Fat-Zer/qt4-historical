@@ -47,8 +47,10 @@
 #include <QIcon>
 #include <QXmlDefaultHandler>
 
+QT_BEGIN_NAMESPACE
 class QTreeWidget;
 class QTreeWidgetItem;
+QT_END_NAMESPACE
 
 class XbelHandler : public QXmlDefaultHandler
 {

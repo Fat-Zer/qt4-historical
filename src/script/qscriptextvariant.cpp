@@ -57,21 +57,19 @@
 
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace Ext {
 
-Variant::Variant(QScriptEnginePrivate *eng, QScriptClassInfo *classInfo):
-    Ecma::Core(eng), m_classInfo(classInfo)
+Variant::Variant(QScriptEnginePrivate *eng):
+    Ecma::Core(eng, QLatin1String("QVariant"), QScriptClassInfo::VariantType)
 {
-    publicPrototype.invalidate();
     newVariant(&publicPrototype, QVariant());
 
     eng->newConstructor(&ctor, this, publicPrototype);
 
-    const QScriptValue::PropertyFlags flags = QScriptValue::SkipInEnumeration;
-    publicPrototype.setProperty(QLatin1String("toString"),
-                eng->createFunction(method_toString, 0, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("valueOf"),
-                eng->createFunction(method_valueOf, 0, m_classInfo), flags);
+    addPrototypeFunction(QLatin1String("toString"), method_toString, 0);
+    addPrototypeFunction(QLatin1String("valueOf"), method_valueOf, 0);
 }
 
 Variant::~Variant()
@@ -81,7 +79,7 @@ Variant::~Variant()
 Variant::Instance *Variant::Instance::get(const QScriptValueImpl &object, QScriptClassInfo *klass)
 {
     if (! klass || klass == object.classInfo())
-        return static_cast<Instance*> (object.objectData().data());
+        return static_cast<Instance*> (object.objectData());
 
     return 0;
 }
@@ -95,25 +93,43 @@ void Variant::execute(QScriptContextPrivate *context)
 
 void Variant::newVariant(QScriptValueImpl *result, const QVariant &value)
 {
-    Instance *instance = new Instance();
+    Instance *instance;
+    if (!result->isValid()) {
+        engine()->newObject(result, publicPrototype, classInfo());
+        instance = new Instance();
+        result->setObjectData(instance);
+    } else {
+        Q_ASSERT(result->isObject());
+        if (result->classInfo() != classInfo()) {
+            result->destroyObjectData();
+            result->setClassInfo(classInfo());
+            instance = new Instance();
+            result->setObjectData(instance);
+        } else {
+            instance = Instance::get(*result, classInfo());
+        }
+    }
     instance->value = value;
-
-    engine()->newObject(result, publicPrototype, classInfo());
-    result->setObjectData(QExplicitlySharedDataPointer<QScriptObjectData>(instance));
 }
 
 QScriptValueImpl Variant::method_toString(QScriptContextPrivate *context, QScriptEnginePrivate *eng, QScriptClassInfo *classInfo)
 {
     if (Instance *instance = Instance::get(context->thisObject(), classInfo)) {
+        QString result;
         QScriptValueImpl value = method_valueOf(context, eng, classInfo);
-        QString valueStr = value.isObject() ? QString::fromUtf8("...") : value.toString();
-        QString str = QString::fromUtf8("variant(%0, %1)")
-                      .arg(QLatin1String(instance->value.typeName()))
-                      .arg(valueStr);
-        return QScriptValueImpl(eng, str);
+        if (value.isObject()) {
+            result = instance->value.toString();
+            if (result.isEmpty()) {
+                result = QString::fromLatin1("QVariant(%0)")
+                         .arg(QLatin1String(instance->value.typeName()));
+            }
+        } else {
+            result = value.toString();
+        }
+        return QScriptValueImpl(eng, result);
     }
     return context->throwError(QScriptContext::TypeError,
-                               QLatin1String("Variant.prototype.toString"));
+                               QLatin1String("QVariant.prototype.toString"));
 }
 
 QScriptValueImpl Variant::method_valueOf(QScriptContextPrivate *context, QScriptEnginePrivate *eng, QScriptClassInfo *classInfo)
@@ -143,11 +159,11 @@ QScriptValueImpl Variant::method_valueOf(QScriptContextPrivate *context, QScript
             return context->thisObject();
         } // switch
     }
-
-    return context->throwError(QScriptContext::TypeError,
-                               QLatin1String("Variant.prototype.valueOf"));
+    return context->thisObject();
 }
 
 } } // namespace QScript::Ecma
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

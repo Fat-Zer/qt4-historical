@@ -1,10 +1,9 @@
 TEMPLATE      = subdirs
 SUBDIRS       = cachedtable \
                 drilldown \
-                masterdetail \
-                querymodel \
-                tablemodel \
                 relationaltablemodel
+
+!wince*: SUBDIRS += querymodel tablemodel masterdetail
 
 # install
 sources.files = connection.h sql.pro README

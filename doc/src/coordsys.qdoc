@@ -1,5 +1,48 @@
 /****************************************************************************
 **
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/****************************************************************************
+**
 ** Qt Coordinate System Documentation.
 **
 ** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
@@ -83,20 +126,10 @@
 
     \row
     \o
-    \code
-    QPainter painter(this);
-
-    painter.setPen(Qt::darkGreen);
-    painter.drawRect(1, 2, 6, 4);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.coordsys.qdoc 0
 
     \o
-    \code
-    QPainter painter(this);
-
-    painter.setPen(Qt::darkGreen);
-    painter.drawLine(2, 7, 6, 1);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.coordsys.qdoc 1
     \endtable
 
     When rendering with a pen with an even number of pixels, the
@@ -159,22 +192,10 @@
     \row
     \o
 
-    \code
-    QPainter painter(this);
-    painter.setRenderHint(
-        QPainter::Antialiasing);
-    painter.setPen(Qt::darkGreen);
-    painter.drawRect(1, 2, 6, 4);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.coordsys.qdoc 2
 
     \o
-    \code
-    QPainter painter(this);
-    painter.setRenderHint(
-        QPainter::Antialiasing);
-    painter.setPen(Qt::darkGreen);
-    painter.drawLine(2, 7, 6, 1);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.coordsys.qdoc 3
     \endtable
 
     \section1 Transformations
@@ -246,9 +267,7 @@
     \row
     \o {2,1}
 
-    \quotefromfile widgets/analogclock/analogclock.cpp
-    \skipto ::paintEvent
-    \printuntil scale
+    \snippet examples/widgets/analogclock/analogclock.cpp 9
 
     First, we set up the painter. We translate the coordinate system
     so that point (0, 0) is in the widget's center, instead of being
@@ -263,8 +282,7 @@
 
     See also the \l {Window-Viewport Conversion} section.
 
-    \skipto painter.save()
-    \printuntil restore
+    \snippet examples/widgets/analogclock/analogclock.cpp 18
 
     We draw the clock's hour hand by rotating the coordinate system
     and calling QPainter::drawConvexPolygon(). Thank's to the
@@ -279,16 +297,14 @@
     the code guarantees that the code that follows won't be disturbed
     by the transformations we've used.
 
-    \skipto painter.save()
-    \printuntil restore
+    \snippet examples/widgets/analogclock/analogclock.cpp 24
 
     We do the same for the clock's minute hand, which is defined by
     the four points (1, 0), (0, 1), (-1, 0), and (0, -40). These
     coordinates specify a hand that is thinner and longer than the
     minute hand.
 
-    \skipto for (int
-    \printuntil }
+    \snippet examples/widgets/analogclock/analogclock.cpp 27
 
     Finally, we draw the clock face, which consists of twelve short
     lines at 30-degree intervals. At the end of that, the painter is
@@ -332,10 +348,7 @@
     -50) to (50, 50) with (0, 0) in the center by calling the
     QPainter::setWindow() function:
 
-    \code
-        QPainter painter(this);
-        painter.setWindow(QRect(-50, -50, 100, 100));
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.coordsys.qdoc 4
 
     Now, the logical coordinates (-50,-50) correspond to the paint
     device's physical coordinates (0, 0). Independent of the paint
@@ -349,13 +362,7 @@
     viewport and "window" maintain the same aspect ratio to prevent
     deformation:
 
-    \code
-        int side = qMin(width(), height())
-        int x = (width() - side / 2);
-        int y = (height() - side / 2);
-
-        painter.setViewport(x, y, side, side);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.coordsys.qdoc 5
 
     If we make the logical coordinate system a square, we should also
     make the viewport a square using the QPainter::setViewport()

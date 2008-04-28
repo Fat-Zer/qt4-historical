@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QWidget;
 
 class QDesignerContainerExtension
@@ -67,6 +69,8 @@ public:
     virtual void remove(int index) = 0;
 };
 Q_DECLARE_EXTENSION_INTERFACE(QDesignerContainerExtension, "com.trolltech.Qt.Designer.Container")
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

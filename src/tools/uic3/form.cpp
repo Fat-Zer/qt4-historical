@@ -59,6 +59,8 @@
 #include <QRegExp>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 QByteArray combinePath(const char *infile, const char *outfile)
 {
     QFileInfo inFileInfo(QDir::current(), QFile::decodeName(infile));
@@ -917,3 +919,5 @@ void Ui3Reader::createFormImpl(const QDomElement& e, const QString& form, const 
         createFormImpl(n, form, connection, table);
     }
 }
+
+QT_END_NAMESPACE

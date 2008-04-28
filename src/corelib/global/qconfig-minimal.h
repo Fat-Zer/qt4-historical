@@ -77,6 +77,9 @@
 #ifndef QT_NO_PRINTDIALOG
 #  define QT_NO_PRINTDIALOG
 #endif
+#ifndef QT_NO_PRINTPREVIEWDIALOG
+#  define QT_NO_PRINTPREVIEWDIALOG
+#endif
 #ifndef QT_NO_PROGRESSDIALOG
 #  define QT_NO_PROGRESSDIALOG
 #endif
@@ -93,6 +96,9 @@
 #endif
 #ifndef QT_NO_FILESYSTEMWATCHER
 #  define QT_NO_FILESYSTEMWATCHER
+#endif
+#ifndef QT_NO_FILESYSTEMMODEL
+#  define QT_NO_FILESYSTEMMODEL
 #endif
 #ifndef QT_NO_PROCESS
 #  define QT_NO_PROCESS
@@ -189,6 +195,9 @@
 #ifndef QT_NO_LISTVIEW
 #  define QT_NO_LISTVIEW
 #endif
+#ifndef QT_NO_COLUMNVIEW
+#  define QT_NO_COLUMNVIEW
+#endif
 #ifndef QT_NO_PROXYMODEL
 #  define QT_NO_PROXYMODEL
 #endif
@@ -215,6 +224,9 @@
 #ifndef QT_NO_CLIPBOARD
 #  define QT_NO_CLIPBOARD
 #endif
+#ifndef QT_NO_CSSPARSER
+#  define QT_NO_CSSPARSER
+#endif
 #ifndef QT_NO_CURSOR
 #  define QT_NO_CURSOR
 #endif
@@ -230,20 +242,41 @@
 #ifndef QT_NO_SESSIONMANAGER
 #  define QT_NO_SESSIONMANAGER
 #endif
+#ifndef QT_NO_SHAREDMEMORY
+#  define QT_NO_SHAREDMEMORY
+#endif
 #ifndef QT_NO_SHORTCUT
 #  define QT_NO_SHORTCUT
 #endif
 #ifndef QT_NO_SOUND
 #  define QT_NO_SOUND
 #endif
+#ifndef QT_NO_SYSTEMSEMAPHORE
+#  define QT_NO_SYSTEMSEMAPHORE
+#endif
 #ifndef QT_NO_TABLETEVENT
 #  define QT_NO_TABLETEVENT
+#endif
+#ifndef QT_NO_TEXTHTMLPARSER
+#  define QT_NO_TEXTHTMLPARSER
 #endif
 #ifndef QT_NO_THREAD
 #  define QT_NO_THREAD
 #endif
+#ifndef QT_NO_CONCURRENT
+#  define QT_NO_CONCURRENT
+#endif
 #ifndef QT_NO_WHEELEVENT
 #  define QT_NO_WHEELEVENT
+#endif
+#ifndef QT_NO_XMLSTREAM
+#  define QT_NO_XMLSTREAM
+#endif
+#ifndef QT_NO_XMLSTREAMREADER
+#  define QT_NO_XMLSTREAMREADER
+#endif
+#ifndef QT_NO_XMLSTREAMWRITER
+#  define QT_NO_XMLSTREAMWRITER
 #endif
 
 /* Networking */
@@ -295,7 +328,7 @@
 #  define QT_NO_CUPS
 #endif
 
-/* Qtopia Core */
+/* Qt for Embedded Linux */
 #ifndef QT_NO_QWSEMBEDWIDGET
 #  define QT_NO_QWSEMBEDWIDGET
 #endif
@@ -341,6 +374,29 @@
 #ifndef QT_NO_QWS_PROPERTIES
 #  define QT_NO_QWS_PROPERTIES
 #endif
+#ifndef QT_NO_QWS_PROXYSCREEN
+#  define QT_NO_QWS_PROXYSCREEN
+#endif
+#ifndef QT_NO_QWS_DYNAMICSCREENTRANSFORMATION
+#  define QT_NO_QWS_DYNAMICSCREENTRANSFORMATION
+#endif
+
+/* SVG */
+#ifndef QT_NO_SVG
+#  define QT_NO_SVG
+#endif
+#ifndef QT_NO_GRAPHICSSVGITEM
+#  define QT_NO_GRAPHICSSVGITEM
+#endif
+#ifndef QT_NO_SVGGENERATOR
+#  define QT_NO_SVGGENERATOR
+#endif
+#ifndef QT_NO_SVGRENDERER
+#  define QT_NO_SVGRENDERER
+#endif
+#ifndef QT_NO_SVGWIDGET
+#  define QT_NO_SVGWIDGET
+#endif
 
 /* Styles */
 #ifndef QT_NO_STYLE_MOTIF
@@ -357,6 +413,12 @@
 #endif
 #ifndef QT_NO_STYLE_STYLESHEET
 #  define QT_NO_STYLE_STYLESHEET
+#endif
+#ifndef QT_NO_STYLE_WINDOWSCE
+#  define QT_NO_STYLE_WINDOWSCE
+#endif
+#ifndef QT_NO_STYLE_WINDOWSMOBILE
+#  define QT_NO_STYLE_WINDOWSMOBILE
 #endif
 #ifndef QT_NO_STYLE_WINDOWSVISTA
 #  define QT_NO_STYLE_WINDOWSVISTA
@@ -479,6 +541,9 @@
 #ifndef QT_NO_GRAPHICSVIEW
 #  define QT_NO_GRAPHICSVIEW
 #endif
+#ifndef QT_NO_PRINTPREVIEWWIDGET
+#  define QT_NO_PRINTPREVIEWWIDGET
+#endif
 #ifndef QT_NO_MDIAREA
 #  define QT_NO_MDIAREA
 #endif
@@ -532,4 +597,9 @@
 #endif
 #ifndef QT_NO_VALIDATOR
 #  define QT_NO_VALIDATOR
+#endif
+
+/* Windows */
+#ifndef QT_NO_WIN_ACTIVEQT
+#  define QT_NO_WIN_ACTIVEQT
 #endif

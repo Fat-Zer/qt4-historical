@@ -47,10 +47,13 @@
 #include <QPainter>
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
 class QToolButton;
+QT_END_NAMESPACE
 
+//! [0]
 class ImageComposer : public QWidget
 {
     Q_OBJECT
@@ -62,7 +65,9 @@ private slots:
     void chooseSource();
     void chooseDestination();
     void recalculateResult();
+//! [0]
 
+//! [1]
 private:
     void addOp(QPainter::CompositionMode mode, const QString &name);
     void chooseImage(const QString &title, QImage *image, QToolButton *button);
@@ -80,5 +85,6 @@ private:
     QImage destinationImage;
     QImage resultImage;
 };
+//! [1]
 
 #endif

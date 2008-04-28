@@ -54,12 +54,14 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 struct Q_CORE_EXPORT QLinkedListData
 {
     QLinkedListData *n, *p;
-    QBasicAtomic ref;
+    QBasicAtomicInt ref;
     int size;
     uint sharable : 1;
 
@@ -103,6 +105,7 @@ public:
     T takeFirst();
     T takeLast();
     int removeAll(const T &t);
+    bool removeOne(const T &t);
     bool contains(const T &t) const;
     int count(const T &t) const;
 
@@ -259,7 +262,7 @@ void QLinkedList<T>::detach_helper()
 {
     union { QLinkedListData *d; Node *e; } x;
     x.d = new QLinkedListData;
-    x.d->ref.init(1);
+    x.d->ref = 1;
     x.d->size = d->size;
     x.d->sharable = true;
     Node *i = e->n, *j = x.e;
@@ -271,9 +274,9 @@ void QLinkedList<T>::detach_helper()
     }
     j->n = x.e;
     x.e->p = j;
-    x.d = qAtomicSetPtr(&d, x.d);
-    if (!x.d->ref.deref())
-        free(x.d);
+    if (!d->ref.deref())
+        free(d);
+    d = x.d;
 }
 
 template <typename T>
@@ -301,11 +304,10 @@ template <typename T>
 QLinkedList<T> &QLinkedList<T>::operator=(const QLinkedList<T> &l)
 {
     if (d != l.d) {
-        QLinkedListData *x = l.d;
-        x->ref.ref();
-        x = qAtomicSetPtr(&d, x);
-        if (!x->ref.deref())
-            free(x);
+        l.d->ref.ref();
+        if (!d->ref.deref())
+            free(d);
+        d = l.d;
         if (!d->sharable)
             detach_helper();
     }
@@ -375,6 +377,18 @@ int QLinkedList<T>::removeAll(const T &_t)
     }
     d->size-=c;
     return c;
+}
+
+template <typename T>
+bool QLinkedList<T>::removeOne(const T &_t)
+{
+    detach();
+    iterator it = qFind(begin(), end(), _t);
+    if (it != end()) {
+        erase(it);
+        return true;
+    }
+    return false;
 }
 
 template <typename T>
@@ -482,6 +496,8 @@ QLinkedList<T> QLinkedList<T>::operator+(const QLinkedList<T> &l) const
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(LinkedList)
 Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(LinkedList)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

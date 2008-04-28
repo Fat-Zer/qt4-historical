@@ -69,23 +69,26 @@
 #include "QtCore/qt_windows.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 #if defined(Q_WS_QWS)
-#define QT_QSETTINGS_ALWAYS_CASE_SENSITIVE
+#define QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
 #endif
 
 // used in testing framework
 #define QSETTINGS_P_H_VERSION 2
 
-#ifdef QT_QSETTINGS_ALWAYS_CASE_SENSITIVE
+#ifdef QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
 static const Qt::CaseSensitivity IniCaseSensitivity = Qt::CaseSensitive;
 
 class QSettingsKey : public QString
 {
 public:
-    inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs)
+    inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs, int /* position */ = -1)
         : QString(key) { Q_ASSERT(cs == Qt::CaseSensitive); Q_UNUSED(cs); }
 
     inline QString originalCaseKey() const { return *this; }
+    inline int originalKeyPosition() const { return -1; }
 };
 #else
 static const Qt::CaseSensitivity IniCaseSensitivity = Qt::CaseInsensitive;
@@ -93,17 +96,19 @@ static const Qt::CaseSensitivity IniCaseSensitivity = Qt::CaseInsensitive;
 class QSettingsKey : public QString
 {
 public:
-    inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs)
-         : QString(key), theOriginalKey(key)
+    inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs, int position = -1)
+         : QString(key), theOriginalKey(key), theOriginalKeyPosition(position)
     {
         if (cs == Qt::CaseInsensitive)
             QString::operator=(toLower());
     }
 
     inline QString originalCaseKey() const { return theOriginalKey; }
+    inline int originalKeyPosition() const { return theOriginalKeyPosition; }
 
 private:
     QString theOriginalKey;
+    int theOriginalKeyPosition;
 };
 #endif
 
@@ -147,6 +152,7 @@ class Q_CORE_EXPORT QConfFile
 {
 public:
     ParsedSettingsMap mergedKeyMap() const;
+    bool isWritable() const;
 
     static QConfFile *fromName(const QString &name, bool _userPerms);
     static void clearCache();
@@ -158,7 +164,7 @@ public:
     ParsedSettingsMap originalKeys;
     ParsedSettingsMap addedKeys;
     ParsedSettingsMap removedKeys;
-    QAtomic ref;
+    QAtomicInt ref;
     QMutex mutex;
     bool userPerms;
 
@@ -183,7 +189,9 @@ class Q_AUTOTEST_EXPORT QSettingsPrivate
     Q_DECLARE_PUBLIC(QSettings)
 
 public:
-    QSettingsPrivate();
+    QSettingsPrivate(QSettings::Format format);
+    QSettingsPrivate(QSettings::Format format, QSettings::Scope scope,
+                     const QString &organization, const QString &application);
     virtual ~QSettingsPrivate();
 
     virtual void remove(const QString &key) = 0;
@@ -240,6 +248,11 @@ public:
        NumConfFiles = 4
     };
 
+    QSettings::Format format;
+    QSettings::Scope scope;
+    QString organizationName;
+    QString applicationName;
+
 protected:
     QStack<QSettingsGroup> groupStack;
     QString groupPrefix;
@@ -288,11 +301,13 @@ private:
     void ensureSectionParsed(QConfFile *confFile, const QSettingsKey &key) const;
 
     QConfFile *confFiles[NumConfFiles];
-    QSettings::Format format;
     QSettings::ReadFunc readFunc;
     QSettings::WriteFunc writeFunc;
     QString extension;
     Qt::CaseSensitivity caseSensitivity;
+    int nextPosition;
 };
+
+QT_END_NAMESPACE
 
 #endif // QSETTINGS_P_H

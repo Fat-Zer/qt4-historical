@@ -77,6 +77,8 @@
 #include <limits.h>
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 #define RECT_EXTENSION 300
 
 static const char * const unknown_xpm[] = {
@@ -336,7 +338,7 @@ QList<Q3IconViewPrivate::ItemContainer *>* Q3IconViewPrivate::findContainers(
 extern "C" {
 #endif
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 static int _cdecl cmpIconViewItems(const void *n1, const void *n2)
 #else
 static int cmpIconViewItems(const void *n1, const void *n2)
@@ -737,12 +739,7 @@ void Q3IconDragData::setTextRect(const QRect &r)
     Q3IconView is to construct the item passing the constructor a
     pointer to the icon view, a string and an icon:
 
-    \code
-    (void) new Q3IconViewItem(
-                    iconView,        // A pointer to a Q3IconView
-                    "This is the text of the item",
-                    aPixmap);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 0
 
     By default the text of an icon view item may not be edited by the
     user but calling setRenameEnabled(true) will allow the user to
@@ -754,11 +751,7 @@ void Q3IconDragData::setTextRect(const QRect &r)
     The Q3IconView::firstItem() and Q3IconViewItem::nextItem() functions
     provide a means of iterating over all the items in a Q3IconView:
 
-    \code
-    Q3IconViewItem *item;
-    for (item = iconView->firstItem(); item; item = item->nextItem())
-        do_something_with(item);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 1
 
     The item's icon view is available from iconView(), and its
     position in the icon view from index().
@@ -1298,11 +1291,7 @@ Q3IconViewItem *Q3IconViewItem::prevItem() const
     To find the first item use Q3IconView::firstItem().
 
     Example:
-    \code
-    Q3IconViewItem *item;
-    for (item = iconView->firstItem(); item; item = item->nextItem())
-        do_something_with(item);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 2
 
     \sa prevItem()
 */
@@ -1690,12 +1679,7 @@ void Q3IconViewItem::rename()
     different values and a different comparison function. Here is a
     reimplementation that uses plain Unicode comparison:
 
-    \code
-        int MyIconViewItem::compare(Q3IconViewItem *i) const
-        {
-            return key().compare(i->key());
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 3
 
     \sa key() QString::localeAwareCompare() QString::compare()
 */
@@ -2175,15 +2159,7 @@ void Q3IconViewItem::checkRect()
     object and create some Q3IconViewItems with the Q3IconView as their
     parent, set the icon view's geometry and show it.
     For example:
-    \code
-    Q3IconView *iv = new Q3IconView(this);
-    QDir dir(path, "*.xpm");
-    for (uint i = 0; i < dir.count(); i++) {
-        (void) new Q3IconViewItem(iv, dir[i], QPixmap(path + dir[i]));
-    }
-    iv->resize(600, 400);
-    iv->show();
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 4
 
     The Q3IconViewItem call passes a pointer to the Q3IconView we wish to
     populate, along with the label text and a QPixmap.
@@ -2239,10 +2215,7 @@ void Q3IconViewItem::checkRect()
     Instead we iterate by getting the first item from the \e{icon view}
     and then each subsequent (\l Q3IconViewItem::nextItem()) from each
     \e item in turn:
-    \code
-        for (Q3IconViewItem *item = iv->firstItem(); item; item = item->nextItem())
-            do_something(item);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 5
     Q3IconView also provides currentItem(). You can search for an item
     using findItem() (searching by position or for label text) and
     with findFirstVisibleItem() and findLastVisibleItem(). The number
@@ -2267,12 +2240,7 @@ void Q3IconViewItem::checkRect()
     The simple approach to dragging items out of the icon view is to
     subclass Q3IconView and reimplement Q3IconView::dragObject().
 
-    \code
-    Q3DragObject *MyIconView::dragObject()
-    {
-        return new Q3TextDrag(currentItem()->text(), this);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 6
 
     In this example we create a Q3TextDrag object, (derived from
     Q3DragObject), containing the item's label and return it as the drag
@@ -2287,21 +2255,7 @@ void Q3IconViewItem::checkRect()
     reimplement Q3IconViewItem::acceptDrop() and
     Q3IconViewItem::dropped().
 
-    \code
-    bool MyIconViewItem::acceptDrop(const QMimeSource *mime) const
-    {
-        if (mime->provides("text/plain"))
-            return true;
-        return false;
-    }
-
-    void MyIconViewItem::dropped(QDropEvent *evt, const Q3ValueList<Q3IconDragItem>&)
-    {
-        QString label;
-        if (Q3TextDrag::decode(evt, label))
-            setText(label);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 7
 
     If you want to use extended drag-and-drop or have drag shapes drawn
     you must take a more sophisticated approach.
@@ -2785,9 +2739,7 @@ Q3IconView::~Q3IconView()
     \e{You should never need to call this function.} Instead create
     Q3IconViewItem's and associate them with your icon view like this:
 
-    \code
-        (void) new Q3IconViewItem(myIconview, "The text of the item", aPixmap);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 8
 */
 
 void Q3IconView::insertItem(Q3IconViewItem *item, Q3IconViewItem *after)
@@ -6247,5 +6199,7 @@ bool Q3IconView::isRenaming() const
 
     \sa StringComparisonMode
 */
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_ICONVIEW

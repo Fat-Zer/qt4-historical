@@ -50,7 +50,9 @@
 #include <sys/types.h>
 #endif
 
-#ifndef QT_NO_FILESYSTEMWATCHER
+QT_BEGIN_NAMESPACE
+
+#ifndef QT_NO_FILESYSTEMMODEL
 
 #if defined Q_AUTOTEST_EXPORT
     Q_AUTOTEST_EXPORT bool QFileInfoGatherer_fetchedRoot = false;
@@ -59,8 +61,12 @@
 /*!
     Creates thread
 */
-QFileInfoGatherer::QFileInfoGatherer(QObject *parent) : QThread(parent)
-,abort(false), watcher(0), m_resolveSymlinks(false), m_iconProvider(&defaultProvider)
+QFileInfoGatherer::QFileInfoGatherer(QObject *parent)
+    : QThread(parent), abort(false),
+#ifndef QT_NO_FILESYSTEMWATCHER
+      watcher(0),
+#endif
+      m_resolveSymlinks(false), m_iconProvider(&defaultProvider)
 {
 #ifndef Q_OS_WIN
     userId = getuid();
@@ -68,9 +74,11 @@ QFileInfoGatherer::QFileInfoGatherer(QObject *parent) : QThread(parent)
 #else
     m_resolveSymlinks = true;
 #endif
+#ifndef QT_NO_FILESYSTEMWATCHER
     watcher = new QFileSystemWatcher(this);
     connect(watcher, SIGNAL(directoryChanged(const QString &)), this, SLOT(list(const QString &)));
     connect(watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(updateFile(const QString &)));
+#endif
     start(LowPriority);
 }
 
@@ -193,7 +201,7 @@ void QFileInfoGatherer::run()
             path = this->path.first();
             list = this->files.first();
             this->path.pop_front();
-	    this->files.pop_front();
+            this->files.pop_front();
             updateFiles = true;
         }
         mutex.unlock();
@@ -279,7 +287,7 @@ QExtendedInformation QFileInfoGatherer::getInfo(const QFileInfo &fileInfo) const
 QString QFileInfoGatherer::translateDriveName(const QFileInfo &drive) const
 {
     QString driveName = drive.absoluteFilePath();
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
     if (driveName.startsWith(QLatin1Char('/'))) // UNC host
         return drive.fileName();
     if (driveName.endsWith(QLatin1Char('/')))
@@ -362,4 +370,6 @@ void QFileInfoGatherer::fetch(const QFileInfo &fileInfo, QTime &base, bool &firs
     }
 }
 
-#endif // QT_NO_FILESYSTEMWATCHER
+#endif // QT_NO_FILESYSTEMMODEL
+
+QT_END_NAMESPACE

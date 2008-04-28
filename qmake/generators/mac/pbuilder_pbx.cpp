@@ -59,6 +59,8 @@
 #include <private/qcore_mac_p.h>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 //#define GENERATE_AGGREGRATE_SUBDIR
 
 // Note: this is fairly hacky, but it does the job...
@@ -1289,9 +1291,15 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
 #if 1
     t << "\t\t\t\t" << writeSettings("BUILD_ROOT", escapeFilePath(qmake_getpwd())) << ";" << "\n";
 #endif
-    if(!project->isActiveConfig("staticlib"))
+    if(!project->isActiveConfig("staticlib")) {
         t << "\t\t\t\t" << writeSettings("OTHER_LDFLAGS",
-                                         fixListForOutput("SUBLIBS")+fixListForOutput("QMAKE_LFLAGS")+fixListForOutput("QMAKE_LIBDIR_FLAGS")+fixListForOutput("QMAKE_LIBS"), SettingsAsList, 5) << ";" << "\n";
+                                         fixListForOutput("SUBLIBS")
+                                         + fixListForOutput("QMAKE_LFLAGS")
+                                         + fixListForOutput("QMAKE_LIBDIR_FLAGS")
+                                         + fixListForOutput("QMAKE_FRAMEWORKPATH_FLAGS")
+                                         + fixListForOutput("QMAKE_LIBS"),
+                                         SettingsAsList, 6) << ";" << "\n";
+    }
     if(!project->isEmpty("DESTDIR")) {
         QString dir = project->first("DESTDIR");
         if (QDir::isRelativePath(dir))
@@ -1761,7 +1769,7 @@ ProjectBuilderMakefileGenerator::pbuilderVersion() const
         }
     }
     debug_msg(1, "pbuilder: version.plist: Fallback to default version");
-    return 34; //my fallback
+    return 42; //my fallback
 }
 
 int
@@ -1848,3 +1856,5 @@ ProjectBuilderMakefileGenerator::writeSettings(QString var, QStringList vals, in
     }
     return ret;
 }
+
+QT_END_NAMESPACE

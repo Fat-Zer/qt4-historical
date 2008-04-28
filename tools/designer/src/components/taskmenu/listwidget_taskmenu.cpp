@@ -46,19 +46,22 @@ TRANSLATOR qdesigner_internal::ListWidgetTaskMenu
 */
 
 #include "listwidget_taskmenu.h"
-#include "inplace_editor.h"
 #include "listwidgeteditor.h"
+#include "qdesigner_utils_p.h"
 #include <qdesigner_command_p.h>
 
 #include <QtDesigner/QDesignerFormWindowInterface>
 
 #include <QtGui/QAction>
 #include <QtGui/QStyle>
+#include <QtGui/QLineEdit>
 #include <QtGui/QStyleOption>
 
 #include <QtCore/QEvent>
 #include <QtCore/QVariant>
 #include <QtCore/qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
@@ -101,9 +104,9 @@ void ListWidgetTaskMenu::editItems()
     ListWidgetEditor dlg(m_formWindow, m_listWidget->window());
     dlg.fillContentsFromListWidget(m_listWidget);
     if (dlg.exec() == QDialog::Accepted) {
-        QList<QPair<QString, QIcon> > items;
+        QList<QPair<QString, PropertySheetIconValue> > items;
         for (int i = 0; i < dlg.count(); i++) {
-            items.append(qMakePair<QString, QIcon>(dlg.text(i), dlg.icon(i)));
+            items.append(qMakePair<QString, PropertySheetIconValue>(dlg.text(i), dlg.icon(i)));
         }
         ChangeListContentsCommand *cmd = new ChangeListContentsCommand(m_formWindow);
         cmd->init(m_listWidget, items);
@@ -112,25 +115,10 @@ void ListWidgetTaskMenu::editItems()
     }
 }
 
-ListWidgetTaskMenuFactory::ListWidgetTaskMenuFactory(QExtensionManager *extensionManager)
-    : QExtensionFactory(extensionManager)
-{
-}
-
-QObject *ListWidgetTaskMenuFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (QListWidget *button = qobject_cast<QListWidget*>(object)) {
-        if (iid == Q_TYPEID(QDesignerTaskMenuExtension)) {
-            return new ListWidgetTaskMenu(button, parent);
-        }
-    }
-
-    return 0;
-}
-
 void ListWidgetTaskMenu::updateSelection()
 {
     if (m_editor)
         m_editor->deleteLater();
 }
 
+QT_END_NAMESPACE

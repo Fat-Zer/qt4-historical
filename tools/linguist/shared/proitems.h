@@ -48,6 +48,8 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
 
+QT_BEGIN_NAMESPACE
+
 struct AbstractProItemVisitor;
 
 class ProItem {
@@ -130,7 +132,7 @@ public:
     virtual bool Accept(AbstractProItemVisitor *visitor);
 private:
     VariableOperator m_variableKind;
-    QByteArray m_variable;    
+    QByteArray m_variable;
 };
 
 class ProValue : public ProItem {
@@ -210,7 +212,7 @@ public:
 
     void setModified(bool modified);
     bool isModified() const;
-    
+
     virtual bool Accept(AbstractProItemVisitor *visitor);
 
 private:
@@ -218,5 +220,7 @@ private:
     QString m_displayFileName;
     bool m_modified;
 };
+
+QT_END_NAMESPACE
 
 #endif //PROITEMS_H

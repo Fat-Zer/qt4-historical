@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/sql/models/qsqltablemodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/sql/models/qsqltablemodel.cpp -->
 <head>
-  <title>Qt 4.3: QSqlTableModel Class Reference</title>
+  <title>Qt 4.4: QSqlTableModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QSqlTableModel Class Reference<br /><sup><sup>[<a href="qtsql.html">QtSql</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QSqlTableModel Class Reference<br /><span class="small-subtitle">[<a href="qtsql.html">QtSql</a> module]</span>
+</h1>
 <p>The QSqlTableModel class provides an editable data model for a single database table. <a href="#details">More...</a></p>
 <pre> #include &lt;QSqlTableModel&gt;</pre><p>Inherits <a href="qsqlquerymodel.html">QSqlQueryModel</a>.</p>
 <p>Inherited by <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>.</p>
@@ -128,7 +129,6 @@
 <p>It is possible to set filters using <a href="qsqltablemodel.html#setFilter">setFilter</a>(), or modify the sort order using <a href="qsqltablemodel.html#setSort">setSort</a>(). At the end, you must call <a href="qsqltablemodel.html#select">select</a>() to populate the model with data.</p>
 <p>The <a href="sql-tablemodel.html">sql/tablemodel</a> example illustrates how to use QSqlTableModel as the data source for a <a href="qtableview.html">QTableView</a>.</p>
 <p>QSqlTableModel provides no direct support for foreign keys. Use the <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a> and <a href="qsqlrelationaldelegate.html">QSqlRelationalDelegate</a> if you want to resolve foreign keys.</p>
-<p>The <a href="sql-driver.html#qsqlite">QSQLITE</a> driver locks for updates until a select is finished. QSqlTableModel fetches data (QSqlQuery::fetchMore()) as needed; this may cause the updates to time out.</p>
 <p>See also <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>, <a href="qsqlquery.html">QSqlQuery</a>, <a href="model-view-programming.html">Model/View Programming</a>, <a href="sql-tablemodel.html">Table Model Example</a>, and <a href="sql-cachedtable.html">Cached Table Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -235,7 +235,7 @@
 <a name="//apple_ref/cpp/instm/QSqlTableModel/removeRows" />
 <h3 class="fn"><a name="removeRows"></a>bool QSqlTableModel::removeRows ( int <i>row</i>, int <i>count</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Removes <i>count</i> rows starting at <i>row</i>. Since this model does not support hierarchical structures, <i>parent</i> must be an invalid model index.</p>
-<p>Emits the <a href="qsqltablemodel.html#beforeDelete">beforeDelete</a>() signal before a row is deleted.</p>
+<p>Emits the <a href="qsqltablemodel.html#beforeDelete">beforeDelete</a>() signal before a row is deleted. When the edit strategy is <a href="qsqltablemodel.html#EditStrategy-enum">OnManualSubmit</a> signal emission is delayed until <a href="qsqltablemodel.html#submitAll">submitAll</a>() is called.</p>
 <p>Returns true if all rows could be removed; otherwise returns false. Detailed error information can be retrieved using <a href="qsqlquerymodel.html#lastError">lastError</a>().</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#removeRows">QAbstractItemModel</a>.</p>
 <p>See also <a href="qsqltablemodel.html#removeColumns">removeColumns</a>() and <a href="qsqltablemodel.html#insertRows">insertRows</a>().</p>
@@ -335,6 +335,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

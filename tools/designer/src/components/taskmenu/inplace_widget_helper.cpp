@@ -49,6 +49,8 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QShortcut>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
     InPlaceWidgetHelper::InPlaceWidgetHelper(QWidget *editorWidget, QWidget *parentWidget, QDesignerFormWindowInterface *fw)
         : QObject(0),
@@ -56,11 +58,10 @@ namespace qdesigner_internal {
     m_parentWidget(parentWidget),
     m_noChildEvent(m_parentWidget->testAttribute(Qt::WA_NoChildEventsForParent))
     {
-        (void) new QShortcut(Qt::Key_Escape, m_editorWidget, SLOT(close()));
-
         m_editorWidget->setAttribute(Qt::WA_DeleteOnClose);
         m_editorWidget->setParent(m_parentWidget->window());
         m_parentWidget->installEventFilter(this);
+        m_editorWidget->installEventFilter(this);
         connect(m_editorWidget, SIGNAL(destroyed()), fw->mainContainer(), SLOT(setFocus()));
     }
 
@@ -83,15 +84,39 @@ namespace qdesigner_internal {
 
     bool InPlaceWidgetHelper::eventFilter(QObject *object, QEvent *e)
     {
-        Q_ASSERT(object == m_parentWidget);
-        Q_UNUSED(object);
-
-        if (e->type() == QEvent::Resize) {
-            const QResizeEvent *event = static_cast<const QResizeEvent*>(e);
-            m_editorWidget->resize(event->size().width() - 2, m_editorWidget->height());
+        if (object == m_parentWidget) {
+            if (e->type() == QEvent::Resize) {
+                const QResizeEvent *event = static_cast<const QResizeEvent*>(e);
+                const QPoint localPos = m_parentWidget->geometry().topLeft();
+                const QPoint globalPos = m_parentWidget->parentWidget() ? m_parentWidget->parentWidget()->mapToGlobal(localPos) : localPos;
+                const QPoint newPos = (m_editorWidget->parentWidget() ? m_editorWidget->parentWidget()->mapFromGlobal(globalPos) : globalPos)
+                    + m_posOffset;
+                const QSize newSize = event->size() + m_sizeOffset;
+                m_editorWidget->setGeometry(QRect(newPos, newSize));
+            }
+        } else if (object == m_editorWidget) {
+            if (e->type() == QEvent::ShortcutOverride) {
+                if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Escape) {
+                    e->accept();
+                    return false;
+                }
+            } else if (e->type() == QEvent::KeyPress) {
+                if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Escape) {
+                    e->accept();
+                    m_editorWidget->close();
+                    return true;
+                }
+            } else if (e->type() == QEvent::Show) {
+                const QPoint localPos = m_parentWidget->geometry().topLeft();
+                const QPoint globalPos = m_parentWidget->parentWidget() ? m_parentWidget->parentWidget()->mapToGlobal(localPos) : localPos;
+                const QPoint newPos = m_editorWidget->parentWidget() ? m_editorWidget->parentWidget()->mapFromGlobal(globalPos) : globalPos;
+                m_posOffset = m_editorWidget->geometry().topLeft() - newPos;
+                m_sizeOffset = m_editorWidget->size() - m_parentWidget->size();
+            }
         }
-
 
         return QObject::eventFilter(object, e);
     }
 }
+
+QT_END_NAMESPACE

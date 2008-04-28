@@ -50,9 +50,12 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Script)
 
 class QString;
+class QScriptString;
 
 class QScriptValueIteratorPrivate;
 class Q_SCRIPT_EXPORT QScriptValueIterator
@@ -68,6 +71,7 @@ public:
     void previous();
 
     QString name() const;
+    QScriptString scriptName() const;
 
     QScriptValue value() const;
     void setValue(const QScriptValue &value);
@@ -88,7 +92,10 @@ private:
     Q_DISABLE_COPY(QScriptValueIterator)
 };
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
 #endif // QT_NO_SCRIPT
+
 #endif // QSCRIPTVALUEITERATOR_H

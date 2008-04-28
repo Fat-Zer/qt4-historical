@@ -47,6 +47,8 @@
 #include "tokenizer.h"
 #include "tree.h"
 
+QT_BEGIN_NAMESPACE
+
 QsaKernelParser::QsaKernelParser( Tree *cppTree )
     : cppTre( cppTree )
 {
@@ -77,7 +79,7 @@ void QsaKernelParser::parseSourceFile( const Location& location,
     }
 
     Location fileLocation( filePath );
-    FileTokenizer fileTokenizer( fileLocation, in );
+    Tokenizer fileTokenizer( fileLocation, in );
     tokenizer = &fileTokenizer;
     readToken();
 
@@ -182,3 +184,5 @@ void QsaKernelParser::readToken()
 {
     tok = tokenizer->getToken();
 }
+
+QT_END_NAMESPACE

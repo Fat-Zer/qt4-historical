@@ -57,6 +57,8 @@
 
 #ifndef QT_NO_TOOLBAR
 
+QT_BEGIN_NAMESPACE
+
 /******************************************************************************
 ** QToolBarItem
 */
@@ -77,7 +79,7 @@ bool QToolBarItem::isEmpty() const
 
 QToolBarLayout::QToolBarLayout(QWidget *parent)
     : QLayout(parent), expanded(false), animating(false), dirty(true),
-        expanding(false), empty(true), popupMenu(0)
+        expanding(false), empty(true), expandFlag(false), popupMenu(0)
 {
     QToolBar *tb = qobject_cast<QToolBar*>(parent);
 
@@ -92,15 +94,13 @@ QToolBarLayout::QToolBarLayout(QWidget *parent)
 
 QToolBarLayout::~QToolBarLayout()
 {
-    for (int i = 0; i < items.count(); ++i) {
-        while (!items.isEmpty()) {
-            QToolBarItem *item = items.takeFirst();
-            if (QWidgetAction *widgetAction = qobject_cast<QWidgetAction*>(item->action)) {
-                if (item->customWidget)
-                    widgetAction->releaseWidget(item->widget());
-            }
-            delete item;
+    while (!items.isEmpty()) {
+        QToolBarItem *item = items.takeFirst();
+        if (QWidgetAction *widgetAction = qobject_cast<QWidgetAction*>(item->action)) {
+            if (item->customWidget)
+                widgetAction->releaseWidget(item->widget());
         }
+        delete item;
     }
 }
 
@@ -115,8 +115,15 @@ void QToolBarLayout::updateMarginAndSpacing()
     setSpacing(style->pixelMetric(QStyle::PM_ToolBarItemSpacing, &opt, tb));
 }
 
+bool QToolBarLayout::hasExpandFlag() const
+{
+    return expandFlag;
+}
+
 void QToolBarLayout::setUsePopupMenu(bool set)
 {
+    if (!dirty && ((popupMenu == 0) == set))
+        invalidate();
     if (!set) {
         QObject::connect(extension, SIGNAL(clicked(bool)),
                         this, SLOT(setExpanded(bool)));
@@ -133,8 +140,13 @@ void QToolBarLayout::setUsePopupMenu(bool set)
         }
         extension->setMenu(popupMenu);
     }
+}
 
-    invalidate();
+void QToolBarLayout::checkUsePopupMenu()
+{
+    QMainWindow *mw = qobject_cast<QMainWindow *>(parentWidget()->parentWidget());
+    setUsePopupMenu(!mw || static_cast<QToolBar *>(parentWidget())->isFloating() ||
+            expandedSize(mw->size()).height() >= mw->height());
 }
 
 void QToolBarLayout::addItem(QLayoutItem*)
@@ -155,6 +167,9 @@ QLayoutItem *QToolBarLayout::takeAt(int index)
     if (index < 0 || index >= items.count())
         return 0;
     QToolBarItem *item = items.takeAt(index);
+
+    if (popupMenu)
+        popupMenu->removeAction(item->action);
 
     QWidgetAction *widgetAction = qobject_cast<QWidgetAction*>(item->action);
     if (widgetAction != 0 && item->customWidget) {
@@ -264,6 +279,13 @@ void QToolBarLayout::updateGeomArray() const
 
         that->expanding = expanding || exp & o;
 
+        
+        if (item->widget()) {
+            if ((item->widget()->sizePolicy().horizontalPolicy() & QSizePolicy::ExpandFlag)) {
+                that->expandFlag = true;
+            }
+        }
+
         if (!empty) {
             if (count == 0) // the minimum size only displays one widget
                 rpick(o, that->minSize) += spacing + pick(o, min);
@@ -297,11 +319,16 @@ void QToolBarLayout::updateGeomArray() const
 
     rpick(o, that->hint) += handleExtent;
     that->hint += QSize(2*margin, 2*margin);
+    that->dirty = false;
 #ifdef Q_WS_MAC
     if (QMainWindow *mw = qobject_cast<QMainWindow *>(parentWidget()->parentWidget())) {
         if (mw->unifiedTitleAndToolBarOnMac()
                 && mw->toolBarArea(static_cast<QToolBar *>(parentWidget())) == Qt::TopToolBarArea) {
-            tb->setMaximumSize(hint);
+            if (that->expandFlag) {
+                tb->setMaximumSize(0xFFFFFF, 0xFFFFFF);
+            } else {
+               tb->setMaximumSize(hint);
+            }
         }
     }
 #endif
@@ -309,10 +336,10 @@ void QToolBarLayout::updateGeomArray() const
     that->dirty = false;
 }
 
-static bool defaultWidgetAction(QAction *action)
+static bool defaultWidgetAction(QToolBarItem *item)
 {
-    QWidgetAction *a = qobject_cast<QWidgetAction*>(action);
-    return a != 0 && a->defaultWidget() != 0;
+    QWidgetAction *a = qobject_cast<QWidgetAction*>(item->action);
+    return a != 0 && a->defaultWidget() == item->widget();
 }
 
 void QToolBarLayout::setGeometry(const QRect &rect)
@@ -399,6 +426,9 @@ bool QToolBarLayout::layoutActions(const QSize &size)
     if (space <= 0)
         return false;  // nothing to do.
 
+    if(popupMenu)
+        popupMenu->clear();
+
     bool ranOutOfSpace = false;
     int rows = 0;
     int rowPos = perp(o, rect.topLeft()) + margin;
@@ -411,6 +441,7 @@ bool QToolBarLayout::layoutActions(const QSize &size)
         int prev = -1;
         int rowHeight = 0;
         int count = 0;
+        int maximumSize = 0;
         bool expansiveRow = false;
         for (; i < items.count(); ++i) {
             if (a[i].empty)
@@ -431,6 +462,7 @@ bool QToolBarLayout::layoutActions(const QSize &size)
                 rowHeight = qMax(rowHeight, perp(o, items.at(i)->sizeHint()));
             expansiveRow = expansiveRow || a[i].expansive;
             size = newSize;
+            maximumSize += spacing + (a[i].expansive ? a[i].maximumSize : a[i].smartSizeHint());
             prev = i;
             ++count;
         }
@@ -442,6 +474,11 @@ bool QToolBarLayout::layoutActions(const QSize &size)
         a[i].expansive = true;
         a[i].stretch = 0;
         a[i].empty = true;
+
+        if (expansiveRow && maximumSize < space) {
+            expansiveRow = false;
+            a[i].maximumSize = space - maximumSize;
+        }
 
         qGeomCalc(a, start, i - start + (expansiveRow ? 0 : 1), 0,
                     space - (ranOutOfSpace ? (extensionExtent + spacing) : 0),
@@ -474,8 +511,6 @@ bool QToolBarLayout::layoutActions(const QSize &size)
 
             if (item->widget()->isHidden())
                 showWidgets << item->widget();
-            if (popupMenu && !defaultWidgetAction(item->action))
-                popupMenu->removeAction(item->action);
         }
 
         if (!expanded) {
@@ -484,7 +519,7 @@ bool QToolBarLayout::layoutActions(const QSize &size)
                 if (!item->widget()->isHidden())
                     hideWidgets << item->widget();
                 if (popupMenu) {
-                    if (!defaultWidgetAction(item->action)) {
+                    if (!defaultWidgetAction(item)) {
                         popupMenu->addAction(item->action);
                         extensionMenuContainsOnlyWidgetActions = false;
                     }
@@ -605,6 +640,11 @@ void QToolBarLayout::setExpanded(bool exp)
         animating = true;
         QMainWindowLayout *layout = qobject_cast<QMainWindowLayout*>(win->layout());
         if (expanded) {
+            // In this case the expansion of the tool bar shows up underneath the central
+            // widget (because of the clipping), so make sure the tool bar is native as well.
+            const QWidget *centralWidget = win->centralWidget();
+            if (centralWidget && centralWidget->internalWinId() && !tb->internalWinId())
+                tb->setAttribute(Qt::WA_NativeWindow);
             tb->raise();
         } else {
             QList<int> path = layout->layoutState.indexOf(tb);
@@ -678,5 +718,7 @@ QRect QToolBarLayout::handleRect() const
 {
     return handRect;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TOOLBAR

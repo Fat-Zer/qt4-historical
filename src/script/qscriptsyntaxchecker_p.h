@@ -61,6 +61,8 @@
 
 #include "qscriptgrammar_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QScriptEngine;
 
 namespace QScript {
@@ -97,6 +99,8 @@ inline void SyntaxChecker::reallocateStack()
 
 } // namespace QScript
 
-#endif // QT_NO_SCRIPT
-#endif
+QT_END_NAMESPACE
 
+#endif // QT_NO_SCRIPT
+
+#endif

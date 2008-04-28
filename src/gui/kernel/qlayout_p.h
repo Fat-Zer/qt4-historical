@@ -57,17 +57,32 @@
 
 #include "private/qobject_p.h"
 #include "qstyle.h"
+#include "qsizepolicy.h"
+
+QT_BEGIN_NAMESPACE
+
+class QWidgetItem;
+class QSpacerItem;
 
 class Q_GUI_EXPORT QLayoutPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QLayout)
 
 public:
+    typedef QWidgetItem * (*QWidgetItemFactoryMethod)(const QLayout *layout, QWidget *widget);
+    typedef QSpacerItem * (*QSpacerItemFactoryMethod)(const QLayout *layout, int w, int h, QSizePolicy::Policy hPolicy, QSizePolicy::Policy);
+
     QLayoutPrivate();
 
     void getMargin(int *result, int userMargin, QStyle::PixelMetric pm) const;
     void doResize(const QSize &);
     void reparentChildWidgets(QWidget *mw);
+
+    static QWidgetItem *createWidgetItem(const QLayout *layout, QWidget *widget);
+    static QSpacerItem *createSpacerItem(const QLayout *layout, int w, int h, QSizePolicy::Policy hPolicy = QSizePolicy::Minimum, QSizePolicy::Policy vPolicy = QSizePolicy::Minimum);
+
+    static QWidgetItemFactoryMethod widgetItemFactoryMethod;
+    static QSpacerItemFactoryMethod spacerItemFactoryMethod;
 
     int insideSpacing;
     int userLeftMargin;
@@ -82,5 +97,7 @@ public:
     QRect rect;
     QWidget *menubar;
 };
+
+QT_END_NAMESPACE
 
 #endif // QLAYOUT_P_H

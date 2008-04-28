@@ -51,13 +51,15 @@
 #include <private/qthread_p.h>
 #include <ctype.h>
 
+QT_BEGIN_NAMESPACE
 
 // ############### DON'T EXPORT HERE!!!
 Q_CORE_EXPORT char         appFileName[256];                // application file name
-Q_CORE_EXPORT char         appName[256];                        // application name
+Q_CORE_EXPORT char         theAppName[256];                        // application name
 Q_CORE_EXPORT HINSTANCE appInst        = 0;                // handle to app instance
 Q_CORE_EXPORT HINSTANCE appPrevInst        = 0;                // handle to prev app instance
 Q_CORE_EXPORT int appCmdShow = 0;
+bool usingWinMain = false;  // whether the qWinMain() is used or not
 
 Q_CORE_EXPORT HINSTANCE qWinAppInst()                // get Windows app handle
 {
@@ -74,20 +76,20 @@ void set_winapp_name()
     static bool already_set = false;
     if (!already_set) {
         already_set = true;
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
         GetModuleFileNameA(0, appFileName, sizeof(appFileName));
 #else
         QString afm;
-        afm.setLength(256);
-        afm.setLength(GetModuleFileName(0, (unsigned short*)afm.unicode(), 255));
-        strncpy(appFileName, afm.latin1(), afm.length());
+        afm.resize(256);
+        afm.resize(GetModuleFileName(0, (wchar_t *) (afm.unicode()), 255));
+        strncpy(appFileName, afm.toLatin1(), afm.length());
 #endif
         const char *p = strrchr(appFileName, '\\');        // skip path
         if (p)
-            memcpy(appName, p+1, qstrlen(p));
-        int l = qstrlen(appName);
-        if ((l > 4) && !qstricmp(appName + l - 4, ".exe"))
-            appName[l-4] = '\0';                // drop .exe extension
+            memcpy(theAppName, p+1, qstrlen(p));
+        int l = qstrlen(theAppName);
+        if ((l > 4) && !qstricmp(theAppName + l - 4, ".exe"))
+            theAppName[l-4] = '\0';                // drop .exe extension
     }
 }
 
@@ -98,9 +100,9 @@ Q_CORE_EXPORT QString qAppFileName()                // get application file name
 
 QString QCoreApplicationPrivate::appName() const
 {
-    if (!::appName[0])
+    if (!theAppName[0])
         set_winapp_name();
-    return QString::fromLatin1(::appName);
+    return QString::fromLatin1(theAppName);
 }
 
 class QWinMsgHandlerCriticalSection
@@ -132,7 +134,7 @@ Q_CORE_EXPORT void qWinMsgHandler(QtMsgType t, const char* str)
 
     staticCriticalSection.lock();
     QT_WA({
-        QString s(QString::fromLatin1(str));
+        QString s(QString::fromLocal8Bit(str));
         s += QLatin1String("\n");
         OutputDebugStringW((TCHAR*)s.utf16());
     }, {
@@ -148,7 +150,7 @@ Q_CORE_EXPORT void qWinMsgHandler(QtMsgType t, const char* str)
   qWinMain() - Initializes Windows. Called from WinMain() in qtmain_win.cpp
  *****************************************************************************/
 
-#if defined(Q_OS_TEMP)
+#if defined(Q_OS_WINCE)
 Q_CORE_EXPORT void __cdecl qWinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdParam,
                int cmdShow, int &argc, QVector<char *> &argv)
 #else
@@ -164,6 +166,7 @@ void qWinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdParam,
         return;
     }
     already_called = true;
+    usingWinMain = true;
 
   // Install default debug handler
 
@@ -179,14 +182,6 @@ void qWinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdParam,
     appInst = instance;
     appPrevInst = prevInstance;
     appCmdShow = cmdShow;
-
-#ifdef Q_OS_TEMP
-    TCHAR uniqueAppID[256];
-    GetModuleFileName(0, uniqueAppID, 255);
-    appUniqueID = RegisterWindowMessage(
-                  QString::fromUtf16(uniqueAppID)
-                  .lower().remove('\\').utf16());
-#endif
 }
 
 /*!
@@ -195,14 +190,13 @@ void qWinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdParam,
     messages \a msg that are not processed by Qt. If you don't want
     the event to be processed by Qt, then return true and set \a result
     to the value that the window procedure should return. Otherwise
-    return false. 
+    return false.
 
     It is only directly addressed messages that are filtered. To
     handle system wide messages, such as messages from a registered
     hot key, you need to install an event filter on the event
     dispatcher, which is returned from
     QAbstractEventDispatcher::instance().
-
 */
 bool QCoreApplication::winEventFilter(MSG *msg, long *result)        // Windows event filter
 {
@@ -238,8 +232,11 @@ void QCoreApplicationPrivate::removePostedTimerEvent(QObject *object, int timerI
   Convenience functions for convert WM_* messages into human readable strings,
   including a nifty QDebug operator<< for simpel QDebug() << msg output.
  *****************************************************************************/
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <windowsx.h>
 #include "qdebug.h"
+QT_END_INCLUDE_NAMESPACE
+
 #if !defined(GET_X_LPARAM)
 #  define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
 #  define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
@@ -1042,3 +1039,5 @@ QDebug operator<<(QDebug dbg, const MSG &msg)
     return dbg.nospace();
 }
 #endif
+
+QT_END_NAMESPACE

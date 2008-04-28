@@ -46,6 +46,9 @@
 #include <qdebug.h>
 
 #ifndef QT_NO_ITEMVIEWS
+
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QItemSelectionRange
 
@@ -311,19 +314,13 @@ QModelIndexList QItemSelectionRange::indexes() const
   a selection that contains a range of items from the given \c model,
   beginning at the \c topLeft, and ending at the \c bottomRight.
 
-  \code
-    QItemSelection *selection = new QItemSelection(topLeft, bottomRight);
-  \endcode
+  \snippet doc/src/snippets/code/src.gui.itemviews.qitemselectionmodel.cpp 0
 
   An empty item selection can be constructed, and later populated as
   required. So, if the model is going to be unavailable when we construct
   the item selection, we can rewrite the above code in the following way:
 
-  \code
-    QItemSelection *selection = new QItemSelection();
-    ...
-    selection->select(topLeft, bottomRight);
-  \endcode
+  \snippet doc/src/snippets/code/src.gui.itemviews.qitemselectionmodel.cpp 1
 
   QItemSelection saves memory, and avoids unnecessary work, by working with
   selection ranges rather than recording the model item index for each
@@ -631,7 +628,7 @@ void QItemSelectionModelPrivate::_q_columnsAboutToBeInserted(const QModelIndex &
     QList<QItemSelectionRange>::iterator it = ranges.begin();
     for (; it != ranges.end(); ) {
         if ((*it).isValid() && (*it).parent() == parent
-            && (*it).left() <= start && (*it).right() >= start) {
+            && (*it).left() < start && (*it).right() >= start) {
             QModelIndex bottomMiddle = model->index((*it).bottom(), start - 1, (*it).parent());
             QItemSelectionRange left((*it).topLeft(), bottomMiddle);
             QModelIndex topMiddle = model->index((*it).top(), start, (*it).parent());
@@ -660,7 +657,7 @@ void QItemSelectionModelPrivate::_q_rowsAboutToBeInserted(const QModelIndex &par
     QList<QItemSelectionRange>::iterator it = ranges.begin();
     for (; it != ranges.end(); ) {
         if ((*it).isValid() && (*it).parent() == parent
-            && (*it).top() <= start && (*it).bottom() >= start) {
+            && (*it).top() < start && (*it).bottom() >= start) {
             QModelIndex middleRight = model->index(start - 1, (*it).right(), (*it).parent());
             QItemSelectionRange top((*it).topLeft(), middleRight);
             QModelIndex middleLeft = model->index(start, (*it).left(), (*it).parent());
@@ -799,7 +796,7 @@ void QItemSelectionModelPrivate::_q_layoutChanged()
   To update the currently selected items, use the bitwise OR of
   QItemSelectionModel::Current and any of the other SelectionFlags.
   If you omit the QItemSelectionModel::Current command, a new current
-  selection will be created, and the previous one added to the committed
+  selection will be created, and the previous one added to the whole
   selection. All functions operate on both layers; for example,
   selectedItems() will return items from both layers.
 
@@ -1088,9 +1085,11 @@ void QItemSelectionModel::setCurrentIndex(const QModelIndex &index, QItemSelecti
     if (command != NoUpdate)
         select(d->currentIndex, command); // select item
     emit currentChanged(d->currentIndex, previous);
-    if (d->currentIndex.row() != previous.row())
+    if (d->currentIndex.row() != previous.row() ||
+            d->currentIndex.parent() != previous.parent())
         emit currentRowChanged(d->currentIndex, previous);
-    if (d->currentIndex.column() != previous.column())
+    if (d->currentIndex.column() != previous.column() ||
+            d->currentIndex.parent() != previous.parent())
         emit currentColumnChanged(d->currentIndex, previous);
 }
 
@@ -1116,7 +1115,7 @@ bool QItemSelectionModel::isSelected(const QModelIndex &index) const
     //  search model ranges
     QList<QItemSelectionRange>::const_iterator it = d->ranges.begin();
     for (; it != d->ranges.end(); ++it) {
-        if ((*it).contains(index)) {
+        if ((*it).isValid() && (*it).contains(index)) {
             selected = true;
             break;
         }
@@ -1256,16 +1255,13 @@ bool QItemSelectionModel::rowIntersectsSelection(int row, const QModelIndex &par
     Q_D(const QItemSelectionModel);
     if (parent.isValid() && d->model != parent.model())
          return false;
-    // check current selection
-    for (int i = 0; i < d->currentSelection.count(); ++i)
-        if (d->currentSelection.at(i).top() <= row
-            && d->currentSelection.at(i).bottom() >= row)
+
+    QItemSelection sel = d->ranges;
+    sel.merge(d->currentSelection, d->currentCommand);
+    for (int i = 0; i < sel.count(); ++i)
+        if (sel.at(i).top() <= row && sel.at(i).bottom() >= row)
             return true;
-    // check the ranges
-    for (int i = 0; i < d->ranges.count(); ++i)
-        if (d->ranges.at(i).top() <= row
-            && d->ranges.at(i).bottom() >= row)
-            return true;
+
     return false;
 }
 
@@ -1278,16 +1274,13 @@ bool QItemSelectionModel::columnIntersectsSelection(int column, const QModelInde
     Q_D(const QItemSelectionModel);
     if (parent.isValid() && d->model != parent.model())
         return false;
-    // check current selection
-    for (int i = 0; i < d->currentSelection.count(); ++i)
-        if (d->currentSelection.at(i).left() <= column
-            && d->currentSelection.at(i).right() >= column)
+
+    QItemSelection sel = d->ranges;
+    sel.merge(d->currentSelection, d->currentCommand);
+    for (int i = 0; i < sel.count(); ++i)
+        if (sel.at(i).left() <= column && sel.at(i).right() >= column)
             return true;
-    // check the ranges
-    for (int i = 0; i < d->ranges.count(); ++i)
-        if (d->ranges.at(i).left() <= column
-            && d->ranges.at(i).right() >= column)
-            return true;
+
     return false;
 }
 
@@ -1478,6 +1471,8 @@ QDebug operator<<(QDebug dbg, const QItemSelectionRange &range)
 #endif
 }
 #endif
+
+QT_END_NAMESPACE
 
 #include "moc_qitemselectionmodel.cpp"
 

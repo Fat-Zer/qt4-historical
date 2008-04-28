@@ -47,6 +47,8 @@
 #include "qpainter.h"
 #include "private/qframe_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QLCDNumberPrivate : public QFramePrivate
 {
     Q_DECLARE_PUBLIC(QLCDNumber)
@@ -1270,5 +1272,7 @@ bool QLCDNumber::event(QEvent *e)
     Use QWidget::getContentsMargins() instead.
     \sa setMargin(), QWidget::getContentsMargins()
 */
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_LCDNUMBER

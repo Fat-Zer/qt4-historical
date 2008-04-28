@@ -52,6 +52,8 @@
 
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 class Config;
 class Node;
 class QString;
@@ -88,5 +90,7 @@ protected:
 private:
     static QList<CodeParser *> parsers;
 };
+
+QT_END_NAMESPACE
 
 #endif

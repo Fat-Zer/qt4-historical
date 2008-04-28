@@ -50,6 +50,8 @@
 
 #include "codeparser.h"
 
+QT_BEGIN_NAMESPACE
+
 class Tokenizer;
 
 class QsaKernelParser : public CodeParser
@@ -71,5 +73,7 @@ private:
     Tokenizer *tokenizer;
     int tok;
 };
+
+QT_END_NAMESPACE
 
 #endif

@@ -45,11 +45,14 @@
 
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     QWidget *widget = new QWidget;
     setCentralWidget(widget);
+//! [0]
 
+//! [1]
     QWidget *topFiller = new QWidget;
     topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -67,7 +70,9 @@ MainWindow::MainWindow()
     layout->addWidget(infoLabel);
     layout->addWidget(bottomFiller);
     widget->setLayout(layout);
+//! [1]
 
+//! [2]
     createActions();
     createMenus();
 
@@ -78,7 +83,9 @@ MainWindow::MainWindow()
     setMinimumSize(160, 160);
     resize(480, 320);
 }
+//! [2]
 
+//! [3]
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
@@ -87,6 +94,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(pasteAct);
     menu.exec(event->globalPos());
 }
+//! [3]
 
 void MainWindow::newFile()
 {
@@ -186,17 +194,21 @@ void MainWindow::aboutQt()
     infoLabel->setText(tr("Invoked <b>Help|About Qt</b>"));
 }
 
+//! [4]
 void MainWindow::createActions()
 {
+//! [5]
     newAct = new QAction(tr("&New"), this);
     newAct->setShortcut(tr("Ctrl+N"));
     newAct->setStatusTip(tr("Create a new file"));
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
+//! [4]
 
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O"));
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+//! [5]
 
     saveAct = new QAction(tr("&Save"), this);
     saveAct->setShortcut(tr("Ctrl+S"));
@@ -304,22 +316,31 @@ void MainWindow::createActions()
     centerAct->setStatusTip(tr("Center the selected text"));
     connect(centerAct, SIGNAL(triggered()), this, SLOT(center()));
 
+//! [6] //! [7]
     alignmentGroup = new QActionGroup(this);
     alignmentGroup->addAction(leftAlignAct);
     alignmentGroup->addAction(rightAlignAct);
     alignmentGroup->addAction(justifyAct);
     alignmentGroup->addAction(centerAct);
     leftAlignAct->setChecked(true);
+//! [6]
 }
+//! [7]
 
+//! [8]
 void MainWindow::createMenus()
 {
+//! [9] //! [10]
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
+//! [9]
     fileMenu->addAction(openAct);
+//! [10]
     fileMenu->addAction(saveAct);
     fileMenu->addAction(printAct);
+//! [11]
     fileMenu->addSeparator();
+//! [11]
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -334,7 +355,9 @@ void MainWindow::createMenus()
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
+//! [8]
 
+//! [12]
     formatMenu = editMenu->addMenu(tr("&Format"));
     formatMenu->addAction(boldAct);
     formatMenu->addAction(italicAct);
@@ -347,3 +370,4 @@ void MainWindow::createMenus()
     formatMenu->addAction(setLineSpacingAct);
     formatMenu->addAction(setParagraphSpacingAct);
 }
+//! [12]

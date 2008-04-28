@@ -47,10 +47,12 @@
 #include "codemarker.h"
 #include "tree.h"
 
+QT_BEGIN_NAMESPACE
+
 static QString indentStr(int indent)
 {
     QString str;
-    str.fill(QChar(' '), indent * 4);
+    str.fill(QLatin1Char(' '), indent * 4);
     return str;
 }
 
@@ -61,12 +63,12 @@ static bool lessThanName(Node *node1, Node *node2)
 
 QString ApiGenerator::format()
 {
-    return "API";
+    return QLatin1String("API");
 }
 
 void ApiGenerator::generateTree(const Tree *tree, CodeMarker *marker)
 {
-    QFile outFile("api");
+    QFile outFile(QLatin1String("api"));
     outFile.open(QIODevice::WriteOnly);
 
     out.setDevice(&outFile);
@@ -146,3 +148,5 @@ void ApiGenerator::generateNode(const Node *node, CodeMarker *marker, int indent
 
     out.flush();
 }
+
+QT_END_NAMESPACE

@@ -47,6 +47,8 @@
 #ifndef QT_NO_ACTION
 #include "qwidgetaction_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QWidgetAction
     \since 4.2
@@ -54,7 +56,7 @@
     for inserting custom widgets into action based containers, such
     as toolbars.
 
-    Most actions in application are represented as items in menus or
+    Most actions in an application are represented as items in menus or
     buttons in toolbars. However sometimes more complex widgets are
     necessary. For example a zoom action in a word processor may be
     realized using a QComboBox in a QToolBar, presenting a range
@@ -68,9 +70,10 @@
     QWidgetAction::createWidget() is called. Reimplementations of that
     function should create a new custom widget with the specified parent.
 
-    If the action is removed from a container widget then QWidgetAction::deleteWidget()
-    is called with the previously created custom widget as argument. The default implementation
-    hides the widget and deletes it using QObject::deleteLater().
+    If the action is removed from a container widget then
+    QWidgetAction::deleteWidget() is called with the previously created custom
+    widget as argument. The default implementation hides the widget and deletes
+    it using QObject::deleteLater().
 
     If you have only one single custom widget then you can set it as default
     widget using setDefaultWidget(). That widget will then be used if the
@@ -83,19 +86,20 @@
     Note that it is up to the widget to activate the action, for example by
     reimplementing mouse event handlers and calling QAction::trigger().
 
-    \bold {Mac OS X}: If you add widgets to a menu in the application's menu
-    bar on Mac OS X, the widget will be added and function but there are some
+    \bold {Mac OS X}: If you add a widget to a menu in the application's menu
+    bar on Mac OS X, the widget will be added and it will function but with some
     limitations:
     \list 1
         \o The widget is reparented away from the QMenu to the native menu
-        view. If you show the menu some other place (e.g. as a popup menu), the
-        widget will not be there.
-        \o Focus/Keyboard handling of the widget is not possible
-        \o Mouse tracking on the widget currently does not work
+            view. If you show the menu in some other place (e.g. as a popup menu),
+            the widget will not be there.
+        \o Focus/Keyboard handling of the widget is not possible.
+        \o Due to Apple's design, mouse tracking on the widget currently does
+            not work.
         \o Connecting the triggered() signal to a slot that opens a modal
-        dialog will cause a crash in Mac OS X 10.4 (known bug acknowledged by
-        Apple), a workaround is to use a QueuedConnection instead of a
-        DirectConnection.
+            dialog will cause a crash in Mac OS X 10.4 (known bug acknowledged
+            by Apple), a workaround is to use a QueuedConnection instead of a
+            DirectConnection.
     \endlist
 
     \ingroup application
@@ -148,6 +152,11 @@ void QWidgetAction::setDefaultWidget(QWidget *widget)
     d->defaultWidget->hide();
     d->defaultWidget->setParent(0);
     d->defaultWidgetInUse = false;
+    if (!d->defaultWidget->isEnabled())
+        setEnabled(false);
+    else if (!isEnabled())
+        d->defaultWidget->setEnabled(false);
+    d->defaultWidget->installEventFilter(this);
 }
 
 /*!
@@ -220,7 +229,25 @@ void QWidgetAction::releaseWidget(QWidget *widget)
 */
 bool QWidgetAction::event(QEvent *event)
 {
+    Q_D(QWidgetAction);
+    if (event->type() == QEvent::ActionChanged) {
+        if (d->defaultWidget)
+            d->defaultWidget->setEnabled(isEnabled());
+        foreach (QWidget *w, d->createdWidgets) 
+            w->setEnabled(isEnabled());
+    }
     return QAction::event(event);
+}
+
+/*!
+    \reimp
+ */
+bool QWidgetAction::eventFilter(QObject *obj, QEvent *event)
+{
+    Q_D(QWidgetAction);
+    if (obj == d->defaultWidget && event->type() == QEvent::EnabledChange)
+        setEnabled(d->defaultWidget->isEnabled());
+    return QAction::eventFilter(obj, event);
 }
 
 /*!
@@ -262,7 +289,8 @@ QList<QWidget *> QWidgetAction::createdWidgets() const
     return d->createdWidgets;
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qwidgetaction.cpp"
 
 #endif // QT_NO_ACTION
-

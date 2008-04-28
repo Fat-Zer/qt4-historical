@@ -47,6 +47,7 @@
 #include <QDialog>
 #include <QHash>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QFile;
 class QFtp;
@@ -57,6 +58,7 @@ class QTreeWidgetItem;
 class QProgressDialog;
 class QPushButton;
 class QUrlInfo;
+QT_END_NAMESPACE
 
 class FtpWindow : public QDialog
 {

@@ -47,6 +47,8 @@
 
 #include "node.h"
 
+QT_BEGIN_NAMESPACE
+
 Node::~Node()
 {
     if (par)
@@ -118,6 +120,17 @@ Node::ThreadSafeness Node::inheritedThreadSafeness() const
     if (par && saf == UnspecifiedSafeness)
 	return par->inheritedThreadSafeness();
     return saf;
+}
+
+QString Node::fileBase() const
+{
+    QString base = name();
+    if (base.endsWith(".html"))
+        base.chop(5);
+    base.replace(QRegExp("[^A-Za-z0-9]+"), " ");
+    base = base.trimmed();
+    base.replace(" ", "-");
+    return base.toLower();
 }
 
 InnerNode::~InnerNode()
@@ -202,8 +215,10 @@ void InnerNode::setOverload( const FunctionNode *func, bool overlode )
 void InnerNode::makeUndocumentedChildrenInternal()
 {
     foreach (Node *child, childNodes()) {
-	if (child->doc().isEmpty())
+	if (child->doc().isEmpty()) {
 	    child->setAccess(Node::Private);
+            child->setStatus(Node::Internal);
+        }
     }
 }
 
@@ -275,8 +290,7 @@ void InnerNode::removeFromRelated()
 
 void InnerNode::deleteChildren()
 {
-    while (!children.isEmpty())
-	delete children.takeFirst();
+    qDeleteAll(children);
 }
 
 bool InnerNode::isInnerNode() const
@@ -466,27 +480,29 @@ QString Node::moduleName() const
     if (finish == -1)
         return "";
 
-    moduleDir = moduleDir.left(finish);
+    QString moduleName = moduleDir.left(finish);
 
-    if (moduleDir == "corelib")
+    if (moduleName == "corelib")
         return "QtCore";
-    else if (moduleDir == "uitools")
+    else if (moduleName == "uitools")
         return "QtUiTools";
-    else if (moduleDir == "gui")
+    else if (moduleName == "gui")
         return "QtGui";
-    else if (moduleDir == "network")
+    else if (moduleName == "network")
         return "QtNetwork";
-    else if (moduleDir == "opengl")
+    else if (moduleName == "opengl")
         return "QtOpenGL";
-    else if (moduleDir == "qt3support")
+    else if (moduleName == "qt3support")
         return "Qt3Support";
-    else if (moduleDir == "svg")
+    else if (moduleName == "svg")
         return "QtSvg";
-    else if (moduleDir == "sql")
+    else if (moduleName == "sql")
         return "QtSql";
-    else if (moduleDir == "qtestlib")
+    else if (moduleName == "qtestlib")
         return "QtTest";
-    else if (moduleDir == "xml")
+    else if (moduleDir.contains("webkit"))
+        return "QtWebKit";
+    else if (moduleName == "xml")
         return "QtXml";
     else
         return "";
@@ -771,3 +787,5 @@ bool TargetNode::isInnerNode() const
 {
     return false;
 }
+
+QT_END_NAMESPACE

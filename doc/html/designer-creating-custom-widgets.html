@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/designer-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/designer-manual.qdoc -->
 <head>
-  <title>Qt 4.3: Creating Custom Widgets for Qt Designer</title>
+  <title>Qt 4.4: Creating Custom Widgets for Qt Designer</title>
   <link rel="prev" href="designer-using-a-component.html" />
   <link rel="contents" href="designer-manual.html" />
   <link rel="next" href="designer-creating-custom-widgets-extensions.html" />
@@ -20,7 +20,8 @@
 [<a href="designer-manual.html">Contents</a>]
 [Next: <a href="designer-creating-custom-widgets-extensions.html">Creating Custom Widget Extensions</a>]
 </p>
-<h1 align="center">Creating Custom Widgets for Qt Designer<br /><small></small></h1>
+<h1 class="title">Creating Custom Widgets for Qt Designer<br /><span class="subtitle"></span>
+</h1>
 <p><i>Qt Designer</i>'s plugin-based architecture allows user-defined and third party custom widgets to be edited in the same way as standard Qt widgets. All the features of the custom widgets are made available to <i>Qt Designer</i>, including widget properties, signals, and slots. Since <i>Qt Designer</i> uses real widgets during the form design process, custom widgets will appear the same as they do when previewed.</p>
 <p align="center"><img src="images/worldtimeclockplugin-example.png" /></p><p>The ability to create custom widgets in <i>Qt Designer</i> is one of the features provided by the <a href="qtdesigner.html">QtDesigner</a> module.</p>
 <ul><li><a href="#getting-started">Getting Started</a></li>
@@ -75,18 +76,18 @@
 <h2>Creating Well Behaved Widgets</h2>
 <p>Some custom widgets have special user interface features that may make them behave differently to many of the standard widgets found in <i>Qt Designer</i>. Specifically, if a custom widget grabs the keyboard as a result of a call to <a href="qwidget.html#grabKeyboard">QWidget::grabKeyboard</a>(), the operation of <i>Qt Designer</i> will be affected.</p>
 <p>To give custom widgets special behavior in <i>Qt Designer</i>, provide an implementation of the initialize() function to configure the widget construction process for <i>Qt Designer</i> specific behavior. This function will be called for the first time before any calls to createWidget() and could perhaps set an internal flag that can be tested later when <i>Qt Designer</i> calls the plugin's createWidget() function.</p>
-<a name="building-and-installing-the-plugin"></a>
+<a name="buildingandinstallingtheplugin"></a><a name="building-and-installing-the-plugin"></a>
 <h2>Building and Installing the Plugin</h2>
 <p>The project file for a plugin must specify the headers and sources for both the custom widget and the plugin interface. Typically, the project file only needs to specify that the plugin's project is to be built as a library, but with specific plugin support for <i>Qt Designer</i>. This is done with the following declarations:</p>
 <pre> CONFIG      += designer plugin debug_and_release
  TARGET      = $$qtLibraryTarget($$TARGET)
  TEMPLATE    = lib</pre>
 <p>When Qt is configured to build in both debug and release modes, <i>Qt Designer</i> will be built in release mode. When this occurs, it is necessary to ensure that plugins are also built in release mode. To do this, include the following declaration in the plugin's project file:</p>
-<pre> CONFIG += release</pre>
+<pre>     CONFIG += release</pre>
 <p>If plugins are built in a mode that is incompatible with <i>Qt Designer</i>, they won't be loaded and installed. For more information about plugins, see the <a href="plugins-howto.html">Plugins HOWTO</a> document.</p>
 <p>It is also necessary to ensure that the plugin is installed alongside the other <i>Qt Designer</i> widget plugins:</p>
-<pre> target.path = $$[QT_INSTALL_PLUGINS]/designer
- INSTALLS += target</pre>
+<pre>     target.path = $$[QT_INSTALL_PLUGINS]/designer
+     INSTALLS += target</pre>
 <p>The <tt>$[QT_INSTALL_PLUGINS]</tt> variable is a placeholder to the location of the installed Qt plugins. You can configure <i>Qt Designer</i> to look for plugins in other locations by setting the <tt>QT_PLUGIN_PATH</tt> environment variable before running the application. Note that <i>Qt Designer</i> will look for a <tt>designer</tt> subdirectory on each path supplied.</p>
 <p>See <a href="qcoreapplication.html#libraryPaths">QCoreApplication::libraryPaths</a>() for more information about customizing paths for libraries and plugins with Qt applications.</p>
 <a name="related-examples"></a>
@@ -101,6 +102,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

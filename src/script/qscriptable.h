@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Script)
 
 #ifndef QT_NO_QOBJECT
@@ -80,6 +82,8 @@ private:
 };
 
 #endif // QT_NO_QOBJECT
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

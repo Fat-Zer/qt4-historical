@@ -64,6 +64,8 @@
 #include "QtSql/qsqlindex.h"
 #include "Qt3Support/q3sqlcursor.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_SQL
 
 class Q3SqlCursor;
@@ -154,5 +156,7 @@ private:
 };
 
 #endif // QT_NO_SQL
+
+QT_END_NAMESPACE
 
 #endif // Q3SQLMANAGER_P_H

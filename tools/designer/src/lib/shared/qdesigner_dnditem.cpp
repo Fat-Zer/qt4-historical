@@ -57,6 +57,8 @@
 
 #include <QtCore/QMultiMap>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 QDesignerDnDItem::QDesignerDnDItem(DropType type, QWidget *source) :
@@ -213,10 +215,10 @@ Qt::DropAction QDesignerMimeData::proposedDropAction() const
    return m_items.first()->type() == QDesignerDnDItemInterface::CopyDrop ? Qt::CopyAction : Qt::MoveAction;
 }
 
-bool QDesignerMimeData::execDrag(const QDesignerDnDItems &items, QWidget * dragSource)
+Qt::DropAction QDesignerMimeData::execDrag(const QDesignerDnDItems &items, QWidget * dragSource)
 {
     if (items.empty())
-        return false;
+        return Qt::IgnoreAction;
 
     QDrag *drag = new QDrag(dragSource);
     QDesignerMimeData *mimeData = new QDesignerMimeData(items, drag);
@@ -235,7 +237,7 @@ bool QDesignerMimeData::execDrag(const QDesignerDnDItems &items, QWidget * dragS
         foreach (QWidget *w, reshowWidgets)
             w->show();
 
-    return executedAction != Qt::IgnoreAction;
+    return executedAction;
 }
 
 
@@ -293,4 +295,7 @@ void QDesignerMimeData::setImageTransparency(QImage &image, int alpha)
         }
     }
 }
+
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

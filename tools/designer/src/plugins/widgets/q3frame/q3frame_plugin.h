@@ -48,12 +48,14 @@
 
 #include <Qt3Support/Q3Frame>
 
+QT_BEGIN_NAMESPACE
+
 class Q3FramePlugin: public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
-    Q3FramePlugin(QObject *parent = 0);
+    Q3FramePlugin(const QIcon &icon, QObject *parent = 0);
     virtual ~Q3FramePlugin();
 
     virtual QString name() const;
@@ -86,6 +88,9 @@ public:
 
 private:
     bool m_initialized;
+    QIcon m_icon;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3FRAME_PLUGIN_H

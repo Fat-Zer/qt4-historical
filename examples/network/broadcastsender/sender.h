@@ -46,11 +46,13 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QLabel;
 class QPushButton;
 class QTimer;
 class QUdpSocket;
+QT_END_NAMESPACE
 
 class Sender : public QDialog
 {

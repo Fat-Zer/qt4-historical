@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifdef QT3_SUPPORT
@@ -86,7 +88,10 @@ public:
                      Text, BrightText, ButtonText, Base, Window, Shadow,
                      Highlight, HighlightedText,
                      Link, LinkVisited, // ### Qt 5: remove
-                     AlternateBase, NoRole, NColorRoles = NoRole,
+                     AlternateBase,
+                     NoRole, // ### Qt 5: value should be 0 or -1
+                     ToolTipBase, ToolTipText,
+                     NColorRoles = ToolTipText + 1,
                      Foreground = WindowText, Background = Window // ### Qt 5: remove
                    };
 
@@ -118,6 +123,8 @@ public:
     inline const QBrush &text() const { return brush(Text); }
     inline const QBrush &base() const { return brush(Base); }
     inline const QBrush &alternateBase() const { return brush(AlternateBase); }
+    inline const QBrush &toolTipBase() const { return brush(ToolTipBase); }
+    inline const QBrush &toolTipText() const { return brush(ToolTipText); }
     inline const QBrush &background() const { return brush(Window); }
     inline const QBrush &window() const { return brush(Window); }
     inline const QBrush &midlight() const { return brush(Midlight); }
@@ -162,6 +169,15 @@ private:
                        const QBrush &button_text, const QBrush &shadow,
                        const QBrush &highlight, const QBrush &highlighted_text,
                        const QBrush &link, const QBrush &link_visited);
+    void setColorGroup(ColorGroup cr, const QBrush &windowText, const QBrush &button,
+                       const QBrush &light, const QBrush &dark, const QBrush &mid,
+                       const QBrush &text, const QBrush &bright_text,
+                       const QBrush &base, const QBrush &alternate_base,
+                       const QBrush &window, const QBrush &midlight,
+                       const QBrush &button_text, const QBrush &shadow,
+                       const QBrush &highlight, const QBrush &highlighted_text,
+                       const QBrush &link, const QBrush &link_visited,
+                       const QBrush &toolTipBase, const QBrush &toolTipText);
 #ifdef QT3_SUPPORT
     friend class QColorGroup;
     void setColorGroup(ColorGroup, const QColorGroup &);
@@ -240,6 +256,8 @@ inline QColorGroup QPalette::normal() const { return createColorGroup(Active); }
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &ds, const QPalette &p);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &ds, QPalette &p);
 #endif // QT_NO_DATASTREAM
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -46,6 +46,10 @@
 
 #include <QtGui/qimageiohandler.h>
 
+#ifndef QT_NO_SVGRENDERER
+
+QT_BEGIN_NAMESPACE
+
 class QImage;
 class QByteArray;
 class QIODevice;
@@ -69,4 +73,7 @@ private:
     QSvgIOHandlerPrivate *d;
 };
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVGRENDERER
 #endif // QSVGIOHANDLER_H

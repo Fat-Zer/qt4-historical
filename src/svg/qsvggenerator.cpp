@@ -43,17 +43,21 @@
 
 #include "qsvggenerator.h"
 
+#ifndef QT_NO_SVGGENERATOR
+
 #include "qpainterpath.h"
 
 #include "private/qpaintengine_p.h"
 #include "private/qtextengine_p.h"
 
 #include "qfile.h"
+#include "qtextcodec.h"
 #include "qtextstream.h"
 #include "qbuffer.h"
 
 #include "qdebug.h"
 
+QT_BEGIN_NAMESPACE
 
 static void translate_color(const QColor &color, QString *color_string,
                             QString *opacity_string)
@@ -456,6 +460,7 @@ public:
     \ingroup multimedia
     \since 4.3
     \brief The QSvgGenerator class provides a paint device that is used to create SVG drawings.
+    \reentrant
 
     \sa QSvgRenderer, QSvgWidget
 */
@@ -670,7 +675,7 @@ bool QSvgPaintEngine::begin(QPaintDevice *)
     qreal hmm = h * 25.4 / d->resolution;
 
     // stream out the header...
-    *d->stream << "<?xml version=\"1.0\" standalone=\"no\"?>" << endl;
+    *d->stream << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << endl;
     *d->stream << "<svg width=\"" << wmm << "mm\" height=\"" << hmm << "mm\"" << endl;
     *d->stream << " viewBox=\"0 0 " << w << " " << h << "\"" << endl;
     *d->stream << " xmlns=\"http://www.w3.org/2000/svg\""
@@ -701,11 +706,14 @@ bool QSvgPaintEngine::end()
 {
     Q_D(QSvgPaintEngine);
 
-
     d->stream->setString(&d->defs);
     *d->stream << "</defs>\n";
 
     d->stream->setDevice(d->outputDevice);
+#ifndef QT_NO_TEXTCODEC
+    d->stream->setCodec(QTextCodec::codecForName("UTF-8"));
+#endif
+
     *d->stream << d->header;
     *d->stream << d->defs;
     *d->stream << d->body;
@@ -890,3 +898,7 @@ void QSvgPaintEngine::drawTextItem(const QPointF &pt, const QTextItem &textItem)
                << "</text>"
                << endl;
 }
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVGGENERATOR

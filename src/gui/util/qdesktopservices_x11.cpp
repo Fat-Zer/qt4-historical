@@ -47,8 +47,14 @@
 
 #include <qprocess.h>
 #include <qurl.h>
+#include <qdir.h>
+#include <qfile.h>
+#include <qtextstream.h>
 #include <private/qt_x11_p.h>
+#include <qcoreapplication.h>
 #include <stdlib.h>
+
+QT_BEGIN_NAMESPACE
 
 inline static bool launch(const QUrl &url, const QString &client)
 {
@@ -115,141 +121,150 @@ static bool launchWebBrowser(const QUrl &url)
 }
 
 
-/*
-    enum Location {  // -> StandardLocation
-        Desktop, // -> add Path suffix to each value
-        Documents,
-        Fonts,
-        Applications,
-        Music,
-        Movies,
-        Pictures,
-        Temp,
-        Home
-    };
 
-    QString storageLocation(Location type); // -> location() ### Qt 5: rename to path()
-    QString displayName(Location type);
-*/
-/*
-    \enum QDesktopServices::Location
+/*!
+    \enum QDesktopServices::StandardLocation
+    \since 4.4
 
     This enum describes the different locations that can be queried
     by QDesktopServices::storageLocation and QDesktopServices::displayName.
 
-    \value Desktop Returns the users desktop.
-    \value Documents Returns the users document.
-    \value Fonts Returns the users fonts.
-    \value Applications Returns the users applications.
-    \value Music Returns the users music.
-    \value Movies Returns the users movies.
-    \value Pictures Returns the users pictures.
-    \value Temp Returns the system's temporary directory.
-    \value Home Returns the user's home directory.
+    \value DesktopLocation Returns the users desktop.
+    \value DocumentsLocation Returns the users document.
+    \value FontsLocation Returns the users fonts.
+    \value ApplicationsLocation Returns the users applications.
+    \value MusicLocation Returns the users music.
+    \value MoviesLocation Returns the users movies.
+    \value PicturesLocation Returns the users pictures.
+    \value TempLocation Returns the system's temporary directory.
+    \value HomeLocation Returns the user's home directory.
+    \value DataLocation Returns a directory location where persistent application
+           data can be stored.  QCoreApplication::applicationName and
+           QCoreApplication::organizationName should be set to work
+           on all platforms.
 
     \sa storageLocation() displayName()
 */
 
-/*
-    Returns the default system directory where file of type belong or an invalid QUrl
-    if it is unable to figure out.
+
+/*!
+    \fn QString QDesktopServices::storageLocation(StandardLocation type)
+    \since 4.4
+
+    Returns the default system directory where files of \a type belong or an empty string
+    if it is unable to determine the location.
+
+    Note: that storage location returned can be a directory that doesn't exists.
   */
-/*
-QString QDesktopServices::storageLocation(const Location type)
+QString QDesktopServices::storageLocation(StandardLocation type)
 {
-    QDir emptyDir;
-    switch (type) {
-    case Desktop:
-        return QDir::homePath()+"/Desktop";
-        break;
-
-    case Documents:
-        if (emptyDir.exists(QDir::homePath()+"/Documents"))
-            return QDir::homePath()+"/Documents";
-        break;
-
-    case Pictures:
-        if (emptyDir.exists(QDir::homePath()+"/Pictures"))
-             return QDir::homePath()+"/Pictures";
-        break;
-
-    case Fonts:
-        return QDir::homePath()+"/.fonts";
-        break;
-
-    case Music:
-        if (emptyDir.exists(QDir::homePath()+"/Music"))
-                return QDir::homePath()+"/Music";
-        break;
-
-    case Movies:
-        if (emptyDir.exists(QDir::homePath()+"/Movies"))
-                return QDir::homePath()+"/Movies";
-        break;
-
-    case QDesktopServices::Home:
+    if (type == QDesktopServices::HomeLocation)
         return QDir::homePath();
-        break;
-
-    case QDesktopServices::Temp:
+    if (type == QDesktopServices::TempLocation)
         return QDir::tempPath();
+
+    if (type == QDesktopServices::DataLocation) {
+        // http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html
+        QString xdgDataHome = QLatin1String(qgetenv("XDG_DATA_HOME"));
+        if (xdgDataHome.isEmpty())
+            xdgDataHome = QDir::homePath() + QLatin1String("/.local/share");
+        xdgDataHome += QLatin1String("/data/")
+                    + QCoreApplication::organizationName() + QLatin1Char('/')
+                    + QCoreApplication::applicationName();
+        return xdgDataHome;
+    }
+
+    // http://www.freedesktop.org/wiki/Software/xdg-user-dirs
+    QString xdgConfigHome = QLatin1String(qgetenv("XDG_CONFIG_HOME"));
+    if (xdgConfigHome.isEmpty())
+        xdgConfigHome = QDir::homePath() + QLatin1String("/.config");
+    QFile file(xdgConfigHome + QLatin1String("/user-dirs.dirs"));
+    if (file.exists() && file.open(QIODevice::ReadOnly)) {
+        QHash<QString, QString> lines;
+        QTextStream stream(&file);
+        // Only look for lines like: XDG_DESKTOP_DIR="$HOME/Desktop"
+        QRegExp exp(QLatin1String("^XDG_(.*)_DIR=(.*)$"));
+        while (!stream.atEnd()) {
+            QString line = stream.readLine();
+            if (exp.indexIn(line) != -1) {
+                QStringList lst = exp.capturedTexts();
+                QString key = lst.at(1);
+                QString value = lst.at(2);
+                if (value.length() > 2
+                    && value.left(1) == QLatin1String("\"")
+                    && value.right(1) == QLatin1String("\""))
+                    value = value.mid(1, value.length() - 2);
+                // Store the key and value: "DESKTOP", "$HOME/Desktop"
+                lines[key] = value;
+            }
+        }
+
+        QString key;
+        switch (type) {
+        case DesktopLocation: key = QLatin1String("DESKTOP"); break;
+        case DocumentsLocation: key = QLatin1String("DOCUMENTS"); break;
+        case PicturesLocation: key = QLatin1String("PICTURES"); break;
+        case MusicLocation: key = QLatin1String("MUSIC"); break;
+        case MoviesLocation: key = QLatin1String("VIDEOS"); break;
+        default: break;
+        }
+        if (!key.isEmpty() && lines.contains(key)) {
+            QString value = lines[key];
+            // value can start with $HOME
+            if (value.startsWith(QLatin1String("$HOME")))
+                value = QDir::homePath() + value.mid(5);
+            return value;
+        }
+    }
+
+    QDir emptyDir;
+    QString path;
+    switch (type) {
+    case DesktopLocation:
+        path = QDir::homePath() + QLatin1String("/Desktop");
+        break;
+    case DocumentsLocation:
+        path = QDir::homePath() + QLatin1String("/Documents");
+       break;
+    case PicturesLocation:
+        path = QDir::homePath() + QLatin1String("/Pictures");
         break;
 
-    case Applications:
+    case FontsLocation:
+        path = QDir::homePath() + QLatin1String("/.fonts");
+        break;
+
+    case MusicLocation:
+        path = QDir::homePath() + QLatin1String("/Music");
+        break;
+
+    case MoviesLocation:
+        path = QDir::homePath() + QLatin1String("/Movies");
+        break;
+
+    case ApplicationsLocation:
     default:
         break;
     }
+
+    if (emptyDir.exists(path))
+        return path;
+
     return QString();
 }
-*/
-/*
-    Returns a localized display name for a location type or
+
+/*!
+    \fn QString QDesktopServices::displayName(const StandardLocation type)
+
+    Returns a localized display name for a location \a type or
     an empty QString if it is unable to figure out.
   */
-/*
-QString QDesktopServices::displayName(const Location type)
+QString QDesktopServices::displayName(StandardLocation type)
 {
     Q_UNUSED(type);
-    switch (type) {
-    case Desktop:
-        return QObject::tr("Desktop");
-        break;
-
-    case Documents:
-        return QObject::tr("Documents");
-        break;
-
-    case Pictures:
-        return QObject::tr("Pictures");
-        break;
-
-    case Fonts:
-        return QObject::tr("Fonts");
-        break;
-
-    case Music:
-        return QObject::tr("Music");
-        break;
-
-    case Movies:
-        return QObject::tr("Movies");
-        break;
-
-    case QDesktopServices::Home:
-        return QObject::tr("Home");
-        break;
-
-    case QDesktopServices::Temp:
-        return QObject::tr("Temp");
-        break;
-
-    case Applications:
-        return QObject::tr("Applications");
-    default:
-        break;
-    }
     return QString();
 }
-*/
-#endif // QT_NO_DESKTOPSERVICES
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_DESKTOPSERVICES

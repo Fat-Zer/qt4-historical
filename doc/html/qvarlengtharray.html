@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qvarlengtharray.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qvarlengtharray.qdoc -->
 <head>
-  <title>Qt 4.3: QVarLengthArray Class Reference</title>
+  <title>Qt 4.4: QVarLengthArray Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QVarLengthArray Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QVarLengthArray Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
+</h1>
 <p>The QVarLengthArray class provides a low-level variable-length array. <a href="#details">More...</a></p>
 <pre> #include &lt;QVarLengthArray&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
@@ -46,30 +47,30 @@
 <h2>Detailed Description</h2>
 <p>The QVarLengthArray class provides a low-level variable-length array.</p>
 <p>The C++ language doesn't support variable-length arrays on the stack. For example, the following code won't compile:</p>
-<pre> int myfunc(int n)
- {
-     int table[n + 1];  <span class="comment">//</span> WRONG
-     ...
-     return table[n];
- }</pre>
+<pre>         int myfunc(int n)
+         {
+             int table[n + 1];  // WRONG
+             ...
+             return table[n];
+         }</pre>
 <p>The alternative is to allocate the array on the heap (with <tt>new</tt>):</p>
-<pre> int myfunc(int n)
- {
-     int *table = new int[n + 1];
-     ...
-     int ret = table[n];
-     delete[] table;
-     return ret;
- }</pre>
+<pre>         int myfunc(int n)
+         {
+             int *table = new int[n + 1];
+             ...
+             int ret = table[n];
+             delete[] table;
+             return ret;
+         }</pre>
 <p>However, if myfunc() is called very frequently from the application's inner loop, heap allocation can be a major source of slowdown.</p>
 <p>QVarLengthArray is an attempt to work around this gap in the C++ language. It allocates a certain number of elements on the stack, and if you resize the array to a larger size, it automatically uses the heap instead. Stack allocation has the advantage that it is much faster than heap allocation.</p>
 <p>Example:</p>
-<pre> int myfunc(int n)
- {
-     QVarLengthArray&lt;int, 1024&gt; array(n + 1);
-     ...
-     return array[n];
- }</pre>
+<pre>         int myfunc(int n)
+         {
+             QVarLengthArray&lt;int, 1024&gt; array(n + 1);
+             ...
+             return array[n];
+         }</pre>
 <p>In the example above, QVarLengthArray will preallocate 1024 elements on the stack and use them unless <tt>n + 1</tt> is greater than 1024. If you omit the second template argument, QVarLengthArray's default of 256 is used.</p>
 <p>QVarLengthArray's value type must be an <a href="containers.html#assignable-data-types">assignable data type</a>. This covers most data types that are commonly used, but the compiler won't let you, for example, store a <a href="qwidget.html">QWidget</a> as a value; instead, store a <a href="qwidget.html">QWidget</a> *.</p>
 <p>QVarLengthArray, like <a href="qvector.html">QVector</a>, provides a resizable array data structure. The main differences between the two classes are:</p>
@@ -119,10 +120,10 @@
 <h3 class="fn"><a name="data"></a>T * QVarLengthArray::data ()</h3>
 <p>Returns a pointer to the data stored in the array. The pointer can be used to access and modify the items in the array.</p>
 <p>Example:</p>
-<pre> QVarLengthArray&lt;int&gt; array(10);
- int *data = array.data();
- for (int i = 0; i &lt; 10; ++i)
-     data[i] = 2 * i;</pre>
+<pre>         QVarLengthArray&lt;int&gt; array(10);
+         int *data = array.data();
+         for (int i = 0; i &lt; 10; ++i)
+             data[i] = 2 * i;</pre>
 <p>The pointer remains valid as long as the array isn't reallocated.</p>
 <p>This function is mostly useful to pass an array to a function that accepts a plain C++ array.</p>
 <p>See also <a href="qvarlengtharray.html#constData">constData</a>() and <a href="qvarlengtharray.html#operator-5b-5d">operator[]</a>().</p>
@@ -160,6 +161,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

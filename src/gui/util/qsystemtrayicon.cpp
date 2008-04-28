@@ -61,6 +61,8 @@
 #include "private/qlabel_p.h"
 #include "qapplication.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QSystemTrayIcon
     \brief The QSystemTrayIcon class provides an icon for an application in the system tray.
@@ -80,8 +82,9 @@
     \o All supported versions of Windows.
     \o All window managers for X11 that implement the \l{freedesktop.org} system
        tray specification, including recent versions of KDE and GNOME.
-    \o All supported version of Mac OS X. QSystemTrayIcon::showMessage() requires 
-       Growl to display messages.
+    \o All supported versions of Mac OS X. Note that the Growl
+       notification system must be installed for
+       QSystemTrayIcon::showMessage() to display messages.
     \endlist
 
     To check whether a system tray is present on the user's desktop,
@@ -361,7 +364,8 @@ bool QSystemTrayIcon::supportsMessages()
     \since 4.3
 
     Shows a balloon message for the entry with the given \a title, \a message and
-    \a icon for the time specified in \a millisecondsTimeoutHint.
+    \a icon for the time specified in \a millisecondsTimeoutHint. \a title and \a message
+    must be plain text strings.
 
     Message can be clicked by the user; the messageClicked() signal will emitted when
     this occurs.
@@ -418,24 +422,43 @@ QBalloonTip::QBalloonTip(QSystemTrayIcon::MessageIcon icon, const QString& title
     titleLabel->setText(title);
     QFont f = titleLabel->font();
     f.setBold(true);
+#ifdef Q_OS_WINCE
+    f.setPointSize(f.pointSize() - 2);
+#endif
     titleLabel->setFont(f);
     titleLabel->setTextFormat(Qt::PlainText); // to maintain compat with windows
 
+#ifdef Q_OS_WINCE
+    const int iconSize = style()->pixelMetric(QStyle::PM_SmallIconSize);
+    const int closeButtonSize = style()->pixelMetric(QStyle::PM_SmallIconSize) - 2;
+#else
+    const int iconSize = 18;
+    const int closeButtonSize = 15;
+#endif
+
     QPushButton *closeButton = new QPushButton;
-    closeButton->setIcon(style()->standardIcon(QStyle::SP_DockWidgetCloseButton));
-    closeButton->setIconSize(QSize(18, 18));
+    closeButton->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+    closeButton->setIconSize(QSize(closeButtonSize, closeButtonSize));
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    closeButton->setFixedSize(18, 18);
+    closeButton->setFixedSize(closeButtonSize, closeButtonSize);
     QObject::connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
 
     QLabel *msgLabel = new QLabel;
+#ifdef Q_OS_WINCE
+    f.setBold(false);
+    msgLabel->setFont(f);
+#endif
     msgLabel->installEventFilter(this);
     msgLabel->setText(message);
     msgLabel->setTextFormat(Qt::PlainText);
     msgLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     // smart size for the message label
+#ifdef Q_OS_WINCE
+    int limit = QApplication::desktop()->availableGeometry(msgLabel).size().width() / 2;
+#else
     int limit = QApplication::desktop()->availableGeometry(msgLabel).size().width() / 3;
+#endif
     if (msgLabel->sizeHint().width() > limit) {
         msgLabel->setWordWrap(true);
         if (msgLabel->sizeHint().width() > limit) {
@@ -446,7 +469,15 @@ QBalloonTip::QBalloonTip(QSystemTrayIcon::MessageIcon icon, const QString& title
                 control->document()->setDefaultTextOption(opt);
             }
         }
+#ifdef Q_OS_WINCE
+        // Make sure that the text isn't wrapped "somewhere" in the balloon widget
+        // in the case that we have a long title label.
+        setMaximumWidth(limit);
+#else
+        // Here we allow the text being much smaller than the balloon widget
+        // to emulate the weird standard windows behavior.
         msgLabel->setFixedSize(limit, msgLabel->heightForWidth(limit));
+#endif
     }
 
     QIcon si;
@@ -468,7 +499,7 @@ QBalloonTip::QBalloonTip(QSystemTrayIcon::MessageIcon icon, const QString& title
     QGridLayout *layout = new QGridLayout;
     if (!si.isNull()) {
         QLabel *iconLabel = new QLabel;
-        iconLabel->setPixmap(si.pixmap(15, 15));
+        iconLabel->setPixmap(si.pixmap(iconSize, iconSize));
         iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         iconLabel->setMargin(2);
         layout->addWidget(iconLabel, 0, 0);
@@ -614,5 +645,7 @@ void qtsystray_sendActivated(QSystemTrayIcon *i, int r)
 {
     emit i->activated((QSystemTrayIcon::ActivationReason)r);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SYSTEMTRAYICON

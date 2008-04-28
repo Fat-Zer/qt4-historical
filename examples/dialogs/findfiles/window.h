@@ -46,12 +46,15 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QDir;
 class QLabel;
 class QPushButton;
 class QTableWidget;
+QT_END_NAMESPACE
 
+//! [0]
 class Window : public QDialog
 {
     Q_OBJECT
@@ -82,5 +85,6 @@ private:
     QPushButton *findButton;
     QTableWidget *filesTable;
 };
+//! [0]
 
 #endif

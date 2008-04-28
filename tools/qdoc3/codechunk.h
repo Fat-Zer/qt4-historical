@@ -50,6 +50,8 @@
 
 #include <qstring.h>
 
+QT_BEGIN_NAMESPACE
+
 // ### get rid of that class
 
 /*
@@ -79,26 +81,18 @@ class CodeChunk
 public:
     CodeChunk();
     CodeChunk( const QString& str );
-    CodeChunk( const CodeChunk& chk );
-
-    CodeChunk& operator=( const CodeChunk& chk );
 
     void append( const QString& lexeme );
-    void appendBase( const QString& lexeme );
     void appendHotspot();
 
     bool isEmpty() const { return s.isEmpty(); }
     QString toString() const;
     QStringList toPath() const;
-    const QString& base() const { return b; }
     QString left() const { return s.left(hotspot == -1 ? s.length() : hotspot); }
     QString right() const { return s.mid(hotspot == -1 ? s.length() : hotspot); }
 
 private:
     QString s;
-    QString b;
-    int bstart;
-    int blen;
     int hotspot;
 };
 
@@ -125,5 +119,7 @@ inline bool operator<=( const CodeChunk& c, const CodeChunk& d ) {
 inline bool operator>=( const CodeChunk& c, const CodeChunk& d ) {
     return !( c < d );
 }
+
+QT_END_NAMESPACE
 
 #endif

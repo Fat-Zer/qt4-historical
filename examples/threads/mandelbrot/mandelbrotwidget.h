@@ -49,6 +49,7 @@
 
 #include "renderthread.h"
 
+//! [0]
 class MandelbrotWidget : public QWidget
 {
     Q_OBJECT
@@ -81,5 +82,6 @@ private:
     double pixmapScale;
     double curScale;
 };
+//! [0]
 
 #endif

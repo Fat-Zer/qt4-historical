@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_SCRIPT
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace Ecma {
 
 class Error: public Core
@@ -67,9 +69,9 @@ public:
     Error(QScriptEnginePrivate *engine);
     virtual ~Error();
 
-    inline QScriptClassInfo *classInfo() const { return m_objectClass; }
-
     virtual void execute(QScriptContextPrivate *context);
+
+    virtual void mark(QScriptEnginePrivate *eng, int generation);
 
     void newError(QScriptValueImpl *result, const QString &message = QString());
     void newEvalError(QScriptValueImpl *result, const QString &message = QString());
@@ -106,8 +108,6 @@ protected:
     static QScriptValueImpl method_toString(QScriptContextPrivate *context, QScriptEnginePrivate *eng, QScriptClassInfo *classInfo);
     static QScriptValueImpl method_backtrace(QScriptContextPrivate *context, QScriptEnginePrivate *eng, QScriptClassInfo *classInfo);
 
-    QScriptClassInfo *m_objectClass;
-
 private:
     void newError(QScriptValueImpl *result, const QScriptValueImpl &proto,
                   const QString &message = QString());
@@ -116,6 +116,8 @@ private:
 };
 
 } } // namespace QScript::Ecma
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT
 #endif // QSCRIPTECMAERROR_P_H

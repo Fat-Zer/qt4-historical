@@ -46,11 +46,14 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
 class QSpinBox;
+QT_END_NAMESPACE
 class RenderArea;
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -62,11 +65,15 @@ private slots:
     void fillRuleChanged();
     void fillGradientChanged();
     void penColorChanged();
+//! [0]
 
+//! [1]
 private:
     void populateWithColors(QComboBox *comboBox);
     QVariant currentItemData(QComboBox *comboBox);
+//! [1]
 
+//! [2]
     enum { NumRenderAreas = 9 };
 
     RenderArea *renderAreas[NumRenderAreas];
@@ -83,5 +90,6 @@ private:
     QComboBox *penColorComboBox;
     QSpinBox *rotationAngleSpinBox;
 };
+//! [2]
 
 #endif

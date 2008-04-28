@@ -47,6 +47,8 @@
 #include "smallobject.h"
 #include <QtGlobal>
 
+QT_BEGIN_NAMESPACE
+
 template <typename T>
 class List
 {
@@ -368,5 +370,7 @@ int List<T>::count(const T &t) const
             ++c;
     return c;
 }
+
+QT_END_NAMESPACE
 
 #endif // LIST_H

@@ -73,6 +73,8 @@
 #include <stdlib.h>
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 // TODO: separate QInputContextPrivate into qinputcontext_p.h and
 //       qinputcontext_x11.cpp
 class QInputContextPrivate : public QObjectPrivate
@@ -462,6 +464,8 @@ bool QInputContext::x11FilterEvent(QWidget * /*keywidget*/, XEvent * /*event*/)
 {
     return false;
 }
-#endif
+#endif // Q_WS_X11
+
+QT_END_NAMESPACE
 
 #endif //Q_NO_IM

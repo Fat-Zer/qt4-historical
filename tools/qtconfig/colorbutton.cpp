@@ -51,6 +51,8 @@
 #include <QStyle>
 #include <QStyleOption>
 
+QT_BEGIN_NAMESPACE
+
 ColorButton::ColorButton(QWidget *parent)
     : QAbstractButton(parent), mousepressed(false)
 {
@@ -202,3 +204,5 @@ void ColorButton::paintEvent(QPaintEvent *)
     QPainter p(this);
     drawButton(&p);
 }
+
+QT_END_NAMESPACE

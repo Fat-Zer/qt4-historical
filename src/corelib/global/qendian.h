@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 /*
@@ -339,6 +341,8 @@ template <typename T> inline void qToLittleEndian(T src, uchar *dest)
 { qToUnaligned<T>(src, dest); }
 
 #endif // Q_BYTE_ORDER == Q_BIG_ENDIAN
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

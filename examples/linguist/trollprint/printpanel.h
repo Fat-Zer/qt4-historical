@@ -46,12 +46,16 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QGroupBox;
 class QRadioButton;
+QT_END_NAMESPACE
 
+//! [0]
 class PrintPanel : public QWidget
 {
     Q_OBJECT
+//! [0]
 
 public:
     PrintPanel(QWidget *parent = 0);

@@ -50,8 +50,10 @@
 #include <QtCore/qplugin.h>
 #include <Qt3Support/Q3MainWindow>
 
-Q3MainWindowPlugin::Q3MainWindowPlugin(QObject *parent)
-    : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3MainWindowPlugin::Q3MainWindowPlugin(const QIcon &icon, QObject *parent)
+    : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3MainWindowPlugin::name() const
@@ -70,7 +72,7 @@ QString Q3MainWindowPlugin::includeFile() const
 { return QLatin1String("q3mainwindow.h"); }
 
 QIcon Q3MainWindowPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3MainWindowPlugin::isContainer() const
 { return true; }
@@ -113,3 +115,5 @@ QString Q3MainWindowPlugin::domXml() const
     ");
 }
 
+
+QT_END_NAMESPACE

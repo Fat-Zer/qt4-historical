@@ -57,29 +57,30 @@
 
 #include "ui_newactiondialog.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 class ActionEditor;
+class PropertySheetIconValue;
 
 class NewActionDialog: public QDialog
 {
     Q_OBJECT
 public:
-    NewActionDialog(ActionEditor *parent);
+    explicit NewActionDialog(ActionEditor *parent);
     virtual ~NewActionDialog();
 
     QString actionText() const;
     QString actionName() const;
-    QIcon actionIcon() const;
+    PropertySheetIconValue actionIcon() const;
 
-    void setActionData(const QString &text, const QString &name, const QIcon &icon);
+    void setActionData(const QString &text, const QString &name, const PropertySheetIconValue &icon);
 
 private slots:
     void accept();
     void on_editActionText_textEdited(const QString &text);
     void on_editObjectName_textEdited(const QString &text);
-    void on_iconButton_clicked();
-    void on_removeIconButton_clicked();
 
 private:
     ActionEditor *m_actionEditor;
@@ -90,5 +91,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // NEWACTIONDIALOG_P_H

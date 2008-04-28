@@ -60,6 +60,8 @@
 
 //#define DEBUG_RESOURCE_MATCH
 
+QT_BEGIN_NAMESPACE
+
 //resource glue
 class QResourceRoot
 {
@@ -74,7 +76,7 @@ class QResourceRoot
     QString name(int node) const;
     short flags(int node) const;
 public:
-    mutable QAtomic ref;
+    mutable QAtomicInt ref;
 
     inline QResourceRoot(): tree(0), names(0), payloads(0) {}
     inline QResourceRoot(const uchar *t, const uchar *n, const uchar *d) { setSource(t, n, d); }
@@ -163,7 +165,8 @@ Q_GLOBAL_STATIC(QStringList, resourceSearchPaths)
     to the unregistered file, they will continue to be valid but the resource
     file itself will be removed from the resource roots, and thus no further
     QResource can be created pointing into this resource data. The resource
-    itself will be unmapped from memory when the last QResource points into it.
+    itself will be unmapped from memory when the last QResource that points
+    to it is destroyed.
 
     \sa {The Qt Resource System}, QFile, QDir, QFileInfo
 */
@@ -873,8 +876,10 @@ public:
 // also this lacks Large File support but that's probably irrelevant
 #if defined(QT_USE_MMAP)
 // for mmap
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <sys/mman.h>
 #include <errno.h>
+QT_END_INCLUDE_NAMESPACE
 #endif
 
 
@@ -1141,6 +1146,8 @@ class QResourceFileEnginePrivate : public QAbstractFileEnginePrivate
 protected:
     Q_DECLARE_PUBLIC(QResourceFileEngine)
 private:
+    uchar *map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags);
+    bool unmap(uchar *ptr);
     qint64 offset;
     QResource resource;
     QByteArray uncompressed;
@@ -1182,7 +1189,7 @@ QResourceFileEngine::QResourceFileEngine(const QString &file) :
 #ifndef QT_NO_COMPRESS
         d->uncompressed = qUncompress(d->resource.data(), d->resource.size());
 #else
-        Q_ASSERT("QResourceFileEngine::open: Qt built without support for compression");
+        Q_ASSERT(!"QResourceFileEngine::open: Qt built without support for compression");
 #endif
     }
 }
@@ -1398,16 +1405,45 @@ QAbstractFileEngine::Iterator *QResourceFileEngine::endEntryList()
 
 bool QResourceFileEngine::extension(Extension extension, const ExtensionOption *option, ExtensionReturn *output)
 {
-    Q_UNUSED(extension);
-    Q_UNUSED(option);
-    Q_UNUSED(output);
+    Q_D(QResourceFileEngine);
+    if (extension == MapExtension) {
+        const MapExtensionOption *options = (MapExtensionOption*)(option);
+        MapExtensionReturn *returnValue = static_cast<MapExtensionReturn*>(output);
+        returnValue->address = d->map(options->offset, options->size, options->flags);
+        return (returnValue->address != 0);
+    }
+    if (extension == UnMapExtension) {
+        UnMapExtensionOption *options = (UnMapExtensionOption*)option;
+        return d->unmap(options->address);
+    }
     return false;
 }
 
 bool QResourceFileEngine::supportsExtension(Extension extension) const
 {
-    Q_UNUSED(extension);
-    return false;
+    return (extension == UnMapExtension || extension == MapExtension);
+}
+
+uchar *QResourceFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags)
+{
+    Q_Q(QResourceFileEngine);
+    Q_UNUSED(flags);
+    if (!resource.isValid()
+        || offset < 0
+        || size < 0
+        || offset + size > resource.size()
+        || (size == 0)) {
+        q->setError(QFile::UnspecifiedError, QString());
+        return 0;
+    }
+    uchar *address = const_cast<uchar *>(resource.data());
+    return (address + offset);
+}
+
+bool QResourceFileEnginePrivate::unmap(uchar *ptr)
+{
+    Q_UNUSED(ptr);
+    return true;
 }
 
 //Initialization and cleanup
@@ -1418,5 +1454,4 @@ Q_CORE_EXPORT void qInitResourceIO() { resource_file_handler(); }
 static int qt_forced_resource_init = qt_force_resource_init();
 Q_CONSTRUCTOR_FUNCTION(qt_force_resource_init)
 
-
-
+QT_END_NAMESPACE

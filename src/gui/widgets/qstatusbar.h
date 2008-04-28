@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_STATUSBAR
@@ -93,6 +95,7 @@ Q_SIGNALS:
     void messageChanged(const QString &text);
 
 protected:
+    void showEvent(QShowEvent *);
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *);
 
@@ -107,6 +110,8 @@ private:
 };
 
 #endif // QT_NO_STATUSBAR
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

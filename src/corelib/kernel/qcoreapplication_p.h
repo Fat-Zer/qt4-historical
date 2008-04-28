@@ -59,6 +59,8 @@
 #include "QtCore/qtranslator.h"
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 typedef QList<QTranslator*> QTranslatorList;
 
 class QAbstractEventDispatcher;
@@ -71,6 +73,8 @@ public:
     QCoreApplicationPrivate(int &aargc,  char **aargv);
     ~QCoreApplicationPrivate();
 
+    bool sendThroughApplicationEventFilters(QObject *, QEvent *);
+    bool sendThroughObjectEventFilters(QObject *, QEvent *);
     bool notify_helper(QObject *, QEvent *);
 
     virtual QString appName() const;
@@ -80,10 +84,15 @@ public:
     static void removePostedTimerEvent(QObject *object, int timerId);
 #endif
 
+#ifdef Q_OS_MAC
+    static QString macMenuBarName();
+#endif
+
     static QThread *theMainThread;
     static QThread *mainThread();
     static bool checkInstance(const char *method);
     static void sendPostedEvents(QObject *receiver, int event_type, QThreadData *data);
+    static void removePostedEvents_unlocked(QObject *receiver, int type, QThreadData *data);
 
 #if !defined (QT_NO_DEBUG) || defined (QT_MAC_FRAMEWORK_BUILD)
     void checkReceiverThread(QObject *receiver);
@@ -100,6 +109,8 @@ public:
     QCoreApplication::EventFilter eventFilter;
 
     bool in_exec;
+    QString cachedApplicationDirPath;
+    QString cachedApplicationFilePath;
 
     static bool isTranslatorInstalled(QTranslator *translator);
 
@@ -110,5 +121,7 @@ public:
     static uint attribs;
     static inline bool testAttribute(uint flag) { return attribs & (1 << flag); }
 };
+
+QT_END_NAMESPACE
 
 #endif // QCOREAPPLICATION_P_H

@@ -46,11 +46,14 @@
 #ifndef QT_NO_SCRIPT
 
 #include "qscriptvalueiterator_p.h"
+#include "qscriptvalueiteratorimpl_p.h"
 #include "qscriptengine_p.h"
-#include "qscriptvalueimpl_p.h"
 #include "qscriptcontext_p.h"
+#include "qscriptvalueimpl_p.h"
 #include "qscriptmember_p.h"
 #include "qscriptobject_p.h"
+
+QT_BEGIN_NAMESPACE
 
 /*!
   \since 4.3
@@ -66,15 +69,7 @@
   beginning of the sequence of properties. Here's how to iterate over
   all the properties of a QScriptValue:
 
-  \code
-  QScriptValue object;
-  ...
-  QScriptValueIterator it(object);
-  while (it.hasNext()) {
-    it.next();
-    qDebug() << it.name() << ": " << it.value().toString();
-  }
-  \endcode
+  \snippet doc/src/snippets/code/src.script.qscriptvalueiterator.cpp 0
 
   The next() advances the iterator. The name(), value() and flags()
   functions return the name, value and flags of the last item that was
@@ -85,24 +80,34 @@
   property, use setValue().
 
   Note that QScriptValueIterator only iterates over the QScriptValue's
-  own properties; i.e. it does not follow the prototype chain.
+  own properties; i.e. it does not follow the prototype chain. You can
+  use a loop like this to follow the prototype chain:
+
+  \snippet doc/src/snippets/code/src.script.qscriptvalueiterator.cpp 1
 
   Note that QScriptValueIterator will not automatically skip over
   properties that have the QScriptValue::SkipInEnumeration flag set;
   that flag only affects iteration in script code.  If you want, you
   can skip over such properties with code like the following:
 
-  \code
-  while (it.hasNext()) {
-    it.next();
-    if (it.flags() & QScriptValue::SkipInEnumeration)
-        continue;
-    qDebug() << "found enumerated property:" << it.name();
-  }
-  \endcode
+  \snippet doc/src/snippets/code/src.script.qscriptvalueiterator.cpp 2
 
   \sa QScriptValue::property()
 */
+
+/*!
+  \internal
+*/
+QScriptValueIteratorPrivate::QScriptValueIteratorPrivate()
+{
+}
+
+/*!
+  \internal
+*/
+QScriptValueIteratorPrivate::~QScriptValueIteratorPrivate()
+{
+}
 
 /*!
   Constructs an iterator for traversing \a object. The iterator is
@@ -110,8 +115,14 @@
   first property).
 */
 QScriptValueIterator::QScriptValueIterator(const QScriptValue &object)
-    : d_ptr(new QScriptValueIteratorPrivate(this, object))
 {
+    QScriptValueImpl val = QScriptValuePrivate::valueOf(object);
+    if (!val.isObject()) {
+        d_ptr = 0;
+    } else {
+        d_ptr = new QScriptValueIteratorPrivate();
+        d_ptr->it = new QScriptValueIteratorImpl(val);
+    }
 }
 
 /*!
@@ -119,8 +130,11 @@ QScriptValueIterator::QScriptValueIterator(const QScriptValue &object)
 */
 QScriptValueIterator::~QScriptValueIterator()
 {
-    delete d_ptr;
-    d_ptr = 0;
+    if (d_ptr) {
+        delete d_ptr->it;
+        delete d_ptr;
+        d_ptr = 0;
+    }
 }
 
 /*!
@@ -133,54 +147,22 @@ QScriptValueIterator::~QScriptValueIterator()
 bool QScriptValueIterator::hasNext() const
 {
     Q_D(const QScriptValueIterator);
-    if ((d->nextIndex != -1) && d->forward)
-        return true;
-
-    if (!d->object.isObject())
-        return false;
-
-    QScriptValueImpl v = QScriptValuePrivate::valueOf(d->object);
-    int i = d->index;
-    if ((i != -1) && !d->forward)
-        --i;
-
-    int count = v.memberCount();
-    bool found = false;
-    while (! found && ++i < count) {
-        QScript::Member member;
-        v.member(i, &member);
-        found = member.isValid();
-        if (found && (member.isObjectProperty() || v.isArray())) {
-            QScriptValueImpl vv;
-            v.get(member, &vv);
-            found = vv.isValid();
-        }
-    }
-
-    QScriptValueIteratorPrivate *that;
-    that = const_cast<QScriptValueIteratorPrivate*>(d);
-    if (found) {
-        that->forward = true;
-        that->nextIndex = i;
-        return true;
-    } else {
-        that->nextIndex = -1;
-        return false;
-    }
+    return (d && d->it->hasNext());
 }
 
 /*!
   Advances the iterator by one position.
+
+  Calling this function on an iterator located at the back of the
+  container leads to undefined results.
 
   \sa hasNext(), previous(), name()
 */
 void QScriptValueIterator::next()
 {
     Q_D(QScriptValueIterator);
-    (void)hasNext();
-
-    d->index = d->nextIndex;
-    d->nextIndex = -1;
+    if (d)
+        d->it->next();
 }
 
 /*!
@@ -193,54 +175,22 @@ void QScriptValueIterator::next()
 bool QScriptValueIterator::hasPrevious() const
 {
     Q_D(const QScriptValueIterator);
-    if ((d->nextIndex != -1) && !d->forward)
-        return true;
-
-    if (!d->object.isObject())
-        return false;
-
-    QScriptValueImpl v = QScriptValuePrivate::valueOf(d->object);
-    int i = d->index;
-    if ((i != -1) && d->forward)
-        ++i;
-
-    bool found = false;
-    while (! found && --i >= 0) {
-        QScript::Member member;
-        v.member(i, &member);
-        found = member.isValid();
-        if (found) {
-            QScriptValueImpl vv;
-            v.get(member, &vv);
-            found = vv.isValid();
-        }
-    }
-
-    QScriptValueIteratorPrivate *that;
-    that = const_cast<QScriptValueIteratorPrivate*>(d);
-    if (found) {
-        that->forward = false;
-        that->nextIndex = i;
-        return true;
-    } else {
-        that->nextIndex = -1;
-        return false;
-    }
-
+    return (d && d->it->hasPrevious());
 }
 
 /*!
   Moves the iterator back by one position.
+
+  Calling this function on an iterator located at the front of the
+  container leads to undefined results.
 
   \sa hasPrevious(), next(), name()
 */
 void QScriptValueIterator::previous()
 {
     Q_D(QScriptValueIterator);
-    (void)hasPrevious();
-
-    d->index = d->nextIndex;
-    d->nextIndex = -1;
+    if (d)
+        d->it->previous();
 }
 
 /*!
@@ -252,8 +202,8 @@ void QScriptValueIterator::previous()
 void QScriptValueIterator::toFront()
 {
     Q_D(QScriptValueIterator);
-    d->index = -1;
-    d->nextIndex = -1;
+    if (d)
+        d->it->toFront();
 }
 
 /*!
@@ -265,8 +215,8 @@ void QScriptValueIterator::toFront()
 void QScriptValueIterator::toBack()
 {
     Q_D(QScriptValueIterator);
-    d->index = QScriptValuePrivate::valueOf(d->object).memberCount();
-    d->nextIndex = -1;
+    if (d)
+        d->it->toBack();
 }
 
 /*!
@@ -278,19 +228,24 @@ void QScriptValueIterator::toBack()
 QString QScriptValueIterator::name() const
 {
     Q_D(const QScriptValueIterator);
-    if (d->index == -1)
+    if (!d)
         return QString();
+    return d->it->name();
+}
 
-    QScript::Member member;
-    QScriptValuePrivate::valueOf(d->object).member(d->index, &member);
+/*!
+  \since 4.4
 
-    if (member.isObjectProperty() || member.nameId())
-        return member.nameId()->s;
-
-    else if (member.isNativeProperty())
-        return QScriptEnginePrivate::toString(member.id());
-
-    return QString();
+  Returns the name of the last property that was jumped over using
+  next() or previous().
+*/
+QScriptString QScriptValueIterator::scriptName() const
+{
+    Q_D(const QScriptValueIterator);
+    if (!d)
+        return QScriptString();
+    QScriptEnginePrivate *eng = QScriptEnginePrivate::get(d->it->object().engine());
+    return eng->internedString(d->it->nameId());
 }
 
 /*!
@@ -302,17 +257,9 @@ QString QScriptValueIterator::name() const
 QScriptValue QScriptValueIterator::value() const
 {
     Q_D(const QScriptValueIterator);
-    if (d->index == -1)
+    if (!d)
         return QScriptValue();
-
-    QScript::Member member;
-    QScriptValuePrivate::valueOf(d->object).member(d->index, &member);
-    if (!member.isValid())
-        return QScriptValue();
-
-    QScriptValueImpl result;
-    QScriptValuePrivate::valueOf(d->object).get(member, &result);
-    return result;
+    return d->it->value();
 }
 
 /*!
@@ -324,15 +271,8 @@ QScriptValue QScriptValueIterator::value() const
 void QScriptValueIterator::setValue(const QScriptValue &value)
 {
     Q_D(const QScriptValueIterator);
-    if (d->index == -1)
-        return;
-
-    QScript::Member member;
-    QScriptValuePrivate::valueOf(d->object).member(d->index, &member);
-    if (!member.isValid())
-        return;
-
-    QScriptValuePrivate::valueOf(d->object).put(member, QScriptValuePrivate::valueOf(value));
+    if (d)
+        d->it->setValue(QScriptValuePrivate::valueOf(value));
 }
 
 /*!
@@ -344,15 +284,9 @@ void QScriptValueIterator::setValue(const QScriptValue &value)
 QScriptValue::PropertyFlags QScriptValueIterator::flags() const
 {
     Q_D(const QScriptValueIterator);
-    if (d->index == -1)
+    if (!d)
         return 0;
-
-    QScript::Member member;
-    QScriptValuePrivate::valueOf(d->object).member(d->index, &member);
-    if (!member.isValid())
-        return 0;
-
-    return QScriptValue::PropertyFlags(member.flags());
+    return QScriptValue::PropertyFlags(d->it->flags() & ~QScript::Member::InternalRange);
 }
 
 /*!
@@ -364,15 +298,8 @@ QScriptValue::PropertyFlags QScriptValueIterator::flags() const
 void QScriptValueIterator::remove()
 {
     Q_D(const QScriptValueIterator);
-    if (d->index == -1)
-        return;
-
-    QScript::Member member;
-    QScriptValuePrivate::valueOf(d->object).member(d->index, &member);
-    if (!member.isValid())
-        return;
-
-    QScriptValuePrivate::valueOf(d->object).removeMember(member);
+    if (d)
+        d->it->remove();
 }
 
 /*!
@@ -382,11 +309,18 @@ void QScriptValueIterator::remove()
 */
 QScriptValueIterator& QScriptValueIterator::operator=(QScriptValue &object)
 {
-    Q_D(QScriptValueIterator);
-    d->object = object;
-    d->index = -1;
-    d->nextIndex = -1;
+    if (d_ptr) {
+        delete d_ptr->it;
+        d_ptr = 0;
+    }
+    QScriptValueImpl val = QScriptValuePrivate::valueOf(object);
+    if (val.isObject()) {
+        d_ptr = new QScriptValueIteratorPrivate();
+        d_ptr->it = new QScriptValueIteratorImpl(val);
+    }
     return *this;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

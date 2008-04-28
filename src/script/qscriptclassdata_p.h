@@ -44,6 +44,12 @@
 #ifndef QSCRIPTCLASSDATA_P_H
 #define QSCRIPTCLASSDATA_P_H
 
+#include <QtCore/qshareddata.h>
+
+#ifndef QT_NO_SCRIPT
+
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -55,10 +61,9 @@
 // We mean it.
 //
 
-#include <QtCore/qshareddata.h>
-
 class QScriptValueImpl;
 class QScriptNameIdImpl;
+class QScriptClassDataIterator;
 
 namespace QScript {
     class Member;
@@ -67,10 +72,10 @@ namespace QScript {
 class QScriptClassData: public QSharedData
 {
 protected:
-    QScriptClassData() {}
+    QScriptClassData();
 
 public:
-    virtual ~QScriptClassData() {}
+    virtual ~QScriptClassData();
 
     virtual void mark(const QScriptValueImpl &object, int generation);
     virtual bool resolve(const QScriptValueImpl &object, QScriptNameIdImpl *nameId,
@@ -81,12 +86,32 @@ public:
                      const QScriptValueImpl &value);
     virtual bool removeMember(const QScriptValueImpl &object,
                               const QScript::Member &member);
-    virtual int extraMemberCount(const QScriptValueImpl &object);
-    virtual bool extraMember(const QScriptValueImpl &object, int index,
-                             QScript::Member *member);
+    virtual QScriptClassDataIterator *newIterator(const QScriptValueImpl &object);
 
 private:
     Q_DISABLE_COPY(QScriptClassData)
 };
+
+class QScriptClassDataIterator
+{
+protected:
+    QScriptClassDataIterator();
+
+public:
+    virtual ~QScriptClassDataIterator();
+
+    virtual bool hasNext() const = 0;
+    virtual void next(QScript::Member *member) = 0;
+
+    virtual bool hasPrevious() const = 0;
+    virtual void previous(QScript::Member *member) = 0;
+
+    virtual void toFront() = 0;
+    virtual void toBack() = 0;
+};
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_SCRIPT
 
 #endif // QSCRIPTCLASSDATA_P_H

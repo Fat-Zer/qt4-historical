@@ -63,6 +63,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QLayout;
@@ -128,6 +130,9 @@ public:
 
     int alloc_region_index;
 //    int alloc_region_revision;
+#endif
+#if defined(Q_OS_WINCE)
+    uint window_state_internal : 4;
 #endif
     QRect wrect;
 };
@@ -207,6 +212,7 @@ class Q_GUI_EXPORT QWidget : public QObject, public QPaintDevice
     Q_PROPERTY(QString styleSheet READ styleSheet WRITE setStyleSheet)
 #endif
     Q_PROPERTY(QLocale locale READ locale WRITE setLocale RESET unsetLocale)
+    Q_PROPERTY(QString windowFilePath READ windowFilePath WRITE setWindowFilePath DESIGNABLE isWindow)
 
 public:
     enum RenderFlag {
@@ -227,6 +233,7 @@ public:
     WId winId() const;
     void createWinId(); // internal, going away
     inline WId internalWinId() const { return data->winid; }
+    WId effectiveWinId() const;
 
     // GUI style setting
     QStyle *style() const;
@@ -304,6 +311,7 @@ public:
     QPoint mapFrom(QWidget *, const QPoint &) const;
 
     QWidget *window() const;
+    QWidget *nativeParentWidget() const;
     inline QWidget *topLevelWidget() const { return window(); }
 
     // Widget appearance functions
@@ -340,6 +348,10 @@ public:
                 const QRegion &sourceRegion = QRegion(),
                 RenderFlags renderFlags = RenderFlags(DrawWindowBackground | DrawChildren));
 
+    void render(QPainter *painter, const QPoint &targetOffset = QPoint(),
+                const QRegion &sourceRegion = QRegion(),
+                RenderFlags renderFlags = RenderFlags(DrawWindowBackground | DrawChildren));
+
 public Q_SLOTS:
     void setWindowTitle(const QString &);
 #ifndef QT_NO_STYLE_STYLESHEET
@@ -356,6 +368,8 @@ public:
     QString windowIconText() const;
     void setWindowRole(const QString &);
     QString windowRole() const;
+    void setWindowFilePath(const QString &filePath);
+    QString windowFilePath() const;
 
     void setWindowOpacity(qreal level);
     qreal windowOpacity() const;
@@ -452,7 +466,11 @@ public Q_SLOTS:
 
     virtual void setVisible(bool visible);
     inline void setHidden(bool hidden) { setVisible(!hidden); }
+#ifndef Q_OS_WINCE
     inline void show() { setVisible(true); }
+#else
+    void show();
+#endif
     inline void hide() { setVisible(false); }
     inline QT_MOC_COMPAT void setShown(bool shown) { setVisible(shown); }
 
@@ -674,6 +692,7 @@ private:
     friend void qt_syncBackingStore(QWidget *);
     friend void qt_syncBackingStore(QRegion, QWidget *);
     friend void qt_syncBackingStore(QRegion, QWidget *, bool);
+    friend QRegion qt_dirtyRegion(QWidget *, bool);
     friend QWindowSurface *qt_default_window_surface(QWidget*);
 
     friend class QBackingStoreDevice;
@@ -682,12 +701,14 @@ private:
     friend class QApplicationPrivate;
     friend class QBaseApplication;
     friend class QPainter;
+    friend class QPainterPrivate;
     friend class QPixmap; // for QPixmap::fill()
     friend class QFontMetrics;
     friend class QFontInfo;
     friend class QETWidget;
     friend class QLayout;
     friend class QWidgetItem;
+    friend class QWidgetItemV2;
     friend class QGLContext;
     friend class QGLWidget;
     friend class QX11PaintEngine;
@@ -695,6 +716,9 @@ private:
     friend class QShortcutPrivate;
     friend class QWindowSurface;
     friend class QD3DWindowSurface;
+    friend class QGraphicsProxyWidget;
+    friend class QGraphicsProxyWidgetPrivate;
+    friend class QStyleSheetStyle;
 
 #ifdef Q_WS_MAC
 #ifdef Q_WS_MAC32
@@ -720,9 +744,7 @@ private:
 #endif
 
     friend Q_GUI_EXPORT QWidgetData *qt_qwidget_data(QWidget *widget);
-#ifdef Q_WS_MAC
     friend Q_GUI_EXPORT QWidgetPrivate *qt_widget_private(QWidget *widget);
-#endif
 
 private:
     Q_DISABLE_COPY(QWidget)
@@ -1009,6 +1031,8 @@ inline QT3_SUPPORT void QWidget::erase(const QRect &r) { erase_helper(r.x(), r.y
 #endif
 
 #define QWIDGETSIZE_MAX ((1<<24)-1)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -1,1 +1,1 @@
-#include "../../src/network/qauthenticator.h"
+#include "../../src/network/kernel/qauthenticator.h"

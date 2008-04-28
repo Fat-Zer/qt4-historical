@@ -45,6 +45,7 @@
 
 #include "xbelreader.h"
 
+//! [0]
 XbelReader::XbelReader(QTreeWidget *treeWidget)
     : treeWidget(treeWidget)
 {
@@ -56,7 +57,9 @@ XbelReader::XbelReader(QTreeWidget *treeWidget)
                          QIcon::Normal, QIcon::On);
     bookmarkIcon.addPixmap(style->standardPixmap(QStyle::SP_FileIcon));
 }
+//! [0]
 
+//! [1]
 bool XbelReader::read(QIODevice *device)
 {
     setDevice(device);
@@ -74,7 +77,9 @@ bool XbelReader::read(QIODevice *device)
 
     return !error();
 }
+//! [1]
 
+//! [2]
 void XbelReader::readUnknownElement()
 {
     Q_ASSERT(isStartElement());
@@ -89,7 +94,9 @@ void XbelReader::readUnknownElement()
             readUnknownElement();
     }
 }
+//! [2]
 
+//! [3]
 void XbelReader::readXBEL()
 {
     Q_ASSERT(isStartElement() && name() == "xbel");
@@ -112,7 +119,9 @@ void XbelReader::readXBEL()
         }
     }
 }
+//! [3]
 
+//! [4]
 void XbelReader::readTitle(QTreeWidgetItem *item)
 {
     Q_ASSERT(isStartElement() && name() == "title");
@@ -120,7 +129,9 @@ void XbelReader::readTitle(QTreeWidgetItem *item)
     QString title = readElementText();
     item->setText(0, title);
 }
+//! [4]
 
+//! [5]
 void XbelReader::readSeparator(QTreeWidgetItem *item)
 {
     QTreeWidgetItem *separator = createChildItem(item);
@@ -128,6 +139,7 @@ void XbelReader::readSeparator(QTreeWidgetItem *item)
     separator->setText(0, QString(30, 0xB7));
     readElementText();
 }
+//! [5]
 
 void XbelReader::readFolder(QTreeWidgetItem *item)
 {

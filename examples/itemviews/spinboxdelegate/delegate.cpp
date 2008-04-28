@@ -53,11 +53,14 @@
 #include "delegate.h"
 
 
+//! [0]
 SpinBoxDelegate::SpinBoxDelegate(QObject *parent)
     : QItemDelegate(parent)
 {
 }
+//! [0]
 
+//! [1]
 QWidget *SpinBoxDelegate::createEditor(QWidget *parent,
     const QStyleOptionViewItem &/* option */,
     const QModelIndex &/* index */) const
@@ -68,16 +71,20 @@ QWidget *SpinBoxDelegate::createEditor(QWidget *parent,
 
     return editor;
 }
+//! [1]
 
+//! [2]
 void SpinBoxDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
-    int value = index.model()->data(index, Qt::DisplayRole).toInt();
+    int value = index.model()->data(index, Qt::EditRole).toInt();
 
     QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
     spinBox->setValue(value);
 }
+//! [2]
 
+//! [3]
 void SpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
@@ -87,9 +94,12 @@ void SpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 
     model->setData(index, value, Qt::EditRole);
 }
+//! [3]
 
+//! [4]
 void SpinBoxDelegate::updateEditorGeometry(QWidget *editor,
     const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
     editor->setGeometry(option.rect);
 }
+//! [4]

@@ -52,6 +52,8 @@
 #include <qvariant.h>
 #include <private/qcursor_p.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QCursor
 
@@ -127,11 +129,11 @@
          \o Qt::SizeAllCursor \o \c size_all
     \row \o \inlineimage      cursor-busy.png
          \o Qt::BusyCursor    \o \c left_ptr_watch
-         \o \inlineimage      cursor-vsplit.png
+         \o \inlineimage      cursor-hsplit.png
          \o Qt::SplitVCursor  \o \c split_v
     \row \o \inlineimage      cursor-forbidden.png
          \o Qt::ForbiddenCursor \o \c forbidden
-         \o \inlineimage      cursor-hsplit.png
+         \o \inlineimage      cursor-vsplit.png
          \o Qt::SplitHCursor  \o \c split_h
     \row \o \inlineimage      cursor-hand.png
          \o Qt::PointingHandCursor \o \c pointing_hand
@@ -151,7 +153,7 @@
 
     Returns a platform-specific cursor handle. The \c
     HCURSOR_or_HANDLE type is \c HCURSOR on Windows and Qt::HANDLE on X11
-    and Mac OS X. On \l {Qtopia Core} it is an integer.
+    and Mac OS X. On \l{Qt for Embedded Linux} it is an integer.
 
     \warning Using the value returned by this function is not
     portable.
@@ -262,6 +264,9 @@ QDataStream &operator>>(QDataStream &s, QCursor &c)
     because this size is supported on all platforms. Some platforms
     also support 16 x 16, 48 x 48, and 64 x 64 cursors.
 
+    \note On Windows CE, the cursor size is fixed. If the pixmap
+    is bigger than the system size, it will be scaled.
+
     \sa QPixmap::QPixmap(), QPixmap::setMask()
 */
 
@@ -316,6 +321,9 @@ QCursor::QCursor(const QPixmap &pixmap, int hotX, int hotY)
     underlying window system). We recommend using 32 x 32 cursors,
     because this size is supported on all platforms. Some platforms
     also support 16 x 16, 48 x 48, and 64 x 64 cursors.
+
+    \note On Windows CE, the cursor size is fixed. If the pixmap
+    is bigger than the system size, it will be scaled.
 
     \sa QBitmap::QBitmap(), QBitmap::setMask()
 */
@@ -419,9 +427,9 @@ void QCursor::setShape(Qt::CursorShape shape)
     if (!d) {
         d = c;
     } else {
-        c = qAtomicSetPtr(&d, c);
-        if (!c->ref.deref())
-            delete c;
+        if (!d->ref.deref())
+            delete d;
+        d = c;
     }
 }
 
@@ -506,9 +514,9 @@ QCursor &QCursor::operator=(const QCursor &c)
         QCursorData::initialize();
     if (c.d)
         c.d->ref.ref();
-    QCursorData *x = qAtomicSetPtr(&d, c.d);
-    if (x && !x->ref.deref())
-        delete x;
+    if (d && !d->ref.deref())
+        delete d;
+    d = c.d;
     return *this;
 }
 
@@ -521,3 +529,5 @@ QCursor::operator QVariant() const
 }
 
 #endif // QT_NO_CURSOR
+
+QT_END_NAMESPACE

@@ -56,6 +56,8 @@
 #include "dcfsection.h"
 #include "pagegenerator.h"
 
+QT_BEGIN_NAMESPACE
+
 #if 0
 struct NavigationBar
 {
@@ -64,6 +66,8 @@ struct NavigationBar
     SectionIterator next;
 };
 #endif
+
+class HelpProjectWriter;
 
 class HtmlGenerator : public PageGenerator
 {
@@ -148,13 +152,13 @@ private:
     void findAllNamespaces(const InnerNode *node);
     static int hOffset(const Node *node);
     static bool isThreeColumnEnumValueTable(const Atom *atom);
-    QString getLink(const Atom *atom, const Node *relative, CodeMarker *marker);
+    QString getLink(const Atom *atom, const Node *relative, CodeMarker *marker, const Node *node = 0);
     virtual void generateDcf(const QString &fileBase, const QString &startPage,
                              const QString &title, DcfSection &dcfRoot);
     virtual void generateIndex(const QString &fileBase, const QString &url,
                                const QString &title);
     void generateMacRef(const Node *node, CodeMarker *marker);
-    void beginLink(const QString &link, const Node *relative, CodeMarker *marker);
+    void beginLink(const QString &link, const Node *node, const Node *relative, CodeMarker *marker);
     void endLink();
 
 #if 0
@@ -169,6 +173,7 @@ private:
     DcfSection dcfLinguistRoot;
     DcfSection dcfAssistantRoot;
     DcfSection dcfQmakeRoot;
+    HelpProjectWriter *helpProjectWriter;
     bool inLink;
     bool inContents;
     bool inSectionHeading;
@@ -209,5 +214,7 @@ private:
 #define HTMLGENERATOR_STYLE             "style"
 #define HTMLGENERATOR_STYLESHEETS       "stylesheets"
 #define HTMLGENERATOR_CUSTOMHEADELEMENTS "customheadelements"
+
+QT_END_NAMESPACE
 
 #endif

@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example widgets/styles
     \title Styles Example
@@ -40,9 +83,7 @@
 
     Here's the definition of the \c NorwegianWoodStyle class:
 
-    \quotefromfile widgets/styles/norwegianwoodstyle.h
-    \skipto class NorwegianWood
-    \printuntil };
+    \snippet examples/widgets/styles/norwegianwoodstyle.h 0
 
     The public functions are all declared in QStyle (QMotifStyle's
     grandparent class) and reimplemented here to override the Motif
@@ -53,9 +94,7 @@
     We will now review the implementation of the \c
     NorwegianWoodStyle class.
 
-    \quotefromfile widgets/styles/norwegianwoodstyle.cpp
-    \skipto ::polish
-    \printuntil painter.end()
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 0
 
     The \c polish() function is reimplemented from QStyle. It takes a
     QPalette as a reference and adapts the palette to fit the style.
@@ -91,8 +130,7 @@
     buttonImage. This image will be used for filling buttons that the
     user is holding down.
 
-    \printline palette = QPalette
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 1
 
     We initialize the palette. Palettes have various
     \l{QPalette::ColorRole}{color roles}, such as QPalette::Base
@@ -134,8 +172,8 @@
     Let's move on to the other functions reimplemented from
     QMotifStyle:
 
-    \printline ::polish(
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 3
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 4
 
     This QStyle::polish() overload is called once on every widget
     drawn using the style. We reimplement it to set the Qt::WA_Hover
@@ -145,8 +183,8 @@
     render push buttons and comboboxes differently when the mouse
     pointer is over them.
 
-    \printline ::unpolish(
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 5
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 6
 
     This QStyle::unpolish() overload is called to undo any
     modification done to the widget in \c polish(). For simplicity,
@@ -155,8 +193,8 @@
     widgets (e.g., using a QMap<QWidget *, bool>) and restore it in
     \c unpolish().
 
-    \printline ::pixelMetric
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 7
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 8
 
     The \l{QStyle::pixelMetric()}{pixelMetric()} function returns the
     size in pixels for a certain user interface element. By
@@ -175,8 +213,8 @@
     For all other QStyle::PixelMetric elements, we use the Motif
     settings.
 
-    \printline ::styleHint
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 9
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 10
 
     The \l{QStyle::styleHint()}{styleHint()} function returns some
     hints to widgets or to the base style (in our case QMotifStyle)
@@ -187,8 +225,8 @@
     QStyle::SH_EtchDisabledText hint, meaning that disabled text is
     rendered with an embossed look (as QWindowsStyle does).
 
-    \printline ::drawPrimitive
-    \printuntil getRect
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 11
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 12
 
     The \l{QStyle::drawPrimitive()}{drawPrimitive()} function is
     called by Qt widgets to draw various fundamental graphical
@@ -219,8 +257,8 @@
     QStyle::State_MouseOver flag to be set when the mouse is over the
     widget.
 
-    \printline roundRect =
-    \printline int radius
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 13
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 14
 
     The \c roundRect variable is a QPainterPath. A QPainterPath is is
     a vectorial specification of a shape. Any shape (rectangle,
@@ -230,10 +268,10 @@
     \c roundRectPath() function is a private function; we will come
     back to it later.
 
-    \printline QBrush brush
-    \printuntil darker = false
-    \printline }
-    \printline }
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 15
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 16
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 17
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 18
 
     We define two variables, \c brush and \c darker, and initialize
     them based on the state of the button:
@@ -265,11 +303,11 @@
     performs a dynamic cast; if \c option is not a
     QStyleOptionButton, qstyleoption_cast() returns a null pointer.
 
-    \printline painter->save(
-    \printline Antialiasing
-    \printline fillPath
-    \printline if (darker)
-    \printline fillPath
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 19
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 20
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 21
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 22
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 23
 
     We turn on antialiasing on QPainter. Antialiasing is a technique
     that reduces the visual distortion that occurs when the edges of
@@ -284,8 +322,8 @@
     semi-transparent black color (a black color with an alpha channel
     of 63) to make the area darker if \c darker is true.
 
-    \printline int penWidth
-    \printuntil qSwap
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 24
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 25
 
     Next, we draw the outline. The top-left half of the outline and
     the bottom-right half of the outline are drawn using different
@@ -296,12 +334,7 @@
     \l{QAbstractButton::checked}{checked}, we invert the two
     \l{QPen}s to give a sunken look to the button.
 
-    \printline int x1
-    \printuntil int x4
-    \printline Qt::RightToLeft) {
-    \printuntil }
-    \printuntil QPoint(x1, y + height);
-    \printuntil drawPath
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 26
 
     We draw the top-left part of the outline by calling
     QPainter::drawPath() with an appropriate
@@ -323,9 +356,9 @@
     pass the \c -reverse command-line option to the application. This
     option is recognized by the QApplication constructor.
 
-    \printuntil break;
-    \printline default:
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 32
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 33
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 34
 
     The bottom-right part of the outline is drawn in a similar
     fashion. Then we draw a one-pixel wide outline around the entire
@@ -337,8 +370,8 @@
     base style. Let's now turn to the other \c NorwegianWoodStyle
     member functions:
 
-    \printline ::drawControl
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 35
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 36
 
     We reimplement QStyle::drawControl() to draw the text on a
     QPushButton in a bright color when the button is
@@ -351,8 +384,8 @@
     QPalette::ButtonText be the same as the QPalette::BrightText
     component (unless the widget is disabled).
 
-    \printline ::setTexture
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 37
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 38
 
     The \c setTexture() function is a private function that sets the
     \l{QBrush::texture()}{texture} component of the \l{QBrush}es for
@@ -361,8 +394,8 @@
     inactive). We used it to initialize the Norwegian Wood palette in
     \c polish(QPalette &).
 
-    \printline ::roundRectPath
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 39
+    \snippet examples/widgets/styles/norwegianwoodstyle.cpp 40
 
     The \c roundRectPath() function is a private function that
     constructs a QPainterPath object for round buttons. The path
@@ -380,18 +413,13 @@
     class, which contains the most common Qt widgets and allows the
     user to change style dynamically. Here's the class definition:
 
-    \quotefromfile widgets/styles/widgetgallery.h
-    \skipto class WidgetGallery
-    \printuntil disableWidgetsCheckBox
+    \snippet examples/widgets/styles/widgetgallery.h 0
     \dots
-    \skipto };
-    \printline };
+    \snippet examples/widgets/styles/widgetgallery.h 1
 
     Here's the \c WidgetGallery constructor:
 
-    \quotefromfile widgets/styles/widgetgallery.cpp
-    \skipto ::WidgetGallery(
-    \printuntil createProgressBar(
+    \snippet examples/widgets/styles/widgetgallery.cpp 0
 
     We start by creating child widgets. The \gui Style combobox is
     initialized with all the styles known to QStyleFactory, in
@@ -399,8 +427,8 @@
     private functions that set up the various parts of the \c
     WidgetGallery.
 
-    \printline connect(
-    \printuntil bottomRightGroupBox
+    \snippet examples/widgets/styles/widgetgallery.cpp 1
+    \snippet examples/widgets/styles/widgetgallery.cpp 2
 
     We connect the \gui Style combobox to the \c changeStyle()
     private slot, the \gui{Use style's standard palette} check box to
@@ -408,20 +436,20 @@
     box to the child widgets'
     \l{QWidget::setDisabled()}{setDisabled()} slot.
 
-    \printline topLayout = new QHBoxLayout
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/widgetgallery.cpp 3
+    \snippet examples/widgets/styles/widgetgallery.cpp 4
 
     Finally, we put the child widgets in layouts.
 
-    \printline ::changeStyle
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/widgetgallery.cpp 5
+    \snippet examples/widgets/styles/widgetgallery.cpp 6
 
     When the user changes the style in the combobox, we call
     QApplication::setStyle() to dynamically change the style of the
     application.
 
-    \printline ::changePalette
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/widgetgallery.cpp 7
+    \snippet examples/widgets/styles/widgetgallery.cpp 8
 
     If the user turns the \gui{Use style's standard palette} on, the
     current style's \l{QStyle::standardPalette()}{standard palette}
@@ -431,8 +459,8 @@
     always override the palette with our own palette in \c
     NorwegianWoodStyle::polish().
 
-    \printline ::advanceProgressBar
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/widgetgallery.cpp 9
+    \snippet examples/widgets/styles/widgetgallery.cpp 10
 
     The \c advanceProgressBar() slot is called at regular intervals
     to advance the progress bar. Since we don't know how long the
@@ -442,8 +470,8 @@
 
     We will review \c createProgressBar() in a moment.
 
-    \printline ::createTopLeftGroupBox
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/widgetgallery.cpp 11
+    \snippet examples/widgets/styles/widgetgallery.cpp 12
 
     The \c createTopLeftGroupBox() function creates the QGroupBox
     that occupies the top-left corner of the \c WidgetGallery. We
@@ -451,8 +479,7 @@
     createBottomLeftTabWidget(), and \c createBottomRightGroupBox()
     functions, which are very similar.
 
-    \skipto ::createProgressBar
-    \printuntil /^\}/
+    \snippet examples/widgets/styles/widgetgallery.cpp 13
 
     In \c createProgressBar(), we create a QProgressBar at the bottom
     of the \c WidgetGallery and connect its

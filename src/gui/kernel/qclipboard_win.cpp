@@ -54,6 +54,23 @@
 #include "qt_windows.h"
 #include "qdnd_p.h"
 
+QT_BEGIN_NAMESPACE
+                
+#if defined(Q_OS_WINCE)
+QT_BEGIN_INCLUDE_NAMESPACE
+#include "qguifunctions_wince.h"
+QT_END_INCLUDE_NAMESPACE
+
+HRESULT QtCeGetClipboard(IDataObject** obj);
+HRESULT QtCeSetClipboard(IDataObject* obj);
+void QtCeFlushClipboard();
+        
+#define OleGetClipboard QtCeGetClipboard
+#define OleSetClipboard QtCeSetClipboard
+#define OleFlushClipboard QtCeFlushClipboard
+
+#endif        
+
 
 class QClipboardWatcher : public QInternalMimeData {
 public:
@@ -170,6 +187,68 @@ static void cleanupClipboardData()
     ptrClipboardData = 0;
 }
 
+#if defined(Q_OS_WINCE)
+HRESULT QtCeGetClipboard(IDataObject** obj)
+{
+    HWND owner = ptrClipboardData->clipBoardViewer->internalWinId();
+    if (!OpenClipboard(owner))
+        return !S_OK;
+
+    if (!IsClipboardFormatAvailable(CF_TEXT) && !IsClipboardFormatAvailable(CF_UNICODETEXT))
+        return !S_OK;
+
+    HANDLE clipData = GetClipboardData(CF_TEXT);
+    QString clipText;
+    if (clipData == 0) {
+        clipData = GetClipboardData(CF_UNICODETEXT);
+        if (clipData != 0)
+            clipText = QString::fromUtf16((unsigned short *)clipData);
+    } else {
+        clipText = QString::fromLatin1((const char*)clipData);
+    }
+
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setText(clipText);
+    QOleDataObject* data = new QOleDataObject(mimeData);
+    *obj = data;
+    CloseClipboard();
+    return S_OK;
+}
+
+HRESULT QtCeSetClipboard(IDataObject* obj)
+{
+    HWND owner = ptrClipboardData->clipBoardViewer->internalWinId();
+    if (!OpenClipboard(owner))
+        return !S_OK;
+
+    bool result = false;
+    if (obj == 0) {
+        result = true;
+        EmptyClipboard();
+        CloseClipboard();
+    } else {
+        QOleDataObject* qobj = dynamic_cast<QOleDataObject*>(obj);
+        if (qobj == 0) {
+            CloseClipboard();
+            return !S_OK;
+        }
+
+        const QMimeData* data = qobj->mimeData();
+        if (data->hasText()) {
+            EmptyClipboard();
+            result = SetClipboardData(CF_UNICODETEXT, wcsdup(reinterpret_cast<const wchar_t *> (data->text().utf16()))) != NULL;
+            CloseClipboard();
+            result = true;
+        }
+    }
+    return result ? S_OK : !S_OK;
+}
+
+void QtCeFlushClipboard() { }
+#endif
+
+
+
 QClipboard::~QClipboard()
 {
     cleanupClipboardData();
@@ -179,7 +258,6 @@ void QClipboard::setMimeData(QMimeData *src, Mode mode)
 {
     if (mode != Clipboard)
         return;
-
     QClipboardData *d = clipboardData();
 
     if (!(d->iData && d->iData->mimeData() == src)) {
@@ -192,7 +270,12 @@ void QClipboard::setMimeData(QMimeData *src, Mode mode)
         qErrnoWarning("QClipboard::setMimeData: Failed to set data on clipboard");
         return;
     }
-
+#if defined(Q_OS_WINCE)
+    // As WinCE does not support notifications we send the signal here
+    // We will get no event when the clipboard changes outside...
+    emit dataChanged();
+    emit changed(Clipboard);
+#endif
 }
 
 void QClipboard::clear(Mode mode)
@@ -207,6 +290,12 @@ void QClipboard::clear(Mode mode)
         qErrnoWarning("QClipboard::clear: Failed to clear data on clipboard");
         return;
     }
+#if defined(Q_OS_WINCE)
+    // As WinCE does not support notifications we send the signal here
+    // We will get no event when the clipboard changes outside...
+    emit dataChanged();
+    emit changed(Clipboard);
+#endif
 }
 
 bool QClipboard::event(QEvent *e)
@@ -287,7 +376,11 @@ bool QClipboard::ownsMode(Mode mode) const
 {
     if (mode == Clipboard) {
         QClipboardData *d = clipboardData();
+#if !defined(Q_OS_WINCE)
         return d->iData && OleIsCurrentClipboard(d->iData) == S_OK;
+#else
+        return d->iData && GetClipboardOwner() == d->clipBoardViewer->internalWinId();
+#endif
     } else {
         return false;
     }
@@ -296,5 +389,7 @@ bool QClipboard::ownsMode(Mode mode) const
 void QClipboard::ownerDestroyed()
 {
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_CLIPBOARD

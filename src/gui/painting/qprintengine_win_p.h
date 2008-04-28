@@ -63,6 +63,8 @@
 #include "QtCore/qt_windows.h"
 #include "private/qpaintengine_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QAlphaPaintEnginePrivate;
 class QWin32PrintEnginePrivate;
 class QPrinterPrivate;
@@ -194,7 +196,8 @@ public:
         num_copies(1),
         printToFile(false),
         fullPage(false),
-        reinit(false)
+        reinit(false),
+        has_custom_paper_size(false)
     {
     }
 
@@ -260,7 +263,7 @@ public:
 
     void initDevRects();
     void setPageMargins(int margin_left, int margin_top, int margin_right, int margin_bottom);
-    QRect getPageMargins();
+    QRect getPageMargins() const;
 
     // Windows GDI printer references.
     HANDLE hPrinter;
@@ -316,16 +319,20 @@ public:
     uint complex_xform : 1;
     uint has_pen : 1;
     uint has_brush : 1;
+    uint has_custom_paper_size : 1;
 
     uint txop;
 
     QColor brush_color;
     QPen pen;
     QColor pen_color;
+    QSizeF paper_size;
 
     QTransform painterMatrix;
     QTransform matrix;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PRINTER
 

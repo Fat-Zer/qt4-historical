@@ -54,6 +54,8 @@
 #include "qevent.h"
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3ProgressBar q3progressbar.h
     \brief The Q3ProgressBar widget provides a horizontal progress bar.
@@ -460,3 +462,5 @@ void Q3ProgressBar::paintEvent(QPaintEvent *)
     This function uses QWidget::getContentsMargins() to get the margin.
     \sa setMargin(), QWidget::getContentsMargins()
 */
+
+QT_END_NAMESPACE

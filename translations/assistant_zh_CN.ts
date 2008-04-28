@@ -2,967 +2,1002 @@
 <!DOCTYPE TS><TS version="1.1" language="zh">
 <defaultcodec></defaultcodec>
 <context>
-    <name>AssistantServer</name>
+    <name>AboutDialog</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/main.cpp" line="194"/>
-        <source>Qt Assistant</source>
-        <translation>Qt 助手</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/aboutdialog.cpp" line="31"/>
+        <source>&amp;Close</source>
+        <translation>关闭(&amp;C)</translation>
+    </message>
+</context>
+<context>
+    <name>BookmarkDialog</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkdialog.cpp" line="113"/>
+        <source>Bookmarks</source>
+        <translation>书签</translation>
+    </message>
+</context>
+<context>
+    <name>BookmarkWidget</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="198"/>
+        <source>Bookmarks</source>
+        <translation>书签</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/main.cpp" line="195"/>
-        <source>Failed to bind to port %1</source>
-        <translation>绑定到端口%1失败</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="165"/>
+        <source>Remove</source>
+        <translation>移除</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="167"/>
+        <source>You are going to delete a Folder, this will also&lt;br&gt;remove it&apos;s content. Are you sure to continue?</source>
+        <translation>您将要删除一个文件夹，这将会导致&lt;br&gt;对该文件夹内容的删除。您确认要继续么？</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="286"/>
+        <source>Delete Folder</source>
+        <translation>删除文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="287"/>
+        <source>Rename Folder</source>
+        <translation>重命名文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="289"/>
+        <source>Show Bookmark</source>
+        <translation>显示文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="290"/>
+        <source>Show Bookmark in New Tab</source>
+        <translation>在新标签页中显示书签</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="292"/>
+        <source>Delete Bookmark</source>
+        <translation>删除书签</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="293"/>
+        <source>Rename Bookmark</source>
+        <translation>重命名书签</translation>
+    </message>
+</context>
+<context>
+    <name>CentralWidget</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="163"/>
+        <source>Add new page</source>
+        <translation>添加新页面</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="172"/>
+        <source>Close current page</source>
+        <translation>关闭当前页面</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="401"/>
+        <source>Print Document</source>
+        <translation>打印文档</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="521"/>
+        <source>unknown</source>
+        <translation>未知的</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="594"/>
+        <source>Add New Page</source>
+        <translation>添加新页面</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="595"/>
+        <source>Close This Page</source>
+        <translation>关闭这个页面</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="596"/>
+        <source>Close Other Pages</source>
+        <translation>关闭其它页面</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="598"/>
+        <source>Add Bookmark for this Page...</source>
+        <translation>把这个页面添加为书签...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="820"/>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+</context>
+<context>
+    <name>ContentWindow</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/contentwindow.cpp" line="99"/>
+        <source>Open Link</source>
+        <translation>打开链接</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/contentwindow.cpp" line="100"/>
+        <source>Open Link in New Tab</source>
+        <translation>在新标签页中打开链接</translation>
+    </message>
+</context>
+<context>
+    <name>FilterNameDialogClass</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/filternamedialog.ui" line="13"/>
+        <source>FilterNameDialog</source>
+        <translation>过滤器名称对话框</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/filternamedialog.ui" line="25"/>
+        <source>Filter Name:</source>
+        <translation>过滤器名称：</translation>
+    </message>
+</context>
+<context>
+    <name>FindWidget</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="83"/>
+        <source>Previous</source>
+        <translation>上一个</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="90"/>
+        <source>Next</source>
+        <translation>下一个</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="95"/>
+        <source>Case Sensitive</source>
+        <translation>区分大小写</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="98"/>
+        <source>Whole words</source>
+        <translation>整词</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/centralwidget.cpp" line="110"/>
+        <source>&lt;img src=&quot;:/trolltech/assistant/images/wrap.png&quot;&gt;&amp;nbsp;Search wrapped</source>
+        <translation>&lt;img src=&quot;:/trolltech/assistant/images/wrap.png&quot;&gt;&amp;nbsp;搜索已经回环</translation>
     </message>
 </context>
 <context>
     <name>FontPanel</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="43"/>
+        <location filename="../../depot/qt/4.4/tools/shared/fontpanel/fontpanel.cpp" line="35"/>
         <source>Font</source>
         <translation>字体</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="56"/>
+        <location filename="../../depot/qt/4.4/tools/shared/fontpanel/fontpanel.cpp" line="46"/>
         <source>&amp;Writing system</source>
         <translation>书写系统(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="59"/>
+        <location filename="../../depot/qt/4.4/tools/shared/fontpanel/fontpanel.cpp" line="49"/>
         <source>&amp;Family</source>
         <translation>字体族(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="63"/>
+        <location filename="../../depot/qt/4.4/tools/shared/fontpanel/fontpanel.cpp" line="53"/>
         <source>&amp;Style</source>
         <translation>风格(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="67"/>
+        <location filename="../../depot/qt/4.4/tools/shared/fontpanel/fontpanel.cpp" line="57"/>
         <source>&amp;Point size</source>
         <translation>点大小(&amp;P)</translation>
     </message>
 </context>
 <context>
-    <name>FontSettingsDialog</name>
+    <name>HelpViewer</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="33"/>
-        <source>Font Settings</source>
-        <translation>字体设置</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="40"/>
-        <source>Font settings for:</source>
-        <translation>字体设置用于：</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="44"/>
-        <source>Browser</source>
-        <translation>浏览器</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="45"/>
-        <source>Application</source>
-        <translation>应用程序</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="51"/>
-        <source>Use custom settings</source>
-        <translation>使用自定义设置</translation>
-    </message>
-</context>
-<context>
-    <name>HelpDialog</name>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="248"/>
-        <source>Open Link in Current Tab</source>
-        <translation>在当前标签页打开链接</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="251"/>
-        <source>Open Link in New Window</source>
-        <translation>在新窗口中打开链接</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="254"/>
-        <source>Open Link in New Tab</source>
-        <translation>在新标签页中打开链接</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="409"/>
-        <source>Prepare...</source>
-        <translation>准备...</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1020"/>
-        <source>Qt Assistant</source>
-        <translation>Qt 助手</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="346"/>
-        <source>Failed to load keyword index file
-Assistant will not work!</source>
-        <translation>加载关键词索引文件失败
-Qt 助手将不能工作！</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="362"/>
-        <source>Cannot open the index file %1</source>
-        <translation>无法打开索引文件 %1</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="552"/>
-        <source>Warning</source>
-        <translation>警告</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="546"/>
-        <source>Documentation file %1 does not exist!
-Skipping file.</source>
-        <translation>文档文件 %1 不存在！
-跳过文件。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="566"/>
-        <source>Parse Error</source>
-        <translation>解析错误</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="554"/>
-        <source>Documentation file %1 is not compatible!
-Skipping file.</source>
-        <translation>%1 文档文件不兼容！
-跳过文件！</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1068"/>
-        <source>Done</source>
-        <translation>完成</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1022"/>
-        <source>Failed to save fulltext search index
-Assistant will not work!</source>
-        <translation>保存全文搜索索引失败 Qt 助手将不能工作！</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1050"/>
-        <source>Indexing files...</source>
-        <translation>正在索引文件...</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1065"/>
-        <source>Reading dictionary...</source>
-        <translation>正在读取词典...</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1120"/>
-        <source>Full Text Search</source>
-        <translation>全文搜索</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1112"/>
-        <source>Using a wildcard within phrases is not allowed.</source>
-        <translation>不允许在短语中使用通配符。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1121"/>
-        <source>The closing quotation mark is missing.</source>
-        <translation>缺少关闭标点。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="27"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/helpviewer.cpp" line="255"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="30"/>
-        <source>&lt;b&gt;Help&lt;/b&gt;&lt;p&gt;Choose the topic you want help on from the contents list, or search the index for keywords.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;帮助&lt;/b&gt;&lt;p&gt;在内容列表中选择您需要帮助的主题，或者在索引中搜索这个关键词。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="42"/>
-        <source>Displays help topics organized by category, index or bookmarks. Another tab inherits the full text search.</source>
-        <translation>按种类、索引和标签显示帮助主题。另一个标签页中可以执行全文搜索。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="46"/>
-        <source>Con&amp;tents</source>
-        <translation>内容(&amp;T)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="61"/>
-        <source>&lt;b&gt;Help topics organized by category.&lt;/b&gt;&lt;p&gt;Double-click an item to see the topics in that category. To view a topic, just double-click it.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;按种类组织帮助主题。&lt;/b&gt;&lt;p&gt;双击一项可以查看那个种类中的主题。要查看一个主题，只要双击它就可以了。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="145"/>
-        <source>column 1</source>
-        <translation>列 1</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="80"/>
-        <source>&amp;Index</source>
-        <translation>索引(&amp;I)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="92"/>
-        <source>&amp;Look For:</source>
-        <translation>查找(&amp;L)：</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="102"/>
-        <source>Enter keyword</source>
-        <translation>输入关键词</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="105"/>
-        <source>&lt;b&gt;Enter a keyword.&lt;/b&gt;&lt;p&gt;The list will select an item that matches the entered string best.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;输入一个关键词。&lt;/b&gt;&lt;p&gt;这个列表将会选择一个和已输入字符串最匹配的一项。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="115"/>
-        <source>&lt;b&gt;List of available help topics.&lt;/b&gt;&lt;p&gt;Double-click on an item to open its help page. If more than one is found, you must specify which page you want.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;可用的帮助主题列表。&lt;/b&gt;&lt;p&gt;双击一项打开它的帮助页面。如果找到一个以上的结果，你必须指定你想要打开哪一个。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="123"/>
-        <source>&amp;Bookmarks</source>
-        <translation>书签(&amp;B)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="138"/>
-        <source>Displays the list of bookmarks.</source>
-        <translation>显示书签列表。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="177"/>
-        <source>Add new bookmark</source>
-        <translation>添加新书签</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="180"/>
-        <source>Add the currently displayed page as a new bookmark.</source>
-        <translation>把当前显示的页面添加为一个新书签。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="183"/>
-        <source>&amp;New</source>
-        <translation>新建(&amp;N)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="190"/>
-        <source>Delete bookmark</source>
-        <translation>删除书签</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="193"/>
-        <source>Delete the selected bookmark.</source>
-        <translation>删除被选中的书签。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="196"/>
-        <source>&amp;Delete</source>
-        <translation>删除(&amp;D)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="317"/>
-        <source>&amp;Search</source>
-        <translation>搜索(&amp;S)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="234"/>
-        <source>Searching f&amp;or:</source>
-        <translation>正在搜索(&amp;O)：</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="244"/>
-        <source>Enter searchword(s).</source>
-        <translation>输入搜索词。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="247"/>
-        <source>&lt;b&gt;Enter search word(s).&lt;/b&gt;&lt;p&gt;Enter here the word(s) you are looking for. The words may contain wildcards (*). For a sequence of words quote them.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;输入搜索词。&lt;b&gt;&lt;p&gt;在这里输入您要查找的词。这个词可以包含通配符（*）。如果是一个词的序列，请把它们放在英文引号内。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="257"/>
-        <source>&lt;b&gt;Found documents&lt;/b&gt;&lt;p&gt;This list contains all found documents from the last search. The documents are ordered, i.e. the first document has the most matches.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;发现文档&lt;/b&gt;&lt;p&gt;这个列表包含上此搜索发现的所有文档。这些文档已经排序，例如，第一个文档最为匹配。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="264"/>
-        <source>Found &amp;Documents:</source>
-        <translation>找到的文档(&amp;D)：</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="282"/>
-        <source>Display the help page.</source>
-        <translation>显示帮助页面。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="285"/>
-        <source>Display the help page for the full text search.</source>
-        <translation>显示全文文本搜索的帮助页面。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="288"/>
-        <source>He&amp;lp</source>
-        <translation>帮助(&amp;L)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="311"/>
-        <source>Start searching.</source>
-        <translation>开始搜索。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="314"/>
-        <source>Pressing this button starts the search.</source>
-        <translation>点击这个按钮开始搜索。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="348"/>
-        <source>Preparing...</source>
-        <translation>正在准备...</translation>
-    </message>
-</context>
-<context>
-    <name>HelpWindow</name>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="63"/>
-        <source>Help</source>
-        <translation>帮助</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="64"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/helpviewer.cpp" line="256"/>
         <source>Unable to launch web browser.
 </source>
         <translation>不能启动网页浏览器。
 </translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="92"/>
-        <source>Failed to open link: &apos;%1&apos;</source>
-        <translation>打开链接失败：“%1”</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="94"/>
-        <source>&lt;div align=&quot;center&quot;&gt;&lt;h1&gt;The page could not be found&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</source>
-        <translation>&lt;div align=&quot;center&quot;&gt;&lt;h1&gt;没有找到这个页面&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;“%1”&lt;/h3&gt;&lt;/div&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="95"/>
-        <source>Error...</source>
-        <translation>错误...</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="145"/>
-        <source>Open Link in New Window<byte value="x9"/>Shift+LMB</source>
-        <translation>在新窗口中打开链接<byte value="x9"/>Shift+LMB</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="147"/>
-        <source>Open Link in New Tab</source>
-        <translation>在新标签页中打开链接</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="65"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/helpviewer.cpp" line="257"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/helpviewer.cpp" line="275"/>
+        <source>&lt;title&gt;Error 404...&lt;/title&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h1&gt;The page could not be found&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</source>
+        <translation>&lt;title&gt;404 错误...&lt;/title&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h1&gt;不能找到该页面&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/helpviewer.cpp" line="357"/>
+        <source>Copy &amp;Link Location</source>
+        <translation>复制链接地址(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/helpviewer.cpp" line="360"/>
+        <source>Open Link in New Tab<byte value="x9"/>Ctrl+LMB</source>
+        <translation>在新标签页中打开链接<byte value="x9"/>Ctrl+LMB</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/helpviewer.cpp" line="169"/>
+        <source>Open Link in New Tab</source>
+        <translation>在新标签页中打开链接</translation>
+    </message>
 </context>
 <context>
-    <name>Index</name>
+    <name>IndexWindow</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/index.cpp" line="355"/>
-        <source>Untitled</source>
-        <translation>未命名的</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/indexwindow.cpp" line="38"/>
+        <source>&amp;Look for:</source>
+        <translation>查找(&amp;L)：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/indexwindow.cpp" line="105"/>
+        <source>Open Link</source>
+        <translation>打开链接</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/indexwindow.cpp" line="106"/>
+        <source>Open Link in New Tab</source>
+        <translation>在新标签页中打开链接</translation>
+    </message>
+</context>
+<context>
+    <name>InstallDialog</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.ui" line="13"/>
+        <source>Install Documentation</source>
+        <translation>安装文档</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="77"/>
+        <source>Downloading documentation info...</source>
+        <translation>正在下载文档信息...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="125"/>
+        <source>Download canceled.</source>
+        <translation>下载被取消。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="256"/>
+        <source>Done.</source>
+        <translation>完成。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="167"/>
+        <source>The file %1 already exists. Do you want to overwrite it?</source>
+        <translation>文件 %1 已经存在。您想要覆盖它么？</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="178"/>
+        <source>Unable to save the file %1: %2.</source>
+        <translation>不能保存文件 %1：%2。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="185"/>
+        <source>Downloading %1...</source>
+        <translation>正在下载 %1...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="285"/>
+        <source>Download failed: %1.</source>
+        <translation>下载失败：%1。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="214"/>
+        <source>Documentation info file is corrupt!</source>
+        <translation>文档信息文件已损坏！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="251"/>
+        <source>Download failed: Downloaded file is corrupted.</source>
+        <translation>下载失败：被下载文件已损坏。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="254"/>
+        <source>Installing documentation %1...</source>
+        <translation>正在安装文档 %1...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.cpp" line="276"/>
+        <source>Error while installing documentation:
+%1</source>
+        <translation>在安装文档时发生错误：
+%1</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.ui" line="19"/>
+        <source>Available Documentation:</source>
+        <translation>可用的文档：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.ui" line="29"/>
+        <source>Install</source>
+        <translation>安装</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.ui" line="36"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.ui" line="43"/>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.ui" line="63"/>
+        <source>Installation Path:</source>
+        <translation>安装路径：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/installdialog.ui" line="73"/>
+        <source>...</source>
+        <translation>...</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="72"/>
-        <source>Sidebar</source>
-        <translation>侧栏</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="432"/>
+        <source>Index</source>
+        <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="90"/>
-        <source>&amp;Window</source>
-        <translation>窗口(&amp;W)</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="430"/>
+        <source>Contents</source>
+        <translation>内容</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="92"/>
-        <source>Minimize</source>
-        <translation>最小化</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="474"/>
+        <source>Bookmarks</source>
+        <translation>书签</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="93"/>
-        <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="436"/>
+        <source>Search</source>
+        <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="127"/>
-        <source>Initializing Qt Assistant...</source>
-        <translation>正在初始化 Qt 助手...</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="153"/>
-        <source>SHIFT+CTRL+=</source>
-        <translation>SHIFT+CTRL+=</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="157"/>
-        <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="158"/>
-        <source>Ctrl+I</source>
-        <translation>Ctrl+I</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="159"/>
-        <source>Ctrl+B</source>
-        <translation>Ctrl+B</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="160"/>
-        <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="326"/>
-        <source>Ctrl+W</source>
-        <translation>Ctrl+W</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="161"/>
-        <source>Ctrl+]</source>
-        <translation>Ctrl+]</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="162"/>
-        <source>Ctrl+[</source>
-        <translation>Ctrl+[</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="169"/>
-        <source>Views</source>
-        <translation>视图</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="248"/>
-        <source>Displays the main page of a specific documentation set.</source>
-        <translation>显示一个指定文档集的主页面。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="283"/>
-        <source>Open Source Edition</source>
-        <translation>开源版本</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="287"/>
-        <source>This version of Qt Assistant is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.</source>
-        <translation>这个版本的 Qt 助手是 Qt 开源版本的一部分，用于开发开源应用程序。Qt 是一个用于跨平台应用程序开发的综合 C++ 框架。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="296"/>
-        <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
-        <translation>我们已经允许您在 Qt 商业许可协议下使用本程序。有关细节，请阅读本软件发行中所带的 LICENSE 文件。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="310"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="793"/>
         <source>Qt Assistant</source>
         <translation>Qt 助手</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="329"/>
-        <source>Failed to open about application contents in file: &apos;%1&apos;</source>
-        <translation>在“%1”文件中打开应用程序内容失败</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="280"/>
+        <source>Unfiltered</source>
+        <translation>未过滤的</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="471"/>
-        <source>...</source>
-        <translation>...</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="360"/>
+        <source>File</source>
+        <translation>文件</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="715"/>
-        <source>Save Page</source>
-        <translation>保存页面</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="362"/>
+        <source>Page Set&amp;up...</source>
+        <translation>页面设置(&amp;U)...</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="715"/>
-        <source>Cannot open file for writing!</source>
-        <translation>不能写打开文件！</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="363"/>
+        <source>Print Preview...</source>
+        <translation>打印预览...</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="25"/>
-        <source>Qt Assistant by Trolltech</source>
-        <translation>Trolltech Qt 助手</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="30"/>
-        <source>Toolbar</source>
-        <translation>工具栏</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="57"/>
-        <source>Go</source>
-        <translation>前往</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="80"/>
-        <source>&amp;Help</source>
-        <translation>帮助(&amp;H)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="91"/>
-        <source>&amp;File</source>
-        <translation>文件(&amp;F)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="106"/>
-        <source>Boo&amp;kmarks</source>
-        <translation>书签(&amp;K)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="111"/>
-        <source>&amp;Go</source>
-        <translation>前往(&amp;G)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="123"/>
-        <source>&amp;View</source>
-        <translation>查看(&amp;V)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="130"/>
-        <source>&amp;Edit</source>
-        <translation>编辑(&amp;E)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="151"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="364"/>
         <source>&amp;Print...</source>
         <translation>打印(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="154"/>
-        <source>Print the currently displayed page.</source>
-        <translation>打印当前显示页面。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="367"/>
+        <source>CTRL+P</source>
+        <translation>CTRL+P</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="157"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="371"/>
+        <source>New &amp;Tab</source>
+        <translation>新建标签页(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="162"/>
-        <source>E&amp;xit</source>
-        <translation>退出(&amp;X)</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="372"/>
+        <source>CTRL+T</source>
+        <translation>CTRL+T</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="165"/>
-        <source>Quit Qt Assistant.</source>
-        <translation>退出 Qt 助手。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="373"/>
+        <source>&amp;Close Tab</source>
+        <translation>关闭标签页(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="168"/>
-        <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="374"/>
+        <source>CTRL+W</source>
+        <translation>CTRL+W</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="179"/>
-        <source>&amp;Copy</source>
-        <translation>复制(&amp;C)</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="376"/>
+        <source>&amp;Quit</source>
+        <translation>退出(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="182"/>
-        <source>Copy the selected text to the clipboard.</source>
-        <translation>复制选中的文本到剪贴板。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="377"/>
+        <source>CTRL+Q</source>
+        <translation>CTRL+Q</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="185"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="380"/>
+        <source>Edit</source>
+        <translation>编辑</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="381"/>
+        <source>&amp;Copy selected Text</source>
+        <translation>复制选中的文本(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="385"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="193"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="388"/>
         <source>&amp;Find in Text...</source>
         <translation>在文本中查找(&amp;F)...</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="196"/>
-        <source>Open the Find dialog. Qt Assistant will search the currently displayed page for the text you enter.</source>
-        <translation>打开查找对话框。Qt 助手将会在当前显示页面中搜索您输入的文本。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="199"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="392"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="204"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="395"/>
         <source>Find &amp;Next</source>
         <translation>查找下一个(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="207"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="397"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="212"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="400"/>
         <source>Find &amp;Previous</source>
         <translation>查找上一个(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="215"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="402"/>
         <source>Shift+F3</source>
         <translation>Shift+F3</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="223"/>
-        <source>&amp;Home</source>
-        <translation>主页(&amp;H)</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="406"/>
+        <source>Preferences...</source>
+        <translation>首选项...</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="226"/>
-        <source>Go to the home page. Qt Assistant&apos;s home page is the Qt Reference Documentation.</source>
-        <translation>前往主页。Qt 助手的主页就是 Qt 参考文档。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="409"/>
+        <source>View</source>
+        <translation>查看</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="229"/>
-        <source>Ctrl+Home</source>
-        <translation>Ctrl+Home</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="237"/>
-        <source>&amp;Previous</source>
-        <translation>上一页(&amp;P)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="240"/>
-        <source>Go to the previous page.</source>
-        <translation>前往上一页。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="243"/>
-        <source>Alt+Left</source>
-        <translation>Alt+Left</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="251"/>
-        <source>&amp;Next</source>
-        <translation>下一页(&amp;N)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="254"/>
-        <source>Go to the next page.</source>
-        <translation>前往下一页。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="257"/>
-        <source>Alt+Right</source>
-        <translation>Alt+Right</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="262"/>
-        <source>About Qt Assistant</source>
-        <translation>关于 Qt 助手</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="265"/>
-        <source>Display further information about Qt Assistant.</source>
-        <translation>显示有关 Qt 助手的更多信息。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="273"/>
-        <source>About Qt</source>
-        <translation>关于 Qt</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="284"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="410"/>
         <source>Zoom &amp;in</source>
         <translation>放大(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="287"/>
-        <source>Zoom in on the document, i.e. increase the font size.</source>
-        <translation>放大文档，也就是增大字体大小。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="290"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="414"/>
         <source>Ctrl++</source>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="298"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="416"/>
         <source>Zoom &amp;out</source>
         <translation>缩小(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="301"/>
-        <source>Zoom out on the document, i.e. decrease the font size.</source>
-        <translation>缩小文档，也就是减小字体大小。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="304"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="420"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="309"/>
-        <source>New Window</source>
-        <translation>新建窗口</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="422"/>
+        <source>Normal &amp;Size</source>
+        <translation>正常大小(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="312"/>
-        <source>Open a new window.</source>
-        <translation>打开一个新窗口。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="426"/>
+        <source>Ctrl+0</source>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="315"/>
-        <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="431"/>
+        <source>ALT+C</source>
+        <translation>ALT+C</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="320"/>
-        <source>&amp;Close</source>
-        <translation>关闭(&amp;C)</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="433"/>
+        <source>ALT+I</source>
+        <translation>ALT+I</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="323"/>
-        <source>Close the current window.</source>
-        <translation>关闭当前窗口。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="435"/>
+        <source>ALT+B</source>
+        <translation>ALT+B</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="331"/>
-        <source>&amp;Add Bookmark</source>
-        <translation>添加书签(&amp;A)</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="437"/>
+        <source>ALT+S</source>
+        <translation>ALT+S</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="334"/>
-        <source>Add the currently displayed page as a new bookmark.</source>
-        <translation>把当前显示页面添加为一个新书签。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="439"/>
+        <source>Go</source>
+        <translation>前往</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="342"/>
-        <source>What&apos;s This?</source>
-        <translation>这是什么？</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="440"/>
+        <source>&amp;Home</source>
+        <translation>主页(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="348"/>
-        <source>&quot;What&apos;s This?&quot; context sensitive help.</source>
-        <translation>“这是什么？”上下文敏感帮助。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="442"/>
+        <source>Ctrl+Home</source>
+        <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="351"/>
-        <source>Shift+F1</source>
-        <translation>Shift+F1</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="446"/>
+        <source>&amp;Back</source>
+        <translation>后退(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="356"/>
-        <source>Add Tab</source>
-        <translation>添加标签页</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="453"/>
+        <source>&amp;Forward</source>
+        <translation>前进(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="359"/>
-        <source>Ctrl+Alt+N</source>
-        <translation>Ctrl+Alt+N</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="364"/>
-        <source>Next Tab</source>
-        <translation>下一个标签页</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="367"/>
-        <source>Ctrl+Alt+Right</source>
-        <translation>Ctrl+Alt+Right</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="372"/>
-        <source>Previous Tab</source>
-        <translation>前一个标签页</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="375"/>
-        <source>Ctrl+Alt+Left</source>
-        <translation>Ctrl+Alt+Left</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="380"/>
-        <source>Close Tab</source>
-        <translation>关闭标签页</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="383"/>
-        <source>Ctrl+Alt+Q</source>
-        <translation>Ctrl+Alt+Q</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="391"/>
-        <source>Qt Assistant Manual</source>
-        <translation>Qt 助手手册</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="394"/>
-        <source>F1</source>
-        <translation>F1</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="399"/>
-        <source>Save Page As...</source>
-        <translation>页面另存为...</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="402"/>
-        <source>Ctrl+Alt+S</source>
-        <translation>Ctrl+Alt+S</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="410"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="460"/>
         <source>Sync with Table of Contents</source>
         <translation>同步目录</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="413"/>
-        <source>Select the page in contents tab.</source>
-        <translation>选择内容标签页中的页面。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="467"/>
+        <source>Next Page</source>
+        <translation>下一页</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="418"/>
-        <source>Font Settings...</source>
-        <translation>字体设置...</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="468"/>
+        <source>Ctrl+Alt+Right</source>
+        <translation>Ctrl+Alt+Right</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="290"/>
-        <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://www.trolltech.com/company/model&quot;&gt;www.trolltech.com/company/model&lt;/a&gt; for an overview of Qt licensing.</source>
-        <translation>开发商业（闭源）应用程序，您需要商业 Qt 许可。对于 Qt 许可的概览，请参考&lt;a href=&quot;http://www.trolltech.com/company/model&quot;&gt;www.trolltech.com/company/model&lt;/a&gt;。</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="470"/>
+        <source>Previous Page</source>
+        <translation>上一页</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="472"/>
+        <source>Ctrl+Alt+Left</source>
+        <translation>Ctrl+Alt+Left</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="475"/>
+        <source>Add Bookmark...</source>
+        <translation>添加书签...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="476"/>
+        <source>CTRL+B</source>
+        <translation>CTRL+B</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="478"/>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="479"/>
+        <source>About...</source>
+        <translation>关于...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="482"/>
+        <source>Navigation Toolbar</source>
+        <translation>导航工具栏</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="553"/>
+        <source>Toolbars</source>
+        <translation>工具栏</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="568"/>
+        <source>Filter Toolbar</source>
+        <translation>过滤器工具栏</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="570"/>
+        <source>Filtered by:</source>
+        <translation>过滤器为：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="591"/>
+        <source>Address Toolbar</source>
+        <translation>地址工具栏</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="595"/>
+        <source>Address:</source>
+        <translation>地址：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="707"/>
+        <source>Could not find the associated content item.</source>
+        <translation>不能找到相关内容项目。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="768"/>
+        <source>Open Source Edition</source>
+        <translation>开源版本</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="772"/>
+        <source>This version of Qt Assistant is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.</source>
+        <translation>这个版本的 Qt 助手是 Qt 开源版本的一部分，用于开发开源应用程序。Qt 是一个用于跨平台应用程序开发的综合 C++ 框架。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="781"/>
+        <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
+        <translation>我们已经允许您在 Qt 商业许可协议下使用本程序。有关细节，请阅读本软件发行中所带的 LICENSE 文件。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="796"/>
+        <source>About %1</source>
+        <translation>关于 %1</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="914"/>
+        <source>Updating search index</source>
+        <translation>正在更新搜索索引</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="301"/>
+        <source>Looking for Qt Documentation...</source>
+        <translation>正在查找 Qt 文档...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="504"/>
+        <source>&amp;Window</source>
+        <translation>窗口(&amp;W)</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="506"/>
+        <source>Minimize</source>
+        <translation>最小化</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="507"/>
+        <source>Ctrl+M</source>
+        <translation>Ctrl+M</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="508"/>
+        <source>Zoom</source>
+        <translation>缩放</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="955"/>
+        <source>Add</source>
+        <translation>添加</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="963"/>
+        <source>Remove</source>
+        <translation>移除</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/mainwindow.cpp" line="775"/>
+        <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://trolltech.com/company/about/businessmodel&quot;&gt;http://trolltech.com/company/about/businessmodel&lt;/a&gt; for an overview of Qt licensing.</source>
+        <translation>开发商业（闭源）应用程序，你需要商业 Qt 许可。对于 Qt 许可的概览，请参考&lt;a href=&quot;http://www.trolltech.com/company/about/businessmodel&quot;&gt;www.trolltech.com/company/about/businessmodel&lt;/a&gt;。</translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesDialog</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.cpp" line="248"/>
+        <source>Add Documentation</source>
+        <translation>添加文档</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.cpp" line="235"/>
+        <source>Qt Compressed Help Files (*.qch)</source>
+        <translation>Qt 压缩帮助文件 (*.qch)</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.cpp" line="243"/>
+        <source>The specified file is not a valid Qt Help File!</source>
+        <translation>指定文件不是有效的 Qt 帮助文件！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.cpp" line="249"/>
+        <source>The namespace %1 is already registered!</source>
+        <translation>命名空间 %1 已经被注册！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.cpp" line="364"/>
+        <source>Use custom settings</source>
+        <translation>使用自定义设定</translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesDialogClass</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="13"/>
+        <source>Preferences</source>
+        <translation>首选项</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="31"/>
+        <source>Fonts</source>
+        <translation>字体</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="45"/>
+        <source>Font settings:</source>
+        <translation>字体设置：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="53"/>
+        <source>Browser</source>
+        <translation>浏览器</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="58"/>
+        <source>Application</source>
+        <translation>应用程序：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="94"/>
+        <source>Filters</source>
+        <translation>过滤器</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="100"/>
+        <source>Filter:</source>
+        <translation>过滤器：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="110"/>
+        <source>Attributes:</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="121"/>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="129"/>
+        <source>Add</source>
+        <translation>添加</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="191"/>
+        <source>Remove</source>
+        <translation>移除</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="152"/>
+        <source>Documentation</source>
+        <translation>文档</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="158"/>
+        <source>Registered Documentation:</source>
+        <translation>已注册的文档：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="184"/>
+        <source>Add...</source>
+        <translation>添加...</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="224"/>
+        <source>Network</source>
+        <translation>网络</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="230"/>
+        <source>Use Http Proxy</source>
+        <translation>使用 HTTP 代理</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="242"/>
+        <source>Http Proxy:</source>
+        <translation>HTTP 代理：</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/preferencesdialog.ui" line="252"/>
+        <source>Port:</source>
+        <translation>端口：</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/config.cpp" line="321"/>
-        <source>Qt Assistant by Trolltech</source>
-        <translation>Trolltech Qt 助手</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/bookmarkwidget.cpp" line="43"/>
+        <source>New Folder</source>
+        <translation>新建文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="81"/>
+        <source>The specified collection file does not exist!</source>
+        <translation>指定的收藏文件并不存在！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="197"/>
+        <source>Missing collection file!</source>
+        <translation>缺少收藏文件！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="94"/>
+        <source>Invalid URL!</source>
+        <translation>无效的 URL！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="98"/>
+        <source>Missing URL!</source>
+        <translation>缺少 URL！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="153"/>
+        <source>Unknown widget: %1</source>
+        <translation>未知的窗口部件：%1</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="157"/>
+        <source>Missing widget!</source>
+        <translation>缺少窗口部件！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="176"/>
+        <source>The specified Qt help file does not exist!</source>
+        <translation>指定的 Qt 帮助文件并不存在！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="181"/>
+        <source>Missing help file!</source>
+        <translation>缺少帮助文件！</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="191"/>
+        <source>Unknown option: %1</source>
+        <translation>未知的选项：%1</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/cmdlineparser.cpp" line="226"/>
+        <source>Qt Assistant</source>
+        <translation>Qt 助手</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/main.cpp" line="52"/>
+        <source>Could not register documentation file
+%1
+
+Reason:
+%2</source>
+        <translation>不能注册文档文件
+%1
+
+原因：
+%2</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/main.cpp" line="55"/>
+        <source>Documentation successfully registered.</source>
+        <translation>文档已经成功注册。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/main.cpp" line="62"/>
+        <source>Could not unregister documentation file
+%1
+
+Reason:
+%2</source>
+        <translation>不能取消注册文档文件
+%1
+
+原因：
+%2</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/main.cpp" line="65"/>
+        <source>Documentation successfully unregistered.</source>
+        <translation>文档已经成功取消注册。</translation>
+    </message>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/main.cpp" line="75"/>
+        <source>The specified collection file could not be read!</source>
+        <translation>不能读取指定的收藏文件！</translation>
     </message>
 </context>
 <context>
-    <name>TabbedBrowser</name>
+    <name>RemoteControl</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="119"/>
-        <source>...</source>
-        <translation>...</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/remotecontrol.cpp" line="130"/>
+        <source>Debugging Remote Control</source>
+        <translation>正在调试遥控器</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="205"/>
-        <source>Add page</source>
-        <translation>添加页面</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/remotecontrol.cpp" line="131"/>
+        <source>Received Command: %1 %2</source>
+        <translation>接收到的命令：%1 %2</translation>
+    </message>
+</context>
+<context>
+    <name>SearchWidget</name>
+    <message>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/searchwidget.cpp" line="146"/>
+        <source>&amp;Copy</source>
+        <translation>复制(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="214"/>
-        <source>Close page</source>
-        <translation>关闭页面</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/searchwidget.cpp" line="149"/>
+        <source>Copy &amp;Link Location</source>
+        <translation>复制链接地址(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="27"/>
-        <source>TabbedBrowser</source>
-        <translation>标签页浏览器</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/searchwidget.cpp" line="188"/>
+        <source>Open Link in New Tab</source>
+        <translation>在新标签页中打开链接</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="40"/>
-        <source>Untitled</source>
-        <translation>未命名的</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/searchwidget.cpp" line="160"/>
+        <source>Select All</source>
+        <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="102"/>
-        <source>Previous</source>
-        <translation>上一个</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="124"/>
-        <source>Next</source>
-        <translation>下一个</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="143"/>
-        <source>Case Sensitive</source>
-        <translation>区分大小写</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="150"/>
-        <source>Whole words</source>
-        <translation>整词</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="169"/>
-        <source>&lt;img src=&quot;:/trolltech/assistant/images/wrap.png&quot;&gt;&amp;nbsp;Search wrapped</source>
-        <translation>&lt;img src=&quot;:/trolltech/assistant/images/wrap.png&quot;&gt;&amp;nbsp;搜索已经回环</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="456"/>
-        <source>New Tab</source>
-        <translation>新标签页</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="457"/>
-        <source>Close Tab</source>
-        <translation>关闭标签页</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="458"/>
-        <source>Close Other Tabs</source>
-        <translation>关闭其它标签页</translation>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/searchwidget.cpp" line="187"/>
+        <source>Open Link</source>
+        <translation>打开链接</translation>
     </message>
 </context>
 <context>
     <name>TopicChooser</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.cpp" line="26"/>
-        <source>Choose a topic for &lt;b&gt;%1&lt;/b&gt;</source>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/topicchooser.cpp" line="26"/>
+        <source>Choose a topic for &lt;b&gt;%1&lt;/b&gt;:</source>
         <translation>为&lt;b&gt;%1&lt;/b&gt;选择一个主题</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="25"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/topicchooser.ui" line="16"/>
         <source>Choose Topic</source>
         <translation>选择主题</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="28"/>
-        <source>Select a topic from the list and click the &lt;b&gt;Display&lt;/b&gt;-button to open the online help.</source>
-        <translation>从列表中选择一个主题并且点击&lt;b&gt;显示&lt;/b&gt;按钮打开在线帮助。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="52"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/topicchooser.ui" line="37"/>
         <source>&amp;Topics</source>
         <translation>主题(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="62"/>
-        <source>Displays a list of available help topics for the keyword.</source>
-        <translation>为这个关键词显示一个可用帮助主题的列表。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="105"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/topicchooser.ui" line="88"/>
         <source>&amp;Display</source>
         <translation>显示(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="102"/>
-        <source>Open the topic selected in the list.</source>
-        <translation>打开列表中选中的主题。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="121"/>
+        <location filename="../../depot/qt/4.4/tools/assistant/tools/assistant/topicchooser.ui" line="104"/>
         <source>&amp;Close</source>
         <translation>关闭(&amp;C)</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="118"/>
-        <source>Close the Dialog.</source>
-        <translation>关闭对话框。</translation>
     </message>
 </context>
 </TS>

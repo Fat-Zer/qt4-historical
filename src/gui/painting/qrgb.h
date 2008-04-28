@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 typedef unsigned int QRgb;                        // RGB triplet
@@ -80,6 +82,8 @@ Q_GUI_EXPORT_INLINE int qGray(QRgb rgb)                // convert RGB to gray 0.
 
 Q_GUI_EXPORT_INLINE bool qIsGray(QRgb rgb)
 { return qRed(rgb) == qGreen(rgb) && qRed(rgb) == qBlue(rgb); }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

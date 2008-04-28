@@ -50,12 +50,15 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_THREAD
 
 class QWaitConditionPrivate;
 class QMutex;
+class QReadWriteLock;
 
 class Q_CORE_EXPORT QWaitCondition
 {
@@ -64,6 +67,7 @@ public:
     ~QWaitCondition();
 
     bool wait(QMutex *mutex, unsigned long time = ULONG_MAX);
+    bool wait(QReadWriteLock *readWriteLock, unsigned long time = ULONG_MAX);
 
     void wakeOne();
     void wakeAll();
@@ -95,6 +99,8 @@ public:
 };
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -1,1 +1,1 @@
-#include "../../src/network/qtcpsocket.h"
+#include "../../src/network/socket/qtcpsocket.h"

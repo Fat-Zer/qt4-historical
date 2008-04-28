@@ -52,18 +52,18 @@ class DemoItem;
 class DemoItemAnimation : public QGraphicsItemAnimation
 {
     Q_OBJECT
-    
+
 public:
     enum INOROUT {ANIM_IN, ANIM_OUT, ANIM_UNSPECIFIED};
-    
+
     DemoItemAnimation(DemoItem *item, INOROUT inOrOut = ANIM_UNSPECIFIED);
     virtual ~DemoItemAnimation();
-    
+
     virtual void play(bool fromStart = true, bool force = false);
     virtual void playReverse();
     virtual void stop(bool reset = true);
     virtual void setRepeat(int nr = 0);
-    
+
     void setDuration(int duration);
     void setDuration(float duration){ setDuration(int(duration)); };
     void setOpacityAt0(qreal opacity);
@@ -72,16 +72,16 @@ public:
     void setCurrentTime(int ms);
     void setStartPos(const QPointF &pos);
     bool notOwnerOfItem();
-    
+
     bool running();
     bool runningOrItemLocked();
     void lockItem(bool state);
     void prepare();
-    
+
     DemoItem *demoItem();
-    
+
     virtual void afterAnimationStep(qreal step); // overridden
-    
+
     QTimeLine *timeline;
     qreal opacityAt0;
     qreal opacityAt1;
@@ -93,7 +93,7 @@ public:
     bool fromStart;
     INOROUT inOrOut;
 
-public slots:
+private slots:
     virtual void playWithoutDelay();
 };
 

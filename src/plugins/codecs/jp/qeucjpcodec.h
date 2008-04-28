@@ -77,6 +77,8 @@
 #include <QtCore/qtextcodec.h>
 #include <QtCore/qlist.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TEXTCODEC
 
 class QEucJpCodec : public QTextCodec {
@@ -100,5 +102,7 @@ protected:
 };
 
 #endif // QT_NO_TEXTCODEC
+
+QT_END_NAMESPACE
 
 #endif // QEUCJPCODEC_H

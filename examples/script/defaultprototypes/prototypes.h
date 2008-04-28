@@ -47,6 +47,7 @@
 #include <QtCore/QObject>
 #include <QtScript/QScriptable>
 
+//! [0]
 class ListWidgetItemPrototype : public QObject, public QScriptable
 {
     Q_OBJECT
@@ -57,20 +58,23 @@ public:
     QString text() const;
     void setText(const QString &text);
 
-public Q_SLOTS:
+public slots:
     QString toString() const;
 };
+//! [0]
 
+//! [1]
 class ListWidgetPrototype : public QObject, public QScriptable
 {
     Q_OBJECT
 public:
     ListWidgetPrototype(QObject *parent = 0);
 
-public Q_SLOTS:
+public slots:
     void addItem(const QString &text);
     void addItems(const QStringList &texts);
     void setBackgroundColor(const QString &colorName);
 };
+//! [1]
 
 #endif

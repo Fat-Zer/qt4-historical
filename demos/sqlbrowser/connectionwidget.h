@@ -46,10 +46,10 @@
 
 #include <QWidget>
 
-class QTreeWidget;
-class QTreeWidgetItem;
-class QSqlDatabase;
-class QMenu;
+QT_FORWARD_DECLARE_CLASS(QTreeWidget)
+QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
+QT_FORWARD_DECLARE_CLASS(QSqlDatabase)
+QT_FORWARD_DECLARE_CLASS(QMenu)
 
 class ConnectionWidget: public QWidget
 {

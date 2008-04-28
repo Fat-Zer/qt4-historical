@@ -46,13 +46,21 @@
 
 #include "ui_newform.h"
 
-#include <QDialog>
+#include <QtGui/QDialog>
+#include <QtCore/QStringList>
+
+QT_BEGIN_NAMESPACE
+
+class QIODevice;
+class QTreeWidgetItem;
 
 class QDesignerWorkbench;
 
 class NewForm: public QDialog
 {
     Q_OBJECT
+    Q_DISABLE_COPY(NewForm)
+
 public:
     NewForm(QDesignerWorkbench *workbench, QWidget *parentWidget, const QString &fileName = QString());
     virtual ~NewForm();
@@ -67,17 +75,30 @@ private slots:
     void recentFileChosen();
 
 private:
-    QPixmap formPreviewPixmap(const QString &fileName);
-    void loadFrom(const QString &path, bool resourceFile, const QString &uiExtension);
+    QPixmap formPreviewPixmap(const QString &fileName) const;
+    QPixmap formPreviewPixmap(QIODevice &file, const QString &workingDir = QString()) const;
+    QPixmap formPreviewPixmap(const QTreeWidgetItem *item);
+
+    void loadFrom(const QString &path, bool resourceFile, const QString &uiExtension,
+                  const QString &selectedItem, QTreeWidgetItem *&selectedItemFound);
+    void loadFrom(const QString &title, const QStringList &nameList,
+                  const QString &selectedItem, QTreeWidgetItem *&selectedItemFound);
 
 private:
-    bool openTemplate(const QString &templateFileName);
+    bool openTemplate(const QTreeWidgetItem *item, QString *errorMessage);
+
+    typedef QMap<const QTreeWidgetItem *, QPixmap> ItemPixmapMap;
+    ItemPixmapMap m_itemPixmapMap;
 
     QDesignerWorkbench *m_workbench;
     Ui::NewForm ui;
     QPushButton *m_createButton;
     QPushButton *m_recentButton;
     QString m_fileName;
+    QTreeWidgetItem *m_currentItem;
+    QTreeWidgetItem *m_acceptedItem;
 };
+
+QT_END_NAMESPACE
 
 #endif // NEWFORM_H

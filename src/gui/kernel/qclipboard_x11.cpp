@@ -80,6 +80,8 @@
 #include "qvariant.h"
 #include "qdnd_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /*****************************************************************************
   Internal QClipboard functions for X11.
  *****************************************************************************/
@@ -146,45 +148,68 @@ public:
     mutable QByteArray format_atoms;
 };
 
-
-
 class QClipboardData
 {
+private:
+    QMimeData *&mimeDataRef() const
+    {
+        if(mode == QClipboard::Selection)
+            return selectionData;
+        return clipboardData;
+    }
+
 public:
-    QClipboardData();
+    QClipboardData(QClipboard::Mode mode);
     ~QClipboardData();
 
     void setSource(QMimeData* s)
     {
-        if (s == src)
+        if ((mode == QClipboard::Selection && selectionData == s)
+            || clipboardData == s) {
             return;
-        delete src;
-        src = s;
+        }
+
+        if (selectionData != clipboardData) {
+            delete mimeDataRef();
+        }
+
+        mimeDataRef() = s;
     }
 
-    QMimeData *source() const { return src; }
+    QMimeData *source() const
+    {
+        return mimeDataRef();
+    }
 
-    void clear();
+    void clear()
+    {
+        timestamp = CurrentTime;
+        if (selectionData == clipboardData) {
+            mimeDataRef() = 0;
+        } else {
+            QMimeData *&src = mimeDataRef();
+            delete src;
+            src = 0;
+        }
+    }
 
-    QMimeData *src;
+    static QMimeData *selectionData;
+    static QMimeData *clipboardData;
     Time timestamp;
+    QClipboard::Mode mode;
 };
 
-QClipboardData::QClipboardData()
+QMimeData *QClipboardData::selectionData = 0;
+QMimeData *QClipboardData::clipboardData = 0;
+
+QClipboardData::QClipboardData(QClipboard::Mode clipboardMode)
 {
-    src = 0;
     timestamp = CurrentTime;
+    mode = clipboardMode;
 }
 
 QClipboardData::~QClipboardData()
 { clear(); }
-
-void QClipboardData::clear()
-{
-    delete src;
-    src = 0;
-    timestamp = CurrentTime;
-}
 
 
 static QClipboardData *internalCbData = 0;
@@ -199,7 +224,7 @@ static void cleanupClipboardData()
 static QClipboardData *clipboardData()
 {
     if (internalCbData == 0) {
-        internalCbData = new QClipboardData;
+        internalCbData = new QClipboardData(QClipboard::Clipboard);
         qAddPostRoutine(cleanupClipboardData);
     }
     return internalCbData;
@@ -214,7 +239,7 @@ static void cleanupSelectionData()
 static QClipboardData *selectionData()
 {
     if (internalSelData == 0) {
-        internalSelData = new QClipboardData;
+        internalSelData = new QClipboardData(QClipboard::Selection);
         qAddPostRoutine(cleanupSelectionData);
     }
     return internalSelData;
@@ -391,9 +416,12 @@ bool QX11Data::clipboardWaitForEvent(Window win, int type, XEvent *event, int ti
     QTime started = QTime::currentTime();
     QTime now = started;
 
-    if (QAbstractEventDispatcher::instance()->inherits("QtMotif")) {
-        if (waiting_for_data)
-            qFatal("QClipboard: internal error, qt_xclb_wait_for_event recursed");
+    if (QAbstractEventDispatcher::instance()->inherits("QtMotif")
+        || QApplication::clipboard()->property("useEventLoopWhenWaiting").toBool()) {
+        if (waiting_for_data) {
+            Q_ASSERT(!"QClipboard: internal error, qt_xclb_wait_for_event recursed");
+            return false;
+        }
         waiting_for_data = true;
 
 
@@ -673,6 +701,14 @@ static Atom send_selection(QClipboardData *d, Atom target, Window window, Atom p
     Atom atomFormat = target;
     int dataFormat = 0;
     QByteArray data;
+
+    QByteArray fmt = X11->xdndAtomToString(target);
+    if (fmt.isEmpty() || !QInternalMimeData::hasFormatHelper(QString::fromAscii(fmt), d->source())) { // Not a MIME type we have
+        DEBUG("QClipboard: send_selection(): converting to type '%s' is not supported", fmt.data());
+        return XNone;
+    }
+    DEBUG("QClipboard: send_selection(): converting to type '%s'", fmt.data());
+
     if (X11->xdndMimeDataForAtom(target, d->source(), &data, &atomFormat, &dataFormat)) {
 
         VDEBUG("QClipboard: send_selection():\n"
@@ -791,7 +827,7 @@ bool QClipboard::event(QEvent *e)
             QClipboardData *d = selectionData();
 
             // ignore the event if it was generated before we gained selection ownership
-            if (d->timestamp != CurrentTime && xevent->xselectionclear.time < d->timestamp)
+            if (d->timestamp != CurrentTime && xevent->xselectionclear.time <= d->timestamp)
                 break;
 
             DEBUG("QClipboard: new selection owner 0x%lx at time %lx (ours %lx)",
@@ -810,7 +846,7 @@ bool QClipboard::event(QEvent *e)
             QClipboardData *d = clipboardData();
 
             // ignore the event if it was generated before we gained selection ownership
-            if (d->timestamp != CurrentTime && xevent->xselectionclear.time < d->timestamp)
+            if (d->timestamp != CurrentTime && xevent->xselectionclear.time <= d->timestamp)
                 break;
 
             DEBUG("QClipboard: new clipboard owner 0x%lx at time %lx (%lx)",
@@ -1346,5 +1382,7 @@ bool qt_check_clipboard_sentinel()
 
     return doIt;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_CLIPBOARD

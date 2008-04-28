@@ -45,6 +45,7 @@
 
 #include "shapedclock.h"
 
+//! [0]
 ShapedClock::ShapedClock(QWidget *parent)
     : QWidget(parent, Qt::FramelessWindowHint)
 {
@@ -62,7 +63,9 @@ ShapedClock::ShapedClock(QWidget *parent)
                   "Use the right mouse button to open a context menu."));
     setWindowTitle(tr("Shaped Analog Clock"));
 }
+//! [0]
 
+//! [1]
 void ShapedClock::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -70,7 +73,9 @@ void ShapedClock::mousePressEvent(QMouseEvent *event)
         event->accept();
     }
 }
+//! [1]
 
+//! [2]
 void ShapedClock::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton) {
@@ -78,7 +83,9 @@ void ShapedClock::mouseMoveEvent(QMouseEvent *event)
         event->accept();
     }
 }
+//! [2]
 
+//! [3]
 void ShapedClock::paintEvent(QPaintEvent *)
 {
     static const QPoint hourHand[3] = {
@@ -134,7 +141,9 @@ void ShapedClock::paintEvent(QPaintEvent *)
         painter.rotate(6.0);
     }
 }
+//! [3]
 
+//! [4]
 void ShapedClock::resizeEvent(QResizeEvent * /* event */)
 {
     int side = qMin(width(), height());
@@ -142,8 +151,11 @@ void ShapedClock::resizeEvent(QResizeEvent * /* event */)
                          side, QRegion::Ellipse);
     setMask(maskedRegion);
 }
+//! [4]
 
+//! [5]
 QSize ShapedClock::sizeHint() const
 {
     return QSize(100, 100);
 }
+//! [5]

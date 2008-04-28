@@ -1,1 +1,1 @@
-#include "../../../src/network/qnetworkinterface_p.h"
+#include "../../../src/network/kernel/qnetworkinterface_p.h"

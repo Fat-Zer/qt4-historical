@@ -53,6 +53,10 @@
 #include <private/qcombobox_p.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
+extern QObject *qt_fontdatabase_private();
+
 static QFontDatabase::WritingSystem writingSystemForFont(const QFont &font, bool *hasLatin)
 {
     *hasLatin = true;
@@ -226,34 +230,46 @@ void QFontComboBoxPrivate::_q_updateModel()
 
     QFontDatabase fdb;
     QStringList list = fdb.families(system);
+    QStringList result;
 
-    if (filters != QFontComboBox::AllFonts) {
-        QStringList result;
-        for (int i = 0; i < list.size(); ++i) {
-            if ((filters & scalableMask) && (filters & scalableMask) != scalableMask) {
-                if (bool(filters & QFontComboBox::ScalableFonts) != fdb.isSmoothlyScalable(list.at(i)))
-                    continue;
-            }
-            if ((filters & spacingMask) && (filters & spacingMask) != spacingMask) {
-                if (bool(filters & QFontComboBox::MonospacedFonts) != fdb.isFixedPitch(list.at(i)))
-                    continue;
-            }
-            result += list.at(i);
-        }
-        list = result;
-    }
-    m->setStringList(list);
+    int offset = 0;
     QFontInfo fi(currentFont);
-    q->setCurrentIndex(m->stringList().indexOf(fi.family()));
+
+    for (int i = 0; i < list.size(); ++i) {
+        if ((filters & scalableMask) && (filters & scalableMask) != scalableMask) {
+            if (bool(filters & QFontComboBox::ScalableFonts) != fdb.isSmoothlyScalable(list.at(i)))
+                continue;
+        }
+        if ((filters & spacingMask) && (filters & spacingMask) != spacingMask) {
+            if (bool(filters & QFontComboBox::MonospacedFonts) != fdb.isFixedPitch(list.at(i)))
+                continue;
+        }
+        result += list.at(i);
+        if (list.at(i) == fi.family() || list.at(i).startsWith(fi.family() + QLatin1String(" [")))
+            offset = result.count() - 1;
+    }
+    list = result;
+
+    m->setStringList(list);
+    if (list.isEmpty()) {
+        if (currentFont != QFont()) {
+            currentFont = QFont();
+            emit q->currentFontChanged(currentFont);
+        }
+    } else {
+        q->setCurrentIndex(offset);
+    }
 }
 
 
 void QFontComboBoxPrivate::_q_currentChanged(const QString &text)
 {
     Q_Q(QFontComboBox);
-
-    currentFont = QFont(text);
-    emit q->currentFontChanged(currentFont);
+    QFont newFont(text);
+    if (currentFont != newFont) {
+        currentFont = newFont;
+        emit q->currentFontChanged(currentFont);
+    }
 }
 
 /*!
@@ -319,7 +335,6 @@ QFontComboBox::QFontComboBox(QWidget *parent)
             this, SLOT(_q_currentChanged(QString)));
 
     // qfontdatabase.cpp
-    extern QObject *qt_fontdatabase_private();
     connect(qt_fontdatabase_private(), SIGNAL(fontDatabaseChanged()),
             this, SLOT(_q_updateModel()));
 }
@@ -366,10 +381,10 @@ QFontDatabase::WritingSystem QFontComboBox::writingSystem() const
   This enum can be used to only show certain types of fonts in the font combo box.
 
   \value AllFonts Show all fonts
-  \value ScalableFonts Only show scalable fonts
-  \value NonScalableFonts Only show non scalable fonts
-  \value MonospacedFonts Only show monospaced fonts
-  \value ProportionalFonts Only show proportional fonts
+  \value ScalableFonts Show scalable fonts
+  \value NonScalableFonts Show non scalable fonts
+  \value MonospacedFonts Show monospaced fonts
+  \value ProportionalFonts Show proportional fonts
 */
 
 /*!
@@ -408,8 +423,11 @@ QFont QFontComboBox::currentFont() const
 void QFontComboBox::setCurrentFont(const QFont &font)
 {
     Q_D(QFontComboBox);
-    d->currentFont = font;
-    d->_q_updateModel();
+    if (font != d->currentFont) {
+        d->currentFont = font;
+        emit currentFontChanged(d->currentFont);
+        d->_q_updateModel();
+    }
 }
 
 /*!
@@ -444,6 +462,8 @@ QSize QFontComboBox::sizeHint() const
     sz.setWidth(fm.width(QLatin1Char('m'))*14);
     return sz;
 }
+
+QT_END_NAMESPACE
 
 #include "qfontcombobox.moc"
 #include "moc_qfontcombobox.cpp"

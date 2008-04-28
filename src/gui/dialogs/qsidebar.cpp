@@ -55,6 +55,8 @@
 #include <qfileiconprovider.h>
 #include <qfiledialog.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     QUrlModel lets you have indexes from a QFileSystemModel to a list.  When QFileSystemModel
     changes them QUrlModel will automatically update.
@@ -158,9 +160,9 @@ bool QUrlModel::setData(const QModelIndex &index, const QVariant &value, int rol
         QUrl url = value.toUrl();
         QModelIndex dirIndex = fileSystemModel->index(url.toLocalFile());
         if (showFullPath)
-            QStandardItemModel::setData(index, fileSystemModel->data(dirIndex, Qt::UserRole + 1).toString());
+            QStandardItemModel::setData(index, fileSystemModel->data(dirIndex, QFileSystemModel::FilePathRole).toString());
         else {
-            QStandardItemModel::setData(index, fileSystemModel->data(dirIndex, Qt::UserRole + 1).toString(), Qt::ToolTipRole);
+            QStandardItemModel::setData(index, fileSystemModel->data(dirIndex, QFileSystemModel::FilePathRole).toString(), Qt::ToolTipRole);
             QStandardItemModel::setData(index, fileSystemModel->data(dirIndex).toString());
         }
         QStandardItemModel::setData(index, fileSystemModel->data(dirIndex, Qt::DecorationRole),
@@ -178,7 +180,13 @@ void QUrlModel::setUrl(const QModelIndex &index, const QUrl &url, const QModelIn
         setData(index, fileSystemModel->myComputer());
         setData(index, fileSystemModel->myComputer(Qt::DecorationRole), Qt::DecorationRole);
     } else {
-        QString newName = dirIndex.data().toString();
+        QString newName;
+        if (showFullPath) {
+            newName = dirIndex.data(QFileSystemModel::FilePathRole).toString();
+        } else {
+            newName = dirIndex.data().toString();
+        }
+
         QIcon newIcon = qvariant_cast<QIcon>(dirIndex.data(Qt::DecorationRole));
         if (!dirIndex.isValid()) {
             newIcon = fileSystemModel->iconProvider()->icon(QFileIconProvider::Folder);
@@ -471,5 +479,7 @@ bool QSidebar::event(QEvent * event)
     }
     return QListView::event(event);
 }
+
+QT_END_NAMESPACE
 
 #endif

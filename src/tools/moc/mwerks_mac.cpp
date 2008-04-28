@@ -55,6 +55,8 @@
 #include <stdio.h>
 #include <string.h>
 
+QT_BEGIN_NAMESPACE
+
 //qglobal.cpp
 const unsigned char * p_str(const char * c);
 QCString pstring2qstring(const unsigned char *c);
@@ -236,3 +238,5 @@ pascal short main(CWPluginContext context)
 }
 
 #endif
+
+QT_END_NAMESPACE

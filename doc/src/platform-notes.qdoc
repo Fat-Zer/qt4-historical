@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page platform-notes-platforms.html
     \ingroup platform-notes
@@ -37,8 +80,8 @@
     \section1 AIX - 5.1 or later
 
     Qt has been built on a range of versions from 5.1 upwards, using both
-    the \l{compiler-notes.html#xlC}{AIX} and 
-    \l{compiler-notes.html#GCC}{GCC} compilers.
+    the \l{Compiler Notes#IBM xlC (AIX)}{AIX} and 
+    \l{Compiler Notes#GCC}{GCC} compilers.
 
     \table
     \header \o Compiler \o Notes
@@ -95,6 +138,13 @@
     hpuxi-acc-64. The minimum required version for aCC (HP ANSI C++) on
     Itanium is A.06.12.
 
+    \section2 OpenGL Support
+
+    Qt's \l{QtOpenGL}{OpenGL} module requires GLX 1.3 or later to be installed.
+    This is available for HP-UX 11i - see the
+    \l{http://docs.hp.com/en/5992-2331/ch04s02.html}{Graphics and Technical Computing Software}
+    section of the release notes for more information.
+
     \target IRIX
     \section1 IRIX - 6.5.x
 
@@ -122,9 +172,7 @@
     archive, be aware that you will probably end up with two different
     versions of the Qt library installed on your system, which will probably
     lead to link errors, like this:
-    \code
-    undefined reference to `_vt.11QPushButton'
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.platform-notes.qdoc 0
     Fix this by removing the old version of the library.
 
     If you have problems installing a Qt Open Source Edition Linux archive
@@ -154,9 +202,7 @@
     cause the resulting binaries to hang.
 
     GCC gives compilation error
-    \code
-    ANSI C++ forbids declaration ... with no type
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.platform-notes.qdoc 1
     on systems with old X11 header files. This is fixed by patches
     \l{http://sunsolve.sun.com/search/document.do?assetkey=urn:cds:docid:1-21-108652}{108652-24}
     on Solaris 8,
@@ -195,9 +241,7 @@
 
     Installing Qt into a directory with spaces, e.g. C:\\Program Files, may
     cause linker errors like the following:
-    \code
-    c:\program.obj not found
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.platform-notes.qdoc 2
 
     Install Qt into a subdirectory without spaces to avoid this problem.
 
@@ -286,9 +330,7 @@
     build Qt as a set of universal binaries and frameworks from configure by
     adding these extra flags:
 
-    \code
-    -universal -sdk /Developer/SDKs/MacOSX10.4u.sdk
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.platform-notes.qdoc 3
 
     If you are building on Intel hardware you can omit the sdk parameter, but
     PowerPC hardware requires it.
@@ -296,22 +338,14 @@
     You can also generate universal binaries using qmake. Simply add these
     lines to your .pro file:
 
-    \code
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk 
-    CONFIG+=x86 ppc
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.platform-notes.qdoc 4
 
     \section2 Build Issues
 
     If Qt does not build upon executing make, and fails with an error message
     such as
 
-    \code
-    /usr/bin/ld: /System/Library/Frameworks/Carbon.framework/Carbon
-    load command 20 unknown cmd field
-    /usr/bin/ld: /usr/lib/libSystem.dylib
-    load command 6 unknown cmd field
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.platform-notes.qdoc 5
 
     this could be an indication you have upgraded your version of Mac OS X
     (e.g. 10.3 to 10.4), without upgrading your Developer Tools (Xcode Tools).
@@ -334,11 +368,7 @@
     defined when linking static C libraries into dynamic library. If you
     get the following error message when linking Qt:
 
-    \code
-    ld: common symbols not allowed with MH_DYLIB output format with the -multi_module option
-    /usr/local/mysql/lib/libmysqlclient.a(my_error.o) definition of common _errbuff (size 512)
-    /usr/bin/libtool: internal link edit command failed
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.platform-notes.qdoc 6
 
     re-link Qt using -single_module. This is only a problem when building the
     MySQL driver into Qt. It does not affect plugins or static builds.
@@ -365,35 +395,114 @@
 
     Qt is supported on a variety of 32-bit and 64-bit platforms, and can
     usually be built on each platform with GCC, a vendor-supplied compiler, or
-    a third party compiler. The following sections describe platform-compiler
-    combinations that are supported by Trolltech for Qt.
+    a third party compiler. Although Qt may be built on a range of platform-compiler
+    combinations, only a subset of these are actively supported by Trolltech:
 
-    \section1 32-Bit Platforms 
-
-    \table
-    \header \o Platform  \o GCC  \o Compiler provided by OS vendor  \o 3rd party compiler
-    \row    \o Microsoft Windows \o gcc (MinGW) \o MS Visual Studio/Visual C++ \o Intel icc
-    \row    \o Linux     \o gcc  \o -  \o -
-    \row    \o Apple Mac OS X    \o gcc  \o -  \o -
-    \row    \o IBM AIX   \o gcc  \o IBM xlC  \o -
-    \row    \o HP HP-UX  \o gcc  \o HP aCC  \o -
-    \row    \o SGI IRIX  \o gcc  \o SGI MipsPRO  \o -
-    \row    \o Sun Solaris  \o gcc  \o Sun CC  \o -
-    \row    \o FreeBSD   \o gcc  \o -  \o Intel icc
-    \endtable
-
-    \section1 64-Bit Platforms
+    \section1 Actively Supported Platforms 
 
     \table
-    \header \o Platform  \o GCC  \o Compiler provided by OS vendor  \o 3rd party compiler
-    \row    \o Microsoft Windows \o - \o MS Visual Studio/Visual C++ \o Intel icc
-    \row    \o IBM AIX   \o gcc  \o IBM xlC  \o -
-    \row    \o HP-UX     \o -    \o HP acc   \o -
-    \row    \o SGI IRIX  \o gcc  \o SGI MipsPRO  \o -
-    \row    \o Sun Solaris  \o gcc  \o Sun cc  \o -
-    \row    \o Linux     \o gcc  \o -  \o Intel icc
+    \header \o Platform                \o Compilers
+    \row    \o Apple Mac OS X (32-bit) \o gcc 4.0.1
+    \row    \o Linux (32 and 64-bit)   \o gcc 4.1, 4.2
+    \row    \o Microsoft Windows       \o gcc 4.3 (MinGW) (32-bit), MSVC 2003, 2005 (32 and 64-bit), Intel icc
     \endtable
+
+    Other platform-compiler combinations are either community supported or unsupported.
+    See the Makespec Support section further down for a complete list of platform-compiler
+    combinations that ship with Qt and their support levels.
 
     Trolltech's online \l{Platform Support Policy} describes the level of
-    support you should expect for these and other platforms.
+    support you should expect for these platforms.
+
+    \section1 Supported Features
+
+    \table
+    \header \o Compiler \o{5,1} Features
+    \header \o                  \o Concurrent \o XmlPatterns \o WebKit   \o CLucene  \o Phonon
+    \row    \o g++ 3.3          \o \bold{X}   \o \bold{X}    \o          \o \bold{X} \o \bold{X}
+    \row    \o g++ 3.4 and up   \o \bold{X}   \o \bold{X}    \o \bold{X} \o \bold{X} \o \bold{X}
+    \row
+    \row    \o SunCC <= 5.6     \o \bold{X}   \o             \o          \o \bold{X} \o \bold{X}
+    \row    \o SunCC 5.7 & 5.8  \o \bold{X}   \o \bold{X}    \o          \o \bold{X} \o \bold{X}
+    \row    \o SunCC 5.9 and up \o \bold{X}   \o \bold{X}    \o \bold{X} \o \bold{X} \o \bold{X}
+    \row
+    \row    \o aCC series 3     \o            \o             \o          \o \bold{X} \o \bold{X}
+    \row    \o aCC series 6     \o \bold{X}   \o \bold{X}    \o \bold{X} \o \bold{X} \o \bold{X}
+    \row    \o MIPSpro 7.4.2m   \o            \o \bold{X}    \o          \o \bold{X} \o \bold{X}
+    \row    \o xlC 6            \o            \o             \o          \o \bold{X} \o \bold{X}
+    \row    \o Intel CC 10      \o \bold{X}   \o \bold{X}    \o \bold{X} \o \bold{X} \o \bold{X}
+    \row
+    \row    \o MSVC 6.0         \o            \o             \o          \o \bold{X} \o \bold{X}
+    \row    \o MSVC 2002        \o            \o             \o          \o \bold{X} \o \bold{X}
+    \row    \o MSVC 2003        \o \bold{X}   \o \bold{X}    \o          \o \bold{X} \o \bold{X}
+    \row    \o MSVC 2005 and up \o \bold{X}   \o \bold{X}    \o \bold{X} \o \bold{X} \o \bold{X}
+    \endtable
+
+    \section1 Makespec Support
+
+    Note that any platform-compiler combinations not listed here should be considered unsupported.
+
+    \table
+    \header \o Makespec            \o Architecture  \o Compiler version(s) \o Support Level
+    \row    \o aix-g++             \o -             \o -                   \o -
+    \row    \o aix-g++-64          \o -             \o -                   \o -
+    \row    \o aix-xlc             \o PowerPC       \o 6                   \o Active
+    \row    \o aix-xlc-64          \o -             \o -                   \o -
+    \row    \o cygwin-g++          \o -             \o -                   \o Unsupported
+    \row    \o darwin-g++          \o -             \o -                   \o Community
+    \row    \o freebsd-g++         \o -             \o -                   \o Community
+    \row    \o freebsd-g++34       \o -             \o -                   \o Community
+    \row    \o freebsd-g++40       \o -             \o -                   \o Community
+    \row    \o freebsd-icc         \o -             \o -                   \o Community
+    \row    \o hpux-acc*           \o PA/RISC       \o A.03.57             \o Active
+    \row    \o hpux-g++            \o PA/RISC       \o 3.4                 \o Active
+    \row    \o hpux-g++-64         \o -             \o -                   \o Active
+    \row    \o hpuxi-acc*          \o Itanium       \o A.06.10             \o Active
+    \row    \o hpuxi-g++*          \o Itanium       \o 4.1                 \o Active
+    \row    \o hurd-g++            \o -             \o -                   \o Community
+    \row    \o irix-cc*            \o MIPS          \o MIPS Pro            \o Active
+    \row    \o irix-g++*           \o MIPS          \o 3.3                 \o Active
+    \row    \o linux-cxx           \o -             \o -                   \o Community
+    \row    \o linux-ecc-64        \o -             \o -                   \o Community
+    \row    \o linux-g++           \o Itanium       \o 3.4                 \o Community
+    \row    \o linux-g++           \o x86, x86-64   \o 3.3, 3.4            \o Community
+    \row    \o linux-g++           \o x86, x86-64   \o 4.1, 4.2            \o Active
+    \row    \o linux-icc           \o x86, x86-64   \o 10.1                \o Active
+    \row    \o linux-icc-32        \o -             \o -                   \o Active
+    \row    \o linux-icc-64        \o -             \o -                   \o Active
+    \row    \o linux-kcc           \o -             \o -                   \o Community
+    \row    \o linux-llvm          \o -             \o -                   \o Community
+    \row    \o linux-lsb-g++       \o -             \o -                   \o Community
+    \row    \o linux-pgcc          \o -             \o -                   \o Unsupported
+    \row    \o lynxos-g++          \o -             \o -                   \o Community
+    \row    \o macx-icc            \o -             \o -                   \o -
+    \row    \o macx-g++            \o ppc           \o 3.3                 \o Unsupported
+    \row    \o macx-g++            \o x86*, ppc*    \o 4.0.1               \o Active
+    \row    \o macx-llvm           \o -             \o -                   \o Community
+    \row    \o macx-pbuilder       \o -             \o -                   \o -
+    \row    \o macx-xcode          \o -             \o -                   \o Active
+    \row    \o macx-xlc            \o -             \o -                   \o -
+    \row    \o netbsd-g++          \o -             \o -                   \o Community
+    \row    \o openbsd-g++         \o -             \o -                   \o Community
+    \row    \o qws/linux-g++       \o MIPS, PowerPC \o 3.4, 4.1, 4.2       \o Community
+    \row    \o qws/linux-g++       \o x86, ARM      \o 3.4, 4.1, 4.2       \o Active
+    \row    \o sco-cc              \o -             \o -                   \o Unsupported
+    \row    \o sco-g++             \o -             \o -                   \o Unsupported
+    \row    \o solaris-cc*         \o sparc, x86    \o 5.5                 \o Active
+    \row    \o solaris-g++*        \o sparc, x86    \o 3.4.2               \o Active
+    \row    \o unixware-cc         \o -             \o -                   \o Unsupported
+    \row    \o unixware-g++        \o -             \o -                   \o Unsupported
+    \row    \o win32-borland       \o -             \o -                   \o Unsupported
+    \row    \o win32-g++           \o x86           \o 3.4                 \o Active
+    \row    \o win32-icc           \o x86           \o 9.1                 \o Active
+    \row    \o win32-msvc          \o x86           \o 6.0                 \o Active
+    \row    \o win32-msvc2002      \o -             \o 2002                \o Active
+    \row    \o win32-msvc2003      \o x86           \o 2003                \o Active
+    \row    \o win32-msvc2005      \o x86           \o 2005                \o Active
+    \row    \o win32-msvc2008      \o -             \o 2008                \o Active
+    \row    \o win32-msvc.net      \o x86           \o 2002                \o Active
+    \row    \o wince*-msvc.net2005 \o x86, ARMv4i   \o 2005                \o Active
+    \row    \o tru64-cxx           \o -             \o -                   \o Unsupported
+    \row    \o tru64-g++           \o -             \o -                   \o Unsupported
+    \endtable
 */

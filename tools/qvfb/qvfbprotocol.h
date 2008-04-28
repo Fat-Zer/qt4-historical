@@ -46,6 +46,9 @@
 #include <QImage>
 #include <QVector>
 #include <QColor>
+
+QT_BEGIN_NAMESPACE
+
 class QVFbKeyProtocol;
 class QVFbMouseProtocol;
 class QVFbViewProtocol : public QObject
@@ -69,6 +72,7 @@ public:
     virtual int  numcols() const = 0;
     virtual QVector<QRgb> clut() const = 0;
     virtual unsigned char *data() const = 0;
+    virtual int brightness() const = 0;
 
     virtual void setRate(int) {}
 public slots:
@@ -164,4 +168,7 @@ protected:
     QPoint lastPos;
     QTimer *repeater;
 };
+
+QT_END_NAMESPACE
+
 #endif

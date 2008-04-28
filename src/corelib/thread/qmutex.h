@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_THREAD
@@ -94,7 +96,13 @@ private:
 class Q_CORE_EXPORT QMutexLocker
 {
 public:
-    inline explicit QMutexLocker(QMutex *m) : mtx(m) { relock(); }
+    inline explicit QMutexLocker(QMutex *m)
+        : mtx(m)
+    {
+        Q_ASSERT_X((val & quintptr(1u)) == quintptr(0),
+                   "QMutexLocker", "QMutex pointer is misaligned");
+        relock();
+    }
     inline ~QMutexLocker() { unlock(); }
 
     inline void unlock()
@@ -117,10 +125,19 @@ public:
         }
     }
 
+#if defined(Q_CC_MSVC)
+#pragma warning( push )
+#pragma warning( disable : 4312 ) // ignoring the warning from /Wp64
+#endif
+
     inline QMutex *mutex() const
     {
         return reinterpret_cast<QMutex *>(val & ~quintptr(1u));
     }
+
+#if defined(Q_CC_MSVC)
+#pragma warning( pop )
+#endif
 
 private:
     Q_DISABLE_COPY(QMutexLocker)
@@ -170,6 +187,8 @@ private:
 };
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

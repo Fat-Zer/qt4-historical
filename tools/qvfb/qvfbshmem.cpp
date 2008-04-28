@@ -63,6 +63,7 @@
 #include <errno.h>
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
 
 #ifdef Q_WS_QWS
 #error qvfb must be compiled with  the Qt/X11 package
@@ -122,25 +123,6 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
                                        int d, QObject *parent)
     : QVFbViewProtocol(displayid, parent), hdr(0), dataCache(0), lockId(-1)
 {
-    int actualdepth=d;
-
-    switch ( d ) {
-    case 12:
-        actualdepth=16;
-        break;
-    case 1:
-    case 4:
-    case 8:
-    case 16:
-    case 18:
-    case 24:
-    case 32:
-        break;
-
-    default:
-        qFatal("Unsupported bit depth %d\n", d);
-    }
-
     int w = s.width();
     int h = s.height();
 
@@ -149,10 +131,10 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
     if ( logname )
         username = logname;
 
-    QString oldPipe = "/tmp/qtembedded-" + username + "/" + QString( QTE_PIPE ).arg( displayid );
-    int oldPipeSemkey = ftok( oldPipe.toLatin1().constData(), 'd' );
+    QString oldPipe = "/tmp/qtembedded-" + username + "/" + QString(QTE_PIPE).arg(displayid);
+    int oldPipeSemkey = ftok(oldPipe.toLatin1().constData(), 'd');
     if (oldPipeSemkey != -1) {
-        int oldPipeLockId = semget( oldPipeSemkey, 0, 0 );
+        int oldPipeLockId = semget(oldPipeSemkey, 0, 0);
         if (oldPipeLockId >= 0){
             sembuf sops;
             sops.sem_num = 0;
@@ -161,8 +143,12 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
             int rv;
             do {
                 rv = semop(lockId,&sops,1);
-            } while ( rv == -1 && errno == EINTR );
-            qFatal("Cannot create lock file as an old version of QVFb has opened %s. Close other QVFb and try again", oldPipe.toLatin1().constData());
+            } while (rv == -1 && errno == EINTR);
+
+            perror("QShMemViewProtocol::QShMemViewProtocol");
+            qFatal("Cannot create lock file as an old version of QVFb has "
+                   "opened %s. Close other QVFb and try again",
+                   oldPipe.toLatin1().constData());
         }
     }
 
@@ -173,15 +159,13 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
 
     QString mousePipe = mh->pipeName();
 
-    key_t key = ftok( mousePipe.toLatin1().constData(), 'b' );
+    key_t key = ftok(mousePipe.toLatin1().constData(), 'b');
 
     int bpl;
-    if ( d == 1 )
-	bpl = (w*d+7)/8;
-    else if ( d == 18 )
-        bpl = ((w*24+31)/32)*4;
+    if (d < 8)
+	bpl = (w * d + 7) / 8;
     else
-	bpl = ((w*actualdepth+31)/32)*4;
+        bpl = w * ((d + 7) / 8);
 
     displaySize = bpl * h;
 
@@ -189,22 +173,25 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
     uint data_offset_value = sizeof(QVFbHeader);
 
     int dataSize = bpl * h + data_offset_value;
-    shmId = shmget( key, dataSize, IPC_CREAT|0666);
-    if ( shmId != -1 )
-	data = (unsigned char *)shmat( shmId, 0, 0 );
+    shmId = shmget(key, dataSize, IPC_CREAT | 0666);
+    if (shmId != -1)
+	data = (unsigned char *)shmat(shmId, 0, 0);
     else {
 	struct shmid_ds shm;
-	shmctl( shmId, IPC_RMID, &shm );
-	shmId = shmget( key, dataSize, IPC_CREAT|0666);
-	if ( shmId == -1 )
-	    qFatal( "Cannot get shared memory 0x%08x", key );
-	data = (unsigned char *)shmat( shmId, 0, 0 );
+	shmctl(shmId, IPC_RMID, &shm);
+	shmId = shmget(key, dataSize, IPC_CREAT | 0666);
+	if (shmId == -1) {
+            perror("QShMemViewProtocol::QShMemViewProtocol");
+            qFatal("Cannot get shared memory 0x%08x", key);
+        }
+	data = (unsigned char *)shmat(shmId, 0, 0);
     }
 
-    if ( (long)data == -1 ){
+    if ((long)data == -1) {
         delete kh;
         delete mh;
-	qFatal( "Cannot attach to shared memory %d",shmId );
+        perror("QShMemViewProtocol::QShMemViewProtocol");
+        qFatal("Cannot attach to shared memory %d",shmId);
     }
     dataCache = (unsigned char *)malloc(displaySize);
     memset(dataCache, 0, displaySize);
@@ -213,21 +200,22 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
     hdr = (QVFbHeader *)data;
     hdr->width = w;
     hdr->height = h;
-    hdr->depth = actualdepth;
+    hdr->depth = d;
     hdr->linestep = bpl;
     hdr->dataoffset = data_offset_value;
     hdr->update = QRect();
     hdr->dirty = 0;
     hdr->numcols = 0;
     hdr->viewerVersion = QT_VERSION;
+    hdr->brightness = 255;
 
-    displayPipe = qws_dataDir(displayid) + QString( QTE_PIPE ).arg( displayid );
+    displayPipe = qws_dataDir(displayid) + QString(QTE_PIPE).arg(displayid);
 
     displayPiped = displayPipe + 'd';
 
 
-    mRefreshTimer = new QTimer( this );
-    connect( mRefreshTimer, SIGNAL(timeout()), this, SLOT(flushChanges()) );
+    mRefreshTimer = new QTimer(this);
+    connect(mRefreshTimer, SIGNAL(timeout()), this, SLOT(flushChanges()));
 }
 
 QShMemViewProtocol::~QShMemViewProtocol()
@@ -280,6 +268,11 @@ unsigned char *QShMemViewProtocol::data() const
     //return ((unsigned char *)hdr)+hdr->dataoffset;
 }
 
+int QShMemViewProtocol::brightness() const
+{
+    return hdr->brightness;
+}
+
 void QShMemViewProtocol::flushChanges()
 {
     // based of dirty rect, copy changes from hdr to hdrcopy
@@ -314,3 +307,5 @@ int QShMemViewProtocol::rate() const
     else
         return 0;
 }
+
+QT_END_NAMESPACE

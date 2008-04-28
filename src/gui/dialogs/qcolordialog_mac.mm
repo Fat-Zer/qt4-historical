@@ -54,6 +54,8 @@
 typedef float CGFloat;  // Should only not be defined on 32-bit platforms
 #endif
 
+QT_USE_NAMESPACE
+
 @class QNSColorPickerResponder;
 
 @interface QNSColorPickerResponder : NSObject {
@@ -118,6 +120,8 @@ typedef float CGFloat;  // Should only not be defined on 32-bit platforms
 }
 @end
 
+QT_BEGIN_NAMESPACE
+
 QRgb macGetRgba(QRgb initial, bool needAlpha, bool *ok, QWidget *parent)
 {
     QMacCocoaAutoReleasePool pool;
@@ -162,8 +166,10 @@ QRgb macGetRgba(QRgb initial, bool needAlpha, bool *ok, QWidget *parent)
         QWidget modal_widg(parent, Qt::Sheet);
         modal_widg.createWinId();
         QApplicationPrivate::enterModal(&modal_widg);
+        QApplicationPrivate::native_modal_dialog_active = true;
         rval = GetColor(place, title, &rgb, &rgbout);
         QApplicationPrivate::leaveModal(&modal_widg);
+        QApplicationPrivate::native_modal_dialog_active = false;
     }
     if (rval)
         initial = [responder qtColor];
@@ -183,4 +189,7 @@ QColor macGetColor(const QColor &initial, QWidget *parent)
         ret = QColor(rgb);
     return ret;
 }
+
+QT_END_NAMESPACE
+
 #endif

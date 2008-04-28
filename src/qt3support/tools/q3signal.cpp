@@ -46,6 +46,8 @@
 #include "qpointer.h"
 #include "q3cstring.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3Signal q3signal.h
     \brief The Q3Signal class can be used to send signals for classes
@@ -70,44 +72,7 @@
     cannot call any QObject member functions from a Q3Signal object.
 
     Example:
-    \code
-	#include <q3signal.h>
-
-	class MyClass
-	{
-	public:
-	    MyClass();
-	    ~MyClass();
-
-	    void doSomething();
-
-	    void connect(QObject *receiver, const char *member);
-
-	private:
-	    Q3Signal *sig;
-	};
-
-	MyClass::MyClass()
-	{
-	    sig = new Q3Signal;
-	}
-
-	MyClass::~MyClass()
-	{
-	    delete sig;
-	}
-
-	void MyClass::doSomething()
-	{
-	    // ... does something
-	    sig->activate(); // emits the signal
-	}
-
-	void MyClass::connect(QObject *receiver, const char *member)
-	{
-	    sig->connect(receiver, member);
-	}
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.tools.q3signal.cpp 0
 */
 
 /*!
@@ -259,3 +224,5 @@ int Q3Signal::parameter() const
     return val.toInt();
 }
 #endif //QT_NO_VARIANT
+
+QT_END_NAMESPACE

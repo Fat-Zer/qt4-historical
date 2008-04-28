@@ -48,6 +48,7 @@
 #include "tictactoedialog.h"
 #include "tictactoetaskmenu.h"
 
+//! [0]
 TicTacToeTaskMenu::TicTacToeTaskMenu(TicTacToe *tic, QObject *parent)
     : QObject(parent)
 {
@@ -56,30 +57,40 @@ TicTacToeTaskMenu::TicTacToeTaskMenu(TicTacToe *tic, QObject *parent)
     editStateAction = new QAction(tr("Edit State..."), this);
     connect(editStateAction, SIGNAL(triggered()), this, SLOT(editState()));
 }
+//! [0]
 
+//! [1]
 void TicTacToeTaskMenu::editState()
 {
     TicTacToeDialog dialog(ticTacToe);
     dialog.exec();
 }
+//! [1]
 
+//! [2]
 QAction *TicTacToeTaskMenu::preferredEditAction() const
 {
     return editStateAction;
 }
+//! [2]
 
+//! [3]
 QList<QAction *> TicTacToeTaskMenu::taskActions() const
 {
     QList<QAction *> list;
     list.append(editStateAction);
     return list;
 }
+//! [3]
 
+//! [4]
 TicTacToeTaskMenuFactory::TicTacToeTaskMenuFactory(QExtensionManager *parent)
     : QExtensionFactory(parent)
 {
 }
+//! [4]
 
+//! [5]
 QObject *TicTacToeTaskMenuFactory::createExtension(QObject *object,
                                                    const QString &iid,
                                                    QObject *parent) const
@@ -92,3 +103,4 @@ QObject *TicTacToeTaskMenuFactory::createExtension(QObject *object,
 
     return 0;
 }
+//! [5]

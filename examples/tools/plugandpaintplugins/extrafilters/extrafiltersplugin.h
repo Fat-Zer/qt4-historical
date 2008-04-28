@@ -44,6 +44,7 @@
 #ifndef EXTRAFILTERSPLUGIN_H
 #define EXTRAFILTERSPLUGIN_H
 
+//! [0]
 #include <QObject>
 #include <QStringList>
 #include <QImage>
@@ -60,5 +61,6 @@ public:
     QImage filterImage(const QString &filter, const QImage &image,
                        QWidget *parent);
 };
+//! [0]
 
 #endif

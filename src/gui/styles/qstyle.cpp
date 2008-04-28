@@ -59,6 +59,8 @@
 
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 static const int MaxBits = 8 * sizeof(QSizePolicy::ControlType);
 
 static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::ControlType *array)
@@ -94,10 +96,10 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
 
     Qt's built-in widgets use QStyle to perform nearly all of their
     drawing, ensuring that they look exactly like the equivalent
-    native widgets. The diagram below shows a QComboBox in six
+    native widgets. The diagram below shows a QComboBox in eight
     different styles.
 
-    \img qstyle-comboboxes.png Six combo boxes
+    \img qstyle-comboboxes.png Eight combo boxes
 
     Topics:
 
@@ -109,9 +111,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     QApplication::setStyle() function. It can also be specified by the
     user of the application, using the \c -style command-line option:
 
-    \code
-        ./myapplication -style motif
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.styles.qstyle.cpp 0
 
     If no style is specified, Qt will choose the most appropriate
     style for the user's platform or desktop environment.
@@ -137,9 +137,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     For example, if you want to draw a focus rectangle on your
     widget, you can write:
 
-    \quotefromfile snippets/styles/styles.cpp
-    \skipto MyWidget::paintEvent
-    \printuntil }
+    \snippet doc/src/snippets/styles/styles.cpp 1
 
     QStyle gets all the information it needs to render the graphical
     element from QStyleOption. The widget is passed as the last
@@ -160,27 +158,24 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     combines a QStyle, a QPainter, and a QWidget. This makes it
     possible to write
 
-    \skipto QStylePainter painter
-    \printline painter
+    \snippet doc/src/snippets/styles/styles.cpp 5
     \dots
-    \skipto drawPrimitive
-    \printline drawPrimitive
+    \snippet doc/src/snippets/styles/styles.cpp 7
 
     instead of
 
-    \quotefromfile snippets/styles/styles.cpp
-    \skipto QPainter painter
-    \printline painter
+    \snippet doc/src/snippets/styles/styles.cpp 2
     \dots
-    \skipto drawPrimitive
-    \printline drawPrimitive
+    \snippet doc/src/snippets/styles/styles.cpp 3
 
     \section1 Creating a Custom Style
 
-    If you want to design a custom look and feel for your
-    application, the first step is to pick one of the base styles
-    provided with Qt to build your custom style from. The choice will
-    depend on which existing style resembles your style the most.
+    If you want to design a custom look and feel for your application,
+    the first step is to pick one of the styles provided with Qt to
+    build your custom style from. The choice will depend on which
+    existing style resembles your style the most. The most general
+    class that you can use as base is QCommonStyle (and not QStyle).
+    This is because Qt requires its styles to be \l{QCommonStyle}s.
 
     Depending on which parts of the base style you want to change,
     you must reimplement the functions that are used to draw those
@@ -190,20 +185,16 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     function, so we need to reimplement that function. We need the
     following class declaration:
 
-    \quotefile snippets/customstyle/customstyle.h
-    \skipto class CustomStyle
-    \printuntil };
+    \snippet doc/src/snippets/customstyle/customstyle.h 0
 
     To draw its up and down arrows, QSpinBox uses the
     PE_IndicatorSpinUp and PE_IndicatorSpinDown primitive elements.
     Here's how to reimplement the drawPrimitive() function to draw
     them differently:
 
-    \quotefile snippets/customstyle/customstyle.cpp
-    \skipto CustomStyle::drawPrimitive
-    \printuntil QWindowsStyle::drawPrimitive
-    \printline }
-    \printline }
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 2
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 3
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 4
 
     Notice that we don't use the \c widget argument, except to pass it
     on to the QWindowStyle::drawPrimitive() function. As mentioned
@@ -215,12 +206,9 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     information, be careful to ensure that it isn't 0 and that it is
     of the correct type before using it. For example:
 
-    \quotefile snippets/customstyle/customstyle.cpp
-    \skipto CustomStyle::CustomStyle
-    \skipto QSpinBox
-    \printuntil {
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 0
     \dots
-    \printuntil }
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 1
 
     When implementing a custom style, you cannot assume that the
     widget is a QSpinBox just because the enum value is called
@@ -236,7 +224,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     QApplication::setStyle() static function before creating the
     QApplication object:
 
-    \include snippets/customstyle/main.cpp
+    \snippet doc/src/snippets/customstyle/main.cpp using a custom style
 
     You can call QApplication::setStyle() at any time, but by calling
     it before the constructor, you ensure that the user's preference,
@@ -255,9 +243,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     automatically. To use your new style with existing applications,
     simply start the application with the following argument:
 
-    \code
-        ./myapplication -style custom
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.styles.qstyle.cpp 1
 
     The application will use the look and feel from the custom style you
     implemented.
@@ -288,7 +274,28 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     \o alignedRect() will return a logical rect aligned for the current direction
     \endlist
 
-    \sa QStyleOption, QStylePainter, {Styles Example}, {Implementing Styles and Style Aware Widgets}
+    \section1 Styles in Item Views
+
+    The painting of items in views is performed by a delegate. Qt's
+    default delegate, QStyledItemDelegate, uses the style to draw
+    check box indicators, and for calculating bounding rectangles
+    of items, and their sub-elements for the various kind of item
+    \l{Qt::ItemDataRole}{data roles} for the datatypes the
+    QStyledItemDelegate supports. Please see the \l{Model/View
+    Programming} for more info on item data roles.
+
+    To fully customize the look and feel in an item view or add
+    support for drawing of new datatypes, it is necessary to create a
+    custom delegate. But if you only need to support the datatypes
+    implemented by the default delegate, a custom style does not need
+    an accompanying delegate. The QStyledItemDelegate class
+    description gives more information on custom delegates.
+
+    The drawing of item view headers is also done by the style, giving
+    control over size of header items and row and column sizes. 
+
+    \sa QStyleOption, QStylePainter, {Styles Example},
+        {Implementing Styles and Style Aware Widgets}, QStyledItemDelegate
 */
 
 /*!
@@ -527,6 +534,9 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     primitive element is a common GUI element, such as a checkbox
     indicator or button bevel.
 
+    \omitvalue PE_IndicatorViewItemCheck
+    \value PE_FrameStatusBar Frame
+
     \value PE_PanelButtonCommand  Button used to initiate an action, for
         example, a QPushButton.
 
@@ -549,7 +559,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value PE_IndicatorSpinPlus  Increase symbol for a spin widget.
     \value PE_IndicatorSpinMinus  Decrease symbol for a spin widget.
 
-    \value PE_IndicatorViewItemCheck On/off indicator for a view item.
+    \value PE_IndicatorItemViewItemCheck On/off indicator for a view item.
 
     \value PE_IndicatorCheckBox  On/off indicator, for example, a QCheckBox.
     \value PE_IndicatorRadioButton  Exclusive on/off indicator, for example, a QRadioButton.
@@ -573,7 +583,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value PE_IndicatorHeaderArrow  Arrow used to indicate sorting on a list or table
         header.
-    \value PE_FrameStatusBar Frame for a section of a status bar; see also QStatusBar.
+    \value PE_FrameStatusBarItem Frame for an item of a status bar; see also QStatusBar.
 
     \value PE_FrameWindow  Frame around a MDI window or a docking window.
 
@@ -602,6 +612,13 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     All values above this are reserved for custom use. Custom values
     must be greater than this value.
 
+    \value PE_IndicatorItemViewItemDrop An indicator that is drawn to show where an item in an item view is about to be dropped
+    during a drag-and-drop operation in an item view.
+    \value PE_PanelItemViewItem The background for an item in an item view.
+    \value PE_PanelItemViewRow The background of a row in an item view.
+
+    \value PE_PanelStatusBar The panel for a status bar.
+
     \sa drawPrimitive()
 */
 
@@ -624,36 +641,36 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     Note that not all primitives use all of these flags, and that the
     flags may mean different things to different items.
 
-    \value State_None
-    \value State_Active
-    \value State_AutoRaise
-    \value State_Bottom
-    \value State_Children
-    \value State_DownArrow
-    \value State_Editing
-    \value State_Enabled
-    \value State_FocusAtBorder
-    \value State_HasEditFocus
-    \value State_HasFocus
-    \value State_Horizontal
-    \value State_Item
-    \value State_KeyboardFocusChange
-    \value State_Mini
-    \value State_MouseOver
-    \value State_NoChange
-    \value State_Off
-    \value State_On
-    \value State_Open
-    \value State_Raised
-    \value State_ReadOnly
-    \value State_Selected
-    \value State_Sibling
-    \value State_Small
-    \value State_Sunken
-    \value State_Top
-    \value State_UpArrow
-    \value State_Window
+    \value State_None Indicates that the widget does not have a state.
+    \value State_Active Indicates that the widget is active.
+    \value State_AutoRaise Used to indicate if auto-raise appearance should be usd on a tool button.
+    \value State_Children Used to indicate if an item view branch has children.
+    \value State_DownArrow Used to indicate if a down arrow should be visible on the widget. 
+    \value State_Editing Used to indicate if an editor is opened on the widget.
+    \value State_Enabled Used to indicate if the widget is enabled.
+    \value State_HasEditFocus Used to indicate if the widget currently has edit focus.
+    \value State_HasFocus Used to indicate if the widget has focus.
+    \value State_Horizontal Used to indicate if the widget is laid out horizontally, for example. a tool bar.
+    \value State_KeyboardFocusChange Used to indicate if the focus was changed with the keyboard, e.g., tab, backtab or shortcut.
+    \value State_MouseOver Used to indicate if the widget is under the mouse.
+    \value State_NoChange Used to indicate a tri-state checkbox.
+    \value State_Off Used to indicate if the widget is not checked.
+    \value State_On Used to indicate if the widget is checked.
+    \value State_Raised Used to indicate if a button is raised.
+    \value State_ReadOnly Used to indicate if a widget is read-only.
+    \value State_Selected Used to indicate if a widget is selected.
+    \value State_Item Used by item views to indicate if a horizontal branch should be drawn.
+    \value State_Open Used by item views to indicate if the tree branch is open.
+    \value State_Sibling Used by item views to indicate if a vertical line needs to be drawn (for siblings).
+    \value State_Sunken Used to indicate if the widget is sunken or pressed.
+    \value State_UpArrow Used to indicate if an up arrow should be visible on the widget.
+    \value State_Mini Used to indicate a mini style Mac widget or button.
+    \value State_Small Used to indicate a small style Mac widget or button.
+    \omitvalue State_Window
+    \omitvalue State_Bottom
     \omitvalue State_Default
+    \omitvalue State_FocusAtBorder
+    \omitvalue State_Top
 
     \sa drawPrimitive()
 */
@@ -786,6 +803,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CE_RubberBand        Rubber band used in for example an icon view.
 
     \value CE_FocusFrame        Focus frame that is style controlled.
+
+    \value CE_ItemViewItem      An item inside an item view.
 
     \value CE_CustomBase  Base value for custom control elements;
     custom values must be greater than this value.
@@ -939,6 +958,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \omitvalue SE_DialogButtonAbort
     \omitvalue SE_DialogButtonIgnore
     \omitvalue SE_DialogButtonCustom
+    \omitvalue SE_ViewItemCheckIndicator
 
     \value SE_FrameContents  Area for a frame's contents.
     \value SE_FrameLayoutItem  Area that counts for the parent layout.
@@ -961,7 +981,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value SE_ToolButtonLayoutItem  Area that counts for the parent layout.
 
-    \value SE_ViewItemCheckIndicator Area for a view item's check mark.
+    \value SE_ItemViewItemCheckIndicator Area for a view item's check mark.
 
     \value SE_TabBarTearIndicator Area for the tear indicator on a tab bar with scroll arrows.
 
@@ -982,6 +1002,11 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
                                     widget.
     \value SE_DockWidgetIcon The icon of a dock widget.
     \value SE_ComboBoxLayoutItem Area that counts for the parent layout.
+
+
+    \value SE_ItemViewItemDecoration Area for a view item's decoration (icon).
+    \value SE_ItemViewItemText Area for a view item's text.
+    \value SE_ItemViewItemFocusRect Area for a view item's focus rect.
 
     \sa subElementRect()
 */
@@ -1369,6 +1394,9 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value PM_SizeGripSize The size of a size grip.
     \value PM_MessageBoxIconSize The size of the standard icons in a message box
     \value PM_ButtonIconSize The default size of button icons
+    \value PM_TextCursorWidth The width of the cursor in a line edit or text edit
+    \value PM_TabBar_ScrollButtonOverlap The distance between the left and right buttons in a tab bar.
+    
 
     \value PM_CustomBase Base value for custom pixel metrics.  Custom
     values must be greater than this value.
@@ -1451,6 +1479,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CT_TabWidget A tab widget, like QTabWidget.
     \value CT_ToolButton A tool button, like QToolButton.
     \value CT_GroupBox A group box, like QGroupBox.
+    \value CT_ItemViewItem An item inside an item view.
 
     \value CT_CustomBase  Base value for custom contents types.
     Custom values must be greater than this value.
@@ -1662,6 +1691,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     spinbox key presses.
     \value SH_SpinBox_ClickAutoRepeatRate  Auto-repeat interval for
     spinbox mouse clicks.
+    \value SH_SpinBox_ClickAutoRepeatThreshold  Auto-repeat threshold for
+    spinbox mouse clicks.
     \value SH_ToolTipLabel_Opacity  An integer indicating the opacity for
     the tip label, 0 is completely transparent, 255 is completely
     opaque.
@@ -1736,6 +1767,11 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value SH_WizardStyle Controls the look and feel of a QWizard. Returns a QWizard::WizardStyle enum.
 
+    \value SH_FormLayoutWrapPolicy Provides a default for how rows are wrapped in a QFormLayout. Returns a QFormLayout::RowWrapPolicy enum.
+    \value SH_FormLayoutFieldGrowthPolicy Provides a default for how fields can grow in a QFormLayout. Returns a QFormLayout::FieldGrowthPolicy enum.
+    \value SH_FormLayoutFormAlignment Provides a default for how a QFormLayout aligns its contents within the available space. Returns a Qt::Alignment enum.
+    \value SH_FormLayoutLabelAlignment Provides a default for how a QFormLayout aligns labels within the available space. Returns a Qt::Alignment enum.
+
     \value SH_ItemView_ArrowKeysNavigateIntoChildren Controls whether the tree view will select the first child when it is exapanded and the right arrow key is pressed.
     \value SH_ComboBox_PopupFrameStyle  The frame style used when drawing a combobox popup menu.
 
@@ -1750,9 +1786,18 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     QStyleHintReturnVariant return value. The QTextFormat::OutlinePen property is used for the outline and QTextFormat::BackgroundBrush
     for the background of the highlighted area.
 
-    Used to fill any area not covered by the items.
+    \value SH_Menu_FlashTriggeredItem Flash triggered item.
+    \value SH_Menu_FadeOutOnHide Fade out the menu instead of hiding it immediately.
+    
+    \value SH_TabWidget_DefaultTabPosition Default position of the tab bar in a tab widget.
+    
+    \value SH_ToolBar_Movable Determines if the tool bar is movable by default.
+
+    \value SH_ItemView_PaintAlternatingRowColorsForEmptyArea Whether QTreeView paints alternating row colors for the area that does not have any items.
+
+    \value SH_Menu_Mask The mask for a popup menu.
+
     \omitvalue SH_UnderlineAccelerator
-    \omitvalue SH_Menu_Mask
 
     \sa styleHint()
 */
@@ -1836,6 +1881,17 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SP_ArrowForward Equivalent to SP_ArrowRight when the current layout direction is Qt::LeftToRight, otherwise SP_ArrowLeft.
     \value SP_CommandLink Icon used to indicate a Vista style command link glyph.
     \value SP_VistaShield Icon used to indicate UAC prompts on Windows Vista. This will return a null pixmap or icon on all other platforms.
+    \value SP_BrowserReload  Icon indicating that the current page should be reloaded.
+    \value SP_BrowserStop  Icon indicating that the page loading should stop.
+    \value SP_MediaPlay   Icon indicating that media should begin playback.
+    \value SP_MediaStop   Icon indicating that media should stop playback.
+    \value SP_MediaPause  Icon indicating that media should pause playback.
+    \value SP_MediaSkipForward Icon indicating that media should skip forward.
+    \value SP_MediaSkipBackward Icon indicating that media should skip backward.
+    \value SP_MediaSeekForward Icon indicating that media should seek forward.
+    \value SP_MediaSeekBackward Icon indicating that media should seek backward.
+    \value SP_MediaVolume Icon indicating a volume control.
+    \value SP_MediaVolumeMuted Icon indicating a muted volume control.
     \value SP_CustomBase  Base value for custom standard pixmaps;
     custom values must be greater than this value.
 
@@ -2290,7 +2346,10 @@ int QStyle::layoutSpacingImplementation(QSizePolicy::ControlType /* control1 */,
 }
 
 #if !defined(QT_NO_DEBUG) && !defined(QT_NO_DEBUG_STREAM)
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <QDebug>
+QT_END_INCLUDE_NAMESPACE
+
 QDebug operator<<(QDebug debug, QStyle::State state)
 {
     debug << "QStyle::State(";
@@ -2327,3 +2386,5 @@ QDebug operator<<(QDebug debug, QStyle::State state)
     return debug;
 }
 #endif
+
+QT_END_NAMESPACE

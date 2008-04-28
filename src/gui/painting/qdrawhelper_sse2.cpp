@@ -48,6 +48,8 @@
 #include <private/qpaintengine_raster_p.h>
 #include <emmintrin.h>
 
+QT_BEGIN_NAMESPACE
+
 void qt_memfill32_sse2(quint32 *dest, quint32 value, int count)
 {
     if (count < 7) {
@@ -62,7 +64,7 @@ void qt_memfill32_sse2(quint32 *dest, quint32 value, int count)
         return;
     };
 
-    const int align = (long)(dest) & 0xf;
+    const int align = (quintptr)(dest) & 0xf;
     switch (align) {
     case 4:  *dest++ = value; --count;
     case 8:  *dest++ = value; --count;
@@ -102,7 +104,7 @@ void qt_memfill16_sse2(quint16 *dest, quint16 value, int count)
         return;
     }
 
-    const int align = (long)(dest) & 0x3;
+    const int align = (quintptr)(dest) & 0x3;
     switch (align) {
     case 2: *dest++ = value; --count;
     }
@@ -196,5 +198,7 @@ void qt_bitmapblit16_sse2(QRasterBuffer *rasterBuffer, int x, int y,
         src += stride;
     }
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_HAVE_SSE2

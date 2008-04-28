@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_ACTION
@@ -67,7 +69,7 @@ class Q_GUI_EXPORT QAction : public QObject
 
     Q_ENUMS(MenuRole)
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
-    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked DESIGNABLE isCheckable NOTIFY toggled)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
     Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
     Q_PROPERTY(QString text READ text WRITE setText)
@@ -83,6 +85,7 @@ class Q_GUI_EXPORT QAction : public QObject
 #endif
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(MenuRole menuRole READ menuRole WRITE setMenuRole)
+    Q_PROPERTY(bool iconVisibleInMenu READ isIconVisibleInMenu WRITE setIconVisibleInMenu)
 
 public:
     enum MenuRole { NoRole, TextHeuristicRole, ApplicationSpecificRole, AboutQtRole,
@@ -166,6 +169,9 @@ public:
     void setMenuRole(MenuRole menuRole);
     MenuRole menuRole() const;
 
+    void setIconVisibleInMenu(bool visible);
+    bool isIconVisibleInMenu() const;
+
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT void setMenuText(const QString &text) { setText(text); }
     inline QT3_SUPPORT QString menuText() const { return text(); }
@@ -224,9 +230,13 @@ private:
     friend class QToolButton;
 };
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <QtGui/qactiongroup.h>
+QT_END_INCLUDE_NAMESPACE
 
 #endif // QT_NO_ACTION
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -52,13 +52,15 @@
 #include <QtCore/qstringlist.h>
 #endif
 
-QT_BEGIN_HEADER
-
-QT_MODULE(Core)
-
 #if defined(Q_WS_WIN) && !defined(tagMSG)
 typedef struct tagMSG MSG;
 #endif
+
+QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Core)
 
 class QCoreApplicationPrivate;
 class QTextCodec;
@@ -66,10 +68,13 @@ class QTranslator;
 class QPostEventList;
 class QStringList;
 
+#define qApp QCoreApplication::instance()
+
 class Q_CORE_EXPORT QCoreApplication : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName)
+    Q_PROPERTY(QString applicationVersion READ applicationVersion WRITE setApplicationVersion)
     Q_PROPERTY(QString organizationName READ organizationName WRITE setOrganizationName)
     Q_PROPERTY(QString organizationDomain READ organizationDomain WRITE setOrganizationDomain)
 
@@ -93,6 +98,8 @@ public:
     static QString organizationName();
     static void setApplicationName(const QString &application);
     static QString applicationName();
+    static void setApplicationVersion(const QString &version);
+    static QString applicationVersion();
 
     static QCoreApplication *instance() { return self; }
 
@@ -117,6 +124,7 @@ public:
 
     static QString applicationDirPath();
     static QString applicationFilePath();
+    static qint64 applicationPid();
 
 #ifndef QT_NO_LIBRARY
     static void setLibraryPaths(const QStringList &);
@@ -265,6 +273,8 @@ Q_CORE_EXPORT QString qAppName();                // get application name
 Q_CORE_EXPORT QString decodeMSG(const MSG &);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const MSG &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

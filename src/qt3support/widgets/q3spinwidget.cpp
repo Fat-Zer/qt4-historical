@@ -53,6 +53,8 @@
 #include "qstyleoption.h"
 #include "qtimer.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3SpinWidgetPrivate
 {
 public:
@@ -467,5 +469,7 @@ Q3SpinWidget::ButtonSymbols Q3SpinWidget::buttonSymbols() const
 {
     return d->bsyms;
 }
+
+QT_END_NAMESPACE
 
 #endif

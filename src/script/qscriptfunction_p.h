@@ -60,16 +60,19 @@
 #ifndef QT_NO_SCRIPT
 
 #include "qscriptglobals_p.h"
-#include "qscriptcontext_p.h"
 #include "qscriptnodepool_p.h"
 
 #include <QtCore/QList>
+
 #ifndef QT_NO_QOBJECT
-#include <QtCore/QPointer>
-#include <QtCore/QMetaMethod>
+# include <QtCore/QPointer>
+# include <QtCore/QMetaMethod>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 class QScriptContext;
+class QScriptContextPrivate;
 class QScriptNameIdImpl;
 
 class QScriptFunction: public QScriptObjectData
@@ -80,6 +83,7 @@ public:
         Script,
         C,
         C2,
+        C3,
         Qt,
         QtProperty
     };
@@ -99,9 +103,15 @@ public:
 
     virtual QString functionName() const;
 
+    virtual int startLineNumber() const;
+
+    virtual int endLineNumber() const;
+
+    virtual void mark(QScriptEnginePrivate *engine, int generation);
+
 public: // ### private
     int length;
-    QList<QScriptNameIdImpl*> formals; // ### mark the formals
+    QList<QScriptNameIdImpl*> formals;
 };
 
 namespace QScript {
@@ -131,9 +141,9 @@ class C2Function: public QScriptFunction
 {
 public:
     C2Function(QScriptInternalFunctionSignature funPtr, int length,
-               QScriptClassInfo *classInfo)
+               QScriptClassInfo *classInfo, const QString &name)
         : QScriptFunction(length), m_funPtr(funPtr),
-          m_classInfo(classInfo)
+          m_classInfo(classInfo), m_name(name)
         { }
 
     virtual ~C2Function() {}
@@ -147,6 +157,25 @@ public:
 private:
     QScriptInternalFunctionSignature m_funPtr;
     QScriptClassInfo *m_classInfo;
+    QString m_name;
+};
+
+class C3Function: public QScriptFunction
+{
+public:
+    C3Function(QScriptFunctionWithArgSignature funPtr, void *arg, int length)
+        : QScriptFunction(length), m_funPtr(funPtr), m_arg(arg)
+        { }
+
+    virtual ~C3Function() { }
+
+    virtual void execute(QScriptContextPrivate *context);
+
+    virtual Type type() const { return QScriptFunction::C3; }
+
+private:
+    QScriptFunctionWithArgSignature m_funPtr;
+    void *m_arg;
 };
 
 namespace AST {
@@ -173,6 +202,10 @@ public:
 
     virtual QString functionName() const;
 
+    virtual int startLineNumber() const;
+
+    virtual int endLineNumber() const;
+
 private:
     AST::FunctionExpression *m_definition;
     QExplicitlySharedDataPointer<NodePool> m_astPool;
@@ -181,6 +214,8 @@ private:
 
 } // namespace QScript
 
-#endif // QT_NO_SCRIPT
-#endif
+QT_END_NAMESPACE
 
+#endif // QT_NO_SCRIPT
+
+#endif // QSCRIPTFUNCTION_P_H

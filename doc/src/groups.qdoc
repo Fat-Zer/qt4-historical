@@ -1,9 +1,40 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -185,6 +216,19 @@
     and \link signalsandslots.html Signals and Slots\endlink.
 */
 
+/*!
+    \group explicitly-shared
+    \ingroup groups
+
+    \title Explicitly Shared Classes
+    \brief Classes that use explicit sharing to manage internal data.
+
+    \keyword explicit sharing
+    \keyword explicitly shared
+
+    Unlike many of Qt's data types, which use \l{implicit sharing}, these
+    classes use explicit sharing to manage internal data.
+*/
 
 /*!
     \group geomanagement
@@ -198,6 +242,17 @@
 
 */
 
+/*!
+    \group graphicsview-api
+    \ingroup groups
+
+    \title Graphics View Classes
+    \brief Classes in the Graphics View framework for interactive applications.
+
+    These classes are provided by \l{The Graphics View Framework} for interactive
+    applications and are part of a larger collection of classes related to
+    \l{Multimedia, Graphics and Printing}.
+*/
 
 /*!
     \group helpsystem
@@ -326,11 +381,21 @@
     \group qws
     \ingroup groups
 
-    \title Qtopia Core Classes
-    \ingroup qtopiacore
-    \brief Classes that are specific to Qtopia Core (Qt for embedded Linux).
+    \title Qt for Embedded Linux Classes
+    \ingroup qt-embedded
+    \brief Classes that are specific to Qt for Embedded Linux.
 
-    These classes are relevant to \l{Qtopia Core} users.
+    These classes are relevant to \l{Qt for Embedded Linux} users.
+*/
+
+/*!
+    \group qtce
+    \ingroup groups
+
+    \title Qt on Windows CE
+    \brief Classes that are specific to Qt on Windows CE
+
+    These classes are relevant to Qt/Windows CE users.
 */
 
 /*!
@@ -349,9 +414,10 @@
     \keyword shared classes
 
     Many C++ classes in Qt use implicit data sharing to maximize
-    resource usage and minimize copying of data. The only important
-    effect is that the classes listed here \e can be passed around as
-    arguments efficiently, even though they may seem heavyweight.
+    resource usage and minimize copying. Implicitly shared classes are
+    both safe and efficient when passed as arguments, because only a
+    pointer to the data is passed around, and the data is copied only
+    if and when a function writes to it, i.e., \e {copy-on-write}.
 
     \tableofcontents
 
@@ -392,9 +458,10 @@
 
     \section1 Implicit Sharing in Detail
 
-    Implicit sharing automatically detaches the object from a shared block
-    if the object is about to change and the reference count is greater
-    than one. (This is often called "copy-on-write" or "value semantics".)
+    Implicit sharing automatically detaches the object from a shared
+    block if the object is about to change and the reference count is
+    greater than one. (This is often called \e {copy-on-write} or
+    \e {value semantics}.)
 
     An implicitly shared class has total control of its internal data. In
     any member functions that modify its data, it automatically detaches
@@ -404,20 +471,7 @@
     data in all member functions that change the internal data.
 
     Code fragment:
-    \code
-        void QPen::setStyle(Qt::PenStyle style)
-        {
-            detach();           // detach from common data
-            d->style = style;   // set the style member
-        }
-
-        void QPen::detach()
-        {
-            if (d->ref != 1) {
-                ...             // perform a deep copy
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.groups.qdoc 0
 
     \section1 List of Classes
 
@@ -431,16 +485,7 @@
     concern for the copying overhead.
 
     Example:
-    \code
-        QPixmap p1, p2;
-        p1.load("image.bmp");
-        p2 = p1;                        // p1 and p2 share data
-
-        QPainter paint;
-        paint.begin(&p2);               // cuts p2 loose from p1
-        paint.drawText(0,50, "Hi");
-        paint.end();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.groups.qdoc 1
 
     In this example, \c p1 and \c p2 share data until QPainter::begin()
     is called for \c p2, because painting a pixmap will modify it.

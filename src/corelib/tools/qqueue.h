@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 template <class T>
@@ -61,6 +63,8 @@ public:
     inline T &head() { return QList<T>::first(); }
     inline const T &head() const { return QList<T>::first(); }
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

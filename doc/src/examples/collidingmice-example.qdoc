@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example graphicsview/collidingmice
     \title Colliding Mice Example
@@ -30,9 +73,7 @@
     the Graphics View framework, and provides a light-weight
     foundation for writing your own custom items.
 
-    \quotefromfile graphicsview/collidingmice/mouse.h
-    \skipto class Mouse
-    \printuntil };
+    \snippet examples/graphicsview/collidingmice/mouse.h 0
 
     When writing a custom graphics item, you must implement
     QGraphicsItem's two pure virtual public functions: \l
@@ -53,9 +94,7 @@
     When constructing a mouse item, we first ensure that all the item's
     private variables are properly initialized:
 
-    \quotefromfile graphicsview/collidingmice/mouse.cpp
-    \skipto Mouse::Mouse()
-    \printuntil /^\}/
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 0
 
     To calculate the various components of the mouse's color, we use
     the global qrand() function which is a thread-safe version of the
@@ -75,11 +114,9 @@
     receives a timer event it will trigger \l
     {QObject::}{timerEvent()}:
 
-    \skipto timerEvent
-    \printuntil {
-    \skipto lineToCenter
-    \printuntil angle -= 0.25
-    \printline }
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 4
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 5
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 6
 
     First we ensure that the mice stays within a circle with a radius
     of 150 pixels.
@@ -88,17 +125,15 @@
     function provided by QGraphicsItem. This function maps a position
     given in \e scene coordinates, to the item's coordinate system.
 
-    \skipto dangerMice
-    \printuntil angle -= 0.5
-    \printline }
-    \printline }
-    \skipto dangerMice.size()
-    \printuntil }
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 7
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 8
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 9
+    \codeline
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 10
 
     Then we try to avoid colliding with other mice.
 
-    \skipto speed
-    \printuntil /^\}/
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 11
 
     Finally, we calculate the mouse's speed and its eye direction (for
     use when painting the mouse), and set its new position.
@@ -117,9 +152,7 @@
     functions inherited from QGraphicsItem. Let's first take a look at
     the \l {QGraphicsItem::}{boundingRect()} function:
 
-    \quotefromfile graphicsview/collidingmice/mouse.cpp
-    \skipto boundingRect()
-    \printuntil /^\}/
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 1
 
     The \l {QGraphicsItem::boundingRect()}{boundingRect()} function
     defines the outer bounds of the item as a rectangle. Note that the
@@ -127,8 +160,7 @@
     whether the item requires redrawing, so all painting must be
     restricted inside this rectangle.
 
-    \skipto paint
-    \printuntil /^\}/
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 3
 
     The Graphics View framework calls the \l
     {QGraphicsItem::paint()}{paint()} function to paint the contents
@@ -143,9 +175,7 @@
     have to do is to ensure that the QGraphicsItem::shape() function
     returns an accurate shape for our item:
 
-    \quotefromfile graphicsview/collidingmice/mouse.cpp
-    \skipto shape()
-    \printuntil /^\}/
+    \snippet examples/graphicsview/collidingmice/mouse.cpp 2
 
     Because the complexity of arbitrary shape-shape intersection grows
     with an order of magnitude when the shapes are complex, this
@@ -166,9 +196,7 @@
     scene, putting the items into the scene and creating a
     corresponding view.
 
-    \quotefromfile graphicsview/collidingmice/main.cpp
-    \skipto main
-    \printuntil qsrand
+    \snippet examples/graphicsview/collidingmice/main.cpp 0
 
     First, we create an application object and call the global
     qsrand() function to specify the seed used to generate a new
@@ -177,8 +205,7 @@
 
     Then it is time to create the scene:
 
-    \skipto scene
-    \printuntil setSceneRect
+    \snippet examples/graphicsview/collidingmice/main.cpp 1
 
     The QGraphicsScene class serves as a container for
     QGraphicsItems. It also provides functionality that lets you
@@ -196,8 +223,7 @@
     grow when items are added or moved in the scene, but it will never
     shrink).
 
-    \skipto setItemIndexMethod
-    \printline setItemIndexMethod
+    \snippet examples/graphicsview/collidingmice/main.cpp 2
 
     The item index function is used to speed up item discovery. \l
     {QGraphicsScene::NoIndex}{NoIndex} implies that item location is
@@ -209,13 +235,11 @@
     which makes use of binary search resulting in item location
     algorithms that are of an order closer to logarithmic complexity.
 
-    \skipto for
-    \printuntil }
+    \snippet examples/graphicsview/collidingmice/main.cpp 3
 
     Then we add the mice to the scene.
 
-    \skipto QGraphicsView
-    \printuntil setBackgroundBrush
+    \snippet examples/graphicsview/collidingmice/main.cpp 4
 
     To be able to view the scene we must also create a QGraphicsView
     widget. The QGraphicsView class visualizes the contents of a scene
@@ -229,8 +253,7 @@
     file names that refer to actual files on disk and file names that
     refer to the application's embedded resources.
 
-    \skipto view.setCacheMode
-    \printuntil view.setDragMode
+    \snippet examples/graphicsview/collidingmice/main.cpp 5
 
     Then we set the cache mode; QGraphicsView can cache pre-rendered
     content in a pixmap, which is then drawn onto the viewport. The
@@ -249,8 +272,7 @@
     cursor change into a pointing hand, and dragging the mouse around
     will scroll the scrollbars.
 
-    \skipto setWindowTitle
-    \printuntil /^\}/
+    \snippet examples/graphicsview/collidingmice/main.cpp 6
 
     In the end, we set the application window's title and size before
     we enter the main event loop using the QApplication::exec()

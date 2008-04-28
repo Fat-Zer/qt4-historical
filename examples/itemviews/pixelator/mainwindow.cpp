@@ -47,13 +47,16 @@
 #include "mainwindow.h"
 #include "pixeldelegate.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
+//! [0]
     currentPath = QDir::homePath();
     model = new ImageModel(this);
 
     QWidget *centralWidget = new QWidget;
 
+//! [1]
     view = new QTableView;
     view->setShowGrid(false);
     view->horizontalHeader()->hide();
@@ -61,15 +64,20 @@ MainWindow::MainWindow()
     view->horizontalHeader()->setMinimumSectionSize(1);
     view->verticalHeader()->setMinimumSectionSize(1);
     view->setModel(model);
+//! [1]
 
+//! [2]
     PixelDelegate *delegate = new PixelDelegate(this);
     view->setItemDelegate(delegate);
+//! [2]
 
+//! [3]
     QLabel *pixelSizeLabel = new QLabel(tr("Pixel size:"));
     QSpinBox *pixelSizeSpinBox = new QSpinBox;
     pixelSizeSpinBox->setMinimum(4);
     pixelSizeSpinBox->setMaximum(32);
     pixelSizeSpinBox->setValue(12);
+//! [3]
 
     QMenu *fileMenu = new QMenu(tr("&File"), this);
     QAction *openAction = fileMenu->addAction(tr("&Open..."));
@@ -93,10 +101,12 @@ MainWindow::MainWindow()
     connect(printAction, SIGNAL(triggered()), this, SLOT(printImage()));
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(showAboutBox()));
+//! [4]
     connect(pixelSizeSpinBox, SIGNAL(valueChanged(int)),
             delegate, SLOT(setPixelSize(int)));
     connect(pixelSizeSpinBox, SIGNAL(valueChanged(int)),
             this, SLOT(updateView()));
+//! [4]
 
     QHBoxLayout *controlsLayout = new QHBoxLayout;
     controlsLayout->addWidget(pixelSizeLabel);
@@ -112,7 +122,9 @@ MainWindow::MainWindow()
 
     setWindowTitle(tr("Pixelator"));
     resize(640, 480);
+//! [5]
 }
+//! [5]
 
 void MainWindow::chooseImage()
 {
@@ -141,6 +153,7 @@ void MainWindow::openImage(const QString &fileName)
 
 void MainWindow::printImage()
 {
+#ifndef QT_NO_PRINTER
     if (model->rowCount(QModelIndex())*model->columnCount(QModelIndex())
         > 90000) {
 	    QMessageBox::StandardButton answer;
@@ -211,6 +224,10 @@ void MainWindow::printImage()
         QMessageBox::information(this, tr("Printing canceled"),
             tr("The printing process was canceled."), QMessageBox::Cancel);
     }
+#else
+    QMessageBox::information(this, tr("Printing canceled"), 
+        tr("Printing is not supported on this Qt build"), QMessageBox::Cancel);
+#endif
 }
 
 void MainWindow::showAboutBox()
@@ -221,8 +238,10 @@ void MainWindow::showAboutBox()
            "of data in a simple custom model."));
 }
 
+//! [6]
 void MainWindow::updateView()
 {
     view->resizeColumnsToContents();
     view->resizeRowsToContents();
 }
+//! [6]

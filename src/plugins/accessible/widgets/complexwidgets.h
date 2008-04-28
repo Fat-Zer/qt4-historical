@@ -49,6 +49,8 @@
 #include <QtGui/qabstractitemview.h>
 #include <QtGui/qaccessible2.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_ACCESSIBILITY
 
 class QAbstractButton;
@@ -80,11 +82,12 @@ public:
     QVariant invokeMethodEx(QAccessible::Method method, int child, const QVariantList &params);
     int childCount() const;
     int indexOfChild(const QAccessibleInterface *child) const;
+    bool isValid() const;
     int navigate(RelationFlag relation, int entry, QAccessibleInterface **target) const;
     QRect rect(int child) const;
     int childAt(int x, int y) const;
 
-protected:
+//protected:
     QAbstractScrollArea *abstractScrollArea() const;
 
 private:
@@ -123,7 +126,7 @@ class QAccessibleItemRow: public QAccessibleInterface
 {
     friend class QAccessibleItemView;
 public:
-    QAccessibleItemRow(QAbstractItemView *view, const QModelIndex &index);
+    QAccessibleItemRow(QAbstractItemView *view, const QModelIndex &index = QModelIndex(), bool isHeader = false);
     QRect rect(int child) const;
     QString text(Text t, int child) const;
     void setText(Text t, int child, const QString &text);
@@ -145,12 +148,18 @@ public:
     bool doAction(int action, int child, const QVariantList &params = QVariantList());
 
     QModelIndex childIndex(int child) const;
+
+    QHeaderView *horizontalHeader() const;  //used by QAccessibleItemView
 private:
     static QAbstractItemView::CursorAction toCursorAction(Relation rel);
+    int logicalFromChild(QHeaderView *header, int child) const;
     int treeLevel() const;
+    QHeaderView *verticalHeader() const;
+    QString text_helper(int child) const;
 
     QPersistentModelIndex row;
     QPointer<QAbstractItemView> view;
+    bool m_header;
 };
 
 class QAccessibleItemView: public QAccessibleAbstractScrollArea, public QAccessibleTableInterface
@@ -171,6 +180,7 @@ public:
 
     QModelIndex childIndex(int child) const;
     int entryFromIndex(const QModelIndex &index) const;
+    bool isValid() const;
     int navigate(RelationFlag relation, int index, QAccessibleInterface **iface) const;
 
     QAccessibleInterface *accessibleAt(int row, int column);
@@ -200,6 +210,10 @@ public:
     void unselectColumn(int column);
     void cellAtIndex(int index, int *row, int *column, int *rowSpan,
                      int *columnSpan, bool *isSelected);
+
+    QHeaderView *horizontalHeader() const;
+    QHeaderView *verticalHeader() const;
+    bool isValidChildRole(QAccessible::Role role) const;
 
 protected:
     QAbstractItemView *itemView() const;
@@ -275,5 +289,7 @@ protected:
 #endif // QT_NO_COMBOBOX
 
 #endif // QT_NO_ACCESSIBILITY
+
+QT_END_NAMESPACE
 
 #endif // COMPLEXWIDGETS_H

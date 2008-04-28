@@ -70,6 +70,13 @@
 #include "qmap.h"
 #include <private/qt_mac_p.h>
 
+#ifdef Q_WS_MAC32
+#include <QuickTime/QuickTime.h>
+#include "qlibrary.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
 extern CGImageRef qt_mac_createCGImageFromQImage(const QImage &img, const QImage **imagePtr = 0); // qpaintengine_mac.cpp
 
 typedef QList<QMacPasteboardMime*> MimeList;
@@ -346,15 +353,69 @@ QList<QByteArray> QMacPasteboardMimeUnicodeText::convertFromMime(const QString &
     QList<QByteArray> ret;
     QString string = data.toString();
     if(flavor == QLatin1String("public.utf8-plain-text"))
-        ret.append(string.toLatin1());
+        ret.append(string.toUtf8());
     else if (flavor == QLatin1String("public.utf16-plain-text"))
         ret.append(QByteArray((char*)string.utf16(), string.length()*2));
     return ret;
 }
 
+class QMacPasteboardMimeHTMLText : public QMacPasteboardMime {
+public:
+    QMacPasteboardMimeHTMLText() : QMacPasteboardMime(MIME_ALL) { }
+    QString convertorName();
+
+    QString flavorFor(const QString &mime);
+    QString mimeFor(QString flav);
+    bool canConvert(const QString &mime, QString flav);
+    QVariant convertToMime(const QString &mime, QList<QByteArray> data, QString flav);
+    QList<QByteArray> convertFromMime(const QString &mime, QVariant data, QString flav);
+};
+
+QString QMacPasteboardMimeHTMLText::convertorName()
+{
+    return QLatin1String("HTML");
+}
+
+QString QMacPasteboardMimeHTMLText::flavorFor(const QString &mime)
+{
+    if (mime == QLatin1String("text/html"))
+        return QLatin1String("public.html");
+    return QString();
+}
+
+QString QMacPasteboardMimeHTMLText::mimeFor(QString flav)
+{
+    if (flav == QLatin1String("public.html"))
+        return QLatin1String("text/html");
+    return QString();
+}
+
+bool QMacPasteboardMimeHTMLText::canConvert(const QString &mime, QString flav)
+{
+    return flavorFor(mime) == flav;
+}
+
+QVariant QMacPasteboardMimeHTMLText::convertToMime(const QString &mimeType, QList<QByteArray> data, QString flavor)
+{
+    if (!canConvert(mimeType, flavor))
+        return QVariant();
+    if (data.count() > 1)
+        qWarning("QMacPasteboardMimeHTMLText: Cannot handle multiple member data");
+    return data.first();
+}
+
+QList<QByteArray> QMacPasteboardMimeHTMLText::convertFromMime(const QString &mime, QVariant data, QString flavor)
+{
+    QList<QByteArray> ret;
+    if (!canConvert(mime, flavor))
+        return ret;
+    ret.append(data.toByteArray());
+    return ret;
+}
+
+
 #ifdef Q_WS_MAC32
-#include <QuickTime/QuickTime.h>
-#include "qlibrary.h"
+
 typedef ComponentResult (*PtrGraphicsImportSetDataHandle)(GraphicsImportComponent, Handle);
 typedef ComponentResult (*PtrGraphicsImportCreateCGImage)(GraphicsImportComponent, CGImageRef*, UInt32);
 typedef ComponentResult (*PtrGraphicsExportSetInputCGImage)(GraphicsExportComponent, CGImageRef);
@@ -757,6 +818,7 @@ static bool qt_mac_openMimeRegistry(bool global, QIODevice::OpenMode mode, QFile
     }
     return file.open(mode);
 }
+
 static void qt_mac_loadMimeRegistry(QFile &file, QMap<QString, int> &registry, int &max)
 {
     file.reset();
@@ -776,7 +838,7 @@ bool QMacPasteboardMimeQt3Any::loadMimeRegistry()
         if(!qt_mac_openMimeRegistry(true, QIODevice::ReadWrite, library_file)) {
             QFile global;
             if(qt_mac_openMimeRegistry(true, QIODevice::ReadOnly, global)) {
-                ::qt_mac_loadMimeRegistry(global, mime_registry, current_max);
+                qt_mac_loadMimeRegistry(global, mime_registry, current_max);
                 global.close();
             }
             if(!qt_mac_openMimeRegistry(false, QIODevice::ReadWrite, library_file)) {
@@ -791,7 +853,7 @@ bool QMacPasteboardMimeQt3Any::loadMimeRegistry()
     if(!mime_registry_loaded.isNull() && mime_registry_loaded == fi.lastModified())
         return true;
     mime_registry_loaded = fi.lastModified();
-    ::qt_mac_loadMimeRegistry(library_file, mime_registry, current_max);
+    qt_mac_loadMimeRegistry(library_file, mime_registry, current_max);
     return true;
 }
 
@@ -900,6 +962,7 @@ void QMacPasteboardMime::initialize()
 #endif
         new QMacPasteboardMimeUnicodeText;
         new QMacPasteboardMimePlainText;
+        new QMacPasteboardMimeHTMLText;
         new QMacPasteboardMimeFileUri;
 
         //make sure our "non-standard" types are always last! --Sam
@@ -1034,3 +1097,5 @@ QList<QMacPasteboardMime*> QMacPasteboardMime::all(uchar t)
   All subclasses must reimplement this pure virtual function.
 */
 
+
+QT_END_NAMESPACE

@@ -42,16 +42,16 @@
 ****************************************************************************/
 
 /*!
-    \page qtopiacore-architecture.html
+    \page qt-embedded-architecture.html
 
-    \title Qtopia Core Architecture
-    \ingroup qtopiacore
+    \title Qt for Embedded Linux Architecture
+    \ingroup qt-embedded
 
-    A \l {Qtopia Core} application requires a server application to be
-    running, or to be the server application itself. Any \l {Qtopia
-    Core} application can act as the server. When more than one
-    application are running, the subsequent applications connect to
-    the existing server application as clients.
+    A \l{Qt for Embedded Linux} application requires a server
+    application to be running, or to be the server application itself.
+    Any \l{Qt for Embedded Linux} application can act as the server.
+    When more than one application are running, the subsequent
+    applications connect to the existing server application as clients.
 
     The server and client processes have different responsibilities:
     The server process manages pointer handling, character input, and
@@ -64,7 +64,7 @@
     instances of the QWSClient class. On each side, there are several
     classes performing the various operations.
 
-    \image qtopiacore-architecture2.png
+    \image qt-embedded-architecture2.png
 
     All system generated events, including keyboard and mouse events,
     are passed to the server application which then propagates the
@@ -75,9 +75,10 @@
     putting the contents of the memory onto the screen. But when the
     hardware is known and well defined, as is often the case with
     software for embedded devices, it may be useful for the clients to
-    manipulate and control the underlying hardware directly. \l
-    {Qtopia Core} provides two different approaches to achieve this
-    behavior, see the graphics rendering section below for details.
+    manipulate and control the underlying hardware directly.
+    \l{Qt for Embedded Linux} provides two different approaches to
+    achieve this behavior, see the graphics rendering section below for
+    details.
 
     \tableofcontents
 
@@ -95,7 +96,7 @@
     request. Finally, the server forwards the event, encapsulated by
     an instance of the QWSEvent class, to the appropiate client.
 
-    \image qtopiacore-clientservercommunication.png
+    \image qt-embedded-clientservercommunication.png
 
     If an input method is installed, it is used as a filter between
     the server and the client application. Derive from the
@@ -112,7 +113,7 @@
     \row
     \o
 
-    \image qtopiacore-client.png
+    \image qt-embedded-client.png
 
     The server communicates with the client applications over the UNIX
     domain socket. You can retrieve direct access to all the events a
@@ -141,28 +142,28 @@
     starts running, using Qt's \l {How to Create Qt Plugins}{plugin
     system}.
 
-    \image qtopiacore-pointerhandlinglayer.png
+    \image qt-embedded-pointerhandlinglayer.png
 
     A mouse driver receives mouse events from the device and
     encapsulates each event with an instance of the QWSEvent class
     which it then passes to the server.
 
-    \l {Qtopia Core} provides ready-made drivers for several mouse
-    protocols, see the \l {Qtopia Core Pointer Handling}{pointer
+    \l{Qt for Embedded Linux} provides ready-made drivers for several mouse
+    protocols, see the \l{Qt for Embedded Linux Pointer Handling}{pointer
     handling} documentation for details. Custom mouse drivers can be
     implemented by subclassing the QWSMouseHandler class and creating
-    a mouse driver plugin. \l {Qtopia Core}'s implementation of the
+    a mouse driver plugin. The default implementation of the
     QMouseDriverFactory class will automatically detect the plugin,
     loading the driver into the server application at runtime.
 
-    In addition to the generic mouse handler, \l {Qtopia Core}
+    In addition to the generic mouse handler, \l{Qt for Embedded Linux}
     provides a calibrated mouse handler. Use the
     QWSCalibratedMouseHandler class as the base class when the system
     device does not have a fixed mapping between device and screen
     coordinates and/or produces noisy events, e.g. a touchscreen.
 
-    See also: \l {Qtopia Core Pointer Handling} and \l {How to Create
-    Qt Plugins}.
+    See also: \l{Qt for Embedded Linux Pointer Handling} and
+    \l{How to Create Qt Plugins}.
 
     \section1 Character Input Layer
 
@@ -177,22 +178,21 @@
     it starts running, using Qt's \l {How to Create Qt Plugins}{plugin
     system}.
 
-    \image qtopiacore-characterinputlayer.png
+    \image qt-embedded-characterinputlayer.png
 
     A keyboard driver receives keyboard events from the device and
     encapsulates each event with an instance of the QWSEvent class
     which it then passes to the server.
 
-    \l {Qtopia Core} provides ready-made drivers for several keyboard
-    protocols, see the \l {Qtopia Core Character Input}{character
+    \l{Qt for Embedded Linux} provides ready-made drivers for several keyboard
+    protocols, see the \l {Qt for Embedded Linux Character Input}{character
     input} documentation for details. Custom keyboard drivers can be
     implemented by subclassing the QWSKeyboardHandler class and
-    creating a keyboard driver plugin. \l {Qtopia Core}'s
-    implementation of the QKbdDriverFactory class will automatically
-    detect the plugin, loading the driver into the server application
-    at runtime.
+    creating a keyboard driver plugin. The default implementation of the
+    QKbdDriverFactory class will automatically detect the plugin, loading the
+    driver into the server application at run-time.
 
-    See also: \l {Qtopia Core Character Input} and \l {How to Create
+    See also: \l{Qt for Embedded Linux Character Input} and \l {How to Create
     Qt Plugins}.
 
     \section1  Graphics Rendering
@@ -204,20 +204,20 @@
         \o QDecorationFactory
     \endlist
 
-    \l {Qtopia Core}'s default behavior is for each client to render
-    its widgets as well as its decorations into memory, while the
-    server copies the memory content to the device's framebuffer.
+    The default behavior is for each client to render its widgets as well
+    as its decorations into memory, while the server copies the memory content
+    to the device's framebuffer.
 
     Whenever a client receives an event that alters any of its
     widgets, the application updates the relevant parts of its memory
     buffer:
 
-    \image qtopiacore-clientrendering.png
+    \image qt-embedded-clientrendering.png
 
     The decoration is loaded by the client application when it starts
     running (using Qt's \l {How to Create Qt Plugins}{plugin system}),
     and can be customized by deriving from the QDecoration class and
-    creating a decoration plugin. \l {Qtopia Core}'s implementation of
+    creating a decoration plugin. The default implementation of
     the QDecorationFactory class will automatically detect the plugin,
     loading the decoration into the application at runtime. Call the
     QApplication::qwsSetDecoration() function to actually apply the
@@ -234,7 +234,7 @@
     attribute for each widget, the other is to use the QDirectPainter
     class to reserve a region of the framebuffer.
 
-    \image qtopiacore-setwindowattribute.png
+    \image qt-embedded-setwindowattribute.png
 
     By setting the Qt::WA_PaintOnScreen attribute, the application
     renders the widget directly onto the screen and the affected
@@ -244,7 +244,7 @@
     widgets directly on screen, it might be easier to set the
     QT_ONSCREEN_PAINT environment variable.
 
-    \image qtopiacore-reserveregion.png
+    \image qt-embedded-reserveregion.png
 
     Using QDirectPainter, on the other hand, provides a complete
     control over the reserved region, i.e., the screen driver will
@@ -263,7 +263,7 @@
     {QScreen::}{base()} function to retrieve a pointer to the
     framebuffer.
 
-    Note that \l {Qtopia Core} also provides the QWSEmbedWidget class,
+    Note that \l{Qt for Embedded Linux} also provides the QWSEmbedWidget class,
     making it possible to embed the reserved region (i.e., the
     QDirectPainter object) in a regular widget.
 
@@ -285,16 +285,16 @@
     content of the memory to the screen.
 
     The screen driver is loaded by the server application when it
-    starts running, using Qt's plugin system. \l {Qtopia Core}
+    starts running, using Qt's plugin system. \l{Qt for Embedded Linux}
     provides ready-made drivers for several screen protocols, see the
-    \l {Qtopia Core Display Management}{display management}
+    \l{Qt for Embedded Linux Display Management}{display management}
     documentation for details. Custom screen drivers can be
     implemented by subclassing the QScreen class and creating a screen
-    driver plugin. \l {Qtopia Core}'s implementation of the
-    QScreenDriverFactory class will automatically detect the plugin,
-    loading the driver into the server application at runtime.
+    driver plugin. The default implementation of the QScreenDriverFactory
+    class will automatically detect the plugin, loading the driver into
+    the server application at run-time.
 
-    \image qtopiacore-drawingonscreen.png
+    \image qt-embedded-drawingonscreen.png
 
     To locate the relevant parts of memory, the driver is provided
     with the list of top-level windows that intersect with the given
@@ -310,11 +310,11 @@
     \row
     \o
 
-    In \l {Qtopia Core}, painting is a pure software implementation,
+    In \l{Qt for Embedded Linux}, painting is a pure software implementation,
     but (starting with Qt 4.2) it is possible to add an accelerated
     graphics driver to take advantage of available hardware resources.
 
-    \image qtopiacore-accelerateddriver.png
+    \image qt-embedded-accelerateddriver.png
 
     The clients render each window onto a corresponding window surface
     object using Qt's paint system, and then store the surface in
@@ -323,18 +323,18 @@
     above.
 
     To add an accelerated graphics driver you must create a custom
-    screen and implement a custom raster paint engine (\l {Qtopia
-    Core} uses a raster-based paint engine to implement the painting
-    operations). Then you must create a custom paint device that is
-    aware of your paint engine, a custom window surface that knows
-    about your paint device, and make your screen able to recognize
-    your window surface.
+    screen and implement a custom raster paint engine
+    (\l{Qt for Embedded Linux} uses a raster-based paint engine to
+    implement the painting operations). Then you must create a custom
+    paint device that is aware of your paint engine, a custom window
+    surface that knows about your paint device, and make your screen
+    able to recognize your window surface.
 
-    See the \l {Adding an Accelerated Graphics Driver in Qtopia
-    Core}{accelerated graphics driver} documentation for details.
+    See the \l{Adding an Accelerated Graphics Driver to Qt for Embedded Linux}
+    {accelerated graphics driver} documentation for details.
 
     \endtable
 
-    See also: \l {Qtopia Core Display Management} and \l {How to
-    Create Qt Plugins}.
+    See also: \l{Qt for Embedded Linux Display Management} and
+    \l{How to Create Qt Plugins}.
 */

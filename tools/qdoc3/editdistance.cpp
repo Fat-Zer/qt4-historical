@@ -47,6 +47,8 @@
 
 #include "editdistance.h"
 
+QT_BEGIN_NAMESPACE
+
 int editDistance( const QString& s, const QString& t )
 {
 #define D( i, j ) d[(i) * n + (j)]
@@ -107,3 +109,5 @@ QString nearestName( const QString& actual, const QSet<QString>& candidates )
 	return "";
     }
 }
+
+QT_END_NAMESPACE

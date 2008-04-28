@@ -49,6 +49,8 @@
 #include <QtGui/qevent.h>
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class QAction;
 class QMainWindow;
 
@@ -60,7 +62,7 @@ class WidgetEditorTool: public QDesignerFormWindowToolInterface
 {
     Q_OBJECT
 public:
-    WidgetEditorTool(FormWindow *formWindow);
+    explicit WidgetEditorTool(FormWindow *formWindow);
     virtual ~WidgetEditorTool();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -98,5 +100,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TOOL_WIDGETEDITOR_H

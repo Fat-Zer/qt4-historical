@@ -63,6 +63,12 @@
 
 #include <QtCore/qobjectdefs.h>
 
+#if defined Q_CC_MSVC && !defined Q_CC_MSVC_NET
+#include <QtCore/qnumeric.h>
+#endif
+
+QT_BEGIN_NAMESPACE
+
 namespace QScript {
     namespace AST {
     class Node;
@@ -80,6 +86,7 @@ public:
 
     static inline QScriptContextPrivate *get(QScriptContext *q);
     static inline const QScriptContextPrivate *get(const QScriptContext *q);
+    static QScriptContext *get(QScriptContextPrivate *d);
 
     static inline QScriptContext *create();
 
@@ -93,6 +100,10 @@ public:
 
     inline void throwException();
     inline bool hasUncaughtException() const;
+    const QScriptInstruction *findExceptionHandler(const QScriptInstruction *ip) const;
+    const QScriptInstruction *findExceptionHandlerRecursive(
+        const QScriptInstruction *ip, QScriptContextPrivate **handlerContext) const;
+    QScriptContextPrivate *exceptionHandlerContext() const;
     inline void recover();
     QStringList backtrace() const;
 
@@ -114,6 +125,10 @@ public:
                 return false;
 
             case QScript::NumberType:
+#if defined Q_CC_MSVC && !defined Q_CC_MSVC_NET
+                if (qIsNaN(lhs.m_number_value) || qIsNaN(rhs.m_number_value))
+                    return false;
+#endif
                 return lhs.m_number_value < rhs.m_number_value;
 
             case QScript::IntegerType:
@@ -170,6 +185,9 @@ public:
     QScriptValueImpl throwError(QScriptContext::Error error, const QString &text);
     QScriptValueImpl throwError(const QString &text);
 
+#ifndef Q_SCRIPT_NO_EVENT_NOTIFY
+    qint64 scriptId() const;
+#endif
     QString fileName() const;
     QString functionName() const;
     void setDebugInformation(QScriptValueImpl *error) const;
@@ -230,8 +248,12 @@ public:
     bool catching;
     bool m_calledAsConstructor;
 
+    int calleeMetaIndex;
+
     QScriptContext *q_ptr;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT
 #endif

@@ -1,11 +1,13 @@
 TEMPLATE      = subdirs
 SUBDIRS       = basicdrawing \
                 concentriccircles \
-		fontsampler \
                 imagecomposition \
                 painterpaths \
                 svgviewer \
                 transformations
+
+!wince*: SUBDIRS += fontsampler
+
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/painting

@@ -46,10 +46,13 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
 class QTextEdit;
+QT_END_NAMESPACE
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -100,5 +103,6 @@ private:
     QAction *aboutAct;
     QAction *aboutQtAct;
 };
+//! [0]
 
 #endif

@@ -63,6 +63,28 @@
 #include "QtCore/qhash.h"
 #include "private/qwidget_p.h"
 
+#ifndef QT_OPENGL_ES_CL
+#define q_vertexType float
+#define q_vertexTypeEnum GL_FLOAT
+#define f2vt(f)     (f)
+#define vt2f(x)     (x)
+#else
+#define FLOAT2X(f)      ((int) ( (f) * (65536)))
+#define X2FLOAT(x)      ((float)(x) / 65536.0f)
+#define f2vt(f)     FLOAT2X(f)
+#define vt2f(x)     X2FLOAT(x)
+#define q_vertexType GLfixed
+#define q_vertexTypeEnum GL_FIXED
+#endif //QT_OPENGL_ES_CL
+
+#ifdef QT_OPENGL_ES
+QT_BEGIN_INCLUDE_NAMESPACE
+#include <GLES/egl.h>
+QT_END_INCLUDE_NAMESPACE
+#endif
+
+QT_BEGIN_NAMESPACE
+
 class QGLContext;
 class QGLOverlayWidget;
 class QPixmap;
@@ -71,7 +93,9 @@ class QPixmap;
 #   define old_qDebug qDebug
 #   undef qDebug
 # endif
+QT_BEGIN_INCLUDE_NAMESPACE
 # include <AGL/agl.h>
+QT_END_INCLUDE_NAMESPACE
 # ifdef old_qDebug
 #   undef qDebug
 #   define qDebug QT_QDEBUG_MACRO
@@ -81,12 +105,13 @@ class QMacWindowChangeEvent;
 #endif
 
 #ifdef Q_WS_QWS
-#include <GLES/egl.h>
 class QGLDirectPainter;
 class QWSGLWindowSurface;
 #endif
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <QtOpenGL/private/qglextensions_p.h>
+QT_END_INCLUDE_NAMESPACE
 
 class QGLFormatPrivate
 {
@@ -185,7 +210,8 @@ public:
     bool update;
     AGLPixelFormat tryFormat(const QGLFormat &format);
 #endif
-#elif defined(Q_WS_QWS)
+#endif
+#if defined(QT_OPENGL_ES)
     EGLDisplay dpy;
     EGLContext cx;
     EGLConfig  config;
@@ -206,12 +232,12 @@ public:
     QGLExtensionFuncs extensionFuncs;
 
 #ifdef Q_WS_WIN
-    static inline QGLExtensionFuncs& qt_get_extension_funcs(QGLContext *ctx) { return ctx->d_ptr->extensionFuncs; }
+    static inline QGLExtensionFuncs& qt_get_extension_funcs(const QGLContext *ctx) { return ctx->d_ptr->extensionFuncs; }
 #endif
 
 #if defined(Q_WS_X11) || defined(Q_WS_MAC) || defined(Q_WS_QWS)
     static QGLExtensionFuncs qt_extensionFuncs;
-    static inline QGLExtensionFuncs& qt_get_extension_funcs(QGLContext *) { return qt_extensionFuncs; }
+    static inline QGLExtensionFuncs& qt_get_extension_funcs(const QGLContext *) { return qt_extensionFuncs; }
 #endif
 
 };
@@ -229,36 +255,6 @@ public:
 Q_SIGNALS:
     void aboutToDestroyContext(const QGLContext *context);
 };
-
-class QGLProxy
-{
-public:
-    QGLSignalProxy *pointer;
-    bool destroyed;
-
-    inline ~QGLProxy()
-    {
-        delete pointer;
-        pointer = 0;
-        destroyed = true;
-    }
-
-    static QGLSignalProxy *signalProxy()
-    {
-#if defined Q_OS_HPUX && defined Q_CC_HPACC
-        static QGLProxy this_proxy; // <- workaround for aCC bug.
-#else
-        static QGLProxy this_proxy = { 0 , false };
-#endif
-        if (!this_proxy.pointer && !this_proxy.destroyed) {
-            QGLSignalProxy *x = new QGLSignalProxy;
-            if (!q_atomic_test_and_set_ptr(&this_proxy.pointer, 0, x))
-                delete x;
-        }
-        return this_proxy.pointer;
-    }
-};
-
 
 // GL extension definitions
 class QGLExtensions {
@@ -330,14 +326,29 @@ public:
         }
     }
 
+    void replaceShare(const QGLContext *oldContext, const QGLContext *newContext) {
+        QGLSharingHash::iterator it = reg.begin();
+        while (it != reg.end()) {
+            if (it.key() == oldContext)
+                reg.insert(newContext, it.value());
+            else if (it.value() == oldContext)
+                reg.insert(it.key(), newContext);
+            ++it;
+        }
+        removeShare(oldContext);
+    }
+
 private:
     QGLSharingHash reg;
 };
 
-extern QGLShareRegister* qgl_share_reg();
+extern Q_OPENGL_EXPORT QGLShareRegister* qgl_share_reg();
 
 #ifdef Q_WS_QWS
 class QOpenGLPaintEngine;
 extern QOpenGLPaintEngine* qt_qgl_paint_engine();
 #endif
+
+QT_END_NAMESPACE
+
 #endif // QGL_P_H

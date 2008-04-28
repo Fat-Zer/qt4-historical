@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PRINTER
@@ -73,7 +75,9 @@ public:
         PrintToFile             = 0x0001,
         PrintSelection          = 0x0002,
         PrintPageRange          = 0x0004,
-        PrintCollateCopies      = 0x0010
+        PrintShowPageSize       = 0x0008,
+        PrintCollateCopies      = 0x0010,
+        DontUseSheet            = 0x0020
     };
 
     Q_DECLARE_FLAGS(PrintDialogOptions, PrintDialogOption)
@@ -88,6 +92,8 @@ public:
     void setEnabledOptions(PrintDialogOptions options);
     PrintDialogOptions enabledOptions() const;
     bool isOptionEnabled(PrintDialogOption option) const;
+
+    void setOptionTabs(const QList<QWidget*> &tabs);
 
     void setPrintRange(PrintRange range);
     PrintRange printRange() const;
@@ -114,6 +120,8 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractPrintDialog::PrintDialogOptions)
 
 #endif // QT_NO_PRINTER
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

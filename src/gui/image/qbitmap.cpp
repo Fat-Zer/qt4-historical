@@ -42,13 +42,13 @@
 ****************************************************************************/
 
 #include "qbitmap.h"
-#include "qpixmap_p.h"
+#include "qpixmapdata_p.h"
 #include "qimage.h"
 #include "qvariant.h"
 #include <qpainter.h>
-#if defined(Q_WS_X11)
-#include <private/qt_x11_p.h>
-#endif
+#include <private/qpixmapdatafactory_p.h>
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QBitmap
@@ -101,7 +101,7 @@
 */
 
 QBitmap::QBitmap()
-    : QPixmap(QSize(0, 0), BitmapType)
+    : QPixmap(QSize(0, 0), QPixmapData::BitmapType)
 {
 }
 
@@ -115,7 +115,7 @@ QBitmap::QBitmap()
 */
 
 QBitmap::QBitmap(int w, int h)
-    : QPixmap(QSize(w, h), BitmapType)
+    : QPixmap(QSize(w, h), QPixmapData::BitmapType)
 {
 }
 
@@ -127,7 +127,7 @@ QBitmap::QBitmap(int w, int h)
 */
 
 QBitmap::QBitmap(const QSize &size)
-    : QPixmap(size, BitmapType)
+    : QPixmap(size, QPixmapData::BitmapType)
 {
 }
 
@@ -172,7 +172,7 @@ QBitmap::QBitmap(const QPixmap &pixmap)
 */
 
 QBitmap::QBitmap(const QString& fileName, const char *format)
-    : QPixmap(QSize(0, 0), BitmapType)
+    : QPixmap(QSize(0, 0), QPixmapData::BitmapType)
 {
     load(fileName, format, Qt::MonoOnly);
 }
@@ -253,24 +253,11 @@ QBitmap QBitmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
 {
     if (image.isNull())
         return QBitmap();
+
     QImage img = image.convertToFormat(QImage::Format_MonoLSB, flags);
-#if defined (Q_WS_WIN) || defined (Q_WS_QWS)
-    QBitmap bm;
-    bm.data->image = img;
 
-    // Swap colors to match so that default config draws more correctly.
-    // black bits -> black pen in QPainter
-    if (image.numColors() == 2 && qGray(image.color(0)) < qGray(image.color(1))) {
-        QRgb color0 = image.color(0);
-        QRgb color1 = image.color(1);
-        bm.data->image.setColor(0, color1);
-        bm.data->image.setColor(1, color0);
-        bm.data->image.invertPixels();
-    }
-    return bm;
-#elif defined(Q_WS_X11)
-    QBitmap bm;
-    // make sure image.color(0) == Qt::color0 (white) and image.color(1) == Qt::color1 (black)
+    // make sure image.color(0) == Qt::color0 (white)
+    // and image.color(1) == Qt::color1 (black)
     const QRgb c0 = QColor(Qt::black).rgb();
     const QRgb c1 = QColor(Qt::white).rgb();
     if (img.color(0) == c0 && img.color(1) == c1) {
@@ -279,53 +266,10 @@ QBitmap QBitmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
         img.setColor(1, c0);
     }
 
-    char  *bits;
-    uchar *tmp_bits;
-    int w = img.width();
-    int h = img.height();
-    int bpl = (w+7)/8;
-    int ibpl = img.bytesPerLine();
-    if (bpl != ibpl) {
-        tmp_bits = new uchar[bpl*h];
-        bits = (char *)tmp_bits;
-        uchar *p, *b;
-        int y;
-        b = tmp_bits;
-        p = img.scanLine(0);
-        for (y = 0; y < h; y++) {
-            memcpy(b, p, bpl);
-            b += bpl;
-            p += ibpl;
-        }
-    } else {
-        bits = (char *)img.bits();
-        tmp_bits = 0;
-    }
-    bm.data->hd = (Qt::HANDLE)XCreateBitmapFromData(bm.data->xinfo.display(),
-                                                    RootWindow(bm.data->xinfo.display(), bm.data->xinfo.screen()),
-                                                    bits, w, h);
-
-#ifndef QT_NO_XRENDER
-    if (X11->use_xrender)
-        bm.data->picture = XRenderCreatePicture(X11->display, bm.data->hd,
-                                                XRenderFindStandardFormat(X11->display, PictStandardA1), 0, 0);
-#endif // QT_NO_XRENDER
-
-    if (tmp_bits)                                // Avoid purify complaint
-        delete [] tmp_bits;
-    bm.data->w = w;  bm.data->h = h;  bm.data->d = 1;
-
-    return bm;
-#else
-    const QRgb c0 = QColor(Qt::black).rgb();
-    const QRgb c1 = QColor(Qt::white).rgb();
-    if (img.color(0) == c0 && img.color(1) == c1) {
-        img.invertPixels();
-        img.setColor(0, c1);
-        img.setColor(1, c0);
-    }
-    return QBitmap(QPixmap::fromImage(img, flags|Qt::MonoOnly));
-#endif
+    QPixmapDataFactory *f = QPixmapDataFactory::instance();
+    QPixmapData *d = f->create(QPixmapData::BitmapType);
+    d->fromImage(img, flags | Qt::MonoOnly);
+    return QPixmap(d);
 }
 
 /*!
@@ -427,10 +371,7 @@ QBitmap QBitmap::transformed(const QMatrix &matrix) const
     QImage, the data has to be byte aligned.
 
     Example (creates an arrow bitmap):
-    \code
-        uchar arrow_bits[] = { 0x3f, 0x1f, 0x0f, 0x1f, 0x3b, 0x71, 0xe0, 0xc0 };
-        QBitmap bm(8, 8, arrow_bits, true);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qbitmap.cpp 0
     \endomit
 */
 
@@ -454,3 +395,5 @@ QBitmap QBitmap::transformed(const QMatrix &matrix) const
     use QImage::Format_Mono.
 */
 #endif
+
+QT_END_NAMESPACE

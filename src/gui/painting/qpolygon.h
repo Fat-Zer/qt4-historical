@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QMatrix;
@@ -94,6 +96,14 @@ inline QPolygon::QPolygon(int asize) : QVector<QPoint>(asize) {}
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPolygon &);
+#endif
+
+/*****************************************************************************
+  QPolygon stream functions
+ *****************************************************************************/
+#ifndef QT_NO_DATASTREAM
+Q_GUI_EXPORT QDataStream &operator<<(QDataStream &stream, const QPolygon &polygon);
+Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QPolygon &polygon);
 #endif
 
 /*****************************************************************************
@@ -157,6 +167,8 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QPolygonF &array);
 
 inline void QPolygonF::translate(qreal dx, qreal dy)
 { translate(QPointF(dx, dy)); }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

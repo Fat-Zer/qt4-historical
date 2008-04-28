@@ -71,6 +71,8 @@
 #include <qdesktopwidget.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*****************************************************************************
   QOpenGL debug facilities
  *****************************************************************************/
@@ -604,26 +606,6 @@ QRegion qt_mac_get_widget_rgn(const QWidget *widget)
     return ret;
 }
 
-bool QGLWidget::event(QEvent *e)
-{
-    Q_D(QGLWidget);
-    if (e->type() == QEvent::MacGLWindowChange
-#if 0 //(MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-            && ((QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5 && isWindow())
-                || QSysInfo::MacintoshVersion <= QSysInfo::MV_10_4)
-#endif
-        ) {
-        if (d->needWindowChange) {
-            d->needWindowChange = false;
-            d->glcx->updatePaintDevice();
-            update();
-        }
-        return true;
-    }
-
-    return QWidget::event(e);
-}
-
 void QGLWidget::setMouseTracking(bool enable)
 {
     QWidget::setMouseTracking(enable);
@@ -718,7 +700,7 @@ void QGLWidgetPrivate::init(QGLContext *context, const QGLWidget* shareWidget)
 
 #if 0
     // overlays are not supported by the GL drivers on the Mac..
-    // ### remove all overlay code for Qt 5.0
+    // ### Qt 5: remove all overlay code
     if(q->isValid() && glcx->format().hasOverlay()) {
         olcx = new QGLContext(QGLFormat::defaultOverlayFormat(), q);
         if(!olcx->create(shareWidget ? shareWidget->overlayContext() : 0)) {
@@ -727,7 +709,7 @@ void QGLWidgetPrivate::init(QGLContext *context, const QGLWidget* shareWidget)
             glcx->d_func()->glFormat.setOverlay(false);
         }
     }
-#endif    
+#endif
     //updatePaintDevice();
 }
 
@@ -785,3 +767,5 @@ void QGLExtensions::init()
 }
 
 #endif
+
+QT_END_NAMESPACE

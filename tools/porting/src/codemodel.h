@@ -53,6 +53,8 @@
 #include <QMap>
 #include <QHash>
 
+QT_BEGIN_NAMESPACE
+
 namespace CodeModel
 {
 
@@ -771,5 +773,7 @@ T *Create(TypedPool<CodeModel::Item> *p)
 }
 
 } // namespace CodeModel
+
+QT_END_NAMESPACE
 
 #endif // CODEMODEL_H

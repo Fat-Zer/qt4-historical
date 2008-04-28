@@ -46,6 +46,8 @@
 
 #include "winmakefile.h"
 
+QT_BEGIN_NAMESPACE
+
 class MingwMakefileGenerator : public Win32MakefileGenerator
 {
 public:
@@ -81,5 +83,7 @@ private:
 
 inline MingwMakefileGenerator::~MingwMakefileGenerator()
 { }
+
+QT_END_NAMESPACE
 
 #endif // MINGW_MAKE_H

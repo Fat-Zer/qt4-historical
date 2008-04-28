@@ -59,6 +59,8 @@
 #include <QtCore/qshareddata.h>
 #include <string.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript {
 
 class MemoryPool : public QSharedData
@@ -114,5 +116,6 @@ private:
 
 } // namespace QScript
 
-#endif
+QT_END_NAMESPACE
 
+#endif

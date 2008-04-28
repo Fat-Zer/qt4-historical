@@ -66,6 +66,8 @@
 #include <sys/select.h>
 #endif
 #include <unistd.h>
+
+QT_BEGIN_NAMESPACE
 #if !defined(_POSIX_MONOTONIC_CLOCK)
 #  define _POSIX_MONOTONIC_CLOCK -1
 #endif
@@ -116,7 +118,7 @@ struct QTimerInfo {
 
 class QTimerInfoList : public QList<QTimerInfo*>
 {
-#if (_POSIX_MONOTONIC_CLOCK-0 <= 0)
+#if (_POSIX_MONOTONIC_CLOCK-0 <= 0) || defined(QT_BOOTSTRAPPED)
     bool useMonotonicTimers;
 
     timeval previousTime;
@@ -237,8 +239,10 @@ public:
     // pending socket notifiers list
     QSockNotType::List sn_pending_list;
 
-    QAtomic wakeUps;
+    QAtomicInt wakeUps;
     bool interrupt;
 };
+
+QT_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_UNIX_P_H

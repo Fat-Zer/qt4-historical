@@ -61,6 +61,8 @@
 #include <QtGui/QWidget>
 #include <QtGui/QSizePolicy>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 class QDESIGNER_SHARED_EXPORT Spacer: public QWidget
@@ -68,19 +70,19 @@ class QDESIGNER_SHARED_EXPORT Spacer: public QWidget
     Q_OBJECT
 
     Q_ENUMS(SizeType)
-
+    // Special hack: Make name appear as "spacer name"
+    Q_PROPERTY(QString spacerName  READ objectName WRITE setObjectName)
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(QSizePolicy::Policy sizeType READ sizeType WRITE setSizeType)
-    Q_PROPERTY(QSize sizeHint READ sizeHint WRITE setSizeHint DESIGNABLE true STORED true)
+    Q_PROPERTY(QSize sizeHint READ sizeHintProperty WRITE setSizeHintProperty DESIGNABLE true STORED true)
 
 public:
-
     Spacer(QWidget *parent = 0);
 
-    QSize minimumSize() const;
-
     QSize sizeHint() const;
-    void setSizeHint(const QSize &s);
+
+    QSize sizeHintProperty() const;
+    void setSizeHintProperty(const QSize &s);
 
     QSizePolicy::Policy sizeType() const;
     void setSizeType(QSizePolicy::Policy t);
@@ -89,7 +91,9 @@ public:
     Qt::Orientation orientation() const;
 
     void setOrientation(Qt::Orientation o);
-    void setInteraciveMode(bool b) { interactive = b; };
+    void setInteractiveMode(bool b) { m_interactive = b; };
+
+    virtual bool event(QEvent *e);
 
 protected:
     void paintEvent(QPaintEvent *e);
@@ -97,10 +101,19 @@ protected:
     void updateMask();
 
 private:
+    bool isInLayout() const;
+    void updateToolTip();
+
+    const QSize m_SizeOffset;
     QDesignerFormWindowInterface *m_formWindow;
-    Qt::Orientation orient;
-    bool interactive;
-    QSize sh;
+    Qt::Orientation m_orientation;
+    bool m_interactive;
+    // Cache information about 'being in layout' which is expensive to calculate.
+    enum LayoutState { InLayout, OutsideLayout, UnknownLayoutState };
+    mutable LayoutState m_layoutState;
+    QSize m_sizeHint;
 };
+
+QT_END_NAMESPACE
 
 #endif // SPACER_WIDGET_H

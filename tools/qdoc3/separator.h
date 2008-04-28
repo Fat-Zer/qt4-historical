@@ -50,6 +50,10 @@
 
 #include <qstring.h>
 
+QT_BEGIN_NAMESPACE
+
 QString separator( int index, int count );
+
+QT_END_NAMESPACE
 
 #endif

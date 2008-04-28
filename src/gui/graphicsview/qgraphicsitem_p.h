@@ -59,6 +59,8 @@
 
 #if !defined(QT_NO_GRAPHICSVIEW) || (QT_EDITION & QT_MODULE_GRAPHICSVIEW) != QT_MODULE_GRAPHICSVIEW
 
+QT_BEGIN_NAMESPACE
+
 class Q_AUTOTEST_EXPORT QGraphicsItemPrivate
 {
     Q_DECLARE_PUBLIC(QGraphicsItem)
@@ -66,7 +68,11 @@ public:
     enum Extra {
         ExtraTransform,
         ExtraToolTip,
-        ExtraCursor
+        ExtraCursor,
+        ExtraPixmapKey,
+        ExtraInvalidateRect,
+        ExtraMaxDeviceCoordCacheSize,
+        ExtraBoundingRegionGranularity
     };
 
     enum AncestorFlag {
@@ -93,8 +99,10 @@ public:
         hasTransform = 0;
         hasCursor = 0;
         ancestorFlags = 0;
+        cacheMode = 0;
+        hasBoundingRegionGranularity = 0;
         flags = 0;
-        pad = 0;
+        isWidget = 0;
     }
 
     inline virtual ~QGraphicsItemPrivate()
@@ -109,6 +117,8 @@ public:
 
     void setVisibleHelper(bool newVisible, bool explicitly, bool update = true);
     void setEnabledHelper(bool newEnabled, bool explicitly, bool update = true);
+    void updateHelper(const QRectF &rect = QRectF(), bool force = false);
+    void fullUpdateHelper();
 
     inline QVariant extra(Extra type) const
     {
@@ -180,11 +190,15 @@ public:
     quint32 hasTransform : 1;
     quint32 hasCursor : 1;
     quint32 ancestorFlags : 3;
-    quint32 flags : 11;
-    quint32 pad : 1;
+    quint32 cacheMode : 2;
+    quint32 hasBoundingRegionGranularity : 1;
+    quint32 flags : 8;
+    quint32 isWidget : 1;
 
     QGraphicsItem *q_ptr;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_GRAPHICSVIEW
 

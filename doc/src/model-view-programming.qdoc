@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page model-view-programming.html
     \nextpage An Introduction to Model/View Programming
@@ -73,13 +116,13 @@
     Smalltalk that is often used when building user interfaces.
     In \l{Design Patterns}, Gamma et al. write:
 
-    \quote
+    \quotation
     MVC consists of three kinds of objects. The Model is the application
     object, the View is its screen presentation, and the Controller defines
     the way the user interface reacts to user input. Before MVC, user
     interface designs tended to lump these objects together. MVC decouples
     them to increase flexibility and reuse.
-    \endquote
+    \endquotation
 
     If the view and the controller objects are combined, the result is
     the model/view architecture. This still separates the way that data
@@ -281,15 +324,13 @@
     way to use a model. The construction and use of the model is
     performed from within a single \c main() function:
 
-    \quotefromfile snippets/shareddirmodel/main.cpp
-    \skipto int main
-    \printuntil QDirModel
+    \snippet doc/src/snippets/shareddirmodel/main.cpp 0
 
     The model is set up to use data from a default directory. We create two
     views so that we can examine the items held in the model in two
     different ways:
 
-    \printto QItemSelectionModel
+    \snippet doc/src/snippets/shareddirmodel/main.cpp 5
 
     The views are constructed in the same way as other widgets. Setting up
     a view to display the items in the model is simply a matter of calling its
@@ -306,8 +347,7 @@
     The rest of the function just displays the views within a splitter
     widget, and runs the application's event loop:
 
-    \skipto splitter
-    \printuntil }
+    \snippet doc/src/snippets/shareddirmodel/main.cpp 8
 
     In the above example, we neglected to mention how to handle selections
     of items. This subject is covered in more detail in the chapter on
@@ -360,9 +400,7 @@
     Model indexes contain a pointer to the model that created them, and
     this prevents confusion when working with more than one model.
 
-    \code
-    QAbstractItemModel *model = index.model();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 0
 
     Model indexes provide \e temporary references to pieces of information,
     and can be used to retrieve or modify data via the model. Since models
@@ -391,9 +429,7 @@
     and column numbers to the model, and we receive an index that
     represents the item:
 
-    \code
-    QModelIndex index = model->index(row, column, ...);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 1
 
     Models that provide interfaces to simple, single level data structures
     like lists and tables do not need any other information to be provided
@@ -409,11 +445,7 @@
     By passing the relevant row and column numbers to the model we
     obtain a model index that refers to an item of data.
 
-    \code
-    QModelIndex indexA = model->index(0, 0, QModelIndex());
-    QModelIndex indexB = model->index(1, 1, QModelIndex());
-    QModelIndex indexC = model->index(2, 1, QModelIndex());
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 2
 
     Top level items in a model are always referenced by specifying
     \c QModelIndex() as their parent item. This is discussed in the next
@@ -435,9 +467,7 @@
     refer to an item is through a model index, so a parent model index must
     also be given:
 
-    \code
-    QModelIndex index = model->index(row, column, parent);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 3
 
     \table
     \row \i \inlineimage modelview-treemodel.png
@@ -447,16 +477,11 @@
     is referred to by a parent, a row number, and a column number.
 
     Items "A" and "C" are represented as top-level siblings in the model:
-    \code
-    QModelIndex indexA = model->index(0, 0, QModelIndex());
-    QModelIndex indexC = model->index(2, 1, QModelIndex());
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 4
 
     Item "A" has a number of children. A model index for item "B" is
     obtained with the following code:
-    \code
-    QModelIndex indexB = model->index(1, 0, indexA);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 5
     \endtable
 
     \section2 Item Roles
@@ -472,9 +497,7 @@
     corresponding to the item, and by specifying a role to obtain the type
     of data we want:
 
-    \code
-    QVariant value = model->data(index, role);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 6
 
     \table
     \row \i \inlineimage modelview-roles.png
@@ -527,9 +550,7 @@
 
     We construct a directory model in the following way:
 
-    \quotefromfile snippets/simplemodel-use/main.cpp
-    \skipto QDirModel *model
-    \printuntil int numRows
+    \snippet doc/src/snippets/simplemodel-use/main.cpp 0
 
     In this case, we set up a default QDirModel, obtain a parent index using
     a specific implementation of \l{QDirModel::index()}{index()} provided by
@@ -541,8 +562,7 @@
     the first item in each row, and read the data stored for that item
     in the model.
 
-    \skipto for (
-    \printuntil QModelIndex index
+    \snippet doc/src/snippets/simplemodel-use/main.cpp 1
 
     To obtain a model index, we specify the row number, column number (zero
     for the first column), and the appropriate model index for the parent
@@ -552,10 +572,9 @@
     the \l{Qt::ItemDataRole}{DisplayRole} to obtain data for the
     item in the form of a string.
 
-    \skipto QString text
-    \printuntil // Display
-    \skipto }
-    \printuntil }
+    \snippet doc/src/snippets/simplemodel-use/main.cpp 2
+    \codeline
+    \snippet doc/src/snippets/simplemodel-use/main.cpp 3
 
     The above example demonstrates the basic principles used to retrieve
     data from a model:
@@ -658,9 +677,7 @@
     display the contents of the model. This can all be performed within a
     single function:
 
-    \quotefromfile snippets/stringlistmodel/main.cpp
-    \skipto int main
-    \printuntil QAbstractItemModel
+    \snippet doc/src/snippets/stringlistmodel/main.cpp 0
 
     Note that the \c StringListModel is declared as a \l QAbstractItemModel.
     This allows us to use the abstract interface to the model, and
@@ -671,15 +688,12 @@
     the items in the string list model. We construct the view, and set up
     the model using the following lines of code:
 
-    \skipto QListView
-    \printuntil QListView
-    \skipto view->setModel
-    \printuntil view->setModel
+    \snippet doc/src/snippets/stringlistmodel/main.cpp 2
+    \snippet doc/src/snippets/stringlistmodel/main.cpp 4
 
     The view is shown in the normal way:
 
-    \skipto view->show
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/main.cpp 5
 
     The view renders the contents of a model, accessing data via the model's
     interface. When the user tries to edit an item, the view uses a default
@@ -698,11 +712,9 @@
     two table views, each using the same simple table model which we have
     created for this example:
 
-    \quotefromfile snippets/sharedtablemodel/main.cpp
-    \skipto QTableView *first
-    \printuntil QTableView *second
-    \skipto firstTableView->
-    \printuntil secondTableView->
+    \snippet doc/src/snippets/sharedtablemodel/main.cpp 0
+    \codeline
+    \snippet doc/src/snippets/sharedtablemodel/main.cpp 1
 
     The use of signals and slots in the model/view architecture means that
     changes to the model can be propagated to all the attached views,
@@ -746,9 +758,7 @@
     replaced, we can achieve a unified selection between views with the
     following line:
 
-    \quotefromfile snippets/sharedtablemodel/main.cpp
-    \skipto secondTableView->setSelectionModel
-    \printuntil secondTableView->setSelectionModel
+    \snippet doc/src/snippets/sharedtablemodel/main.cpp 2
 
     The second view is given the selection model for the first view.
     Both views now operate on the same selection model, keeping both
@@ -835,9 +845,7 @@
     to write custom display functions. However, we must still provide
     functions to manage the editor widget:
 
-    \quotefromfile itemviews/spinboxdelegate/delegate.h
-    \skipto class SpinBoxDelegate
-    \printuntil };
+    \snippet examples/itemviews/spinboxdelegate/delegate.h 0
 
     Note that no editor widgets are set up when the delegate is
     constructed. We only construct an editor widget when it is needed.
@@ -851,9 +859,7 @@
     supplied with everything that the delegate needs to be able to set up
     a suitable widget:
 
-    \quotefromfile itemviews/spinboxdelegate/delegate.cpp
-    \skipto QWidget *SpinBoxDelegate::createEditor
-    \printuntil }
+    \snippet examples/itemviews/spinboxdelegate/delegate.cpp 1
 
     Note that we do not need to keep a pointer to the editor widget because
     the view takes responsibility for destroying it when it is no longer
@@ -877,8 +883,7 @@
     \l{Qt::ItemDataRole}{display role}, and set the value in the
     spin box accordingly.
 
-    \skipto void SpinBoxDelegate::setEditorData
-    \printuntil }
+    \snippet examples/itemviews/spinboxdelegate/delegate.cpp 2
 
     In this example, we know that the editor widget is a spin box, but we
     could have provided different editors for different types of data in
@@ -891,9 +896,7 @@
     asks the delegate to store the edited value in the model by calling the
     \l{QAbstractItemDelegate::setModelData()}{setModelData()} function.
 
-    \quotefromfile itemviews/spinboxdelegate/delegate.cpp
-    \skipto void SpinBoxDelegate::setModelData
-    \printuntil /^\}/
+    \snippet examples/itemviews/spinboxdelegate/delegate.cpp 3
 
     Since the view manages the editor widgets for the delegate, we only
     need to update the model with the contents of the editor supplied.
@@ -924,8 +927,7 @@
     the view provides all the necessary geometry information inside a
     \l{QStyleOptionViewItem}{view option} object.
 
-    \skipto void SpinBoxDelegate::updateEditorGeometry
-    \printuntil }
+    \snippet examples/itemviews/spinboxdelegate/delegate.cpp 4
 
     In this case, we just use the geometry information provided by the
     view option in the item rectangle. A delegate that renders items with
@@ -1042,9 +1044,7 @@
     an instance of a custom table model with 32 items in total, and open a
     table view onto its data:
 
-    \quotefromfile snippets/itemselection/main.cpp
-    \skipto TableModel
-    \printuntil QItemSelectionModel
+    \snippet doc/src/snippets/itemselection/main.cpp 0
 
     The table view's default selection model is retrieved for later use.
     We do not modify any items in the model, but instead select a few
@@ -1052,15 +1052,13 @@
     this, we need to retrieve the model indexes corresponding to the
     top-left and bottom-right items in the region to be selected:
 
-    \skipto QModelIndex topLeft
-    \printuntil bottomRight = model->index
+    \snippet doc/src/snippets/itemselection/main.cpp 1
 
     To select these items in the model, and see the corresponding change
     in the table view, we need to construct a selection object then apply
     it to the selection model:
 
-    \skipto QItemSelection
-    \printuntil selectionModel->select
+    \snippet doc/src/snippets/itemselection/main.cpp 2
 
     The selection is applied to the selection model using a command
     defined by a combination of
@@ -1085,9 +1083,7 @@
     function. This returns an unsorted list of model indexes that we can
     iterate over as long as we know which model they are for:
 
-    \quotefromfile snippets/reading-selections/window.cpp
-    \skipto QModelIndexList indexes
-    \printuntil }
+    \snippet doc/src/snippets/reading-selections/window.cpp 0
 
     The above code uses Qt's convenient \l{Generic Containers}{foreach
     keyword} to iterate over, and modify, the items corresponding to the
@@ -1109,11 +1105,10 @@
     signal, fills in the selected items with
     a string, and clears the contents of the deselected items.
 
-    \quotefromfile snippets/updating-selections/window.cpp
-    \skipto void MainWindow::updateSelection
-    \printuntil model->setData
-    \printuntil }
-    \printuntil }
+    \snippet doc/src/snippets/updating-selections/window.cpp 0
+    \snippet doc/src/snippets/updating-selections/window.cpp 1
+    \codeline
+    \snippet doc/src/snippets/updating-selections/window.cpp 2
 
     We can keep track of the currently focused item by connecting the
     \l{QItemSelectionModel::currentChanged()}{currentChanged()} signal
@@ -1125,8 +1120,7 @@
     and uses the information provided to update the status bar of a
     \l QMainWindow:
 
-    \skipto void MainWindow::changeCurrent
-    \printuntil }
+    \snippet doc/src/snippets/updating-selections/window.cpp 3
 
     Monitoring selections made by the user is straightforward with these
     signals, but we can also update the selection model directly.
@@ -1155,9 +1149,7 @@
     \l{QItemSelectionModel::SelectionFlag}{Toggle} command to invert the
     selection state of the items given.
 
-    \quotefromfile snippets/itemselection/main.cpp
-    \skipto QItemSelection toggle
-    \printuntil selectionModel->select
+    \snippet doc/src/snippets/itemselection/main.cpp 3
 
     The results of this operation are displayed in the table view,
     providing a convenient way of visualizing what we have achieved:
@@ -1177,8 +1169,7 @@
     \l{QItemSelectionModel::SelectionFlag}{Rows} and
     \l{QItemSelectionModel::SelectionFlag}{Columns} flags:
 
-    \skipto QItemSelection columnSelection
-    \printuntil QItemSelectionModel::Select | QItemSelectionModel::Rows
+    \snippet doc/src/snippets/itemselection/main.cpp 4
 
     Although only four indexes are supplied to the selection model, the
     use of the
@@ -1213,24 +1204,17 @@
     level. We do this by retrieving the indexes corresponding to the
     top-left and bottom-right items with a given parent index:
 
-    \quotefromfile snippets/reading-selections/window.cpp
-    \skipto void MainWindow::selectAll()
-    \skipto QModelIndex topLeft
-    \printuntil model->columnCount
+    \snippet doc/src/snippets/reading-selections/window.cpp 2
 
     A selection is constructed with these indexes and the model. The
     corresponding items are then selected in the selection model:
 
-    \skipto QItemSelection selection
-    \printuntil selectionModel->select
+    \snippet doc/src/snippets/reading-selections/window.cpp 3
 
     This needs to be performed for all levels in the model.
     For top-level items, we would define the parent index in the usual way:
 
-    \quotefromfile snippets/reading-selections/window.cpp
-    \skipto void MainWindow::selectAll()
-    \skipto QModelIndex parent
-    \printuntil QModelIndex parent
+    \snippet doc/src/snippets/reading-selections/window.cpp 1
 
     For hierarchical models, the
     \l{QAbstractItemModel::hasChildren()}{hasChildren()} function is used to
@@ -1320,13 +1304,11 @@
     functions as there are default implementations for most of the
     interface. The class declaration is as follows:
 
-    \quotefromfile snippets/stringlistmodel/model.h
 
-    \skipto class
-    \printuntil headerData
-    \printuntil const;
-    \skipto private:
-    \printuntil /^\};/
+    \snippet doc/src/snippets/stringlistmodel/model.h 0
+    \snippet doc/src/snippets/stringlistmodel/model.h 1
+    \codeline
+    \snippet doc/src/snippets/stringlistmodel/model.h 5
 
     Apart from the model's constructor, we only need to implement two
     functions: \l{QAbstractItemModel::rowCount()}{rowCount()} returns the
@@ -1353,9 +1335,7 @@
     \l{QAbstractItemModel::rowCount()}{rowCount()} function with this in
     mind:
 
-    \quotefromfile snippets/stringlistmodel/model.cpp
-    \skipto int StringListModel
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 0
 
     Since the model is non-hierarchical, we can safely ignore the model index
     corresponding to the parent item. By default, models derived from
@@ -1369,8 +1349,7 @@
     The \l{QAbstractItemModel::data()}{data()} function is responsible for
     returning the item of data that corresponds to the index argument:
 
-    \skipto QVariant StringListModel::data
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 1
 
     We only return a valid QVariant if the model index supplied is valid,
     the row number is within the range of items in the string list, and the
@@ -1382,8 +1361,7 @@
     information about the headers by subclassing the
     \l{QAbstractItemModel::headerData()}{headerData()} function:
 
-    \skipto QVariant StringListModel::headerData
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 2
 
     Again, we return a valid QVariant only if the model index is valid and
     the role is one that we support. The orientation of the header is also
@@ -1414,10 +1392,8 @@
     \l{QAbstractItemModel::setData()}{setData()}.
     The following function declarations are added to the class definition:
 
-    \quotefromfile snippets/stringlistmodel/model.h
-    \skipto ItemFlags flags
-    \printuntil setData
-    \printuntil role
+    \snippet doc/src/snippets/stringlistmodel/model.h 2
+    \snippet doc/src/snippets/stringlistmodel/model.h 3
 
     \section2 Making the Model Editable
 
@@ -1427,19 +1403,15 @@
     the model; in this case, we enable all items and make them both
     selectable and editable:
 
-    \quotefromfile snippets/stringlistmodel/model.cpp
-    \skipto ItemFlags StringListModel::flags
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 3
 
     Note that we do not have to know how the delegate performs the actual
     editing process. We only have to provide a way for the delegate to set the
     data in the model. This is achieved through the
     \l{QAbstractItemModel::setData()}{setData()} function:
 
-    \quotefromfile snippets/stringlistmodel/model.cpp
-    \skipto bool StringListModel::setData
-    \printuntil }
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 4
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 5
 
     In this model, the item in the string list that corresponds to the model
     index is replaced by the value provided. However, before we can modify
@@ -1463,9 +1435,7 @@
     only reimplement the functions for inserting and removing rows. These are
     declared in the class definition:
 
-    \quotefromfile snippets/stringlistmodel/model.h
-    \skipto bool insertRows
-    \printuntil bool removeRows
+    \snippet doc/src/snippets/stringlistmodel/model.h 4
 
     Since rows in this model correspond to strings in a list, the
     \c insertRows() function inserts a number of empty strings into the string
@@ -1476,10 +1446,8 @@
     rows should be added. In this case, we only have a single top-level list
     of strings, so we just insert empty strings into that list.
 
-    \quotefromfile snippets/stringlistmodel/model.cpp
-    \skipto bool StringListModel::insertRows
-    \printuntil return true
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 6
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 7
 
     The model first calls the
     \l{QAbstractItemModel::beginInsertRows()}{beginInsertRows()} function to
@@ -1497,10 +1465,8 @@
     We ignore the parent index to simplify our implementation, and just
     remove the corresponding items from the string list.
 
-    \quotefromfile snippets/stringlistmodel/model.cpp
-    \skipto bool StringListModel::removeRows
-    \printuntil return true
-    \printuntil }
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 8
+    \snippet doc/src/snippets/stringlistmodel/model.cpp 9
 
     The \l{QAbstractItemModel::beginRemoveRows()}{beginRemoveRows()} function
     is always called before any underlying data is removed, and specifies the
@@ -1558,25 +1524,18 @@
     and a number of \c{QListWidgetItem}s. A list widget is constructed in the
     same way as any other widget:
 
-    \quotefromfile snippets/qlistwidget-using/mainwindow.cpp
-    \skipto QListWidget *
-    \printuntil listWidget = new
+    \snippet doc/src/snippets/qlistwidget-using/mainwindow.cpp 0
 
     List items can be added directly to the list widget when they are
     constructed:
 
-    \quotefromfile snippets/qlistwidget-using/mainwindow.cpp
-    \skipto new QListWidgetItem(tr("Sycamore"
-    \printuntil new QListWidgetItem(tr("Mahogany"
+    \snippet doc/src/snippets/qlistwidget-using/mainwindow.cpp 3
 
     They can also be constructed without a parent list widget and added to
     a list at some later time:
 
-    \quotefromfile snippets/qlistwidget-using/mainwindow.cpp
-    \skipto QListWidgetItem *newItem
-    \printuntil newItem->setText(
-    \skipto listWidget->insertItem
-    \printuntil listWidget->insertItem
+    \snippet doc/src/snippets/qlistwidget-using/mainwindow.cpp 6
+    \snippet doc/src/snippets/qlistwidget-using/mainwindow.cpp 7
 
     Each item in a list can display a text label and an icon. The colors
     and font used to render the text can be changed to provide a customized
@@ -1584,19 +1543,15 @@
     This?" help are all easily configured to ensure that the list is properly
     integrated into the application.
 
-    \skipto newItem->setToolTip(
-    \printuntil newItem->setWhatsThis(
+    \snippet doc/src/snippets/qlistwidget-using/mainwindow.cpp 8
 
     By default, items in a list are presented in the order of their creation.
     Lists of items can be sorted according to the criteria given in
     \l{Qt::SortOrder} to produce a list of items that is sorted in forward or
     reverse alphabetical order:
 
-    \quotefromfile snippets/qlistwidget-using/mainwindow.cpp
-    \skipto listWidget->sortItems(Qt::Ascend
-    \printuntil listWidget->sortItems(Qt::Ascend
-    \skipto listWidget->sortItems(Qt::Descend
-    \printuntil listWidget->sortItems(Qt::Descend
+    \snippet doc/src/snippets/qlistwidget-using/mainwindow.cpp 4
+    \snippet doc/src/snippets/qlistwidget-using/mainwindow.cpp 5
 
 
     \section1 Tree Widgets
@@ -1606,17 +1561,14 @@
     child items of its own, and can display a number of columns of
     information. Tree widgets are created just like any other widget:
 
-    \quotefromfile snippets/qtreewidget-using/mainwindow.cpp
-    \skipto QTreeWidget *
-    \printuntil treeWidget = new
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 0
 
     Before items can be added to the tree widget, the number of columns must
     be set. For example, we could define two columns, and create a header
     to provide labels at the top of each column:
 
-    \skipto treeWidget->setColumnCount
-    \printuntil treeWidget->setColumnCount
-    \printuntil treeWidget->setHeaderLabels
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 1
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 2
 
     The easiest way to set up the labels for each section is to supply a string
     list. For more sophisticated headers, you can construct a tree item,
@@ -1627,10 +1579,9 @@
     can ensure that they are listed in a particular order by specifying the
     previous item when constructing each item:
 
-    \skipto QTreeWidgetItem *cities
-    \printuntil osloItem->setText(1
-    \skipto QTreeWidgetItem *planets
-    \printuntil QTreeWidgetItem *planets
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 3
+    \codeline
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 4
 
     Tree widgets deal with top-level items slightly differently to other
     items from deeper within the tree. Items can be removed from the top
@@ -1649,20 +1600,14 @@
     function. For example, we can remove the current item in the tree widget
     regardless of its location:
 
-    \quotefromfile snippets/qtreewidget-using/mainwindow.cpp
-    \skipto void MainWindow::removeItem()
-    \skipto QTreeWidgetItem *parent
-    \printuntil treeWidget->takeTopLevelItem(
-    \printuntil }
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 10
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 11
 
     Inserting the item somewhere else in the tree widget follows the same
     pattern:
 
-    \quotefromfile snippets/qtreewidget-using/mainwindow.cpp
-    \skipto void MainWindow::insertItem()
-    \skipto QTreeWidgetItem *parent
-    \printuntil else
-    \printuntil newItem = new
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 8
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 9
 
 
     \section1 Table Widgets
@@ -1674,25 +1619,18 @@
     Tables can be created with a set number of rows and columns, or these
     can be added to an unsized table as they are needed.
 
-    \quotefromfile snippets/qtablewidget-using/mainwindow.h
-    \skipto QTableWidget *
-    \printuntil QTableWidget *
-    \quotefromfile snippets/qtablewidget-using/mainwindow.cpp
-    \skipto tableWidget = new
-    \printuntil tableWidget = new
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.h 0
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.cpp 0
 
     Items are constructed outside the table before being added to the table
     at the required location:
 
-    \skipto QTableWidgetItem *newItem
-    \printuntil tableWidget->setItem(
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.cpp 3
 
     Horizontal and vertical headers can be added to the table by constructing
     items outside the table and using them as headers:
 
-    \quotefromfile snippets/qtablewidget-using/mainwindow.cpp
-    \skipto QTableWidgetItem *valuesHeaderItem
-    \printuntil tableWidget->setHorizontalHeaderItem(0
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.cpp 1
 
     Note that the rows and columns in the table begin at zero.
 
@@ -1760,9 +1698,7 @@
     For example, we can find the sum of all the numeric values within a
     list of selected items with the following code:
 
-    \skipto void MainWindow::sumItems()
-    \skipto QList<QTableWidgetItem *>
-    \printto if (number > 0)
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.cpp 4
 
     Note that for the single selection mode, the current item will be in
     the selection. In the multi-selection and extended selection modes, the
@@ -1781,12 +1717,8 @@
     We can obtain a list of matching items with the \c findItems()
     function:
 
-    \quotefromfile snippets/qtreewidget-using/mainwindow.cpp
-    \skipto void MainWindow::findItems()
-    \skipto QTreeWidgetItem *
-    \printuntil QTreeWidgetItem *
-    \skipto QList<QTreeWidgetItem *> found
-    \printuntil }
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 6
+    \snippet doc/src/snippets/qtreewidget-using/mainwindow.cpp 7
 
     The above code causes items in a tree widget to be selected if they
     contain the text given in the search string. This pattern can also be
@@ -1849,9 +1781,7 @@
     For example, we can enable drag and drop in a list widget with the following lines
     of code:
 
-    \quotefromfile snippets/qlistwidget-dnd/mainwindow.cpp
-    \skipto QListWidget *listWidget
-    \printuntil setDropIndicatorShown
+    \snippet doc/src/snippets/qlistwidget-dnd/mainwindow.cpp 0
 
     The result is a list widget which allows the items to be copied
     around within the view, and even lets the user drag items between
@@ -1861,7 +1791,7 @@
     To enable the user to move the items around within the view, we
     must set the list widget's \l {QAbstractItemView::}{dragDropMode}:
 
-    \printline setDragDropMode
+    \snippet doc/src/snippets/qlistwidget-dnd/mainwindow.cpp 1
 
     \section1 Using Model/View Classes
 
@@ -1869,9 +1799,7 @@
     convenience views. For example, a QListView can be set up in the same way as a
     QListWidget:
 
-    \quotefromfile snippets/qlistview-dnd/mainwindow.cpp
-    \skipto QListView *listView
-    \printuntil setDropIndicatorShown
+    \snippet doc/src/snippets/qlistview-dnd/mainwindow.cpp 0
 
     Since access to the data displayed by the view is controlled by a model, the
     model used also has to provide support for drag and drop operations. The
@@ -1879,9 +1807,7 @@
     QAbstractItemModel::supportedDropActions() function. For example, copy and
     move operations are enabled with the following code:
 
-    \quotefromfile snippets/qlistview-dnd/model.cpp
-    \skipto Model::supportedDropActions
-    \printuntil /^\}/
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 10
 
     Although any combination of values from Qt::DropActions can be given, the
     model needs to be written to support them. For example, to allow Qt::MoveAction
@@ -1900,9 +1826,7 @@
     returned contain the \l Qt::ItemIsDragEnabled and \l Qt::ItemIsDropEnabled
     values:
 
-    \quotefromfile snippets/qlistview-dnd/model.cpp
-    \skipto Model::flags(const
-    \printuntil /^\}/
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 7
 
     Note that items can be dropped into the top level of the model, but dragging is
     only enabled for valid items.
@@ -1922,8 +1846,7 @@
     For example, a model that only provides plain text would provide the following
     implementation:
 
-    \skipto Model::mimeTypes
-    \printuntil /^\}/
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 9
 
     The model must also provide code to encode data in the advertised format. This
     is achieved by reimplementing the QAbstractItemModel::mimeData() function to
@@ -1932,9 +1855,7 @@
     The following code shows how each item of data, corresponding to a given list of
     indexes, is encoded as plain text and stored in a QMimeData object.
 
-    \quotefromfile snippets/qlistview-dnd/model.cpp
-    \skipto Model::mimeData
-    \printuntil /^\}/
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 8
 
     Since a list of model indexes is supplied to the function, this approach is general
     enough to be used in both hierarchical and non-heirarchical models.
@@ -1965,10 +1886,8 @@
     the data supplied is in a format that can be used, and that its destination
     within the model is valid:
 
-    \quotefromfile snippets/qlistview-dnd/model.cpp
-    \skipto Model::dropMimeData
-    \printuntil if (column
-    \printuntil return
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 0
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 1
 
     A simple one column string list model can indicate failure if the data
     supplied is not plain text, or if the column number given for the drop
@@ -1984,20 +1903,19 @@
     be invalid, indicating that the drop occurred somewhere in the view that
     corresponds to top level of the model.
 
-    \skipto int beginRow
-    \printuntil = row
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 2
 
     We initially examine the row number supplied to see if we can use it
     to insert items into the model, regardless of whether the parent index is
     valid or not.
 
-    \printuntil parent.row
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 3
 
     If the parent model index is valid, the drop occurred on an item. In this
     simple list model, we find out the row number of the item and use that
     value to insert dropped items into the top level of the model.
 
-    \printuntil rowCount(QModelIndex())
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 4
 
     When a drop occurs elsewhere in the view, and the row number is unusable,
     we append items to the top level of the model.
@@ -2015,14 +1933,12 @@
     For a simple string list model, the encoded items can be decoded and streamed
     into a QStringList:
 
-    \skipto QByteArray
-    \printuntil }
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 5
 
     The strings can then be inserted into the underlying data store. For consistency,
     this can be done through the model's own interface:
 
-    \skipto insertRows
-    \printuntil /^\}/
+    \snippet doc/src/snippets/qlistview-dnd/model.cpp 6
 
     Note that the model will typically need to provide implementations of the
     QAbstractItemModel::insertRows() and QAbstractItemModel::setData() functions.
@@ -2070,11 +1986,9 @@
     instantiated and used directly, but can also be subclassed to provide custom filtering
     and sorting behavior. The QSortFilterProxyModel class can be used in the following way:
 
-    \quotefromfile snippets/qsortfilterproxymodel/main.cpp
-    \skipto QSortFilterProxyModel
-    \printuntil setSourceModel
-    \skipto filteredView
-    \printuntil setModel
+    \snippet doc/src/snippets/qsortfilterproxymodel/main.cpp 0
+    \codeline
+    \snippet doc/src/snippets/qsortfilterproxymodel/main.cpp 1
 
     Since proxy models are inherit from QAbstractItemModel, they can be connected to
     any kind of view, and can be shared between views. They can be also be used to

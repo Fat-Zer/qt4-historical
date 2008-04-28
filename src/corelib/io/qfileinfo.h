@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QDir;
@@ -160,7 +162,7 @@ public:
     inline QT3_SUPPORT bool convertToAbs() { return makeAbsolute(); }
 #if !defined(Q_NO_TYPESAFE_FLAGS)
     inline QT3_SUPPORT bool permission(PermissionSpec permissions) const
-    { return permission(QFile::Permissions((int)permissions)); }
+    { return permission(QFile::Permissions(static_cast<int>(permissions))); }
 #endif
 #endif
 
@@ -179,6 +181,8 @@ typedef QList<QFileInfo> QFileInfoList;
 #ifdef QT3_SUPPORT
 typedef QList<QFileInfo>::Iterator QFileInfoListIterator;
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

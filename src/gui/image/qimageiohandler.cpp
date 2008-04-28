@@ -45,6 +45,7 @@
     \class QImageIOHandler
     \brief The QImageIOHandler class defines the common image I/O
     interface for all image formats in Qt.
+    \reentrant
 
     Qt uses QImageIOHandler for reading and writing images through
     QImageReader and QImageWriter. You can also derive from this class
@@ -160,6 +161,7 @@
     \class QImageIOPlugin
     \brief The QImageIOPlugin class defines an interface for writing
     an image format plugin.
+    \reentrant
 
     \ingroup plugins
 
@@ -206,6 +208,7 @@
     \class QImageIOHandlerFactoryInterface
     \brief The QImageIOHandlerFactoryInterface class provides the factory
     interface for QImageIOPlugin.
+    \reentrant
 
     \internal
 
@@ -217,6 +220,8 @@
 #include <qbytearray.h>
 #include <qimage.h>
 #include <qvariant.h>
+
+QT_BEGIN_NAMESPACE
 
 class QIODevice;
 
@@ -557,3 +562,5 @@ QImageIOPlugin::~QImageIOPlugin()
 
     \sa keys()
 */
+
+QT_END_NAMESPACE

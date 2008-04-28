@@ -49,6 +49,8 @@
 #include <qevent.h>
 #include <private/qframe_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QStackedWidgetPrivate : public QFramePrivate
 {
     Q_DECLARE_PUBLIC(QStackedWidget)
@@ -75,22 +77,16 @@ public:
     Like QStackedLayout, QStackedWidget can be constructed and
     populated with a number of child widgets ("pages"):
 
-    \quotefromfile snippets/qstackedwidget/main.cpp
-    \skipto firstPageWidget
-    \printto QComboBox
-    \skipto QVBoxLayout
-    \printline QVBoxLayout
-    \skipto layout->addWidget(stackedWidget)
-    \printuntil setLayout
+    \snippet doc/src/snippets/qstackedwidget/main.cpp 0
+    \snippet doc/src/snippets/qstackedwidget/main.cpp 2
+    \snippet doc/src/snippets/qstackedwidget/main.cpp 3
 
     QStackedWidget provides no intrinsic means for the user to switch
     page. This is typically done through a QComboBox or a QListWidget
     that stores the titles of the QStackedWidget's pages. For
     example:
 
-    \quotefromfile snippets/qstackedwidget/main.cpp
-    \skipto QComboBox
-    \printto QVBoxLayout
+    \snippet doc/src/snippets/qstackedwidget/main.cpp 1
 
     When populating a stacked widget, the widgets are added to an
     internal list. The indexOf() function returns the index of a
@@ -287,4 +283,7 @@ bool QStackedWidget::event(QEvent *e)
 {
     return QFrame::event(e);
 }
+
+QT_END_NAMESPACE
+
 #endif // QT_NO_STACKEDWIDGET

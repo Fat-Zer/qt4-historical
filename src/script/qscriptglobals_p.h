@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_SCRIPT
 
+QT_BEGIN_NAMESPACE
+
 class QScriptValue;
 class QScriptValueImpl;
 class QScriptClassInfo;
@@ -69,42 +71,28 @@ class QScriptContextPrivate;
 
 typedef QScriptValueImpl (*QScriptInternalFunctionSignature)(QScriptContextPrivate *, QScriptEnginePrivate *, QScriptClassInfo *);
 typedef QScriptValue (*QScriptFunctionSignature)(QScriptContext *, QScriptEngine *);
+typedef QScriptValue (*QScriptFunctionWithArgSignature)(QScriptContext *, QScriptEngine *, void *);
 
 namespace QScript {
 
 enum Type {
-    ObjectBased         = 0x20000000,
-    FunctionBased       = 0x40000000,
-
-    UndefinedType       = 1,
-    NullType            = 2,
-    ReferenceType       = 3,
-
-    // Integer based
-    BooleanType         =  4,
-    IntegerType         =  5,
-    StringType          =  6,
-
-    // Double based
-    NumberType          =  7,
-
-    // Pointer based
-    PointerType         =  8,
-
-    // Object data based
-    ObjectType          =  9 | ObjectBased,
-    FunctionType        = 10 | ObjectBased | FunctionBased,
-    VariantType         = 11 | ObjectBased,
-    QObjectType         = 12 | ObjectBased | FunctionBased,
-    QMetaObjectType     = 13 | ObjectBased | FunctionBased,
-
-    // Types used by the runtime
-    ActivationType      = 100 | ObjectBased,
-
-    CustomType          = 1000
+    // standard types
+    UndefinedType,
+    NullType,
+    BooleanType,
+    StringType,
+    NumberType,
+    ObjectType,
+    // internal types
+    IntegerType,
+    ReferenceType,
+    PointerType
 };
 
 } // namespace QScript
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
-#endif
+
+#endif // QSCRIPTGLOBALS_P_H

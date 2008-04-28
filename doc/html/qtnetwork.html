@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qtnetwork.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtnetwork.qdoc -->
 <head>
-  <title>Qt 4.3: QtNetwork Module</title>
+  <title>Qt 4.4: QtNetwork Module</title>
   <link rel="prev" href="qtgui.html" />
   <link rel="contents" href="modules.html" />
   <link rel="next" href="qtopengl.html" />
@@ -20,7 +20,8 @@
 [<a href="modules.html">Qt's Modules</a>]
 [Next: <a href="qtopengl.html">QtOpenGL Module</a>]
 </p>
-<h1 align="center">QtNetwork Module<br /><small></small></h1>
+<h1 class="title">QtNetwork Module<br /><span class="subtitle"></span>
+</h1>
 <p>The QtNetwork module offers classes that allow you to write TCP/IP clients and servers. <a href="#details">More...</a></p>
 <h2>Namespaces</h2>
 <p><table width="100%" class="annotated" cellpadding="2" cellspacing="1" border="0">
@@ -34,14 +35,22 @@
 <tr valign="top" class="even"><th><a href="qhostaddress.html">QHostAddress</a></th><td>IP address</td></tr>
 <tr valign="top" class="odd"><th><a href="qhostinfo.html">QHostInfo</a></th><td>Static functions for host name lookups</td></tr>
 <tr valign="top" class="even"><th><a href="qhttp.html">QHttp</a></th><td>Implementation of the HTTP protocol</td></tr>
-<tr valign="top" class="odd"><th><a href="qhttpheader.html">QHttpHeader</a></th><td>Header information for HTTP</td></tr>
-<tr valign="top" class="even"><th><a href="qhttprequestheader.html">QHttpRequestHeader</a></th><td>Request header information for HTTP</td></tr>
-<tr valign="top" class="odd"><th><a href="qhttpresponseheader.html">QHttpResponseHeader</a></th><td>Response header information for HTTP</td></tr>
-<tr valign="top" class="even"><th><a href="qnetworkaddressentry.html">QNetworkAddressEntry</a></th><td>Stores one IP address supported by a network interface, along with its associated netmask and broadcast address</td></tr>
-<tr valign="top" class="odd"><th><a href="qnetworkinterface.html">QNetworkInterface</a></th><td>Listing of the host's IP addresses and network interfaces</td></tr>
-<tr valign="top" class="even"><th><a href="qnetworkproxy.html">QNetworkProxy</a></th><td>Network layer proxy</td></tr>
-<tr valign="top" class="odd"><th><a href="qsslcertificate.html">QSslCertificate</a></th><td>Convenient API for an X509 certificate</td></tr>
-<tr valign="top" class="even"><th><a href="qsslcipher.html">QSslCipher</a></th><td>Represents an SSL cryptographic cipher</td></tr>
+<tr valign="top" class="odd"><th><a href="qhttpheader.html">QHttpHeader</a></th><td>Contains header information for HTTP</td></tr>
+<tr valign="top" class="even"><th><a href="qhttprequestheader.html">QHttpRequestHeader</a></th><td>Contains request header information for HTTP</td></tr>
+<tr valign="top" class="odd"><th><a href="qhttpresponseheader.html">QHttpResponseHeader</a></th><td>Contains response header information for HTTP</td></tr>
+<tr valign="top" class="even"><th><a href="qlocalserver.html">QLocalServer</a></th><td>Local socket based server</td></tr>
+<tr valign="top" class="odd"><th><a href="qlocalsocket.html">QLocalSocket</a></th><td>Local socket</td></tr>
+<tr valign="top" class="even"><th><a href="qnetworkaccessmanager.html">QNetworkAccessManager</a></th><td>Allows the application to post network requests and receive replies</td></tr>
+<tr valign="top" class="odd"><th><a href="qnetworkaddressentry.html">QNetworkAddressEntry</a></th><td>Stores one IP address supported by a network interface, along with its associated netmask and broadcast address</td></tr>
+<tr valign="top" class="even"><th><a href="qnetworkcookie.html">QNetworkCookie</a></th><td>Holds one network cookie</td></tr>
+<tr valign="top" class="odd"><th><a href="qnetworkcookiejar.html">QNetworkCookieJar</a></th><td>Implements a simple jar of QNetworkCookie objects</td></tr>
+<tr valign="top" class="even"><th><a href="qnetworkinterface.html">QNetworkInterface</a></th><td>Listing of the host's IP addresses and network interfaces</td></tr>
+<tr valign="top" class="odd"><th><a href="qnetworkproxy.html">QNetworkProxy</a></th><td>Network layer proxy</td></tr>
+<tr valign="top" class="even"><th><a href="qnetworkreply.html">QNetworkReply</a></th><td>Contains the data and headers for a request posted with QNetworkAccessManager</td></tr>
+<tr valign="top" class="odd"><th><a href="qnetworkrequest.html">QNetworkRequest</a></th><td>Holds one request to be sent with the Network Access API</td></tr>
+<tr valign="top" class="even"><th><a href="qsslcertificate.html">QSslCertificate</a></th><td>Convenient API for an X509 certificate</td></tr>
+<tr valign="top" class="odd"><th><a href="qsslcipher.html">QSslCipher</a></th><td>Represents an SSL cryptographic cipher</td></tr>
+<tr valign="top" class="even"><th><a href="qsslconfiguration.html">QSslConfiguration</a></th><td>Holds the configuration and state of an SSL connection</td></tr>
 <tr valign="top" class="odd"><th><a href="qsslerror.html">QSslError</a></th><td>SSL error</td></tr>
 <tr valign="top" class="even"><th><a href="qsslkey.html">QSslKey</a></th><td>Interface for private and public keys</td></tr>
 <tr valign="top" class="odd"><th><a href="qsslsocket.html">QSslSocket</a></th><td>SSL encrypted socket for both clients and servers</td></tr>
@@ -64,10 +73,10 @@
 <a name="configuring-the-build-process"></a>
 <h3>Configuring the Build Process</h3>
 <p>Applications that use Qt's networking classes need to be configured to be built against the QtNetwork module. The following declaration in a <tt>qmake</tt> project file ensures that an application is compiled and linked appropriately:</p>
-<pre> QT += network</pre>
+<pre>         QT += network</pre>
 <p>This line is necessary because only the <a href="qtcore.html">QtCore</a> and <a href="qtgui.html">QtGui</a> modules are used in the default build process.</p>
 <p>To include the definitions of the module's classes, use the following directive:</p>
-<pre> #include &lt;QtNetwork&gt;</pre>
+<pre>         #include &lt;QtNetwork&gt;</pre>
 <a name="writing-http-and-ftp-clients-with-qhttp-and-qftp"></a>
 <h3>Writing HTTP and FTP Clients with QHttp and QFtp</h3>
 <p>HTTP (Hypertext Transfer Protocol) is an application-level network protocol used mainly for downloading HTML and XML files, but it is also used as a high-level transport protocol for many other types of data, from images and movies to purchase orders and banking transactions. In contrast, FTP (File Transfer Protocol) is a protocol used almost exclusively for browsing remote directories and for transferring files.</p>
@@ -115,6 +124,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

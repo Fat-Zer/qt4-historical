@@ -55,6 +55,8 @@
 // We mean it.
 //
 
+QT_BEGIN_NAMESPACE
+
 class QWidgetItemData
 {
 public:
@@ -81,6 +83,8 @@ inline QDataStream &operator<<(QDataStream &out, const QWidgetItemData &data)
     return out;
 }
 
-#endif
+#endif // QT_NO_DATASTREAM
+
+QT_END_NAMESPACE
 
 #endif // QWIDGETITEMDATA_P_H

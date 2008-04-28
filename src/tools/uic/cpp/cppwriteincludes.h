@@ -46,10 +46,12 @@
 
 #include "treewalker.h"
 
-#include <QHash>
-#include <QMap>
-#include <QSet>
-#include <QString>
+#include <QtCore/QHash>
+#include <QtCore/QMap>
+#include <QtCore/QSet>
+#include <QtCore/QString>
+
+QT_BEGIN_NAMESPACE
 
 class QTextStream;
 class Driver;
@@ -109,5 +111,7 @@ private:
 };
 
 } // namespace CPP
+
+QT_END_NAMESPACE
 
 #endif // CPPWRITEINCLUDES_H

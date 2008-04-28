@@ -60,6 +60,8 @@
 #include <qtextobject.h>
 #include <qdesktopservices.h>
 
+QT_BEGIN_NAMESPACE
+
 class QTextBrowserPrivate : public QTextEditPrivate
 {
     Q_DECLARE_PUBLIC(QTextBrowser)
@@ -79,10 +81,26 @@ public:
             : hpos(0), vpos(0), focusIndicatorPosition(-1),
               focusIndicatorAnchor(-1) {}
         QUrl url;
+        QString title;
         int hpos;
         int vpos;
         int focusIndicatorPosition, focusIndicatorAnchor;
     };
+
+    HistoryEntry history(int i) const
+    {
+        if (i <= 0)
+            if (-i < stack.count())
+                return stack[stack.count()+i-1];
+            else
+                return HistoryEntry();
+        else
+            if (i <= forwardStack.count())
+                return forwardStack[forwardStack.count()-i];
+            else
+                return HistoryEntry();
+    }
+
 
     HistoryEntry createHistoryEntry() const;
     void restoreHistoryEntry(const HistoryEntry entry);
@@ -120,7 +138,10 @@ public:
 
     void setSource(const QUrl &url);
 
-    QUrl resolveUrl(const QUrl &url) const;
+    // re-imlemented from QTextEditPrivate
+    virtual QUrl resolveUrl(const QUrl &url) const;
+    inline QUrl resolveUrl(const QString &url) const
+    { return resolveUrl(QUrl::fromEncoded(url.toUtf8())); }
 
 #ifdef QT_KEYPAD_NAVIGATION
     void keypadMove(bool next);
@@ -128,18 +149,6 @@ public:
     int lastKeypadScrollValue;
 #endif
 };
-
-static bool isAbsoluteFileName(const QString &name)
-{
-    return !name.isEmpty()
-           && (name[0] == QLatin1Char('/')
-#if defined(Q_WS_WIN)
-               || (name[0].isLetter() && name[1] == QLatin1Char(':')) || name.startsWith(QLatin1String("\\\\"))
-#endif
-               || (name[0]  == QLatin1Char(':') && name[1] == QLatin1Char('/'))
-              );
-
-}
 
 QString QTextBrowserPrivate::findFile(const QUrl &name) const
 {
@@ -149,7 +158,7 @@ QString QTextBrowserPrivate::findFile(const QUrl &name) const
     else
         fileName = name.toLocalFile();
 
-    if (isAbsoluteFileName(fileName))
+    if (QFileInfo(fileName).isAbsolute())
         return fileName;
 
     foreach (QString path, searchPaths) {
@@ -172,7 +181,7 @@ QUrl QTextBrowserPrivate::resolveUrl(const QUrl &url) const
     // correctly to "foo.html#someanchor"
     if (!(currentURL.isRelative()
           || (currentURL.scheme() == QLatin1String("file")
-              && !isAbsoluteFileName(currentURL.toLocalFile())))
+              && !QFileInfo(currentURL.toLocalFile()).isAbsolute()))
           || (url.hasFragment() && url.path().isEmpty())) {
         return currentURL.resolved(url);
     }
@@ -303,7 +312,13 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
         home = url;
 
     if (doSetText) {
+#ifndef QT_NO_TEXTHTMLPARSER
         q->QTextEdit::setHtml(txt);
+        q->document()->setMetaInformation(QTextDocument::DocumentUrl, currentURL.toString());
+#else
+        q->QTextEdit::setPlainText(txt);
+#endif
+
 #ifdef QT_KEYPAD_NAVIGATION
         prevFocus.movePosition(QTextCursor::Start);
 #endif
@@ -317,9 +332,9 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
         hbar->setValue(0);
         vbar->setValue(0);
     }
-#ifdef QT_KEYPAD_NAVIGATION 
-    lastKeypadScrollValue = vbar->value(); 
-#endif 
+#ifdef QT_KEYPAD_NAVIGATION
+    lastKeypadScrollValue = vbar->value();
+#endif
 
 #ifndef QT_NO_CURSOR
     if (q->isVisible())
@@ -519,6 +534,7 @@ QTextBrowserPrivate::HistoryEntry QTextBrowserPrivate::createHistoryEntry() cons
 {
     HistoryEntry entry;
     entry.url = q_func()->source();
+    entry.title = q_func()->documentTitle();
     entry.hpos = hbar->value();
     entry.vpos = vbar->value();
 
@@ -541,13 +557,13 @@ void QTextBrowserPrivate::restoreHistoryEntry(const HistoryEntry entry)
         QTextCursor cursor(control->document());
         cursor.setPosition(entry.focusIndicatorAnchor);
         cursor.setPosition(entry.focusIndicatorPosition, QTextCursor::KeepAnchor);
-        control->setCursorIsFocusIndicator(true);
         control->setTextCursor(cursor);
+        control->setCursorIsFocusIndicator(true);
     }
-#ifdef QT_KEYPAD_NAVIGATION 
-    lastKeypadScrollValue = vbar->value(); 
-    prevFocus = control->textCursor(); 
-#endif 
+#ifdef QT_KEYPAD_NAVIGATION
+    lastKeypadScrollValue = vbar->value();
+    prevFocus = control->textCursor();
+#endif
 }
 
 /*!
@@ -739,6 +755,7 @@ void QTextBrowser::setSource(const QUrl &url)
 
     QTextBrowserPrivate::HistoryEntry entry;
     entry.url = url;
+    entry.title = documentTitle();
     entry.hpos = 0;
     entry.vpos = 0;
     d->stack.push(entry);
@@ -752,6 +769,8 @@ void QTextBrowser::setSource(const QUrl &url)
         d->forwardStack.clear();
         emit forwardAvailable(false);
     }
+
+    emit historyChanged();
 }
 
 /*!
@@ -768,6 +787,15 @@ void QTextBrowser::setSource(const QUrl &url)
     This signal is emitted when the availability of forward() changes.
     \a available is true after the user navigates backward() and false
     when the user navigates or goes forward().
+*/
+
+/*!
+    \fn void QTextBrowser::historyChanged()
+    \since 4.4
+
+    This signal is emitted when the history changes.
+
+    \sa historyTitle(), historyUrl()
 */
 
 /*!
@@ -828,6 +856,7 @@ void QTextBrowser::backward()
     d->restoreHistoryEntry(d->stack.top()); // previous entry
     emit backwardAvailable(d->stack.count() > 1);
     emit forwardAvailable(true);
+    emit historyChanged();
 }
 
 /*!
@@ -850,11 +879,12 @@ void QTextBrowser::forward()
     d->restoreHistoryEntry(d->stack.top());
     emit backwardAvailable(true);
     emit forwardAvailable(!d->forwardStack.isEmpty());
+    emit historyChanged();
 }
 
 /*!
-    Changes the document displayed to be the first document the
-    browser displayed.
+    Changes the document displayed to be the first document from
+    the history.
 */
 void QTextBrowser::home()
 {
@@ -1095,10 +1125,76 @@ void QTextBrowser::clearHistory()
 {
     Q_D(QTextBrowser);
     d->forwardStack.clear();
-    if (!d->stack.isEmpty())
-        d->stack.resize(1);
+    if (!d->stack.isEmpty()) {
+        QTextBrowserPrivate::HistoryEntry historyEntry = d->stack.top();
+        d->stack.resize(0);
+        d->stack.push(historyEntry);
+        d->home = historyEntry.url;
+    }
     emit forwardAvailable(false);
     emit backwardAvailable(false);
+    emit historyChanged();
+}
+
+/*!
+   Returns the url of the HistoryItem.
+
+    \table
+    \header \i Input            \i Return
+    \row \i \a{i} < 0  \i \l backward() history
+    \row \i\a{i} == 0 \i current, see QTextBrowser::source()
+    \row \i \a{i} > 0  \i \l forward() history
+    \endtable
+
+    \since 4.4
+*/
+QUrl QTextBrowser::historyUrl(int i) const
+{
+    Q_D(const QTextBrowser);
+    return d->history(i).url;
+}
+
+/*!
+    Returns the documentTitle() of the HistoryItem.
+
+    \table
+    \header \i Input            \i Return
+    \row \i \a{i} < 0  \i \l backward() history
+    \row \i \a{i} == 0 \i current, see QTextBrowser::source()
+    \row \i \a{i} > 0  \i \l forward() history
+    \endtable
+
+    \snippet doc/src/snippets/code/src.gui.widgets.qtextbrowser.cpp 0
+
+    \since 4.4
+*/
+QString QTextBrowser::historyTitle(int i) const
+{
+    Q_D(const QTextBrowser);
+    return d->history(i).title;
+}
+
+
+/*!
+    Returns the number of locations forward in the history.
+
+    \since 4.4
+*/
+int QTextBrowser::forwardHistoryCount() const
+{
+    Q_D(const QTextBrowser);
+    return d->forwardStack.count();
+}
+
+/*!
+    Returns the number of locations backward in the history.
+
+    \since 4.4
+*/
+int QTextBrowser::backwardHistoryCount() const
+{
+    Q_D(const QTextBrowser);
+    return d->stack.count()-1;
 }
 
 /*!
@@ -1154,5 +1250,8 @@ bool QTextBrowser::event(QEvent *e)
     return QTextEdit::event(e);
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qtextbrowser.cpp"
+
 #endif // QT_NO_TEXTBROWSER

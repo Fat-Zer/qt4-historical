@@ -53,6 +53,12 @@
 #include "qglpixelbuffer.h"
 #include "qglpixelbuffer_p.h"
 
+#if defined(Q_OS_LINUX) || defined(Q_OS_BSD4)
+#include <dlfcn.h>
+#endif
+
+QT_BEGIN_NAMESPACE
+
 #ifndef GLX_VERSION_1_3
 #define GLX_RGBA_BIT            0x00000002
 #define GLX_PBUFFER_BIT         0x00000004
@@ -97,14 +103,28 @@ static bool qt_resolve_pbuffer_extensions()
     else if (resolved)
         return false;
 
-    extern const QString qt_gl_library_name();
-    QLibrary gl(qt_gl_library_name());
-    qt_glXChooseFBConfig = (_glXChooseFBConfig) gl.resolve("glXChooseFBConfig");
-    qt_glXCreateNewContext = (_glXCreateNewContext) gl.resolve("glXCreateNewContext");
-    qt_glXCreatePbuffer = (_glXCreatePbuffer) gl.resolve("glXCreatePbuffer");
-    qt_glXDestroyPbuffer = (_glXDestroyPbuffer) gl.resolve("glXDestroyPbuffer");
-    qt_glXGetFBConfigAttrib = (_glXGetFBConfigAttrib) gl.resolve("glXGetFBConfigAttrib");
-    qt_glXMakeContextCurrent = (_glXMakeContextCurrent) gl.resolve("glXMakeContextCurrent");
+#if defined(Q_OS_LINUX) || defined(Q_OS_BSD4)
+    void *handle = dlopen(NULL, RTLD_LAZY);
+    if (handle) {
+        qt_glXChooseFBConfig = (_glXChooseFBConfig) dlsym(handle, "glXChooseFBConfig");
+        qt_glXCreateNewContext = (_glXCreateNewContext) dlsym(handle, "glXCreateNewContext");
+        qt_glXCreatePbuffer = (_glXCreatePbuffer) dlsym(handle, "glXCreatePbuffer");
+        qt_glXDestroyPbuffer = (_glXDestroyPbuffer) dlsym(handle, "glXDestroyPbuffer");
+        qt_glXGetFBConfigAttrib = (_glXGetFBConfigAttrib) dlsym(handle, "glXGetFBConfigAttrib");
+        qt_glXMakeContextCurrent = (_glXMakeContextCurrent) dlsym(handle, "glXMakeContextCurrent");
+        dlclose(handle);
+    } else
+#endif
+    {
+        extern const QString qt_gl_library_name();
+        QLibrary gl(qt_gl_library_name());
+        qt_glXChooseFBConfig = (_glXChooseFBConfig) gl.resolve("glXChooseFBConfig");
+        qt_glXCreateNewContext = (_glXCreateNewContext) gl.resolve("glXCreateNewContext");
+        qt_glXCreatePbuffer = (_glXCreatePbuffer) gl.resolve("glXCreatePbuffer");
+        qt_glXDestroyPbuffer = (_glXDestroyPbuffer) gl.resolve("glXDestroyPbuffer");
+        qt_glXGetFBConfigAttrib = (_glXGetFBConfigAttrib) gl.resolve("glXGetFBConfigAttrib");
+        qt_glXMakeContextCurrent = (_glXMakeContextCurrent) gl.resolve("glXMakeContextCurrent");
+    }
 
     resolved = qt_glXMakeContextCurrent ? true : false;
     return resolved;
@@ -278,3 +298,5 @@ bool QGLPixelBuffer::hasOpenGLPbuffers()
     }
     return pbuf && ctx;
 }
+
+QT_END_NAMESPACE

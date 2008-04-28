@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QPushButton;
@@ -56,7 +58,6 @@ class QDialogPrivate;
 class Q_GUI_EXPORT QDialog : public QWidget
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QDialog)
     friend class QPushButton;
 
     Q_PROPERTY(bool sizeGripEnabled READ isSizeGripEnabled WRITE setSizeGripEnabled)
@@ -89,10 +90,6 @@ public:
     bool isSizeGripEnabled() const;
 
     void setModal(bool modal);
-#ifdef Q_OS_TEMP
-    bool event(QEvent *);
-#endif
-
     void setResult(int r);
 
 Q_SIGNALS:
@@ -111,6 +108,9 @@ public Q_SLOTS:
 protected:
     QDialog(QDialogPrivate &, QWidget *parent, Qt::WindowFlags f = 0);
 
+#ifdef Q_OS_WINCE
+    bool event(QEvent *e);
+#endif
     void keyPressEvent(QKeyEvent *);
     void closeEvent(QCloseEvent *);
     void showEvent(QShowEvent *);
@@ -120,8 +120,15 @@ protected:
     void adjustPosition(QWidget*);
 
 private:
+    Q_DECLARE_PRIVATE(QDialog)
     Q_DISABLE_COPY(QDialog)
+
+#ifdef Q_OS_WINCE_WM
+    Q_PRIVATE_SLOT(d_func(), void _q_doneAction())
+#endif
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

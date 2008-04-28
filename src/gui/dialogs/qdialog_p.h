@@ -60,6 +60,8 @@
 #include "QtGui/qdialog.h"
 #include "QtGui/qpushbutton.h"
 
+QT_BEGIN_NAMESPACE
+
 class QEventLoop;
 class QSizeGrip;
 
@@ -91,13 +93,16 @@ public:
     void        setDefault(QPushButton *);
     void        setMainDefault(QPushButton *);
     void        hideDefault();
-#ifdef Q_OS_TEMP
-    void        hideSpecial();
+
+#ifdef Q_OS_WINCE_WM
+    void _q_doneAction();
 #endif
 
     int rescode;
 
     QEventLoop *eventLoop;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDIALOG_P_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qt4-accessibility.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qt4-accessibility.qdoc -->
 <head>
-  <title>Qt 4.3: Cross-Platform Accessibility Support in Qt 4</title>
+  <title>Qt 4.4: Cross-Platform Accessibility Support in Qt 4</title>
   <link rel="prev" href="qt4-designer.html" />
   <link rel="contents" href="qt4-intro.html" />
   <link rel="next" href="qt4-sql.html" />
@@ -20,7 +20,8 @@
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-sql.html">The Qt 4 Database GUI Layer</a>]
 </p>
-<h1 align="center">Cross-Platform Accessibility Support in Qt 4<br /><small></small></h1>
+<h1 class="title">Cross-Platform Accessibility Support in Qt 4<br /><span class="subtitle"></span>
+</h1>
 <p>Qt 4 allows developers to write cross-platform applications that are usable by visually impaired users as well as by users with other disabilities. Qt accessibility will make applications accessible to more users and opens the governmental market, where accessibility is often a requirement.</p>
 <a name="general-overview"></a>
 <h2>General Overview</h2>
@@ -33,53 +34,53 @@
 <a name="example-code"></a>
 <h2>Example Code</h2>
 <p>The first example illustrates how to provide accessibility information for a custom widget. We can use <a href="qaccessiblewidget.html">QAccessibleWidget</a> as a base class and reimplement various functions:</p>
-<pre> class MyWidgetInterface : public QAccessibleWidget
- {
- public:
-     MyWidgetInterface(QWidget *widget, Role role);
-
-     QString text(Text text, int child) const;
-     State state(int child) const;
-     QString actionText(int action, Text text, int child) const;
-     bool doAction(int action, int child, const QVariantList &amp;params);
-     ...
- };</pre>
-<p>Here's how we would implement the <a href="qaccessibleinterface.html#doAction">doAction()</a> function to call a function named click() on the wrapped MyWidget object when the user invokes the object's default action or &quot;presses&quot; it.</p>
-<pre> bool MyWidgetInterface::doAction(int action, int child,
-                                  const QVariantList &amp;params)
- {
-     if (child || !widget()-&gt;isEnabled())
-         return false;
-
-     switch (action) {
-     case DefaultAction:
-     case Press:
+<pre>         class MyWidgetInterface : public QAccessibleWidget
          {
-             MyWidget *widget = qobject_cast&lt;MyWidget *&gt;(object());
-             if (widget)
-                 widget-&gt;click();
-         }
-         return true;
-     }
-     return QAccessibleWidget::doAction(action, child, params);
- }</pre>
+         public:
+             MyWidgetInterface(QWidget *widget, Role role);
+
+             QString text(Text text, int child) const;
+             State state(int child) const;
+             QString actionText(int action, Text text, int child) const;
+             bool doAction(int action, int child, const QVariantList &amp;params);
+             ...
+         };</pre>
+<p>Here's how we would implement the <a href="qaccessibleinterface.html#doAction">doAction()</a> function to call a function named click() on the wrapped MyWidget object when the user invokes the object's default action or &quot;presses&quot; it.</p>
+<pre>         bool MyWidgetInterface::doAction(int action, int child,
+                                          const QVariantList &amp;params)
+         {
+             if (child || !widget()-&gt;isEnabled())
+                 return false;
+
+             switch (action) {
+             case DefaultAction:
+             case Press:
+                 {
+                     MyWidget *widget = qobject_cast&lt;MyWidget *&gt;(object());
+                     if (widget)
+                         widget-&gt;click();
+                 }
+                 return true;
+             }
+             return QAccessibleWidget::doAction(action, child, params);
+         }</pre>
 <p>To export the widget interface as a plugin, we must subclass QAccessibleFactory:</p>
-<pre> QStringList MyFactory::keys() const
- {
-     return QStringList() &lt;&lt; &quot;MyWidget&quot; &lt;&lt; &quot;MyOtherWidget&quot;;
- }
+<pre>         QStringList MyFactory::keys() const
+         {
+             return QStringList() &lt;&lt; &quot;MyWidget&quot; &lt;&lt; &quot;MyOtherWidget&quot;;
+         }
 
- QAccessibleInterface *MyFactory::create(const QString &amp;className,
-                                         QObject *object)
- {
-     if (classname == &quot;MyWidget&quot;)
-         return new MyWidgetInterface(object);
-     if (classname == &quot;MyOtherWidget&quot;)
-         return new MyOtherWidgetInterface(object);
-     return 0;
- }
+         QAccessibleInterface *MyFactory::create(const QString &amp;className,
+                                                 QObject *object)
+         {
+             if (classname == &quot;MyWidget&quot;)
+                 return new MyWidgetInterface(object);
+             if (classname == &quot;MyOtherWidget&quot;)
+                 return new MyOtherWidgetInterface(object);
+             return 0;
+         }
 
- Q_EXPORT_PLUGIN2(MyFactory)</pre>
+         Q_EXPORT_PLUGIN2(myfactory, MyFactory)</pre>
 <p>
 [Previous: <a href="qt4-designer.html">The New Qt Designer</a>]
 [<a href="qt4-intro.html">Home</a>]
@@ -89,6 +90,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

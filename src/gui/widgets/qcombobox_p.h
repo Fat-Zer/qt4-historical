@@ -60,7 +60,8 @@
 #ifndef QT_NO_COMBOBOX
 #include "QtGui/qabstractslider.h"
 #include "QtGui/qapplication.h"
-#include "qitemdelegate.h"
+#include "QtGui/qitemdelegate.h"
+#include "QtGui/qstandarditemmodel.h"
 #include "QtGui/qlineedit.h"
 #include "QtGui/qlistview.h"
 #include "QtGui/qpainter.h"
@@ -77,11 +78,13 @@
 
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 class QComboBoxListView : public QListView
 {
     Q_OBJECT
 public:
-        QComboBoxListView(QComboBox *cmb = 0) : combo(cmb){};
+    QComboBoxListView(QComboBox *cmb = 0) : combo(cmb) {}
 
 protected:
     void resizeEvent(QResizeEvent *event)
@@ -129,7 +132,7 @@ private:
 
 class QStandardItemModel;
 
-class QComboBoxPrivateScroller : public QWidget
+class Q_AUTOTEST_EXPORT QComboBoxPrivateScroller : public QWidget
 {
     Q_OBJECT
 
@@ -210,7 +213,7 @@ private:
     bool fast;
 };
 
-class QComboBoxPrivateContainer : public QFrame
+class Q_AUTOTEST_EXPORT QComboBoxPrivateContainer : public QFrame
 {
     Q_OBJECT
 
@@ -257,7 +260,7 @@ private:
 class QComboMenuDelegate : public QAbstractItemDelegate
 {
 public:
-    QComboMenuDelegate(QObject *parent, QComboBox *cmb) : QAbstractItemDelegate(parent), mCombo(cmb), pal(QApplication::palette("QMenu")) {}
+    QComboMenuDelegate(QObject *parent, QComboBox *cmb) : QAbstractItemDelegate(parent), mCombo(cmb) {}
 
 protected:
     void paint(QPainter *painter,
@@ -270,8 +273,6 @@ protected:
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const {
         QStyleOptionMenuItem opt = getStyleOption(option, index);
-        QVariant value = index.model()->data(index, Qt::FontRole);
-        QFont fnt = value.isValid() ? qvariant_cast<QFont>(value) : option.font;
         return mCombo->style()->sizeFromContents(
             QStyle::CT_MenuItem, &opt, option.rect.size(), mCombo);
     }
@@ -280,7 +281,53 @@ private:
     QStyleOptionMenuItem getStyleOption(const QStyleOptionViewItem &option,
                                         const QModelIndex &index) const;
     QComboBox *mCombo;
-    QPalette pal;
+};
+
+// Note that this class is intentionally not using QStyledItemDelegate 
+// Vista does not use the new theme for combo boxes and there might 
+// be other side effects from using the new class
+class QComboBoxDelegate : public QItemDelegate
+{
+public:
+    QComboBoxDelegate(QObject *parent, QComboBox *cmb) : QItemDelegate(parent), mCombo(cmb) {}
+
+    static bool isSeparator(const QModelIndex &index) {
+        return index.data(Qt::AccessibleDescriptionRole).toString() == QString::fromLatin1("separator");
+    }
+    static void setSeparator(QAbstractItemModel *model, const QModelIndex &index) {
+        model->setData(index, QString::fromLatin1("separator"), Qt::AccessibleDescriptionRole);
+        if (QStandardItemModel *m = qobject_cast<QStandardItemModel*>(model))
+            if (QStandardItem *item = m->itemFromIndex(index))
+                item->setFlags(item->flags() & ~(Qt::ItemIsSelectable|Qt::ItemIsEnabled));
+    }
+
+protected:
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const {
+        if (isSeparator(index)) {
+            QRect rect = option.rect;
+            if (const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3*>(&option))
+                if (const QAbstractItemView *view = qobject_cast<const QAbstractItemView*>(v3->widget))
+                    rect.setWidth(view->viewport()->width());
+            QStyleOption opt;
+            opt.rect = rect;
+            mCombo->style()->drawPrimitive(QStyle::PE_IndicatorToolBarSeparator, &opt, painter, mCombo);
+        } else {
+            QItemDelegate::paint(painter, option, index);
+        }
+    }
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const {
+        if (isSeparator(index)) {
+            int pm = mCombo->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, 0, mCombo);
+            return QSize(pm, pm);
+        }
+        return QItemDelegate::sizeHint(option, index);
+    }
+private:
+    QComboBox *mCombo;
 };
 
 class QComboBoxPrivate : public QWidgetPrivate
@@ -320,6 +367,7 @@ public:
     QString itemText(const QModelIndex &index) const;
     int itemRole() const;
     void updateLayoutDirection();
+    void setCurrentIndex(const QModelIndex &index);
 
     QAbstractItemModel *model;
     QLineEdit *lineEdit;
@@ -349,7 +397,11 @@ public:
 #ifndef QT_NO_COMPLETER
     QPointer<QCompleter> completer;
 #endif
+    static QPalette viewContainerPalette(QComboBox *cmb)
+    { return cmb->d_func()->viewContainer()->palette(); }
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_COMBOBOX
 

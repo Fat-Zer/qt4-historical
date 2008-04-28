@@ -47,10 +47,12 @@
 #include <QList>
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
 class QTextCodec;
 class QTextEdit;
+QT_END_NAMESPACE
 class PreviewForm;
 
 class MainWindow : public QMainWindow

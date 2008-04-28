@@ -44,6 +44,9 @@
 #include "qplatformdefs.h"
 #include "qabstractfileengine.h"
 #include "private/qfsfileengine_p.h"
+
+#ifndef QT_NO_FSFILEENGINE
+
 #ifndef QT_NO_REGEXP
 # include "qregexp.h"
 #endif
@@ -53,12 +56,15 @@
 #include "qdebug.h"
 #include "qvarlengtharray.h"
 
+#include <sys/mman.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <errno.h>
 #if !defined(QWS) && defined(Q_OS_MAC)
 # include <private/qcore_mac_p.h>
 #endif
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \internal
@@ -268,7 +274,8 @@ qint64 QFSFileEnginePrivate::nativeRead(char *data, qint64 len)
             int v = 1;
             fcntl(QT_FILENO(fh), F_SETFL, oldFlags, &v, sizeof(v));
         }
-        if (readBytes == 0) {
+        if (readBytes == 0 && !feof(fh)) {
+            // if we didn't read anything and we're not at EOF, it must be an error
             q->setError(QFile::ReadError, qt_error_string(int(errno)));
             return -1;
         }
@@ -516,14 +523,14 @@ static bool _q_isMacHidden(const QString &path)
 
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
     if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
-        err = FSPathMakeRefWithOptions(reinterpret_cast<const UInt8 *>(QFile::encodeName(path).constData()),
+        err = FSPathMakeRefWithOptions(reinterpret_cast<const UInt8 *>(QFile::encodeName(QDir::cleanPath(path)).constData()),
                                         kFSPathMakeRefDoNotFollowLeafSymlink, &fsRef, 0);
     } else
 #endif
     {
         QFileInfo fi(path);
         FSRef parentRef;
-        err = FSPathMakeRef(reinterpret_cast<const UInt8 *>(fi.absoluteDir().canonicalPath().toUtf8().constData()),
+        err = FSPathMakeRef(reinterpret_cast<const UInt8 *>(fi.absoluteDir().absolutePath().toUtf8().constData()),
                             &parentRef, 0);
         if (err == noErr) {
             QString fileName = fi.fileName();
@@ -690,47 +697,19 @@ QString QFSFileEngine::fileName(FileName file) const
         }
         return ret;
     } else if (file == CanonicalName || file == CanonicalPathName) {
-#if defined(__GLIBC__) && !defined(PATH_MAX)
-      char *cur = ::get_current_dir_name();
-      if (cur) {
-	QString ret;
-	char *tmp = ::canonicalize_file_name(d->nativeFilePath.constData());
-	if (tmp) {
-	  ret = QFile::decodeName(tmp);
-	  ::free(tmp);
-	}
-	::chdir(cur); // always make sure we go back to the current dir
-	::free(cur);
-#else
-        char cur[PATH_MAX+1];
-        if (::getcwd(cur, PATH_MAX)) {
-            QString ret;
-#  ifndef Q_OS_INTEGRITY // INTEGRITY has no realpath
-            char real[PATH_MAX+1];
-            // need the cast for old solaris versions of realpath that doesn't take
-            // a const char*.
-            if (::realpath(d->nativeFilePath.constData(), real))
-                ret = QFile::decodeName(QByteArray(real));
-#  endif
-            ::chdir(cur); // always make sure we go back to the current dir
-#endif
-            //check it
-            QT_STATBUF st;
-            if (QT_STAT(QFile::encodeName(ret), &st) != 0)
-                ret = QString();
-            if (!ret.isEmpty() && file == CanonicalPathName) {
-                int slash = ret.lastIndexOf(QLatin1Char('/'));
-                if (slash == -1)
-                    return QDir::currentPath();
-                else if (!slash)
-                    return QLatin1String("/");
-                return ret.left(slash);
-            }
-            return ret;
+        if (!(fileFlags(ExistsFlag) & ExistsFlag))
+            return QString();
+
+        QString ret = QFSFileEnginePrivate::canonicalized(fileName(AbsoluteName));
+        if (!ret.isEmpty() && file == CanonicalPathName) {
+            int slash = ret.lastIndexOf(QLatin1Char('/'));
+            if (slash == -1)
+                ret = QDir::currentPath();
+            else if (slash == 0)
+                ret = QLatin1String("/");
+            ret = ret.left(slash);
         }
-        if (file == CanonicalPathName)
-            return fileName(AbsolutePathName);
-        return fileName(AbsoluteName);
+        return ret;
     } else if (file == LinkName) {
         if (d->isSymlink()) {
 #if defined(__GLIBC__) && !defined(PATH_MAX)
@@ -917,3 +896,70 @@ QDateTime QFSFileEngine::fileTime(FileTime time) const
     }
     return ret;
 }
+
+uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags)
+{
+    Q_Q(QFSFileEngine);
+    Q_UNUSED(flags);
+    if (offset < 0) {
+        q->setError(QFile::UnspecifiedError, qt_error_string(int(EINVAL)));
+        return 0;
+    }
+    if (openMode == QIODevice::NotOpen) {
+        q->setError(QFile::PermissionsError, qt_error_string(int(EACCES)));
+        return 0;
+    }
+    int access = 0;
+    if (openMode & QIODevice::ReadOnly) access |= PROT_READ;
+    if (openMode & QIODevice::WriteOnly) access |= PROT_WRITE;
+
+    int pagesSize = getpagesize();
+    int realOffset = offset / pagesSize;
+    int extra = offset % pagesSize;
+
+    void *mapAddress = mmap((void*)0, (size_t)size + extra,
+                   access, MAP_SHARED, nativeHandle(), realOffset * pagesSize);
+    if (MAP_FAILED != mapAddress) {
+        uchar *address = extra + static_cast<uchar*>(mapAddress);
+        maps[address] = QPair<int,int>(extra, size);
+        return address;
+    }
+
+    switch(errno) {
+    case EBADF:
+        q->setError(QFile::PermissionsError, qt_error_string(int(EACCES)));
+        break;
+    case ENFILE:
+    case ENOMEM:
+        q->setError(QFile::ResourceError, qt_error_string(int(errno)));
+        break;
+    case EINVAL:
+        // size are out of bounds
+    default:
+        q->setError(QFile::UnspecifiedError, qt_error_string(int(errno)));
+        break;
+    }
+    return 0;
+}
+
+bool QFSFileEnginePrivate::unmap(uchar *ptr)
+{
+    Q_Q(QFSFileEngine);
+    if (!maps.contains(ptr)) {
+        q->setError(QFile::PermissionsError, qt_error_string(EACCES));
+        return false;
+    }
+
+    uchar *start = ptr - maps[ptr].first;
+    int len = maps[ptr].second;
+    if (-1 == munmap(start, len)) {
+        q->setError(QFile::UnspecifiedError, qt_error_string(errno));
+        return false;
+    }
+    maps.remove(ptr);
+    return true;
+}
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_FSFILEENGINE

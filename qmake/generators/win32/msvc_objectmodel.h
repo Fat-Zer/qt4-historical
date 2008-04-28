@@ -53,11 +53,14 @@
 #include <qmap.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 enum DotNET {
     NETUnknown = 0,
     NET2002 = 0x70,
     NET2003 = 0x71,
-    NET2005 = 0x80
+    NET2005 = 0x80,
+    NET2008 = 0x90
 };
 
 /*
@@ -370,6 +373,10 @@ enum ProcessorOptimizeOption {
     procOptimizePentiumProAndAbove,     //G6
     procOptimizePentium4AndAbove        //G7
 };
+enum RegisterDeployOption {
+    registerNo = 0,
+    registerYes
+};
 enum RemoteDebuggerType {
     DbgLocal,
     DbgRemote,
@@ -425,6 +432,13 @@ enum useOfMfc {
     useMfcStatic,
     useMfcDynamic
 };
+enum useOfArchitecture {
+    archUnknown = -1,
+    archArmv4,
+    archArmv5,
+    archArmv4T,
+    archArmv5T
+};
 enum warningLevelOption {
     warningLevelUnknown = -1,
     warningLevel_0,
@@ -433,6 +447,7 @@ enum warningLevelOption {
     warningLevel_3,
     warningLevel_4
 };
+
 
 class VCToolBase {
 protected:
@@ -521,6 +536,8 @@ public:
     triState                WarnAsError;
     warningLevelOption      WarningLevel;
     triState                WholeProgramOptimization;
+    useOfArchitecture       CompileForArchitecture;
+    triState                InterworkCalls;
     VCConfiguration*        config;
 };
 
@@ -689,6 +706,20 @@ public:
     QString                 ToolPath;
 };
 
+class VCDeploymentTool
+{
+public:
+    // Functions
+    VCDeploymentTool();
+    virtual ~VCDeploymentTool() {}
+
+    // Variables
+    QString                 DeploymentTag;
+    QString                 RemoteDirectory;
+    RegisterDeployOption    RegisterOutput;
+    QString                 AdditionalFiles;
+};
+
 class VCEventTool : public VCToolBase
 {
 protected:
@@ -761,6 +792,7 @@ public:
     VCMIDLTool              idl;
     VCPostBuildEventTool    postBuild;
     VCPreBuildEventTool     preBuild;
+    VCDeploymentTool        deployment;
     VCPreLinkEventTool      preLink;
     VCResourceCompilerTool  resource;
 };
@@ -805,7 +837,6 @@ public:
     void addFile(const QString& filename);
     void addFile(const VCFilterFile& fileInfo);
     void addFiles(const QStringList& fileList);
-    void addMOCstage(const VCFilterFile &str, bool hdr);
     bool addExtraCompiler(const VCFilterFile &info);
     void modifyPCHstage(QString str);
     void outputFileConfig(XmlOutput &xml, const QString &filename);
@@ -820,7 +851,6 @@ public:
     QList<VCFilterFile>     Files;
 
     customBuildCheck	    CustomBuild;
-    QString                 customMocArguments;
 
     bool		    useCustomBuildTool;
     VCCustomBuildTool       CustomBuildTool;
@@ -1023,9 +1053,12 @@ XmlOutput &operator<<(XmlOutput &, const VCCustomBuildTool &);
 XmlOutput &operator<<(XmlOutput &, const VCLibrarianTool &);
 XmlOutput &operator<<(XmlOutput &, const VCResourceCompilerTool &);
 XmlOutput &operator<<(XmlOutput &, const VCEventTool &);
+XmlOutput &operator<<(XmlOutput &, const VCDeploymentTool &);
 XmlOutput &operator<<(XmlOutput &, const VCConfiguration &);
 XmlOutput &operator<<(XmlOutput &, VCFilter &);
 XmlOutput &operator<<(XmlOutput &, const VCProjectSingleConfig &);
 XmlOutput &operator<<(XmlOutput &, VCProject &);
+
+QT_END_NAMESPACE
 
 #endif // MSVC_OBJECTMODEL_H

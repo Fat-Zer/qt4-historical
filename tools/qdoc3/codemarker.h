@@ -49,9 +49,10 @@
 #define CODEMARKER_H
 
 #include <qpair.h>
-#include <QRegExp>
 
 #include "node.h"
+
+QT_BEGIN_NAMESPACE
 
 class Config;
 class Tree;
@@ -140,14 +141,12 @@ protected:
 private:
     QString macName(const Node *parent, const QString &name = QString());
 
-    QRegExp amp;
-    QRegExp lt;
-    QRegExp gt;
-    QRegExp quot;
     bool slow;
 
     static QString defaultLang;
     static QList<CodeMarker *> markers;
 };
+
+QT_END_NAMESPACE
 
 #endif

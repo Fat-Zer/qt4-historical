@@ -47,6 +47,7 @@
 #include <QDomNode>
 #include <QHash>
 
+//! [0]
 class DomItem
 {
 public:
@@ -63,5 +64,6 @@ private:
     DomItem *parentItem;
     int rowNumber;
 };
+//! [0]
 
 #endif

@@ -52,6 +52,8 @@
 #include "qwidget.h"
 #include "qhash.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3SqlFormPrivate
 {
 public:
@@ -93,32 +95,7 @@ public:
 
     Some sample code to initialize a form successfully:
 
-    \code
-    QLineEdit  myEditor(this);
-    Q3SqlForm   myForm(this);
-    Q3SqlCursor myCursor("mytable");
-
-    // Execute a query to make the cursor valid
-    myCursor.select();
-    // Move the cursor to a valid record (the first record)
-    myCursor.next();
-    // Set the form's record pointer to the cursor's edit buffer (which
-    // contains the current record's values)
-    myForm.setRecord(myCursor.primeUpdate());
-
-    // Insert a field into the form that uses myEditor to edit the
-    // field 'somefield' in 'mytable'
-    myForm.insert(&myEditor, "somefield");
-
-    // Update myEditor with the value from the mapped database field
-    myForm.readFields();
-    ...
-    // Let the user edit the form
-    ...
-    // Update the database
-    myForm.writeFields();  // Update the cursor's edit buffer from the form
-    myCursor.update();        // Update the database from the cursor's buffer
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlform.cpp 0
 
     If you want to use custom editors for displaying and editing data
     fields, you must install a custom Q3SqlPropertyMap. The form
@@ -397,5 +374,7 @@ void Q3SqlForm::clearMap()
 {
     d->map.clear();
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SQL

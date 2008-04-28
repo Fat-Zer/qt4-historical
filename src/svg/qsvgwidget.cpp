@@ -43,11 +43,14 @@
 
 #include "qsvgwidget.h"
 
+#ifndef QT_NO_SVGWIDGET
+
 #include "qsvgrenderer.h"
 
 #include "qpainter.h"
 #include "private/qwidget_p.h"
 
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QSvgWidget
@@ -176,3 +179,7 @@ void QSvgWidget::load(const QByteArray &contents)
     Q_D(const QSvgWidget);
     d->renderer->load(contents);
 }
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVGWIDGET

@@ -48,10 +48,13 @@
 #include <QWidget>
 #include <QBuffer>
 #include <QXmlStreamReader>
+
+QT_BEGIN_NAMESPACE
 class QLineEdit;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QPushButton;
+QT_END_NAMESPACE
 
 class RSSListing : public QWidget
 {

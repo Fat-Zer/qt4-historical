@@ -47,6 +47,8 @@
 #include "view3d_global.h"
 #include <QtGui/QWidget>
 
+QT_BEGIN_NAMESPACE
+
 class QScrollBar;
 class QGLWidget;
 class QDesignerFormWindowInterface;
@@ -73,3 +75,5 @@ private:
 
 #endif // VIEW3D_H
 
+
+QT_END_NAMESPACE

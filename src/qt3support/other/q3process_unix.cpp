@@ -66,6 +66,8 @@
 #include <errno.h>
 #include <sys/types.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifdef __MIPSEL__
 # ifndef SOCK_DGRAM
 #  define SOCK_DGRAM 1
@@ -471,7 +473,9 @@ void Q3ProcessManager::sigchldHnd( int fd )
 	sn->setEnabled( true );
 }
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "q3process_unix.moc"
+QT_END_INCLUDE_NAMESPACE
 
 
 /***********************************************************************
@@ -1022,10 +1026,7 @@ void Q3Process::tryTerminate() const
 
     The nice way to end a process and to be sure that it is finished,
     is to do something like this:
-    \code
-	process->tryTerminate();
-	QTimer::singleShot( 5000, process, SLOT(kill()) );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.other.q3process_unix.cpp 0
 
     This tries to terminate the process the nice way. If the process
     is still running after 5 seconds, it terminates the process the
@@ -1405,5 +1406,7 @@ Q3Process::PID Q3Process::processIdentifier()
 	return -1;
     return d->proc->pid;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PROCESS

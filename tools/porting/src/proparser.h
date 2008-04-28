@@ -47,7 +47,11 @@
 #include <QMap>
 #include <QString>
 
+QT_BEGIN_NAMESPACE
+
 QMap<QString, QString> proFileTagMap( const QString& text, QString currentPath = QString() );
 QString loadFile( const QString &fileName );
+
+QT_END_NAMESPACE
 
 #endif

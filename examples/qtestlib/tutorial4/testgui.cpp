@@ -44,6 +44,7 @@
 #include <QtGui>
 #include <QtTest/QtTest>
 
+//! [0]
 class TestGui: public QObject
 {
     Q_OBJECT
@@ -52,7 +53,9 @@ private slots:
     void testGui_data();
     void testGui();
 };
+//! [0]
 
+//! [1]
 void TestGui::testGui_data()
 {
     QTest::addColumn<QTestEventList>("events");
@@ -67,7 +70,9 @@ void TestGui::testGui_data()
     list2.addKeyClick(Qt::Key_Backspace);
     QTest::newRow("there and back again") << list2 << "";
 }
+//! [1]
 
+//! [2]
 void TestGui::testGui()
 {
     QFETCH(QTestEventList, events);
@@ -79,7 +84,10 @@ void TestGui::testGui()
 
     QCOMPARE(lineEdit.text(), expected);
 }
+//! [2]
 
+//! [3]
 QTEST_MAIN(TestGui)
 #include "testgui.moc"
+//! [3]
 

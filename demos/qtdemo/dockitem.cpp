@@ -64,7 +64,7 @@ void DockItem::setupPixmap()
     QColor background = Colors::sceneBg1;
     QLinearGradient brush(0, 0, 0, this->boundingRect().height());
     brush.setSpread(QGradient::PadSpread);
-    
+
     if (this->orientation == DOWN){
         brush.setColorAt(0.0, background);
         brush.setColorAt(0.2, background);
@@ -80,9 +80,9 @@ void DockItem::setupPixmap()
     }
     else
         qWarning("DockItem doesn't support the orientation given!");
-    
+
     painter.fillRect(0, 0, int(this->boundingRect().width()), int(this->boundingRect().height()), brush);
-    
+
 }
 
 DockItem::~DockItem()
@@ -102,7 +102,7 @@ void DockItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    
+
     painter->drawPixmap(0, 0, *this->pixmap);
 }
 

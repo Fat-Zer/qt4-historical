@@ -57,6 +57,8 @@
 
 #include "QtCore/qbytearray.h"
 
+QT_BEGIN_NAMESPACE
+
 template <typename Type> class QDataBuffer
 {
 public:
@@ -85,12 +87,32 @@ public:
     inline const Type &first() const { Q_ASSERT(!isEmpty()); return buffer[0]; }
 
     inline void add(const Type &t) {
-        if (siz >= capacity) {
+        reserve(siz + 1);
+        buffer[siz] = t;
+        ++siz;
+    }
+
+    inline void resize(int size) {
+        reserve(size);
+        siz = size;
+    }
+
+    inline void reserve(int size) {
+        if (size > capacity) {
             capacity *= 2;
             buffer = (Type*) qRealloc(buffer, capacity * sizeof(Type));
         }
-        buffer[siz] = t;
-        ++siz;
+    }
+
+    inline void shrink(int size) {
+        capacity = size;
+        buffer = (Type*) qRealloc(buffer, capacity * sizeof(Type));
+    }
+
+    inline void swap(QDataBuffer<Type> &other) {
+        qSwap(capacity, other.capacity);
+        qSwap(siz, other.siz);
+        qSwap(buffer, other.buffer);
     }
 
     inline QDataBuffer &operator<<(const Type &t) { add(t); return *this; }
@@ -100,5 +122,7 @@ private:
     int siz;
     Type *buffer;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDATABUFFER_P_H

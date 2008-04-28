@@ -46,8 +46,11 @@
 
 #include <QLabel>
 
+QT_BEGIN_NAMESPACE
 class QMimeData;
+QT_END_NAMESPACE
 
+//! [DropArea header part1]
 class DropArea : public QLabel
 {
     Q_OBJECT
@@ -60,7 +63,9 @@ public slots:
 
 signals:
     void changed(const QMimeData *mimeData = 0);
+//! [DropArea header part1]
 
+//! [DropArea header part2]
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
@@ -70,5 +75,6 @@ protected:
 private:
     QLabel *label;
 };
+//! [DropArea header part2]
 
 #endif

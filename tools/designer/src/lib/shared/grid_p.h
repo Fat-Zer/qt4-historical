@@ -59,8 +59,11 @@
 
 #include <QtCore/QVariantMap>
 
+QT_BEGIN_NAMESPACE
+
 class QWidget;
 class QPaintEvent;
+class QPainter;
 
 namespace qdesigner_internal {
 
@@ -90,7 +93,8 @@ public:
     inline int deltaY() const     { return m_deltaY; }
     void setDeltaY(int dy)        { m_deltaY = dy; }
 
-    void paint(QWidget *widget, QPaintEvent *e, bool needFrame = false) const;
+    void paint(QWidget *widget, QPaintEvent *e) const;
+    void paint(QPainter &p, const QWidget *widget, QPaintEvent *e) const;
 
     QPoint snapPoint(const QPoint &p) const;
 
@@ -106,5 +110,7 @@ private:
     int m_deltaY;
 };
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_GRID_H

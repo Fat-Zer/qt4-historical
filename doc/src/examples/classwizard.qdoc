@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example dialogs/classwizard
     \title Class Wizard Example
@@ -55,18 +98,14 @@
 
     Here's the \c ClassWizard definition:
 
-    \quotefromfile dialogs/classwizard/classwizard.h
-    \skipto class ClassWizard :
-    \printuntil /^\}/
+    \snippet examples/dialogs/classwizard/classwizard.h 0
 
     The class reimplements QDialog's \l{QDialog::}{accept()} slot.
     This slot is called when the user clicks \gui{Finish}.
 
     Here's the constructor:
 
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto ::ClassWizard
-    \printuntil /^\}/
+    \snippet examples/dialogs/classwizard/classwizard.cpp 1
 
     We instantiate the five pages and insert them into the wizard
     using QWizard::addPage(). The order in which they are inserted
@@ -79,12 +118,11 @@
     dialog's background in \l{QWizard::}{MacStyle}. (See \l{Elements
     of a Wizard Page} for more information.)
 
-    \printline ::accept
-    \printuntil QString implementation
+    \snippet examples/dialogs/classwizard/classwizard.cpp 3
+    \snippet examples/dialogs/classwizard/classwizard.cpp 4
     \dots
-    \skipto QDialog::accept
-    \printline QDialog::accept
-    \printline }
+    \snippet examples/dialogs/classwizard/classwizard.cpp 5
+    \snippet examples/dialogs/classwizard/classwizard.cpp 6
 
     If the user clicks \gui Finish, we extract the information from
     the various pages using QWizard::field() and generate the files.
@@ -99,13 +137,9 @@
     classwizard.cpp, together with \c ClassWizard. We will start with
     the easiest page:
 
-    \quotefromfile dialogs/classwizard/classwizard.h
-    \skipto class IntroPage :
-    \printuntil /^\};/
-
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto ::IntroPage(
-    \printuntil /^\}/
+    \snippet examples/dialogs/classwizard/classwizard.h 1
+    \codeline
+    \snippet examples/dialogs/classwizard/classwizard.cpp 7
 
     A page inherits from QWizardPage. We set a
     \l{QWizardPage::}{title} and a
@@ -121,19 +155,13 @@
 
     The second page is defined and implemented as follows:
 
-    \quotefromfile dialogs/classwizard/classwizard.h
-    \skipto class ClassInfoPage :
-    \printuntil /^\};/
-
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto ::ClassInfoPage(
-    \printuntil groupBox = new
+    \snippet examples/dialogs/classwizard/classwizard.h 2
+    \codeline
+    \snippet examples/dialogs/classwizard/classwizard.cpp 9
     \dots
-    \skipto registerField
-    \printuntil groupBoxLayout
+    \snippet examples/dialogs/classwizard/classwizard.cpp 12
     \dots
-    \skipto /^\}/
-    \printline }
+    \snippet examples/dialogs/classwizard/classwizard.cpp 13
 
     First, we set the page's \l{QWizardPage::}{title},
     \l{QWizardPage::}{subTitle}, and \l{QWizard::LogoPixmap}{logo
@@ -153,19 +181,13 @@
 
     The third page is defined and implemented as follows:
 
-    \quotefromfile dialogs/classwizard/classwizard.h
-    \skipto class CodeStylePage :
-    \printuntil /^\};/
-
-    \quotefromfile dialogs/classwizard/classwizard.cpp
-    \skipto ::CodeStylePage(
-    \printuntil commentCheckBox = new
+    \snippet examples/dialogs/classwizard/classwizard.h 3
+    \codeline
+    \snippet examples/dialogs/classwizard/classwizard.cpp 14
     \dots
-    \skipto setLayout
-    \printuntil }
-
-    \skipto CodeStylePage::initializePage
-    \printuntil /^\}/
+    \snippet examples/dialogs/classwizard/classwizard.cpp 15
+    \codeline
+    \snippet examples/dialogs/classwizard/classwizard.cpp 16
 
     The code in the constructor is very similar to what we did for \c
     ClassInfoPage, so we skipped most of it.

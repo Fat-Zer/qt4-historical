@@ -55,8 +55,10 @@
 #ifndef CSSHIGHLIGHTER_H
 #define CSSHIGHLIGHTER_H
 
-#include <QSyntaxHighlighter>
+#include <QtGui/QSyntaxHighlighter>
 #include "shared_global_p.h"
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -64,7 +66,7 @@ class QDESIGNER_SHARED_EXPORT CssHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    CssHighlighter(QTextDocument *document);
+    explicit CssHighlighter(QTextDocument *document);
 
 protected:
     void highlightBlock(const QString&);
@@ -76,5 +78,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // CSSHIGHLIGHTER_H

@@ -48,6 +48,8 @@
 #include <qpair.h>
 #include <qstring.h>
 
+QT_BEGIN_NAMESPACE
+
 class QTextStream;
 
 struct DcfSection
@@ -88,5 +90,7 @@ void appendDcfSubSections(DcfSection *dcfSect, const QList<DcfSection> &subs);
 void generateDcfSubSections(QString indent, QTextStream &out, const DcfSection &sect);
 void generateDcfSections(const DcfSection &rootSect, const QString& fileName,
                          const QString& category );
+
+QT_END_NAMESPACE
 
 #endif

@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TEXTBROWSER
@@ -81,6 +83,10 @@ public:
     bool isBackwardAvailable() const;
     bool isForwardAvailable() const;
     void clearHistory();
+    QString historyTitle(int) const;
+    QUrl historyUrl(int) const;
+    int backwardHistoryCount() const;
+    int forwardHistoryCount() const;
 
     bool openExternalLinks() const;
     void setOpenExternalLinks(bool open);
@@ -98,6 +104,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void backwardAvailable(bool);
     void forwardAvailable(bool);
+    void historyChanged();
     void sourceChanged(const QUrl &);
     void highlighted(const QUrl &);
     void highlighted(const QString &);
@@ -127,6 +134,8 @@ private:
 };
 
 #endif // QT_NO_TEXTBROWSER
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

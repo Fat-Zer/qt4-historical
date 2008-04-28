@@ -54,6 +54,8 @@
 
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerFormWindowInterface
 
@@ -73,10 +75,7 @@
     widget, you can use the static
     QDesignerFormWindowInterface::findFormWindow() function:
 
-    \code
-    QDesignerFormWindowInterface *formWindow;
-    formWindow = QDesignerFormWindowInterface::findFormWindow(myWidget);
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindow.cpp 0
 
     But in addition, you can access any of the current form windows
     through \QD's form window manager: Use the
@@ -86,17 +85,7 @@
     through the QDesignerFormWindowManagerInterface::formWindow()
     function. For example:
 
-    \code
-    QList<QDesignerFormWindowInterface *> forms;
-    QDesignerFormWindowInterface *formWindow;
-
-    QDesignerFormWindowManagerInterface *manager = formEditor->formWindowManager();
-
-    for (int i = 0; i < manager->formWindowCount(); i++) {
-        formWindow = manager->formWindow(i);
-        forms.append(formWindow);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindow.cpp 1
 
     The pointer to \QD's current QDesignerFormEditorInterface object
     (\c formEditor in the example above) is provided by the
@@ -112,10 +101,7 @@
     with functions that enables you to control whether a widget should
     be managed by \QD, or not:
 
-    \code
-        if (formWindow->isManaged(myWidget))
-            formWindow->manageWidget(myWidget->childWidget);
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindow.cpp 2
 
     The complete list of functions concerning widget management is:
     isManaged(), manageWidget() and unmanageWidget(). There is also
@@ -194,7 +180,7 @@ QDesignerFormEditorInterface *QDesignerFormWindowInterface::core() const
     Returns the form window interface for the given \a widget.
 */
 
-static inline bool stopFindAtTopLevel(const QWidget *w)
+static inline bool stopFindAtTopLevel(const QObject *w)
 {
     // Do we need to go beyond top levels when looking for the form window?
     // 1) A dialog has a window attribute at the moment it is created
@@ -223,6 +209,36 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
         }
 
         w = w->parentWidget();
+    }
+
+    return 0;
+}
+
+/*!
+    \fn QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QObject *object)
+
+    Returns the form window interface for the given \a object.
+
+    \since 4.4
+*/
+
+QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QObject *object)
+{
+    while (object != 0) {
+        if (QDesignerFormWindowInterface *fw = qobject_cast<QDesignerFormWindowInterface*>(object)) {
+            return fw;
+        } else {
+            QWidget *w = qobject_cast<QWidget *>(object);
+            // QDesignerMenu is a window so stopFindAtTopLevel(w) returns NULL.
+            // However we want to find form window for actions inside menu.
+            // If this check is inside stopFindAtTopLevel(w) then it breaks designer
+            // menu editing (e.g. broken ckicking on items inside opened menu)
+            if (w && w->isWindow() && stopFindAtTopLevel(w) && !w->inherits("QDesignerMenu"))
+                break;
+
+        }
+
+        object = object->parent();
     }
 
     return 0;
@@ -784,3 +800,5 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     This signal is emitted whenever a widget is removed from the form.
     The widget that was removed is specified by \a widget.
 */
+
+QT_END_NAMESPACE

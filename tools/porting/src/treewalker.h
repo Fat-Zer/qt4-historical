@@ -47,6 +47,8 @@
 
 #include "ast.h"
 
+QT_BEGIN_NAMESPACE
+
 class TreeWalker
 {
 public:
@@ -229,5 +231,7 @@ inline void TreeWalker::parseNode(AST *node)
         break;
     }
 }
+
+QT_END_NAMESPACE
 
 #endif // TREEWALKER_H

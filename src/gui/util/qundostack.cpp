@@ -48,6 +48,8 @@
 
 #ifndef QT_NO_UNDOCOMMAND
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QUndoCommand
     \brief The QUndoCommand class is the base class of all commands stored on a QUndoStack.
@@ -62,21 +64,7 @@
     a change to the document with redo() and undo the change with undo(). The
     implementations for these functions must be provided in a derived class.
 
-    \code
-    class AppendText : public QUndoCommand
-    {
-    public:
-        AppendText(QString *doc, const QString &text)
-            : m_document(doc), m_text(text) { setText("append text"); }
-        virtual void undo()
-            { m_document->chop(m_text.length()); }
-        virtual void redo()
-            { m_document->append(m_text); }
-    private:
-        QString *m_document;
-        QString m_text;
-    };
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qundostack.cpp 0
 
     A QUndoCommand has an associated text(). This is a short string
     describing what the command does. It is used to update the text
@@ -86,17 +74,7 @@
     QUndoCommand objects are owned by the stack they were pushed on.
     QUndoStack deletes a command if it has been undone and a new command is pushed. For example:
 
-\code
-    MyCommand *command1 = new MyCommand();
-    stack->push(command1);
-    MyCommand *command2 = new MyCommand();
-    stack->push(command2);
-
-    stack->undo();
-
-    MyCommand *command3 = new MyCommand();
-    stack->push(command3); // command2 gets deleted
-\endcode
+\snippet doc/src/snippets/code/src.gui.util.qundostack.cpp 1
 
     In effect, when a command is pushed, it becomes the top-most command
     on the stack.
@@ -116,15 +94,7 @@
     redo() on all its children. The parent should, however, have a meaningful
     text().
 
-    \code
-    QUndoCommand *insertRed = new QUndoCommand(); // an empty command
-    insertRed->setText("insert red text");
-
-    new InsertText(document, idx, text, insertRed); // becomes child of insertRed
-    new SetColor(document, idx, text.length(), Qt::red, insertRed);
-
-    stack.push(insertRed);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qundostack.cpp 2
 
     Another way to create macros is to use the convenience functions
     QUndoStack::beginMacro() and QUndoStack::endMacro().
@@ -213,15 +183,7 @@ int QUndoCommand::id() const
 
     The default implementation returns false.
 
-    \code
-    bool AppendText::mergeWith(const QUndoCommand *other)
-    {
-        if (other->id() != id()) // make sure other is also an AppendText command
-            return false;
-        m_text += static_cast<const AppendText*>(other)->m_text;
-        return true;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qundostack.cpp 3
 
     \sa id() QUndoStack::push()
 */
@@ -294,6 +256,30 @@ QString QUndoCommand::text() const
 void QUndoCommand::setText(const QString &text)
 {
     d->text = text;
+}
+
+/*!
+    Returns the number of child commands in this command.
+
+    \sa child()
+*/
+
+int QUndoCommand::childCount() const
+{
+    return d->child_list.count();
+}
+
+/*!
+    Returns the child command at \a index.
+
+    \sa childCount(), QUndoStack::command()
+*/
+
+const QUndoCommand *QUndoCommand::child(int index) const
+{
+    if (index < 0 || index >= d->child_list.count())
+        return 0;
+    return d->child_list.at(index);
 }
 
 #endif // QT_NO_UNDOCOMMAND
@@ -703,7 +689,7 @@ void QUndoStack::redo()
     Returns the number of commands on the stack. Macro commands are counted as
     one command.
 
-    \sa index() setIndex()
+    \sa index() setIndex() command()
 */
 
 int QUndoStack::count() const
@@ -905,24 +891,11 @@ QAction *QUndoStack::createRedoAction(QObject *parent, const QString &prefix) co
     The stack becomes enabled and appropriate signals are emitted when endMacro()
     is called for the outermost macro.
 
-    \code
-    stack.beginMacro("insert red text");
-    stack.push(new InsertText(document, idx, text));
-    stack.push(new SetColor(document, idx, text.length(), Qt::red));
-    stack.endMacro(); // indexChanged() is emitted
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qundostack.cpp 4
 
     This code is equivalent to:
 
-    \code
-    QUndoCommand *insertRed = new QUndoCommand(); // an empty command
-    insertRed->setText("insert red text");
-
-    new InsertText(document, idx, text, insertRed); // becomes child of insertRed
-    new SetColor(document, idx, text.length(), Qt::red, insertRed);
-
-    stack.push(insertRed);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qundostack.cpp 5
 
     \sa endMacro()
 */
@@ -975,6 +948,25 @@ void QUndoStack::endMacro()
         d->checkUndoLimit();
         d->setIndex(d->index + 1, false);
     }
+}
+
+/*!
+  Returns a const pointer to the command at \a index.
+
+  This function returns a const pointer, because modifying a command,
+  once it has been pushed onto the stack and executed, almost always
+  causes corruption of the state of the document, if the command is 
+  later undone or redone.
+
+  \sa QUndoCommand::child()
+*/
+const QUndoCommand *QUndoStack::command(int index) const
+{
+    Q_D(const QUndoStack);
+
+    if (index < 0 || index >= d->command_list.count())
+        return 0;
+    return d->command_list.at(index);
 }
 
 /*!
@@ -1127,5 +1119,7 @@ bool QUndoStack::isActive() const
     used to enable or disable the redo action returned by createRedoAction().
     \a canUndo specifies the new value.
 */
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_UNDOSTACK

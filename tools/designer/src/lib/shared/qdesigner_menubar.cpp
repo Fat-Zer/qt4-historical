@@ -68,7 +68,8 @@
 #include <QtGui/qevent.h>
 
 Q_DECLARE_METATYPE(QAction*)
-Q_DECLARE_METATYPE(QListWidgetItem*)
+
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
@@ -114,8 +115,7 @@ QDesignerMenuBar::QDesignerMenuBar(QWidget *parent)  :
     m_editor->setObjectName(QLatin1String("__qt__passive_editor"));
     m_editor->hide();
     m_editor->installEventFilter(this);
-
-    qApp->installEventFilter(this);
+    installEventFilter(this);
 }
 
 QDesignerMenuBar::~QDesignerMenuBar()
@@ -197,7 +197,7 @@ bool QDesignerMenuBar::handleMouseDoubleClickEvent(QWidget *, QMouseEvent *event
 
     m_startPosition = QPoint();
 
-    m_currentIndex = actionAtPosition(event->pos());
+    m_currentIndex = actionIndexAt(this, event->pos(), Qt::Horizontal);
     if (m_currentIndex != -1) {
         showLineEdit();
     }
@@ -353,7 +353,7 @@ bool QDesignerMenuBar::handleMousePressEvent(QWidget *, QMouseEvent *event)
         return true;
 
     m_startPosition = event->pos();
-    const int newIndex = actionAtPosition(m_startPosition);
+    const int newIndex = actionIndexAt(this, m_startPosition, Qt::Horizontal);
     const bool changed = newIndex != m_currentIndex;
     m_currentIndex =  newIndex;
     updateCurrentAction(changed);
@@ -369,7 +369,7 @@ bool QDesignerMenuBar::handleMouseReleaseEvent(QWidget *, QMouseEvent *event)
         return true;
 
     event->accept();
-    m_currentIndex = actionAtPosition(event->pos());
+    m_currentIndex = actionIndexAt(this, event->pos(), Qt::Horizontal);
     if (!m_editor->isVisible() && m_currentIndex != -1 && m_currentIndex < realActionCount())
         showMenu();
 
@@ -389,7 +389,7 @@ bool QDesignerMenuBar::handleMouseMoveEvent(QWidget *, QMouseEvent *event)
     if ((pos - m_startPosition).manhattanLength() < qApp->startDragDistance())
         return true;
 
-    const int index = actionAtPosition(m_startPosition);
+    const int index =  actionIndexAt(this, m_startPosition, Qt::Horizontal);
     if (index < actions().count()) {
         hideMenu(index);
         update();
@@ -405,7 +405,7 @@ bool QDesignerMenuBar::handleContextMenuEvent(QWidget *, QContextMenuEvent *even
 {
     event->accept();
 
-    m_currentIndex = actionAtPosition(mapFromGlobal(event->globalPos()));
+    m_currentIndex = actionIndexAt(this, mapFromGlobal(event->globalPos()), Qt::Horizontal);
 
     update();
 
@@ -568,29 +568,9 @@ bool QDesignerMenuBar::eventFilter(QObject *object, QEvent *event)
     return false;
 };
 
-
-int QDesignerMenuBar::actionAtPosition(const QPoint &pos) const
-{
-    QList<QAction*> lst = actions();
-    int index = 0;
-    for (; index<lst.count(); ++index) {
-        QRect g = actionGeometry(lst.at(index));
-        if (QApplication::layoutDirection() == Qt::LeftToRight)
-            g.setTopLeft(QPoint(0, 0));
-        else
-            g.setTopRight(QPoint(rect().width(), 0));
-
-        if (g.contains(pos))
-            return index;
-    }
-
-    return -1;
-}
-
-
 int QDesignerMenuBar::findAction(const QPoint &pos) const
 {
-    const int index = actionAtPosition(pos);
+    const int index = actionIndexAt(this, pos, Qt::Horizontal);
     if (index == -1)
         return realActionCount();
 
@@ -957,3 +937,5 @@ void QDesignerMenuBar::updateCurrentAction(bool selectAction)
     oi->clearSelection();
     oi->selectObject(menu);
 }
+
+QT_END_NAMESPACE

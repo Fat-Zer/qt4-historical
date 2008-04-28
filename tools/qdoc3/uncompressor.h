@@ -52,6 +52,8 @@
 
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 class Uncompressor
 {
 public:
@@ -73,5 +75,7 @@ private:
 
     static QList<Uncompressor *> uncompressors;
 };
+
+QT_END_NAMESPACE
 
 #endif

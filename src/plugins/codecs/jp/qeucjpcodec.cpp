@@ -77,6 +77,8 @@
 
 #include "qeucjpcodec.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TEXTCODEC
 
 static const uchar Esc = 0x1b;
@@ -258,3 +260,5 @@ QByteArray QEucJpCodec::_name()
     return "EUC-JP";
 }
 #endif // QT_NO_TEXTCODEC
+
+QT_END_NAMESPACE

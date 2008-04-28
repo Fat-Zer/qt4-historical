@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(OpenGL)
 
 class Q_OPENGL_EXPORT QGLColormap
@@ -78,7 +80,7 @@ protected:
 
 private:
     struct QGLColormapData {
-        QBasicAtomic ref;
+        QBasicAtomicInt ref;
         QVector<QRgb> *cells;
         Qt::HANDLE cmapHandle;
     };
@@ -97,6 +99,8 @@ inline void QGLColormap::detach()
     if (d->ref != 1)
         detach_helper();
 }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

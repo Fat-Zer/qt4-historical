@@ -43,6 +43,8 @@
 
 #include "qsvgrenderer.h"
 
+#ifndef QT_NO_SVGRENDERER
+
 #include "qsvgtinydocument_p.h"
 
 #include "qbytearray.h"
@@ -51,12 +53,15 @@
 #include "private/qobject_p.h"
 
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QSvgRenderer
     \ingroup multimedia
 
     \brief The QSvgRenderer class is used to draw the contents of SVG files onto paint devices.
     \since 4.1
+    \reentrant
 
     Using QSvgRenderer, Scalable Vector Graphics (SVG) can be rendered onto any QPaintDevice
     subclass, including QWidget, QImage, and QGLWidget.
@@ -167,7 +172,7 @@ bool QSvgRenderer::isValid() const
 QSize QSvgRenderer::defaultSize() const
 {
     Q_D(const QSvgRenderer);
-    if (d->render) 
+    if (d->render)
         return d->render->size();
     else
         return QSize();
@@ -325,7 +330,7 @@ bool QSvgRenderer::load(const QByteArray &contents)
     } else if (d->timer) {
         d->timer->stop();
     }
-    
+
     //force first update
     emit repaintNeeded();
 
@@ -450,4 +455,8 @@ QMatrix QSvgRenderer::matrixForElement(const QString &id) const
     return mat;
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qsvgrenderer.cpp"
+
+#endif // QT_NO_SVGRENDERER

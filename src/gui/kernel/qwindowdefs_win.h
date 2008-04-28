@@ -48,7 +48,11 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
+
+QT_END_NAMESPACE
 
 #if !defined(Q_NOWINSTRICT)
 #define Q_WINSTRICT
@@ -116,10 +120,14 @@ typedef struct tagMSG MSG;
 typedef HWND WId;
 
 
+QT_BEGIN_NAMESPACE
+
 Q_CORE_EXPORT HINSTANCE qWinAppInst();
 Q_CORE_EXPORT HINSTANCE qWinAppPrevInst();
 Q_GUI_EXPORT int           qWinAppCmdShow();
 Q_GUI_EXPORT HDC           qt_win_display_dc();
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

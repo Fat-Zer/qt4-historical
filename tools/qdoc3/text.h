@@ -50,6 +50,8 @@
 
 #include "atom.h"
 
+QT_BEGIN_NAMESPACE
+
 class Text
 {
 public:
@@ -78,6 +80,7 @@ public:
 
     static Text subText( const Atom *begin, const Atom *end = 0 );
     static Text sectionHeading(const Atom *sectionBegin);
+    static const Atom *sectionHeadingAtom(const Atom *sectionLeft);
     static int compare(const Text &text1, const Text &text2);
 
 private:
@@ -99,5 +102,7 @@ inline bool operator>(const Text &text1, const Text &text2)
 { return Text::compare(text1, text2) > 0; }
 inline bool operator>=(const Text &text1, const Text &text2)
 { return Text::compare(text1, text2) >= 0; }
+
+QT_END_NAMESPACE
 
 #endif

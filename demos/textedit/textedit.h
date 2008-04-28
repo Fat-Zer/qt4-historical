@@ -48,12 +48,12 @@
 #include <QMap>
 #include <QPointer>
 
-class QAction;
-class QComboBox;
-class QFontComboBox;
-class QTextEdit;
-class QTextCharFormat;
-class QMenu;
+QT_FORWARD_DECLARE_CLASS(QAction)
+QT_FORWARD_DECLARE_CLASS(QComboBox)
+QT_FORWARD_DECLARE_CLASS(QFontComboBox)
+QT_FORWARD_DECLARE_CLASS(QTextEdit)
+QT_FORWARD_DECLARE_CLASS(QTextCharFormat)
+QT_FORWARD_DECLARE_CLASS(QMenu)
 
 class TextEdit : public QMainWindow
 {
@@ -96,7 +96,8 @@ private slots:
 
     void clipboardDataChanged();
     void about();
-    
+    void printPreview(QPrinter *);
+
 private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
     void fontChanged(const QFont &f);

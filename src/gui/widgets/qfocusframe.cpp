@@ -49,6 +49,8 @@
 #include "qdebug.h"
 #include <private/qwidget_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QFocusFramePrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QFocusFrame)
@@ -264,5 +266,4 @@ bool QFocusFrame::event(QEvent *e)
     return QWidget::event(e);
 }
 
-
-
+QT_END_NAMESPACE

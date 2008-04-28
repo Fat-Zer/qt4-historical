@@ -45,11 +45,16 @@
 #define QSVGRENDERER_H
 
 #include <QtGui/qmatrix.h>
+
+#ifndef QT_NO_SVGRENDERER
+
 #include <QtCore/qobject.h>
 #include <QtCore/qsize.h>
 #include <QtCore/qrect.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Svg)
 
@@ -89,13 +94,13 @@ public:
     QRectF boundsOnElement(const QString &id) const;
     bool elementExists(const QString &id) const;
     QMatrix matrixForElement(const QString &id) const;
-    
+
 public Q_SLOTS:
     bool load(const QString &filename);
     bool load(const QByteArray &contents);
     void render(QPainter *p);
     void render(QPainter *p, const QRectF &bounds);
-    
+
     void render(QPainter *p, const QString &elementId,
                 const QRectF &bounds=QRectF());
 
@@ -106,6 +111,9 @@ private:
     Q_DECLARE_PRIVATE(QSvgRenderer)
 };
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
+#endif // QT_NO_SVGRENDERER
 #endif // QSVGRENDERER_H

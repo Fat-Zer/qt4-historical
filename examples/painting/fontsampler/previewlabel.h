@@ -48,7 +48,9 @@
 #include <QPixmap>
 #include <QSize>
 
+QT_BEGIN_NAMESPACE
 class QResizeEvent;
+QT_END_NAMESPACE
 
 class PreviewLabel : public QWidget
 {

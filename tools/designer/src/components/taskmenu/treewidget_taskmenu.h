@@ -48,7 +48,9 @@
 #include <QtCore/QPointer>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QLineEdit;
 class QDesignerFormWindowInterface;
@@ -59,7 +61,7 @@ class TreeWidgetTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    TreeWidgetTaskMenu(QTreeWidget *button, QObject *parent = 0);
+    explicit TreeWidgetTaskMenu(QTreeWidget *button, QObject *parent = 0);
     virtual ~TreeWidgetTaskMenu();
 
     virtual QAction *preferredEditAction() const;
@@ -77,16 +79,9 @@ private:
     QAction *m_editItemsAction;
 };
 
-class TreeWidgetTaskMenuFactory: public QExtensionFactory
-{
-    Q_OBJECT
-public:
-    TreeWidgetTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
-};
-
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QTreeWidget, TreeWidgetTaskMenu> TreeWidgetTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TREEWIDGET_TASKMENU_H

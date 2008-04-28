@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example widgets/wiggly
     \title Wiggly Example
@@ -16,7 +59,7 @@
     choice. This makes QBasicTimer a more lightweight alternative to
     QTimer. Qt's built-in widgets use it internally, and it is
     provided in Qt's API for highly-optimized applications (e.g.,
-    \l{Qtopia Core} applications).
+    \l{Qt for Embedded Linux} applications).
 
     The example consists of two classes:
 
@@ -33,18 +76,14 @@
 
     \section1 Dialog Class Definition
 
-    \quotefromfile widgets/wiggly/dialog.h
-    \skipto class Dialog
-    \printuntil };
+    \snippet examples/widgets/wiggly/dialog.h 0
 
     The \c Dialog class provides a dialog widget that allows the user
     to enter a text. The text is then rendered by \c WigglyWidget.
 
     \section1 Dialog Class Implementation
 
-    \quotefromfile widgets/wiggly/dialog.cpp
-    \skipto Dialog
-    \printuntil /^\}/
+    \snippet examples/widgets/wiggly/dialog.cpp 0
 
     In the constructor we create a wiggly widget along with a
     \l{QLineEdit}{line edit}, and we put the two widgets in a
@@ -56,9 +95,7 @@
 
     \section1 WigglyWidget Class Definition
 
-    \quotefromfile widgets/wiggly/wigglywidget.h
-    \skipto class WigglyWidget
-    \printuntil };
+    \snippet examples/widgets/wiggly/wigglywidget.h 0
 
     The \c WigglyWidget class provides the wiggly line displaying the
     text. We subclass QWidget and reimplement the standard \l
@@ -75,9 +112,7 @@
 
     \section1 WigglyWidget Class Implementation
 
-    \quotefromfile widgets/wiggly/wigglywidget.cpp
-    \skipto WigglyWidget
-    \printuntil /^\}/
+    \snippet examples/widgets/wiggly/wigglywidget.cpp 0
 
     In the constructor, we make the widget's background slightly
     lighter than the usual background using the QPalette::Midlight
@@ -90,8 +125,8 @@
     timer events generated when the timer times out (every 60
     milliseconds).
 
-    \printline paintEvent
-    \printuntil QColor
+    \snippet examples/widgets/wiggly/wigglywidget.cpp 1
+    \snippet examples/widgets/wiggly/wigglywidget.cpp 2
 
     The \c paintEvent() function is called whenever a QPaintEvent is
     sent to the widget. Paint events are sent to widgets that need to
@@ -114,8 +149,8 @@
     font below the base line). If the descent equals the ascent, they
     cancel out each other and the base line is at \c height() / 2.
 
-    \printline QPainter
-    \printuntil /^\}/
+    \snippet examples/widgets/wiggly/wigglywidget.cpp 3
+    \snippet examples/widgets/wiggly/wigglywidget.cpp 4
 
     Each time the \c paintEvent() function is called, we create a
     QPainter object \c painter to draw the contents of the widget.
@@ -131,8 +166,8 @@
     'V'). The result is that the text isn't perfectly centered. You
     can verify this by typing "AVAVAVAVAVAV" in the line edit.
 
-    \printline timerEvent
-    \printto /^\}/
+    \snippet examples/widgets/wiggly/wigglywidget.cpp 5
+    \snippet examples/widgets/wiggly/wigglywidget.cpp 6
 
     The \c timerEvent() function receives all the timer events that
     are generated for this widget. If a timer event is sent from the

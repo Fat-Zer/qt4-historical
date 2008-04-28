@@ -53,6 +53,8 @@
 
 #include <QtCore/qnumeric.h>
 
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -117,9 +119,9 @@ inline void QScriptContextPrivate::init(QScriptContext *parent)
     m_scopeChain.invalidate();
     m_callee.invalidate();
     m_arguments.invalidate();
-    currentLine = 0;
-    currentColumn = 0;
-    errorLineNumber = 0;
+    currentLine = -1;
+    currentColumn = -1;
+    errorLineNumber = -1;
     m_calledAsConstructor = false;
 }
 
@@ -177,6 +179,7 @@ inline bool QScriptContextPrivate::eq_cmp(const QScriptValueImpl &lhs, const QSc
         case QScript::NumberType:
             return lhs.m_number_value == rhs.m_number_value;
 
+        case QScript::ReferenceType:
         case QScript::IntegerType:
             return lhs.m_int_value == rhs.m_int_value;
 
@@ -188,13 +191,18 @@ inline bool QScriptContextPrivate::eq_cmp(const QScriptValueImpl &lhs, const QSc
                 return lhs.m_string_value == rhs.m_string_value;
             return lhs.m_string_value->s == rhs.m_string_value->s;
 
-        case QScript::VariantType:
-            return lhs.m_object_value == rhs.m_object_value || lhs.toVariant() == rhs.toVariant();
+        case QScript::PointerType:
+            return lhs.m_ptr_value == rhs.m_ptr_value;
 
-        default:
-            if (lhs.isObject())
+        case QScript::ObjectType:
+            if (lhs.isVariant())
+                return lhs.m_object_value == rhs.m_object_value || lhs.toVariant() == rhs.toVariant();
+#ifndef QT_NO_QOBJECT
+            else if (lhs.isQObject())
+                return lhs.m_object_value == rhs.m_object_value || lhs.toQObject() == rhs.toQObject();
+#endif
+            else
                 return lhs.m_object_value == rhs.m_object_value;
-            break;
         }
     }
 
@@ -226,9 +234,6 @@ inline bool QScriptContextPrivate::strict_eq_cmp(const QScriptValueImpl &lhs, co
         if (lhs.m_string_value->unique && rhs.m_string_value->unique)
             return lhs.m_string_value == rhs.m_string_value;
         return lhs.m_string_value->s == rhs.m_string_value->s;
-
-    case QScript::VariantType:
-        return lhs.m_object_value == rhs.m_object_value || lhs.toVariant() == rhs.toVariant();
 
     default:
         if (lhs.isObject())
@@ -313,6 +318,8 @@ inline QScriptContext::ExecutionState QScriptContextPrivate::state() const
 {
     return m_state;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT
 #endif

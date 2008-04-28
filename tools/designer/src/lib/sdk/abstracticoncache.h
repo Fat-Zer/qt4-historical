@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QIcon;
 class QPixmap;
 class QString;
@@ -75,6 +77,8 @@ public:
 
     virtual QString resolveQrcPath(const QString &filePath, const QString &qrcPath, const QString &workingDirectory = QString()) const = 0;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

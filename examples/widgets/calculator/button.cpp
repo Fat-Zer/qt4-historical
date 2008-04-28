@@ -45,6 +45,7 @@
 
 #include "button.h"
 
+//! [0]
 Button::Button(const QString &text, const QColor &color, QWidget *parent)
     : QToolButton(parent)
 {
@@ -55,11 +56,15 @@ Button::Button(const QString &text, const QColor &color, QWidget *parent)
     newPalette.setColor(QPalette::Button, color);
     setPalette(newPalette);
 }
+//! [0]
 
+//! [1]
 QSize Button::sizeHint() const
+//! [1] //! [2]
 {
     QSize size = QToolButton::sizeHint();
     size.rheight() += 20;
     size.rwidth() = qMax(size.width(), size.height());
     return size;
 }
+//! [2]

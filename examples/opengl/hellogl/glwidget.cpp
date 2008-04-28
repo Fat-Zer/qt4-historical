@@ -48,6 +48,7 @@
 
 #include "glwidget.h"
 
+//! [0]
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(parent)
 {
@@ -59,23 +60,32 @@ GLWidget::GLWidget(QWidget *parent)
     trolltechGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
     trolltechPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
 }
+//! [0]
 
+//! [1]
 GLWidget::~GLWidget()
 {
     makeCurrent();
     glDeleteLists(object, 1);
 }
+//! [1]
 
+//! [2]
 QSize GLWidget::minimumSizeHint() const
 {
     return QSize(50, 50);
 }
+//! [2]
 
+//! [3]
 QSize GLWidget::sizeHint() const
+//! [3] //! [4]
 {
     return QSize(400, 400);
 }
+//! [4]
 
+//! [5]
 void GLWidget::setXRotation(int angle)
 {
     normalizeAngle(&angle);
@@ -85,6 +95,7 @@ void GLWidget::setXRotation(int angle)
         updateGL();
     }
 }
+//! [5]
 
 void GLWidget::setYRotation(int angle)
 {
@@ -106,6 +117,7 @@ void GLWidget::setZRotation(int angle)
     }
 }
 
+//! [6]
 void GLWidget::initializeGL()
 {
     qglClearColor(trolltechPurple.dark());
@@ -114,7 +126,9 @@ void GLWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 }
+//! [6]
 
+//! [7]
 void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,7 +139,9 @@ void GLWidget::paintGL()
     glRotated(zRot / 16.0, 0.0, 0.0, 1.0);
     glCallList(object);
 }
+//! [7]
 
+//! [8]
 void GLWidget::resizeGL(int width, int height)
 {
     int side = qMin(width, height);
@@ -136,12 +152,16 @@ void GLWidget::resizeGL(int width, int height)
     glOrtho(-0.5, +0.5, +0.5, -0.5, 4.0, 15.0);
     glMatrixMode(GL_MODELVIEW);
 }
+//! [8]
 
+//! [9]
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
     lastPos = event->pos();
 }
+//! [9]
 
+//! [10]
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
     int dx = event->x() - lastPos.x();
@@ -156,6 +176,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     }
     lastPos = event->pos();
 }
+//! [10]
 
 GLuint GLWidget::makeObject()
 {

@@ -1,1 +1,1 @@
-#include "../../../src/network/qsslcertificate_p.h"
+#include "../../../src/network/ssl/qsslcertificate_p.h"

@@ -55,25 +55,50 @@
 // We mean it.
 //
 
-class QScriptEngine;
-#include "qscriptglobals_p.h"
+#include "qscriptclassdata_p.h"
 
 #ifndef QT_NO_SCRIPT
 
-#include "qscriptclassdata_p.h"
 #include <QtCore/qstring.h>
 #include <QtCore/qshareddata.h>
+
+QT_BEGIN_NAMESPACE
 
 class QScriptClassInfo
 {
 public:
-    inline QScriptClassInfo() { }
+    enum Type {
+        FunctionBased   = 0x40000000,
+
+        ObjectType      = 1,
+        FunctionType    = 2 | FunctionBased,
+        ArrayType       = 3,
+        StringType      = 4,
+        BooleanType     = 5,
+        NumberType      = 6,
+        DateType        = 7,
+        RegExpType      = 8,
+        ErrorType       = 9,
+
+        VariantType     = 10,
+        QObjectType     = 11 | FunctionBased,
+        QMetaObjectType = 12 | FunctionBased,
+
+        // Types used by the runtime
+        ActivationType  = 100,
+        EnumerationType = 101,
+
+        CustomType      = 1000,
+
+        TypeMask        = 0x0000FFFF
+    };
+
+    inline QScriptClassInfo(Type type, const QString &name)
+        : m_type(type), m_name(name), m_data(0) { }
     inline ~QScriptClassInfo() { }
 
-    inline QScript::Type type() const
+    inline Type type() const
         { return m_type; }
-    inline QScriptEngine *engine() const
-        { return m_engine; }
     inline QString name() const
         { return m_name; }
 
@@ -83,15 +108,15 @@ public:
         { return m_data; }
 
 private:
-    QScript::Type m_type;
-    QScriptEngine *m_engine;
+    Type m_type;
     QString m_name;
     QExplicitlySharedDataPointer<QScriptClassData> m_data;
 
 private:
-    friend class QScriptEnginePrivate;
     Q_DISABLE_COPY(QScriptClassInfo)
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT
 #endif // QSCRIPTCLASSINFO_P_H

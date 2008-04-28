@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TREEWIDGET
@@ -64,6 +66,7 @@ class Q_GUI_EXPORT QTreeWidgetItem
 {
     friend class QTreeModel;
     friend class QTreeWidget;
+    friend class QTreeWidgetPrivate;
     friend class QTreeWidgetItemIterator;
     friend class QTreeWidgetItemPrivate;
 public:
@@ -286,6 +289,7 @@ public:
     int currentColumn() const;
     void setCurrentItem(QTreeWidgetItem *item);
     void setCurrentItem(QTreeWidgetItem *item, int column);
+    void setCurrentItem(QTreeWidgetItem *item, int column, QItemSelectionModel::SelectionFlags command);
 
     QTreeWidgetItem *itemAt(const QPoint &p) const;
     inline QTreeWidgetItem *itemAt(int x, int y) const;
@@ -372,6 +376,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_sort())
     Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight))
     Q_PRIVATE_SLOT(d_func(), void _q_itemsSorted())
+    Q_PRIVATE_SLOT(d_func(), void _q_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected))
 };
 
 inline void QTreeWidget::removeItemWidget(QTreeWidgetItem *item, int column)
@@ -414,6 +419,8 @@ inline bool QTreeWidgetItem::isDisabled() const
 { return !(flags() & Qt::ItemIsEnabled); }
 
 #endif // QT_NO_TREEWIDGET
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

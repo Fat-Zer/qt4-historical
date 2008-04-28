@@ -49,11 +49,15 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #if !defined(QT_NO_GRAPHICSVIEW) || (QT_EDITION & QT_MODULE_GRAPHICSVIEW) != QT_MODULE_GRAPHICSVIEW
 
 class QMimeData;
+class QPointF;
+class QSizeF;
 class QWidget;
 
 class QGraphicsSceneEventPrivate;
@@ -195,6 +199,18 @@ public:
     QPoint screenPos() const;
     void setScreenPos(const QPoint &pos);
 
+    QPointF lastPos() const;
+    void setLastPos(const QPointF &pos);
+
+    QPointF lastScenePos() const;
+    void setLastScenePos(const QPointF &pos);
+
+    QPoint lastScreenPos() const;
+    void setLastScreenPos(const QPoint &pos);
+
+    Qt::KeyboardModifiers modifiers() const;
+    void setModifiers(Qt::KeyboardModifiers modifiers);
+
 private:
     Q_DECLARE_PRIVATE(QGraphicsSceneHoverEvent)
 };
@@ -258,6 +274,37 @@ private:
     Q_DECLARE_PRIVATE(QGraphicsSceneDragDropEvent)
 };
 
+class QGraphicsSceneResizeEventPrivate;
+class Q_GUI_EXPORT QGraphicsSceneResizeEvent : public QGraphicsSceneEvent
+{
+    Q_DECLARE_PRIVATE(QGraphicsSceneResizeEvent)
+public:
+    QGraphicsSceneResizeEvent();
+    ~QGraphicsSceneResizeEvent();
+
+    QSizeF oldSize() const;
+    void setOldSize(const QSizeF &size);
+
+    QSizeF newSize() const;
+    void setNewSize(const QSizeF &size);
+};
+
+class QGraphicsSceneMoveEventPrivate;
+class Q_GUI_EXPORT QGraphicsSceneMoveEvent : public QGraphicsSceneEvent
+{
+    Q_DECLARE_PRIVATE(QGraphicsSceneMoveEvent)
+public:
+    QGraphicsSceneMoveEvent();
+    ~QGraphicsSceneMoveEvent();
+
+    QPointF oldPos() const;
+    void setOldPos(const QPointF &pos);
+
+    QPointF newPos() const;
+    void setNewPos(const QPointF &pos);
+};
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

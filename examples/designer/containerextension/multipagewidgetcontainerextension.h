@@ -46,9 +46,12 @@
 
 #include <QtDesigner/QDesignerContainerExtension>
 
+QT_BEGIN_NAMESPACE
 class QExtensionManager;
+QT_END_NAMESPACE
 class MultiPageWidget;
 
+//! [0]
 class MultiPageWidgetContainerExtension: public QObject,
                                          public QDesignerContainerExtension
 {
@@ -69,5 +72,6 @@ public:
 private:
     MultiPageWidget *myWidget;
 };
+//! [0]
 
 #endif

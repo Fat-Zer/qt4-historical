@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QString;
@@ -71,6 +73,7 @@ class QByteArray;
 # define Q_SLOTS
 # define Q_SIGNALS protected
 # define Q_PRIVATE_SLOT(d, signature)
+# define Q_EMIT
 #ifndef QT_NO_EMIT
 # define emit
 #endif
@@ -133,7 +136,7 @@ class QByteArray;
 /* tmake ignore Q_OBJECT */
 #define Q_OBJECT_CHECK \
     template <typename T> inline void qt_check_for_QOBJECT_macro(const T &_q_argument) const \
-    { int i = qYouForgotTheQ_OBJECT_Macro(this, &_q_argument); Q_UNUSED(i); }
+    { int i = qYouForgotTheQ_OBJECT_Macro(this, &_q_argument); i = i; }
 
 template <typename T>
 inline int qYouForgotTheQ_OBJECT_Macro(T, T) { return 0; }
@@ -419,6 +422,8 @@ inline const QMetaObject *QMetaObject::superClass() const
 inline const char *QMetaObject::superClassName() const
 { return d.superdata ? d.superdata->className() : 0; }
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -43,6 +43,8 @@
 
 #include "javadocgenerator.h"
 
+QT_BEGIN_NAMESPACE
+
 enum JavaSignatureSyntax {
     GeneratedJdocFile,
     JavadocRef,
@@ -449,3 +451,5 @@ void JavadocGenerator::generateEnumItemDoc(const Text &text, const Node *node, C
     }
     out() << " */\"";
 }
+
+QT_END_NAMESPACE

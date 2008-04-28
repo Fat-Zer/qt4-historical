@@ -62,6 +62,8 @@
 #include <QtCore/QList>
 #include <QtCore/QMimeData>
 
+QT_BEGIN_NAMESPACE
+
 class QDrag;
 class QImage;
 class QDropEvent;
@@ -71,7 +73,7 @@ namespace qdesigner_internal {
 class QDESIGNER_SHARED_EXPORT QDesignerDnDItem: public QDesignerDnDItemInterface
 {
 public:
-    QDesignerDnDItem(DropType type, QWidget *source = 0);
+    explicit QDesignerDnDItem(DropType type, QWidget *source = 0);
     virtual ~QDesignerDnDItem();
 
     virtual DomUI *domUi() const;
@@ -111,7 +113,7 @@ public:
     const QDesignerDnDItems &items() const { return m_items; }
 
     // Execute a drag and drop operation.
-    static bool execDrag(const QDesignerDnDItems &items, QWidget * dragSource);
+    static Qt::DropAction execDrag(const QDesignerDnDItems &items, QWidget * dragSource);
 
     QPoint hotSpot() const { return m_hotSpot; }
 
@@ -139,6 +141,9 @@ private:
     QPoint m_globalStartPos;
     QPoint m_hotSpot;
 };
+
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_DNDITEM_H

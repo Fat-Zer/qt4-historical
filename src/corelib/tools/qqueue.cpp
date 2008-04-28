@@ -59,14 +59,7 @@
     the head item without removing it.
 
     Example:
-    \code
-        QQueue<int> queue;
-        queue.enqueue(1);
-        queue.enqueue(2);
-        queue.enqueue(3);
-        while (!queue.isEmpty())
-            cout << queue.dequeue() << endl;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qqueue.cpp 0
 
     The example will output 1, 2, 3 in that order.
 

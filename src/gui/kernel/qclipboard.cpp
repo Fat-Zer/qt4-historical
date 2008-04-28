@@ -50,6 +50,10 @@
 #include "qpixmap.h"
 #include "qclipboard_p.h"
 #include "qvariant.h"
+#include "qbuffer.h"
+#include "qimage.h"
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QClipboard
@@ -70,12 +74,7 @@
     as QApplication::clipboard().
 
     Example:
-    \code
-        QClipboard *clipboard = QApplication::clipboard();
-        QString originalText = clipboard->text();
-        ...
-        clipboard->setText(newText);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qclipboard.cpp 0
 
     QClipboard features some convenience functions to access common
     data types: setText() allows the exchange of Unicode text and
@@ -359,11 +358,7 @@ QImage QClipboard::image(Mode mode) const
 
     This is shorthand for:
 
-    \code
-        QMimeData *data = new QMimeData;
-        data->setImageData(image);
-        clipboard->setMimeData(data, mode);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qclipboard.cpp 1
 
     \sa image(), setPixmap() setMimeData()
 */
@@ -505,7 +500,7 @@ void QClipboard::setData(QMimeSource *source, Mode mode)
         return;
 
     d->compat_data[mode] = source;
-    setMimeData(new QMimeSourceWrapper(d, mode));
+    setMimeData(new QMimeSourceWrapper(d, mode), mode);
 }
 #endif // QT3_SUPPORT
 
@@ -588,8 +583,8 @@ void QClipboard::emitChanged(Mode mode)
         break;
         default:
         break;
-        emit changed(mode);
     }
+    emit changed(mode);
 }
 
 const char* QMimeDataWrapper::format(int n) const
@@ -606,7 +601,17 @@ const char* QMimeDataWrapper::format(int n) const
 
 QByteArray QMimeDataWrapper::encodedData(const char *format) const
 {
-    return data->data(QLatin1String(format));
+    if (QLatin1String(format) != QLatin1String("application/x-qt-image")){
+        return data->data(QLatin1String(format));
+    } else{
+        QVariant variant = data->imageData();
+        QImage img = qVariantValue<QImage>(variant);
+        QByteArray ba;
+        QBuffer buffer(&ba);
+        buffer.open(QIODevice::WriteOnly);
+        img.save(&buffer, "PNG");
+        return ba;
+    }
 }
 
 QVariant QMimeSourceWrapper::retrieveData(const QString &mimetype, QVariant::Type) const
@@ -632,3 +637,5 @@ QStringList QMimeSourceWrapper::formats() const
 }
 
 #endif // QT_NO_CLIPBOARD
+
+QT_END_NAMESPACE

@@ -46,6 +46,7 @@
 #include "diagramitem.h"
 #include "arrow.h"
 
+//! [0]
 DiagramItem::DiagramItem(DiagramType diagramType, QMenu *contextMenu,
              QGraphicsItem *parent, QGraphicsScene *scene)
     : QGraphicsPolygonItem(parent, scene)
@@ -84,7 +85,9 @@ DiagramItem::DiagramItem(DiagramType diagramType, QMenu *contextMenu,
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
+//! [0]
 
+//! [1]
 void DiagramItem::removeArrow(Arrow *arrow)
 {
     int index = arrows.indexOf(arrow);
@@ -92,7 +95,9 @@ void DiagramItem::removeArrow(Arrow *arrow)
     if (index != -1)
         arrows.removeAt(index);
 }
+//! [1]
 
+//! [2]
 void DiagramItem::removeArrows()
 {
     foreach (Arrow *arrow, arrows) {
@@ -102,12 +107,16 @@ void DiagramItem::removeArrows()
         delete arrow;
     }
 }
+//! [2]
 
+//! [3]
 void DiagramItem::addArrow(Arrow *arrow)
 {
     arrows.append(arrow);
 }
+//! [3]
 
+//! [4]
 QPixmap DiagramItem::image() const
 {
     QPixmap pixmap(250, 250);
@@ -119,14 +128,18 @@ QPixmap DiagramItem::image() const
 
     return pixmap;
 }
+//! [4]
 
+//! [5]
 void DiagramItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     scene()->clearSelection();
     setSelected(true);
     myContextMenu->exec(event->screenPos());
 }
+//! [5]
 
+//! [6]
 QVariant DiagramItem::itemChange(GraphicsItemChange change,
                      const QVariant &value)
 {
@@ -138,3 +151,4 @@ QVariant DiagramItem::itemChange(GraphicsItemChange change,
 
     return value;
 }
+//! [6]

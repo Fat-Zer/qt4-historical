@@ -55,20 +55,24 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #if !defined(QT_NO_GRAPHICSVIEW) || (QT_EDITION & QT_MODULE_GRAPHICSVIEW) != QT_MODULE_GRAPHICSVIEW
 
 template<typename T> class QList;
 class QFocusEvent;
-class QKeyEvent;
+class QFont;
+class QFontMetrics;
+class QGraphicsEllipseItem;
 class QGraphicsItem;
 class QGraphicsItemGroup;
-class QGraphicsEllipseItem;
 class QGraphicsLineItem;
 class QGraphicsPathItem;
 class QGraphicsPixmapItem;
 class QGraphicsPolygonItem;
+class QGraphicsProxyWidget;
 class QGraphicsRectItem;
 class QGraphicsSceneContextMenuEvent;
 class QGraphicsSceneDragDropEvent;
@@ -79,7 +83,11 @@ class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
+class QGraphicsView;
+class QGraphicsWidget;
 class QHelpEvent;
+class QInputMethodEvent;
+class QKeyEvent;
 class QLineF;
 class QPainterPath;
 class QPixmap;
@@ -87,9 +95,8 @@ class QPointF;
 class QPolygonF;
 class QRectF;
 class QSizeF;
+class QStyle;
 class QStyleOptionGraphicsItem;
-class QInputMethodEvent;
-class QGraphicsView;
 
 class QGraphicsScenePrivate;
 class Q_GUI_EXPORT QGraphicsScene : public QObject
@@ -100,6 +107,9 @@ class Q_GUI_EXPORT QGraphicsScene : public QObject
     Q_PROPERTY(ItemIndexMethod itemIndexMethod READ itemIndexMethod WRITE setItemIndexMethod)
     Q_PROPERTY(QRectF sceneRect READ sceneRect WRITE setSceneRect)
     Q_PROPERTY(int bspTreeDepth READ bspTreeDepth WRITE setBspTreeDepth)
+    Q_PROPERTY(QPalette palette READ palette WRITE setPalette)
+    Q_PROPERTY(QFont font READ font WRITE setFont)
+
 public:
     enum ItemIndexMethod {
         BspTreeIndex,
@@ -155,7 +165,6 @@ public:
     QPainterPath selectionArea() const;
     void setSelectionArea(const QPainterPath &path);
     void setSelectionArea(const QPainterPath &path, Qt::ItemSelectionMode);
-    void clearSelection();
 
     QGraphicsItemGroup *createItemGroup(const QList<QGraphicsItem *> &items);
     void destroyItemGroup(QGraphicsItemGroup *group);
@@ -169,6 +178,7 @@ public:
     QGraphicsRectItem *addRect(const QRectF &rect, const QPen &pen = QPen(), const QBrush &brush = QBrush());
     QGraphicsTextItem *addText(const QString &text, const QFont &font = QFont());
     QGraphicsSimpleTextItem *addSimpleText(const QString &text, const QFont &font = QFont());
+    QGraphicsProxyWidget *addWidget(QWidget *widget, Qt::WindowFlags wFlags = 0);
     inline QGraphicsEllipseItem *addEllipse(qreal x, qreal y, qreal w, qreal h, const QPen &pen = QPen(), const QBrush &brush = QBrush())
     { return addEllipse(QRectF(x, y, w, h), pen, brush); }
     inline QGraphicsLineItem *addLine(qreal x1, qreal y1, qreal x2, qreal y2, const QPen &pen = QPen())
@@ -200,13 +210,28 @@ public:
     inline void invalidate(qreal x, qreal y, qreal w, qreal h, SceneLayers layers = AllLayers)
     { invalidate(QRectF(x, y, w, h), layers); }
 
+    QStyle *style() const;
+    void setStyle(QStyle *style);
+
+    QFont font() const;
+    void setFont(const QFont &font);
+
+    QPalette palette() const;
+    void setPalette(const QPalette &palette);
+
+    QGraphicsWidget *activeWindow() const;
+    void setActiveWindow(QGraphicsWidget *widget);
+
 public Q_SLOTS:
     void update(const QRectF &rect = QRectF());
     void invalidate(const QRectF &rect = QRectF(), SceneLayers layers = AllLayers);
     void advance();
+    void clearSelection();
+    void clear();
 
 protected:
     bool event(QEvent *event);
+    bool eventFilter(QObject *watched, QEvent *event);
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
@@ -231,6 +256,9 @@ protected:
                            const QStyleOptionGraphicsItem options[],
                            QWidget *widget = 0);
 
+protected Q_SLOTS:
+    bool focusNextPrevChild(bool next);
+
 Q_SIGNALS:
     void changed(const QList<QRectF> &region);
     void sceneRectChanged(const QRectF &rect);
@@ -240,17 +268,22 @@ private:
     void itemUpdated(QGraphicsItem *item, const QRectF &rect);
 
     Q_DECLARE_PRIVATE(QGraphicsScene)
-    Q_PRIVATE_SLOT(d_func(), void _q_generateBspTree())
+    Q_DISABLE_COPY(QGraphicsScene)
+    Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
     Q_PRIVATE_SLOT(d_func(), void _q_emitUpdated())
     Q_PRIVATE_SLOT(d_func(), void _q_removeItemLater(QGraphicsItem *item))
     Q_PRIVATE_SLOT(d_func(), void _q_updateLater())
+    Q_PRIVATE_SLOT(d_func(), void _q_polishItems())
     friend class QGraphicsItem;
     friend class QGraphicsItemPrivate;
     friend class QGraphicsView;
     friend class QGraphicsViewPrivate;
+    friend class QGraphicsWidget;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGraphicsScene::SceneLayers)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

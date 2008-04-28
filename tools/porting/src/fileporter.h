@@ -52,6 +52,8 @@
 #include <QSet>
 #include <QMap>
 
+QT_BEGIN_NAMESPACE
+
 class FilePorter
 {
 public:
@@ -110,5 +112,7 @@ private:
     QSet<QByteArray> m_includedHeaders;
     QSet<QByteArray> m_usedClasses;
 };
+
+QT_END_NAMESPACE
 
 #endif

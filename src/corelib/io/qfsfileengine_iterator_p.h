@@ -58,6 +58,10 @@
 #include "qabstractfileengine.h"
 #include "qdir.h"
 
+#ifndef QT_NO_FSFILEENGINE
+
+QT_BEGIN_NAMESPACE
+
 class QFSFileEngineIteratorPrivate;
 class QFSFileEngineIteratorPlatformSpecificData;
 
@@ -79,8 +83,12 @@ private:
     void newPlatformSpecifics();
     void deletePlatformSpecifics();
     void advance();
-    
+
     QString currentEntry;
 };
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_FSFILEENGINE
 
 #endif

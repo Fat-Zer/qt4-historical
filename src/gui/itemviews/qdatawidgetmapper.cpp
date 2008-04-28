@@ -52,6 +52,8 @@
 #include "private/qobject_p.h"
 #include "private/qabstractitemmodel_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDataWidgetMapperPrivate: public QObjectPrivate
 {
 public:
@@ -258,6 +260,7 @@ void QDataWidgetMapperPrivate::_q_modelDestroyed()
     of a data model to widgets.
     \since 4.2
     \ingroup model-view
+    \ingroup advanced
 
     QDataWidgetMapper can be used to create data-aware widgets by mapping
     them to sections of an item model. A section is a column of a model
@@ -288,14 +291,7 @@ void QDataWidgetMapperPrivate::_q_modelDestroyed()
     The following code will map the columns of the model to widgets called \c mySpinBox,
     \c myLineEdit and \c{myCountryChooser}:
 
-    \code
-    QDataWidgetMapper *mapper = new QDataWidgetMapper;
-    mapper->setModel(model);
-    mapper->addMapping(mySpinBox, 0);
-    mapper->addMapping(myLineEdit, 1);
-    mapper->addMapping(myCountryChooser, 2);
-    mapper->toFirst();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qdatawidgetmapper.cpp 0
 
     After the call to toFirst(), \c mySpinBox displays the value \c{1}, \c myLineEdit
     displays \c {Trolltech ASA} and \c myCountryChooser displays \c{Oslo}. The
@@ -482,12 +478,7 @@ QModelIndex QDataWidgetMapper::rootIndex() const
     is mapped to the QLineEdit \c nameLineEdit, and the second is
     mapped to the QSpinBox \c{ageSpinBox}:
 
-    \code
-    QDataWidgetMapper *mapper = new QDataWidgetMapper();
-    mapper->setModel(myModel);
-    mapper->addMapping(nameLineEdit, 0);
-    mapper->addMapping(ageSpinBox, 1);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qdatawidgetmapper.cpp 1
 
     \bold{Notes:}
     \list
@@ -748,11 +739,7 @@ int QDataWidgetMapper::currentIndex() const
     with new data whenever the selection of a QTableView named
     \c myTableView changes:
 
-    \code
-    QDataWidgetMapper *mapper = new QDataWidgetMapper(); 
-    connect(myTableView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            mapper, SLOT(setCurrentModelIndex(QModelIndex)));
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qdatawidgetmapper.cpp 2
 
     \sa currentIndex()
 */
@@ -857,6 +844,8 @@ QDataWidgetMapper::SubmitPolicy QDataWidgetMapper::submitPolicy() const
     Q_D(const QDataWidgetMapper);
     return d->submitPolicy;
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qdatawidgetmapper.cpp"
 

@@ -46,7 +46,9 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QLabel;
+QT_END_NAMESPACE
 
 class Window : public QWidget
 {

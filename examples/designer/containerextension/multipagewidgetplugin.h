@@ -41,13 +41,16 @@
 **
 ****************************************************************************/
 
+//! [0]
 #ifndef MULTIPAGEWIDGETPLUGIN_H
 #define MULTIPAGEWIDGETPLUGIN_H
 
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
+QT_BEGIN_NAMESPACE
 class QIcon;
 class QWidget;
+QT_END_NAMESPACE
 
 class MultiPageWidgetPlugin: public QObject, public QDesignerCustomWidgetInterface
 {
@@ -77,3 +80,4 @@ private:
 };
 
 #endif
+//! [0]

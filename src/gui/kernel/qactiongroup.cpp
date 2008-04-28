@@ -50,6 +50,8 @@
 #include "qevent.h"
 #include "qlist.h"
 
+QT_BEGIN_NAMESPACE
+
 class QActionGroupPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QActionGroup)
@@ -111,9 +113,7 @@ void QActionGroupPrivate::_q_actionHovered()
 
     Here's a example (from the \l{mainwindows/menus}{Menus} example):
 
-    \quotefile mainwindows/menus/mainwindow.cpp
-    \skipto new QActionGroup
-    \printuntil leftAlignAct->setChecked
+    \snippet examples/mainwindows/menus/mainwindow.cpp 6
 
     Here we create a new action group. Since the action group is
     exclusive by default, only one of the actions in the group is
@@ -232,6 +232,8 @@ void QActionGroup::removeAction(QAction *action)
 {
     Q_D(QActionGroup);
     if (d->actions.removeAll(action)) {
+        if (action == d->current)
+            d->current = 0;
         QObject::disconnect(action, SIGNAL(triggered()), this, SLOT(_q_actionTriggered()));
         QObject::disconnect(action, SIGNAL(changed()), this, SLOT(_q_actionChanged()));
         QObject::disconnect(action, SIGNAL(hovered()), this, SLOT(_q_actionHovered()));
@@ -405,5 +407,8 @@ bool QActionGroup::isVisible() const
 
 */
 
+QT_END_NAMESPACE
+
 #include "moc_qactiongroup.cpp"
+
 #endif // QT_NO_ACTION

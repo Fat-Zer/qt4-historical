@@ -49,8 +49,11 @@
 #include <QThread>
 #include <QWaitCondition>
 
+QT_BEGIN_NAMESPACE
 class QImage;
+QT_END_NAMESPACE
 
+//! [0]
 class RenderThread : public QThread
 {
     Q_OBJECT
@@ -83,5 +86,6 @@ private:
     enum { ColormapSize = 512 };
     uint colormap[ColormapSize];
 };
+//! [0]
 
 #endif

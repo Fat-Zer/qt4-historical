@@ -74,6 +74,8 @@
 
 #include "qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 enum Tag { Tag_End = 1, Tag_SourceText16, Tag_Translation, Tag_Context16, Tag_Obsolete1,
            Tag_SourceText, Tag_Context, Tag_Comment, Tag_Obsolete2 };
 /*
@@ -91,6 +93,10 @@ static const uchar magic[MagicLength] = {
 
 static bool match(const uchar* found, const char* target, uint len)
 {
+    // catch the case if \a found has a zero-terminating symbol and \a len includes it.
+    // (normalize it to be without the zero-terminating symbol)
+    if (len > 0 && found[len-1] == '\0')
+        --len;
     // 0 means anything, "" means empty
     return !found || qstrncmp((const char *)found, target, len) == 0 && target[len] == '\0';
 }
@@ -115,7 +121,7 @@ static uint elfHash(const char *name)
     return h;
 }
 
-static int numerus(int n, const uchar *rules, int rulesSize)
+static int numerusHelper(int n, const uchar *rules, int rulesSize)
 {
 #define CHECK_RANGE \
     do { \
@@ -257,9 +263,7 @@ public:
     it via QObject::tr(). Here's the \c main() function from the
     \l{linguist/hellotr}{Hello tr()} example:
 
-    \quotefromfile linguist/hellotr/main.cpp
-    \skipto main(
-    \printuntil }
+    \snippet examples/linguist/hellotr/main.cpp 2
 
     Note that the translator must be created \e before the
     application's widgets.
@@ -378,7 +382,7 @@ bool QTranslator::load(const QString & filename, const QString & directory,
     d->clear();
 
     QString prefix;
-    if (QFileInfo(filename).isRelative()) { 
+    if (QFileInfo(filename).isRelative()) {
         prefix = directory;
 	if (prefix.length() && !prefix.endsWith(QLatin1Char('/')))
 	    prefix += QLatin1Char('/');
@@ -595,7 +599,7 @@ static QString getMessage(const uchar *m, const uchar *end, const char *context,
         case Tag_Context: {
             quint32 len = read32(m);
             m += 4;
-            if (*m && !match(m, context, len))
+            if (!match(m, context, len))
                 return QString();
             m += len;
         }
@@ -666,7 +670,7 @@ QString QTranslatorPrivate::do_translate(const char *context, const char *source
 
     int numerus = 0;
     if (n >= 0)
-        numerus = ::numerus(n, numerusRulesArray, numerusRulesLength);
+        numerus = numerusHelper(n, numerusRulesArray, numerusRulesLength);
 
     for (;;) {
         quint32 h = elfHash(QByteArray(sourceText) + comment);
@@ -802,3 +806,5 @@ bool QTranslator::isEmpty() const
 */
 
 #endif // QT_NO_TRANSLATION
+
+QT_END_NAMESPACE

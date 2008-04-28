@@ -59,6 +59,8 @@
 #include "private/qdatabuffer_p.h"
 #include "private/qnumeric_p.h"
 
+QT_BEGIN_NAMESPACE
+
 // #define QFIXED_IS_26_6
 
 #if defined QFIXED_IS_26_6
@@ -114,6 +116,8 @@ struct qfixed2d
 
 QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLength,
                           QPointF *controlPoints, int *point_count);
+
+qreal qt_t_for_arc_angle(qreal angle);
 
 typedef void (*qStrokerMoveToHook)(qfixed x, qfixed y, void *data);
 typedef void (*qStrokerLineToHook)(qfixed x, qfixed y, void *data);
@@ -370,5 +374,7 @@ inline void QDashStroker::end()
     QStrokerOps::end();
     m_stroker->end();
 }
+
+QT_END_NAMESPACE
 
 #endif // QSTROKER_P_H

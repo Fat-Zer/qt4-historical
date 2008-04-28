@@ -54,6 +54,8 @@
 #include "qpointer.h"
 #include "q3valuelist.h"
 
+QT_BEGIN_NAMESPACE
+
 //#define QLOCALFS_DEBUG
 
 
@@ -67,10 +69,7 @@
     This class is derived from QNetworkProtocol. Q3LocalFs is not
     normally used directly, but rather through a QUrlOperator, for
     example:
-    \code
-    QUrlOperator op( "file:///tmp" );
-    op.listChildren(); // Asks the server to provide a directory listing
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3localfs.cpp 0
 
     This code will only work if the Q3LocalFs class is registered; to
     register the class, you must call qInitNetworkProtocols() before
@@ -401,5 +400,7 @@ int Q3LocalFs::calcBlockSize( int totalSize ) const
 	s = 1048576;
     return s;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_NETWORKPROTOCOL

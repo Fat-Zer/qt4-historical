@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/richtext.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/richtext.qdoc -->
 <head>
-  <title>Qt 4.3: Supported HTML Subset</title>
+  <title>Qt 4.4: Supported HTML Subset</title>
   <link rel="prev" href="richtext-common-tasks.html" />
   <link rel="contents" href="richtext.html" />
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -18,7 +18,8 @@
 [Previous: <a href="richtext-common-tasks.html">Common Rich Text Editing Tasks</a>]
 [<a href="richtext.html">Contents</a>]
 </p>
-<h1 align="center">Supported HTML Subset<br /><small></small></h1>
+<h1 class="title">Supported HTML Subset<br /><span class="subtitle"></span>
+</h1>
 <p>The following table lists the HTML tags supported by Qt's <a href="richtext.html">rich text</a> engine:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Tag</th><th>Description</th><th>Comment</th></tr></thead>
@@ -51,7 +52,7 @@
 <tr valign="top" class="odd"><td><tt>i</tt></td><td>Italic</td><td></td></tr>
 <tr valign="top" class="even"><td><tt>img</tt></td><td>Image</td><td>Supports the <tt>src</tt>, <tt>source</tt> (for Qt 3 compatibility), <tt>width</tt>, and <tt>height</tt> attributes.</td></tr>
 <tr valign="top" class="odd"><td><tt>kbd</tt></td><td>User-entered text</td><td></td></tr>
-<tr valign="top" class="even"><td><tt>meta</tt></td><td>Meta-information</td><td>If a text encoding is specified using the <tt>meta</tt> tag, it is picked up by Qt::codecForHtml(). Likewise, if an encoding is specified to <a href="qtextdocument.html#toHtml">QTextDocument::toHtml</a>(), the encoding is stored using a <tt>meta</tt> tag, for example:<pre> &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=EUC-JP&quot; /&gt;</pre>
+<tr valign="top" class="even"><td><tt>meta</tt></td><td>Meta-information</td><td>If a text encoding is specified using the <tt>meta</tt> tag, it is picked up by Qt::codecForHtml(). Likewise, if an encoding is specified to <a href="qtextdocument.html#toHtml">QTextDocument::toHtml</a>(), the encoding is stored using a <tt>meta</tt> tag, for example:<pre>         &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=EUC-JP&quot; /&gt;</pre>
 </td></tr>
 <tr valign="top" class="odd"><td><tt>li</tt></td><td>List item</td><td></td></tr>
 <tr valign="top" class="even"><td><tt>nobr</tt></td><td>Non-breakable text</td><td></td></tr>
@@ -123,13 +124,18 @@
 <tr valign="top" class="odd"><td><tt>margin-bottom</tt></td><td>&lt;length&gt;px</td><td>Bottom paragraph margin in pixels</td></tr>
 <tr valign="top" class="even"><td><tt>margin-left</tt></td><td>&lt;length&gt;px</td><td>Left paragraph margin in pixels</td></tr>
 <tr valign="top" class="odd"><td><tt>margin-right</tt></td><td>&lt;length&gt;px</td><td>Right paragraph margin in pixels</td></tr>
-<tr valign="top" class="even"><td><tt>vertical-align</tt></td><td>baseline | sub | super | middle | top | bottom</td><td>Vertical text alignment. For vertical alignment in text table cells only middle, top, and bottom apply.</td></tr>
-<tr valign="top" class="odd"><td><tt>border-color</tt></td><td>&lt;color&gt;</td><td>Border color for text tables.</td></tr>
-<tr valign="top" class="even"><td><tt>border-style</tt></td><td>none | dotted | dashed | dot-dash | dot-dot-dash | solid | double | groove | ridge | inset | outset</td><td>Border style for text tables.</td></tr>
-<tr valign="top" class="odd"><td><tt>background</tt></td><td>[ &lt;'background-color'&gt; || &lt;'background-image'&gt; ]</td><td>Background shorthand property</td></tr>
-<tr valign="top" class="even"><td><tt>page-break-before</tt></td><td>[ auto | always ]</td><td>Make it possible to enforce a page break before the paragraph/table</td></tr>
-<tr valign="top" class="odd"><td><tt>page-break-after</tt></td><td>[ auto | always ]</td><td>Make it possible to enforce a page break after the paragraph/table</td></tr>
-<tr valign="top" class="even"><td>float</td><td>[ left | right | none ]</td><td>Specifies where an image or a text will be placed in another element.</td></tr>
+<tr valign="top" class="even"><td><tt>padding-top</tt></td><td>&lt;length&gt;px</td><td>Top table cell padding in pixels</td></tr>
+<tr valign="top" class="odd"><td><tt>padding-bottom</tt></td><td>&lt;length&gt;px</td><td>Bottom table cell padding in pixels</td></tr>
+<tr valign="top" class="even"><td><tt>padding-left</tt></td><td>&lt;length&gt;px</td><td>Left table cell padding in pixels</td></tr>
+<tr valign="top" class="odd"><td><tt>padding-right</tt></td><td>&lt;length&gt;px</td><td>Right table cell padding in pixels</td></tr>
+<tr valign="top" class="even"><td><tt>padding</tt></td><td>&lt;length&gt;px</td><td>Shorthand for setting all the padding properties at once.</td></tr>
+<tr valign="top" class="odd"><td><tt>vertical-align</tt></td><td>baseline | sub | super | middle | top | bottom</td><td>Vertical text alignment. For vertical alignment in text table cells only middle, top, and bottom apply.</td></tr>
+<tr valign="top" class="even"><td><tt>border-color</tt></td><td>&lt;color&gt;</td><td>Border color for text tables.</td></tr>
+<tr valign="top" class="odd"><td><tt>border-style</tt></td><td>none | dotted | dashed | dot-dash | dot-dot-dash | solid | double | groove | ridge | inset | outset</td><td>Border style for text tables.</td></tr>
+<tr valign="top" class="even"><td><tt>background</tt></td><td>[ &lt;'background-color'&gt; || &lt;'background-image'&gt; ]</td><td>Background shorthand property</td></tr>
+<tr valign="top" class="odd"><td><tt>page-break-before</tt></td><td>[ auto | always ]</td><td>Make it possible to enforce a page break before the paragraph/table</td></tr>
+<tr valign="top" class="even"><td><tt>page-break-after</tt></td><td>[ auto | always ]</td><td>Make it possible to enforce a page break after the paragraph/table</td></tr>
+<tr valign="top" class="odd"><td>float</td><td>[ left | right | none ]</td><td>Specifies where an image or a text will be placed in another element.</td></tr>
 </table></p>
 <a name="supported-css-selectors"></a>
 <h2>Supported CSS Selectors</h2>
@@ -142,6 +148,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

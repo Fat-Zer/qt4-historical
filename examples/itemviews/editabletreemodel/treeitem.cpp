@@ -51,27 +51,36 @@
 
 #include "treeitem.h"
 
+//! [0]
 TreeItem::TreeItem(const QVector<QVariant> &data, TreeItem *parent)
 {
     parentItem = parent;
     itemData = data;
 }
+//! [0]
 
+//! [1]
 TreeItem::~TreeItem()
 {
     qDeleteAll(childItems);
 }
+//! [1]
 
+//! [2]
 TreeItem *TreeItem::child(int number)
 {
     return childItems.value(number);
 }
+//! [2]
 
+//! [3]
 int TreeItem::childCount() const
 {
     return childItems.count();
 }
+//! [3]
 
+//! [4]
 int TreeItem::childNumber() const
 {
     if (parentItem)
@@ -79,17 +88,23 @@ int TreeItem::childNumber() const
 
     return 0;
 }
+//! [4]
 
+//! [5]
 int TreeItem::columnCount() const
 {
     return itemData.count();
 }
+//! [5]
 
+//! [6]
 QVariant TreeItem::data(int column) const
 {
     return itemData.value(column);
 }
+//! [6]
 
+//! [7]
 bool TreeItem::insertChildren(int position, int count, int columns)
 {
     if (position < 0 || position > childItems.size())
@@ -103,7 +118,9 @@ bool TreeItem::insertChildren(int position, int count, int columns)
 
     return true;
 }
+//! [7]
 
+//! [8]
 bool TreeItem::insertColumns(int position, int columns)
 {
     if (position < 0 || position > itemData.size())
@@ -117,12 +134,16 @@ bool TreeItem::insertColumns(int position, int columns)
 
     return true;
 }
+//! [8]
 
+//! [9]
 TreeItem *TreeItem::parent()
 {
     return parentItem;
 }
+//! [9]
 
+//! [10]
 bool TreeItem::removeChildren(int position, int count)
 {
     if (position < 0 || position + count > childItems.size())
@@ -133,6 +154,7 @@ bool TreeItem::removeChildren(int position, int count)
 
     return true;
 }
+//! [10]
 
 bool TreeItem::removeColumns(int position, int columns)
 {
@@ -148,6 +170,7 @@ bool TreeItem::removeColumns(int position, int columns)
     return true;
 }
 
+//! [11]
 bool TreeItem::setData(int column, const QVariant &value)
 {
     if (column < 0 || column >= itemData.size())
@@ -156,3 +179,4 @@ bool TreeItem::setData(int column, const QVariant &value)
     itemData[column] = value;
     return true;
 }
+//! [11]

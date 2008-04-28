@@ -51,6 +51,8 @@
 #include "qmetaobject.h"
 #include "qvarlengtharray.h"
 
+QT_BEGIN_NAMESPACE
+
 class QAccessibleObjectPrivate
 {
 public:
@@ -128,7 +130,7 @@ QAccessibleObject::~QAccessibleObject()
 QObject *QAccessibleObject::object() const
 {
 #ifndef QT_NO_DEBUG
-    if (!isValid())
+    if (!d->object)
         qWarning("QAccessibleInterface is invalid. Crash pending...");
 #endif
     return d->object;
@@ -404,5 +406,7 @@ QString QAccessibleObjectEx::actionText(int action, Text t, int child) const
 { return reinterpret_cast<const QAccessibleObject *>(this)->QAccessibleObject::actionText(action, t, child); }
 QAccessibleObjectEx::~QAccessibleObjectEx()
 { delete d; }
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_ACCESSIBILITY

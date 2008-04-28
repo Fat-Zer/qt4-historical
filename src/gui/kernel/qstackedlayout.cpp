@@ -48,13 +48,16 @@
 #include <qwidget.h>
 #include "private/qlayoutengine_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QStackedLayoutPrivate : public QLayoutPrivate
 {
     Q_DECLARE_PUBLIC(QStackedLayout)
 public:
-    QStackedLayoutPrivate() : index(-1) {}
+    QStackedLayoutPrivate() : index(-1), stackingMode(QStackedLayout::StackOne) {}
     QList<QLayoutItem *> list;
     int index;
+    QStackedLayout::StackingMode stackingMode;
 };
 
 /*!
@@ -74,23 +77,17 @@ public:
     A QStackedLayout can be populated with a number of child widgets
     ("pages"). For example:
 
-    \quotefromfile snippets/qstackedlayout/main.cpp
-    \skipto firstPageWidget
-    \printto QComboBox
-
-    \skipto QVBoxLayout
-    \printline QVBoxLayout
-    \skipto mainLayout->addLayout
-    \printuntil setLayout
+    \snippet doc/src/snippets/qstackedlayout/main.cpp 0
+    \codeline
+    \snippet doc/src/snippets/qstackedlayout/main.cpp 2
+    \snippet doc/src/snippets/qstackedlayout/main.cpp 3
 
     QStackedLayout provides no intrinsic means for the user to switch
     page. This is typically done through a QComboBox or a QListWidget
     that stores the titles of the QStackedLayout's pages. For
     example:
 
-    \quotefromfile snippets/qstackedlayout/main.cpp
-    \skipto QComboBox
-    \printuntil SLOT
+    \snippet doc/src/snippets/qstackedlayout/main.cpp 1
 
     When populating a layout, the widgets are added to an internal
     list. The indexOf() function returns the index of a widget in that
@@ -120,7 +117,8 @@ public:
 
     This signal is emitted whenever the current widget in the layout
     changes.  The \a index specifies the index of the new current
-    widget.
+    widget, or -1 if there isn't a new one (for example, if there
+    are no widgets in the QStackedLayout)
 
     \sa currentWidget(), setCurrentWidget()
 */
@@ -218,7 +216,7 @@ int QStackedLayout::insertWidget(int index, QWidget *widget)
     index = qMin(index, d->list.count());
     if (index < 0)
         index = d->list.count();
-    QWidgetItem *wi = new QWidgetItem(widget);
+    QWidgetItem *wi = QLayoutPrivate::createWidgetItem(this, widget);
     d->list.insert(index, wi);
     invalidate();
     if (d->index < 0) {
@@ -226,7 +224,8 @@ int QStackedLayout::insertWidget(int index, QWidget *widget)
     } else {
         if (index <= d->index)
             ++d->index;
-        widget->hide();
+        if (d->stackingMode == StackOne)
+            widget->hide();
         widget->lower();
     }
     return index;
@@ -268,6 +267,8 @@ QLayoutItem *QStackedLayout::takeAt(int index)
         if ( d->list.count() > 0 ) {
             int newIndex = (index == d->list.count()) ? index-1 : index;
             setCurrentIndex(newIndex);
+        } else {
+            emit currentChanged(-1);
         }
     } else if (index < d->index) {
         --d->index;
@@ -305,7 +306,8 @@ void QStackedLayout::setCurrentIndex(int index)
     QWidget *fw = parent ? parent->window()->focusWidget() : 0;
     if (prev) {
         prev->clearFocus();
-        prev->hide();
+        if (d->stackingMode == StackOne)
+            prev->hide();
     }
 
     d->index = index;
@@ -431,8 +433,14 @@ QSize QStackedLayout::sizeHint() const
     int n = d->list.count();
 
     for (int i = 0; i < n; ++i)
-        if (QWidget *widget = d->list.at(i)->widget())
-            s = s.expandedTo(widget->sizeHint());
+        if (QWidget *widget = d->list.at(i)->widget()) {
+            QSize ws(widget->sizeHint());
+            if (widget->sizePolicy().horizontalPolicy() == QSizePolicy::Ignored)
+                ws.setWidth(0);
+            if (widget->sizePolicy().verticalPolicy() == QSizePolicy::Ignored)
+                ws.setHeight(0);
+            s = s.expandedTo(ws);
+        }
     return s;
 }
 
@@ -456,7 +464,84 @@ QSize QStackedLayout::minimumSize() const
 */
 void QStackedLayout::setGeometry(const QRect &rect)
 {
-    QWidget *widget = currentWidget();
-    if (widget)
-        widget->setGeometry(rect);
+    Q_D(QStackedLayout);
+    switch (d->stackingMode) {
+    case StackOne:
+        if (QWidget *widget = currentWidget())
+            widget->setGeometry(rect);
+        break;
+    case StackAll:
+        if (const int n = d->list.count())
+            for (int i = 0; i < n; ++i)
+                if (QWidget *widget = d->list.at(i)->widget())
+                    widget->setGeometry(rect);
+        break;
+    }
 }
+
+/*!
+    \enum QStackedLayout::StackingMode
+    \since 4.4
+
+    This enum specifies how the layout handles its child widgets
+    regarding their visibility.
+
+    \value StackOne
+           Only the current widget is visible. This is the default.
+
+    \value StackAll
+           All widgets are visible. The current widget is merely raised.
+*/
+
+
+/*!
+    \property QStackedLayout::stackingMode
+    \brief determines the way visibility of child widgets are handled.
+    \since 4.4
+
+    The default value is StackOne. Setting the property to StackAll
+    allows you to make use of the layout for overlay widgets
+    that do additional drawing on top of other widgets, for example,
+    graphical editors.
+*/
+
+QStackedLayout::StackingMode QStackedLayout::stackingMode() const
+{
+    Q_D(const QStackedLayout);
+    return d->stackingMode;
+}
+
+void QStackedLayout::setStackingMode(StackingMode stackingMode)
+{
+    Q_D(QStackedLayout);
+    if (d->stackingMode == stackingMode)
+        return;
+    d->stackingMode = stackingMode;
+
+    const int n = d->list.count();
+    if (n == 0)
+        return;
+
+    switch (d->stackingMode) {
+    case StackOne:
+        if (const int idx = currentIndex())
+            for (int i = 0; i < n; ++i)
+                if (QWidget *widget = d->list.at(i)->widget())
+                    widget->setVisible(i == idx);
+        break;
+    case StackAll: { // Turn overlay on: Make sure all widgets are the same size
+        QRect geometry;
+        if (const QWidget *widget = currentWidget())
+            geometry = widget->geometry();
+        for (int i = 0; i < n; ++i)
+            if (QWidget *widget = d->list.at(i)->widget()) {
+                if (!geometry.isNull())
+                    widget->setGeometry(geometry);
+                widget->setVisible(true);
+            }
+    }
+        break;
+    }
+}
+
+QT_END_NAMESPACE

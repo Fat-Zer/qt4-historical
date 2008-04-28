@@ -45,6 +45,7 @@
 
 #include "norwegianwoodstyle.h"
 
+//! [0]
 void NorwegianWoodStyle::polish(QPalette &palette)
 {
     QColor brown(212, 140, 95);
@@ -60,7 +61,9 @@ void NorwegianWoodStyle::polish(QPalette &palette)
     painter.setPen(Qt::NoPen);
     painter.fillRect(midImage.rect(), slightlyOpaqueBlack);
     painter.end();
+//! [0]
 
+//! [1]
     palette = QPalette(brown);
 
     palette.setBrush(QPalette::BrightText, Qt::white);
@@ -80,22 +83,31 @@ void NorwegianWoodStyle::polish(QPalette &palette)
     palette.setBrush(QPalette::Disabled, QPalette::Button, brush);
     palette.setBrush(QPalette::Disabled, QPalette::Mid, brush);
 }
+//! [1]
 
+//! [3]
 void NorwegianWoodStyle::polish(QWidget *widget)
+//! [3] //! [4]
 {
     if (qobject_cast<QPushButton *>(widget)
             || qobject_cast<QComboBox *>(widget))
         widget->setAttribute(Qt::WA_Hover, true);
 }
+//! [4]
 
+//! [5]
 void NorwegianWoodStyle::unpolish(QWidget *widget)
+//! [5] //! [6]
 {
     if (qobject_cast<QPushButton *>(widget)
             || qobject_cast<QComboBox *>(widget))
         widget->setAttribute(Qt::WA_Hover, false);
 }
+//! [6]
 
+//! [7]
 int NorwegianWoodStyle::pixelMetric(PixelMetric metric,
+//! [7] //! [8]
                                     const QStyleOption *option,
                                     const QWidget *widget) const
 {
@@ -108,8 +120,11 @@ int NorwegianWoodStyle::pixelMetric(PixelMetric metric,
         return QMotifStyle::pixelMetric(metric, option, widget);
     }
 }
+//! [8]
 
+//! [9]
 int NorwegianWoodStyle::styleHint(StyleHint hint, const QStyleOption *option,
+//! [9] //! [10]
                                   const QWidget *widget,
                                   QStyleHintReturn *returnData) const
 {
@@ -122,8 +137,11 @@ int NorwegianWoodStyle::styleHint(StyleHint hint, const QStyleOption *option,
         return QMotifStyle::styleHint(hint, option, widget, returnData);
     }
 }
+//! [10]
 
+//! [11]
 void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
+//! [11] //! [12]
                                        const QStyleOption *option,
                                        QPainter *painter,
                                        const QWidget *widget) const
@@ -138,11 +156,17 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
 
             int x, y, width, height;
             option->rect.getRect(&x, &y, &width, &height);
+//! [12]
 
+//! [13]
             QPainterPath roundRect = roundRectPath(option->rect);
+//! [13] //! [14]
             int radius = qMin(width, height) / 2;
+//! [14]
 
+//! [15]
             QBrush brush;
+//! [15] //! [16]
             bool darker;
 
             const QStyleOptionButton *buttonOption =
@@ -158,16 +182,27 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
                 } else {
                     brush = option->palette.button();
                     darker = false;
+//! [16] //! [17]
                 }
+//! [17] //! [18]
             }
+//! [18]
 
+//! [19]
             painter->save();
+//! [19] //! [20]
             painter->setRenderHint(QPainter::Antialiasing, true);
+//! [20] //! [21]
             painter->fillPath(roundRect, brush);
+//! [21] //! [22]
             if (darker)
+//! [22] //! [23]
                 painter->fillPath(roundRect, slightlyOpaqueBlack);
+//! [23]
 
+//! [24]
             int penWidth;
+//! [24] //! [25]
             if (radius < 10)
                 penWidth = 3;
             else if (radius < 20)
@@ -180,7 +215,9 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
 
             if (option->state & (State_Sunken | State_On))
                 qSwap(topPen, bottomPen);
+//! [25]
 
+//! [26]
             int x1 = x;
             int x2 = x + radius;
             int x3 = x + width - radius;
@@ -202,6 +239,7 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
             painter->setClipRegion(topHalf, Qt::IntersectClip);
             painter->setPen(topPen);
             painter->drawPath(roundRect);
+//! [26] //! [32]
 
             QPolygon bottomHalf = topHalf;
             bottomHalf[0] = QPoint(x4, y + height);
@@ -218,12 +256,17 @@ void NorwegianWoodStyle::drawPrimitive(PrimitiveElement element,
             painter->restore();
         }
         break;
+//! [32] //! [33]
     default:
+//! [33] //! [34]
         QMotifStyle::drawPrimitive(element, option, painter, widget);
     }
 }
+//! [34]
 
+//! [35]
 void NorwegianWoodStyle::drawControl(ControlElement element,
+//! [35] //! [36]
                                      const QStyleOption *option,
                                      QPainter *painter,
                                      const QWidget *widget) const
@@ -251,8 +294,11 @@ void NorwegianWoodStyle::drawControl(ControlElement element,
         QMotifStyle::drawControl(element, option, painter, widget);
     }
 }
+//! [36]
 
+//! [37]
 void NorwegianWoodStyle::setTexture(QPalette &palette, QPalette::ColorRole role,
+//! [37] //! [38]
                                     const QPixmap &pixmap)
 {
     for (int i = 0; i < QPalette::NColorGroups; ++i) {
@@ -260,8 +306,11 @@ void NorwegianWoodStyle::setTexture(QPalette &palette, QPalette::ColorRole role,
         palette.setBrush(QPalette::ColorGroup(i), role, QBrush(color, pixmap));
     }
 }
+//! [38]
 
+//! [39]
 QPainterPath NorwegianWoodStyle::roundRectPath(const QRect &rect)
+//! [39] //! [40]
 {
     int radius = qMin(rect.width(), rect.height()) / 2;
     int diam = 2 * radius;
@@ -281,3 +330,4 @@ QPainterPath NorwegianWoodStyle::roundRectPath(const QRect &rect)
     path.closeSubpath();
     return path;
 }
+//! [40]

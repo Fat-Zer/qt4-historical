@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class Q3GridLayout : public QGridLayout
@@ -70,6 +72,8 @@ public:
 private:
     Q_DISABLE_COPY(Q3GridLayout)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

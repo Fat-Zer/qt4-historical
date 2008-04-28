@@ -52,6 +52,8 @@
 
 #include <QtDesigner/abstractformwindow.h>
 
+QT_BEGIN_NAMESPACE
+
 SaveFormAsTemplate::SaveFormAsTemplate(QDesignerFormWindowInterface *formWindow, QWidget *parent)
     : QDialog(parent, Qt::Sheet),
       m_formWindow(formWindow)
@@ -108,7 +110,12 @@ void SaveFormAsTemplate::accept()
         }
     }
 
+    const QString origName = m_formWindow->fileName();
+    // ensure m_formWindow->contents() will convert properly resource paths to relative paths
+    // (relative to template location, not to the current form location)
+    m_formWindow->setFileName(templateFileName);
     QByteArray ba = m_formWindow->contents().toUtf8();
+    m_formWindow->setFileName(origName);
     while (file.write(ba) != ba.size()) {
         if (QMessageBox::information(m_formWindow, tr("Write Error"),
             tr("There was an error writing the template %1 to disk. Reason: %2").arg(name).arg(file.errorString()),
@@ -150,3 +157,5 @@ void SaveFormAsTemplate::checkToAddPath(int itemIndex)
     ui.categoryCombo->setCurrentIndex(m_addPathIndex);
     ++m_addPathIndex;
 }
+
+QT_END_NAMESPACE

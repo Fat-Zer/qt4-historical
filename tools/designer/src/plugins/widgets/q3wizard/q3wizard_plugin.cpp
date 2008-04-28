@@ -51,8 +51,10 @@
 #include <QtGui/QPushButton>
 #include <Qt3Support/Q3Wizard>
 
-Q3WizardPlugin::Q3WizardPlugin(QObject *parent)
-    : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3WizardPlugin::Q3WizardPlugin(const QIcon &icon, QObject *parent)
+    : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3WizardPlugin::name() const
@@ -71,7 +73,7 @@ QString Q3WizardPlugin::includeFile() const
 { return QLatin1String("q3wizard.h"); }
 
 QIcon Q3WizardPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3WizardPlugin::isContainer() const
 { return true; }
@@ -79,6 +81,7 @@ bool Q3WizardPlugin::isContainer() const
 QWidget *Q3WizardPlugin::createWidget(QWidget *parent)
 {
     Q3Wizard *wizard = new Q3Wizard(parent);
+    new Q3WizardHelper(wizard);
     wizard->backButton()->setObjectName(QLatin1String("__qt__passive_") + wizard->backButton()->objectName());
     wizard->nextButton()->setObjectName(QLatin1String("__qt__passive_") + wizard->nextButton()->objectName());
     return wizard;
@@ -96,7 +99,9 @@ void Q3WizardPlugin::initialize(QDesignerFormEditorInterface *core)
 
     m_initialized = true;
     QExtensionManager *mgr = core->extensionManager();
+    Q3WizardPropertySheetFactory::registerExtension(mgr);
     mgr->registerExtensions(new Q3WizardContainerFactory(mgr), Q_TYPEID(QDesignerContainerExtension));
+    mgr->registerExtensions(new Q3WizardExtraInfoFactory(core, mgr), Q_TYPEID(QDesignerExtraInfoExtension));
 }
 
 QString Q3WizardPlugin::codeTemplate() const
@@ -120,3 +125,5 @@ QString Q3WizardPlugin::domXml() const
     ");
 }
 
+
+QT_END_NAMESPACE

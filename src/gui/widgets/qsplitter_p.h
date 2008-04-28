@@ -58,6 +58,8 @@
 #include "private/qframe_p.h"
 #include "qrubberband.h"
 
+QT_BEGIN_NAMESPACE
+
 static const uint Default = 2;
 
 class QSplitterLayoutStruct
@@ -116,6 +118,7 @@ public:
     bool collapsible(int index) const
     { return (index < 0 || index >= list.size()) ? true : collapsible(list.at(index)); }
     QSplitterLayoutStruct *findWidget(QWidget *) const;
+    void insertWidget_helper(int index, QWidget *widget, bool show);
     QSplitterLayoutStruct *insertWidget(int index, QWidget *);
     void doMove(bool backwards, int pos, int index, int delta,
                 bool mayCollapse, int *positions, int *widths);
@@ -140,5 +143,7 @@ public:
     bool hover;
     int mouseOffset;
 };
+
+QT_END_NAMESPACE
 
 #endif

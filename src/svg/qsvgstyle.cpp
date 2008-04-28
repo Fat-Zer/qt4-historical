@@ -42,6 +42,9 @@
 ****************************************************************************/
 
 #include "qsvgstyle_p.h"
+
+#ifndef QT_NO_SVG
+
 #include "qsvgfont_p.h"
 #include "qsvggraphics_p.h"
 #include "qsvgnode_p.h"
@@ -53,6 +56,8 @@
 #include "qdebug.h"
 
 #include <math.h>
+
+QT_BEGIN_NAMESPACE
 
 QSvgStyleProperty::~QSvgStyleProperty()
 {
@@ -202,12 +207,12 @@ void QSvgSolidColorStyle::revert(QPainter *p)
     p->setPen(m_oldStroke);
 }
 
-QSvgGradientStyle::QSvgGradientStyle(QGradient *grad, bool resolveBounds)
-    : m_gradient(grad), m_resolveBounds(resolveBounds)
+QSvgGradientStyle::QSvgGradientStyle(QGradient *grad)
+    : m_gradient(grad)
 {
 }
 
-void QSvgGradientStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *)
+void QSvgGradientStyle::apply(QPainter *p, const QRectF &/*rect*/, QSvgNode *)
 {
     if (!m_link.isEmpty()) {
         resolveStops();
@@ -227,47 +232,10 @@ void QSvgGradientStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *)
         }
     }
 
+    QGradient gradient = *m_gradient;
+
     QBrush brush;
-    //we need to resolve boundaries
-    //the code is funky i'll have to verify it
-    //(testcases right now are bugs/resolve_radial.svg
-    // and bugs/resolve_linear.svg)
-    if (m_resolveBounds) {
-        if (m_gradient->type() == QGradient::LinearGradient) {
-            QLinearGradient *grad = (QLinearGradient*)(m_gradient);
-            qreal xs, ys, xf, yf;
-            xs = rect.x() +  rect.width()  * grad->start().x();
-            ys = rect.y() +  rect.height() * grad->start().y();
-            xf =  rect.x() + rect.width()  * grad->finalStop().x();
-            yf =  rect.y() + rect.height() * grad->finalStop().y();
-            QLinearGradient gradient(xs, ys,
-                                     xf, yf);
-            gradient.setStops(m_gradient->stops());
-            gradient.setSpread(m_gradient->spread());
-            brush = QBrush(gradient);
-        } else {
-            QRadialGradient *grad = (QRadialGradient*)m_gradient;
-            qreal cx, cy, r, fx, fy;
-            cx = rect.width() * grad->center().x();
-            cy = rect.height() * grad->center().y();
-            //### the radius is wrong. it has to be transformed
-            // so that the horizontal on is rect.width() * grad->radius();
-            // and vertical rect.height() * grad->radius(). it's a simple
-            // transformation but we don't support exclusive fill
-            // transformations at the moment
-            r  = rect.width() * grad->radius();
-            fx = rect.width() * grad->focalPoint().x();
-            fy = rect.width() * grad->focalPoint().y();
-            //qDebug()<<cx << cy << r << fx << fy;
-            QRadialGradient gradient(cx, cy,
-                                     r, fx, fy);
-            gradient.setStops(m_gradient->stops());
-            gradient.setSpread(m_gradient->spread());
-            brush = QBrush(gradient);
-        }
-    } else {
-        brush = QBrush(*m_gradient);
-    }
+    brush = QBrush(gradient);
 
     if (!m_matrix.isIdentity())
         brush.setMatrix(m_matrix);
@@ -351,7 +319,7 @@ QSvgStyleProperty::Type QSvgTransformStyle::type() const
 QSvgCompOpStyle::QSvgCompOpStyle(QPainter::CompositionMode mode)
     : m_mode(mode)
 {
-    
+
 }
 
 void QSvgCompOpStyle::apply(QPainter *p, const QRectF &, QSvgNode *)
@@ -524,16 +492,23 @@ void QSvgAnimateTransform::revert(QPainter *p)
 void QSvgAnimateTransform::resolveMatrix(QSvgNode *node)
 {
     static const qreal deg2rad = qreal(0.017453292519943295769);
-    qreal elapsed = node->document()->currentElapsed();
-    qreal percent = (elapsed - m_from) / m_to;
-    if (elapsed < m_from || m_finished)
+    qreal totalTimeElapsed = node->document()->currentElapsed();
+    if (totalTimeElapsed < m_from || m_finished)
         return;
 
-    if (percent > 1) {
-        percent -= ((int)percent);
+    qreal animationFrame = (totalTimeElapsed - m_from) / m_to;
+
+    if (m_repeatCount >= 0 && m_repeatCount < animationFrame) {
+        m_finished = true;
+        animationFrame = m_repeatCount;
     }
 
-    qreal currentPosition = percent * (m_count-1); //array offset
+    qreal percentOfAnimation = animationFrame;
+    if (percentOfAnimation > 1) {
+        percentOfAnimation -= ((int)percentOfAnimation);
+    }
+
+    qreal currentPosition = percentOfAnimation * (m_count - 1);
     int startElem = static_cast<int>(floor(currentPosition));
     int endElem   = static_cast<int>(ceil(currentPosition));
 
@@ -551,9 +526,9 @@ void QSvgAnimateTransform::resolveMatrix(QSvgNode *node)
         to2   = m_args[endElem++];
         to3   = m_args[endElem++];
 
-        qreal transXDiff = (to1-from1) * percent;
+        qreal transXDiff = (to1-from1) * percentOfAnimation;
         qreal transX = from1 + transXDiff;
-        qreal transYDiff = (to2-from2) * percent;
+        qreal transYDiff = (to2-from2) * percentOfAnimation;
         qreal transY = from2 + transYDiff;
         m_transform = QMatrix();
         m_transform.translate(transX, transY);
@@ -571,9 +546,9 @@ void QSvgAnimateTransform::resolveMatrix(QSvgNode *node)
         to2   = m_args[endElem++];
         to3   = m_args[endElem++];
 
-        qreal transXDiff = (to1-from1) * percent;
+        qreal transXDiff = (to1-from1) * percentOfAnimation;
         qreal transX = from1 + transXDiff;
-        qreal transYDiff = (to2-from2) * percent;
+        qreal transYDiff = (to2-from2) * percentOfAnimation;
         qreal transY = from2 + transYDiff;
         if (transY == 0)
             transY = transX;
@@ -593,12 +568,12 @@ void QSvgAnimateTransform::resolveMatrix(QSvgNode *node)
         to2   = m_args[endElem++];
         to3   = m_args[endElem++];
 
-        qreal rotationDiff = (to1-from1) * percent;
+        qreal rotationDiff = (to1 - from1) * percentOfAnimation;
         //qreal rotation = from1 + rotationDiff;
 
-        qreal transXDiff = (to2-from2) * percent;
+        qreal transXDiff = (to2-from2) * percentOfAnimation;
         qreal transX = from2 + transXDiff;
-        qreal transYDiff = (to3-from3) * percent;
+        qreal transYDiff = (to3-from3) * percentOfAnimation;
         qreal transY = from3 + transYDiff;
         m_transform = QMatrix();
         m_transform.translate(transX, transY);
@@ -618,10 +593,10 @@ void QSvgAnimateTransform::resolveMatrix(QSvgNode *node)
         to2   = m_args[endElem++];
         to3   = m_args[endElem++];
 
-        qreal transXDiff = (to1-from1) * percent;
+        qreal transXDiff = (to1-from1) * percentOfAnimation;
         qreal transX = from1 + transXDiff;
         m_transform = QMatrix();
-        m_transform.shear(tan(transX*deg2rad), 0);
+        m_transform.shear(tan(transX * deg2rad), 0);
         break;
     }
     case SkewY: {
@@ -637,32 +612,14 @@ void QSvgAnimateTransform::resolveMatrix(QSvgNode *node)
         to3   = m_args[endElem++];
 
 
-        qreal transYDiff = (to1-from1) * percent;
+        qreal transYDiff = (to1 - from1) * percentOfAnimation;
         qreal transY = from1 + transYDiff;
         m_transform = QMatrix();
-        m_transform.shear(0, tan(transY*deg2rad));
+        m_transform.shear(0, tan(transY * deg2rad));
         break;
     }
     default:
         break;
-    }
-
-    if (m_repeatCount < 0)
-        return;
-
-    if (elapsed > m_to) {
-        if (m_repeatCount > 1) {
-            --m_repeatCount;
-        } else if (m_repeatCount > 0 && m_repeatCount < 1) {
-            if (m_repeatCount <= percent) {
-                m_finished = true;
-            }
-        }
-    } else if (m_repeatCount > 0 && m_repeatCount < 1) {
-        //this happens if m_repeatCount < 1 from the start
-        if (m_repeatCount <= percent) {
-            m_finished = true;
-        }
     }
 }
 
@@ -708,31 +665,39 @@ void QSvgAnimateColor::setRepeatCount(qreal repeatCount)
 
 void QSvgAnimateColor::apply(QPainter *p, const QRectF &, QSvgNode *node)
 {
-    qreal elapsed = node->document()->currentElapsed();
-    qreal percent = (elapsed - m_from) / m_to;
-
-    if (elapsed < m_from || m_finished)
+    qreal totalTimeElapsed = node->document()->currentElapsed();
+    if (totalTimeElapsed < m_from || m_finished)
         return;
-    if (percent > 1) {
-        percent -= ((int)percent);
+
+    qreal animationFrame = (totalTimeElapsed - m_from) / m_to;
+
+    if (m_repeatCount >= 0 && m_repeatCount < animationFrame) {
+        m_finished = true;
+        animationFrame = m_repeatCount;
     }
 
-    qreal currentPosition = percent * (m_colors.count()-1); //array offset
-
-    percent *= (m_colors.count() - 1);
-    if (percent > 1) {
-        percent -= ((int)percent);
+    qreal percentOfAnimation = animationFrame;
+    if (percentOfAnimation > 1) {
+        percentOfAnimation -= ((int)percentOfAnimation);
     }
+
+    qreal currentPosition = percentOfAnimation * (m_colors.count() - 1);
 
     int startElem = static_cast<int>(floor(currentPosition));
     int endElem   = static_cast<int>(ceil(currentPosition));
     QColor start = m_colors[startElem];
     QColor end = m_colors[endElem];
-    qreal aDiff = (end.alpha() - start.alpha()) * percent;
-    qreal rDiff = (end.red()   - start.red()) * percent;
-    qreal gDiff = (end.green() - start.green()) * percent;
-    qreal bDiff = (end.blue()  - start.blue()) * percent;
 
+    qreal percentOfColorMorph = currentPosition;
+    if (percentOfColorMorph > 1) {
+        percentOfColorMorph -= ((int)percentOfColorMorph);
+    }
+
+    // Interpolate between the two fixed colors start and end
+    qreal aDiff = (end.alpha() - start.alpha()) * percentOfColorMorph;
+    qreal rDiff = (end.red()   - start.red()) * percentOfColorMorph;
+    qreal gDiff = (end.green() - start.green()) * percentOfColorMorph;
+    qreal bDiff = (end.blue()  - start.blue()) * percentOfColorMorph;
 
     int alpha  = int(start.alpha() + aDiff);
     int red    = int(start.red() + rDiff);
@@ -751,24 +716,6 @@ void QSvgAnimateColor::apply(QPainter *p, const QRectF &, QSvgNode *node)
         m_oldPen = pen;
         pen.setColor(color);
         p->setPen(pen);
-    }
-
-    if (m_repeatCount < 0)
-        return;
-
-    if (elapsed > m_to) {
-        if (m_repeatCount > 1) {
-            --m_repeatCount;
-        } else if (m_repeatCount > 0 && m_repeatCount < 1) {
-            if (m_repeatCount <= percent) {
-                m_finished = true;
-            }
-        }
-    } else if (m_repeatCount > 0 && m_repeatCount < 1) {
-        //this happens if m_repeatCount < 1 from the start
-        if (m_repeatCount <= percent) {
-            m_finished = true;
-        }
     }
 }
 
@@ -840,3 +787,6 @@ void QSvgGradientStyle::resolveStops()
     }
 }
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG

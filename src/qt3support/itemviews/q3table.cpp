@@ -70,6 +70,8 @@
 #include <stdlib.h>
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 using namespace Qt;
 
 class Q3HeaderData;
@@ -445,14 +447,7 @@ int Q3TableSelection::numCols() const
     the original item will be deleted.
 
     Example:
-    \code
-    for (int row = 0; row < table->numRows(); row++) {
-        for (int col = 0; col < table->numCols(); col++) {
-            table->setItem(row, col,
-                new Q3TableItem(table, Q3TableItem::WhenCurrent, QString::number(row * col)));
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 0
 
     You can move a table item from one cell to another, in the same or
     a different table, using Q3Table::takeItem() and Q3Table::setItem()
@@ -478,15 +473,7 @@ int Q3TableSelection::numCols() const
     QHBox with two child QLineEdit widgets may use one of them to
     accept the keyboard focus:
 
-    \code
-    QWidget* MyTableItem::createEditor() const
-    {
-        QHBox* hbox = new QHBox(table()->viewport());
-        hbox->setFocusProxy(new QLineEdit(hbox));
-        new QLineEdit(hbox);
-        return hbox;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 1
 
     By default, table items may be replaced by new Q3TableItems
     during the lifetime of a Q3Table. Therefore, if you create your
@@ -742,11 +729,7 @@ void Q3TableItem::setText(const QString &str)
     Note that the painter is not clipped by default in order to get
     maximum efficiency. If you want clipping, use
 
-    \code
-    p->setClipRect(table()->cellRect(row, col), QPainter::ClipPainter);
-    //... your drawing code
-    p->setClipping(false);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 2
 
 */
 
@@ -812,7 +795,7 @@ a QLineEdit you will need to reimplement this function.
 
 void Q3TableItem::setContentFromEditor(QWidget *w)
 {
-    QLineEdit *le = ::qobject_cast<QLineEdit*>(w);
+    QLineEdit *le = qobject_cast<QLineEdit*>(w);
     if (le) {
         QString input = le->text();
         if (le->validator())
@@ -1269,7 +1252,7 @@ QWidget *Q3ComboTableItem::createEditor() const
 
 void Q3ComboTableItem::setContentFromEditor(QWidget *w)
 {
-    Q3ComboBox *cb = ::qobject_cast<Q3ComboBox*>(w);
+    Q3ComboBox *cb = qobject_cast<Q3ComboBox*>(w);
     if (cb) {
         entries.clear();
         for (int i = 0; i < cb->count(); ++i)
@@ -1326,7 +1309,7 @@ void Q3ComboTableItem::paint(QPainter *p, const QColorGroup &cg,
 void Q3ComboTableItem::setCurrentItem(int i)
 {
     QWidget *w = table()->cellWidget(row(), col());
-    Q3ComboBox *cb = ::qobject_cast<Q3ComboBox*>(w);
+    Q3ComboBox *cb = qobject_cast<Q3ComboBox*>(w);
     if (cb) {
         cb->setCurrentItem(i);
         current = cb->currentItem();
@@ -1365,7 +1348,7 @@ void Q3ComboTableItem::setCurrentItem(const QString &s)
 int Q3ComboTableItem::currentItem() const
 {
     QWidget *w = table()->cellWidget(row(), col());
-    Q3ComboBox *cb = ::qobject_cast<Q3ComboBox*>(w);
+    Q3ComboBox *cb = qobject_cast<Q3ComboBox*>(w);
     if (cb)
         return cb->currentItem();
     return current;
@@ -1380,7 +1363,7 @@ int Q3ComboTableItem::currentItem() const
 QString Q3ComboTableItem::currentText() const
 {
     QWidget *w = table()->cellWidget(row(), col());
-    Q3ComboBox *cb = ::qobject_cast<Q3ComboBox*>(w);
+    Q3ComboBox *cb = qobject_cast<Q3ComboBox*>(w);
     if (cb)
         return cb->currentText();
     return entries.value(current);
@@ -1393,7 +1376,7 @@ QString Q3ComboTableItem::currentText() const
 int Q3ComboTableItem::count() const
 {
     QWidget *w = table()->cellWidget(row(), col());
-    Q3ComboBox *cb = ::qobject_cast<Q3ComboBox*>(w);
+    Q3ComboBox *cb = qobject_cast<Q3ComboBox*>(w);
     if (cb)
         return cb->count();
     return (int)entries.count();
@@ -1408,7 +1391,7 @@ int Q3ComboTableItem::count() const
 QString Q3ComboTableItem::text(int i) const
 {
     QWidget *w = table()->cellWidget(row(), col());
-    Q3ComboBox *cb = ::qobject_cast<Q3ComboBox*>(w);
+    Q3ComboBox *cb = qobject_cast<Q3ComboBox*>(w);
     if (cb)
         return cb->text(i);
     return entries.value(i);
@@ -1530,7 +1513,7 @@ void Q3CheckTableItem::setText(const QString &t)
 {
     Q3TableItem::setText(t);
     QWidget *w = table()->cellWidget(row(), col());
-    QCheckBox *cb = ::qobject_cast<QCheckBox*>(w);
+    QCheckBox *cb = qobject_cast<QCheckBox*>(w);
     if (cb)
         cb->setText(t);
 }
@@ -1554,7 +1537,7 @@ QWidget *Q3CheckTableItem::createEditor() const
 
 void Q3CheckTableItem::setContentFromEditor(QWidget *w)
 {
-    QCheckBox *cb = ::qobject_cast<QCheckBox*>(w);
+    QCheckBox *cb = qobject_cast<QCheckBox*>(w);
     if (cb)
         checked = cb->isChecked();
 }
@@ -1610,7 +1593,7 @@ void Q3CheckTableItem::setChecked(bool b)
     checked = b;
     table()->updateCell(row(), col());
     QWidget *w = table()->cellWidget(row(), col());
-    QCheckBox *cb = ::qobject_cast<QCheckBox*>(w);
+    QCheckBox *cb = qobject_cast<QCheckBox*>(w);
     if (cb)
         cb->setChecked(b);
 }
@@ -1629,7 +1612,7 @@ bool Q3CheckTableItem::isChecked() const
     // #### and end up in an infinite loop that way
     // table()->updateCell(row(), col());
     QWidget *w = table()->cellWidget(row(), col());
-    QCheckBox *cb = ::qobject_cast<QCheckBox*>(w);
+    QCheckBox *cb = qobject_cast<QCheckBox*>(w);
     if (cb)
         return cb->isChecked();
     return checked;
@@ -1685,11 +1668,7 @@ QSize Q3CheckTableItem::sizeHint() const
     are perfectly possible. Q3Table is economical with memory, using
     none for unused cells.
 
-    \code
-    Q3Table *table = new Q3Table(100, 250, this);
-    table->setPixmap(3, 2, pix);
-    table->setText(3, 2, "A pixmap");
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 3
 
     The first line constructs the table specifying its size in rows
     and columns. We then insert a pixmap and some text into the \e
@@ -2919,11 +2898,7 @@ void Q3Table::paintCell(QPainter* p, int row, int col,
     Note that the painter is not clipped by default in order to get
     maximum efficiency. If you want clipping, use code like this:
 
-    \code
-    p->setClipRect(cellRect(row, col), QPainter::CoordPainter);
-    //... your drawing code
-    p->setClipping(false);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 4
 */
 
 void Q3Table::paintCell(QPainter *p, int row, int col,
@@ -3677,7 +3652,7 @@ void Q3Table::contentsMousePressEventEx(QMouseEvent* e)
         Q3TableItem *itm = item(tmpRow, tmpCol);
         if (itm && itm->editType() == Q3TableItem::WhenCurrent) {
             QWidget *w = cellWidget(tmpRow, tmpCol);
-            if (::qobject_cast<Q3ComboBox*>(w) || ::qobject_cast<QAbstractButton*>(w)) {
+            if (qobject_cast<Q3ComboBox*>(w) || qobject_cast<QAbstractButton*>(w)) {
                 QMouseEvent ev(e->type(), w->mapFromGlobal(e->globalPos()),
                                 e->globalPos(), e->button(), e->state());
                 QApplication::sendPostedEvents(w, 0);
@@ -4354,7 +4329,7 @@ void Q3Table::paintEvent(QPaintEvent *e)
     erase(topLeftCorner); // erase instead of widget on top
     Q3ScrollView::paintEvent(e);
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
     QPainter p(this);
     p.drawLine(topLeftCorner.bottomLeft(), topLeftCorner.bottomRight());
     p.drawLine(topLeftCorner.bottomRight(), topLeftCorner.topRight());
@@ -5014,14 +4989,7 @@ void Q3Table::setColumnLabels(const QStringList &labels)
     If you are not using \l{Q3TableItem}s and you don't want to use a
     QLineEdit as the default editor, subclass Q3Table and reimplement
     this function with code like this:
-    \code
-    Q3TableItem *i = item(row, col);
-    if (initFromCell || (i && !i->isReplaceable()))
-        // If we had a Q3TableItem ask the base class to create the editor
-        return Q3Table::createEditor(row, col, initFromCell);
-    else
-        return ...(create your own editor)
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 5
     Ownership of the editor widget is transferred to the caller.
 
     If you reimplement this function return 0 for read-only cells. You
@@ -5186,7 +5154,7 @@ void Q3Table::setCellContentFromEditor(int row, int col)
     if (i) {
         i->setContentFromEditor(editor);
     } else {
-        QLineEdit *le = ::qobject_cast<QLineEdit*>(editor);
+        QLineEdit *le = qobject_cast<QLineEdit*>(editor);
         if (le)
             setText(row, col, le->text());
     }
@@ -5528,7 +5496,7 @@ struct SortableTableItem
 extern "C" {
 #endif
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 static int _cdecl cmpTableItems(const void *n1, const void *n2)
 #else
 static int cmpTableItems(const void *n1, const void *n2)
@@ -6054,6 +6022,7 @@ void Q3Table::clearCellWidget(int row, int col)
     QWidget *w = cellWidget(row, col);
     if (w) {
         w->removeEventFilter(this);
+        w->hide();
         w->deleteLater();
     }
     widgets.setAutoDelete(false);
@@ -7361,5 +7330,7 @@ void Q3TableHeader::setLabels(const QStringList & labels)
         }
     }
 }
+
+QT_END_NAMESPACE
 
 #include "q3table.moc"

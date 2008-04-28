@@ -48,7 +48,9 @@
 #include <QtCore/QPointer>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QLineEdit;
 class QDesignerFormWindowInterface;
@@ -59,7 +61,7 @@ class ComboBoxTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    ComboBoxTaskMenu(QComboBox *button, QObject *parent = 0);
+    explicit ComboBoxTaskMenu(QComboBox *button, QObject *parent = 0);
     virtual ~ComboBoxTaskMenu();
 
     virtual QAction *preferredEditAction() const;
@@ -77,16 +79,17 @@ private:
     QAction *m_editItemsAction;
 };
 
-class ComboBoxTaskMenuFactory: public QExtensionFactory
+class ComboBoxTaskMenuFactory : public ExtensionFactory<QDesignerTaskMenuExtension, QComboBox, ComboBoxTaskMenu>
 {
-    Q_OBJECT
 public:
-    ComboBoxTaskMenuFactory(QExtensionManager *extensionManager = 0);
+    explicit ComboBoxTaskMenuFactory(const QString &iid, QExtensionManager *extensionManager);
 
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
+private:
+    virtual QComboBox *checkObject(QObject *qObject) const;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // COMBOBOX_TASKMENU_H

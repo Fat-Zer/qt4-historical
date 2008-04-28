@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page style-reference.html
 
@@ -58,17 +101,17 @@
     the style options, and the functions of QStyle. Finally, we describe
     how the palette is used.
 
-    Not all drawing is performed by the QStyle implementation; the
-    items in item views are drawn by \l{Delegate Classes}{delegates}
-    (classes that inherit QAbstractItemDelegate). The item view
-    headers are still drawn by the style. In this document we only
-    describe how to implement a QStyle subclass, so we do not treat
-    item view related parts of the drawing. In order to get absolute
-    control over the painting of widgets, you need to implement your
-    own delegates for the item views. Note that delegates must be set
+    Items in item views is drawn by \l{Delegate Classes}{delegates} in
+    Qt. The item view headers are still drawn by the style. Qt's
+    default delegate, QStyledItemDelegate, draws its items partially
+    through the current style; it draws the check box indicators and
+    calculate bounding rectangles for the elements of which the item
+    consists. In this document, we only describe how to implement a
+    QStyle subclass. If you wish to add support for other datatypes
+    than those supported by the QStyledItemDelegate, you need to
+    implement a custom delegate. Note that delegates must be set
     programmatically for each individual widget (i.e., default
-    delegates cannot be provided as plugins). This architecture has
-    mainly been chosen for performance reasons.
+    delegates cannot be provided as plugins).
 
     \section2 The Style Elements
 
@@ -458,25 +501,7 @@
     We start with a look at how QCheckBox builds it style option,
     which is QStyleOptionButton for checkboxes:
 
-    \code
-    opt.init(q);
-        if (down)
-        opt.state |= QStyle::State_Sunken;
-    if (tristate && noChange)
-        opt.state |= QStyle::State_NoChange;
-    else
-        opt.state |= checked ? QStyle::State_On :
-        QStyle::State_Off;
-    if (q->testAttribute(Qt::WA_Hover) &&  q->underMouse()) {
-        if (hovering)
-        opt.state |= QStyle::State_MouseOver;
-        else
-        opt.state &= ~QStyle::State_MouseOver;
-    }
-    opt.text = text;
-    opt.icon = icon;
-    opt.iconSize = q->iconSize();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.styles.qdoc 0
 
     First we let QStyleOption set up the option with the information
     that is common for all widgets with \c init().  We will look at
@@ -495,33 +520,7 @@
     attributes that are common for all widgets. We print its
     implementation here:
 
-    \code
-    state = QStyle::State_None;
-    if (widget->isEnabled())
-        state |= QStyle::State_Enabled;
-    if (widget->hasFocus())
-        state |= QStyle::State_HasFocus;
-    if (widget->window()->testAttribute(Qt::WA_KeyboardFocusChange))
-        state |= QStyle::State_KeyboardFocusChange;
-    if (widget->underMouse())
-        state |= QStyle::State_MouseOver;
-    if (widget->window()->isActiveWindow())
-        state |= QStyle::State_Active;
-#ifdef Q_WS_MAC
-    extern bool qt_mac_can_clickThrough(const QWidget *w); //qwidget_mac.cpp
-    if (!(state & QStyle::State_Active) && !qt_mac_can_clickThrough(widget))
-        state &= ~QStyle::State_Enabled;
-#endif
-#ifdef QT_KEYPAD_NAVIGATION
-    if (widget->hasEditFocus())
-        state |= QStyle::State_HasEditFocus;
-#endif
-
-    direction = widget->layoutDirection();
-    rect = widget->rect();
-    palette = widget->palette();
-    fontMetrics = widget->fontMetrics();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.styles.qdoc 1
 
     The State_Enabled is set when the widget is enabled. When the
     widget has focus the State_HasFocus flag is set. Equally, the
@@ -585,11 +584,7 @@
     notably, it wraps the methods in QStyle used for painting. The
     QCheckBox draws itself as follows:
 
-    \code
-    QStylePainter p(this);
-    QStyleOptionButton opt = d->getStyleOption();
-    p.drawControl(QStyle::CE_CheckBox, opt);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.styles.qdoc 2
 
     QCommonStyle handles the CE_CheckBox element. The QCheckBox
     has two sub elements: SE_CheckBoxIndicator (the checked indicator)
@@ -597,20 +592,7 @@
     checkbox label). QCommonStyle also implements these sub element
     bounding rectangles. We have a look at the QCommonStyle code:
 
-    \code
-            QStyleOptionButton subopt = *btn;
-            subopt.rect = subElementRect(SE_CheckBoxIndicator, btn, widget);
-            drawPrimitive(PE_IndicatorCheckBox, &subopt, p, widget);
-            subopt.rect = subElementRect(SE_CheckBoxContents, btn, widget);
-            drawControl(CE_CheckBoxLabel, &subopt, p, widget);
-
-            if (btn->state & State_HasFocus) {
-                QStyleOptionFocusRect fropt;
-                fropt.QStyleOption::operator=(*btn);
-                fropt.rect = subElementRect(SE_CheckBoxFocusRect, btn, widget);
-                drawPrimitive(PE_FrameFocusRect, &fropt, p, widget);
-            }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.styles.qdoc 3
 
     As can be seen from the code extract, the common style gets
     the bounding rectangles of the two sub elements of
@@ -621,27 +603,7 @@
     handles CE_CheckboxLabel. We will examine each implementation and
     start with CE_CheckBoxLabel:
 
-    \code
-        const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(opt)
-            uint alignment = visualAlignment(btn->direction, Qt::AlignLeft | Qt::AlignVCenter);
-
-            if (!styleHint(SH_UnderlineShortcut, btn, widget))
-                alignment |= Qt::TextHideMnemonic;
-            QPixmap pix;
-            QRect textRect = btn->rect;
-            if (!btn->icon.isNull()) {
-                pix = btn->icon.pixmap(btn->iconSize, btn->state & State_Enabled ? QIcon::Normal : QIcon::Disabled);
-                drawItemPixmap(p, btn->rect, alignment, pix);
-                if (btn->direction == Qt::RightToLeft)
-                    textRect.setRight(textRect.right() - btn->iconSize.width() - 4);
-                else
-                    textRect.setLeft(textRect.left() + btn->iconSize.width() + 4);
-            }
-            if (!btn->text.isEmpty()){
-                drawItemText(p, textRect, alignment | Qt::TextShowMnemonic,
-                    btn->palette, btn->state & State_Enabled, btn->text, QPalette::WindowText);
-            }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.styles.qdoc 4
 
     \l{QStyle::}{visualAlignment()} adjusts the alignment of text
     according to the layout direction. We then draw an icon if it
@@ -660,9 +622,7 @@
     We take a look at the java implementation
     of CE_CheckBoxIndicator in \c drawControl():
 
-    \quotefromfile snippets/javastyle.cpp
-    \skipto /case PE_IndicatorCheckBox/
-    \printuntil /break/
+    \snippet doc/src/snippets/javastyle.cpp 0
 
     We first save the state of the painter. This is not always
     necessary but in this case the QWindowsStyle needs the painter in
@@ -681,9 +641,7 @@
     here if the widget is disabled. We would then have to use
     another image with the indicator in the disabled color.
 
-    \quotefromfile snippets/javastyle.cpp
-    \skipto /::drawButtonBackground/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/javastyle.cpp 1
 
     We have seen how check boxes are styled in the java style from the
     widget gets a paint request to the style is finished painting. To
@@ -1724,7 +1682,7 @@
 
     The CE_MenuScroller and CE_MenuTearOff elements are handled by
     QCommonStyle and are not shown unless the menu is to large to fit
-    on the screen. PE_FrameMenu is only drawn for popup menus.
+    on the screen. PE_FrameMenu is only drawn for pop-up menus.
 
     QMenu calculates rectangles based on its actions and calls
     CE_MenuItem and CE_MenuScroller if the style supports that.

@@ -41,8 +41,8 @@
 **
 ****************************************************************************/
 
-#ifndef QFILESYSTEMMODEL_H
-#define QFILESYSTEMMODEL_H
+#ifndef QFILESYSTEMMODEL_P_H
+#define QFILESYSTEMMODEL_P_H
 
 //
 //  W A R N I N G
@@ -55,122 +55,27 @@
 // We mean it.
 //
 
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qpair.h>
-#include <QtCore/qdir.h>
-#include <QtGui/qicon.h>
+#include "qfilesystemmodel.h"
 
-class ExtendedInformation;
-class QFileSystemModelPrivate;
-class QFileIconProvider;
+#ifndef QT_NO_FILESYSTEMMODEL
 
-#ifndef QT_NO_FILESYSTEMWATCHER
-
-class Q_AUTOTEST_EXPORT QFileSystemModel : public QAbstractItemModel
-{
-    Q_OBJECT
-    Q_PROPERTY(bool resolveSymlinks READ resolveSymlinks WRITE setResolveSymlinks)
-    Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
-    Q_PROPERTY(bool nameFilterDisables READ nameFilterDisables WRITE setNameFilterDisables)
-
-Q_SIGNALS:
-    void rootPathChanged(const QString &newPath);
-
-public:
-    enum Roles {
-        FileIconRole = Qt::DecorationRole,
-        FilePathRole = Qt::UserRole + 1,
-        FileNameRole
-    };
-
-    explicit QFileSystemModel(QObject *parent = 0);
-    ~QFileSystemModel();
-
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex index(const QString &path, int column = 0) const;
-    QModelIndex parent(const QModelIndex &child) const;
-    bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
-    bool canFetchMore(const QModelIndex &parent) const;
-    void fetchMore(const QModelIndex &parent);
-
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-
-    QVariant myComputer(int role = Qt::DisplayRole) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
-
-    QStringList mimeTypes() const;
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
-                      int row, int column, const QModelIndex &parent);
-    Qt::DropActions supportedDropActions() const;
-
-    // QFileSystemModel specific API
-    QModelIndex setRootPath(const QString &path);
-    QString rootPath() const;
-    QDir rootDirectory() const;
-
-    void setIconProvider(QFileIconProvider *provider);
-    QFileIconProvider *iconProvider() const;
-
-    void setFilter(QDir::Filters filters);
-    QDir::Filters filter() const;
-
-    void setResolveSymlinks(bool enable);
-    bool resolveSymlinks() const;
-
-    void setReadOnly(bool enable);
-    bool isReadOnly() const;
-
-    void setNameFilterDisables(bool enable);
-    bool nameFilterDisables() const;
-
-    void setNameFilters(const QStringList &filters);
-    QStringList nameFilters() const;
-
-    QString filePath(const QModelIndex &index) const;
-    bool isDir(const QModelIndex &index) const;
-    qint64 size(const QModelIndex &index) const;
-    QString type(const QModelIndex &index) const;
-    QDateTime lastModified(const QModelIndex &index) const;
-
-    QModelIndex mkdir(const QModelIndex &parent, const QString &name);
-    inline bool rmdir(const QModelIndex &index) { QDir dir; return dir.rmdir(filePath(index)); }
-    inline QString fileName(const QModelIndex &index) const { return index.data(Qt::DisplayRole).toString(); }
-    inline QIcon fileIcon(const QModelIndex &index) const { return qvariant_cast<QIcon>(index.data(Qt::DecorationRole)); }
-    QFile::Permissions permissions(const QModelIndex &index) const;
-    inline QFileInfo fileInfo(const QModelIndex &index) const { return QFileInfo(filePath(index)); }
-    inline bool remove(const QModelIndex &index) { if (isDir(index)) return rmdir(index); else return QFile::remove(filePath(index)); }
-
-protected:
-    QFileSystemModel(QFileSystemModelPrivate &, QObject *parent = 0);
-    void timerEvent(QTimerEvent *event);
-
-private:
-    Q_DECLARE_PRIVATE(QFileSystemModel)
-    Q_DISABLE_COPY(QFileSystemModel)
-
-    Q_PRIVATE_SLOT(d_func(), void _q_directoryChanged(const QString &directory, const QStringList &list))
-    Q_PRIVATE_SLOT(d_func(), void _q_performDelayedSort())
-    Q_PRIVATE_SLOT(d_func(), void _q_fileSystemChanged(const QString &path, const QList<QPair<QString, QFileInfo> > &))
-    Q_PRIVATE_SLOT(d_func(), void _q_resolvedName(const QString &fileName, const QString &resolvedName))
-};
-
-#include <qabstractitemmodel.h>
 #include <private/qabstractitemmodel_p.h>
+#include <qabstractitemmodel.h>
 #include "qfileinfogatherer_p.h"
+#include <qpair.h>
+#include <qdir.h>
+#include <qicon.h>
 #include <qdir.h>
 #include <qicon.h>
 #include <qfileinfo.h>
 #include <qtimer.h>
 #include <qhash.h>
+
+QT_BEGIN_NAMESPACE
+
+class ExtendedInformation;
+class QFileSystemModelPrivate;
+class QFileIconProvider;
 
 class Q_AUTOTEST_EXPORT QFileSystemModelPrivate : public QAbstractItemModelPrivate
 {
@@ -180,9 +85,13 @@ public:
     class QFileSystemNode
     {
     public:
-        QFileSystemNode(const QString &filename = QString(), QFileSystemNode *p=0)
+        QFileSystemNode(const QString &filename = QString(), QFileSystemNode *p = 0)
             : fileName(filename), populatedChildren(false), parent(p), info(0) {}
-        ~QFileSystemNode() { delete info; info = 0; }
+        ~QFileSystemNode() {
+            delete info;
+            info = 0;
+            parent = 0;
+        }
 
         QString fileName;
 
@@ -246,6 +155,14 @@ public:
         inline int visibleLocation(int childRow) {
             return visibleChildren.indexOf(childRow);
         }
+        void updateIcon(QFileIconProvider *iconProvider, const QString &path) {
+            if (info)
+                info->icon = iconProvider->icon(QFileInfo(path));
+            for (int i = 0; i < children.count(); ++i) {
+                children[i].updateIcon(iconProvider, path + QLatin1Char('/') + children[i].fileName);
+            }
+        }
+
         bool populatedChildren;
         QList<QFileSystemNode> children;
         QList<int> visibleChildren;
@@ -369,7 +286,7 @@ public:
     bool readOnly;
     bool setRootPath;
     QDir::Filters filters;
-    QList<const QFileSystemNode*> bypassFilters;
+    QHash<const QFileSystemNode*, bool> bypassFilters;
     bool nameFilterDisables;
 #ifndef QT_NO_REGEXP
     QList<QRegExp> nameFilters;
@@ -388,7 +305,9 @@ public:
     QList<Fetching> toFetch;
 
 };
-#endif // QT_NO_FILESYSTEMWATCHER
+#endif // QT_NO_FILESYSTEMMODEL
+
+QT_END_NAMESPACE
 
 #endif
 

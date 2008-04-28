@@ -65,8 +65,11 @@
 
 #ifndef QT_NO_LIBRARY
 
+QT_BEGIN_NAMESPACE
+
 bool qt_debug_component();
 
+class QSettings;
 class QLibraryPrivate
 {
 public:
@@ -79,7 +82,7 @@ public:
     pHnd;
 
     QString fileName, qualifiedFileName;
-    int majorVerNum;
+    QString fullVersion;
 
     bool load();
     bool loadPlugin(); // loads and resolves instance
@@ -87,7 +90,7 @@ public:
     void release();
     void *resolve(const char *);
 
-    static QLibraryPrivate *findOrCreate(const QString &fileName, int verNum = -1);
+    static QLibraryPrivate *findOrCreate(const QString &fileName, const QString &version = QString());
 
     QtPluginInstanceFunction instance;
     uint qt_version;
@@ -96,23 +99,25 @@ public:
     QString errorString;
     QLibrary::LoadHints loadHints;
 
-    bool isPlugin();
+    bool isPlugin(QSettings *settings = 0);
 
 
 private:
-    explicit QLibraryPrivate(const QString &canonicalFileName, int verNum = -1);
+    explicit QLibraryPrivate(const QString &canonicalFileName, const QString &version);
     ~QLibraryPrivate();
 
     bool load_sys();
     bool unload_sys();
     void *resolve_sys(const char *);
 
-    QAtomic libraryRefCount;
-    QAtomic libraryUnloadCount;
+    QAtomicInt libraryRefCount;
+    QAtomicInt libraryUnloadCount;
 
     enum {IsAPlugin, IsNotAPlugin, MightBeAPlugin } pluginState;
     friend class QLibraryPrivateHasFriends;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_LIBRARY
 

@@ -46,6 +46,7 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QCalendarWidget;
 class QCheckBox;
 class QComboBox;
@@ -54,7 +55,9 @@ class QDateEdit;
 class QGridLayout;
 class QGroupBox;
 class QLabel;
+QT_END_NAMESPACE
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -90,6 +93,7 @@ private:
     QGroupBox *generalOptionsGroupBox;
     QLabel *localeLabel;
     QLabel *firstDayLabel;
+//! [0]
     QLabel *selectionModeLabel;
     QLabel *horizontalHeaderLabel;
     QLabel *verticalHeaderLabel;
@@ -118,7 +122,9 @@ private:
     QComboBox *headerTextFormatCombo;
 
     QCheckBox *firstFridayCheckBox;
+//! [1]
     QCheckBox *mayFirstCheckBox;
 };
+//! [1]
 
 #endif

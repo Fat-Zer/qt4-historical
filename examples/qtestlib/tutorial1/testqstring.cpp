@@ -41,6 +41,7 @@
 **
 ****************************************************************************/
 
+//! [0]
 #include <QtTest/QtTest>
 
 class TestQString: public QObject
@@ -49,13 +50,18 @@ class TestQString: public QObject
 private slots:
     void toUpper();
 };
+//! [0]
 
+//! [1]
 void TestQString::toUpper()
 {
     QString str = "Hello";
     QCOMPARE(str.toUpper(), QString("HELLO"));
 }
+//! [1]
 
+//! [2]
 QTEST_MAIN(TestQString)
 #include "testqstring.moc"
+//! [2]
 

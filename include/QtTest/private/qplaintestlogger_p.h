@@ -1,1 +1,1 @@
-#include "../../../tools/qtestlib/src/qplaintestlogger_p.h"
+#include "../../../src/testlib/qplaintestlogger_p.h"

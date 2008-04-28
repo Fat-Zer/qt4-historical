@@ -53,8 +53,13 @@
 #include <QtGui/qtabbar.h>
 #include <QtGui/qtabwidget.h>
 #include <QtGui/qrubberband.h>
+#ifndef QT_NO_ITEMVIEWS
+#   include <QtCore/qabstractitemmodel.h>
+#endif
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -493,7 +498,10 @@ public:
     enum ViewItemFeature {
         None = 0x00,
         WrapText = 0x01,
-        Alternate = 0x02
+        Alternate = 0x02,
+        HasCheckIndicator = 0x04,
+        HasDisplay = 0x08,
+        HasDecoration = 0x10
     };
     Q_DECLARE_FLAGS(ViewItemFeatures, ViewItemFeature)
 
@@ -507,6 +515,8 @@ public:
 protected:
     QStyleOptionViewItemV2(int version);
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionViewItemV2::ViewItemFeatures)
 
 class Q_GUI_EXPORT QStyleOptionViewItemV3 : public QStyleOptionViewItemV2
 {
@@ -526,7 +536,30 @@ protected:
     QStyleOptionViewItemV3(int version);
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionViewItemV2::ViewItemFeatures)
+#ifndef QT_NO_ITEMVIEWS
+class Q_GUI_EXPORT QStyleOptionViewItemV4 : public QStyleOptionViewItemV3
+{
+public:
+    enum StyleOptionVersion { Version = 4 };
+    enum ViewItemPosition { Invalid, Beginning, Middle, End, OnlyOne };
+
+    QModelIndex index;
+    Qt::CheckState checkState;
+    QIcon icon;
+    QString text;
+    ViewItemPosition viewItemPosition;
+    QBrush backgroundBrush;
+
+    QStyleOptionViewItemV4();
+    QStyleOptionViewItemV4(const QStyleOptionViewItemV4 &other)
+        : QStyleOptionViewItemV3(Version) { *this = other; }
+    QStyleOptionViewItemV4(const QStyleOptionViewItem &other);
+    QStyleOptionViewItemV4 &operator = (const QStyleOptionViewItem &other);
+
+protected:
+    QStyleOptionViewItemV4(int version);
+};
+#endif
 
 class Q_GUI_EXPORT QStyleOptionToolBox : public QStyleOption
 {
@@ -859,6 +892,8 @@ T qstyleoption_cast(QStyleHintReturn *hint)
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType);
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QStyleOption &option);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

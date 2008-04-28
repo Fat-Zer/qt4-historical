@@ -47,6 +47,8 @@
 
 #include "loutgenerator.h"
 
+QT_BEGIN_NAMESPACE
+
 LoutGenerator::LoutGenerator()
 {
 }
@@ -59,3 +61,5 @@ QString LoutGenerator::format()
 {
     return "lout";
 }
+
+QT_END_NAMESPACE

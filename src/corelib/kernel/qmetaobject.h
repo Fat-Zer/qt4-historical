@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 template <typename T> class QList;
@@ -69,6 +71,8 @@ public:
     MethodType methodType() const;
     enum Attributes { Compatibility = 0x1, Cloned = 0x2, Scriptable = 0x4 };
     int attributes() const;
+
+    inline const QMetaObject *enclosingMetaObject() const { return mobj; }
 
 private:
     const QMetaObject *mobj;
@@ -96,6 +100,7 @@ public:
     int keysToValue(const char * keys) const;
     QByteArray valueToKeys(int value) const;
 
+    inline const QMetaObject *enclosingMetaObject() const { return mobj; }
 
     inline bool isValid() const { return name() != 0; }
 private:
@@ -134,6 +139,7 @@ public:
 
     bool hasStdCppSet() const;
     inline bool isValid() const { return isReadable(); }
+    inline const QMetaObject *enclosingMetaObject() const { return mobj; }
 
 private:
     const QMetaObject *mobj;
@@ -149,12 +155,15 @@ public:
     inline QMetaClassInfo() : mobj(0),handle(0) {}
     const char *name() const;
     const char *value() const;
+    inline const QMetaObject *enclosingMetaObject() const { return mobj; }
 private:
     const QMetaObject *mobj;
     uint handle;
     friend struct QMetaObject;
 };
 Q_DECLARE_TYPEINFO(QMetaClassInfo, Q_MOVABLE_TYPE);
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

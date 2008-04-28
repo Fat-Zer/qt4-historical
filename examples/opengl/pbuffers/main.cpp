@@ -47,6 +47,8 @@
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(pbuffers);
+
     QApplication a(argc, argv);
     if (!QGLFormat::hasOpenGL() || !QGLPixelBuffer::hasOpenGLPbuffers()) {
 	QMessageBox::information(0, "OpenGL pbuffers",

@@ -47,6 +47,8 @@
 #include "ui_translationsettings.h"
 #include <QDialog>
 #include <QtCore/QLocale>
+
+QT_BEGIN_NAMESPACE
 class MessageModel;
 class TranslationSettingsDialog : public QDialog
 {
@@ -65,5 +67,7 @@ private:
     MessageModel *m_messageModel;
 
 };
+
+QT_END_NAMESPACE
 
 #endif /* TRANSLATIONSETTINGSDIALOG_H */

@@ -57,6 +57,8 @@
 #define P (*fragment(p))
 #define PP (*fragment(pp))
 
+QT_BEGIN_NAMESPACE
+
 #ifdef QT_QMAP_DEBUG
 #define PMDEBUG qDebug
 void QFragmentMap::inorder(uint x, int level) {
@@ -246,6 +248,7 @@ void QFragmentMapData::rotateLeft(uint x)
         P.right = y;
     X.parent = y;
     Y.size_left += X.size_left + X.size;
+    Y.weight_left += X.weight_left + 1;
 
     inorder();
     check();
@@ -284,6 +287,7 @@ void QFragmentMapData::rotateRight(uint x)
         P.left = y;
     X.parent = y;
     X.size_left -= Y.size_left + Y.size;
+    X.weight_left -= Y.weight_left + 1;
 
     inorder();
     check();
@@ -373,6 +377,7 @@ uint QFragmentMapData::erase_single(uint z)
         F(Z.left).parent = y;
         Y.left = Z.left;
         Y.size_left = Z.size_left;
+        Y.weight_left = Z.weight_left;
         if (y != Z.right) {
             /*
                      z                y
@@ -394,6 +399,7 @@ uint QFragmentMapData::erase_single(uint z)
             uint n = p;
             while (n != y) {
                 N.size_left -= Y.size;
+                N.weight_left -= 1;
                 n = N.parent;
             }
         } else {
@@ -413,6 +419,7 @@ uint QFragmentMapData::erase_single(uint z)
         } else if (F(zp).left == z) {
             F(zp).left = y;
             F(zp).size_left -= Z.size;
+            F(zp).weight_left -= 1;
         } else {
             F(zp).right = y;
         }
@@ -439,6 +446,7 @@ uint QFragmentMapData::erase_single(uint z)
         } else if (P.left == z) {
             P.left = x;
             P.size_left -= Z.size;
+            P.weight_left -= 1;
         } else {
             P.right = x;
         }
@@ -449,6 +457,7 @@ uint QFragmentMapData::erase_single(uint z)
         if (P.left == n) {
             PMDEBUG("reducing size_left of %d by %d", N.parent, Z.size);
             P.size_left -= Z.size;
+            P.weight_left -= 1;
         }
         n = p;
     }
@@ -548,6 +557,24 @@ uint QFragmentMapData::findNode(int k) const
     return 0;
 }
 
+uint QFragmentMapData::findNodeByIndex(int k) const
+{
+    uint x = root();
+
+    uint s = k;
+    while (x) {
+        if (weightLeft(x) <= s) {
+            if (s <= weightLeft(x))
+                return x;
+            s -= weightLeft(x) + 1;
+            x = X.right;
+        } else {
+            x = X.left;
+        }
+    }
+    return 0;
+}
+
 uint QFragmentMapData::insert_single(int key, uint length)
 {
     Q_ASSERT(!findNode(key) || (int)this->position(findNode(key)) == key);
@@ -558,6 +585,7 @@ uint QFragmentMapData::insert_single(int key, uint length)
     Z.left = 0;
     Z.right = 0;
     Z.size_left = 0;
+    Z.weight_left = 0;
 
     PMDEBUG("inserting with key %d", key);
     uint y = 0;
@@ -590,14 +618,17 @@ uint QFragmentMapData::insert_single(int key, uint length)
 //          PMDEBUG("inserting left");
         Y.left = z;
         Y.size_left = Z.size;
+        Y.weight_left = 1;
     } else {
 //          PMDEBUG("inserting right");
         Y.right = z;
     }
     while (y && Y.parent) {
         uint p = Y.parent;
-        if (P.left == y)
+        if (P.left == y) {
             P.size_left += Z.size;
+            P.weight_left += 1;
+        }
         y = p;
     }
 //     PMDEBUG("before rebalance");
@@ -616,3 +647,5 @@ int QFragmentMapData::length() const {
     return root ? sizeLeft(root) + size(root) + sizeRight(root) : 0;
 }
 
+
+QT_END_NAMESPACE

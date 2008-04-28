@@ -59,6 +59,8 @@
 #include <QtGui/QWidget>
 #include <QtGui/QLabel>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 // ---- QDesignerFormWindowCommand ----
@@ -151,3 +153,5 @@ void QDesignerFormWindowCommand::selectUnmanagedObject(QObject *unmanagedObject)
 }
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

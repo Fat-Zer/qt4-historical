@@ -52,6 +52,8 @@
 #include <QtGui/QStyleOption>
 #include "versiondialog.h"
 
+QT_BEGIN_NAMESPACE
+
 class VersionLabel : public QLabel
 {
     Q_OBJECT
@@ -166,8 +168,8 @@ VersionDialog::VersionDialog(QWidget *parent)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint | Qt::MSWindowsFixedSizeDialogHint);
     QGridLayout *layout = new QGridLayout(this);
-    VersionLabel *label = new VersionLabel(this);
-    QLabel *lbl = new QLabel(this);
+    VersionLabel *label = new VersionLabel;
+    QLabel *lbl = new QLabel;
     QString version = tr("<h3>%1</h3><br/><br/>Version %2");
 #if QT_EDITION == QT_EDITION_OPENSOURCE
     QString open = tr(" Open Source Edition");
@@ -183,8 +185,12 @@ VersionDialog::VersionDialog(QWidget *parent)
                     "Qt is a comprehensive C++ framework for cross-platform application "
                     "development.<br/><br/>"
                     "You need a commercial Qt license for development of proprietary (closed "
-                    "source) applications. Please see <a href=\"http://www.trolltech.com/company/model.html\">http://www.trolltech.com/company/model"
+                    "source) applications. Please see <a href=\"http://trolltech.com/company/about/businessmodel\">http://trolltech.com/company/about/businessmodel"
                     ".html</a> for an overview of Qt licensing.<br/>");
+#elif defined(QT_PRODUCT_LICENSE)
+                    tr("This program is licensed to you under the terms of the "
+                    "Qt %1 License Agreement. For details, see the license file "
+                    "that came with this software distribution.<br/>").arg(QT_PRODUCT_LICENSE);
 #else
                     tr("This program is licensed to you under the terms of the "
                     "Qt Commercial License Agreement. For details, see the file LICENSE "
@@ -208,5 +214,7 @@ VersionDialog::VersionDialog(QWidget *parent)
     layout->addWidget(lbl, 0, 1, 4, 4);
     layout->addWidget(buttonBox, 4, 2, 1, 1);
 }
+
+QT_END_NAMESPACE
 
 #include "versiondialog.moc"

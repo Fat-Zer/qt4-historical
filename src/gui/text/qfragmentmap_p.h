@@ -58,6 +58,8 @@
 #include "QtCore/qglobal.h"
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 template <class T> class QFragmentMap;
 
 class QFragment
@@ -69,6 +71,7 @@ public:
     quint32 right;
     quint32 color : 1;
     quint32 size : 31;
+    quint32 weight_left;
 };
 
 class Q_AUTOTEST_EXPORT QFragmentMapData
@@ -135,7 +138,35 @@ public:
         return fragment(node)->size_left;
     }
 
+    inline uint index(uint node) const {
+        const QFragment *f = fragment(node);
+        uint offset = f->weight_left;
+        while (f->parent) {
+            uint p = f->parent;
+            f = fragment(p);
+            if (f->right == node)
+                offset += f->weight_left + 1;
+            node = p;
+        }
+        return offset;
+    }
+    inline uint weightRight(uint node) const {
+        uint wr = 0;
+        const QFragment *f = fragment(node);
+        node = f->right;
+        while (node) {
+            f = fragment(node);
+            wr += f->weight_left + 1;
+            node = f->right;
+        }
+        return wr;
+    }
+    inline uint weightLeft(uint node) const {
+        return fragment(node)->weight_left;
+    }
+
     inline uint size(uint node) const { return fragment(node)->size; }
+
     inline void setSize(uint node, int new_size) {
         QFragment *f = fragment(node);
         int diff = new_size - f->size;
@@ -151,6 +182,7 @@ public:
 
 
     uint findNode(int k) const;
+    uint findNodeByIndex(int k) const;
 
     uint insert_single(int key, uint length);
     uint erase_single(uint f);
@@ -306,6 +338,8 @@ public:
     inline ConstIterator begin() const { return ConstIterator(this, data.minimum(data.root())); }
     inline ConstIterator end() const { return ConstIterator(this, 0); }
 
+    inline ConstIterator last() const { return ConstIterator(this, data.maximum(data.root())); }
+
     inline bool isEmpty() const { return data.head->node_count == 0; }
     inline int numNodes() const { return data.head->node_count; }
     int length() const { return data.length(); }
@@ -314,6 +348,7 @@ public:
     ConstIterator find(int k) const { return ConstIterator(this, data.findNode(k)); }
 
     uint findNode(int k) const { return data.findNode(k); }
+    uint findNodeByIndex(int k) const { return data.findNodeByIndex(k); }
 
     uint insert_single(int key, uint length)
     {
@@ -344,6 +379,7 @@ public:
         return static_cast<const T *>(data.fragment(index));
     }
     inline uint position(uint node) const { return data.position(node); }
+    inline uint index(uint node) const { return data.index(node); }
     inline uint next(uint n) const { return data.next(n); }
     inline uint previous(uint n) const { return data.previous(n); }
     inline uint size(uint node) const { return data.size(node); }
@@ -367,5 +403,7 @@ private:
     QFragmentMap(const QFragmentMap& m);
     QFragmentMap& operator= (const QFragmentMap& m);
 };
+
+QT_END_NAMESPACE
 
 #endif // QFRAGMENTMAP_P_H

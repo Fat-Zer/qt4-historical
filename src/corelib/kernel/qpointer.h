@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 template <class T>
@@ -75,6 +77,8 @@ public:
     inline T& operator*() const
         { return *static_cast<T*>(const_cast<QObject*>(o)); }
     inline operator T*() const
+        { return static_cast<T*>(const_cast<QObject*>(o)); }
+    inline T* data() const
         { return static_cast<T*>(const_cast<QObject*>(o)); }
 };
 
@@ -134,6 +138,8 @@ template<class T>
 inline bool operator!= (int i, const QPointer<T> &p)
 { Q_ASSERT(i == 0); return !i && !p.isNull(); }
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

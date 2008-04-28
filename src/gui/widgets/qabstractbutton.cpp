@@ -53,8 +53,12 @@
 #include "qaccessible.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 #define AUTO_REPEAT_DELAY  300
 #define AUTO_REPEAT_INTERVAL 100
+
+extern bool qt_tab_all_widgets;
 
 /*!
     \class QAbstractButton
@@ -82,9 +86,7 @@
     ampersand ('&'), QAbstractButton automatically creates a shortcut
     key. For example:
 
-    \code
-        QPushButton *button = new QPushButton(tr("Ro&ck && Roll"), this);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qabstractbutton.cpp 0
 
     The \key Alt+C shortcut is assigned to the button, i.e., when the
     user presses \key Alt+C the button will call animateClick(). See
@@ -95,10 +97,7 @@
     function. This is useful mostly for buttons that do not have any
     text, because they have no automatic shortcut.
 
-    \code
-        button->setIcon(QIcon(":/images/print.png"));
-        button->setShortcut(tr("Alt+F7"));
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qabstractbutton.cpp 1
 
     All of the buttons provided by Qt (QPushButton, QToolButton,
     QCheckBox, and QRadioButton) can display both \l text and \l{icon}{icons}.
@@ -316,16 +315,18 @@ QList<QAbstractButton *>QAbstractButtonPrivate::queryButtonList() const
 
     Q_Q(const QAbstractButton);
     QList<QAbstractButton*>candidates;
-    if (q->parentWidget() && autoExclusive) {
+    if (q->parentWidget()) {
         candidates =  qFindChildren<QAbstractButton *>(q->parentWidget());
-        for (int i = candidates.count() - 1; i >= 0; --i) {
-            QAbstractButton *candidate = candidates.at(i);
-            if (!candidate->autoExclusive()
+        if (autoExclusive) {
+            for (int i = candidates.count() - 1; i >= 0; --i) {
+                QAbstractButton *candidate = candidates.at(i);
+                if (!candidate->autoExclusive()
 #ifndef QT_NO_BUTTONGROUP
-                || candidate->group()
+                    || candidate->group()
 #endif
-                )
-                candidates.removeAt(i);
+                    )
+                    candidates.removeAt(i);
+            }
         }
     }
     return candidates;
@@ -340,7 +341,7 @@ QAbstractButton *QAbstractButtonPrivate::queryCheckedButton() const
 
     Q_Q(const QAbstractButton);
     QList<QAbstractButton *> buttonList = queryButtonList();
-    if (buttonList.count() == 1) // no group
+    if (!autoExclusive || buttonList.count() == 1) // no group
         return 0;
 
     for (int i = 0; i < buttonList.count(); ++i) {
@@ -377,67 +378,65 @@ void QAbstractButtonPrivate::moveFocus(int key)
     bool exclusive = autoExclusive;
 #endif
     QWidget *f = qApp->focusWidget();
-    QAbstractButton *fb = ::qobject_cast<QAbstractButton *>(f);
+    QAbstractButton *fb = qobject_cast<QAbstractButton *>(f);
     if (!fb || !buttonList.contains(fb))
         return;
-
+    
     QAbstractButton *candidate = 0;
     int bestScore = -1;
-    QRect fGeometry = f->geometry();
-
-    QPoint goal(f->mapToGlobal(fGeometry.center()));
+    QRect target = f->geometry();
+    QPoint goal = target.center();
+    uint focus_flag = qt_tab_all_widgets ? Qt::TabFocus : Qt::StrongFocus;
 
     for (int i = 0; i < buttonList.count(); ++i) {
         QAbstractButton *button = buttonList.at(i);
-        if (button != f && button->isEnabled()) {
-            QRect buttonGeometry = button->geometry();
-            QPoint p(button->mapToGlobal(buttonGeometry.center()));
-            int score = (p.y() - goal.y())*(p.y() - goal.y()) +
-                        (p.x() - goal.x())*(p.x() - goal.x());
-            bool betterScore = score < bestScore || !candidate;
+        if (button != f && button->isEnabled() && !button->isHidden() &&
+            (autoExclusive || (button->focusPolicy() & focus_flag) == focus_flag)) {
+            QRect buttonRect = button->geometry();
+            QPoint p = buttonRect.center();
+
+            //Priority to widgets that overlap on the same coordinate.
+            //In that case, the distance in the direction will be used as significant score,
+            //take also in account orthogonal distance in case two widget are in the same distance.
+            int score;
+            if ((buttonRect.x() < target.right() && target.x() < buttonRect.right())
+                  && (key == Qt::Key_Up || key == Qt::Key_Down)) {
+                //one item's is at the vertical of the other
+                score = (qAbs(p.y() - goal.y()) << 16) + qAbs(p.x() - goal.x());
+            } else if ((buttonRect.y() < target.bottom() && target.y() < buttonRect.bottom())
+                        && (key == Qt::Key_Left || key == Qt::Key_Right) ) {
+                //one item's is at the horizontal of the other
+                score = (qAbs(p.x() - goal.x()) << 16) + qAbs(p.y() - goal.y());
+            } else {
+                score = (1 << 30) + (p.y() - goal.y()) * (p.y() - goal.y()) + (p.x() - goal.x()) * (p.x() - goal.x());
+            }
+
+            if (score > bestScore && candidate)
+                continue;
+
             switch(key) {
             case Qt::Key_Up:
-                if (p.y() < goal.y() && betterScore) {
-                    if (qAbs(p.x() - goal.x()) < qAbs(p.y() - goal.y())) {
-                        candidate = button;
-                        bestScore = score;
-                    } else if (buttonGeometry.x() == fGeometry.x()) {
-                        candidate = button;
-                        bestScore = score/2;
-                    }
+                if (p.y() < goal.y()) {
+                    candidate = button;
+                    bestScore = score;
                 }
                 break;
             case Qt::Key_Down:
-                if (p.y() > goal.y() && betterScore) {
-                    if (qAbs(p.x() - goal.x()) < qAbs(p.y() - goal.y())) {
-                        candidate = button;
-                        bestScore = score;
-                    } else if (buttonGeometry.x() == fGeometry.x()) {
-                        candidate = button;
-                        bestScore = score/2;
-                    }
+                if (p.y() > goal.y()) {
+                    candidate = button;
+                    bestScore = score;
                 }
                 break;
             case Qt::Key_Left:
-                if (p.x() < goal.x() && betterScore) {
-                    if (qAbs(p.y() - goal.y()) < qAbs(p.x() - goal.x())) {
-                        candidate = button;
-                        bestScore = score;
-                    } else if (buttonGeometry.y() == fGeometry.y()) {
-                        candidate = button;
-                        bestScore = score/2;
-                    }
+                if (p.x() < goal.x()) {
+                    candidate = button;
+                    bestScore = score;
                 }
                 break;
             case Qt::Key_Right:
-                if (p.x() > goal.x() && betterScore) {
-                    if (qAbs(p.y() - goal.y()) < qAbs(p.x() - goal.x())) {
-                        candidate = button;
-                        bestScore = score;
-                    } else if (buttonGeometry.y() == fGeometry.y()) {
-                        candidate = button;
-                        bestScore = score/2;
-                    }
+                if (p.x() > goal.x()) {
+                    candidate = button;
+                    bestScore = score;
                 }
                 break;
             }
@@ -464,6 +463,12 @@ void QAbstractButtonPrivate::moveFocus(int key)
 void QAbstractButtonPrivate::fixFocusPolicy()
 {
     Q_Q(QAbstractButton);
+#ifndef QT_NO_BUTTONGROUP
+    if (!group && !autoExclusive)
+#else
+    if (!autoExclusive)
+#endif
+        return;
 
     QList<QAbstractButton *> buttonList = queryButtonList();
     for (int i = 0; i < buttonList.count(); ++i) {
@@ -627,8 +632,7 @@ void QAbstractButton::setText(const QString &text)
     d->text = text;
 #ifndef QT_NO_SHORTCUT
     QKeySequence newMnemonic = QKeySequence::mnemonic(text);
-    if (!newMnemonic.isEmpty())
-        setShortcut(newMnemonic);
+    setShortcut(newMnemonic);
 #endif
     d->sizeHint = QSize();
     update();
@@ -934,7 +938,7 @@ void QAbstractButton::animateClick(int msec)
     if (!isEnabled())
         return;
     Q_D(QAbstractButton);
-    if (d->checkable && focusPolicy() != Qt::NoFocus)
+    if (d->checkable && focusPolicy() & Qt::ClickFocus)
         setFocus();
     setDown(true);
     repaint(); //flush paint event before invoking potentially expensive operation
@@ -1167,17 +1171,9 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
             return;
         }
 #endif
-#ifndef QT_NO_BUTTONGROUP
-        if (d->group || d->autoExclusive) {
-#else
-        if (d->autoExclusive) {
-#endif
-            d->moveFocus(e->key());
-            if (hasFocus()) // nothing happend, propagate
-                e->ignore();
-        } else {
-            focusNextPrevChild(next);
-        }
+        d->moveFocus(e->key());
+        if (hasFocus()) // nothing happend, propagate
+            e->ignore();
         break;
     case Qt::Key_Escape:
         if (d->down) {
@@ -1324,15 +1320,7 @@ For example, a slot that reacts to signals emitted by newly checked
 buttons but which ignores signals from buttons that have been unchecked
 can be implemented using the following pattern:
 
-\code
-void MyWidget::reactToToggle(bool checked)
-{
-   if (checked) {
-      // Examine the new button states.
-      ...
-   }
-}
-\endcode
+\snippet doc/src/snippets/code/src.gui.widgets.qabstractbutton.cpp 2
 
 Button groups can be created using the QButtonGroup class, and
 updates to the button states monitored with the
@@ -1354,7 +1342,7 @@ QSize QAbstractButton::iconSize() const
     Q_D(const QAbstractButton);
     if (d->iconSize.isValid())
         return d->iconSize;
-    int e = style()->pixelMetric(QStyle::PM_ButtonIconSize);
+    int e = style()->pixelMetric(QStyle::PM_ButtonIconSize, 0, this);
     return QSize(e, e);
 }
 
@@ -1447,5 +1435,6 @@ QAbstractButton::QAbstractButton(QWidget *parent, const char *name, Qt::WindowFl
 
     Use shortcut() instead.
 */
-
 #endif
+
+QT_END_NAMESPACE

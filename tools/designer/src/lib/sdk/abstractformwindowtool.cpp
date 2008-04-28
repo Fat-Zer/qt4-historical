@@ -43,6 +43,8 @@
 
 #include "abstractformwindowtool.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerFormWindowToolInterface
 
@@ -102,3 +104,5 @@ QDesignerFormWindowToolInterface::~QDesignerFormWindowToolInterface()
 /*!
     \fn virtual bool QDesignerFormWindowToolInterface::handleEvent(QWidget *widget, QWidget *managedWidget, QEvent *event) = 0
 */
+
+QT_END_NAMESPACE

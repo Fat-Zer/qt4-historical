@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example linguist/arrowpad
     \title Arrow Pad Example
@@ -12,9 +55,9 @@
     effective limit on the number of possible translations that can be used
     with an application. The relevant lines of \c arrowpad.pro are
 
-    \quotefromfile linguist/arrowpad/arrowpad.pro
-    \skipto HEADERS
-    \printuntil arrowpad_nl.ts
+    \snippet examples/linguist/arrowpad/arrowpad.pro 0
+    \codeline
+    \snippet examples/linguist/arrowpad/arrowpad.pro 1
 
     Run \c lupdate; it should produce two identical message files
     \c arrowpad_fr.ts and \c arrowpad_nl.ts. These files will contain all the source
@@ -29,11 +72,9 @@
     subclass of QWidget. In the screenshot above, the central
     widget with the four buttons is an \c ArrowPad.
 
-    \quotefile linguist/arrowpad/arrowpad.h
-    \skipto class ArrowPad
-    \printline class ArrowPad
-    \printline {
-    \printline Q_OBJECT
+    \snippet examples/linguist/arrowpad/arrowpad.h 0
+    \snippet examples/linguist/arrowpad/arrowpad.h 1
+    \snippet examples/linguist/arrowpad/arrowpad.h 2
 
     When \c lupdate is run it not only extracts the source texts but it
     also groups them into contexts. A context is the name of the class in
@@ -41,9 +82,7 @@
     context: it is the context of the texts in the \c ArrowPad class. 
     The \c Q_OBJECT macro defines \c tr(x) in \c ArrowPad like this:
 
-    \code
-        qApp->translate("ArrowPad", x)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 0
 
     Knowing which class each source text appears in enables \e {Qt
     Linguist} to group texts that are logically related together, e.g.
@@ -58,37 +97,30 @@
 
     In \c arrowpad.cpp we implement the \c ArrowPad class.
 
-    \quotefile linguist/arrowpad/arrowpad.cpp
-    \skipto QPushButton
-    \printline QPushButton
-    \printline QPushButton
-    \printline QPushButton
-    \printline QPushButton
+    \snippet examples/linguist/arrowpad/arrowpad.cpp 0
+    \snippet examples/linguist/arrowpad/arrowpad.cpp 1
+    \snippet examples/linguist/arrowpad/arrowpad.cpp 2
+    \snippet examples/linguist/arrowpad/arrowpad.cpp 3
 
     We call \c ArrowPad::tr() for each button's label since the labels are
     user-visible text.
 
     \image linguist-arrowpad_en.png
 
-    \quotefile linguist/arrowpad/mainwindow.h
-    \skipto public QMainWindow
-    \printline QMainWindow
-    \printuntil Q_OBJECT
+    \snippet examples/linguist/arrowpad/mainwindow.h 0
+    \snippet examples/linguist/arrowpad/mainwindow.h 1
 
     In the screenshot above, the whole window is a \c MainWindow.
     This is defined in the \c mainwindow.h header file. Here too, we
     use \c Q_OBJECT, so that \c MainWindow will become a context in
     \e {Qt Linguist}.
 
-    \quotefile linguist/arrowpad/mainwindow.cpp
-    \skipto new ArrowPad
-    \printline ArrowPad
+    \snippet examples/linguist/arrowpad/mainwindow.cpp 0
 
     In the implementation of \c MainWindow, \c mainwindow.cpp, we create
     an instance of our \c ArrowPad class.
 
-    \skipto exitAct =
-    \printuntil connect
+    \snippet examples/linguist/arrowpad/mainwindow.cpp 1
 
     We also call \c MainWindow::tr() twice, once for the action and
     once for the shortcut.
@@ -103,10 +135,8 @@
 
     Our \c main() function is defined in \c main.cpp as usual.
 
-    \quotefile linguist/arrowpad/main.cpp
-    \skipto QTranslator
-    \printline QTranslator
-    \printuntil install
+    \snippet examples/linguist/arrowpad/main.cpp 2
+    \snippet examples/linguist/arrowpad/main.cpp 3
 
     We choose which translation to use according to the current locale.
     QLocale::system() can be influenced by setting the \c LANG
@@ -174,24 +204,17 @@
 
     Type
 
-    \code
-        lrelease arrowpad.pro
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 1
 
     This should create both \c arrowpad_fr.qm and \c arrowpad_nl.qm. Set the \c
     LANG environment variable to \c fr. In Unix, one of the two following
     commands should work
 
-    \code
-        export LANG=fr
-        setenv LANG fr
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 2
 
     In Windows, either modify \c autoexec.bat or run
 
-    \code
-        set LANG=fr
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 3
 
     When you run the program, you should now see the French version:
 

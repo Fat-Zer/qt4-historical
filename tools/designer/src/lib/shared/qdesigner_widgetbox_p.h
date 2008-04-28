@@ -58,6 +58,10 @@
 #include "shared_global_p.h"
 #include <QtDesigner/QDesignerWidgetBoxInterface>
 
+QT_BEGIN_NAMESPACE
+
+class DomUI;
+
 namespace qdesigner_internal {
 
 // A widget box with a load mode that allows for updating custom widgets.
@@ -74,9 +78,18 @@ public:
     void setLoadMode(LoadMode lm);
 
     virtual bool loadContents(const QString &contents) = 0;
+
+    // Convenience to find a widget by class name.
+    static bool findWidget(const QDesignerWidgetBoxInterface *wbox, const QString &className, Widget *widgetData);
+    // Convenience functions to create a DomWidget from widget box xml.
+    static DomUI *xmlToUi(const QString &name, const QString &xml, bool insertFakeTopLevel, QString *errorMessage);
+    static DomUI *xmlToUi(const QString &name, const QString &xml, bool insertFakeTopLevel);
+
 private:
     LoadMode m_loadMode;
 };
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_WIDGETBOX_H

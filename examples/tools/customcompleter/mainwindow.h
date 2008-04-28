@@ -46,14 +46,17 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QComboBox;
 class QCompleter;
 class QLabel;
 class QLineEdit;
 class QProgressBar;
+QT_END_NAMESPACE
 class TextEdit;
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -71,5 +74,6 @@ private:
     QCompleter *completer;
     TextEdit *completingTextEdit;
 };
+//! [0]
 
 #endif // MAINWINDOW_H

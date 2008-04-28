@@ -41,7 +41,6 @@
 **
 ****************************************************************************/
 
-
 #ifndef QSIDEBAR_H
 #define QSIDEBAR_H
 
@@ -62,6 +61,8 @@
 
 #ifndef QT_NO_FILEDIALOG
 
+QT_BEGIN_NAMESPACE
+
 class QFileSystemModel;
 class Q_AUTOTEST_EXPORT QUrlModel : public QStandardItemModel
 {
@@ -69,7 +70,7 @@ class Q_AUTOTEST_EXPORT QUrlModel : public QStandardItemModel
 
 public:
     enum Roles {
-        UrlRole = Qt::UserRole + 1,
+        UrlRole = Qt::UserRole + 1
     };
 
     QUrlModel(QObject *parent = 0);
@@ -140,7 +141,9 @@ private:
     QUrlModel *urlModel;
 };
 
-#endif
+QT_END_NAMESPACE
 
-#endif
+#endif // QT_NO_FILEDIALOG
+
+#endif // QSIDEBAR_H
 

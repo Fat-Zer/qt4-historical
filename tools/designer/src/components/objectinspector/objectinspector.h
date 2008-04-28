@@ -47,25 +47,20 @@
 #include "objectinspector_global.h"
 #include "qdesigner_objectinspector_p.h"
 
-#include <QtCore/QPointer>
-#include <QtCore/QList>
-#include <QtCore/QSet>
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 
-class QTreeWidgetItem;
 class QItemSelection;
 
 namespace qdesigner_internal {
-class FormWindowBase;
-class TreeWidget;
 
 class QT_OBJECTINSPECTOR_EXPORT ObjectInspector: public QDesignerObjectInspector
 {
     Q_OBJECT
 public:
-    ObjectInspector(QDesignerFormEditorInterface *core, QWidget *parent = 0);
+    explicit ObjectInspector(QDesignerFormEditorInterface *core, QWidget *parent = 0);
     virtual ~ObjectInspector();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -91,28 +86,12 @@ protected:
     virtual void dropEvent (QDropEvent * event);
 
 private:
-    static bool sortEntry(const QObject *a, const QObject *b);
-    void showContainersCurrentPage(QWidget *widget);
-
-private:
-    void restoreDropHighlighting();
-    QWidget *managedWidgetAt(const QPoint &global_mouse_pos);
-    void handleDragEnterMoveEvent(QDragMoveEvent * event, bool isDragEnter);
-
-    typedef QSet<const QObject *> PreviousSelection;
-    PreviousSelection previousSelection(QDesignerFormWindowInterface *fw, bool formWindowChanged) const;
-
-    typedef QList<QTreeWidgetItem *> ItemList;
-    static void findRecursion(QTreeWidgetItem *item, QObject *o, ItemList &matchList);
-
-    ItemList findItemsOfObject(QObject *o) const;
-
-    QDesignerFormEditorInterface *m_core;
-    TreeWidget *m_treeWidget;
-    QPointer<FormWindowBase> m_formWindow;
-    QPointer<QWidget> m_formFakeDropTarget;
+    class ObjectInspectorPrivate;
+    ObjectInspectorPrivate *m_impl;
 };
 
 }  // namespace qdesigner_internal
 
 #endif // OBJECTINSPECTOR_H
+
+QT_END_NAMESPACE

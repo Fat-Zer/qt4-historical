@@ -50,7 +50,7 @@
 #include "demoitem.h"
 #include "demoscene.h"
 
-#ifndef QT_NO_OPENGL    
+#ifndef QT_NO_OPENGL
     #include <QGLWidget>
 #endif
 //#define QT_NO_OPENGL
@@ -58,10 +58,13 @@
 MainWindow::MainWindow(QWidget *parent) : QGraphicsView(parent), updateTimer(this)
 {
     this->currentFps = Colors::fps;
-    this->loop = true;
+    this->loop = false;
     this->fpsMedian = -1;
     this->fpsLabel = 0;
+    this->pausedLabel = 0;
     this->doneAdapt = false;
+    this->useTimer = false;
+    this->updateTimer.setSingleShot(true);
     this->trolltechLogo = 0;
     this->qtLogo = 0;
     this->setupWidget();
@@ -78,37 +81,60 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupWidget()
 {
-    QRect rect(0, 0, 800, 600);
-    rect.moveCenter(QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen()).center());
-    this->setGeometry(rect);
+    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen());
+    QRect windowRect(0, 0, 800, 600);
+    if (screenRect.width() < 800)
+        windowRect.setWidth(screenRect.width());
+    if (screenRect.height() < 600)
+        windowRect.setHeight(screenRect.height());
+    windowRect.moveCenter(screenRect.center());
+    this->setGeometry(windowRect);
     this->setMinimumSize(80, 60);
     setWindowTitle(tr("Qt Examples and Demos"));
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFrameStyle(QFrame::NoFrame);
+    this->setRenderingSystem();
+    connect(&this->updateTimer, SIGNAL(timeout()), this, SLOT(tick()));
+}
 
-#ifndef QT_NO_OPENGL    
-    if (!Colors::noOpenGl){
-        // Use OpenGL
-        QGLWidget *widget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
+void MainWindow::setRenderingSystem()
+{
+    QWidget *viewport = 0;
+
+    if (Colors::direct3dRendering){
+        viewport->setAttribute(Qt::WA_MSWindowsUseDirect3D);
+        setCacheMode(QGraphicsView::CacheNone);
+        if (Colors::verbose)
+            qDebug() << "- using Direct3D";
+    }
+#ifndef QT_NO_OPENGL
+    else if (Colors::openGlRendering){
+        QGLWidget *glw = new QGLWidget(QGLFormat(QGL::SampleBuffers));
         if (Colors::noScreenSync)
-            widget->format().setSwapInterval(0);
-        widget->setAutoFillBackground(false);
-        setViewport(widget);
+            glw->format().setSwapInterval(0);
+        glw->setAutoFillBackground(false);
+        viewport = glw;
+        setCacheMode(QGraphicsView::CacheNone);
+        if (Colors::verbose)
+            qDebug() << "- using OpenGL";
     }
 #endif
-    
-    if (Colors::noOpenGl)
+    else{ // software rendering
+        viewport = new QWidget;
         setCacheMode(QGraphicsView::CacheBackground);
+        if (Colors::verbose)
+            qDebug() << "- using software rendering";
+    }
 
-    connect(&this->updateTimer, SIGNAL(timeout()), this, SLOT(tick()));
+    setViewport(viewport);
 }
 
 void MainWindow::start()
 {
     this->switchTimerOnOff(true);
-    this->demoStartTime.restart();        
-    MenuManager::instance()->itemSelected(MenuManager::ROOT);
+    this->demoStartTime.restart();
+    MenuManager::instance()->itemSelected(MenuManager::ROOT, Colors::rootMenuName);
     if (Colors::verbose)
         qDebug("- starting demo");
 }
@@ -118,7 +144,7 @@ void MainWindow::enableMask(bool enable)
     if (!enable || Colors::noWindowMask)
         this->clearMask();
     else {
-        QPolygon region; 
+        QPolygon region;
         region.setPoints(9,
                                 // north side:
                                 0, 0,
@@ -140,7 +166,7 @@ void MainWindow::enableMask(bool enable)
                                 // 10, 530,
                                 // 10, 520,
                                 // 0, 520,
-                                0, 0); 
+                                0, 0);
         this->setMask(QRegion(region));
     }
 }
@@ -148,7 +174,7 @@ void MainWindow::enableMask(bool enable)
 void MainWindow::setupScene()
 {
     this->scene = new DemoScene(this);
-    this->scene->setSceneRect(0, 0, size().width(), size().height());
+    this->scene->setSceneRect(0, 0, 800, 600);
     setScene(this->scene);
     this->scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 }
@@ -165,27 +191,30 @@ void MainWindow::switchTimerOnOff(bool on)
         MenuManager::instance()->ticker->tickOnPaint = !on || Colors::noTimerUpdate;
 
     if (on && !Colors::noTimerUpdate){
+        this->useTimer = true;
         this->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
         this->fpsTime = QTime::currentTime();
         this->updateTimer.start(int(1000 / Colors::fps));
     }
     else{
+        this->useTimer = false;
         this->updateTimer.stop();
-        if (Colors::low)
-            this->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-        else if (!Colors::noOpenGl)
-            this->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        if (Colors::softwareRendering)
+            if (Colors::noTicker)
+                this->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+            else
+                this->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
         else
-            this->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+            this->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     }
-}	
+}
 
 bool MainWindow::measureFps()
 {
-    // Calculate time diff: 
+    // Calculate time diff:
     float t = this->fpsTime.msecsTo(QTime::currentTime());
     if (t == 0)
-        t = 0.01f;    
+        t = 0.01f;
     this->currentFps = (1000.0f / t);
     this->fpsHistory += this->currentFps;
     this->fpsTime = QTime::currentTime();
@@ -211,13 +240,13 @@ void MainWindow::forceFpsMedianCalculation()
 {
     if (this->fpsMedian != -1)
         return;
-    
+
     int size = this->fpsHistory.size();
     if (size == 0){
         this->fpsMedian = 0.01f;
         return;
     }
-    
+
     qSort(this->fpsHistory.begin(), this->fpsHistory.end());
     this->fpsMedian = this->fpsHistory.at(int(size/2));
     if (this->fpsMedian == 0)
@@ -231,27 +260,35 @@ void MainWindow::tick()
 
     if (medianChanged && this->fpsLabel && Colors::showFps)
         this->fpsLabel->setText(QString("FPS: ") + QString::number(int(this->currentFps)));
-    
+
     if (MenuManager::instance()->ticker)
         MenuManager::instance()->ticker->tick();
-    
+
     this->viewport()->update();
-    if (Colors::noOpenGl)
+    if (Colors::softwareRendering)
         QApplication::syncX();
+
+    if (this->useTimer)
+        this->updateTimer.start(int(1000 / Colors::fps));
 }
 
 void MainWindow::setupSceneItems()
 {
-    if (Colors::showFps){    
+    if (Colors::showFps){
         this->fpsLabel = new DemoTextItem(QString("FPS: --"), Colors::buttonFont(), Qt::white, -1, this->scene, 0, DemoTextItem::DYNAMIC_TEXT);
         this->fpsLabel->setZValue(100);
         this->fpsLabel->setPos(Colors::stageStartX, 600 - QFontMetricsF(Colors::buttonFont()).height() - 5);
     }
 
-    this->trolltechLogo = new ImageItem(":/images/trolltech-logo.png", 1000, 1000, this->scene, 0, true, 0.5f);
-    this->qtLogo = new ImageItem(":/images/qtlogo_small.png", 1000, 1000, this->scene, 0, true, 0.5f);
+    this->trolltechLogo = new ImageItem(QImage(":/images/trolltech-logo.png"), 1000, 1000, this->scene, 0, true, 0.5f);
+    this->qtLogo = new ImageItem(QImage(":/images/qtlogo_small.png"), 1000, 1000, this->scene, 0, true, 0.5f);
     this->trolltechLogo->setZValue(100);
     this->qtLogo->setZValue(100);
+    this->pausedLabel = new DemoTextItem(QString("PAUSED"), Colors::buttonFont(), Qt::white, -1, this->scene, 0);
+    this->pausedLabel->setZValue(100);
+    QFontMetricsF fm(Colors::buttonFont());
+    this->pausedLabel->setPos(Colors::stageWidth - fm.width("PAUSED"), 590 - fm.height());
+    this->pausedLabel->setRecursiveVisible(false);
 }
 
 void MainWindow::checkAdapt()
@@ -265,7 +302,7 @@ void MainWindow::checkAdapt()
     this->forceFpsMedianCalculation();
     Colors::benchmarkFps = this->fpsMedian;
     if (Colors::verbose)
-        qDebug() << "- benchmark:" << QString::number(Colors::benchmarkFps);
+        qDebug() << "- benchmark:" << QString::number(Colors::benchmarkFps) << "FPS";
 
     if (Colors::noAdapt)
         return;
@@ -276,7 +313,7 @@ void MainWindow::checkAdapt()
             Colors::noTimerUpdate = true;
             this->switchTimerOnOff(false);
             if (this->fpsLabel)
-               this->fpsLabel->setText(QString("FPS: (") + QString::number(this->fpsMedian) + QString(")"));       
+               this->fpsLabel->setText(QString("FPS: (") + QString::number(this->fpsMedian) + QString(")"));
             if (Colors::verbose)
                qDebug() << "- benchmark adaption: removed ticker (fps < 30)";
         }
@@ -287,19 +324,19 @@ void MainWindow::checkAdapt()
                qDebug() << "- benchmark adaption: animations switched off (fps < 20)";
         }
 
-        Colors::adapted = true;       
-    }    
+        Colors::adapted = true;
+    }
 }
 
 int MainWindow::performBenchmark()
 {
-/*    
+/*
     QTime time;
     time.restart();
     while (time.elapsed() < 2000)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
-*/    
-    return 0;    
+*/
+    return 0;
 }
 
 void MainWindow::drawBackgroundToPixmap()
@@ -308,7 +345,7 @@ void MainWindow::drawBackgroundToPixmap()
     this->background = QPixmap(qRound(r.width()), qRound(r.height()));
     this->background.fill(Qt::black);
     QPainter painter(&this->background);
-    
+
     if (false && Colors::useEightBitPalette){
         painter.fillRect(r, Colors::sceneBg1);
     } else {
@@ -330,10 +367,12 @@ void MainWindow::showEvent(QShowEvent * event)
 }
 
 void MainWindow::toggleFullscreen()
-{        
+{
     if (this->isFullScreen()){
         this->enableMask(true);
         this->showNormal();
+        if (MenuManager::instance()->ticker)
+            MenuManager::instance()->ticker->pause(false);
     }
     else {
         this->enableMask(false);
@@ -349,14 +388,18 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_1){
             QString s("");
-            s += "Adapt: ";
+            s += "Rendering system: ";
+            if (Colors::openGlRendering)
+                s += "OpenGL";
+            else if (Colors::direct3dRendering)
+                s += "Direct3D";
+            else
+                s += "software";
+
+            s += "\nAdapt: ";
             s += Colors::noAdapt ? "off" : "on";
             s += "\nAdaption occured: ";
             s += Colors::adapted ? "yes" : "no";
-            s += "\nLow settings: ";
-            s += Colors::low ? "yes" : "no";
-            s += "\nOpenGL: ";
-            s += Colors::noOpenGl ? "off" : "on";
             s += "\nOpenGL version: ";
             s += Colors::glVersion;
             QWidget w;
@@ -386,6 +429,36 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void MainWindow::focusInEvent(QFocusEvent *)
+{
+    if (!Colors::pause)
+        return;
+
+    if (MenuManager::instance()->ticker)
+        MenuManager::instance()->ticker->pause(false);
+
+    int code = MenuManager::instance()->currentMenuCode;
+    if (code == MenuManager::ROOT || code == MenuManager::MENU1)
+        this->switchTimerOnOff(true);
+
+    this->pausedLabel->setRecursiveVisible(false);
+}
+
+void MainWindow::focusOutEvent(QFocusEvent *)
+{
+    if (!Colors::pause)
+        return;
+
+    if (MenuManager::instance()->ticker)
+        MenuManager::instance()->ticker->pause(true);
+
+    int code = MenuManager::instance()->currentMenuCode;
+    if (code == MenuManager::ROOT || code == MenuManager::MENU1)
+        this->switchTimerOnOff(false);
+
+    this->pausedLabel->setRecursiveVisible(true);
+}
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -402,7 +475,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         QRectF qtb = this->qtLogo->boundingRect();
         this->qtLogo->setPos(802 - qtb.width(), 0);
     }
-    
+
     // Changing size will almost always
     // hurt FPS during the changing. So
     // ignore it.

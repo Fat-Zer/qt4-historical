@@ -42,9 +42,9 @@
 ****************************************************************************/
 
 #include "qdesigner_formwindow.h"
-#include "qdesigner_actions.h"
 #include "qdesigner_workbench.h"
 #include "qdesigner_settings.h"
+#include "qdesigner_utils_p.h"
 
 // sdk
 #include <QtDesigner/QDesignerFormWindowInterface>
@@ -68,6 +68,7 @@
 #include <QtGui/QUndoCommand>
 #include <QtGui/QWindowStateChangeEvent>
 
+QT_BEGIN_NAMESPACE
 
 QDesignerFormWindow::QDesignerFormWindow(QDesignerFormWindowInterface *editor, QDesignerWorkbench *workbench, QWidget *parent, Qt::WindowFlags flags)
     : QWidget(parent, flags),
@@ -106,17 +107,9 @@ QDesignerFormWindow::~QDesignerFormWindow()
 
 void QDesignerFormWindow::widgetActivated(QWidget *widget)
 {
-    if (const QDesignerTaskMenuExtension *taskMenu = qt_extension<QDesignerTaskMenuExtension*>(m_editor->core()->extensionManager(), widget)) {
-        QAction *action = taskMenu->preferredEditAction();
-        if (!action) {
-            const QList<QAction *> actions = taskMenu->taskActions();
-            if (!actions.isEmpty())
-                action = actions.first();
-        }
-        if (action) {
-            QTimer::singleShot(0, action, SIGNAL(triggered()));
-        }
-    }
+    QAction *action = qdesigner_internal::preferredEditAction(m_editor->core(), widget);
+    if (action)
+        QTimer::singleShot(0, action, SIGNAL(triggered()));
 }
 
 QAction *QDesignerFormWindow::action() const
@@ -288,9 +281,19 @@ void QDesignerFormWindow::resizeEvent(QResizeEvent *rev)
 
 void QDesignerFormWindow::geometryChanged()
 {
-    if(QObject *object = m_editor->core()->propertyEditor()->object()) {
-        QDesignerPropertySheetExtension *sheet =
-            qt_extension<QDesignerPropertySheetExtension*>(m_editor->core()->extensionManager(), object);
-        m_editor->core()->propertyEditor()->setPropertyValue(QLatin1String("geometry"), sheet->property(sheet->indexOf(QLatin1String("geometry"))));
-    }
+    // If the form window changes, re-update the geometry of the current widget in the property editor.
+    // Note that in the case of layouts, non-maincontainer widgets must also be updated,
+    // so, do not do it for the main container only
+    const QDesignerFormEditorInterface *core = m_editor->core();
+    QObject *object = core->propertyEditor()->object();
+    if (object == 0 || !object->isWidgetType())
+        return;
+    static const QString geometryProperty = QLatin1String("geometry");
+    const QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(core->extensionManager(), object);
+    const int geometryIndex = sheet->indexOf(geometryProperty);
+    if (geometryIndex == -1)
+        return;
+    core->propertyEditor()->setPropertyValue(geometryProperty, sheet->property(geometryIndex));
 }
+
+QT_END_NAMESPACE

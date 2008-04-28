@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_IMAGEFORMAT_PPM
 
+QT_BEGIN_NAMESPACE
+
 class QByteArray;
 class QPpmHandler : public QImageIOHandler
 {
@@ -90,6 +92,8 @@ private:
     int mcc;
     mutable QByteArray subType;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_IMAGEFORMAT_PPM
 

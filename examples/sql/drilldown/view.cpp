@@ -45,6 +45,7 @@
 #include "imageitem.h"
 #include "view.h"
 
+//! [0]
 View::View(const QString &offices, const QString &images, QWidget *parent)
     : QGraphicsView(parent)
 {
@@ -52,7 +53,9 @@ View::View(const QString &offices, const QString &images, QWidget *parent)
     officeTable->setTable(offices);
     officeTable->setRelation(1, QSqlRelation(images, "locationid", "file"));
     officeTable->select();
+//! [0]
 
+//! [1]
     scene = new QGraphicsScene(this);
     scene->setSceneRect(0, 0, 465, 615);
     setScene(scene);
@@ -66,7 +69,9 @@ View::View(const QString &offices, const QString &images, QWidget *parent)
     setMaximumSize(470, 620);
     setWindowTitle(tr("Trolltech World Wide"));
 }
+//! [1]
 
+//! [3]
 void View::addItems()
 {
     int officeCount = officeTable->rowCount();
@@ -98,7 +103,9 @@ void View::addItems()
         label->setPos(QPointF(x, y) + labelOffset);
     }
 }
+//! [3]
 
+//! [5]
 void View::mouseReleaseEvent(QMouseEvent *event)
 {
     if (QGraphicsItem *item = itemAt(event->pos())) {
@@ -107,7 +114,9 @@ void View::mouseReleaseEvent(QMouseEvent *event)
     }
     QGraphicsView::mouseReleaseEvent(event);
 }
+//! [5]
 
+//! [6]
 void View::showInformation(ImageItem *image)
 {
     int id = image->id();
@@ -132,7 +141,9 @@ void View::showInformation(ImageItem *image)
         informationWindows.append(window);
     }
 }
+//! [6]
 
+//! [7]
 void View::updateImage(int id, const QString &fileName)
 {
     QList<QGraphicsItem *> items = scene->items();
@@ -149,7 +160,9 @@ void View::updateImage(int id, const QString &fileName)
         }
     }
 }
+//! [7]
 
+//! [8]
 InformationWindow* View::findWindow(int id)
 {
     QList<InformationWindow*>::iterator i, beginning, end;
@@ -164,4 +177,5 @@ InformationWindow* View::findWindow(int id)
     }
     return 0;
 }
+//! [8]
 

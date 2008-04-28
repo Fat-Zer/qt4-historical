@@ -65,6 +65,8 @@
 #include "QtCore/qrect.h"
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QPaintEngine;
 
 extern const char  *qt_mfhdr_tag;
@@ -143,8 +145,8 @@ public:
         PdcReservedStop = 199 //   for Qt
     };
 
-    inline QPicturePrivate() : dont_stream_pixmaps(false), q_ptr(0) { ref = 1; }
-    QAtomic ref;
+    inline QPicturePrivate() : in_memory_only(false), q_ptr(0) { ref = 1; }
+    QAtomicInt ref;
 
     bool checkFormat();
     void resetFormat();
@@ -157,12 +159,14 @@ public:
     QRect brect;
     QRect override_rect;
     QPaintEngine *paintEngine;
-    bool dont_stream_pixmaps;
+    bool in_memory_only;
     QList<QPixmap> pixmap_list;
     QList<QBrush> brush_list;
     QList<QPen> pen_list;
 
     QPicture *q_ptr;
 };
+
+QT_END_NAMESPACE
 
 #endif // QPICTURE_P_H

@@ -49,6 +49,8 @@
 #include <QtDesigner/QDesignerFormEditorPluginInterface>
 #include "view3d_global.h"
 
+QT_BEGIN_NAMESPACE
+
 class QView3DTool;
 class QAction;
 
@@ -78,3 +80,5 @@ private:
 };
 
 #endif // QVIEW3D_PLUGIN_H
+
+QT_END_NAMESPACE

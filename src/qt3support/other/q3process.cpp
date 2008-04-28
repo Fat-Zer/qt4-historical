@@ -51,6 +51,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
 
 //#define QT_Q3PROCESS_DEBUG
 
@@ -251,14 +252,7 @@ Q3Process::Q3Process( const QStringList& args, QObject *parent, const char *name
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \code
-    QStringList list = myProcess.arguments();
-    QStringList::Iterator it = list.begin();
-    while( it != list.end() ) {
-	myProcessing( *it );
-	++it;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.other.q3process.cpp 0
 
     \sa setArguments() addArgument()
 */
@@ -770,5 +764,7 @@ void Q3Process::disconnectNotify( const char * )
 	setWroteStdinConnected( false );
     }
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PROCESS

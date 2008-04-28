@@ -48,12 +48,16 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_MDIAREA
 
 class QMenu;
+class QMdiArea;
 
+namespace QMdi { class ControlContainer; }
 class QMdiSubWindowPrivate;
 class Q_GUI_EXPORT QMdiSubWindow : public QWidget
 {
@@ -97,6 +101,8 @@ public:
     QMenu *systemMenu() const;
 #endif
 
+    QMdiArea *mdiArea() const;
+
 Q_SIGNALS:
     void windowStateChanged(Qt::WindowStates oldState, Qt::WindowStates newState);
     void aboutToActivate();
@@ -138,9 +144,15 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_enterInteractiveMode())
     Q_PRIVATE_SLOT(d_func(), void _q_processFocusChanged(QWidget *, QWidget *))
     friend class QMdiAreaPrivate;
+#ifndef QT_NO_TABBAR
+    friend class QMdiAreaTabBar;
+#endif
+    friend class QMdi::ControlContainer;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMdiSubWindow::SubWindowOptions)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

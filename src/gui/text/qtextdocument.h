@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextFormatCollection;
@@ -118,7 +120,10 @@ class Q_GUI_EXPORT QTextDocument : public QObject
     Q_PROPERTY(QSizeF size READ size)
     Q_PROPERTY(qreal textWidth READ textWidth WRITE setTextWidth)
     Q_PROPERTY(int blockCount READ blockCount)
+    Q_PROPERTY(qreal indentWidth READ indentWidth WRITE setIndentWidth)
+#ifndef QT_NO_CSSPARSER
     Q_PROPERTY(QString defaultStyleSheet READ defaultStyleSheet WRITE setDefaultStyleSheet)
+#endif
     Q_PROPERTY(int maximumBlockCount READ maximumBlockCount WRITE setMaximumBlockCount)
     QDOC_PROPERTY(QTextOption defaultTextOption READ defaultTextOption WRITE setDefaultTextOption)
 
@@ -138,17 +143,22 @@ public:
     bool isUndoAvailable() const;
     bool isRedoAvailable() const;
 
+    int revision() const;
+
     void setDocumentLayout(QAbstractTextDocumentLayout *layout);
     QAbstractTextDocumentLayout *documentLayout() const;
 
     enum MetaInformation {
-        DocumentTitle
+        DocumentTitle,
+        DocumentUrl
     };
     void setMetaInformation(MetaInformation info, const QString &);
     QString metaInformation(MetaInformation info) const;
 
+#ifndef QT_NO_TEXTHTMLPARSER
     QString toHtml(const QByteArray &encoding = QByteArray()) const;
     void setHtml(const QString &html);
+#endif
 
     QString toPlainText() const;
     void setPlainText(const QString &text);
@@ -174,8 +184,12 @@ public:
     QTextObject *objectForFormat(const QTextFormat &) const;
 
     QTextBlock findBlock(int pos) const;
+    QTextBlock findBlockByNumber(int blockNumber) const;
     QTextBlock begin() const;
     QTextBlock end() const;
+
+    QTextBlock firstBlock() const;
+    QTextBlock lastBlock() const;
 
     void setPageSize(const QSizeF &size);
     QSizeF pageSize() const;
@@ -216,13 +230,18 @@ public:
 
     qreal idealWidth() const;
 
+    qreal indentWidth() const;
+    void setIndentWidth(qreal width);
+
     void adjustSize();
     QSizeF size() const;
 
     int blockCount() const;
 
+#ifndef QT_NO_CSSPARSER
     void setDefaultStyleSheet(const QString &sheet);
     QString defaultStyleSheet() const;
+#endif
 
     void undo(QTextCursor *cursor);
     void redo(QTextCursor *cursor);
@@ -238,9 +257,12 @@ Q_SIGNALS:
     void contentsChanged();
     void undoAvailable(bool);
     void redoAvailable(bool);
+    void undoCommandAdded();
     void modificationChanged(bool m);
     void cursorPositionChanged(const QTextCursor &cursor);
     void blockCountChanged(int newBlockCount);
+
+    void documentLayoutChanged();
 
 public Q_SLOTS:
     void undo();
@@ -261,6 +283,8 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QTextDocument::FindFlags)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

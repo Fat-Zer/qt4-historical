@@ -44,40 +44,61 @@
 #include "qplatformdefs.h"
 #include "qlibrary_p.h"
 #include "qfile.h"
+#include "qdir.h"
 #include "qfileinfo.h"
 #include "qdir.h"
 
+#if defined(QT_NO_LIBRARY) && defined(Q_OS_WIN)
+#undef QT_NO_LIBRARY
+#pragma message("QT_NO_LIBRARY is not supported on Windows")
+#endif
+
 #include "qt_windows.h"
+
+QT_BEGIN_NAMESPACE
 
 extern QString qt_error_string(int code);
 
 bool QLibraryPrivate::load_sys()
 {
+#ifdef Q_OS_WINCE
+    QString attempt = QFileInfo(fileName).absoluteFilePath();
+#else
     QString attempt = fileName;
+#endif
 
     //avoid 'Bad Image' message box
     UINT oldmode = SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
     QT_WA({
-        pHnd = LoadLibraryW((TCHAR*)attempt.utf16());
+        pHnd = LoadLibraryW((TCHAR*)QDir::toNativeSeparators(attempt).utf16());
     } , {
-        pHnd = LoadLibraryA(QFile::encodeName(attempt).data());
+        pHnd = LoadLibraryA(QFile::encodeName(QDir::toNativeSeparators(attempt)).data());
     });
-
     
     if (pluginState != IsAPlugin) {
+#if defined(Q_OS_WINCE)
+        if (!pHnd && ::GetLastError() == ERROR_MOD_NOT_FOUND) {
+            QString secondAttempt = fileName;
+            QT_WA({
+                pHnd = LoadLibraryW((TCHAR*)QDir::toNativeSeparators(secondAttempt).utf16());
+            } , {
+                pHnd = LoadLibraryA(QFile::encodeName(QDir::toNativeSeparators(secondAttempt)).data());
+            });
+        }
+#endif
         if (!pHnd && ::GetLastError() == ERROR_MOD_NOT_FOUND) {
             attempt += QLatin1String(".dll");
             QT_WA({
-                pHnd = LoadLibraryW((TCHAR*)attempt.utf16());
+                pHnd = LoadLibraryW((TCHAR*)QDir::toNativeSeparators(attempt).utf16());
             } , {
-                pHnd = LoadLibraryA(QFile::encodeName(attempt).data());
+                pHnd = LoadLibraryA(QFile::encodeName(QDir::toNativeSeparators(attempt)).data());
             });
         }
     }
 
     SetErrorMode(oldmode);
     if (!pHnd) {
-        errorString = QLibrary::tr("QLibrary::load_sys: Cannot load %1 (%2)").arg(fileName).arg(::qt_error_string());
+        errorString = QLibrary::tr("QLibrary::load_sys: Cannot load %1 (%2)").arg(fileName).arg(qt_error_string());
     }
     if (pHnd) {
         errorString.clear();
@@ -103,7 +124,7 @@ bool QLibraryPrivate::load_sys()
 bool QLibraryPrivate::unload_sys()
 {
     if (!FreeLibrary(pHnd)) {
-        errorString = QLibrary::tr("QLibrary::unload_sys: Cannot unload %1 (%2)").arg(fileName).arg(::qt_error_string());
+        errorString = QLibrary::tr("QLibrary::unload_sys: Cannot unload %1 (%2)").arg(fileName).arg(qt_error_string());
         return false;
     }
     errorString.clear();
@@ -112,17 +133,17 @@ bool QLibraryPrivate::unload_sys()
 
 void* QLibraryPrivate::resolve_sys(const char* symbol)
 {
-#ifdef Q_OS_TEMP
-    void* address = (void*)GetProcAddress(pHnd, (const wchar_t*)QString(symbol).ucs2());
+#ifdef Q_OS_WINCE
+    void* address = (void*)GetProcAddress(pHnd, (const wchar_t*)QString::fromLatin1(symbol).utf16());
 #else
     void* address = (void*)GetProcAddress(pHnd, symbol);
 #endif
     if (!address) {
         errorString = QLibrary::tr("QLibrary::resolve_sys: Symbol \"%1\" undefined in %2 (%3)").arg(
-            QString::fromAscii(symbol)).arg(fileName).arg(::qt_error_string());
+            QString::fromAscii(symbol)).arg(fileName).arg(qt_error_string());
     } else {
         errorString.clear();
     }
     return address;
 }
-
+QT_END_NAMESPACE

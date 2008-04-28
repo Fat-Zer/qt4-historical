@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QIcon;
 class QString;
 class QDesignerFormEditorInterface;
@@ -129,6 +131,8 @@ Q_SIGNALS:
 protected:
     QList<QDesignerWidgetDataBaseItemInterface *> m_items;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

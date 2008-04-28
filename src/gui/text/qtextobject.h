@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextObjectPrivate;
@@ -171,6 +173,7 @@ public:
         inline iterator operator--(int) { iterator tmp = *this; operator--(); return tmp; }
     };
 
+    friend class iterator;
     // more Qt
     typedef iterator Iterator;
 
@@ -214,6 +217,7 @@ public:
     bool contains(int position) const;
 
     QTextLayout *layout() const;
+    void clearLayout();
     QTextBlockFormat blockFormat() const;
     int blockFormatIndex() const;
     QTextCharFormat charFormat() const;
@@ -230,6 +234,14 @@ public:
 
     int userState() const;
     void setUserState(int state);
+
+    int revision() const;
+    void setRevision(int rev);
+
+    bool isVisible() const;
+    void setVisible(bool visible);
+
+    int blockNumber() const;
 
     class Q_GUI_EXPORT iterator {
         const QTextDocumentPrivate *p;
@@ -305,6 +317,8 @@ private:
 };
 
 Q_DECLARE_TYPEINFO(QTextFragment, Q_MOVABLE_TYPE);
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

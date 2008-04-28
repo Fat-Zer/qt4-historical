@@ -47,6 +47,7 @@
 #include "tabletapplication.h"
 #include "tabletcanvas.h"
 
+//! [0]
 int main(int argv, char *args[])
 {
     TabletApplication app(argv, args);
@@ -59,3 +60,4 @@ int main(int argv, char *args[])
 
     return app.exec();
 }
+//! [0]

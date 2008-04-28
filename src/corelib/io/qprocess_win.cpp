@@ -43,6 +43,7 @@
 
 #include "qprocess.h"
 #include "qprocess_p.h"
+#include "qwindowspipewriter_p.h"
 
 #include <qdatetime.h>
 #include <qdir.h>
@@ -57,186 +58,14 @@
 
 #include "private/qfsfileengine_p.h" // for longFileName and win95FileName
 
+
 #ifndef QT_NO_PROCESS
+
+QT_BEGIN_NAMESPACE
+
 //#define QPROCESS_DEBUG
 
-#define SLEEPMIN 10
-#define SLEEPMAX 500
 #define NOTIFYTIMEOUT 100
-
-class QIncrementalSleepTimer
-{
-public:
-    QIncrementalSleepTimer(int msecs)
-        : totalTimeOut(msecs)
-        , nextSleep(qMin(SLEEPMIN, totalTimeOut))
-    {
-        timer.start();
-    }
-
-    int nextSleepTime()
-    {
-        if (totalTimeOut == -1)
-            return -1;
-
-        int tmp = nextSleep;
-
-        nextSleep = qMin(nextSleep * 2, qMin(SLEEPMAX, timeLeft()));
-
-        return tmp;
-    }
-
-    int timeLeft()
-    {
-        return qMax(totalTimeOut - timer.elapsed(), 0);
-    }
-
-    bool hasTimedOut()
-    {
-        return timer.elapsed() >= totalTimeOut;
-    }
-
-    void resetIncrements()
-    {
-        nextSleep = qMin(SLEEPMIN, timeLeft());
-    }
-
-private:
-    QTime timer;
-    int totalTimeOut;
-    int nextSleep;
-};
-
-class QWindowsPipeWriter : public QThread
-{
-    Q_OBJECT
-public:
-    QWindowsPipeWriter(HANDLE writePipe, QObject * parent = 0);
-    ~QWindowsPipeWriter();
-
-    bool waitForWrite(int msecs);
-    qint64 write(const char *data, qint64 maxlen);
-    qint64 bytesToWrite() const
-    {
-        QMutexLocker locker(&lock);
-        return data.size();
-    }
-    bool hadWritten() const
-    {
-        return hasWritten;
-    }
-
-signals:
-    void canWrite();
-
-protected:
-   void run();
-
-private:
-    mutable QMutex lock;
-    QWaitCondition waitCondition;
-    bool quitNow;
-    HANDLE writePipe;
-    QByteArray data;
-    bool hasWritten;
-};
-
-
-QWindowsPipeWriter::QWindowsPipeWriter(HANDLE pipe, QObject * parent)
-    : QThread(parent), quitNow(false), hasWritten(false)
-{
-
-    DuplicateHandle(GetCurrentProcess(), pipe, GetCurrentProcess(),
-                         &writePipe, 0, FALSE, DUPLICATE_SAME_ACCESS);
-}
-
-
-QWindowsPipeWriter::~QWindowsPipeWriter()
-{
-    lock.lock();
-    quitNow = true;
-    waitCondition.wakeOne();
-    lock.unlock();
-    if (!wait(100))
-        terminate();
-    CloseHandle(writePipe);
-}
-
-bool QWindowsPipeWriter::waitForWrite(int msecs)
-{
-    QMutexLocker locker(&lock);
-    bool hadWritten = hasWritten;
-    hasWritten = false;
-    if (hadWritten)
-        return true;
-    if (!waitCondition.wait(&lock, msecs))
-        return false;
-    hadWritten = hasWritten;
-    hasWritten = false;
-    return hadWritten;
-}
-
-qint64 QWindowsPipeWriter::write(const char *ptr, qint64 maxlen)
-{
-    if (!isRunning())
-        return -1;
-
-    QMutexLocker locker(&lock);
-    data.append(QByteArray(ptr, maxlen));
-    waitCondition.wakeOne();
-    return maxlen;
-}
-
-
-void QWindowsPipeWriter::run()
-{
-
-    for (;;) {
-
-        lock.lock();
-
-        while(data.isEmpty() && (!quitNow)) {
-            waitCondition.wakeOne();
-            waitCondition.wait(&lock);
-        }
-
-        if (quitNow) {
-            lock.unlock();
-            break;
-        }
-
-        QByteArray copy = data;
-
-        lock.unlock();
-
-        const char *ptrData = copy.data();
-        qint64 maxlen = copy.size();
-        qint64 totalWritten = 0;
-        while ((!quitNow) && totalWritten < maxlen) {
-            DWORD written = 0;
-            // Write 2k at a time to prevent flooding the pipe. If you
-            // write too much (4k-8k), the pipe can close
-            // unexpectedly.
-            if (!WriteFile(writePipe, ptrData + totalWritten, qMin<int>(2048, maxlen - totalWritten), &written, 0)) {
-                if (GetLastError() == 0xE8 /*NT_STATUS_INVALID_USER_BUFFER*/) {
-                    // give the os a rest
-                    msleep(100);
-                    continue;
-                }
-                return;
-            }
-            totalWritten += written;
-#if defined QPROCESS_DEBUG
-            qDebug("QWindowsPipeWriter::run() wrote %d %d/%d bytes", written, int(totalWritten), int(maxlen));
-#endif
-            lock.lock();
-            data.remove(0, written);
-            hasWritten = true;
-            lock.unlock();
-        }
-        emit canWrite();
-    }
-}
 
 static void qt_create_pipe(Q_PIPE *pipe, bool in)
 {
@@ -244,6 +73,7 @@ static void qt_create_pipe(Q_PIPE *pipe, bool in)
     // read handles to avoid non-closable handles (this is done by the
     // DuplicateHandle() call).
 
+#if !defined(Q_OS_WINCE)
     SECURITY_ATTRIBUTES secAtt = { sizeof( SECURITY_ATTRIBUTES ), NULL, TRUE };
 
     HANDLE tmpHandle;
@@ -262,6 +92,10 @@ static void qt_create_pipe(Q_PIPE *pipe, bool in)
     }
 
     CloseHandle(tmpHandle);
+#else
+	Q_UNUSED(pipe);
+	Q_UNUSED(in);
+#endif
 }
 
 /*
@@ -437,14 +271,17 @@ void QProcessPrivate::destroyPipe(Q_PIPE pipe[2])
 
 static QString qt_create_commandline(const QString &program, const QStringList &arguments)
 {
-    QString programName = program;
-    if (!programName.startsWith(QLatin1Char('\"')) && !programName.endsWith(QLatin1Char('\"')) && programName.contains(QLatin1String(" ")))
-        programName = QLatin1String("\"") + programName + QLatin1String("\"");
-    programName.replace(QLatin1String("/"), QLatin1String("\\"));
-
     QString args;
-    // add the prgram as the first arrg ... it works better
-    args = programName + QLatin1String(" ");
+    if (!program.isEmpty()) {
+        QString programName = program;
+        if (!programName.startsWith(QLatin1Char('\"')) && !programName.endsWith(QLatin1Char('\"')) && programName.contains(QLatin1String(" ")))
+            programName = QLatin1String("\"") + programName + QLatin1String("\"");
+        programName.replace(QLatin1String("/"), QLatin1String("\\"));
+
+        // add the prgram as the first arg ... it works better
+        args = programName + QLatin1String(" ");
+    }
+
     for (int i=0; i<arguments.size(); ++i) {
         QString tmp = arguments.at(i);
         // in the case of \" already being in the string the \ must also be escaped
@@ -536,21 +373,24 @@ void QProcessPrivate::startProcess()
     pid = new PROCESS_INFORMATION;
     memset(pid, 0, sizeof(PROCESS_INFORMATION));
 
-    processState = QProcess::Starting;
-    emit q->stateChanged(processState);
+    q->setProcessState(QProcess::Starting);
 
     if (!createChannel(stdinChannel) ||
         !createChannel(stdoutChannel) ||
         !createChannel(stderrChannel))
         return;
 
+#if defined(Q_OS_WINCE)
+    QString args = qt_create_commandline(QString(), arguments);
+#else
     QString args = qt_create_commandline(program, arguments);
     QByteArray envlist = qt_create_environment(environment);
+#endif
 
 #if defined QPROCESS_DEBUG
     qDebug("Creating process");
-    qDebug("   program : [%s]", program.latin1());
-    qDebug("   args : %s", args.latin1());
+    qDebug("   program : [%s]", program.toLatin1().constData());
+    qDebug("   args : %s", args.toLatin1().constData());
     qDebug("   pass environment : %s", environment.isEmpty() ? "no" : "yes");
 #endif
 
@@ -560,6 +400,15 @@ void QProcessPrivate::startProcess()
 
 #ifdef UNICODE
     if (!(QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based)) {
+#if defined(Q_OS_WINCE)
+        QString fullPathProgram = program;
+        if (!QDir::isAbsolutePath(fullPathProgram))
+            fullPathProgram = QFileInfo(fullPathProgram).absoluteFilePath();
+        fullPathProgram.replace(QLatin1String("/"), QLatin1String("\\"));
+        success = CreateProcessW((WCHAR*)fullPathProgram.utf16(),
+                                 (WCHAR*)args.utf16(),
+                                 0, 0, false, 0, 0, 0, 0, pid);
+#else
         dwCreationFlags |= CREATE_UNICODE_ENVIRONMENT;
         STARTUPINFOW startupInfo = { sizeof( STARTUPINFO ), 0, 0, 0,
 	                                 (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
@@ -575,10 +424,11 @@ void QProcessPrivate::startProcess()
                                  workingDirectory.isEmpty() ? 0
                                     : (WCHAR*)QDir::toNativeSeparators(workingDirectory).utf16(),
                                  &startupInfo, pid);
+#endif
     } else
 #endif // UNICODE
     {
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
 	    STARTUPINFOA startupInfo = { sizeof( STARTUPINFOA ), 0, 0, 0,
                                          (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
                                          (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
@@ -593,9 +443,9 @@ void QProcessPrivate::startProcess()
                                      workingDirectory.isEmpty() ? 0
                                         : QDir::toNativeSeparators(workingDirectory).toLocal8Bit().data(),
                                      &startupInfo, pid);
-#endif // Q_OS_TEMP
+#endif // Q_OS_WINCE
     }
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     if (stdinChannel.pipe[0] != INVALID_Q_PIPE) {
         CloseHandle(stdinChannel.pipe[0]);
         stdinChannel.pipe[0] = INVALID_Q_PIPE;
@@ -608,19 +458,22 @@ void QProcessPrivate::startProcess()
         CloseHandle(stderrChannel.pipe[1]);
         stderrChannel.pipe[1] = INVALID_Q_PIPE;
     }
-#endif
+#endif // Q_OS_WINCE
 
     if (!success) {
         cleanup();
         processError = QProcess::FailedToStart;
         q->setErrorString(QLatin1String(QT_TRANSLATE_NOOP(QProcess, "Process failed to start")));
         emit q->error(processError);
-        processState = QProcess::NotRunning;
-        emit q->stateChanged(processState);
+        q->setProcessState(QProcess::NotRunning);
         return;
     }
 
-    processState = QProcess::Running;
+    q->setProcessState(QProcess::Running);
+    // User can call kill()/terminate() from the stateChanged() slot
+    // so check before proceeding 
+    if (!pid) 
+        return;
 
     if (threadData->eventDispatcher) {
         processFinishedNotifier = new QWinEventNotifier(pid->hProcess, q);
@@ -647,7 +500,8 @@ qint64 QProcessPrivate::bytesAvailableFromStdout() const
         return 0;
 
     DWORD bytesAvail = 0;
-    PeekNamedPipe(stdoutChannel.pipe[0], 0, 0, 0, &bytesAvail, 0);
+#if !defined(Q_OS_WINCE)
+	PeekNamedPipe(stdoutChannel.pipe[0], 0, 0, 0, &bytesAvail, 0);
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::bytesAvailableFromStdout() == %d", bytesAvail);
 #endif
@@ -663,6 +517,7 @@ qint64 QProcessPrivate::bytesAvailableFromStdout() const
         }
         bytesAvail = 0;
     }
+#endif
     return bytesAvail;
 }
 
@@ -672,7 +527,8 @@ qint64 QProcessPrivate::bytesAvailableFromStderr() const
         return 0;
 
     DWORD bytesAvail = 0;
-    PeekNamedPipe(stderrChannel.pipe[0], 0, 0, 0, &bytesAvail, 0);
+#if !defined(Q_OS_WINCE)
+	PeekNamedPipe(stderrChannel.pipe[0], 0, 0, 0, &bytesAvail, 0);
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::bytesAvailableFromStderr() == %d", bytesAvail);
 #endif
@@ -688,6 +544,7 @@ qint64 QProcessPrivate::bytesAvailableFromStderr() const
         }
         bytesAvail = 0;
     }
+#endif
     return bytesAvail;
 }
 
@@ -755,6 +612,13 @@ bool QProcessPrivate::waitForReadyRead(int msecs)
 {
     Q_Q(QProcess);
 
+#if defined(Q_OS_WINCE)
+    processError = QProcess::ReadError;
+    q->setErrorString(QT_TRANSLATE_NOOP(QProcess, QLatin1String("Error reading from process")));
+    emit q->error(processError);
+    return false;
+#endif
+
     QIncrementalSleepTimer timer(msecs);
 
     forever {
@@ -762,7 +626,6 @@ bool QProcessPrivate::waitForReadyRead(int msecs)
             return false;
         if (pipeWriter && pipeWriter->waitForWrite(0))
             timer.resetIncrements();
-
         bool readyReadEmitted = false;
         if (bytesAvailableFromStdout() != 0) {
             readyReadEmitted = _q_canReadStandardOutput() ? true : readyReadEmitted;
@@ -797,8 +660,14 @@ bool QProcessPrivate::waitForReadyRead(int msecs)
 
 bool QProcessPrivate::waitForBytesWritten(int msecs)
 {
-
     Q_Q(QProcess);
+
+#if defined(Q_OS_WINCE)
+    processError = QProcess::ReadError;
+    q->setErrorString(QT_TRANSLATE_NOOP(QProcess, QLatin1String("Error reading from process")));
+    emit q->error(processError);
+    return false;
+#endif
 
     QIncrementalSleepTimer timer(msecs);
 
@@ -933,6 +802,13 @@ qint64 QProcessPrivate::writeToStdin(const char *data, qint64 maxlen)
 {
     Q_Q(QProcess);
 
+#if defined(Q_OS_WINCE)
+    processError = QProcess::WriteError;
+    q->setErrorString(QT_TRANSLATE_NOOP(QProcess, QLatin1String("Error writing to process")));
+    emit q->error(processError);
+    return -1;
+#endif
+
     if (!pipeWriter) {
         pipeWriter = new QWindowsPipeWriter(stdinChannel.pipe[1], q);
         pipeWriter->start();
@@ -972,7 +848,12 @@ void QProcessPrivate::_q_notified()
 
 bool QProcessPrivate::startDetached(const QString &program, const QStringList &arguments, const QString &workingDir, qint64 *pid)
 {
+#if defined(Q_OS_WINCE)
+    Q_UNUSED(workingDir);
+    QString args = qt_create_commandline(QString(), arguments);
+#else
     QString args = qt_create_commandline(program, arguments);
+#endif
 
     bool success = false;
 
@@ -980,6 +861,15 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
 
 #ifdef UNICODE
     if (!(QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based)) {
+#if defined(Q_OS_WINCE)
+        QString fullPathProgram = program;
+        if (!QDir::isAbsolutePath(fullPathProgram))
+            fullPathProgram.prepend(QDir::currentPath().append(QLatin1String("/")));
+        fullPathProgram.replace(QLatin1String("/"), QLatin1String("\\"));
+        success = CreateProcessW((WCHAR*)fullPathProgram.utf16(),
+                                 (WCHAR*)args.utf16(),
+                                 0, 0, false, CREATE_NEW_CONSOLE, 0, 0, 0, &pinfo);
+#else
         STARTUPINFOW startupInfo = { sizeof( STARTUPINFO ), 0, 0, 0,
                                      (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
                                      (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
@@ -989,10 +879,11 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
                                  0, 0, FALSE, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE, 0, 
                                  workingDir.isEmpty() ? (const WCHAR *)0 : (const WCHAR *)workingDir.utf16(),
                                  &startupInfo, &pinfo);
+#endif
     } else
 #endif // UNICODE
     {
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
        STARTUPINFOA startupInfo = { sizeof( STARTUPINFOA ), 0, 0, 0,
                                      (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
                                      (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
@@ -1002,7 +893,7 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
                                 0, 0, FALSE, CREATE_NEW_CONSOLE, 0,
                                 workingDir.isEmpty() ? (LPCSTR)0 : workingDir.toLocal8Bit().constData(),
                                 &startupInfo, &pinfo);
-#endif // Q_OS_TEMP
+#endif // Q_OS_WINCE
     }
 
     if (success) {
@@ -1015,8 +906,6 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
     return success;
 }
 
-
-#include "qprocess_win.moc"
+QT_END_NAMESPACE
 
 #endif // QT_NO_PROCESS
-

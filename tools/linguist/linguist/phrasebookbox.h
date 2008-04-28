@@ -49,17 +49,18 @@
 #include "phrasemodel.h"
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
+
+class QSortFilterProxyModel;
+
 class PhraseBookBox : public QDialog, public Ui::PhraseBookBox
 {
     Q_OBJECT
 public:
-    PhraseBookBox(const QString &filename, const PhraseBook &phraseBook,
-        QWidget *parent = 0);
-
-    const PhraseBook &phraseBook() const {return pb;}
+    PhraseBookBox(PhraseBook *phraseBook, QWidget *parent = 0);
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *ev);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     void newPhrase();
@@ -71,14 +72,16 @@ private slots:
     void selectionChanged();
 
 private:
-    void sortAndSelectItem(const QModelIndex &index);
     void selectItem(const QModelIndex &index);
     void enableDisable();
-    bool blockListSignals;
+    QModelIndex currentPhraseIndex() const;
 
     QString fn;
-    PhraseBook pb;
+    PhraseBook *m_phraseBook;
     PhraseModel *phrMdl;
+    QSortFilterProxyModel *m_sortedPhraseModel;
 };
+
+QT_END_NAMESPACE
 
 #endif

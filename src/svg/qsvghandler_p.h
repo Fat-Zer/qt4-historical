@@ -56,10 +56,15 @@
 //
 
 #include "QtXml/qxmlstream.h"
+
+#ifndef QT_NO_SVG
+
 #include "QtCore/qhash.h"
 #include "QtCore/qstack.h"
 #include "qsvgstyle_p.h"
 #include "private/qcssparser_p.h"
+
+QT_BEGIN_NAMESPACE
 
 class QSvgNode;
 class QSvgTinyDocument;
@@ -67,25 +72,15 @@ class QSvgHandler;
 class QColor;
 class QSvgStyleSelector;
 
-typedef QSvgNode *(*FactoryMethod)(QSvgNode *,
-                                   const QXmlStreamAttributes &,
-                                   QSvgHandler *);
-typedef bool (*ParseMethod)(QSvgNode *,
-                            const QXmlStreamAttributes &,
-                            QSvgHandler *);
-
-typedef QSvgStyleProperty *(*StyleFactoryMethod)(QSvgNode *,
-                                                 const QXmlStreamAttributes &,
-                                                 QSvgHandler *);
-typedef bool (*StyleParseMethod)(QSvgStyleProperty *,
-                                 const QXmlStreamAttributes &,
-                                 QSvgHandler *);
-
 struct QSvgCssAttribute
 {
     QXmlStreamStringRef name;
     QXmlStreamStringRef value;
 };
+
+#if defined(Q_OS_WINCE) && defined(IN)
+#undef IN
+#endif
 
 class QSvgHandler
 {
@@ -131,6 +126,9 @@ public:
 
     void parseCSStoXMLAttrs(QString css, QVector<QSvgCssAttribute> *attributes);
 
+    inline QPen defaultPen() const
+    { return m_defaultPen; }
+
 public:
     bool startElement(const QString &localName, const QXmlStreamAttributes &attributes);
     bool endElement(const QStringRef &localName);
@@ -138,7 +136,7 @@ public:
     bool processingInstruction(const QString &target, const QString &data);
 
 private:
-    void init();
+    QString normalizeCharacters(const QString &input) const;
 
     QSvgTinyDocument *m_doc;
     QStack<QSvgNode*> m_nodes;
@@ -153,6 +151,18 @@ private:
     };
     QStack<CurrentNode> m_skipNodes;
 
+    enum WhitespaceMode
+    {
+        Preserve,
+        Default
+    };
+
+    /*!
+        Follows the depths of elements. The top is current xml:space
+        value that applies for a given element.
+     */
+    QStack<WhitespaceMode> m_whitespaceMode;
+
     QSvgRefCounter<QSvgStyleProperty> m_style;
 
     LengthType m_defaultCoords;
@@ -165,16 +175,15 @@ private:
     QSvgStyleSelector *m_selector;
 
     int m_animEnd;
-private:
+
     QXmlStreamReader xml;
     QCss::Parser m_cssParser;
     void parse();
-    static QHash<QString, FactoryMethod> s_groupFactory;
-    static QHash<QString, FactoryMethod> s_graphicsFactory;
-    static QHash<QString, ParseMethod>   s_utilFactory;
 
-    static QHash<QString, StyleFactoryMethod>   s_styleFactory;
-    static QHash<QString, StyleParseMethod>     s_styleUtilFactory;
+    QPen m_defaultPen;
 };
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG
 #endif // QSVGHANDLER_P_H

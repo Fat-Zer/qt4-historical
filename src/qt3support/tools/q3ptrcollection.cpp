@@ -43,6 +43,8 @@
 
 #include "q3ptrcollection.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3PtrCollection qptrcollection.h
     \reentrant
@@ -182,3 +184,5 @@ Q3PtrCollection::Item Q3PtrCollection::newItem(Item d)
 {
     return d;					// just return reference
 }
+
+QT_END_NAMESPACE

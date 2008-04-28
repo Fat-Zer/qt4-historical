@@ -46,19 +46,21 @@ TRANSLATOR qdesigner_internal::TableWidgetTaskMenu
 */
 
 #include "tablewidget_taskmenu.h"
-#include "inplace_editor.h"
 #include "tablewidgeteditor.h"
 
 #include <QtDesigner/QDesignerFormWindowInterface>
 
 #include <QtGui/QTableWidget>
 #include <QtGui/QAction>
+#include <QtGui/QLineEdit>
 #include <QtGui/QStyle>
 #include <QtGui/QStyleOption>
 
 #include <QtCore/QEvent>
 #include <QtCore/QVariant>
 #include <QtCore/qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
@@ -104,25 +106,10 @@ void TableWidgetTaskMenu::editItems()
         dlg.fillTableWidgetFromContents(m_tableWidget);
 }
 
-TableWidgetTaskMenuFactory::TableWidgetTaskMenuFactory(QExtensionManager *extensionManager)
-    : QExtensionFactory(extensionManager)
-{
-}
-
-QObject *TableWidgetTaskMenuFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (QTableWidget *button = qobject_cast<QTableWidget*>(object)) {
-        if (iid == Q_TYPEID(QDesignerTaskMenuExtension)) {
-            return new TableWidgetTaskMenu(button, parent);
-        }
-    }
-
-    return 0;
-}
-
 void TableWidgetTaskMenu::updateSelection()
 {
     if (m_editor)
         m_editor->deleteLater();
 }
 
+QT_END_NAMESPACE

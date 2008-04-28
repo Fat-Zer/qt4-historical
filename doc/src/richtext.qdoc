@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
 \page richtext.html
 \nextpage Rich Text Document Structure
@@ -92,16 +135,11 @@ rich text documents for use with a QTextEdit widget or in a custom editor.
 Although QTextEdit makes it easy to display and edit rich text, documents
 can also be used independently of any editor widget, for example:
 
-\code
-QTextDocument *newDocument = new QTextDocument;
-\endcode
+\snippet doc/src/snippets/code/doc.src.richtext.qdoc 0
 
 Alternatively, they can be extracted from an existing editor:
 
-\code
-QTextEdit *editor = new QTextEdit;
-QTextDocument *editorDocument = editor->document();
-\endcode
+\snippet doc/src/snippets/code/doc.src.richtext.qdoc 1
 
 This flexibility enables applications to handle multiple rich text
 documents without the overhead of multiple editor widgets, or requiring
@@ -114,12 +152,8 @@ ensures that it is padded with empty blocks where necessary.
 
 We obtain the root frame in the following manner:
 
-\quotefromfile snippets/textdocument-frames/xmlwriter.h
-\skipto QTextDocument *textDocument
-\printuntil QTextDocument *textDocument
-\quotefromfile snippets/textdocument-frames/xmlwriter.cpp
-\skipto textDocument->rootFrame()
-\printuntil textDocument->rootFrame()
+\snippet doc/src/snippets/textdocument-frames/xmlwriter.h 0
+\snippet doc/src/snippets/textdocument-frames/xmlwriter.cpp 0
 
 When navigating the document structure, it is useful to begin at the
 root frame because it provides access to the entire document structure.
@@ -158,13 +192,9 @@ of text in the block.
 The fragments within a given block can be examined by using a
 QTextBlock::iterator to traverse the block's internal structure:
 
-\quotefromfile snippets/textblock-fragments/xmlwriter.cpp
-\skipto QTextBlock::iterator
-\printuntil if (currentFragment.isValid())
-\skipto processFragment(
-\printuntil processFragment(
-\skipto /    \}/
-\printto /^\}/
+\snippet doc/src/snippets/textblock-fragments/xmlwriter.cpp 3
+\snippet doc/src/snippets/textblock-fragments/xmlwriter.cpp 5
+\snippet doc/src/snippets/textblock-fragments/xmlwriter.cpp 6
 
 Blocks are also used to represent list items. As a result, blocks can
 define their own character formats which contain information about
@@ -177,13 +207,9 @@ Although a given document may contain complex structures, once we have a
 reference to a valid block in the document, we can navigate between each
 of the text blocks in the order in which they were written:
 
-\quotefromfile snippets/textblock-fragments/xmlwriter.cpp
-\skipto QTextBlock currentBlock
-\printuntil while (currentBlock.isValid()) {
-\skipto processBlock(
-\printuntil processBlock(
-\skipto currentBlock = currentBlock.next();
-\printuntil }
+\snippet doc/src/snippets/textblock-fragments/xmlwriter.cpp 0
+\snippet doc/src/snippets/textblock-fragments/xmlwriter.cpp 1
+\snippet doc/src/snippets/textblock-fragments/xmlwriter.cpp 2
 
 This method is useful for when you want to extract just the rich text from a
 document because it ignores frames, tables, and other types of structure.
@@ -212,10 +238,8 @@ frame will always contain at least one text block, and zero or more
 child frames. We can inspect the contents of a frame by using a
 QTextFrame::iterator to traverse the frame's child elements:
 
-\quotefromfile snippets/textdocument-frames/xmlwriter.cpp
-\skipto QTextFrame::iterator
-\printuntil if (childFrame)
-\printuntil }
+\snippet doc/src/snippets/textdocument-frames/xmlwriter.cpp 1
+\snippet doc/src/snippets/textdocument-frames/xmlwriter.cpp 2
 
 Note that the iterator selects both frames and blocks, so it is necessary
 to check which it is referring to. This allows us to navigate the document
@@ -239,23 +263,16 @@ in the document structure. For each frame that we encounter in the
 document, we can test whether it represents a table, and deal with it in a
 different way:
 
-\quotefromfile snippets/textdocument-tables/xmlwriter.cpp
-\skipto QTextFrame::iterator
-\printuntil }
-\printuntil }
+\snippet doc/src/snippets/textdocument-tables/xmlwriter.cpp 0
+\snippet doc/src/snippets/textdocument-tables/xmlwriter.cpp 1
 
 The cells within an existing table can be examined by iterating through
 the rows and columns.
 
-\quotefromfile snippets/textdocument-tables/mainwindow.cpp
-\skipto MainWindow::showTable()
-\skipto for (int row = 0
-\printuntil QTextTableCell tableCell
-\skipto processTableCell(
-\printuntil processTableCell(
-\skipto }
-\printuntil }
-\printuntil }
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 9
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 10
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 11
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 12
 
 
 \section2 Lists
@@ -269,14 +286,9 @@ format specifies a non-zero indentation.
 
 We can refer to each list item by its index in the list:
 
-\quotefromfile snippets/textdocument-listitems/mainwindow.cpp
-\skipto MainWindow::highlightListItems()
-\skipto for (int
-\printuntil list->item
-\skipto processListItem(
-\printuntil processListItem(
-\skipto }
-\printuntil }
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 0
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 1
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 2
 
 Since QTextList is a subclass of QTextBlockGroup, it does not group the
 list items as child elements, but instead provides various functions for
@@ -284,16 +296,11 @@ managing them. This means that any text block we find when traversing a
 document may actually be a list item. We can ensure that list items are
 correctly identified by using the following code:
 
-\quotefromfile snippets/textdocument-listitems/mainwindow.cpp
-\skipto MainWindow::showList()
-\skipto QTextFrame::iterator
-\printuntil list->itemNumber
-\skipto processListItem(
-\printuntil processListItem(
-\skipto }
-\printuntil }
-\printuntil }
-\printuntil }
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 3
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 4
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 5
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 6
+\snippet doc/src/snippets/textdocument-listitems/mainwindow.cpp 7
 
 
 \section2 Images
@@ -303,11 +310,9 @@ external images via the resource mechanism. Images are created using the
 cursor interface, and can be modified later by changing the character
 format of the image's text fragment:
 
-\quotefromfile snippets/textdocument-imageformat/main.cpp
-\skipto if (fragment.isValid())
-\printuntil setCharFormat
-\printuntil }
-\printuntil }
+\snippet doc/src/snippets/textdocument-imageformat/main.cpp 0
+\snippet doc/src/snippets/textdocument-imageformat/main.cpp 1
+\snippet doc/src/snippets/textdocument-imageformat/main.cpp 2
 
 The fragment that represents the image can be found by iterating over
 the fragments in the text block that contains the image.
@@ -355,15 +360,11 @@ can also be directly obtained through the cursor.
 The main use of a cursor is to insert or modify text within a block.
 We can use a text editor's cursor to do this:
 
-\quotefromfile snippets/textblock-formats/main.cpp
-\skipto QTextEdit *editor
-\printuntil QTextCursor cursor
+\snippet doc/src/snippets/textblock-formats/main.cpp 0
 
 Alternatively, we can obtain a cursor directly from a document:
 
-\quotefromfile snippets/textdocument-images/main.cpp
-\skipto QTextDocument *document
-\printuntil QTextCursor cursor
+\snippet doc/src/snippets/textdocument-images/main.cpp 0
 
 The cursor is positioned at the start of the document so that we can write
 into the first (empty) block in the document.
@@ -376,10 +377,7 @@ using the \c beginEditBlock() and \c endEditBlock() functions in the
 following way, as in the following example where we select the word that
 contains the cursor:
 
-\quotefromfile snippets/textdocument-selections/mainwindow.cpp
-\skipto void MainWindow::selectWord
-\skipto cursor.beginEditBlock
-\printuntil cursor.endEditBlock
+\snippet doc/src/snippets/textdocument-selections/mainwindow.cpp 0
 
 If editing operations are not grouped, the document automatically records
 the individual operations so that they can be undone later. Grouping
@@ -396,11 +394,8 @@ The QTextDocument ensures that each cursor writes text correctly and
 does not interfere with any of the others.
 
 \omit
-\quotefromfile snippets/textdocument-cursors/main.cpp
-\skipto QTextDocument *document
-\printuntil QTextCursor redCursor
-\skipto QTextCursor blueCursor
-\printuntil QTextCursor blueCursor
+\snippet doc/src/snippets/textdocument-cursors/main.cpp 0
+\snippet doc/src/snippets/textdocument-cursors/main.cpp 1
 \endomit
 
 \section1 Inserting Document Elements
@@ -451,9 +446,7 @@ document.
 Text can be inserted into the current block in the current character
 format, or in a custom format that is specified with the text:
 
-\quotefromfile snippets/textdocument-charformats/main.cpp
-\skipto cursor.insertText
-\printuntil emphasisFormat
+\snippet doc/src/snippets/textdocument-charformats/main.cpp 0
 
 Once the character format has been used with a cursor, that format becomes
 the default format for any text inserted with that cursor until another
@@ -468,9 +461,7 @@ document.
 Text blocks are inserted into the document with the
 \l{QTextCursor::insertBlock()}{insertBlock()} function.
 
-\quotefromfile snippets/textblock-formats/main.cpp
-\skipto QTextBlockFormat backgroundFormat
-\printuntil cursor.setBlockFormat
+\snippet doc/src/snippets/textblock-formats/main.cpp 1
 
 The cursor is positioned at the start of the new block.
 
@@ -482,16 +473,12 @@ The following code shows how a frame can be inserted between two text
 blocks in a document's root frame. We begin by finding the cursor's
 current frame:
 
-\quotefromfile snippets/textdocument-frames/mainwindow.cpp
-\skipto main frame
-\skipto QTextFrame *mainFrame
-\printuntil cursor.insertText(...);
+\snippet doc/src/snippets/textdocument-frames/mainwindow.cpp 0
 
 We insert some text in this frame then set up a frame format for the
 child frame:
 
-\skipto QTextFrameFormat
-\printuntil setBorder(
+\snippet doc/src/snippets/textdocument-frames/mainwindow.cpp 1
 
 The frame format will give the frame an external margin of 32 pixels,
 internal padding of 8 pixels, and a border that is 4 pixels wide.
@@ -500,9 +487,7 @@ frame formats.
 
 The frame is inserted into the document after the preceding text:
 
-\skipto insert frame
-\skipto cursor.insertFrame
-\printuntil cursor.insertText(...);
+\snippet doc/src/snippets/textdocument-frames/mainwindow.cpp 2
 
 We add some text to the document immediately after we insert the frame.
 Since the text cursor is positioned \e{inside the frame} when it is inserted
@@ -511,9 +496,7 @@ into the document, this text will also be inserted inside the frame.
 Finally, we position the cursor outside the frame by taking the last
 available cursor position inside the frame we recorded earlier:
 
-\skipto last cursor
-\skipto cursor = mainFrame->
-\printuntil cursor.insertText(...);
+\snippet doc/src/snippets/textdocument-frames/mainwindow.cpp 3
 
 The text that we add last is inserted after the child frame in the
 document. Since each frame is padded with text blocks, this ensures that
@@ -524,11 +507,8 @@ more elements can always be inserted with a cursor.
 Tables are inserted into the document using the cursor, and will be
 placed within the cursor's current frame \e after the current block:
 
-\quotefromfile snippets/textdocument-tables/mainwindow.cpp
-\skipto QTextCursor cursor
-\printuntil QTextCursor cursor
-\skipto QTextTable *table = cursor.insertTable
-\printuntil QTextTable *table = cursor.insertTable
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 0
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 3
 
 Tables can be created with a specific format that defines the overall
 properties of the table, such as its alignment, background color, and
@@ -536,9 +516,7 @@ the cell spacing used. It can also determine the constraints on each
 column, allowing each of them to have a fixed width, or resize according
 to the available space.
 
-\quotefromfile snippets/textdocument-tables/mainwindow.cpp
-\skipto QTextTableFormat tableFormat;
-\printuntil QTextTable *table
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 2
 
 The columns in the table created above will each take up a certain
 percentage of the available width. Note that the table format is
@@ -551,16 +529,14 @@ formatted and styled as necessary.
 Text can be added to the table by navigating to each cell with the cursor
 and inserting text.
 
-\skipto cell = table->cellAt(0, 0);
-\printuntil cellCursor.insertText(tr("Week"
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 4
 
 We can create a simple timetable by following this approach:
 
-\skipto for (column = 1; column < columns; ++column) {
-\printuntil if ((row-1) % 3 == column-1) {
-\printuntil }
-\printuntil }
-\printuntil }
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 5
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 6
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 7
+\snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 8
 
 \section2 Lists
 
@@ -568,9 +544,7 @@ Lists of block elements can be automatically created and inserted into the
 document at the current cursor position. Each list that is created in this
 way requires a list format to be specified:
 
-\quotefromfile snippets/textdocument-lists/mainwindow.cpp
-\skipto QTextListFormat listFormat;
-\printuntil cursor.insertList(listFormat);
+\snippet doc/src/snippets/textdocument-lists/mainwindow.cpp 0
 
 The above code first checks whether the cursor is within an existing list
 and, if so, gives the list format for the new list a suitable level of
@@ -585,9 +559,7 @@ Unlike many other elements, all of the image properties are specified by the
 image's format. This means that a QTextImageFormat object has to be
 created before an image can be inserted:
 
-\quotefromfile snippets/textdocument-images/main.cpp
-\skipto QTextImageFormat imageFormat;
-\printuntil cursor.insertImage(imageFormat);
+\snippet doc/src/snippets/textdocument-images/main.cpp 1
 
 The image name refers to an entry in the application's resource file.
 The method used to derive this name is described in
@@ -619,34 +591,24 @@ be reused in your own applications.
 A text editor widget can be constructed and used to display HTML in the
 following way:
 
-\code
-    QTextEdit *editor = new QTextEdit(parent);
-    editor->setHtml(aStringContainingHTMLtext);
-    editor->show();
-\endcode
+\snippet doc/src/snippets/code/doc.src.richtext.qdoc 2
 
 By default, the text editor contains a document with a root frame, inside
 which is an empty text block. This document can be obtained so that it can
 be modified directly by the application:
 
-\code
-    QTextDocument *document = editor->document();
-\endcode
+\snippet doc/src/snippets/code/doc.src.richtext.qdoc 3
 
 The text editor's cursor may also be used to edit a document:
 
-\code
-    QTextCursor cursor = editor->textCursor();
-\endcode
+\snippet doc/src/snippets/code/doc.src.richtext.qdoc 4
 
 Although a document can be edited using many cursors at once, a QTextEdit
 only displays a single cursor at a time. Therefore, if we want to update the
 editor to display a particular cursor or its selection, we need to set the
 editor's cursor after we have modified the document:
 
-\code
-    editor->setTextCursor(cursor);
-\endcode
+\snippet doc/src/snippets/code/doc.src.richtext.qdoc 5
 
 \section1 Selecting Text
 
@@ -659,9 +621,7 @@ When we select the text, we leave the selection anchor at the old cursor
 position just as the user might do by holding down the Shift key when
 selecting text:
 
-\quotefromfile snippets/textdocument-selections/mainwindow.cpp
-\skipto cursor.movePosition(QTextCursor::StartOfWord);
-\printuntil cursor.movePosition(QTextCursor::EndOfWord
+\snippet doc/src/snippets/textdocument-selections/mainwindow.cpp 1
 
 In the above code, a whole word is selected using this method. QTextCursor
 provides a number of common move operations for selecting individual
@@ -674,10 +634,8 @@ it easy to find and modify text in the style of a text editor. The following
 code finds all the instances of a particular word in a document, and changes
 the color of each:
 
-\quotefromfile snippets/textdocument-find/main.cpp
-\skipto QTextCursor newCursor(document);
-\printuntil }
-\printuntil }
+\snippet doc/src/snippets/textdocument-find/main.cpp 0
+\snippet doc/src/snippets/textdocument-find/main.cpp 1
 
 Note that the cursor does not have to be moved after each search and replace
 operation; it is always positioned at the end of the word that was just
@@ -694,10 +652,7 @@ QTextDocument provides a \l{QTextDocument::print()}{print()} function to
 allow documents to be printed using the QPrinter class. The following code
 shows how to prepare a document in a QTextEdit for printing with a QPrinter:
 
-\quotefromfile snippets/textdocument-printing/mainwindow.cpp
-\skipto MainWindow::printFile()
-\skipto QTextDocument
-\printuntil document->print
+\snippet doc/src/snippets/textdocument-printing/mainwindow.cpp 0
 
 The document is obtained from the text editor, and a QPrinter is constructed
 then configured using a QPrintDialog. If the user accepts the printer's
@@ -742,18 +697,7 @@ following issues:
 We give an example of the latter technique in the list. We assume that
 the text edit is visible.
 
-\code
-    textEdit.show();
-
-    textCursor.beginEditBlock();
-
-    for (int i = 0; i < 1000; ++i) {
-        textCursor.insertBlock();
-        textCursor.insertText(paragraphText.at(i));
-    }
-
-    textCursor.endEditBlock(); 
-\endcode
+\snippet doc/src/snippets/code/doc.src.richtext.qdoc 6
 
 \omit
 Ideas for other sections:
@@ -880,9 +824,7 @@ Ideas for other sections:
                QTextDocument::toHtml(), the encoding is stored using
                a \c meta tag, for example:
 
-    \code
-        <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" />
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.richtext.qdoc 7
 
     \row    \o \c li
             \o List item
@@ -1060,6 +1002,21 @@ Ideas for other sections:
     \row    \o \c margin-right
             \o <length>px
             \o Right paragraph margin in pixels
+    \row    \o \c padding-top
+            \o <length>px
+            \o Top table cell padding in pixels
+    \row    \o \c padding-bottom
+            \o <length>px
+            \o Bottom table cell padding in pixels
+    \row    \o \c padding-left
+            \o <length>px
+            \o Left table cell padding in pixels
+    \row    \o \c padding-right
+            \o <length>px
+            \o Right table cell padding in pixels
+    \row    \o \c padding
+            \o <length>px
+            \o Shorthand for setting all the padding properties at once.
     \row    \o \c vertical-align
             \o baseline | sub | super | middle | top | bottom
             \o Vertical text alignment. For vertical alignment in text table cells only middle, top, and bottom apply.

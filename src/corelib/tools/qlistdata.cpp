@@ -45,6 +45,8 @@
 #include "qtools_p.h"
 #include <string.h>
 
+QT_BEGIN_NAMESPACE
+
 /*
     QList as an array-list combines the easy-of-use of a random
     access interface with fast list operations and the low memory
@@ -56,7 +58,7 @@
     the number of elements in the list.
 */
 
-QListData::Data QListData::shared_null = { Q_ATOMIC_INIT(1), 0, 0, 0, true, { 0 } };
+QListData::Data QListData::shared_null = { Q_BASIC_ATOMIC_INITIALIZER(1), 0, 0, 0, true, { 0 } };
 
 static int grow(int size)
 {
@@ -76,12 +78,12 @@ QListData::Data *QListData::detach()
 
     ::memcpy(x, d, DataHeaderSize + d->alloc * sizeof(void *));
     x->alloc = d->alloc;
-    x->ref.init(1);
+    x->ref = 1;
     x->sharable = true;
     if (!x->alloc)
         x->begin = x->end = 0;
 
-    x = qAtomicSetPtr(&d, x);
+    qSwap(d, x);
     if (!x->ref.deref())
         return x;
     return 0;
@@ -90,18 +92,19 @@ QListData::Data *QListData::detach()
 // Returns the old (shared) data, it is up to the caller to deref() and free()
 QListData::Data *QListData::detach2()
 {
-    Data *x = static_cast<Data *>(qMalloc(DataHeaderSize + d->alloc * sizeof(void *)));
-    if (!x)
+    Data *x = d;
+    d = static_cast<Data *>(qMalloc(DataHeaderSize + x->alloc * sizeof(void *)));
+    if (!d)
         qFatal("QList: Out of memory");
 
-    ::memcpy(x, d, DataHeaderSize + d->alloc * sizeof(void *));
-    x->alloc = d->alloc;
-    x->ref.init(1);
-    x->sharable = true;
-    if (!x->alloc)
-        x->begin = x->end = 0;
+    ::memcpy(d, x, DataHeaderSize + x->alloc * sizeof(void *));
+    d->alloc = x->alloc;
+    d->ref = 1;
+    d->sharable = true;
+    if (!d->alloc)
+        d->begin = d->end = 0;
 
-    return qAtomicSetPtr(&d, x);
+    return x;
 }
 
 void QListData::realloc(int alloc)
@@ -331,10 +334,7 @@ void **QListData::erase(void **xi)
     Here's an example of a QList that stores integers and
     a QList that stores QDate values:
 
-    \code
-        QList<int> integerList;
-        QList<QDate> dateList;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 0
 
     Qt includes a QStringList class that inherits QList\<QString\>
     and adds a few convenience functions, such as QStringList::join()
@@ -345,11 +345,7 @@ void **QListData::erase(void **xi)
     empty list. To insert items into the list, you can use
     operator<<():
 
-    \code
-        QList<QString> list;
-        list << "one" << "two" << "three";
-        // list: ["one", "two", "three"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 1
 
     QList provides these basic functions to add, move, and remove
     items: insert(), replace(), removeAt(), move(), and swap(). In
@@ -361,21 +357,13 @@ void **QListData::erase(void **xi)
     non-const lists, operator[]() returns a reference to the item and
     can be used on the left side of an assignment:
 
-    \code
-        if (list[0] == "Bob")
-            list[0] = "Robert";
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 2
 
     Because QList is implemented as an array of pointers, this
     operation is very fast (\l{constant time}). For read-only access,
     an alternative syntax is to use at():
 
-    \code
-        for (int i = 0; i < list.size(); ++i) {
-            if (list.at(i) == "Jane")
-                cout << "Found Jane at position " << i << endl;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 3
 
     at() can be faster than operator[](), because it never causes a
     \l{deep copy} to occur.
@@ -385,12 +373,7 @@ void **QListData::erase(void **xi)
     and takeLast(). Here's a loop that removes the items from a list
     one at a time and calls \c delete on them:
 
-    \code
-        QList<QWidget *> list;
-        ...
-        while (!list.isEmpty())
-            delete list.takeFirst();
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 4
 
     Inserting and removing items at either ends of the list is very
     fast (\l{constant time} in most cases), because QList
@@ -403,11 +386,7 @@ void **QListData::erase(void **xi)
     backward. Both return the index of a matching item if they find
     it; otherwise, they return -1. For example:
 
-    \code
-        int i = list.indexOf("Jane");
-        if (i != -1)
-            cout << "First occurrence of Jane is at position " << i << endl;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 5
 
     If you simply want to check whether a list contains a particular
     value, use contains(). If you want to find out how many times a
@@ -434,6 +413,21 @@ void **QListData::erase(void **xi)
     QList does \e not support inserting, prepending, appending or replacing
     with references to its own values. Doing so will cause your application to
     abort with an error message.
+
+    To make QList as efficient as possible, its member functions don't
+    validate their input before using it. Except for isEmpty(), member
+    functions always assume the list is \e not empty. Member functions
+    that take index values as parameters always assume their index
+    value parameters are in the valid range. This means QList member
+    functions can fail. If you define QT_NO_DEBUG when you compile,
+    failures will not be detected. If you \e don't define QT_NO_DEBUG,
+    failures will be detected using Q_ASSERT() or Q_ASSERT_X() with an
+    appropriate message.
+
+    To avoid failures when your list can be empty, call isEmpty()
+    before calling other member functions. If you must pass an index
+    value that might not be in the valid range, check that it is less
+    than the value returned by size() but \e not less than 0.
 
     \sa QListIterator, QMutableListIterator, QLinkedList, QVector
 */
@@ -545,10 +539,8 @@ void **QListData::erase(void **xi)
 
 /*! \fn const T &QList::at(int i) const
 
-    Returns the item at index position \a i in the list.
-
-    \a i must be a valid index position in the list (i.e., 0 <= \a
-    i < size()).
+    Returns the item at index position \a i in the list. \a i must be
+    a valid index position in the list (i.e., 0 <= \a i < size()).
 
     This function is very fast (\l{constant time}).
 
@@ -558,9 +550,8 @@ void **QListData::erase(void **xi)
 /*! \fn T &QList::operator[](int i)
 
     Returns the item at index position \a i as a modifiable reference.
-
-    \a i must be a valid index position in the list (i.e., 0 <= \a
-    i < size()).
+    \a i must be a valid index position in the list (i.e., 0 <= \a i <
+    size()).
 
     This function is very fast (\l{constant time}).
 
@@ -579,13 +570,7 @@ void **QListData::erase(void **xi)
     Inserts \a value at the end of the list.
 
     Example:
-    \code
-        QList<QString> list;
-        list.append("one");
-        list.append("two");
-        list.append("three");
-        // list: ["one", "two", "three"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 6
 
     This is the same as list.insert(size(), \a value).
 
@@ -602,13 +587,7 @@ void **QListData::erase(void **xi)
     Inserts \a value at the beginning of the list.
 
     Example:
-    \code
-        QList<QString> list;
-        list.prepend("one");
-        list.prepend("two");
-        list.prepend("three");
-        // list: ["three", "two", "one"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 7
 
     This is the same as list.insert(0, \a value).
 
@@ -626,12 +605,7 @@ void **QListData::erase(void **xi)
     value is appended to the list.
 
     Example:
-    \code
-        QList<QString> list;
-        list << "alpha" << "beta" << "delta";
-        list.insert(2, "gamma");
-        // list: ["alpha", "beta", "gamma", "delta"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 8
 
     \sa append(), prepend(), replace(), removeAt()
 */
@@ -649,10 +623,8 @@ void **QListData::erase(void **xi)
 
 /*! \fn void QList::replace(int i, const T &value)
 
-    Replaces the item at index position \a i with \a value.
-
-    \a i must be a valid index position in the list (i.e., 0 <= \a
-    i < size()).
+    Replaces the item at index position \a i with \a value. \a i must
+    be a valid index position in the list (i.e., 0 <= \a i < size()).
 
     \sa operator[](), removeAt()
 */
@@ -660,39 +632,45 @@ void **QListData::erase(void **xi)
 /*!
     \fn int QList::removeAll(const T &value)
 
-    Removes all occurrences of \a value in the list and returns the number of entries
-    removed.
+    Removes all occurrences of \a value in the list and returns the
+    number of entries removed.
 
     Example:
-    \code
-        QList<QString> list;
-        list << "sun" << "cloud" << "sun" << "rain";
-        list.removeAll("sun");
-        // list: ["cloud", "rain"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 9
 
     This function requires the value type to have an implementation of
     \c operator==().
 
-    \sa removeAt(), takeAt(), replace()
+    \sa removeOne(), removeAt(), takeAt(), replace()
+*/
+
+/*!
+    \fn bool QList::removeOne(const T &value)
+
+    Removes the first occurrence of \a value in the list and returns
+    true on success; otherwise returns false.
+
+    Example:
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 10
+
+    This function requires the value type to have an implementation of
+    \c operator==().
+
+    \sa removeAll(), removeAt(), takeAt(), replace()
 */
 
 /*! \fn void QList::removeAt(int i)
 
-    Removes the item at index position \a i.
+    Removes the item at index position \a i. \a i must be a valid
+    index position in the list (i.e., 0 <= \a i < size()).
 
-    \a i must be a valid index position in the list (i.e., 0 <= \a
-    i < size()).
-
-    \sa takeAt(), removeFirst(), removeLast()
+    \sa takeAt(), removeFirst(), removeLast(), removeOne()
 */
 
 /*! \fn T QList::takeAt(int i)
 
-    Removes the item at index position \a i and returns it.
-
-    \a i must be a valid index position in the list (i.e., 0 <= \a
-    i < size()).
+    Removes the item at index position \a i and returns it. \a i must
+    be a valid index position in the list (i.e., 0 <= \a i < size()).
 
     If you don't use the return value, removeAt() is more efficient.
 
@@ -701,9 +679,10 @@ void **QListData::erase(void **xi)
 
 /*! \fn T QList::takeFirst()
 
-    Removes the first item in the list and returns it.
-
-    This is the same as takeAt(0).
+    Removes the first item in the list and returns it. This is the
+    same as takeAt(0). This is the same as takeAt(size() - 1). This
+    function assumes the list is not empty. To avoid failure, call
+    isEmpty() before calling this function.
 
     This operation is very fast (\l{constant time}), because QList
     preallocates extra space on both sides of its internal buffer to
@@ -717,9 +696,10 @@ void **QListData::erase(void **xi)
 
 /*! \fn T QList::takeLast()
 
-    Removes the last item in the list and returns it.
-
-    This is the same as takeAt(size() - 1).
+    Removes the last item in the list and returns it. This is the
+    same as takeAt(size() - 1). This function assumes the list is
+    not empty. To avoid failure, call isEmpty() before calling this
+    function.
 
     This operation is very fast (\l{constant time}), because QList
     preallocates extra space on both sides of its internal buffer to
@@ -736,14 +716,12 @@ void **QListData::erase(void **xi)
     Moves the item at index position \a from to index position \a to.
 
     Example:
-    \code
-        QList<QString> list;
-        list << "A" << "B" << "C" << "D" << "E" << "F";
-        list.move(1, 4);
-        // list: ["A", "C", "D", "E", "B", "F"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 11
 
-    This is the same as insert(\a{to}, takeAt(\a{from})).
+    This is the same as insert(\a{to}, takeAt(\a{from})).This function
+    assumes that both \a from and \a to are at least 0 but less than
+    size(). To avoid failure, test that both \a from and \a to are at
+    least 0 and less than size().
 
     \sa swap(), insert(), takeAt()
 */
@@ -751,15 +729,12 @@ void **QListData::erase(void **xi)
 /*! \fn void QList::swap(int i, int j)
 
     Exchange the item at index position \a i with the item at index
-    position \a j.
+    position \a j. This function assumes that both \a i and \a j are
+    at least 0 but less than size(). To avoid failure, test that both
+    \a i and \a j are at least 0 and less than size().
 
     Example:
-    \code
-        QList<QString> list;
-        list << "A" << "B" << "C" << "D" << "E" << "F";
-        list.swap(1, 4);
-        // list: ["A", "E", "C", "D", "B", "F"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 12
 
     \sa move()
 */
@@ -771,14 +746,7 @@ void **QListData::erase(void **xi)
     -1 if no item matched.
 
     Example:
-    \code
-        QList<QString> list;
-        list << "A" << "B" << "C" << "B" << "A";
-        list.indexOf("B");          // returns 1
-        list.indexOf("B", 1);       // returns 1
-        list.indexOf("B", 2);       // returns 3
-        list.indexOf("X");          // returns -1
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 13
 
     This function requires the value type to have an implementation of
     \c operator==().
@@ -794,14 +762,7 @@ void **QListData::erase(void **xi)
     Returns -1 if no item matched.
 
     Example:
-    \code
-        QList<QString> list;
-        list << "A" << "B" << "C" << "B" << "A";
-        list.lastIndexOf("B");      // returns 3
-        list.lastIndexOf("B", 3);   // returns 3
-        list.lastIndexOf("B", 2);   // returns 1
-        list.lastIndexOf("X");      // returns -1
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 14
 
     This function requires the value type to have an implementation of
     \c operator==().
@@ -950,8 +911,9 @@ void **QListData::erase(void **xi)
 
 /*! \fn T& QList::first()
 
-    Returns a reference to the first item in the list. This function
-    assumes that the list isn't empty.
+    Returns a reference to the first item in the list. The list must
+    not be empty. If the list can be empty, call isEmpty() before
+    calling this function.
 
     \sa last(), isEmpty()
 */
@@ -963,8 +925,9 @@ void **QListData::erase(void **xi)
 
 /*! \fn T& QList::last()
 
-    Returns a reference to the last item in the list. This function
-    assumes that the list isn't empty.
+    Returns a reference to the last item in the list.  The list must
+    not be empty. If the list can be empty, call isEmpty() before
+    calling this function.
 
     \sa first(), isEmpty()
 */
@@ -976,18 +939,20 @@ void **QListData::erase(void **xi)
 
 /*! \fn void QList::removeFirst()
 
-    Removes the first item in the list.
-
-    This is the same as removeAt(0).
+    Removes the first item in the list. Calling this function is
+    equivalent to calling removeAt(0). The list must not be empty. If
+    the list can be empty, call isEmpty() before calling this
+    function.
 
     \sa removeAt(), takeFirst()
 */
 
 /*! \fn void QList::removeLast()
 
-    Removes the last item in the list.
-
-    This is the same as removeAt(size() - 1).
+    Removes the last item in the list. Calling this function is
+    equivalent to calling removeAt(size() - 1). The list must not be
+    empty. If the list can be empty, call isEmpty() before calling
+    this function.
 
     \sa removeAt(), takeLast()
 */
@@ -1015,19 +980,20 @@ void **QListData::erase(void **xi)
 /*! \fn void QList::push_back(const T &value)
 
     This function is provided for STL compatibility. It is equivalent
-    to append(\a value).
+    to \l{QList::append()}{append(\a value)}.
 */
 
 /*! \fn void QList::push_front(const T &value)
 
     This function is provided for STL compatibility. It is equivalent
-    to prepend(\a value).
+    to \l{QList::prepend()}{prepend(\a value)}.
 */
 
 /*! \fn T& QList::front()
 
     This function is provided for STL compatibility. It is equivalent
-    to first().
+    to first(). The list must not be empty. If the list can be empty,
+    call isEmpty() before calling this function.
 */
 
 /*! \fn const T& QList::front() const
@@ -1038,7 +1004,8 @@ void **QListData::erase(void **xi)
 /*! \fn T& QList::back()
 
     This function is provided for STL compatibility. It is equivalent
-    to last().
+    to last(). The list must not be empty. If the list can be empty,
+    call isEmpty() before calling this function.
 */
 
 /*! \fn const T& QList::back() const
@@ -1049,13 +1016,15 @@ void **QListData::erase(void **xi)
 /*! \fn void QList::pop_front()
 
     This function is provided for STL compatibility. It is equivalent
-    to removeFirst().
+    to removeFirst(). The list must not be empty. If the list can be
+    empty, call isEmpty() before calling this function.
 */
 
 /*! \fn void QList::pop_back()
 
     This function is provided for STL compatibility. It is equivalent
-    to removeLast().
+    to removeLast(). The list must not be empty. If the list can be
+    empty, call isEmpty() before calling this function.
 */
 
 /*! \fn bool QList::empty() const
@@ -1127,28 +1096,14 @@ void **QListData::erase(void **xi)
     start iterating. Here's a typical loop that prints all the items
     stored in a list:
 
-    \code
-        QList<QString> list;
-        list.append("January");
-        list.append("February");
-        ...
-        list.append("December");
-
-        QList<QString>::iterator i;
-        for (i = list.begin(); i != list.end(); ++i)
-            cout << *i << endl;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 15
 
     Let's see a few examples of things we can do with a
     QList::iterator that we cannot do with a QList::const_iterator.
     Here's an example that increments every value stored in a
     QList\<int\> by 2:
 
-    \code
-        QList<int>::iterator i;
-        for (i = list.begin(); i != list.end(); ++i)
-            *i += 2;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 16
 
     Most QList functions accept an integer index rather than an
     iterator. For that reason, iterators are rarely useful in
@@ -1158,11 +1113,7 @@ void **QListData::erase(void **xi)
     For example, here's how to delete all the widgets stored in a
     QList\<QWidget *\>:
 
-    \code
-        QList<QWidget *> list;
-        ...
-        qDeleteAll(list.begin(), list.end());
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 17
 
     Multiple iterators can be used on the same list. However, be
     aware that any non-const function call performed on the QList
@@ -1226,10 +1177,7 @@ void **QListData::erase(void **xi)
     You can change the value of an item by using operator*() on the
     left side of an assignment, for example:
 
-    \code
-        if (*it == "Hello")
-            *it = "Bonjour";
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 18
 
     \sa operator->()
 */
@@ -1403,17 +1351,7 @@ void **QListData::erase(void **xi)
     QList::insert() before you can start iterating. Here's a typical
     loop that prints all the items stored in a list:
 
-    \code
-        QList<QString> list;
-        list.append("January");
-        list.append("February");
-        ...
-        list.append("December");
-
-        QList<QString>::const_iterator i;
-        for (i = list.constBegin(); i != list.constEnd(); ++i)
-            cout << *i << endl;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 19
 
     Most QList functions accept an integer index rather than an
     iterator. For that reason, iterators are rarely useful in
@@ -1423,11 +1361,7 @@ void **QListData::erase(void **xi)
     For example, here's how to delete all the widgets stored in a
     QList\<QWidget *\>:
 
-    \code
-        QList<QWidget *> list;
-        ...
-        qDeleteAll(list.constBegin(), list.constEnd());
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 20
 
     Multiple iterators can be used on the same list. However, be
     aware that any non-const function call performed on the QList
@@ -1703,13 +1637,7 @@ void **QListData::erase(void **xi)
 
     Example:
 
-    \code
-        QVector<double> vect;
-        vect << "red" << "green" << "blue" << "black";
-
-        QList<double> list = QVector<T>::fromVector(vect);
-        // list: ["red", "green", "blue", "black"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 21
 
     \sa fromSet(), toVector(), QVector::toList()
 */
@@ -1720,13 +1648,7 @@ void **QListData::erase(void **xi)
 
     Example:
 
-    \code
-        QStringList list;
-        list << "Sven" << "Kim" << "Ola";
-
-        QVector<QString> vect = list.toVector();
-        // vect: ["Sven", "Kim", "Ola"]
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 22
 
     \sa toSet(), fromVector(), QVector::fromList()
 */
@@ -1738,13 +1660,7 @@ void **QListData::erase(void **xi)
 
     Example:
 
-    \code
-        QSet<double> set;
-        set << "red" << "green" << "blue" << ... << "black";
-
-        QList<double> list = QList<double>::fromSet(set);
-        qSort(list);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 23
 
     \sa fromVector(), toSet(), QSet::toList(), qSort()
 */
@@ -1757,15 +1673,7 @@ void **QListData::erase(void **xi)
 
     Example:
 
-    \code
-        QStringList list;
-        list << "Julia" << "Mike" << "Mike" << "Julia" << "Julia";
-
-        QSet<QString> set = list.toSet();
-        set.contains("Julia");  // returns true
-        set.contains("Mike");   // returns true
-        set.size();             // returns 2
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 24
 
     \sa toVector(), fromSet(), QSet::fromList()
 */
@@ -1777,14 +1685,7 @@ void **QListData::erase(void **xi)
 
     Example:
 
-    \code
-        std::list<double> stdlist;
-        list.push_back(1.2);
-        list.push_back(0.5);
-        list.push_back(3.14);
-
-        QList<double> list = QList<double>::fromStdList(stdlist);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 25
 
     \sa toStdList(), QVector::fromStdVector()
 */
@@ -1794,12 +1695,9 @@ void **QListData::erase(void **xi)
     Returns a std::list object with the data contained in this QList.
     Example:
 
-    \code
-        QList<double> list;
-        list << 1.2 << 0.5 << 3.14;
-
-        std::list<double> stdlist = list.toStdList();
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qlistdata.cpp 26
 
     \sa fromStdList(), QVector::toStdVector()
 */
+
+QT_END_NAMESPACE

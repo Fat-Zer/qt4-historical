@@ -50,7 +50,9 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
 QT_MODULE(Core)
+QT_END_NAMESPACE
 
 #ifndef QT_NO_SETTINGS
 
@@ -60,7 +62,9 @@ QT_MODULE(Core)
 
 #include <ctype.h>
 
-#ifdef Status // ### we seem to pick up a macro Status --> int somewhere
+QT_BEGIN_NAMESPACE
+
+#ifdef Status // we seem to pick up a macro Status --> int somewhere
 #undef Status
 #endif
 
@@ -168,7 +172,13 @@ public:
     bool fallbacksEnabled() const;
 
     QString fileName() const;
+    Format format() const;
+    Scope scope() const;
+    QString organizationName() const;
+    QString applicationName() const;
 
+    static void setDefaultFormat(Format format);
+    static Format defaultFormat();
     static void setSystemIniPath(const QString &dir); // ### remove in 5.0 (use setPath() instead)
     static void setUserIniPath(const QString &dir);   // ### remove in 5.0 (use setPath() instead)
     static void setPath(Format format, Scope scope, const QString &path);
@@ -247,16 +257,8 @@ public:
     inline QT3_SUPPORT void setPath(const QString &organization, const QString &application,
                                     Scope scope = Global)
     {
-#ifndef QT_NO_QOBJECT
-        QObject *parent = this->parent();
-        this->~QSettings();
-        new (this) QSettings(scope == Global ? QSettings::SystemScope : QSettings::UserScope,
-                             organization, application, parent);
-#else
-        this->~QSettings();
-        new (this) QSettings(scope == Global ? QSettings::SystemScope : QSettings::UserScope,
-                             organization, application);
-#endif
+        setPath_helper(scope == Global ? QSettings::SystemScope : QSettings::UserScope,
+                       organization, application);
     }
     inline QT3_SUPPORT void resetGroup()
     {
@@ -291,8 +293,14 @@ protected:
 #endif
 
 private:
+#ifdef QT3_SUPPORT
+    void setPath_helper(Scope scope, const QString &organization, const QString &application);
+#endif
+
     Q_DISABLE_COPY(QSettings)
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SETTINGS
 

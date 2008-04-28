@@ -59,13 +59,7 @@
     To display the movie in your application, you can pass your QMovie object
     to QLabel::setMovie(). Example:
 
-    \code
-        QLabel label;
-        QMovie *movie = new QMovie("animations/fire.gif");
-
-        label.setMovie(movie);
-        movie->start();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qmovie.cpp 0
 
     Whenever a new frame is available in the movie, QMovie will emit
     updated(). If the size of the frame changes, resized() is emitted. You can
@@ -194,6 +188,8 @@
 #include "private/qobject_p.h"
 
 #define QMOVIE_INVALID_DELAY -1
+
+QT_BEGIN_NAMESPACE
 
 class QFrameInfo
 {
@@ -933,10 +929,7 @@ void QMovie::setPaused(bool paused)
     The default speed is 100%.
     Example:
 
-    \code
-        QMovie movie("racecar.gif");
-        movie.setSpeed(200); // 2x speed
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qmovie.cpp 1
 */
 void QMovie::setSpeed(int percentSpeed)
 {
@@ -1075,5 +1068,8 @@ QMovie::CacheMode QMovie::cacheMode()
     return d->cacheMode;
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qmovie.cpp"
+
 #endif // QT_NO_MOVIE

@@ -48,7 +48,14 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
+
+#if defined(QT_NO_LIBRARY) && defined(Q_OS_WIN)
+#undef QT_NO_LIBRARY
+#pragma message("QT_NO_LIBRARY is not supported on Windows")
+#endif
 
 #ifndef QT_NO_LIBRARY
 
@@ -71,11 +78,13 @@ public:
     explicit QLibrary(QObject *parent = 0);
     explicit QLibrary(const QString& fileName, QObject *parent = 0);
     explicit QLibrary(const QString& fileName, int verNum, QObject *parent = 0);
+    explicit QLibrary(const QString& fileName, const QString &version, QObject *parent = 0);
     ~QLibrary();
 
     void *resolve(const char *symbol);
     static void *resolve(const QString &fileName, const char *symbol);
     static void *resolve(const QString &fileName, int verNum, const char *symbol);
+    static void *resolve(const QString &fileName, const QString &version, const char *symbol);
 
     bool load();
     bool unload();
@@ -87,6 +96,7 @@ public:
     QString fileName() const;
 
     void setFileNameAndVersion(const QString &fileName, int verNum);
+    void setFileNameAndVersion(const QString &fileName, const QString &version);
     QString errorString() const;
 
     void setLoadHints(LoadHints hints);
@@ -104,6 +114,8 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLibrary::LoadHints)
 
 #endif //QT_NO_LIBRARY
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

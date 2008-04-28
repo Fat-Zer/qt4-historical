@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*! 
     \class QListIterator
     \inmodule QtCore
@@ -23,13 +66,7 @@
     the list (before the first item). Here's how to iterate over all
     the elements sequentially:
 
-    \code
-        QList<float> list;
-        ...
-        QListIterator<float> i(list);
-        while (i.hasNext())
-	    qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 0
 
     The next() function returns the next item in the list and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -44,12 +81,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QListIterator<float> i(list);
-        i.toBack();
-        while (i.hasPrevious())
-	    qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 1
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop.
@@ -82,13 +114,7 @@
     beginning of the list (before the first item). Here's how to
     iterate over all the elements sequentially:
 
-    \code
-        QLinkedList<float> list;
-        ...
-        QLinkedListIterator<float> i(list);
-        while (i.hasNext())
-	    qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 2
 
     The next() function returns the next item in the list and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -103,12 +129,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QLinkedListIterator<float> i(list);
-        i.toBack();
-        while (i.hasPrevious())
-	    qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 3
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop.
@@ -145,13 +166,7 @@
     of the vector (before the first item). Here's how to iterate over
     all the elements sequentially:
 
-    \code
-        QVector<float> vector;
-        ...
-        QVectorIterator<float> i(vector);
-        while (i.hasNext())
-	    qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 4
 
     The next() function returns the next item in the vector and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -166,12 +181,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QVectorIterator<float> i(vector);
-        i.toBack();
-        while (i.hasPrevious())
-	    qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 5
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop.
@@ -203,13 +213,7 @@
     the first item). Here's how to iterate over all the elements
     sequentially:
 
-    \code
-        QSet<QString> set;
-        ...
-        QSetIterator<QString> i(set);
-        while (i.hasNext())
-            qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 6
 
     The next() function returns the next item in the set and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -224,12 +228,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QSetIterator<QString> i(set);
-        i.toBack();
-        while (i.hasPrevious())
-            qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 7
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop.
@@ -268,13 +267,7 @@
     of the list (before the first item). Here's how to iterate over
     all the elements sequentially:
 
-    \code
-        QList<float> list;
-        ...
-        QMutableListIterator<float> i(list);
-        while (i.hasNext())
-	    qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 8
 
     The next() function returns the next item in the list and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -289,12 +282,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QMutableListIterator<float> i(list);
-        i.toBack();
-        while (i.hasPrevious())
-	    qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 9
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop.
@@ -305,17 +293,7 @@
     insert().
 
     Example:
-    \code
-        QMutableListIterator<int> i(list);
-        while (i.hasNext()) {
-            int val = i.next();
-            if (val < 0) {
-                i.setValue(-val);
-            } else if (val == 0) {
-                i.remove();
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 10
 
     The example traverses a list, replacing negative numbers with
     their absolute values, and eliminating zeroes.
@@ -350,13 +328,7 @@
     beginning of the list (before the first item). Here's how to
     iterate over all the elements sequentially:
 
-    \code
-        QLinkedList<float> list;
-        ...
-        QMutableLinkedListIterator<float> i(list);
-        while (i.hasNext())
-	    qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 11
 
     The next() function returns the next item in the list and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -371,12 +343,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QMutableLinkedListIterator<float> i(list);
-        i.toBack();
-        while (i.hasPrevious())
-	    qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 12
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop.
@@ -387,17 +354,7 @@
     insert().
 
     Example:
-    \code
-        QMutableLinkedListIterator<int> i(list);
-        while (i.hasNext()) {
-            int val = i.next();
-            if (val < 0) {
-                i.setValue(-val);
-            } else if (val == 0) {
-                i.remove();
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 13
 
     The example traverses a list, replacing negative numbers with
     their absolute values, and eliminating zeroes.
@@ -437,13 +394,7 @@
     beginning of the list (before the first item). Here's how to
     iterate over all the elements sequentially:
 
-    \code
-        QVector<float> vector;
-        ...
-        QMutableVectorIterator<float> i(vector);
-        while (i.hasNext())
-	    qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 14
 
     The next() function returns the next item in the vector and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -458,12 +409,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QMutableVectorIterator<float> i(vector);
-        i.toBack();
-        while (i.hasPrevious())
-	    qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 15
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop.
@@ -474,17 +420,7 @@
     insert().
 
     Example:
-    \code
-        QMutableVectorIterator<int> i(vector);
-        while (i.hasNext()) {
-            int val = i.next();
-            if (val < 0) {
-                i.setValue(-val);
-            } else if (val == 0) {
-                i.remove();
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 16
 
     The example traverses a vector, replacing negative numbers with
     their absolute values, and eliminating zeroes.
@@ -520,13 +456,7 @@
     of the set (before the first item). Here's how to iterate over
     all the elements sequentially:
 
-    \code
-        QSet<float> set;
-        ...
-        QMutableSetIterator<float> i(set);
-        while (i.hasNext())
-	    qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 17
 
     The next() function returns the next item in the set and
     advances the iterator. Unlike STL-style iterators, Java-style
@@ -541,12 +471,7 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QMutableSetIterator<float> i(set);
-        i.toBack();
-        while (i.hasPrevious())
-	    qDebug() << i.previous();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 18
 
     If you want to remove items as you iterate over the set, use
     remove().
@@ -846,14 +771,7 @@
     traversal functions (next(), previous(), findNext(), findPrevious()).
 
     Example:
-    \code
-	QMutableListIterator<int> i(list);
-        while (i.hasNext()) {
-	    int val = i.next();
-            if (val < -32768 || val > 32767)
-		i.remove();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 19
 
     \sa insert(), setValue()
 */
@@ -864,14 +782,7 @@
     traversal functions (next(), previous(), findNext(), findPrevious()).
 
     Example:
-    \code
-	QMutableLinkedListIterator<int> i(list);
-        while (i.hasNext()) {
-	    int val = i.next();
-            if (val < -32768 || val > 32767)
-		i.remove();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 20
 
     \sa insert(), setValue()
 */
@@ -882,14 +793,7 @@
     traversal functions (next(), previous(), findNext(), findPrevious()).
 
     Example:
-    \code
-	QMutableVectorIterator<int> i(vector);
-        while (i.hasNext()) {
-	    int val = i.next();
-            if (val < -32768 || val > 32767)
-		i.remove();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 21
 
     \sa insert(), setValue()
 */
@@ -900,14 +804,7 @@
     traversal functions (next(), previous(), findNext(), findPrevious()).
 
     Example:
-    \code
-	QMutableSetIterator<int> i(set);
-        while (i.hasNext()) {
-	    int val = i.next();
-            if (val < -32768 || val > 32767)
-		i.remove();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 22
 
     \sa value()
 */
@@ -921,13 +818,7 @@
     findPrevious().
 
     Example:
-    \code
-	QMutableListIterator<double> i(list);
-        while (i.hasNext()) {
-	    double val = i.next();
-            i.setValue(sqrt(val));
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 23
 
     \sa value(), remove(), insert()
 */
@@ -941,13 +832,7 @@
     findPrevious().
 
     Example:
-    \code
-	QMutableLinkedListIterator<double> i(list);
-        while (i.hasNext()) {
-	    double val = i.next();
-            i.setValue(sqrt(val));
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 24
 
     \sa value(), remove(), insert()
 */
@@ -961,13 +846,7 @@
     findPrevious().
 
     Example:
-    \code
-	QMutableVectorIterator<double> i(list);
-        while (i.hasNext()) {
-	    double val = i.next();
-            i.setValue(sqrt(val));
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 25
 
     \sa value(), remove(), insert()
 */
@@ -1026,15 +905,7 @@
     the map (before the first item). Here's how to iterate over all
     the elements sequentially:
 
-    \code
-        QMap<int, QWidget *> map;
-        ...
-        QMapIterator<QString, QWidget *> i(map);
-        while (i.hasNext()) {
-	    i.next();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 26
 
     The next() function returns the next item in the map and
     advances the iterator. The key() and value() functions return the
@@ -1051,25 +922,12 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QMapIterator<int, QWidget *> i(map);
-        i.toBack();
-        while (i.hasPrevious()) {
-	    i.previous();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 27
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop. For example:
 
-    \code
-        QMapIterator<int, QWidget *> i(map);
-        while (i.findNext(widget)) {
-	    qDebug() << "Found widget " << widget << " under key "
-		     << i.key();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 28
 
     Multiple iterators can be used on the same map. If the map is
     modified while a QMapIterator is active, the QMapIterator will
@@ -1099,15 +957,7 @@
     the hash (before the first item). Here's how to iterate over all
     the elements sequentially:
 
-    \code
-        QHash<int, QWidget *> hash;
-        ...
-        QHashIterator<int, QWidget *> i(hash);
-        while (i.hasNext()) {
-	    i.next();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 29
 
     The next() function returns the next item in the hash and
     advances the iterator. The key() and value() functions return the
@@ -1124,25 +974,12 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QHashIterator<int, QWidget *> i(hash);
-        i.toBack();
-        while (i.hasPrevious()) {
-	    i.previous();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 30
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop. For example:
 
-    \code
-        QHashIterator<int, QWidget *> i(hash);
-        while (i.findNext(widget)) {
-	    qDebug() << "Found widget " << widget << " under key "
-		     << i.key();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 31
 
     Multiple iterators can be used on the same hash. If the hash is
     modified while a QHashIterator is active, the QHashIterator will
@@ -1173,15 +1010,7 @@
     of the map (before the first item). Here's how to iterate over
     all the elements sequentially:
 
-    \code
-        QMap<int, QWidget *> map;
-        ...
-        QMutableMapIterator<int, QWidget *> i(map);
-        while (i.hasNext()) {
-	    i.next();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 32
 
     The next() function returns the next item in the map and
     advances the iterator. The key() and value() functions return the
@@ -1198,25 +1027,12 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QMutableMapIterator<int, QWidget *> i(map);
-        i.toBack();
-        while (i.hasPrevious()) {
-	    i.previous();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 33
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop. For example:
 
-    \code
-        QMutableMapIterator<int, QWidget *> i(map);
-        while (i.findNext(widget)) {
-	    qDebug() << "Found widget " << widget << " under key "
-		     << i.key();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 34
 
     If you want to remove items as you iterate over the map, use
     remove(). If you want to modify the value of an item, use
@@ -1224,14 +1040,7 @@
 
     Example:
 
-    \code
-        QMutableMapIterator<QString, QString> i(map);
-        while (i.hasNext()) {
-            i.next();
-            if (i.key() == i.value())
-                i.remove();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 35
 
     The example removes all (key, value) pairs where the key and the
     value are the same.
@@ -1266,15 +1075,7 @@
     of the hash (before the first item). Here's how to iterate over
     all the elements sequentially:
 
-    \code
-        QHash<int, QWidget *> hash;
-        ...
-        QMutableHashIterator<QString, QWidget *> i(hash);
-        while (i.hasNext()) {
-	    i.next();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 36
 
     The next() function returns the next item in the hash and
     advances the iterator. The key() and value() functions return the
@@ -1291,25 +1092,12 @@
 
     Here's how to iterate over the elements in reverse order:
 
-    \code
-        QMutableHashIterator<int, QWidget *> i(hash);
-        i.toBack();
-        while (i.hasPrevious()) {
-	    i.previous();
-	    qDebug() << i.key() << ": " << i.value();
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 37
 
     If you want to find all occurrences of a particular value, use
     findNext() or findPrevious() in a loop. For example:
 
-    \code
-        QMutableHashIterator<int, QWidget *> i(hash);
-        while (i.findNext(widget)) {
-	    qDebug() << "Found widget " << widget << " under key "
-		     << i.key();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 38
 
     If you want to remove items as you iterate over the hash, use
     remove(). If you want to modify the value of an item, use
@@ -1317,14 +1105,7 @@
 
     Example:
 
-    \code
-        QMutableHashIterator<QString, QString> i(hash);
-        while (i.hasNext()) {
-            i.next();
-            if (i.key() == i.value())
-         i.remove();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qiterator.qdoc 39
 
     The example removes all (key, value) pairs where the key and the
     value are the same.

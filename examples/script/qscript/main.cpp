@@ -47,8 +47,11 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QStringList>
+#include <QtGui/QApplication>
 
 #include <stdlib.h>
+
+#include "bytearrayclass.h"
 
 static bool wantsToQuit;
 
@@ -59,10 +62,10 @@ static QScriptValue qtscript_quit(QScriptContext *ctx, QScriptEngine *eng)
     return eng->undefinedValue();
 }
 
-static void interactive(QScriptEngine &eng)
+static void interactive(QScriptEngine *eng)
 {
-    QScriptValue global = eng.globalObject();
-    QScriptValue quitFunction = eng.newFunction(qtscript_quit);
+    QScriptValue global = eng->globalObject();
+    QScriptValue quitFunction = eng->newFunction(qtscript_quit);
     if (!global.property(QLatin1String("exit")).isValid())
         global.setProperty(QLatin1String("exit"), quitFunction);
     if (!global.property(QLatin1String("quit")).isValid())
@@ -93,11 +96,11 @@ static void interactive(QScriptEngine &eng)
         if (line.trimmed().isEmpty()) {
             continue;
 
-        } else if (! eng.canEvaluate(code)) {
+        } else if (! eng->canEvaluate(code)) {
             prompt = dot_prompt;
 
         } else {
-            QScriptValue result = eng.evaluate(code, QLatin1String("typein"));
+            QScriptValue result = eng->evaluate(code, QLatin1String("typein"));
 
             code.clear();
             prompt = qscript_prompt;
@@ -111,9 +114,36 @@ static void interactive(QScriptEngine &eng)
     }
 }
 
-int main(int, char *argv[])
+static QScriptValue importExtension(QScriptContext *context, QScriptEngine *engine)
 {
-    QScriptEngine eng;
+    return engine->importExtension(context->argument(0).toString());
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication *app;
+    if (argc >= 2 && !qstrcmp(argv[1], "-tty")) {
+        ++argv;
+       --argc;
+        app = new QApplication(argc, argv, QApplication::Tty);
+    } else {
+        app = new QApplication(argc, argv);
+    }
+
+    QScriptEngine *eng = new QScriptEngine();
+
+    QScriptValue globalObject = eng->globalObject();
+
+    {
+        if (!globalObject.property("qt").isObject())
+            globalObject.setProperty("qt", eng->newObject());            
+        QScriptValue qscript = eng->newObject();
+        qscript.setProperty("importExtension", eng->newFunction(importExtension));
+        globalObject.property("qt").setProperty("script", qscript);
+    }
+
+    ByteArrayClass *byteArrayClass = new ByteArrayClass(eng);
+    globalObject.setProperty("ByteArray", byteArrayClass->constructor());
 
     if (! *++argv) {
         interactive(eng);
@@ -129,6 +159,7 @@ int main(int, char *argv[])
         }
 
         QString contents;
+        int lineNumber = 1;
 
         if (fn == QLatin1String("-")) {
             QTextStream stream(stdin, QFile::ReadOnly);
@@ -142,20 +173,29 @@ int main(int, char *argv[])
                 QTextStream stream(&file);
                 contents = stream.readAll();
                 file.close();
+
+                // strip off #!/usr/bin/env qscript line
+                if (contents.startsWith("#!")) {
+                    contents.remove(0, contents.indexOf("\n"));
+                    ++lineNumber;
+                }
             }
         }
 
         if (contents.isEmpty())
             continue;
 
-        QScriptValue r = eng.evaluate(contents, fn);
-        if (eng.hasUncaughtException()) {
-            QStringList backtrace = eng.uncaughtExceptionBacktrace();
+        QScriptValue r = eng->evaluate(contents, fn, lineNumber);
+        if (eng->hasUncaughtException()) {
+            QStringList backtrace = eng->uncaughtExceptionBacktrace();
             fprintf (stderr, "    %s\n%s\n\n", qPrintable(r.toString()),
                      qPrintable(backtrace.join("\n")));
             return EXIT_FAILURE;
         }
     }
+
+    delete eng;
+    delete app;
 
     return EXIT_SUCCESS;
 }

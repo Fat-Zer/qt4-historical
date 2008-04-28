@@ -55,6 +55,8 @@
 
 #include "qapplication.h"
 
+QT_BEGIN_NAMESPACE
+
 //#define Q3URLOPERATOR_DEBUG
 
 class Q3UrlOperatorPrivate
@@ -123,11 +125,7 @@ public:
 
     A Q3UrlOperator can be used like this, for example to download a
     file (and assuming that the FTP protocol is registered):
-    \code
-    Q3UrlOperator *op = new Q3UrlOperator();
-    op->copy( QString("ftp://ftp.trolltech.com/qt/source/qt-2.1.0.tar.gz"),
-	     "file:///tmp" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 0
 
     If you want to be notified about success/failure, progress, etc.,
     you can connect to Q3UrlOperator's signals, e.g. to start(),
@@ -739,28 +737,18 @@ bool Q3UrlOperator::isDir( bool *ok )
 
     For example, to get a web page you might do something like this:
 
-    \code
-    Q3UrlOperator op( "http://www.whatever.org/cgi-bin/search.pl?cmd=Hello" );
-    op.get();
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 1
 
     For most other operations, the path of the Q3UrlOperator must point
     to a directory. If you want to download a file you could do the
     following:
 
-    \code
-    Q3UrlOperator op( "ftp://ftp.whatever.org/pub" );
-    // do some other stuff like op.listChildren() or op.mkdir( "new_dir" )
-    op.get( "a_file.txt" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 2
 
     This will get the data of ftp://ftp.whatever.org/pub/a_file.txt.
 
     \e Never do anything like this:
-    \code
-    Q3UrlOperator op( "http://www.whatever.org/cgi-bin" );
-    op.get( "search.pl?cmd=Hello" ); // WRONG!
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 3
 
     If \a location is not empty and relative it must not contain any
     queries or references, just the name of a child. So if you need to
@@ -808,20 +796,13 @@ const Q3NetworkOperation *Q3UrlOperator::get( const QString &location )
 
     For putting some data to a file you can do the following:
 
-    \code
-    Q3UrlOperator op( "ftp://ftp.whatever.com/home/me/filename.dat" );
-    op.put( data );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 4
 
     For most other operations, the path of the Q3UrlOperator must point
     to a directory. If you want to upload data to a file you could do
     the following:
 
-    \code
-    Q3UrlOperator op( "ftp://ftp.whatever.com/home/me" );
-    // do some other stuff like op.listChildren() or op.mkdir( "new_dir" )
-    op.put( data, "filename.dat" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 5
 
     This will upload the data to ftp://ftp.whatever.com/home/me/filename.dat.
 
@@ -1226,5 +1207,8 @@ void Q3UrlOperator::slotItemChanged( Q3NetworkOperation *op )
     }
 }
 
+QT_END_NAMESPACE
+
 #include "moc_q3urloperator.cpp"
+
 #endif // QT_NO_NETWORKPROTOCOL

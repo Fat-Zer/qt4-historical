@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example itemviews/simpledommodel
     \title Simple DOM Model Example
@@ -26,26 +69,7 @@
     snippet reads the contents of a file into a QDomDocument object and traverses the
     document, reading all the plain text that can be found:
 
-    \code
-    // file is an open QFile object.
-    QDomDocument document;
-    if (document.setContent(&file)) {
-
-        QDomElement documentElement = document.documentElement();
-        QString text;
-        QDomNode node = documentElement.firstChild();
-
-        while (!node.isNull()) {
-            if (node.isText())
-                text += node.nodeValue();
-            else if (node.hasChildNodes()) {
-                // Examine the node's children and read any text found.
-                ...
-            }
-            node = node.nextSibling();
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.simpledommodel.qdoc 0
 
     In principle, the functions provided by QDomNode can be used to navigate from any
     given starting point in a document to the piece of data requested by another component.
@@ -61,9 +85,7 @@
 
     Let us begin by examining the \c DomModel class:
 
-    \quotefromfile itemviews/simpledommodel/dommodel.h
-    \skipto class DomModel
-    \printuntil /^\};/
+    \snippet examples/itemviews/simpledommodel/dommodel.h 0
 
     The class definition contains all the basic functions that are needed for a
     read-only model. Only the constructor and \c document() function are specific to
@@ -76,9 +98,7 @@
     The \c DomItem class is used to hold information about a specific QDomNode in
     the document:
 
-    \quotefromfile itemviews/simpledommodel/domitem.h
-    \skipto class DomItem
-    \printuntil /^\};/
+    \snippet examples/itemviews/simpledommodel/domitem.h 0
 
     Each \c DomItem provides a wrapper for a QDomNode obtained from the underlying
     document which contains a reference to the node, it's location in the parent node's
@@ -101,25 +121,18 @@
 
     The constructor simply records details of the QDomNode that needs to be wrapped:
 
-    \quotefromfile itemviews/simpledommodel/domitem.cpp
-    \skipto DomItem::DomItem
-    \printuntil domNode
-    \skipto rowNumber
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/domitem.cpp 0
+    \snippet examples/itemviews/simpledommodel/domitem.cpp 1
 
     As a result, functions to provide the parent wrapper, the row number occupied by
     the item in its parent's list of children, and the underlying QDomNode for each item
     are straightforward to write:
 
-    \skipto DomItem::parent
-    \printuntil /^\}/
-
-    \skipto DomItem::row
-    \printuntil /^\}/
-
-    \quotefromfile itemviews/simpledommodel/domitem.cpp
-    \skipto DomItem::node
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/domitem.cpp 4
+    \codeline
+    \snippet examples/itemviews/simpledommodel/domitem.cpp 6
+    \codeline
+    \snippet examples/itemviews/simpledommodel/domitem.cpp 3
 
     It is necessary to maintain a collection of items which can be consistently identified
     by the model. For that reason, we maintain a hash of child wrapper items that, to
@@ -128,8 +141,7 @@
     of the item's QDomNode, relating the row number of each child to the newly-constructed
     wrapper:
 
-    \skipto DomItem::child
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/domitem.cpp 5
 
     If a QDomNode was previously wrapped, the cached wrapper is returned; otherwise, a
     new wrapper is constructed and stored for valid children, and zero is returned for
@@ -137,9 +149,7 @@
 
     The class's destructor deletes all the child items of the wrapper:
 
-    \quotefromfile itemviews/simpledommodel/domitem.cpp
-    \skipto DomItem::~DomItem
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/domitem.cpp 2
 
     These, in turn, will delete their children and free any QDomNode objects in use.
 
@@ -151,9 +161,7 @@
 
     The constructor accepts an existing document and a parent object for the model:
 
-    \quotefromfile itemviews/simpledommodel/dommodel.cpp
-    \skipto DomModel::DomModel
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 0
 
     A shallow copy of the document is stored for future reference, and a root item is
     created to provide a wrapper around the document. We assign the root item a row
@@ -162,8 +170,7 @@
     Since the model only contains information about the root item, the destructor only
     needs to delete this one item:
 
-    \skipto DomModel::~DomModel
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 1
 
     All of the child items in the tree will be deleted by the \c DomItem destructor as
     their parent items are deleted.
@@ -176,8 +183,7 @@
     The number of columns exposed by the model is returned by the \c columnCount()
     function:
 
-    \skipto DomModel::columnCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 2
 
     This value is fixed, and does not depend on the location or type of the underlying
     node in the document. We will use these three columns to display different kinds of
@@ -186,14 +192,12 @@
     Since we only implement a read-only model, the \c flags() function is straightforward
     to write:
 
-    \skipto DomModel::flags
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 5
 
     Since the model is intended for use in a tree view, the \c headerData() function only
     provides a horizontal header:
 
-    \skipto DomModel::headerData
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 6
 
     The model presents the names of nodes in the first column, element attributes in the
     second, and any node values in the third.
@@ -203,8 +207,7 @@
     The index() function creates a model index for the item with the given row, column,
     and parent in the model:
 
-    \skipto DomModel::index
-    \printuntil static_cast
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 7
 
     The function first has to relate the parent index to an item that contains a node
     from the underlying document. If the parent index is invalid, it refers to the root
@@ -214,8 +217,7 @@
     will have been created by this function, and we store pointers to item objects in
     any new indexes that we create with QAbstractItemModel::createIndex():
 
-    \skipto DomItem *childItem
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 8
 
     A child item for the given row is provided by the parent item's \c child() function.
     If a suitable child item was found then we call
@@ -231,8 +233,7 @@
     function, and is the number of child nodes contained by the node that corresponds to
     the specified model index:
 
-    \skipto DomModel::rowCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 10
 
     To obtain the relevant node in the underlying document, we access the item via the
     internal pointer stored in the model index. If an invalid index is supplied, the
@@ -243,9 +244,7 @@
     provide an implementation for the \c parent() function. This returns a model index
     that corresponds to the parent of a child model index supplied as its argument:
 
-    \quotefromfile itemviews/simpledommodel/dommodel.cpp
-    \skipto DomModel::parent
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 9
 
     For valid indexes other than the index corresponding to the root item, we obtain
     a pointer to the relevant item using the method described in the \c index() function,
@@ -260,15 +259,13 @@
     the \l{Qt::DisplayRole}{display role}, returning an invalid variant for all other
     requests:
 
-    \quotefromfile itemviews/simpledommodel/dommodel.cpp
-    \skipto DomModel::data
-    \printuntil item->node()
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 3
 
     As before, we obtain an item pointer for the index supplied, and use it to obtain
     the underlying document node. Depending on the column specified, the data we return
     is obtained in different ways:
 
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 4
 
     For the first column, we return the node's name. For the second column, we read any
     attributes that the node may have, and return a string that contains a space-separated

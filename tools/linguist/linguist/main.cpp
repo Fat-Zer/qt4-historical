@@ -54,6 +54,8 @@
 #include <QLocale>
 #include <QFile>
 
+QT_USE_NAMESPACE
+
 int main(int argc, char **argv)
 {
     Q_INIT_RESOURCE(linguist);
@@ -95,7 +97,7 @@ int main(int argc, char **argv)
 
     QWidget tmp;
     tmp.restoreGeometry(config.value(keybase + QLatin1String("Geometry/WindowGeometry")).toByteArray());
-    
+
     QSplashScreen *splash = 0;
     int screenId = QApplication::desktop()->screenNumber(tmp.geometry().center());
     splash = new QSplashScreen(QApplication::desktop()->screen(screenId),

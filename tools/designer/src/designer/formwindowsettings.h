@@ -46,6 +46,8 @@
 
 #include "ui_formwindowsettings.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
@@ -56,7 +58,7 @@ class FormWindowSettings: public QDialog
 {
     Q_OBJECT
 public:
-    FormWindowSettings(QDesignerFormWindowInterface *formWindow);
+    explicit FormWindowSettings(QDesignerFormWindowInterface *formWindow);
 
     virtual void accept();
 
@@ -65,5 +67,6 @@ private:
     qdesigner_internal::FormWindowBase *m_formWindow;
 };
 
-#endif // FORMWINDOWSETTINGS_H
+QT_END_NAMESPACE
 
+#endif // FORMWINDOWSETTINGS_H

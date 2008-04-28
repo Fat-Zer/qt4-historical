@@ -46,6 +46,7 @@
 
 #include <QSqlQueryModel>
 
+//! [0]
 class CustomSqlModel : public QSqlQueryModel
 {
     Q_OBJECT
@@ -55,5 +56,6 @@ public:
 
     QVariant data(const QModelIndex &item, int role) const;
 };
+//! [0]
 
 #endif

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QSize
@@ -171,14 +173,14 @@ inline const QSize operator*(qreal c, const QSize &s)
 
 inline QSize &QSize::operator/=(qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     wd = qRound(wd/c); ht = qRound(ht/c);
     return *this;
 }
 
 inline const QSize operator/(const QSize &s, qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     return QSize(qRound(s.wd/c), qRound(s.ht/c));
 }
 
@@ -327,14 +329,14 @@ inline const QSizeF operator*(qreal c, const QSizeF &s)
 
 inline QSizeF &QSizeF::operator/=(qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     wd = wd/c; ht = ht/c;
     return *this;
 }
 
 inline const QSizeF operator/(const QSizeF &s, qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     return QSizeF(s.wd/c, s.ht/c);
 }
 
@@ -356,6 +358,8 @@ inline QSize QSizeF::toSize() const
 #ifndef QT_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QSizeF &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

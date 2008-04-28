@@ -57,18 +57,7 @@
     argument. After construction, the iterator is located before the first
     directory entry. Here's how to iterate over all the entries sequentially:
 
-    \code
-        QDirIterator it("/etc", QDirIterator::Subdirectories);
-        while (it.hasNext()) {
-            qDebug() << it.next();
-
-            // /etc/.
-            // /etc/..
-            // /etc/X11
-            // /etc/X11/fs
-            // ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdiriterator.cpp 0
 
     The next() function returns the path to the next directory entry and
     advances the iterator. You can also call filePath() to get the current
@@ -110,6 +99,8 @@
 #include <QtCore/qstack.h>
 #include <QtCore/qvariant.h>
 
+QT_BEGIN_NAMESPACE
+
 class QDirIteratorPrivate
 {
 public:
@@ -120,6 +111,7 @@ public:
     void pushSubDirectory(const QString &path, const QStringList &nameFilters,
                           QDir::Filters filters);
     void advance();
+    bool shouldFollowDirectory(const QFileInfo &);
     bool matchesFilters(const QAbstractFileEngineIterator *it) const;
 
     QSet<QString> visitedLinks;
@@ -215,69 +207,74 @@ void QDirIteratorPrivate::advance()
         pushSubDirectory(subDir, it->nameFilters(), it->filters());
     }
 
-    if (fileEngineIterators.isEmpty())
-        done = true;
-
-    bool foundValidEntry = false;
     while (!fileEngineIterators.isEmpty()) {
         QAbstractFileEngineIterator *it = fileEngineIterators.top();
 
         // Find the next valid iterator that matches the filters.
-        foundValidEntry = false;
+        bool foundDirectory = false;
         while (it->hasNext()) {
             it->next();
             if (matchesFilters(it)) {
-                foundValidEntry = true;
+                fileInfo = it->currentFileInfo();
+                // Signal that we want to follow this entry.
+                followNextDir = shouldFollowDirectory(fileInfo);
+                
+                //We found a matching entry.
+                return;
+
+            } else if (iteratorFlags & QDirIterator::Subdirectories) {
+                QFileInfo fileInfo = it->currentFileInfo();
+                if (!shouldFollowDirectory(fileInfo))
+                    continue;
+                QString subDir = it->currentFilePath();
+#ifdef Q_OS_WIN
+                if (fileInfo.isSymLink())
+                    subDir = fileInfo.canonicalFilePath();
+#endif
+                pushSubDirectory(subDir, it->nameFilters(), it->filters());
+                
+                foundDirectory = true;
                 break;
             }
         }
+        if (!foundDirectory)
+            delete fileEngineIterators.pop();
+    }
+    done = true;
+}
 
-        if (!foundValidEntry) {
-            // If this iterator is done, pop and delete it, and continue
-            // iteration on the parent. Otherwise break, we're done.
-            if (!fileEngineIterators.isEmpty()) {
-                delete it;
-                it = fileEngineIterators.pop();
-                continue;
-            }
-            break;
-        }
+/*!
+    \internal
+ */
+bool QDirIteratorPrivate::shouldFollowDirectory(const QFileInfo &fileInfo)
+{
+    // If we're doing flat iteration, we're done.
+    if (!(iteratorFlags & QDirIterator::Subdirectories))
+        return false;
+    
+    // Never follow non-directory entries
+    if (!fileInfo.isDir())
+        return false;
 
-        fileInfo = it->currentFileInfo();
 
-        // If we're doing flat iteration, we're done.
-        if (!(iteratorFlags & QDirIterator::Subdirectories))
-            break;
+    // Never follow . and ..
+    if (fileInfo.fileName() == QLatin1String(".") || fileInfo.fileName() == QLatin1String(".."))
+        return false;
 
-        // Subdirectory iteration.
-        QString filePath = fileInfo.filePath();
-
-        // Never follow . and ..
-        if (fileInfo.fileName() == QLatin1String(".") || fileInfo.fileName() == QLatin1String(".."))
-            break;
-
-        // Never follow non-directory entries
-        if (!fileInfo.isDir())
-            break;
       
-        // Check symlinks
-        if (fileInfo.isSymLink() && !(iteratorFlags & QDirIterator::FollowSymlinks)) {
-            // Follow symlinks only if FollowSymlinks was passed
-            break;
-        }
-
-        // Stop link loops
-        if (visitedLinks.contains(fileInfo.canonicalFilePath()))
-            break;
-
-        // Signal that we want to follow this entry.
-        followNextDir = true;
-        break;
+    // Check symlinks
+    if (fileInfo.isSymLink() && !(iteratorFlags & QDirIterator::FollowSymlinks)) {
+        // Follow symlinks only if FollowSymlinks was passed
+        return false;
     }
 
-    if (!foundValidEntry)
-        done = true;
+    // Stop link loops
+    if (visitedLinks.contains(fileInfo.canonicalFilePath()))
+        return false;
+    
+    return true;
 }
+    
 
 /*!
     \internal
@@ -488,8 +485,6 @@ bool QDirIterator::hasNext() const
     if (d->first) {
         d->first = false;
         d->advance();
-        if (!d->fileEngineIterators.isEmpty())
-            d->currentFilePath = d->fileEngineIterators.top()->currentFilePath();
     }
     return !d->done;
 }
@@ -544,3 +539,5 @@ QString QDirIterator::path() const
 {
     return d->path;
 }
+
+QT_END_NAMESPACE

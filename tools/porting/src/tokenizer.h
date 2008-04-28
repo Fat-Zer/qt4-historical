@@ -49,6 +49,8 @@
 #include <QVector>
 #include <QByteArray>
 
+QT_BEGIN_NAMESPACE
+
 class Tokenizer
 {
 public:
@@ -82,5 +84,7 @@ private:
 
     QVector<TokenEngine::Token> m_tokens;
 };
+
+QT_END_NAMESPACE
 
 #endif

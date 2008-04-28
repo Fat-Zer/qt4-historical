@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \title Moving from QSA to Qt Script
     \page porting-qsa.html
@@ -37,11 +80,7 @@
     can have named properties. For instance to create an point object with
     the properties x and y one would write the following Qt Script code:
 
-    \code
-    point = new Object();
-    point.x = 12;
-    point.y = 35;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 0
 
     The object \c point in this case is constructed as a plain object and
     we assign two properties, \c x and \c y, to it with the values 12 and
@@ -50,41 +89,22 @@
     global namespace of the script engine. Similarly, global functions are
     named properties of the global object; for example:
 
-    \code
-    function manhattanLength(point) {  
-        return point.x + point.y;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 1
 
     An equivalent construction that illustrates that the function is a
     property of the global object is the following assignment:
 
-    \code
-    manhattanLength = function(point) {
-       return point.x + point.y;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 2
 
     Since functions are objects, they can be assigned to objects as
     properties, becoming member functions:
 
-    \code
-    point.manhattanLength = function() {
-        return this.x + this.y;
-    }
-    print(point.manhattanLength()); // prints 47
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 3
 
     In the code above, we see the first subtle difference between
     QSA and Qt Script. In QSA one would write the point class like this:
 
-    \code
-    class Point() {
-        var x;
-        var y;
-        function manhattanLength() { return x + y; }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 4
 
     where in the \c manhattanLength() function we access \c x and \c y
     directly because, when the function is called, the \c this object is
@@ -95,12 +115,7 @@
     All the code above runs with QSA except the assignment of a function
     to \c{point.manhattanLength}, which we repeat here for clarity:
     
-    \code
-    point.manhattanLength = function() {
-        return this.x + this.y;
-    }
-    print(point.manhattanLength()); // prints 47
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 5
 
     This is because, in QSA, the value of \c this is decided based on
     the location of the declaration of the function it is used in. In the
@@ -118,24 +133,11 @@
     assigning properties to them. In QSA, the proper way to solve this
     is to implement a constructor in the class:
 
-    \code
-    class Car {
-        var regNumber;
-        function Car(regnr) {
-            regNumber = regnr;
-        }
-    }
-    var car = new Car("ABC 123");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 6
 
     The equivalent in Qt Script is to create a constructor function:
 
-    \code
-    function Car(regnr) {
-        this.regNumber = regnr;
-    }
-    var car = new Car("ABC 123");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 7
 
     As we can see, the constructor is just a normal function. What is
     special with is how we call it, namely prefixed with the \c new
@@ -143,11 +145,7 @@
     function with the newly created object as the \c this pointer.
     So, in a sense, it is equivalent to:
 
-    \code
-    var car = new Object();
-    car.constructor = function(regnr) { ... }
-    car.constructor();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 8
 
     This is similar to the manhattenLength() example above. Again, the
     main difference between QSA and Qt Script is that one has to
@@ -163,26 +161,11 @@
     and use the \c this object inside the functions. So, if we add a
     \c toString function to the \c Car class
 
-    \code
-    class Car {
-        var regNumber;
-        function Car(regnr) {
-            regNumber = regnr;
-        }
-        function toString() {
-            return regNumber;
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 9
 
     one could write this in Qt Script as:
 
-    \code
-    function Car(regnr) {
-        this.regNumber = regnr;
-        this.toString = function() { return this.regNumber; }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 10
 
     In QSA, the member functions were part of the class declaration,
     and were therefore shared between all instances of a given class.
@@ -206,12 +189,7 @@
     To make the \c toString() function part of the prototype, we write
     code like this:
 
-    \code
-    function Car(regnr) {
-        this.regNumber = regnr;
-    }
-    Car.prototype.toString = function() { return this.regNumber; }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 11
 
     Here, we made the \c toString() function part of the prototype so
     that, when we call \c{car.toString()} it will be resolved via the
@@ -226,31 +204,14 @@
     in Qt Script, let's see how we can use prototypes to create
     polymorphism. In QSA you would write
 
-    \code
-    class GasolineCar extends Car {
-        function GasolineCar(regnr) {
-            Car(regnr);
-        }
-        function toString() {
-            return "GasolineCar(" + regNumber + ")";
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 12
 
     With Qt Script, we acheive the same effect by creating a prototype
     chain. The default prototype of an object is a plain \c Object
     without any special members, but it is possible to replace this
     object with another prototype object.
 
-    \code
-    function GasolineCar(regnr) {
-        Car(regnr); 
-    }
-    GasolineCar.prototype = new Car();
-    GasolineCar.prototype.toString = function() { 
-        return "GasolineCar(" + this.regNumber + ")"; 
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 13
 
     In the code above, we have a constructor, \c{GasolineCar}, which
     calls the "base class" implementation of the constructor to
@@ -272,21 +233,13 @@
     the class itself. For example, the following variable is accessed
     through the \c Car class:
 
-    \code
-    class Car {
-        static var globalCount = 0;
-    }     
-    print(Car.globalCount);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 14
 
     The equivalent in Qt Script is to assign variables that should appear
     as static members as properties of the constructor function. For
     example:
 
-    \code
-    Car.globalCount = 0;
-    print(Car.globalCount);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 15
 
     Note that in QSA, static member variables were also accessible in
     instances of the given class. In Qt Script, with the approach
@@ -437,11 +390,7 @@
     the interpreter using their object names as the names of the
     variables.
 
-    \code
-    QPushButton *button = new QPushButton();
-    button->setObjectName("button");
-    interpreter->addTransientObject(button);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 16
 
     The code above adds the button to the global namespace under the name
     "button". One obvious limitation here is that there is potential for
@@ -449,11 +398,7 @@
     provides a more flexible way of adding QObjects to the scripting
     environment.
 
-    \code
-    QPushButton *button = new QPushButton();
-    QScriptValue scriptButton = engine.newQObject(button);
-    engine.globalObject().setProperty("button", scriptButton);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 17
 
     In the code above we create a QPushButton and wrap it in a script
     value using the function, QScriptEngine::newQObject(). This gives us
@@ -475,45 +420,14 @@
     Below is listed some code from the filter example in the QSA
     package.
 
-    \code
-    ModuleFactory::ModuleFactory()
-    {
-        registerClass( "ImageSource", &ImgSource::staticMetaObject);
-        ...
-    }
-
-    QObject *ModuleFactory::create( const QString &type,
-        			    const QVariantList &,
-        			    QObject * )
-    {
-        if ( type == "ImageSource" )
-            return new ImgSource();
-        ...
-    }
-
-    ...
-
-    interpreter.addObjectFactory(new ModuleFactory());
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 18
 
     The equivalent in Qt Script is written in much the same way as
     constructors are written in scripts. We register a callback C++
     function under the name "ImageSource" in the global namespace and
     return the QObject from this function:
 
-    \code
-    QScriptValue construct_QPushButton(QScriptContext *, QScriptEngine *engine) {
-        return engine->newQObject(new QPushButton());
-    }
-
-    ...
-
-    QScriptValue constructor = engine.newFunction(construct_QPushButton);
-    QScriptValue value =
-        engine.newQMetaObject(&QPushButton::staticMetaObject,
-                              constructor);
-    engine.globalObject().setProperty("QPushButton", value);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.porting-qsa.qdoc 19
 
     In the Qt Script case we use the same approach that we use to expose
     a QObject, namely via QScriptEngine::newQObject(). This function also

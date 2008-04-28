@@ -46,11 +46,14 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QLabel;
 class QMenu;
+QT_END_NAMESPACE
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -60,7 +63,9 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
+//! [0]
 
+//! [1]
 private slots:
     void newFile();
     void open();
@@ -81,11 +86,15 @@ private slots:
     void setParagraphSpacing();
     void about();
     void aboutQt();
+//! [1]
 
+//! [2]
 private:
     void createActions();
     void createMenus();
+//! [2]
 
+//! [3]
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *formatMenu;
@@ -113,5 +122,6 @@ private:
     QAction *aboutQtAct;
     QLabel *infoLabel;
 };
+//! [3]
 
 #endif

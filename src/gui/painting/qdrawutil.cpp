@@ -48,6 +48,8 @@
 #include "qpainter.h"
 #include "qpalette.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \fn void qDrawShadeLine(QPainter *painter, int x1, int y1, int x2, int y2,
                      const QPalette &palette, bool sunken,
@@ -76,10 +78,7 @@
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded line:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::HLine | QFrame::Sunken);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 0
 
     \sa qDrawShadeRect(), qDrawShadePanel(), QStyle
 */
@@ -192,10 +191,7 @@ void qDrawShadeLine(QPainter *p, int x1, int y1, int x2, int y2,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded rectangle:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::Box | QFrame::Raised);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 1
 
     \sa qDrawShadeLine(), qDrawShadePanel(), qDrawPlainRect(), QStyle
 */
@@ -296,10 +292,7 @@ void qDrawShadeRect(QPainter *p, int x, int y, int w, int h,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded panel:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle( QFrame::Panel | QFrame::Sunken);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 2
 
     \sa qDrawWinPanel(), qDrawShadeLine(), qDrawShadeRect(), QStyle
 */
@@ -470,10 +463,7 @@ void qDrawWinButton(QPainter *p, int x, int y, int w, int h,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded panel:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::WinPanel | QFrame::Raised);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 3
 
     \sa qDrawShadePanel(), qDrawWinButton(), QStyle
 */
@@ -509,10 +499,7 @@ void qDrawWinPanel(QPainter *p, int x, int y, int w, int h,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a plain rectangle:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::Box | QFrame::Plain);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 4
 
     \sa qDrawShadeRect(), QStyle
 */
@@ -571,10 +558,7 @@ void qDrawPlainRect(QPainter *p, int x, int y, int w, int h, const QColor &c,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded line:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::HLine | QFrame::Sunken);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 5
 
     \sa qDrawShadeRect(), qDrawShadePanel(), QStyle
 */
@@ -613,10 +597,7 @@ void qDrawShadeLine(QPainter *p, const QPoint &p1, const QPoint &p2,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded rectangle:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::Box | QFrame::Raised);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 6
 
     \sa qDrawShadeLine(), qDrawShadePanel(), qDrawPlainRect(), QStyle
 */
@@ -653,10 +634,7 @@ void qDrawShadeRect(QPainter *p, const QRect &r,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded panel:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle( QFrame::Panel | QFrame::Sunken);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 7
 
     \sa qDrawWinPanel(), qDrawShadeLine(), qDrawShadeRect(), QStyle
 */
@@ -717,10 +695,7 @@ void qDrawWinButton(QPainter *p, const QRect &r,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a shaded panel:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::WinPanel | QFrame::Raised);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 8
 
     \sa qDrawShadePanel(), qDrawWinButton(), QStyle
 */
@@ -747,10 +722,7 @@ void qDrawWinPanel(QPainter *p, const QRect &r,
     Alternatively you can use a QFrame widget and apply the
     QFrame::setFrameStyle() function to display a plain rectangle:
 
-    \code
-        QFrame frame:
-        frame.setFrameStyle(QFrame::Box | QFrame::Plain);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qdrawutil.cpp 9
 
     \sa qDrawShadeRect(), QStyle
 */
@@ -1065,5 +1037,7 @@ void qDrawItem(QPainter *p, Qt::GUIStyle gs,
         p->drawText(x, y, w, h, flags, text.left(len));
     }
 }
+
 #endif
 
+QT_END_NAMESPACE

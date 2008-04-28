@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_TREEVIEW
 
+QT_BEGIN_NAMESPACE
+
 struct QTreeViewItem
 {
     QTreeViewItem() : expanded(false), spanning(false), total(0), level(0), height(0) {}
@@ -80,6 +82,7 @@ public:
           header(0), indent(20), lastViewedItem(0), defaultItemHeight(-1),
           uniformRowHeights(false), rootDecoration(true),
           itemsExpandable(true), sortingEnabled(false),
+          expandsOnDoubleClick(true),
           allColumnsShowFocus(false),
           animationsEnabled(false), columnResizeTimerID(0),
           autoExpandDelay(-1), hoverBranch(-1), geometryRecursionBlock(false) {}
@@ -147,13 +150,16 @@ public:
 
     int itemDecorationAt(const QPoint &pos) const;
 
-    void select(int start, int stop, QItemSelectionModel::SelectionFlags command);
+    QList<QPair<int, int> > columnRanges(const QModelIndex &topIndex, const QModelIndex &bottomIndex) const;
+    void select(const QModelIndex &start, const QModelIndex &stop, QItemSelectionModel::SelectionFlags command);
 
     QPair<int,int> startAndEndColumns(const QRect &rect) const;
 
     void updateChildCount(const int parentItem, const int delta);
     void rowsRemoved(const QModelIndex &parent,
                      int start, int end, bool before);
+
+    void paintAlternatingRowColors(QPainter *painter, QStyleOptionViewItemV4 *option, int y, int bottom) const;
 
     QHeaderView *header;
     int indent;
@@ -165,6 +171,7 @@ public:
     bool rootDecoration;
     bool itemsExpandable;
     bool sortingEnabled;
+    bool expandsOnDoubleClick;
     bool allColumnsShowFocus;
 
     // used for drawing
@@ -173,13 +180,35 @@ public:
     mutable bool spanning;
 
     // used when expanding and collapsing items
-    QVector<QPersistentModelIndex> expandedIndexes;
+    QList<QPersistentModelIndex> expandedIndexes;
     QStack<bool> expandParent;
     AnimatedOperation animatedOperation;
     bool animationsEnabled;
 
+    inline bool storeExpanded(const QModelIndex &idx) {
+        QList<QPersistentModelIndex>::iterator it;
+        it = qLowerBound(expandedIndexes.begin(), expandedIndexes.end(), idx);
+        if (it == expandedIndexes.end() || *it != idx) {
+            expandedIndexes.insert(it, idx);
+            return true;
+        }
+        return false;
+    }
+
+    inline bool isIndexExpanded(const QModelIndex idx) const {
+        QList<QPersistentModelIndex>::const_iterator it;
+        it = qBinaryFind(expandedIndexes.constBegin(), expandedIndexes.constEnd(), idx);
+        return (it != expandedIndexes.constEnd());
+    }
+
     // used when hiding and showing items
     QVector<QPersistentModelIndex> hiddenIndexes;
+
+    inline bool isRowHidden(const QModelIndex idx) const {
+        QVector<QPersistentModelIndex>::const_iterator it;
+        it = qBinaryFind(hiddenIndexes.constBegin(), hiddenIndexes.constEnd(), idx);
+        return (it != hiddenIndexes.constEnd());
+    }
 
     // used for spanning rows
     QVector<QPersistentModelIndex> spanningIndexes;
@@ -198,6 +227,8 @@ public:
     // used for blocking recursion when calling setViewportMargins from updateGeometries
     bool geometryRecursionBlock;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TREEVIEW
 

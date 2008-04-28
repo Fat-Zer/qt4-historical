@@ -49,11 +49,11 @@ Guide::Guide(Guide *follows)
 {
     this->scaleX = 1.0;
     this->scaleY = 1.0;
-    
+
     if (follows){
         while (follows->nextGuide != follows->firstGuide) // append to end
             follows = follows->nextGuide;
-        
+
         follows->nextGuide = this;
         this->prevGuide = follows;
         this->firstGuide = follows->firstGuide;
@@ -72,7 +72,7 @@ void Guide::setScale(float scaleX, float scaleY, bool all)
 {
     this->scaleX = scaleX;
     this->scaleY = scaleY;
-    
+
     if (all){
         Guide *next = this->nextGuide;
         while(next != this){
@@ -86,7 +86,7 @@ void Guide::setScale(float scaleX, float scaleY, bool all)
 void Guide::setFence(const QRectF &fence, bool all)
 {
     this->fence = fence;
-    
+
     if (all){
         Guide *next = this->nextGuide;
         while(next != this){
@@ -114,14 +114,14 @@ float Guide::lengthAll()
 }
 
 void Guide::move(DemoItem *item, QPointF &dest, float moveSpeed)
-{    
-    QLineF walkLine(item->getGuidedPos(), dest);  
+{
+    QLineF walkLine(item->getGuidedPos(), dest);
     if (moveSpeed >= 0 && walkLine.length() > moveSpeed){
         // The item is too far away from it's destination point.
         // So we choose to move it towards it instead.
         float dx = walkLine.dx();
         float dy = walkLine.dy();
-        
+
         if (qAbs(dx) > qAbs(dy)){
             // walk along x-axis
             if (dx != 0){
@@ -141,6 +141,6 @@ void Guide::move(DemoItem *item, QPointF &dest, float moveSpeed)
             }
         }
     }
-  
+
     item->setGuidedPos(dest);
 }

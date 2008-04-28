@@ -50,7 +50,9 @@
 #include <QPoint>
 #include <QStringList>
 
+QT_BEGIN_NAMESPACE
 class QMimeData;
+QT_END_NAMESPACE
 
 class PiecesModel : public QAbstractListModel
 {

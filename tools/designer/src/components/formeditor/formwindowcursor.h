@@ -50,13 +50,15 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 class QT_FORMEDITOR_EXPORT FormWindowCursor: public QObject, public QDesignerFormWindowCursorInterface
 {
     Q_OBJECT
 public:
-    FormWindowCursor(FormWindow *fw, QObject *parent = 0);
+    explicit FormWindowCursor(FormWindow *fw, QObject *parent = 0);
     virtual ~FormWindowCursor();
 
     virtual QDesignerFormWindowInterface *formWindow() const;
@@ -87,5 +89,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // FORMWINDOWCURSOR_H

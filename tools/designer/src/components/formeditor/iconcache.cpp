@@ -42,10 +42,11 @@
 ****************************************************************************/
 
 #include "iconcache.h"
+#include <QtGui/QPixmap>
+#include <QtGui/QIcon>
+#include <QtCore/QDebug>
 
-#include <resourcefile_p.h>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
@@ -55,47 +56,68 @@ IconCache::IconCache(QObject *parent)
 }
 
 QIcon IconCache::nameToIcon(const QString &path, const QString &resourcePath)
-{ return m_icon_cache.keyToItem(path, resourcePath); }
+{
+    Q_UNUSED(path)
+    Q_UNUSED(resourcePath)
+    qWarning() << "IconCache::nameToIcon(): IconCache is obsoleted";
+    return QIcon();
+}
 
 QString IconCache::iconToFilePath(const QIcon &pm) const
-{ return m_icon_cache.itemToFilePath(pm); }
+{
+    Q_UNUSED(pm)
+    qWarning() << "IconCache::iconToFilePath(): IconCache is obsoleted";
+    return QString();
+}
 
 QString IconCache::iconToQrcPath(const QIcon &pm) const
-{ return m_icon_cache.itemToQrcPath(pm); }
+{
+    Q_UNUSED(pm)
+    qWarning() << "IconCache::iconToQrcPath(): IconCache is obsoleted";
+    return QString();
+}
 
 QPixmap IconCache::nameToPixmap(const QString &path, const QString &resourcePath)
-{ return m_pixmap_cache.keyToItem(path, resourcePath); }
+{
+    Q_UNUSED(path)
+    Q_UNUSED(resourcePath)
+    qWarning() << "IconCache::nameToPixmap(): IconCache is obsoleted";
+    return QPixmap();
+}
 
 QString IconCache::pixmapToFilePath(const QPixmap &pm) const
-{ return m_pixmap_cache.itemToFilePath(pm); }
+{
+    Q_UNUSED(pm)
+    qWarning() << "IconCache::pixmapToFilePath(): IconCache is obsoleted";
+    return QString();
+}
 
 QString IconCache::pixmapToQrcPath(const QPixmap &pm) const
-{ return m_pixmap_cache.itemToQrcPath(pm); }
+{
+    Q_UNUSED(pm)
+    qWarning() << "IconCache::pixmapToQrcPath(): IconCache is obsoleted";
+    return QString();
+}
 
 QList<QPixmap> IconCache::pixmapList() const
-{ return m_pixmap_cache.itemList(); }
+{
+    qWarning() << "IconCache::pixmapList(): IconCache is obsoleted";
+    return QList<QPixmap>();
+}
 
 QList<QIcon> IconCache::iconList() const
-{ return m_icon_cache.itemList(); }
+{
+    qWarning() << "IconCache::iconList(): IconCache is obsoleted";
+    return QList<QIcon>();
+}
 
 QString IconCache::resolveQrcPath(const QString &filePath, const QString &qrcPath, const QString &wd) const
 {
-    QString workingDirectory = wd;
-    if (workingDirectory.isEmpty()) {
-        workingDirectory = QDir::currentPath();
-    }
-
-    QString icon_path = filePath;
-    QString qrc_path = qrcPath;
-
-    if (!qrc_path.isEmpty()) {
-        qrc_path = QFileInfo(QDir(workingDirectory), qrcPath).absoluteFilePath();
-        ResourceFile rf(qrc_path);
-        if (rf.load())
-            return rf.resolvePath(filePath);
-    } else {
-        return QFileInfo(QDir(workingDirectory), filePath).absoluteFilePath();
-    }
-
+    Q_UNUSED(filePath)
+    Q_UNUSED(qrcPath)
+    Q_UNUSED(wd)
+    qWarning() << "IconCache::resolveQrcPath(): IconCache is obsoleted";
     return QString();
 }
+
+QT_END_NAMESPACE

@@ -45,6 +45,7 @@
 #include "mainwindow.h"
 #include "textedit.h"
 
+//! [0]
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), completer(0)
 {
@@ -62,7 +63,9 @@ MainWindow::MainWindow(QWidget *parent)
     resize(500, 300);
     setWindowTitle(tr("Completer"));
 }
+//! [0]
 
+//! [1]
 void MainWindow::createMenu()
 {
     QAction *exitAction = new QAction(tr("Exit"), this);
@@ -80,14 +83,18 @@ void MainWindow::createMenu()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 }
+//! [1]
 
+//! [2]
 QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
 {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
         return new QStringListModel(completer);
 
+#ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+#endif
     QStringList words;
     
     while (!file.atEnd()) {
@@ -96,13 +103,18 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
             words << line.trimmed();
     }
 
+#ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
+#endif
     return new QStringListModel(words, completer);
 }
+//! [2]
 
+//! [3]
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About"), tr("This example demonstrates the "
         "different features of the QCompleter class."));
 }
+//! [3]
 

@@ -47,12 +47,14 @@
 #include <QDialog>
 #include <QQueue>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QDialogButtonBox;
 class QGridLayout;
 class QGroupBox;
 class QLabel;
 class QPushButton;
+QT_END_NAMESPACE
 
 class Dialog : public QDialog
 {

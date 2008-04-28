@@ -47,6 +47,7 @@
 #include "metadatabase_p.h"
 #include "widgetdatabase_p.h"
 #include "qdesigner_command_p.h"
+#include "signalslotdialog_p.h"
 
 #include <QtDesigner/QDesignerFormWindowInterface>
 #include <QtDesigner/QDesignerFormWindowCursorInterface>
@@ -60,11 +61,18 @@
 #include <QtCore/QSignalMapper>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 static QAction *separatorAction(QObject *parent)
 {
     QAction *rc = new  QAction(parent);
     rc->setSeparator(true);
     return rc;
+}
+
+static inline QDesignerLanguageExtension *languageExtension(QDesignerFormEditorInterface *core)
+{
+    return qt_extension<QDesignerLanguageExtension*>(core->extensionManager(), core);
 }
 
 namespace qdesigner_internal {
@@ -76,11 +84,13 @@ PromotionTaskMenu::PromotionTaskMenu(QWidget *widget,Mode mode, QObject *parent)
     m_promotionMapper(0),
     m_globalEditAction(new QAction(tr("Promoted widgets..."), this)),
     m_EditPromoteToAction(new QAction(tr("Promote to ..."), this)),
+    m_EditSignalsSlotsAction(new QAction(tr("Change signals/slots..."), this)),
     m_promoteLabel(tr("Promote to")),
     m_demoteLabel(tr("Demote to %1"))
 {
     connect(m_globalEditAction, SIGNAL(triggered()), this, SLOT(slotEditPromotedWidgets()));
     connect(m_EditPromoteToAction, SIGNAL(triggered()), this, SLOT(slotEditPromoteTo()));
+    connect(m_EditSignalsSlotsAction, SIGNAL(triggered()), this, SLOT(slotEditSignalsSlots()));
 }
 
 void PromotionTaskMenu::setWidget(QWidget *widget)
@@ -180,6 +190,14 @@ void PromotionTaskMenu::addActions(QDesignerFormWindowInterface *fw, unsigned fl
     case  CanPromote:
         actionList += m_EditPromoteToAction;
         break;
+    case CanDemote:
+        if (!(flags & SuppressGlobalEdit))
+            actionList += m_globalEditAction;
+        if (!languageExtension(fw->core())) {
+            actionList += separatorAction(this);
+            actionList += m_EditSignalsSlotsAction;
+        }
+        break;
     default:
         if (!(flags & SuppressGlobalEdit))
             actionList += m_globalEditAction;
@@ -243,7 +261,7 @@ void PromotionTaskMenu::slotEditPromoteTo()
     // Show over promotable widget
     QString promoteToClassName;
     QDialog *promotionEditor = 0;
-    if (QDesignerLanguageExtension *lang = qt_extension<QDesignerLanguageExtension*>(core->extensionManager(), core))
+    if (QDesignerLanguageExtension *lang = languageExtension(core))
         promotionEditor = lang->createPromotionDialog(core, base_class_name, &promoteToClassName, fw);
     if (!promotionEditor)
         promotionEditor = new QDesignerPromotionDialog(core, fw, base_class_name, &promoteToClassName);
@@ -302,7 +320,7 @@ QDesignerFormWindowInterface *PromotionTaskMenu::formWindow() const
 }
 
 void PromotionTaskMenu::editPromotedWidgets(QDesignerFormEditorInterface *core, QWidget* parent) {
-    QDesignerLanguageExtension *lang = qt_extension<QDesignerLanguageExtension*>(core->extensionManager(), core);
+    QDesignerLanguageExtension *lang = languageExtension(core);
     // Show over non-promotable widget
     QDialog *promotionEditor =  0;
     if (lang)
@@ -312,4 +330,14 @@ void PromotionTaskMenu::editPromotedWidgets(QDesignerFormEditorInterface *core, 
     promotionEditor->exec();
     delete promotionEditor;
 }
+
+void PromotionTaskMenu::slotEditSignalsSlots()
+{
+    QDesignerFormWindowInterface *fw = formWindow();
+    if (!fw)
+        return;
+    SignalSlotDialog::editPromotedClass(fw->core(), m_widget, fw);
+}
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

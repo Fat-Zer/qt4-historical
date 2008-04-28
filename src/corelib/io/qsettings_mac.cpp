@@ -48,6 +48,8 @@
 #include "qvarlengtharray.h"
 #include "private/qcore_mac_p.h"
 
+QT_BEGIN_NAMESPACE
+
 static const CFStringRef hostNames[2] = { kCFPreferencesCurrentHost, kCFPreferencesAnyHost };
 static const int numHostNames = 2;
 
@@ -64,7 +66,7 @@ enum RotateShift { Macify = 1, Qtify = 2 };
 static QString rotateSlashesDotsAndMiddots(const QString &key, int shift)
 {
     static const int NumKnights = 3;
-    static char knightsOfTheRoundTable[NumKnights] = { '/', '.', '\xb7' };
+    static const char knightsOfTheRoundTable[NumKnights] = { '/', '.', '\xb7' };
     QString result = key;
 
     for (int i = 0; i < result.size(); ++i) {
@@ -112,6 +114,7 @@ static QCFType<CFPropertyListRef> macValue(const QVariant &value)
                                   CFIndex(ba.size()));
         }
         break;
+    // should be same as below (look for LIST)
     case QVariant::List:
     case QVariant::StringList:
     case QVariant::Polygon:
@@ -123,7 +126,8 @@ static QCFType<CFPropertyListRef> macValue(const QVariant &value)
                 QMap<QString, QVariant> is potentially a multimap,
                 whereas CFDictionary is a single-valued map. To allow
                 for multiple values with the same key, we store
-                each CFDictonary value as a CFArray.
+                multiple values in a CFArray. To avoid ambiguities,
+                we also wrap lists in a CFArray singleton.
             */
             QMap<QString, QVariant> map = value.toMap();
             QMap<QString, QVariant>::const_iterator i = map.constBegin();
@@ -142,8 +146,21 @@ static QCFType<CFPropertyListRef> macValue(const QVariant &value)
                     ++i;
                 } while (i != map.constEnd() && i.key() == key);
 
+                bool singleton = (values.count() == 1);
+                if (singleton) {
+                    switch (values.first().type()) {
+                    // should be same as above (look for LIST)
+                    case QVariant::List:
+                    case QVariant::StringList:
+                    case QVariant::Polygon:
+                        singleton = false;
+                    default:
+                        ;
+                    }
+                }
+
                 cfkeys[numUniqueKeys] = QCFString::toCFStringRef(key);
-                cfvalues[numUniqueKeys] = macList(values);
+                cfvalues[numUniqueKeys] = singleton ? macValue(values.first()) : macList(values);
                 ++numUniqueKeys;
             }
 
@@ -356,6 +373,7 @@ private:
 
 QMacSettingsPrivate::QMacSettingsPrivate(QSettings::Scope scope, const QString &organization,
                                          const QString &application)
+    : QSettingsPrivate(QSettings::NativeFormat, scope, organization, application)
 {
     QString javaPackageName;
     int curPos = 0;
@@ -495,8 +513,31 @@ void QMacSettingsPrivate::sync()
         for (int j = 0; j < numHostNames; ++j) {
             Boolean ok = CFPreferencesSynchronize(domains[i].applicationOrSuiteId,
                                                   domains[i].userName, hostNames[j]);
-            if (!ok)
+            // only report failures for the primary file (the one we write to)
+            if (!ok && i == 0 && hostNames[j] == hostName && status == QSettings::NoError) {
+#if 1
+                // work around what seems to be a bug in CFPreferences:
+                // don't report an error if there are no preferences for the application
+                QCFType<CFArrayRef> appIds = CFPreferencesCopyApplicationList(domains[i].userName,
+                                                                              hostNames[j]);
+
+                // iterate through all the applications and see if we're there
+                CFIndex size = CFArrayGetCount(appIds);
+                for (CFIndex k = 0; k < size; ++k) {
+                    const void *cfvalue = CFArrayGetValueAtIndex(appIds, k);
+                    if (CFGetTypeID(cfvalue) == CFStringGetTypeID()) {
+                        if (CFStringCompare(static_cast<CFStringRef>(cfvalue),
+                                            domains[i].applicationOrSuiteId,
+                                            kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
+                            setStatus(QSettings::AccessError);
+                            break;
+                        }
+                    }
+                }
+#else
                 setStatus(QSettings::AccessError);
+#endif
+            }
         }
     }
 }
@@ -611,3 +652,5 @@ bool QConfFileSettingsPrivate::writePlistFile(const QString &fileName,
     SInt32 code;
     return CFURLWriteDataAndPropertiesToResource(urlFromFileName(fileName), xmlData, 0, &code);
 }
+
+QT_END_NAMESPACE

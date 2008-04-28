@@ -46,12 +46,14 @@
 
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
+QT_BEGIN_NAMESPACE
+
 class Q3TextEditPlugin: public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
-    Q3TextEditPlugin(QObject *parent = 0);
+    Q3TextEditPlugin(const QIcon &icon, QObject *parent = 0);
 
     virtual QString name() const;
     virtual QString group() const;
@@ -68,6 +70,9 @@ public:
 
 private:
     bool m_initialized;
+    QIcon m_icon;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3TEXTEDIT_PLUGIN_H

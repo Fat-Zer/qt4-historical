@@ -48,9 +48,12 @@
 #include <QFont>
 #include <QPen>
 
+QT_BEGIN_NAMESPACE
 class QPainter;
 class QPaintEvent;
+QT_END_NAMESPACE
 
+//! [0]
 class Helper
 {
 public:
@@ -66,5 +69,6 @@ private:
     QPen circlePen;
     QPen textPen;
 };
+//! [0]
 
 #endif

@@ -62,25 +62,12 @@
     For example, here's how to provide auto completions from a simple
     word list in a QLineEdit:
 
-    \code
-        QStringList wordList;
-        wordList << "alpha" << "omega" << "omicron" << "zeta";
-
-        QLineEdit *lineEdit = new QLineEdit(this);
-
-        QCompleter *completer = new QCompleter(wordList, this);
-        completer->setCaseSensitivity(Qt::CaseInsensitive);
-        lineEdit->setCompleter(completer);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qcompleter.cpp 0
 
     A QDirModel can be used to provide auto completion of file names.
     For example:
 
-    \code
-        QCompleter *completer = new QCompleter(this);
-        completer->setModel(new QDirModel(completer));
-        lineEdit->setCompleter(completer);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qcompleter.cpp 1
 
     To set the model on which QCompleter should operate, call
     setModel(). By default, QCompleter will attempt to match the \l
@@ -113,10 +100,7 @@
     currentCompletion(). You can iterate through the list of
     completions as below:
 
-    \code
-        for (int i = 0; completer->setCurrentRow(i); i++)
-            qDebug() << completer->currentCompletion() << " is match number " << i;
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qcompleter.cpp 2
 
     completionCount() returns the total number of completions for the
     current prefix. completionCount() should be avoided when possible,
@@ -171,6 +155,8 @@
 #include "QtGui/qevent.h"
 #include "QtGui/qheaderview.h"
 #include "QtGui/qdesktopwidget.h"
+
+QT_BEGIN_NAMESPACE
 
 QCompletionModel::QCompletionModel(QCompleterPrivate *c, QObject *parent)
     : QAbstractProxyModel(*new QCompletionModelPrivate, parent),
@@ -498,8 +484,8 @@ QMatchData QCompletionEngine::filterHistory()
     for (int i = 0; i < source->rowCount(); i++) {
         QString str = source->index(i, c->column).data().toString();
         if (str.startsWith(c->prefix, c->cs)
-#ifndef Q_OS_WIN
-            && (!dirModel || str != QDir::separator())
+#if !defined(Q_OS_WIN) || defined(Q_OS_WINCE)
+            && (!dirModel || QDir::toNativeSeparators(str) != QDir::separator())
 #endif
             )
             m.indices.append(i);
@@ -718,7 +704,7 @@ int QUnsortedModelEngine::buildIndices(const QString& str, const QModelIndex& pa
     for (i = 0; i < indices.count() && count != n; ++i) {
         QModelIndex idx = model->index(indices[i], c->column, parent);
         QString data = model->data(idx, c->role).toString();
-        if (!data.startsWith(str, c->cs))
+        if (!data.startsWith(str, c->cs) || !(model->flags(idx) & Qt::ItemIsSelectable))
             continue;
         m->indices.append(indices[i]);
         ++count;
@@ -1003,7 +989,7 @@ void QCompleter::setModel(QAbstractItemModel *model)
         delete oldModel;
 #ifndef QT_NO_DIRMODEL
     if (qobject_cast<QDirModel *>(model)) {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
         setCaseSensitivity(Qt::CaseInsensitive);
 #else
         setCaseSensitivity(Qt::CaseSensitive);
@@ -1222,19 +1208,20 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
 #endif
                 ))
                 d->popup->hide();
-            return true;
+            if (e->isAccepted())
+                return true;
         }
 
         // default implementation for keys not handled by the widget when popup is open
         switch (key) {
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-        case Qt::Key_Tab:
 #ifdef QT_KEYPAD_NAVIGATION
         case Qt::Key_Select:
             if (!QApplication::keypadNavigationEnabled())
                 break;
 #endif
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+        case Qt::Key_Tab:
             d->popup->hide();
             if (curIndex.isValid())
                 d->_q_complete(curIndex);
@@ -1301,6 +1288,7 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
         return false;
 
     case QEvent::InputMethod:
+    case QEvent::ShortcutOverride:
         QApplication::sendEvent(d->widget, e);
         break;
 
@@ -1622,7 +1610,7 @@ QString QCompleter::pathFromIndex(const QModelIndex& index) const
         idx = parent.sibling(parent.row(), index.column());
     } while (idx.isValid());
 
-#ifndef Q_OS_WIN
+#if !defined(Q_OS_WIN) || defined(Q_OS_WINCE)
     if (list.count() == 1) // only the separator or some other text
         return list[0];
     list[0].clear() ; // the join below will provide the separator
@@ -1656,7 +1644,7 @@ QStringList QCompleter::splitPath(const QString& path) const
 
     QString pathCopy = QDir::toNativeSeparators(path);
     QString sep = QDir::separator();
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
     if (pathCopy == QLatin1String("\\") || pathCopy == QLatin1String("\\\\"))
         return QStringList(pathCopy);
     QString doubleSlash(QLatin1String("\\\\"));
@@ -1669,12 +1657,12 @@ QStringList QCompleter::splitPath(const QString& path) const
     QRegExp re(QLatin1String("[") + QRegExp::escape(sep) + QLatin1String("]"));
     QStringList parts = pathCopy.split(re);
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
     if (!doubleSlash.isEmpty())
         parts[0].prepend(doubleSlash);
 #else
-    if (path[0] == sep[0]) // readd the "/" at the beginning as the split removed it
-        parts[0] = sep[0];
+    if (pathCopy[0] == sep[0]) // readd the "/" at the beginning as the split removed it
+        parts[0] = QDir::fromNativeSeparators(QString(sep[0]));
 #endif
 
     return parts;
@@ -1713,6 +1701,8 @@ QStringList QCompleter::splitPath(const QString& path) const
     the user. It is also sent if complete() is called with the completionMode()
     set to QCOmpleter::InlineCompletion. The item's \a text is given.
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qcompleter.cpp"
 

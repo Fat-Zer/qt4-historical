@@ -54,6 +54,7 @@
     Returns a human readable representation of the first \a len
     characters in \a data.
 */
+QT_BEGIN_NAMESPACE
 static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 {
     if (!data) return "(null)";
@@ -78,6 +79,7 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 
     return out;
 }
+QT_END_NAMESPACE
 #endif
 
 #include "qplatformdefs.h"
@@ -104,6 +106,8 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+
+QT_BEGIN_NAMESPACE
 
 #ifdef Q_OS_INTEGRITY
 static inline char *strdup(const char *data)
@@ -274,6 +278,16 @@ QProcessManager::~QProcessManager()
 
     qDeleteAll(children.values());
     children.clear();
+
+    struct sigaction oldAction;
+    struct sigaction action;
+    memset(&action, 0, sizeof(action));
+    action.sa_handler = qt_sa_old_sigchld_handler;
+    action.sa_flags = SA_NOCLDSTOP;
+    qt_native_sigaction(SIGCHLD, &action, &oldAction);
+    if (oldAction.sa_handler != qt_sa_sigchld_handler) {
+        qt_native_sigaction(SIGCHLD, &oldAction, 0);
+    }
 }
 
 void QProcessManager::run()
@@ -329,7 +343,7 @@ void QProcessManager::catchDeadChildren()
     }
 }
 
-static QBasicAtomic idCounter = Q_ATOMIC_INIT(1);
+static QBasicAtomicInt idCounter = Q_BASIC_ATOMIC_INITIALIZER(1);
 
 void QProcessManager::add(pid_t pid, QProcess *process)
 {
@@ -344,7 +358,7 @@ void QProcessManager::add(pid_t pid, QProcess *process)
     info->exitResult = 0;
     info->pid = pid;
 
-    int serial = idCounter.fetchAndAdd(1);
+    int serial = idCounter.fetchAndAddRelaxed(1);
     process->d_func()->serial = serial;
     children.insert(serial, info);
 }
@@ -553,6 +567,16 @@ static char **_q_dupEnvironment(const QStringList &environment, int *envc)
     return envp;
 }
 
+// under QNX RTOS we have to use vfork() when multithreading
+inline pid_t qt_fork()
+{
+#if defined(Q_OS_QNX)
+    return vfork();
+#else
+    return fork();
+#endif
+}
+
 void QProcessPrivate::startProcess()
 {
     Q_Q(QProcess);
@@ -588,8 +612,7 @@ void QProcessPrivate::startProcess()
         return;
 
     // Start the process (platform dependent)
-    processState = QProcess::Starting;
-    emit q->stateChanged(processState);
+    q->setProcessState(QProcess::Starting);
 
     // Create argument list with right number of elements, and set the final
     // one to 0.
@@ -653,7 +676,7 @@ void QProcessPrivate::startProcess()
                 pathc = pathEntries.size();
                 path = new char *[pathc + 1];
                 path[pathc] = 0;
-                
+
                 for (int k = 0; k < pathEntries.size(); ++k) {
                     QByteArray tmp = QFile::encodeName(pathEntries.at(k));
                     if (!tmp.endsWith('/')) tmp += '/';
@@ -666,7 +689,7 @@ void QProcessPrivate::startProcess()
 
     // Start the process manager, and fork off the child process.
     processManager()->lock();
-    pid_t childPid = fork();
+    pid_t childPid = qt_fork();
     if (childPid != 0) {
         // Clean up duplicated memory.
         free(dupProgramName);
@@ -683,8 +706,7 @@ void QProcessPrivate::startProcess()
     if (childPid < 0) {
         // Cleanup, report error and return
         processManager()->unlock();
-        processState = QProcess::NotRunning;
-        emit q->stateChanged(processState);
+        q->setProcessState(QProcess::NotRunning);
         processError = QProcess::FailedToStart;
         q->setErrorString(QLatin1String(QT_TRANSLATE_NOOP(QProcess, "Resource error (fork failure)")));
         emit q->error(processError);
@@ -803,7 +825,7 @@ bool QProcessPrivate::processStarted()
     int i = qt_native_read(childStartedPipe[0], &c, 1);
     if (startupSocketNotifier) {
         startupSocketNotifier->setEnabled(false);
-        delete startupSocketNotifier;
+        startupSocketNotifier->deleteLater();
         startupSocketNotifier = 0;
     }
     qt_native_close(childStartedPipe[0]);
@@ -862,8 +884,8 @@ qint64 QProcessPrivate::readFromStderr(char *data, qint64 maxlen)
 static void qt_ignore_sigpipe()
 {
     // Set to ignore SIGPIPE once only.
-    static QBasicAtomic atom = Q_ATOMIC_INIT(0);
-    if (atom.testAndSet(0, 1)) {
+    static QBasicAtomicInt atom = Q_BASIC_ATOMIC_INITIALIZER(0);
+    if (atom.testAndSetRelaxed(0, 1)) {
         struct sigaction noaction;
         memset(&noaction, 0, sizeof(noaction));
         noaction.sa_handler = SIG_IGN;
@@ -1232,7 +1254,7 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
     int pidPipe[2];
     ::pipe(pidPipe);
 
-    pid_t childPid = fork();
+    pid_t childPid = qt_fork();
     if (childPid == 0) {
         struct sigaction noaction;
         memset(&noaction, 0, sizeof(noaction));
@@ -1244,7 +1266,7 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
         qt_native_close(startedPipe[0]);
         qt_native_close(pidPipe[0]);
 
-        pid_t doubleForkPid = fork();
+        pid_t doubleForkPid = qt_fork();
         if (doubleForkPid == 0) {
             ::fcntl(startedPipe[1], F_SETFD, FD_CLOEXEC);
             qt_native_close(pidPipe[1]);
@@ -1339,6 +1361,8 @@ void QProcessPrivate::initializeProcessManager()
 {
     (void) processManager();
 }
+
+QT_END_NAMESPACE
 
 #include "qprocess_unix.moc"
 

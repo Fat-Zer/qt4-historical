@@ -59,6 +59,8 @@
 #include "../kernel/qcoreglobaldata_p.h"
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 static QString driveSpec(const QString &path)
 {
 #ifdef Q_OS_WIN
@@ -127,7 +129,7 @@ private:
         inline void clear() {
             listsDirty = 1;
         }
-        mutable QAtomic ref;
+        mutable QAtomicInt ref;
 
         QString path;
         QStringList nameFilters;
@@ -200,7 +202,7 @@ static int qt_cmp_si_sort_flags;
 extern "C" {
 #endif
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 static int __cdecl qt_cmp_si(const void *n1, const void *n2)
 #else
 static int qt_cmp_si(const void *n1, const void *n2)
@@ -226,7 +228,7 @@ static int qt_cmp_si(const void *n1, const void *n2)
         r = f1->item.lastModified().secsTo(f2->item.lastModified());
         break;
       case QDir::Size:
-        r = f2->item.size() - f1->item.size();
+          r = int(qBound<qint64>(-1, f2->item.size() - f1->item.size(), 1));
         break;
       case QDir::Type:
       {
@@ -360,19 +362,14 @@ void QDirPrivate::detach(bool createFileEngine)
 
     Examples of absolute paths:
 
-    \code
-    QDir("/home/user/Documents")
-    QDir("C:/Documents and Settings")
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 0
 
-    On Windows, the second of the examples above will be translated to
-    \c{C:\My Documents} when used to access files.
+    On Windows, the second example above will be translated to
+    \c{C:\Documents and Settings} when used to access files.
 
     Examples of relative paths:
 
-    \code
-    QDir("images/landscape.png")
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 1
 
     You can use the isRelative() or isAbsolute() functions to check if
     a QDir is using a relative or an absolute file path. Call
@@ -389,10 +386,7 @@ void QDirPrivate::detach(bool createFileEngine)
     the location of the directory. However, it can also return "." if
     the QDir represents the current directory.
 
-    \code
-    QDir("Documents/Letters/Applications").dirName() // "Applications"
-    QDir().dirName()                                 // "."
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 2
 
     The path for a directory can also be changed with the cd() and cdUp()
     functions, both of which operate like familiar shell commands.
@@ -428,11 +422,7 @@ void QDirPrivate::detach(bool createFileEngine)
     file or directory. Neither of these functions checks for the
     existence of files or directory; they only construct paths.
 
-    \code
-    QDir directory("Documents/Letters");
-    QString path = directory.filePath("contents.txt");
-    QString absolutePath = directory.absoluteFilePath("contents.txt");
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 3
 
     Files can be removed by using the remove() function. Directories
     cannot be removed in the same way as files; use rmdir() to remove
@@ -504,33 +494,19 @@ void QDirPrivate::detach(bool createFileEngine)
 
     Check if a directory exists:
 
-    \code
-        QDir dir("example");
-        if (!dir.exists())
-            qWarning("Cannot find the example directory");
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 4
 
     (We could also use the static convenience function
     QFile::exists().)
 
     Traversing directories and reading a file:
 
-    \code
-        QDir dir = QDir::root();                 // "/"
-        if (!dir.cd("tmp")) {                    // "/tmp"
-            qWarning("Cannot find the \"/tmp\" directory");
-        } else {
-            QFile file(dir.filePath("ex1.txt")); // "/tmp/ex1.txt"
-            if (!file.open(QIODevice::ReadWrite))
-                qWarning("Cannot create the file %s", file.name());
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 5
 
     A program that lists all the files in the current directory
     (excluding symbolic links), sorted by size, smallest first:
 
-    \quotefromfile snippets/qdir-listfiles/main.cpp
-    \printuntil /^\}/
+    \snippet doc/src/snippets/qdir-listfiles/main.cpp 0
 
     \sa QFileInfo, QFile, QFileDialog, QApplication::applicationDirPath(), {Find Files Example}
 */
@@ -684,17 +660,7 @@ QString QDir::absolutePath() const
 
     Example:
 
-    \code
-        QString bin = "/local/bin";         // where /local/bin is a symlink to /usr/bin
-        QDir binDir(bin);
-        QString canonicalBin = binDir.canonicalPath();
-        // canonicalBin now equals "/usr/bin"
-
-        QString ls = "/local/bin/ls";       // where ls is the executable "ls"
-        QDir lsDir(ls);
-        QString canonicalLs = lsDir.canonicalPath();
-        // canonicalLS now equals "/usr/bin/ls".
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 6
 
     \sa path(), absolutePath(), exists(), cleanPath(), dirName(),
         absoluteFilePath()
@@ -773,8 +739,10 @@ QString QDir::absoluteFilePath(const QString &fileName) const
         return fileName;
 
     QString ret;
+#ifndef QT_NO_FSFILEENGINE
     if (isRelativePath(d->data->path)) //get pwd
         ret = QFSFileEngine::currentPath(fileName);
+#endif
     if(!d->data->path.isEmpty() && d->data->path != QLatin1String(".")) {
         if (!ret.isEmpty() && !ret.endsWith(QLatin1Char('/')))
             ret += QLatin1Char('/');
@@ -791,13 +759,7 @@ QString QDir::absoluteFilePath(const QString &fileName) const
 /*!
     Returns the path to \a fileName relative to the directory.
 
-    \code
-        QDir dir("/home/bob");
-        QString s;
-
-        s = dir.relativeFilePath("images/file.jpg");     // s is "images/file.jpg"
-        s = dir.relativeFilePath("/home/mary/file.txt"); // s is "../mary/file.txt"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 7
 
     \sa absoluteFilePath() filePath() canonicalPath()
 */
@@ -820,7 +782,9 @@ QString QDir::relativeFilePath(const QString &fileName) const
     }
 
 #ifdef Q_OS_WIN
-    if (fileDrive.toLower() != dirDrive.toLower())
+    if (fileDrive.toLower() != dirDrive.toLower()
+        || (file.startsWith(QLatin1String("//"))
+        && !dir.startsWith(QLatin1String("//"))))
 #else
     if (fileDrive != dirDrive)
 #endif
@@ -896,7 +860,7 @@ QString QDir::toNativeSeparators(const QString &pathName)
     \since 4.2
 
     Returns \a pathName using '/' as file separator. On Windows,
-    for instance, fromNativeSeparators("c:\\winnt\\system32") returns
+    for instance, fromNativeSeparators("\c{c:\\winnt\\system32}") returns
     "c:/winnt/system32".
 
     The returned string may be the same as the argument on some
@@ -1012,9 +976,7 @@ QStringList QDir::nameFilters() const
     to ensure that only files with extensions typically used for C++
     source files are listed:
 
-    \quotefromfile snippets/qdir-namefilters/main.cpp
-    \skipto QStringList
-    \printuntil setNameFilters
+    \snippet doc/src/snippets/qdir-namefilters/main.cpp 0
 
     \sa nameFilters(), setFilter()
 */
@@ -1060,18 +1022,12 @@ void QDir::addResourceSearchPath(const QString &path)
     Qt uses this search path to locate files with a known prefix. The search
     path entries are tested in order, starting with the first entry.
 
-    \code
-        QDir::setSearchPaths("icons", QStringList(QDir::homePath() + "/images"));
-        QDir::setSearchPaths("docs", QStringList(":/embeddedDocuments"));
-        ...
-        QPixmap pixmap("icons:undo.png"); // will look for undo.png in QDir::homePath() + "/images"
-        QFile file("docs:design.odf"); // will look in the :/embeddedDocuments resource path
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 8
 
     File name prefix must be at least 2 characters long to avoid conflicts with
     Windows drive letters.
 
-    Search paths may contain paths to {The Qt Resource System}.
+    Search paths may contain paths to \l{The Qt Resource System}.
 */
 void QDir::setSearchPaths(const QString &prefix, const QStringList &searchPaths)
 {
@@ -1149,7 +1105,7 @@ QDir::Filters QDir::filter() const
     \value Dirs    List directories that match the filters.
     \value AllDirs  List all directories; i.e. don't apply the filters
                     to directory names.
-    \value Files   List files only.
+    \value Files   List files.
     \value Drives  List disk drives (ignored under Unix).
     \value NoSymLinks  Do not list symbolic links (ignored by operating
                        systems that don't support symbolic links).
@@ -1605,12 +1561,7 @@ bool QDir::exists() const
     this function returns false. If you want to test for this use
     canonicalPath(), e.g.
 
-    \code
-        QDir dir("/tmp/root_link");
-        dir = dir.canonicalPath();
-        if (dir.isRoot())
-            qWarning("It is a root link");
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 9
 
     \sa root(), rootPath()
 */
@@ -1692,13 +1643,7 @@ bool QDir::makeAbsolute() // ### What do the return values signify?
 
     Example:
 
-    \code
-        // The current directory is "/usr/local"
-        QDir d1("/usr/local/bin");
-        QDir d2("bin");
-        if (d1 == d2)
-            qDebug("They're the same");
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 10
 */
 
 bool QDir::operator==(const QDir &dir) const
@@ -1765,13 +1710,7 @@ QDir &QDir::operator=(const QString &path)
 
     Example:
 
-    \code
-        // The current directory is "/usr/local"
-        QDir d1("/usr/local/bin");
-        QDir d2("bin");
-        if (d1 != d2)
-            qDebug("They differ");
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 11
 */
 
 
@@ -1851,7 +1790,11 @@ bool QDir::exists(const QString &name) const
 
 QFileInfoList QDir::drives()
 {
+#ifdef QT_NO_FSFILEENGINE
+    return QFileInfoList();
+#else
     return QFSFileEngine::drives();
+#endif
 }
 
 /*!
@@ -1888,7 +1831,12 @@ QChar QDir::separator()
 
 bool QDir::setCurrent(const QString &path)
 {
+#ifdef QT_NO_FSFILEENGINE
+    Q_UNUSED(path);
+    return false;
+#else
     return QFSFileEngine::setCurrentPath(path);
+#endif
 }
 
 /*!
@@ -1909,7 +1857,11 @@ bool QDir::setCurrent(const QString &path)
 */
 QString QDir::currentPath()
 {
+#ifdef QT_NO_FSFILEENGINE
+    return QString();
+#else
     return QFSFileEngine::currentPath();
+#endif
 }
 
 /*!
@@ -1940,9 +1892,7 @@ QString QDir::currentPath()
     Under Windows this function will return the directory of the
     current user's profile. Typically, this is:
 
-    \code
-        C:/Documents and Settings/Username
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 12
 
     Use the toNativeSeparators() function to convert the separators to
     the ones that are appropriate for the underlying operating system.
@@ -1969,7 +1919,11 @@ QString QDir::currentPath()
 */
 QString QDir::homePath()
 {
-    return QFSFileEngine::homePath();
+#ifdef QT_NO_FSFILEENGINE
+    return QString();
+#else
+    return cleanPath(QFSFileEngine::homePath());
+#endif
 }
 
 /*!
@@ -2007,7 +1961,11 @@ QString QDir::homePath()
 */
 QString QDir::tempPath()
 {
-    return QFSFileEngine::tempPath();
+#ifdef QT_NO_FSFILEENGINE
+    return QString();
+#else
+    return cleanPath(QFSFileEngine::tempPath());
+#endif
 }
 
 /*!
@@ -2033,7 +1991,11 @@ QString QDir::tempPath()
 */
 QString QDir::rootPath()
 {
+#ifdef QT_NO_FSFILEENGINE
+    return QString();
+#else
     return QFSFileEngine::rootPath();
+#endif
 }
 
 /*!
@@ -2111,7 +2073,7 @@ QString QDir::cleanPath(const QString &path)
     for(int i = 0, last = -1, iwrite = 0; i < len; i++) {
         if(p[i] == QLatin1Char('/')) {
             while(i < len-1 && p[i+1] == QLatin1Char('/')) {
-#ifdef Q_OS_WIN //allow unc paths
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE) //allow unc paths
                 if(!i)
                     break;
 #endif
@@ -2267,27 +2229,13 @@ QStringList QDir::nameFiltersFromString(const QString &nameFilter)
     initialized at startup by adding this line to your \c main()
     function:
 
-    \code
-        Q_INIT_RESOURCE(myapp);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 13
 
     Note: This macro cannot be used in a namespace. It should be called from
     main(). If that is not possible, the following workaround can be used
     to init the resource \c myapp from the function \c{MyNamespace::myFunction}:
 
-    \code
-    inline void initMyResource() { Q_INIT_RESOURCE(myapp); }
-
-    namespace MyNamespace
-    {
-        ...
-
-        void myFunction()
-        {
-            initMyResource();
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 14
 
     \sa Q_CLEANUP_RESOURCE(), {The Qt Resource System}
 */
@@ -2310,9 +2258,7 @@ QStringList QDir::nameFiltersFromString(const QString &nameFilter)
 
     Example:
 
-    \code
-        Q_CLEANUP_RESOURCE(myapp);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdir.cpp 15
 
     \sa Q_INIT_RESOURCE(), {The Qt Resource System}
 */
@@ -2451,7 +2397,7 @@ void QDir::setNameFilter(const QString &nameFilter)
 
     Use QDir::SortFlags instead.
 */
-
+#endif
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, QDir::Filters filters)
 {
@@ -2515,6 +2461,8 @@ QDebug operator<<(QDebug debug, const QDir &dir)
     return debug.space();
 }
 
-#endif
+
 
 #endif
+
+QT_END_NAMESPACE

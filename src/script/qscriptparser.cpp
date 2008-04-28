@@ -66,8 +66,9 @@
 } while (0)
 
 
-
 #include "qscriptparser_p.h"
+
+QT_BEGIN_NAMESPACE
 
 inline static bool automatic(QScriptEnginePrivate *driver, int token)
 {
@@ -1069,5 +1070,7 @@ case 228: {
 
     return false;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

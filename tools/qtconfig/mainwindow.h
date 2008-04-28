@@ -46,6 +46,8 @@
 
 #include "mainwindowbase.h"
 
+QT_BEGIN_NAMESPACE
+
 class MainWindow : public MainWindowBase
 {
     Q_OBJECT
@@ -102,5 +104,7 @@ private:
     QStringList fontpaths;
     bool modified;
 };
+
+QT_END_NAMESPACE
 
 #endif // MAINWINDOW_H

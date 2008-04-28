@@ -51,6 +51,9 @@
 #include <qalgorithms.h>
 
 #include <qdebug.h>
+
+QT_BEGIN_NAMESPACE
+
 //#define QLAYOUT_EXTRA_DEBUG
 
 typedef qint64 Fixed;
@@ -391,11 +394,11 @@ Q_GUI_EXPORT QSize qSmartMaxSize(const QSize &sizeHint,
     QSize s = maxSize;
     QSize hint = sizeHint.expandedTo(minSize);
     if (s.width() == QWIDGETSIZE_MAX && !(align & Qt::AlignHorizontal_Mask))
-        if (!(sizePolicy.horizontalPolicy() & QSizePolicy::GrowFlag) )
+        if (!(sizePolicy.horizontalPolicy() & QSizePolicy::GrowFlag))
             s.setWidth(hint.width());
 
     if (s.height() == QWIDGETSIZE_MAX && !(align & Qt::AlignVertical_Mask))
-        if (!(sizePolicy.verticalPolicy() & QSizePolicy::GrowFlag) )
+        if (!(sizePolicy.verticalPolicy() & QSizePolicy::GrowFlag))
             s.setHeight(hint.height());
 
     if (align & Qt::AlignHorizontal_Mask)
@@ -419,8 +422,7 @@ Q_GUI_EXPORT QSize qSmartMaxSize(const QWidget *w, Qt::Alignment align)
                             w->sizePolicy(), align);
 }
 
-
-int qSmartSpacing(const QLayout *layout, QStyle::PixelMetric pm)
+Q_GUI_EXPORT int qSmartSpacing(const QLayout *layout, QStyle::PixelMetric pm)
 {
     QObject *parent = layout->parent();
     if (!parent) {
@@ -432,3 +434,5 @@ int qSmartSpacing(const QLayout *layout, QStyle::PixelMetric pm)
         return static_cast<QLayout *>(parent)->spacing();
     }
 }
+
+QT_END_NAMESPACE

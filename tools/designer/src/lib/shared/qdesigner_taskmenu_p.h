@@ -56,7 +56,7 @@
 #define QDESIGNER_TASKMENU_H
 
 #include "shared_global_p.h"
-#include <QtDesigner/taskmenu.h>
+#include <QtDesigner/QDesignerTaskMenuExtension>
 
 #include <QtDesigner/default_extensionfactory.h>
 
@@ -64,13 +64,15 @@
 #include <QtCore/QPointer>
 #include <QtCore/QList>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 class QWidget;
 class QSignalMapper;
 
 namespace qdesigner_internal {
-class PromotionTaskMenu;
+class QDesignerTaskMenuPrivate;
 
 class QDESIGNER_SHARED_EXPORT QDesignerTaskMenu: public QObject, public QDesignerTaskMenuExtension
 {
@@ -85,14 +87,15 @@ public:
     virtual QList<QAction*> taskActions() const;
 
 protected:
+    enum PropertyMode { CurrentWidgetMode, MultiSelectionMode };
+
     QDesignerFormWindowInterface *formWindow() const;
-    void changeRichTextProperty(const QString &propertyName);
+    void changeTextProperty(const QString &propertyName, const QString &windowTitle, PropertyMode pm, Qt::TextFormat desiredFormat);
 
     QAction *createSeparator();
 
 private slots:
     void changeObjectName();
-
     void changeToolTip();
     void changeWhatsThis();
     void changeStyleSheet();
@@ -101,24 +104,11 @@ private slots:
     void createStatusBar();
     void removeStatusBar();
     void changeScript();
+    void containerFakeMethods();
+    void applySize(QAction *a);
 
 private:
-    QPointer<QWidget> m_widget;
-    QAction *m_separator;
-    QAction *m_separator2;
-    QAction *m_separator3;
-    QAction *m_separator4;
-    QAction *m_changeObjectNameAction;
-    QAction *m_changeToolTip;
-    QAction *m_changeWhatsThis;
-    QAction *m_changeStyleSheet;
-
-    QAction *m_addMenuBar;
-    QAction *m_addToolBar;
-    QAction *m_addStatusBar;
-    QAction *m_removeStatusBar;
-    QAction *m_changeScript;
-    mutable PromotionTaskMenu* m_promotionTaskMenu;
+    QDesignerTaskMenuPrivate *d;
 };
 
 class QDESIGNER_SHARED_EXPORT QDesignerTaskMenuFactory: public QExtensionFactory
@@ -132,5 +122,7 @@ protected:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_TASKMENU_H

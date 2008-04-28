@@ -44,12 +44,16 @@
 #include "config.h"
 #include "tokenizer.h"
 
+#include <qdebug.h>
+#include <qfile.h>
 #include <qhash.h>
 #include <qregexp.h>
 #include <qstring.h>
 
 #include <ctype.h>
 #include <string.h>
+
+QT_BEGIN_NAMESPACE
 
 #define LANGUAGE_CPP			"Cpp"
 
@@ -61,7 +65,8 @@
 static const char *kwords[] = {
     "char", "class", "const", "double", "enum", "explicit", "friend", "inline", "int", "long",
     "namespace", "operator", "private", "protected", "public", "short", "signals", "signed",
-    "slots", "static", "struct", "template", "typedef", "typename", "union", "unsigned", "virtual",
+    "slots", "static", "struct", "template", "typedef", "typename", "union", "unsigned",
+    "using", "virtual",
     "void", "volatile", "__int64", "Q_OBJECT", "Q_OVERRIDE", "Q_PROPERTY",
     "Q_DECLARE_SEQUENTIAL_ITERATOR", "Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR",
     "Q_DECLARE_ASSOCIATIVE_ITERATOR", "Q_DECLARE_MUTABLE_ASSOCIATIVE_ITERATOR", "Q_DECLARE_FLAGS",
@@ -100,6 +105,25 @@ static void insertKwordIntoHash(const char *s, int number)
 	    k = 0;
     }
     kwordHashTable[k] = number;
+}
+
+Tokenizer::Tokenizer( const Location& loc, FILE *in )
+{
+    init();
+    QFile file;
+    file.open(in, QIODevice::ReadOnly);
+    yyIn = file.readAll();
+    file.close();
+    yyPos = 0;
+    start( loc );
+}
+
+Tokenizer::Tokenizer( const Location& loc, const QByteArray &in )
+  : yyIn(in)
+{
+    init();
+    yyPos = 0;
+    start( loc );
 }
 
 Tokenizer::~Tokenizer()
@@ -410,8 +434,12 @@ int Tokenizer::getToken()
 		yyCh = getChar();
 		return Tok_Tilde;
 	    default:
-		yyTokLoc.warning( tr("Hostile character 0x%1 in C++ source")
-				  .arg((uchar)yyCh, 1, 16) );
+                // ### We should really prevent qdoc from looking at snippet files rather than
+                // ### suppress warnings when reading them.
+                if ( yyNumPreprocessorSkipping == 0 && !yyTokLoc.fileName().endsWith(".qdoc") ) {
+		    yyTokLoc.warning( tr("Hostile character 0x%1 in C++ source")
+				      .arg((uchar)yyCh, 1, 16) );
+                }
 		yyCh = getChar();
 	    }
 	}
@@ -483,7 +511,7 @@ void Tokenizer::terminate()
     ignoredTokensAndDirectives = 0;
 }
 
-Tokenizer::Tokenizer()
+void Tokenizer::init()
 {
     yyLexBuf1 = new char[(int) yyLexBufSize];
     yyLexBuf2 = new char[(int) yyLexBufSize];
@@ -499,11 +527,6 @@ Tokenizer::Tokenizer()
     yyBracketDepth = 0;
     yyCh = '\0';
     parsingMacro = false;
-}
-
-int Tokenizer::getch()
-{
-    return EOF;
 }
 
 void Tokenizer::start( const Location& loc )
@@ -704,25 +727,4 @@ bool Tokenizer::isTrue(const QString &condition)
 	return !falsehoods->exactMatch( t );
 }
 
-
-FileTokenizer::FileTokenizer( const Location& loc, FILE *in )
-    : yyIn( in )
-{
-    start( loc );
-}
-
-int FileTokenizer::getch()
-{
-    return getc( yyIn );
-}
-
-StringTokenizer::StringTokenizer( const Location& loc, const char *in, int len )
-    : yyIn( in ), yyPos( 0 ), yyLen( len )
-{
-    start( loc );
-}
-
-int StringTokenizer::getch()
-{
-    return yyPos == yyLen ? EOF : yyIn[yyPos++];
-}
+QT_END_NAMESPACE

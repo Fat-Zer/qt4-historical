@@ -63,9 +63,12 @@
 #include "QtGui/qpainter.h"
 #include "QtGui/qpainterpath.h"
 #include "QtGui/qpaintengine.h"
-#include "QtCore/qvector.h"
+#include <QtCore/qhash.h>
+
+QT_BEGIN_NAMESPACE
 
 class QPaintEngine;
+struct QTLWExtra;
 
 class QPainterClipInfo
 {
@@ -107,10 +110,12 @@ public:
     QList<QPainterClipInfo> clipInfo;
     QTransform worldMatrix;       // World transformation matrix, not window and viewport
     QTransform matrix;            // Complete transformation matrix,
+    QPoint redirection_offset;
     int txop;
     int wx, wy, ww, wh;         // window rectangle
     int vx, vy, vw, vh;         // viewport rectangle
     qreal opacity;
+    qreal localOpacity;
 
     uint WxF:1;                 // World transformation
     uint VxF:1;                 // View transformation
@@ -130,8 +135,8 @@ class QPainterPrivate
     Q_DECLARE_PUBLIC(QPainter)
 public:
     QPainterPrivate(QPainter *painter)
-        : q_ptr(painter), txinv(0), emptyState(true), device(0)
-        , original_device(0), engine(0), fillrect_func(0)
+        : q_ptr(painter), d_ptrs(0), txinv(0), emptyState(true), inDestructor(false),
+          refcount(1), device(0), original_device(0), helper_device(0), engine(0), fillrect_func(0)
     {
         states.push_back(new QPainterState());
         state = states.back();
@@ -144,8 +149,7 @@ public:
     }
 
     QPainter *q_ptr;
-
-    QPoint redirection_offset;
+    QPainterPrivate **d_ptrs;
 
     QPainterState *state;
     QVector<QPainterState*> states;
@@ -153,6 +157,8 @@ public:
     QTransform invMatrix;
     uint txinv:1;
     uint emptyState:1;
+    uint inDestructor : 1;
+    uint refcount;
 
     enum DrawOperation { StrokeDraw        = 0x1,
                          FillDraw          = 0x2,
@@ -160,14 +166,17 @@ public:
     };
 
     void updateEmulationSpecifier(QPainterState *s);
+    void updateStateImpl(QPainterState *state);
     void updateState(QPainterState *state);
 
     void draw_helper(const QPainterPath &path, DrawOperation operation = StrokeAndFillDraw);
-    void drawStretchToDevice(const QPainterPath &path, DrawOperation operation);
+    void drawStretchedGradient(const QPainterPath &path, DrawOperation operation);
     void drawOpaqueBackground(const QPainterPath &path, DrawOperation operation);
 
     void updateMatrix();
     void updateInvMatrix();
+    void updateCombinedOpacity();
+    void initSharedPainter(QWidget *widget, QTLWExtra *extra);
     void init();
 
     int rectSubtraction() const {
@@ -175,9 +184,12 @@ public:
     }
 
     QTransform viewTransform() const;
+    static bool attachPainterPrivate(QPainter *q, QPaintDevice *pdev);
+    void detachPainterPrivate(QPainter *q);
 
     QPaintDevice *device;
     QPaintDevice *original_device;
+    QPaintDevice *helper_device;
     QPaintEngine *engine;
 
     typedef void (QPaintEngine::*FillRectBackdoor)(const QRect&, const QBrush&);
@@ -185,5 +197,7 @@ public:
 };
 
 QString qt_generate_brush_key(const QBrush &brush);
+
+QT_END_NAMESPACE
 
 #endif // QPAINTER_P_H

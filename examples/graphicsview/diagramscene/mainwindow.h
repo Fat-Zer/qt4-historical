@@ -48,20 +48,24 @@
 
 #include "diagramitem.h"
 
+class DiagramScene;
+
+QT_BEGIN_NAMESPACE
 class QAction;
 class QToolBox;
 class QSpinBox;
 class QComboBox;
 class QFontComboBox;
 class QButtonGroup;
-class DiagramScene;
 class QLineEdit;
 class QGraphicsTextItem;
 class QFont;
 class QToolButton;
 class QAbstractButton;
 class QGraphicsView;
+QT_END_NAMESPACE
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -144,5 +148,6 @@ private:
     QAction *fillAction;
     QAction *lineAction;
 };
+//! [0]
 
 #endif

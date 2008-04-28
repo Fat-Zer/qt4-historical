@@ -48,6 +48,8 @@
 #include <QHash>
 #include <ctype.h>
 
+QT_BEGIN_NAMESPACE
+
 using TokenEngine::Token;
 
 static QHash<QByteArray, bool> preprocessed;
@@ -486,3 +488,5 @@ void Tokenizer::scanOperator(int *kind)
 
     *kind = m_buffer[m_ptr++];
 }
+
+QT_END_NAMESPACE

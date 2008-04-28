@@ -45,6 +45,7 @@
 
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(editor);
     setWindowTitle(tr("Syntax Highlighter"));
 }
+//! [0]
 
 void MainWindow::about()
 {
@@ -85,6 +87,7 @@ void MainWindow::openFile(const QString &path)
     }
 }
 
+//! [1]
 void MainWindow::setupEditor()
 {
     QFont font;
@@ -101,6 +104,7 @@ void MainWindow::setupEditor()
     if (file.open(QFile::ReadOnly | QFile::Text))
         editor->setPlainText(file.readAll());
 }
+//! [1]
 
 void MainWindow::setupFileMenu()
 {

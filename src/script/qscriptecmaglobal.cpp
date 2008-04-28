@@ -56,6 +56,8 @@
 #include <QtCore/QVarLengthArray>
 #include <QtCore/qnumeric.h>
 
+QT_BEGIN_NAMESPACE
+
 extern Q_CORE_EXPORT qlonglong qstrtoll(const char *nptr, const char **endptr, register int base, bool *ok);
 
 static inline char toHex(char c)
@@ -283,27 +285,41 @@ namespace QScript {
 class PrintFunction : public QScriptFunction
 {
 public:
-    PrintFunction():
-        qout(stdout, QIODevice::WriteOnly) {}
+    PrintFunction() {}
 
     virtual ~PrintFunction() {}
 
     virtual void execute(QScriptContextPrivate *context)
     {
         QScriptEnginePrivate *eng = context->enginePrivate();
+#ifndef Q_SCRIPT_NO_EVENT_NOTIFY
+        eng->notifyFunctionEntry(context);
+#endif
+        QString result;
         for (int i = 0; i < context->argumentCount(); ++i) {
             if (i != 0)
-                qout << QLatin1String(" ");
+                result.append(QLatin1String(" "));
 
-            qout << context->argument(i).toString();
+            QString s = context->argument(i).toString();
+            if (context->state() == QScriptContext::ExceptionState)
+                break;
+            result.append(s);
         }
 
-        qout << endl;
-
-        context->setReturnValue(eng->undefinedValue());
+        if (context->state() != QScriptContext::ExceptionState) {
+            QTextStream qout(stdout, QIODevice::WriteOnly);
+            qout << result << endl;
+            context->setReturnValue(eng->undefinedValue());
+        }
+#ifndef Q_SCRIPT_NO_EVENT_NOTIFY
+        eng->notifyFunctionExit(context);
+#endif
     }
 
-    QTextStream qout;
+    QString functionName() const
+    {
+        return QLatin1String("print");
+    }
 };
 
 } // anonumous
@@ -322,13 +338,13 @@ Global::~Global()
 void Global::construct(QScriptValueImpl *object, QScriptEnginePrivate *eng)
 {
     QScriptClassInfo *classInfo = eng->registerClass(QLatin1String("global"),
-                                                     QScript::ActivationType);
+                                                     QScriptClassInfo::ActivationType);
 
     // create with prototype null, since Object.prototype doesn't exist at this point
     eng->newObject(object, eng->nullValue(), classInfo);
 
     Global *instance = new Global(eng, classInfo);
-    object->setObjectData(QExplicitlySharedDataPointer<QScriptObjectData>(instance));
+    object->setObjectData(instance);
 }
 
 void Global::initialize(QScriptValueImpl *object, QScriptEnginePrivate *eng)
@@ -343,33 +359,20 @@ void Global::initialize(QScriptValueImpl *object, QScriptEnginePrivate *eng)
     object->setProperty(QLatin1String("Infinity"), QScriptValueImpl(eng, qInf()), flags);
     object->setProperty(QLatin1String("undefined"), eng->undefinedValue(), flags);
 
-    QScriptClassInfo *classInfo = object->classInfo();
     object->setProperty(QLatin1String("print"),
                         eng->createFunction(new PrintFunction()), flags);
-    object->setProperty(QLatin1String("parseInt"),
-                        eng->createFunction(method_parseInt, 2, classInfo), flags);
-    object->setProperty(QLatin1String("parseFloat"),
-                        eng->createFunction(method_parseFloat, 1, classInfo), flags);
-    object->setProperty(QLatin1String("isNaN"),
-                        eng->createFunction(method_isNaN, 1, classInfo), flags);
-    object->setProperty(QLatin1String("isFinite"),
-                        eng->createFunction(method_isFinite, 1, classInfo), flags);
-    object->setProperty(QLatin1String("decodeURI"),
-                        eng->createFunction(method_decodeURI, 1, classInfo), flags);
-    object->setProperty(QLatin1String("decodeURIComponent"),
-                        eng->createFunction(method_decodeURIComponent, 1, classInfo), flags);
-    object->setProperty(QLatin1String("encodeURI"),
-                        eng->createFunction(method_encodeURI, 1, classInfo), flags);
-    object->setProperty(QLatin1String("encodeURIComponent"),
-                        eng->createFunction(method_encodeURIComponent, 1, classInfo), flags);
-    object->setProperty(QLatin1String("escape"),
-                        eng->createFunction(method_escape, 1, classInfo), flags);
-    object->setProperty(QLatin1String("unescape"),
-                        eng->createFunction(method_unescape, 1, classInfo), flags);
-    object->setProperty(QLatin1String("version"),
-                        eng->createFunction(method_version, 0, classInfo), flags);
-    object->setProperty(QLatin1String("gc"),
-                        eng->createFunction(method_gc, 0, classInfo), flags);
+    addFunction(*object, QLatin1String("parseInt"), method_parseInt, 2, flags);
+    addFunction(*object, QLatin1String("parseFloat"), method_parseFloat, 1, flags);
+    addFunction(*object, QLatin1String("isNaN"), method_isNaN, 1, flags);
+    addFunction(*object, QLatin1String("isFinite"), method_isFinite, 1, flags);
+    addFunction(*object, QLatin1String("decodeURI"), method_decodeURI, 1, flags);
+    addFunction(*object, QLatin1String("decodeURIComponent"), method_decodeURIComponent, 1, flags);
+    addFunction(*object, QLatin1String("encodeURI"), method_encodeURI, 1, flags);
+    addFunction(*object, QLatin1String("encodeURIComponent"), method_encodeURIComponent, 1, flags);
+    addFunction(*object, QLatin1String("escape"), method_escape, 1, flags);
+    addFunction(*object, QLatin1String("unescape"), method_unescape, 1, flags);
+    addFunction(*object, QLatin1String("version"), method_version, 0, flags);
+    addFunction(*object, QLatin1String("gc"), method_gc, 0, flags);
 }
 
 QScriptValueImpl Global::method_parseInt(QScriptContextPrivate *context,
@@ -598,7 +601,17 @@ QScriptValueImpl Global::method_gc(QScriptContextPrivate *,
     return QScriptValueImpl(eng, eng->objectAllocator.freeBlocks());
 }
 
+void Global::addFunction(QScriptValueImpl &object, const QString &name,
+                         QScriptInternalFunctionSignature fun, int length,
+                         const QScriptValue::PropertyFlags flags)
+{
+    QScriptEnginePrivate *eng_p = QScriptEnginePrivate::get(object.engine());
+    QScriptValueImpl val = eng_p->createFunction(fun, length, object.classInfo(), name);
+    object.setProperty(name, val, flags);
+}
 
 } } // namespace QScript::Ecma
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

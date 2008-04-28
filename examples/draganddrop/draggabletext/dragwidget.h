@@ -46,8 +46,10 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
+QT_END_NAMESPACE
 
 class DragWidget : public QWidget
 {

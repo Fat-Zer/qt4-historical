@@ -54,6 +54,8 @@
 #include <qdebug.h>
 #include <private/qtextengine_p.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QAbstractItemDelegate
 
@@ -145,6 +147,15 @@
 
     \sa EndEditHint
 */
+
+/*!
+    \fn void QAbstractItemDelegate::sizeHintChanged(const QModelIndex &index)
+
+    This signal must be emitted when the sizeHint() of \a index changed.
+
+    Views automatically connect to this signal and relayout items as necessary.
+*/
+
 
 /*!
     Creates a new abstract item delegate with the given \a parent.
@@ -358,4 +369,7 @@ bool QAbstractItemDelegate::helpEvent(QHelpEvent *event,
     }
     return false;
 }
+
+QT_END_NAMESPACE
+
 #endif // QT_NO_ITEMVIEWS

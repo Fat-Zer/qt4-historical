@@ -47,6 +47,8 @@
 
 #include "qscriptlexer_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript {
 
 
@@ -99,7 +101,7 @@ bool SyntaxChecker::parse(const QString &code)
       int act = t_action (state_stack [tos], yytoken);
 
       if (act == ACCEPT_STATE)
-        return true;
+        return (lexer.error() != QScript::Lexer::UnclosedComment);
 
       else if (act > 0)
         {
@@ -133,9 +135,14 @@ bool SyntaxChecker::parse(const QString &code)
         }
     }
 
+  if (lexer.error() == QScript::Lexer::UnclosedComment)
+      return false;
+
   return yytoken != 0;
 }
 
 } // namespace QScript
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

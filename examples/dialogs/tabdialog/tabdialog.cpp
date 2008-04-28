@@ -45,6 +45,7 @@
 
 #include "tabdialog.h"
 
+//! [0]
 TabDialog::TabDialog(const QString &fileName, QWidget *parent)
     : QDialog(parent)
 {
@@ -54,21 +55,30 @@ TabDialog::TabDialog(const QString &fileName, QWidget *parent)
     tabWidget->addTab(new GeneralTab(fileInfo), tr("General"));
     tabWidget->addTab(new PermissionsTab(fileInfo), tr("Permissions"));
     tabWidget->addTab(new ApplicationsTab(fileInfo), tr("Applications"));
+//! [0]
 
+//! [1] //! [2]
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+//! [1] //! [3]
                                      | QDialogButtonBox::Cancel);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+//! [2] //! [3]
 
+//! [4]
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(tabWidget);
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);
+//! [4]
 
+//! [5]
     setWindowTitle(tr("Tab Dialog"));
 }
+//! [5]
 
+//! [6]
 GeneralTab::GeneralTab(const QFileInfo &fileInfo, QWidget *parent)
     : QWidget(parent)
 {
@@ -106,7 +116,9 @@ GeneralTab::GeneralTab(const QFileInfo &fileInfo, QWidget *parent)
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 }
+//! [6]
 
+//! [7]
 PermissionsTab::PermissionsTab(const QFileInfo &fileInfo, QWidget *parent)
     : QWidget(parent)
 {
@@ -153,7 +165,9 @@ PermissionsTab::PermissionsTab(const QFileInfo &fileInfo, QWidget *parent)
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 }
+//! [7]
 
+//! [8]
 ApplicationsTab::ApplicationsTab(const QFileInfo &fileInfo, QWidget *parent)
     : QWidget(parent)
 {
@@ -181,3 +195,4 @@ ApplicationsTab::ApplicationsTab(const QFileInfo &fileInfo, QWidget *parent)
     layout->addWidget(alwaysCheckBox);
     setLayout(layout);
 }
+//! [8]

@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example tools/styleplugin
     \title Style Plugin Example
@@ -36,15 +79,13 @@
     SimpleStylePlugin and the \c main() function. After we have looked
     at that, we examine the plugin's profile.
 
-    \quotefromfile tools/styleplugin/plugin/simplestyleplugin.h
 
     \section1 SimpleStylePlugin Class Definition
 
     \c SimpleStylePlugin inherits QStylePlugin and is the plugin
     class. 
 
-    \skipto /class.*SimpleStylePlugin/
-    \printuntil /^\};/
+    \snippet examples/tools/styleplugin/plugin/simplestyleplugin.h 0
 
     \c keys() returns a list of style names that this plugin can
     create, while \c create() takes such a string and returns the
@@ -53,22 +94,19 @@
     requests an instance of the \c SimpleStyle style, which this
     plugin creates, Qt will create it with this plugin.
 
-    \quotefromfile tools/styleplugin/plugin/simplestyleplugin.cpp
 
     \section1 SimpleStylePlugin Class Implementation
 
     Here is the implementation of \c keys():
 
-    \skipto /::keys/
-    \printuntil /^\}/
+    \snippet examples/tools/styleplugin/plugin/simplestyleplugin.cpp 0
 
     Since this plugin only supports one style, we return a QStringList
     with the class name of that style.
 
     Here is the \c create() function:
 
-    \skipto /::create/
-    \printuntil /^\}/
+    \snippet examples/tools/styleplugin/plugin/simplestyleplugin.cpp 1
 
     Note that the key for style plugins are case insensitive.
     The case sensitivity varies from plugin to plugin, so you need to
@@ -76,9 +114,7 @@
 
     \section1 The \c main() function
 
-    \quotefromfile tools/styleplugin/stylewindow/main.cpp
-    \skipto /main/
-    \printuntil /^\}/
+    \snippet examples/tools/styleplugin/stylewindow/main.cpp 0
 
     Qt loads the available style plugins when the QApplication object
     is initialized. The QStyleFactory class knows about all styles and
@@ -90,8 +126,7 @@
     The \c SimpleStylePlugin lives in its own directory and have
     its own profile:
 
-    \quotefromfile tools/styleplugin/plugin/plugin.pro
-    \printuntil /TARGET/
+    \snippet examples/tools/styleplugin/plugin/plugin.pro 0
 
     In the plugin profile we need to set the lib template as we are
     building a shared library instead of an executable. We must also

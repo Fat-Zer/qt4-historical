@@ -43,6 +43,8 @@
 
 #include "qstylepainter.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QStylePainter
 
@@ -64,18 +66,13 @@
 
     Example using QStyle directly:
 
-    \quotefromfile snippets/styles/styles.cpp
-    \skipto ::paintEvent(
-    \printuntil }
+    \snippet doc/src/snippets/styles/styles.cpp 1
 
     Example using QStylePainter:
 
-    \quotefromfile snippets/styles/styles.cpp
-    \skipto ::paintEvent(
-    \printline paintEvent
-    \skipuntil ::paintEvent2(
-    \printline {
-    \printuntil }
+    \snippet doc/src/snippets/styles/styles.cpp 0
+    \snippet doc/src/snippets/styles/styles.cpp 4
+    \snippet doc/src/snippets/styles/styles.cpp 6
 
     \sa QStyle, QStyleOption
 */
@@ -177,3 +174,5 @@
 
     Return the current style used by the QStylePainter.
 */
+
+QT_END_NAMESPACE

@@ -1,9 +1,52 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \module QtXml
     \title QtXml Module
     \contentspage Qt's Modules
     \previouspage QtSvg
-    \nextpage QtDesigner
+    \nextpage QtXmlPatterns
     \ingroup modules
 
     \brief The QtXml module provides a stream reader and writer for
@@ -28,24 +71,17 @@
     Since version 4.3, Qt provides two new classes for reading and
     writing XML: QXmlStreamReader and QXmlStreamWriter.
 
-    In addition to core XML support, QSvgRenderer can read a
-    subset of SVG. Additional XML support is provided by the \l{Qt
-    Solutions} group who provide, for example, classes that support
-    SOAP and MML with the Qt XML classes.
+    In addition to core XML support, classes for higher level querying
+    and manipulation of XML data, are provided by the QtXmlPatterns
+    module. In the QtSvg module, the QSvgRenderer and QSvgGenerator
+    classes can read and write a subset of SVG, an XML-based file
+    format. Qt also provides helper functions that may be useful to
+    those working with XML and XHTML: see Qt::escape() and
+    Qt::convertFromPlainText().
 
-    To include the definitions of the module's classes, use the
-    following directive:
-
-    \code
-        #include <QtXml>
-    \endcode
-
-    To link against the module, add this line to your \l qmake \c
-    .pro file:
-
-    \code
-        QT += xml
-    \endcode
+    Further XML support is provided by the \l{Qt Solutions} group who
+    provide, for example, classes that support SOAP and MML with the
+    Qt XML classes. 
 
     This module is part of the \l{Qt Console Edition}, the \l{Qt
     Desktop Edition}, and the \l{Qt Open Source Edition}.
@@ -61,9 +97,15 @@
     \c qmake project file ensures that an application is compiled and
     linked appropriately:
 
-    \code
-        QT += xml
-    \endcode
+    To include the definitions of the module's classes, use the
+    following directive:
+
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 0
+
+    To link against the module, add this line to your \l qmake \c
+    .pro file:
+
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 1
 
     This line is necessary because only the QtCore and QtGui modules
     are used in the default build process.
@@ -86,18 +128,14 @@
     {hasError()} can be used to check and view the errors.
 
     An example of QXmlStreamReader implementation would be the \c XbelReader in
-    \l{QXmlStream Bookmarks Example}, which is a subclass of QXmlStreamReder.
+    \l{QXmlStream Bookmarks Example}, which is a subclass of QXmlStreamReader.
     The constructor takes \a treeWidget as a parameter and the class has Xbel
     specific functions:
 
-    \quotefromfile xml/streambookmarks/xbelreader.h
-    \skipto XbelReader(QTreeWidget *treeWidget);
-    \printuntil );
+    \snippet examples/xml/streambookmarks/xbelreader.h 1
 
     \dots
-    \quotefromfile xml/streambookmarks/xbelreader.h
-    \skipto void readUnknownElement();
-    \printuntil *treeWidget;
+    \snippet examples/xml/streambookmarks/xbelreader.h 2
     \dots
 
     The \c read() function accepts a QIODevice and sets it with
@@ -106,9 +144,7 @@
     display a custom error message, inidicating that the file's version
     is incorrect.
 
-    \quotefromfile xml/streambookmarks/xbelreader.cpp
-    \skipto bool XbelReader::read
-    \printuntil /^\}/
+    \snippet examples/xml/streambookmarks/xbelreader.cpp 1
 
     The pendent to QXmlStreamReader is QXmlStreamWriter, which provides an XML
     writer with a simple streaming API. QXmlStreamWriter operates on a
@@ -141,9 +177,7 @@
     of QXmlStreamWriter. Its \c writeFile() function illustrates the core
     functions of QXmlStreamWriter mentioned above:
 
-    \quotefromfile xml/streambookmarks/xbelwriter.cpp
-    \skipto bool XbelWriter::writeFile
-    \printuntil /^\}/
+    \snippet examples/xml/streambookmarks/xbelwriter.cpp 1
 
     \section1 The Qt SAX2 Classes
 
@@ -155,9 +189,7 @@
     or an end tag, etc.
 
     To make it less abstract consider the following example:
-    \code 
-    <quote>A quotation.</quote>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 3
 
     Whilst reading (a SAX2 parser is usually referred to as "reader") 
     the above document three events would be triggered:
@@ -242,10 +274,7 @@
     and switched on or off using QXmlReader::setFeature(). 
 
     Consider the example 
-    \code 
-    <document xmlns:book = 'http://trolltech.com/fnord/book/'
-              xmlns      = 'http://trolltech.com/fnord/' >
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 4
     A reader that does not support the \e
     http://xml.org/sax/features/namespace-prefixes feature would report
     the element name \e document but not its attributes \e xmlns:book and
@@ -290,12 +319,7 @@
     \endlist
 
     Consider the following element:
-    \code
-    <author xmlns:fnord = 'http://trolltech.com/fnord/'
-                 title="Ms" 
-                 fnord:title="Goddess" 
-                 name="Eris Kallisti"/>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 5
     With \e http://xml.org/sax/features/namespace-prefixes set to true 
     the reader will report four attributes; but with the \e
     namespace-prefixes feature set to false only three, with the \e
@@ -471,17 +495,7 @@
 
     Consider the following example:
 
-    \code
-    <document>
-    <book>
-      <title>Practical XML</title>
-      <author title="Ms" name="Eris Kallisti"/>
-      <chapter>
-        <title>A Namespace Called fnord</title>
-      </chapter>
-    </book>
-    </document>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 6
 
     Here we find three different uses of the name \e title. If you wish to
     process this document you will encounter problems because each of the
@@ -492,9 +506,7 @@
     occurrence of \e title as the title of a book, i.e. to use the \e
     title element of a book namespace to distinguish it from, for example,
     the chapter title, e.g.:
-    \code
-    <book:title>Practical XML</book:title>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 7
 
     \e book in this case is a \e prefix denoting the namespace.
 
@@ -510,16 +522,12 @@
     http://trolltech.com/fnord/ the document's default XML namespace \e
     xmlns we write
 
-    \code
-    xmlns="http://trolltech.com/fnord/"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 8
 
     To distinguish the \e http://trolltech.com/fnord/book/ namespace from
     the default, we must supply it with a prefix:
 
-    \code
-    xmlns:book="http://trolltech.com/fnord/book/"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 9
 
     A namespace that is declared like this can be applied to element and
     attribute names by prepending the appropriate prefix and a ":"
@@ -540,21 +548,7 @@
     within a \e chapter.
 
     Let's clarify this with an example:
-    \code
-    <document xmlns:book = 'http://trolltech.com/fnord/book/'
-              xmlns      = 'http://trolltech.com/fnord/' >
-    <book>
-      <book:title>Practical XML</book:title>
-      <book:author xmlns:fnord = 'http://trolltech.com/fnord/'
-                   title="Ms"
-                   fnord:title="Goddess"
-                   name="Eris Kallisti"/>
-      <chapter>
-        <title>A Namespace Called fnord</title>
-      </chapter>
-    </book>
-    </document>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtxml.qdoc 10
 
     Within the \e document element we have two namespaces declared. The
     default namespace \e http://trolltech.com/fnord/ applies to the \e

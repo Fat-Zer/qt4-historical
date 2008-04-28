@@ -59,6 +59,8 @@
 #include "private/qwidget_p.h"
 #include "qstyle.h"
 
+QT_BEGIN_NAMESPACE
+
 class QAbstractSliderPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QAbstractSlider)
@@ -91,11 +93,14 @@ public:
         if (q->style()->styleHint(QStyle::SH_Slider_StopMouseOverSlider, 0, q)) {
             if ((position > pressValue - 2 * pageStep) && (position < pressValue + 2 * pageStep)) {
                 repeatAction = QAbstractSlider::SliderNoAction;
-                position = pressValue;
+                q->setSliderPosition(pressValue);
+                return;
             }
         }
-        q->setSliderPosition(position);
+        q->triggerAction(repeatAction);
     }
 };
+
+QT_END_NAMESPACE
 
 #endif // QABSTRACTSLIDER_P_H

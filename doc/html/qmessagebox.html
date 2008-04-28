@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/gui/dialogs/qmessagebox.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/dialogs/qmessagebox.cpp -->
 <head>
-  <title>Qt 4.3: QMessageBox Class Reference</title>
+  <title>Qt 4.4: QMessageBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QMessageBox Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QMessageBox Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+</h1>
 <p>The QMessageBox class provides a modal dialog with a short message, an icon, and buttons laid out depending on the current style. <a href="#details">More...</a></p>
 <pre> #include &lt;QMessageBox&gt;</pre><p>Inherits <a href="qdialog.html">QDialog</a>.</p>
 <ul>
@@ -46,7 +47,7 @@
 </table></p>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="qdialog.html#properties">QDialog</a></li>
-<li><div class="fn"/>56 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>57 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -87,7 +88,7 @@
 </ul>
 <ul>
 <li><div class="fn"/>5 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
-<li><div class="fn"/>201 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -114,6 +115,7 @@
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 </ul>
 <a name="macros"></a>
 <h3>Macros</h3>
@@ -138,12 +140,12 @@
 <a name="basic-usage"></a>
 <h3>Basic Usage</h3>
 <p>The easiest way to pop up a message box in Qt is to call one of the static functions <a href="qmessagebox.html#information">QMessageBox::information</a>(), <a href="qmessagebox.html#question">QMessageBox::question</a>(), <a href="qmessagebox.html#critical">QMessageBox::critical</a>(), and <a href="qmessagebox.html#warning">QMessageBox::warning</a>(). For example:</p>
-<pre> int ret = QMessageBox::warning(this, tr(&quot;My Application&quot;),
-                   tr(&quot;The document has been modified.\n&quot;
-                      &quot;Do you want to save your changes?&quot;),
-                   QMessageBox::Save | QMessageBox::Discard
-                   | QMessageBox::Cancel,
-                   QMessageBox::Save);</pre>
+<pre>         int ret = QMessageBox::warning(this, tr(&quot;My Application&quot;),
+                           tr(&quot;The document has been modified.\n&quot;
+                              &quot;Do you want to save your changes?&quot;),
+                           QMessageBox::Save | QMessageBox::Discard
+                           | QMessageBox::Cancel,
+                           QMessageBox::Save);</pre>
 <p>Buttons are specified by combining <a href="qmessagebox.html#StandardButton-enum">StandardButtons</a> using the bitwise OR operator. The order of the buttons on screen is platform-dependent. For example, on Windows, <b>Save</b> is displayed to the left of <b>Cancel</b>, whereas on Mac OS, the order is reversed.</p>
 <p>The text part of all message box messages can be either rich text or plain text. With certain strings that contain XML meta characters, the auto-rich text detection may fail, interpreting plain text incorrectly as rich text. In these rare cases, use <a href="qt.html#convertFromPlainText">Qt::convertFromPlainText</a>() to convert your plain text string to a visually equivalent rich text string or set the text format explicitly with <a href="qmessagebox.html#textFormat-prop">setTextFormat</a>().</p>
 <p>Note that the Microsoft Windows User Interface Guidelines recommend using the application name as the window's title.</p>
@@ -161,31 +163,31 @@
 <h3>Advanced Usage</h3>
 <p>If the convenience static functions, such as <a href="qmessagebox.html#information">QMessageBox::information</a>() and <a href="qmessagebox.html#warning">QMessageBox::warning</a>(), are not flexible enough for your needs, you can instantiate a QMessageBox on the stack. You can then use <a href="qmessagebox.html#addButton">addButton</a>() to add buttons with standard or arbitrary text.</p>
 <p>When using an instance of QMessageBox with standard buttons, you can test the return value of <a href="qmessagebox.html#exec">exec</a>() to determine which button was clicked. For example,</p>
-<pre> QMessageBox msgBox;
- msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
- switch (msgBox.exec()) {
- case QMessageBox::Yes:
-     <span class="comment">//</span> yes was clicked
-     break;
- case QMessageBox::No:
-     <span class="comment">//</span> no was clicked
-     break;
- default:
-     <span class="comment">//</span> should never be reached
-     break;
- }</pre>
+<pre>         QMessageBox msgBox;
+         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+         switch (msgBox.exec()) {
+         case QMessageBox::Yes:
+             // yes was clicked
+             break;
+         case QMessageBox::No:
+             // no was clicked
+             break;
+         default:
+             // should never be reached
+             break;
+         }</pre>
 <p>When using an instance of QMessageBox with custom buttons, you can test the value of <a href="qmessagebox.html#clickedButton">clickedButton</a>() after calling <a href="qmessagebox.html#exec">exec</a>(). For example,</p>
-<pre> QMessageBox msgBox;
- QPushButton *connectButton = msgBox.addButton(tr(&quot;Connect&quot;), QMessageBox::ActionRole);
- QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
+<pre>         QMessageBox msgBox;
+         QPushButton *connectButton = msgBox.addButton(tr(&quot;Connect&quot;), QMessageBox::ActionRole);
+         QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
 
- msgBox.exec();
+         msgBox.exec();
 
- if (msgBox.clickedButton() == connectButton) {
-     <span class="comment">//</span> connect
- } else if (msgBox.clickedButton() == abortButton) {
-     <span class="comment">//</span> abort
- }</pre>
+         if (msgBox.clickedButton() == connectButton) {
+             // connect
+         } else if (msgBox.clickedButton() == abortButton) {
+             // abort
+         }</pre>
 <p>In the example above, the <b>Connect</b> button is created using the <a href="qmessagebox.html#addButton">addButton</a>() overload that takes a text and a <a href="qmessagebox.html#ButtonRole-enum">ButtonRole</a>. The <a href="qmessagebox.html#ButtonRole-enum">ButtonRole</a> is used by QMessageBox to determine the ordering of the buttons on screen (which varies according to the platform).</p>
 <p>The <a href="qmessagebox.html#text-prop">text</a>(), <a href="qmessagebox.html#icon-prop">icon</a>() and <a href="qmessagebox.html#iconPixmap-prop">iconPixmap</a>() functions provide access to the current text and pixmap of the message box. The <a href="qmessagebox.html#text-prop">setText</a>(), <a href="qmessagebox.html#icon-prop">setIcon</a>() and <a href="qmessagebox.html#iconPixmap-prop">setIconPixmap</a>() let you change it. The difference between <a href="qmessagebox.html#icon-prop">setIcon</a>() and <a href="qmessagebox.html#iconPixmap-prop">setIconPixmap</a>() is that the former accepts a <a href="qmessagebox.html#Icon-enum">QMessageBox::Icon</a> and can be used to set standard icons, whereas the latter accepts a <a href="qpixmap.html">QPixmap</a> and can be used to set custom icons.</p>
 <p><a href="qmessagebox-obsolete.html#setButtonText">setButtonText</a>() and <a href="qmessagebox-obsolete.html#buttonText">buttonText</a>() provide access to the buttons.</p>
@@ -196,7 +198,7 @@
 <ol type="1">
 <li>If there is only one button, it is made the escape button.</li>
 <li>If there is a <a href="qmessagebox.html#StandardButton-enum">Cancel</a> button, it is made the escape button.</li>
-<li>On Mac OS X only, if there is exactly one button with the role <a href="qmessagebox.html#ButtonRole-enum">QMessageBox::RejectRole</a>, it is made the escape button.</li>
+<li>If there is exactly one button with the role <a href="qmessagebox.html#ButtonRole-enum">QMessageBox::RejectRole</a> or <a href="qmessagebox.html#ButtonRole-enum">QMessageBox::NoRole</a>, it is made the escape button.</li>
 </ol>
 <p>When an escape button could not be automatically detected, pressing <b>Esc</b> has no effect.</p>
 <p>See also <a href="qdialogbuttonbox.html">QDialogButtonBox</a>, <a href="guibooks.html#fowler">GUI Design Handbook: Message Box</a>, <a href="dialogs-standarddialogs.html">Standard Dialogs Example</a>, and <a href="mainwindows-application.html">Application Example</a>.</p>
@@ -459,14 +461,14 @@
 <p>Returns the button that was clicked by the user, or 0 if the user hit the <b>Esc</b> key and no <a href="qmessagebox.html#setEscapeButton">escape button</a> was set.</p>
 <p>If <a href="qmessagebox.html#exec">exec</a>() hasn't been called yet, returns 0.</p>
 <p>Example:</p>
-<pre> QMessageBox messageBox(this);
- QAbstractButton *disconnectButton =
-       messageBox.addButton(tr(&quot;Disconnect&quot;), QMessageBox::ActionRole);
- ...
- messageBox.exec();
- if (messageBox.clickedButton() == disconnectButton) {
-     ...
- }</pre>
+<pre>         QMessageBox messageBox(this);
+         QAbstractButton *disconnectButton =
+               messageBox.addButton(tr(&quot;Disconnect&quot;), QMessageBox::ActionRole);
+         ...
+         messageBox.exec();
+         if (messageBox.clickedButton() == disconnectButton) {
+             ...
+         }</pre>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qmessagebox.html#standardButton">standardButton</a>() and <a href="qmessagebox.html#button">button</a>().</p>
 <a name="//apple_ref/cpp/clm/QMessageBox/critical" />
@@ -568,21 +570,21 @@
 <p>This macro can be used to ensure that the application is run against a recent enough version of Qt. This is especially useful if your application depends on a specific bug fix introduced in a bug-fix release (e.g&#x2e;, 4.0&#x2e;2).</p>
 <p>The <i>argc</i> and <i>argv</i> parameters are the <tt>main()</tt> function's <tt>argc</tt> and <tt>argv</tt> parameters. The <i>version</i> parameter is a string literal that specifies which version of Qt the application requires (e.g&#x2e;, &quot;4.0&#x2e;2&quot;).</p>
 <p>Example:</p>
-<pre> #include &lt;QApplication&gt;
- #include &lt;QMessageBox&gt;
+<pre>         #include &lt;QApplication&gt;
+         #include &lt;QMessageBox&gt;
 
- int main(int argc, char *argv[])
- {
-     QT_REQUIRE_VERSION(argc, argv, &quot;4.0.2&quot;)
+         int main(int argc, char *argv[])
+         {
+             QT_REQUIRE_VERSION(argc, argv, &quot;4.0.2&quot;)
 
-     QApplication app(argc, argv);
-     ...
-     return app.exec();
- }</pre>
+             QApplication app(argc, argv);
+             ...
+             return app.exec();
+         }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

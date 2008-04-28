@@ -49,6 +49,9 @@
 #include <QtDesigner/QDesignerWidgetBoxInterface>
 #include <QtDesigner/QDesignerComponents>
 #include <QtDesigner/QDesignerFormEditorInterface>
+#include <QtGui/QAction>
+
+QT_BEGIN_NAMESPACE
 
 QDesignerWidgetBox::QDesignerWidgetBox(QDesignerWorkbench *workbench)
     : QDesignerToolWindow(workbench)
@@ -61,6 +64,7 @@ QDesignerWidgetBox::QDesignerWidgetBox(QDesignerWorkbench *workbench)
     setCentralWidget(widget);
 
     setWindowTitle(tr("Widget Box"));
+    action()->setObjectName(QLatin1String("__qt_widget_box_tool_action"));
 }
 
 QDesignerWidgetBox::~QDesignerWidgetBox()
@@ -79,3 +83,5 @@ Qt::DockWidgetArea QDesignerWidgetBox::dockWidgetAreaHint() const
 {
     return Qt::LeftDockWidgetArea;
 }
+
+QT_END_NAMESPACE

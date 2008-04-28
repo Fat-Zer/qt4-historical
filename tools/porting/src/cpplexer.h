@@ -49,6 +49,8 @@
 #include "tokens.h"
 #include <QVector>
 
+QT_BEGIN_NAMESPACE
+
 class CppLexer
 {
 public:
@@ -101,5 +103,7 @@ private:
     int m_ptr;
     int m_len;
 };
+
+QT_END_NAMESPACE
 
 #endif

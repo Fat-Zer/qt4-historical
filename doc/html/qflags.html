@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/corelib/global/qglobal.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/global/qglobal.cpp -->
 <head>
-  <title>Qt 4.3: QFlags Class Reference</title>
+  <title>Qt 4.4: QFlags Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QFlags Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QFlags Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
+</h1>
 <p>The QFlags class provides a type-safe way of storing OR-combinations of enum values. <a href="#details">More...</a></p>
 <pre> #include &lt;QFlags&gt;</pre><ul>
 <li><a href="qflags-members.html">List of all members, including inherited members</a></li>
@@ -62,23 +63,23 @@
 <p>The QFlags&lt;Enum&gt; class is a template class, where Enum is an enum type. QFlags is used throughout Qt for storing combinations of enum values.</p>
 <p>The traditional C++ approach for storing OR-combinations of enum values is to use an <tt>int</tt> or <tt>uint</tt> variable. The inconvenience with this approach is that there's no type checking at all; any enum value can be OR'd with any other enum value and passed on to a function that takes an <tt>int</tt> or <tt>uint</tt>.</p>
 <p>Qt uses QFlags to provide type safety. For example, the <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> type is simply a typedef for QFlags&lt;<a href="qt.html#AlignmentFlag-enum">Qt::AlignmentFlag</a>&gt;. <a href="qlabel.html#alignment-prop">QLabel::setAlignment</a>() takes a <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> parameter, which means that any combination of <a href="qt.html#AlignmentFlag-enum">Qt::AlignmentFlag</a> values is legal:</p>
-<pre> label-&gt;setAlignment(Qt::AlignLeft | Qt::AlignTop);</pre>
+<pre>         label-&gt;setAlignment(Qt::AlignLeft | Qt::AlignTop);</pre>
 <p>If you try to pass a value from another enum, the compiler will report an error.</p>
 <p>If you want to use QFlags for your own enum types, use the <a href="qflags.html#Q_DECLARE_FLAGS">Q_DECLARE_FLAGS</a>() and <a href="qflags.html#Q_DECLARE_OPERATORS_FOR_FLAGS">Q_DECLARE_OPERATORS_FOR_FLAGS</a>(). For example:</p>
-<pre> class MyClass
- {
- public:
-     enum Option {
-         NoOptions = 0x0,
-         ShowTabs = 0x1,
-         ShowAll = 0x2,
-         SqueezeBlank = 0x4
-     };
-     Q_DECLARE_FLAGS(Options, Option)
-     ...
- };
+<pre>         class MyClass
+         {
+         public:
+             enum Option {
+                 NoOptions = 0x0,
+                 ShowTabs = 0x1,
+                 ShowAll = 0x2,
+                 SqueezeBlank = 0x4
+             };
+             Q_DECLARE_FLAGS(Options, Option)
+             ...
+         };
 
- Q_DECLARE_OPERATORS_FOR_FLAGS(MyClass::Options)</pre>
+         Q_DECLARE_OPERATORS_FOR_FLAGS(MyClass::Options)</pre>
 <p>You can then use the <tt>MyClass::Options</tt> type to store combinations of <tt>MyClass::Option</tt> values.</p>
 <p>A sensible naming convension for enum types and associated QFlags types is to give a singular name to the enum type (e.g&#x2e;, <tt>Option</tt>) and a plural name to the QFlags type (e.g&#x2e;, <tt>Options</tt>). When a singular name is desired for the QFlags type (e.g&#x2e;, <tt>Alignment</tt>), you can use <tt>Flag</tt> as the suffix for the enum type (e.g&#x2e;, <tt>AlignmentFlag</tt>).</p>
 <p>See also <a href="qflag.html">QFlag</a>.</p>
@@ -159,7 +160,7 @@
 <a name="//apple_ref/cpp/macro//Q_DECLARE_FLAGS" />
 <h3 class="fn"><a name="Q_DECLARE_FLAGS"></a>Q_DECLARE_FLAGS (  <i>Flags</i>,  <i>Enum</i> )</h3>
 <p>The Q_DECLARE_FLAGS() macro expands to</p>
-<pre> typedef QFlags&lt;Enum&gt; Flags;</pre>
+<pre>         typedef QFlags&lt;Enum&gt; Flags;</pre>
 <p><i>Enum</i> is the name of an existing enum type, whereas <i>Flags</i> is the name of the <a href="qflags.html">QFlags</a>&lt;<i>Enum</i>&gt; typedef.</p>
 <p>See the <a href="qflags.html">QFlags</a> documentation for details.</p>
 <p>See also <a href="qflags.html#Q_DECLARE_OPERATORS_FOR_FLAGS">Q_DECLARE_OPERATORS_FOR_FLAGS</a>().</p>
@@ -172,6 +173,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

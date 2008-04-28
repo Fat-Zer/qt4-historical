@@ -46,10 +46,13 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QPushButton;
 class QSqlTableModel;
+QT_END_NAMESPACE
 
+//! [0]
 class TableEditor : public QDialog
 {
     Q_OBJECT
@@ -67,5 +70,6 @@ private:
     QDialogButtonBox *buttonBox;
     QSqlTableModel *model;
 };
+//! [0]
 
 #endif

@@ -42,7 +42,11 @@
 **
 **************************************************************************-->
 <Rules>
-    <Count>3786</Count>
+    <Count>3793</Count>
+    <item Type="RenamedHeader" >
+        <Qt4>q3objectdict.h</Qt4>
+        <Qt3>qobjcoll.h</Qt3>
+    </item>
     <item Type="RenamedHeader" >
         <Qt4>q3accel.h</Qt4>
         <Qt3>qaccel.h</Qt3>
@@ -10186,6 +10190,14 @@
         <Qt4>Q3DeepCopy</Qt4>
         <Qt3>QDeepCopy</Qt3>
     </item>
+    <item Type="RenamedClass" >
+        <Qt4>Q3PtrCollection</Qt4>
+        <Qt3>QCollection</Qt3>
+    </item>
+    <item Type="NeedHeader" >
+         <Class>Q3TextStream</Class>
+         <Header>Q3TextStream</Header>
+     </item>
     <item Type="NeedHeader" >
         <Class>QCloseEvent</Class>
         <Header>QCloseEvent</Header>
@@ -10455,8 +10467,28 @@
         <Header>Q3PopupMenu</Header>
     </item>
     <item Type="NeedHeader" >
-        <Class>Q3button</Class>
-        <Header>Q3button</Header>
+        <Class>Q3Button</Class>
+        <Header>Q3Button</Header>
+    </item>
+    <item Type="NeedHeader" >
+        <Class>Q3BoxLayout</Class>
+        <Header>Q3BoxLayout</Header>
+    </item>
+    <item Type="NeedHeader" >
+        <Class>Q3Signal</Class>
+        <Header>Q3Signal</Header>
+    </item>
+    <item Type="NeedHeader" >
+        <Class>QTextIStream</Class>
+        <Header>QTextIStream</Header>
+    </item>
+    <item Type="NeedHeader" >
+        <Class>QTextOStream</Class>
+        <Header>QTextOStream</Header>
+    </item>
+    <item Type="NeedHeader" >
+        <Class>Q3PtrCollection</Class>
+        <Header>Q3PtrCollection</Header>
     </item>
     <item Type="RenamedHeader" >
         <Qt4>qnamespace.h</Qt4>

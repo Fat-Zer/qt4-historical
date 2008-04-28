@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QPushButtonPrivate;
@@ -96,6 +98,7 @@ protected:
     void focusInEvent(QFocusEvent *);
     void focusOutEvent(QFocusEvent *);
     void initStyleOption(QStyleOptionButton *option) const;
+    QPushButton(QPushButtonPrivate &dd, QWidget* parent = 0);
 
 public:
 #ifdef QT3_SUPPORT
@@ -115,6 +118,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_popupPressed())
 #endif
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -52,6 +52,8 @@
 
 #include "private/qabstractbutton_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QRadioButtonPrivate : public QAbstractButtonPrivate
 {
     Q_DECLARE_PUBLIC(QRadioButton)
@@ -105,9 +107,7 @@ void QRadioButtonPrivate::init()
     can be specified by preceding the preferred character with an
     ampersand in the text. For example:
 
-    \code
-        QRadioButton *button = new QRadioButton("Search from the &cursor", this);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qradiobutton.cpp 0
 
     In this example the shortcut is \e{Alt+c}. See the \l
     {QShortcut#mnemonic}{QShortcut} documentation for details (to
@@ -286,3 +286,5 @@ QRadioButton::QRadioButton(const QString &text, QWidget *parent, const char* nam
 }
 
 #endif
+
+QT_END_NAMESPACE

@@ -47,6 +47,8 @@
 
 #ifndef QT_NO_SQL
 
+QT_BEGIN_NAMESPACE
+
 class Q3SqlSelectCursorPrivate
 {
 public:
@@ -70,17 +72,7 @@ public:
     Q3SqlSelectCursor::exec() function.
 
     Example:
-    \code
-    ...
-    Q3SqlSelectCursor* cur = new Q3SqlSelectCursor("SELECT id, firstname, lastname FROM author");
-    Q3DataTable* table = new Q3DataTable(this);
-    table->setSqlCursor(cur, true, true);
-    table->refresh();
-    ...
-    cur->exec("SELECT * FROM books");
-    table->refresh();
-    ...
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlselectcursor.cpp 0
 */
 
 /*!
@@ -251,7 +243,6 @@ void Q3SqlSelectCursor::populateCursor()
 
 /*!
     \fn int Q3SqlSelectCursor::update(const QString & filter, bool invalidate = true)
-
     \overload
 
     Updates the database with the current contents of the cursor edit
@@ -268,4 +259,7 @@ void Q3SqlSelectCursor::populateCursor()
 
     \sa Q3SqlCursor::update() primeUpdate() setMode() lastError()
 */
+
+QT_END_NAMESPACE
+
 #endif // QT_NO_SQL

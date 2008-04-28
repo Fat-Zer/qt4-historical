@@ -41,13 +41,16 @@
 **
 ****************************************************************************/
 
+//! [0]
 #ifndef TICTACTOEPLUGIN_H
 #define TICTACTOEPLUGIN_H
 
 #include <QDesignerCustomWidgetInterface>
 
+QT_BEGIN_NAMESPACE
 class QIcon;
 class QWidget;
+QT_END_NAMESPACE
 
 class TicTacToePlugin : public QObject, public QDesignerCustomWidgetInterface
 {
@@ -73,3 +76,4 @@ private:
 };
 
 #endif
+//! [0]

@@ -43,6 +43,7 @@
 #include "ui4.h"
 #include <QDomDocument>
 
+QT_BEGIN_NAMESPACE
 #ifdef QFORMINTERNAL_NAMESPACE
 using namespace QFormInternal;
 #endif
@@ -63,6 +64,7 @@ void DomUI::clear(bool clear_all)
     delete m_resources;
     delete m_connections;
     delete m_designerdata;
+    delete m_slots;
 
     if (clear_all) {
     m_text = QString();
@@ -83,6 +85,7 @@ void DomUI::clear(bool clear_all)
     m_resources = 0;
     m_connections = 0;
     m_designerdata = 0;
+    m_slots = 0;
 }
 
 DomUI::DomUI()
@@ -102,6 +105,7 @@ DomUI::DomUI()
     m_resources = 0;
     m_connections = 0;
     m_designerdata = 0;
+    m_slots = 0;
 }
 
 DomUI::~DomUI()
@@ -116,6 +120,7 @@ DomUI::~DomUI()
     delete m_resources;
     delete m_connections;
     delete m_designerdata;
+    delete m_slots;
 }
 
 void DomUI::read(const QDomElement &node)
@@ -212,6 +217,12 @@ void DomUI::read(const QDomElement &node)
             setElementDesignerdata(v);
             continue;
         }
+        if (tag == QLatin1String("slots")) {
+            DomSlots *v = new DomSlots();
+            v->read(e);
+            setElementSlots(v);
+            continue;
+        }
     }
 
     m_text.clear();
@@ -304,6 +315,10 @@ QDomElement DomUI::write(QDomDocument &doc, const QString &tagName) const
 
     if (m_children & Designerdata) {
         e.appendChild(m_designerdata->write(doc, QLatin1String("designerdata")));
+    }
+
+    if (m_children & Slots) {
+        e.appendChild(m_slots->write(doc, QLatin1String("slots")));
     }
 
     if (!m_text.isEmpty())
@@ -412,6 +427,13 @@ void DomUI::setElementDesignerdata(DomDesignerData* a)
     m_designerdata = a;
 }
 
+void DomUI::setElementSlots(DomSlots* a)
+{
+    delete m_slots;
+    m_children |= Slots;
+    m_slots = a;
+}
+
 void DomUI::clearElementAuthor()
 {
     m_children &= ~Author;
@@ -505,6 +527,13 @@ void DomUI::clearElementDesignerdata()
     delete m_designerdata;
     m_designerdata = 0;
     m_children &= ~Designerdata;
+}
+
+void DomUI::clearElementSlots()
+{
+    delete m_slots;
+    m_slots = 0;
+    m_children &= ~Slots;
 }
 
 void DomIncludes::clear(bool clear_all)
@@ -1395,6 +1424,7 @@ void DomCustomWidget::clear(bool clear_all)
     delete m_sizePolicy;
     delete m_script;
     delete m_properties;
+    delete m_slots;
 
     if (clear_all) {
     m_text = QString();
@@ -1407,6 +1437,7 @@ void DomCustomWidget::clear(bool clear_all)
     m_sizePolicy = 0;
     m_script = 0;
     m_properties = 0;
+    m_slots = 0;
 }
 
 DomCustomWidget::DomCustomWidget()
@@ -1418,6 +1449,7 @@ DomCustomWidget::DomCustomWidget()
     m_sizePolicy = 0;
     m_script = 0;
     m_properties = 0;
+    m_slots = 0;
 }
 
 DomCustomWidget::~DomCustomWidget()
@@ -1427,6 +1459,7 @@ DomCustomWidget::~DomCustomWidget()
     delete m_sizePolicy;
     delete m_script;
     delete m_properties;
+    delete m_slots;
 }
 
 void DomCustomWidget::read(const QDomElement &node)
@@ -1457,6 +1490,10 @@ void DomCustomWidget::read(const QDomElement &node)
             setElementSizeHint(v);
             continue;
         }
+        if (tag == QLatin1String("addpagemethod")) {
+            setElementAddPageMethod(e.text());
+            continue;
+        }
         if (tag == QLatin1String("container")) {
             setElementContainer(e.text().toInt());
             continue;
@@ -1481,6 +1518,12 @@ void DomCustomWidget::read(const QDomElement &node)
             DomProperties *v = new DomProperties();
             v->read(e);
             setElementProperties(v);
+            continue;
+        }
+        if (tag == QLatin1String("slots")) {
+            DomSlots *v = new DomSlots();
+            v->read(e);
+            setElementSlots(v);
             continue;
         }
     }
@@ -1518,6 +1561,12 @@ QDomElement DomCustomWidget::write(QDomDocument &doc, const QString &tagName) co
         e.appendChild(m_sizeHint->write(doc, QLatin1String("sizehint")));
     }
 
+    if (m_children & AddPageMethod) {
+        child = doc.createElement(QLatin1String("addpagemethod"));
+        child.appendChild(doc.createTextNode(m_addPageMethod));
+        e.appendChild(child);
+    }
+
     if (m_children & Container) {
         child = doc.createElement(QLatin1String("container"));
         child.appendChild(doc.createTextNode(QString::number(m_container)));
@@ -1540,6 +1589,10 @@ QDomElement DomCustomWidget::write(QDomDocument &doc, const QString &tagName) co
 
     if (m_children & Properties) {
         e.appendChild(m_properties->write(doc, QLatin1String("properties")));
+    }
+
+    if (m_children & Slots) {
+        e.appendChild(m_slots->write(doc, QLatin1String("slots")));
     }
 
     if (!m_text.isEmpty())
@@ -1572,6 +1625,12 @@ void DomCustomWidget::setElementSizeHint(DomSize* a)
     delete m_sizeHint;
     m_children |= SizeHint;
     m_sizeHint = a;
+}
+
+void DomCustomWidget::setElementAddPageMethod(const QString& a)
+{
+    m_children |= AddPageMethod;
+    m_addPageMethod = a;
 }
 
 void DomCustomWidget::setElementContainer(int a)
@@ -1607,6 +1666,13 @@ void DomCustomWidget::setElementProperties(DomProperties* a)
     m_properties = a;
 }
 
+void DomCustomWidget::setElementSlots(DomSlots* a)
+{
+    delete m_slots;
+    m_children |= Slots;
+    m_slots = a;
+}
+
 void DomCustomWidget::clearElementClass()
 {
     m_children &= ~Class;
@@ -1629,6 +1695,11 @@ void DomCustomWidget::clearElementSizeHint()
     delete m_sizeHint;
     m_sizeHint = 0;
     m_children &= ~SizeHint;
+}
+
+void DomCustomWidget::clearElementAddPageMethod()
+{
+    m_children &= ~AddPageMethod;
 }
 
 void DomCustomWidget::clearElementContainer()
@@ -1660,6 +1731,13 @@ void DomCustomWidget::clearElementProperties()
     delete m_properties;
     m_properties = 0;
     m_children &= ~Properties;
+}
+
+void DomCustomWidget::clearElementSlots()
+{
+    delete m_slots;
+    m_slots = 0;
+    m_children &= ~Slots;
 }
 
 void DomProperties::clear(bool clear_all)
@@ -2079,6 +2157,7 @@ void DomLayout::clear(bool clear_all)
     if (clear_all) {
     m_text = QString();
     m_has_attr_class = false;
+    m_has_attr_name = false;
     }
 
 }
@@ -2086,6 +2165,7 @@ void DomLayout::clear(bool clear_all)
 DomLayout::DomLayout()
 {
     m_has_attr_class = false;
+    m_has_attr_name = false;
 }
 
 DomLayout::~DomLayout()
@@ -2105,6 +2185,8 @@ void DomLayout::read(const QDomElement &node)
 {
     if (node.hasAttribute(QLatin1String("class")))
         setAttributeClass(node.attribute(QLatin1String("class")));
+    if (node.hasAttribute(QLatin1String("name")))
+        setAttributeName(node.attribute(QLatin1String("name")));
 
     for (QDomNode n = node.firstChild(); !n.isNull(); n = n.nextSibling()) {
         if (!n.isElement())
@@ -2146,6 +2228,9 @@ QDomElement DomLayout::write(QDomDocument &doc, const QString &tagName) const
 
     if (hasAttributeClass())
         e.setAttribute(QLatin1String("class"), attributeClass());
+
+    if (hasAttributeName())
+        e.setAttribute(QLatin1String("name"), attributeName());
 
     for (int i = 0; i < m_property.size(); ++i) {
         DomProperty* v = m_property[i];
@@ -2631,6 +2716,7 @@ void DomWidget::clear(bool clear_all)
     for (int i = 0; i < m_addAction.size(); ++i)
         delete m_addAction[i];
     m_addAction.clear();
+    m_zOrder.clear();
 
     if (clear_all) {
     m_text = QString();
@@ -2689,6 +2775,7 @@ DomWidget::~DomWidget()
     for (int i = 0; i < m_addAction.size(); ++i)
         delete m_addAction[i];
     m_addAction.clear();
+    m_zOrder.clear();
 }
 
 void DomWidget::read(const QDomElement &node)
@@ -2781,6 +2868,10 @@ void DomWidget::read(const QDomElement &node)
             m_addAction.append(v);
             continue;
         }
+        if (tag == QLatin1String("zorder")) {
+            m_zOrder.append(e.text());
+            continue;
+        }
     }
 
     m_text.clear();
@@ -2871,6 +2962,12 @@ QDomElement DomWidget::write(QDomDocument &doc, const QString &tagName) const
         QDomNode child = v->write(doc, QLatin1String("addaction"));
         e.appendChild(child);
     }
+    for (int i = 0; i < m_zOrder.size(); ++i) {
+        QString v = m_zOrder[i];
+        QDomNode child = doc.createElement(QLatin1String("zorder"));
+        child.appendChild(doc.createTextNode(v));
+        e.appendChild(child);
+    }
     if (!m_text.isEmpty())
         e.appendChild(doc.createTextNode(m_text));
 
@@ -2940,6 +3037,11 @@ void DomWidget::setElementActionGroup(const QList<DomActionGroup*>& a)
 void DomWidget::setElementAddAction(const QList<DomActionRef*>& a)
 {
     m_addAction = a;
+}
+
+void DomWidget::setElementZOrder(const QStringList& a)
+{
+    m_zOrder = a;
 }
 
 void DomSpacer::clear(bool clear_all)
@@ -5200,6 +5302,285 @@ QDomElement DomResourcePixmap::write(QDomDocument &doc, const QString &tagName) 
     return e;
 }
 
+void DomResourceIcon::clear(bool clear_all)
+{
+    delete m_normalOff;
+    delete m_normalOn;
+    delete m_disabledOff;
+    delete m_disabledOn;
+    delete m_activeOff;
+    delete m_activeOn;
+    delete m_selectedOff;
+    delete m_selectedOn;
+
+    if (clear_all) {
+    m_text = QString();
+    m_has_attr_resource = false;
+    }
+
+    m_children = 0;
+    m_normalOff = 0;
+    m_normalOn = 0;
+    m_disabledOff = 0;
+    m_disabledOn = 0;
+    m_activeOff = 0;
+    m_activeOn = 0;
+    m_selectedOff = 0;
+    m_selectedOn = 0;
+}
+
+DomResourceIcon::DomResourceIcon()
+{
+    m_children = 0;
+    m_has_attr_resource = false;
+    m_normalOff = 0;
+    m_normalOn = 0;
+    m_disabledOff = 0;
+    m_disabledOn = 0;
+    m_activeOff = 0;
+    m_activeOn = 0;
+    m_selectedOff = 0;
+    m_selectedOn = 0;
+}
+
+DomResourceIcon::~DomResourceIcon()
+{
+    delete m_normalOff;
+    delete m_normalOn;
+    delete m_disabledOff;
+    delete m_disabledOn;
+    delete m_activeOff;
+    delete m_activeOn;
+    delete m_selectedOff;
+    delete m_selectedOn;
+}
+
+void DomResourceIcon::read(const QDomElement &node)
+{
+    if (node.hasAttribute(QLatin1String("resource")))
+        setAttributeResource(node.attribute(QLatin1String("resource")));
+
+    for (QDomNode n = node.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        if (!n.isElement())
+            continue;
+        QDomElement e = n.toElement();
+        QString tag = e.tagName().toLower();
+        if (tag == QLatin1String("normaloff")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementNormalOff(v);
+            continue;
+        }
+        if (tag == QLatin1String("normalon")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementNormalOn(v);
+            continue;
+        }
+        if (tag == QLatin1String("disabledoff")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementDisabledOff(v);
+            continue;
+        }
+        if (tag == QLatin1String("disabledon")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementDisabledOn(v);
+            continue;
+        }
+        if (tag == QLatin1String("activeoff")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementActiveOff(v);
+            continue;
+        }
+        if (tag == QLatin1String("activeon")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementActiveOn(v);
+            continue;
+        }
+        if (tag == QLatin1String("selectedoff")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementSelectedOff(v);
+            continue;
+        }
+        if (tag == QLatin1String("selectedon")) {
+            DomResourcePixmap *v = new DomResourcePixmap();
+            v->read(e);
+            setElementSelectedOn(v);
+            continue;
+        }
+    }
+
+    m_text.clear();
+    for (QDomNode child = node.firstChild(); !child.isNull(); child = child.nextSibling()) {
+        if (child.isText())
+            m_text.append(child.nodeValue());
+    }
+}
+
+QDomElement DomResourceIcon::write(QDomDocument &doc, const QString &tagName) const
+{
+    QDomElement e = doc.createElement(tagName.isEmpty() ? QString::fromUtf8("resourceicon") : tagName.toLower());
+
+    QDomElement child;
+
+    if (hasAttributeResource())
+        e.setAttribute(QLatin1String("resource"), attributeResource());
+
+    if (m_children & NormalOff) {
+        e.appendChild(m_normalOff->write(doc, QLatin1String("normaloff")));
+    }
+
+    if (m_children & NormalOn) {
+        e.appendChild(m_normalOn->write(doc, QLatin1String("normalon")));
+    }
+
+    if (m_children & DisabledOff) {
+        e.appendChild(m_disabledOff->write(doc, QLatin1String("disabledoff")));
+    }
+
+    if (m_children & DisabledOn) {
+        e.appendChild(m_disabledOn->write(doc, QLatin1String("disabledon")));
+    }
+
+    if (m_children & ActiveOff) {
+        e.appendChild(m_activeOff->write(doc, QLatin1String("activeoff")));
+    }
+
+    if (m_children & ActiveOn) {
+        e.appendChild(m_activeOn->write(doc, QLatin1String("activeon")));
+    }
+
+    if (m_children & SelectedOff) {
+        e.appendChild(m_selectedOff->write(doc, QLatin1String("selectedoff")));
+    }
+
+    if (m_children & SelectedOn) {
+        e.appendChild(m_selectedOn->write(doc, QLatin1String("selectedon")));
+    }
+
+    if (!m_text.isEmpty())
+        e.appendChild(doc.createTextNode(m_text));
+
+    return e;
+}
+
+void DomResourceIcon::setElementNormalOff(DomResourcePixmap* a)
+{
+    delete m_normalOff;
+    m_children |= NormalOff;
+    m_normalOff = a;
+}
+
+void DomResourceIcon::setElementNormalOn(DomResourcePixmap* a)
+{
+    delete m_normalOn;
+    m_children |= NormalOn;
+    m_normalOn = a;
+}
+
+void DomResourceIcon::setElementDisabledOff(DomResourcePixmap* a)
+{
+    delete m_disabledOff;
+    m_children |= DisabledOff;
+    m_disabledOff = a;
+}
+
+void DomResourceIcon::setElementDisabledOn(DomResourcePixmap* a)
+{
+    delete m_disabledOn;
+    m_children |= DisabledOn;
+    m_disabledOn = a;
+}
+
+void DomResourceIcon::setElementActiveOff(DomResourcePixmap* a)
+{
+    delete m_activeOff;
+    m_children |= ActiveOff;
+    m_activeOff = a;
+}
+
+void DomResourceIcon::setElementActiveOn(DomResourcePixmap* a)
+{
+    delete m_activeOn;
+    m_children |= ActiveOn;
+    m_activeOn = a;
+}
+
+void DomResourceIcon::setElementSelectedOff(DomResourcePixmap* a)
+{
+    delete m_selectedOff;
+    m_children |= SelectedOff;
+    m_selectedOff = a;
+}
+
+void DomResourceIcon::setElementSelectedOn(DomResourcePixmap* a)
+{
+    delete m_selectedOn;
+    m_children |= SelectedOn;
+    m_selectedOn = a;
+}
+
+void DomResourceIcon::clearElementNormalOff()
+{
+    delete m_normalOff;
+    m_normalOff = 0;
+    m_children &= ~NormalOff;
+}
+
+void DomResourceIcon::clearElementNormalOn()
+{
+    delete m_normalOn;
+    m_normalOn = 0;
+    m_children &= ~NormalOn;
+}
+
+void DomResourceIcon::clearElementDisabledOff()
+{
+    delete m_disabledOff;
+    m_disabledOff = 0;
+    m_children &= ~DisabledOff;
+}
+
+void DomResourceIcon::clearElementDisabledOn()
+{
+    delete m_disabledOn;
+    m_disabledOn = 0;
+    m_children &= ~DisabledOn;
+}
+
+void DomResourceIcon::clearElementActiveOff()
+{
+    delete m_activeOff;
+    m_activeOff = 0;
+    m_children &= ~ActiveOff;
+}
+
+void DomResourceIcon::clearElementActiveOn()
+{
+    delete m_activeOn;
+    m_activeOn = 0;
+    m_children &= ~ActiveOn;
+}
+
+void DomResourceIcon::clearElementSelectedOff()
+{
+    delete m_selectedOff;
+    m_selectedOff = 0;
+    m_children &= ~SelectedOff;
+}
+
+void DomResourceIcon::clearElementSelectedOn()
+{
+    delete m_selectedOn;
+    m_selectedOn = 0;
+    m_children &= ~SelectedOn;
+}
+
 void DomString::clear(bool clear_all)
 {
 
@@ -5757,6 +6138,7 @@ void DomProperty::clear(bool clear_all)
     delete m_sizeF;
     delete m_char;
     delete m_url;
+    delete m_brush;
 
     if (clear_all) {
     m_text = QString();
@@ -5794,6 +6176,7 @@ void DomProperty::clear(bool clear_all)
     m_url = 0;
     m_uInt = 0;
     m_uLongLong = 0;
+    m_brush = 0;
 }
 
 DomProperty::DomProperty()
@@ -5830,6 +6213,7 @@ DomProperty::DomProperty()
     m_url = 0;
     m_uInt = 0;
     m_uLongLong = 0;
+    m_brush = 0;
 }
 
 DomProperty::~DomProperty()
@@ -5854,6 +6238,7 @@ DomProperty::~DomProperty()
     delete m_sizeF;
     delete m_char;
     delete m_url;
+    delete m_brush;
 }
 
 void DomProperty::read(const QDomElement &node)
@@ -5901,7 +6286,7 @@ void DomProperty::read(const QDomElement &node)
             continue;
         }
         if (tag == QLatin1String("iconset")) {
-            DomResourcePixmap *v = new DomResourcePixmap();
+            DomResourceIcon *v = new DomResourceIcon();
             v->read(e);
             setElementIconSet(v);
             continue;
@@ -6036,6 +6421,12 @@ void DomProperty::read(const QDomElement &node)
             setElementULongLong(e.text().toULongLong());
             continue;
         }
+        if (tag == QLatin1String("brush")) {
+            DomBrush *v = new DomBrush();
+            v->read(e);
+            setElementBrush(v);
+            continue;
+        }
     }
 
     m_text.clear();
@@ -6110,7 +6501,7 @@ QDomElement DomProperty::write(QDomDocument &doc, const QString &tagName) const
             break;
         }
         case IconSet: {
-            DomResourcePixmap* v = elementIconSet();
+            DomResourceIcon* v = elementIconSet();
             if (v != 0) {
                 QDomElement child = v->write(doc, QLatin1String("iconset"));
                 e.appendChild(child);
@@ -6302,6 +6693,14 @@ QDomElement DomProperty::write(QDomDocument &doc, const QString &tagName) const
             e.appendChild(child);
             break;
         }
+        case Brush: {
+            DomBrush* v = elementBrush();
+            if (v != 0) {
+                QDomElement child = v->write(doc, QLatin1String("brush"));
+                e.appendChild(child);
+            }
+            break;
+        }
         default:
             break;
     }
@@ -6360,7 +6759,7 @@ void DomProperty::setElementFont(DomFont* a)
     m_font = a;
 }
 
-void DomProperty::setElementIconSet(DomResourcePixmap* a)
+void DomProperty::setElementIconSet(DomResourceIcon* a)
 {
     clear(false);
     m_kind = IconSet;
@@ -6533,6 +6932,13 @@ void DomProperty::setElementULongLong(qulonglong a)
     clear(false);
     m_kind = ULongLong;
     m_uLongLong = a;
+}
+
+void DomProperty::setElementBrush(DomBrush* a)
+{
+    clear(false);
+    m_kind = Brush;
+    m_brush = a;
 }
 
 void DomConnections::clear(bool clear_all)
@@ -7128,4 +7534,85 @@ void DomDesignerData::setElementProperty(const QList<DomProperty*>& a)
     m_property = a;
 }
 
+void DomSlots::clear(bool clear_all)
+{
+    m_slot.clear();
+    m_signal.clear();
+
+    if (clear_all) {
+    m_text = QString();
+    }
+
+}
+
+DomSlots::DomSlots()
+{
+}
+
+DomSlots::~DomSlots()
+{
+    m_slot.clear();
+    m_signal.clear();
+}
+
+void DomSlots::read(const QDomElement &node)
+{
+
+    for (QDomNode n = node.firstChild(); !n.isNull(); n = n.nextSibling()) {
+        if (!n.isElement())
+            continue;
+        QDomElement e = n.toElement();
+        QString tag = e.tagName().toLower();
+        if (tag == QLatin1String("slot")) {
+            m_slot.append(e.text());
+            continue;
+        }
+        if (tag == QLatin1String("signal")) {
+            m_signal.append(e.text());
+            continue;
+        }
+    }
+
+    m_text.clear();
+    for (QDomNode child = node.firstChild(); !child.isNull(); child = child.nextSibling()) {
+        if (child.isText())
+            m_text.append(child.nodeValue());
+    }
+}
+
+QDomElement DomSlots::write(QDomDocument &doc, const QString &tagName) const
+{
+    QDomElement e = doc.createElement(tagName.isEmpty() ? QString::fromUtf8("slots") : tagName.toLower());
+
+    QDomElement child;
+
+    for (int i = 0; i < m_slot.size(); ++i) {
+        QString v = m_slot[i];
+        QDomNode child = doc.createElement(QLatin1String("slot"));
+        child.appendChild(doc.createTextNode(v));
+        e.appendChild(child);
+    }
+    for (int i = 0; i < m_signal.size(); ++i) {
+        QString v = m_signal[i];
+        QDomNode child = doc.createElement(QLatin1String("signal"));
+        child.appendChild(doc.createTextNode(v));
+        e.appendChild(child);
+    }
+    if (!m_text.isEmpty())
+        e.appendChild(doc.createTextNode(m_text));
+
+    return e;
+}
+
+void DomSlots::setElementSlot(const QStringList& a)
+{
+    m_slot = a;
+}
+
+void DomSlots::setElementSignal(const QStringList& a)
+{
+    m_signal = a;
+}
+
+QT_END_NAMESPACE
 

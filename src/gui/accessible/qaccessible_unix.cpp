@@ -53,9 +53,11 @@
 
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QAccessibleBridgeFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/accessiblebridge")))
+    (QAccessibleBridgeFactoryInterface_iid, QLatin1String("/accessiblebridge")))
 #endif
 Q_GLOBAL_STATIC(QVector<QAccessibleBridge *>, bridges)
 static bool isInit = false;
@@ -128,4 +130,7 @@ void QAccessible::setRootObject(QObject *o)
     }
 }
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_ACCESSIBILITY
+

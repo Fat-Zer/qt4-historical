@@ -67,15 +67,26 @@
 #include <errno.h>
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
+
 extern int qvfb_protocol;
 
-QVFbView::QVFbView(int id, int w, int h, int d, Rotation r, QWidget *parent)
+QVFbAbstractView::QVFbAbstractView( QWidget *parent )
 #ifdef QVFB_USE_GLWIDGET
-    : QGLWidget(parent),
+    : QGLWidget( parent )
 #else
-      : QWidget(parent),
+    : QWidget( parent )
 #endif
-        viewdepth(d), rsh(0), gsh(0), bsh(0), rmax(15), gmax(15), bmax(15),
+{
+}
+
+QVFbAbstractView::~QVFbAbstractView()
+{
+}
+
+QVFbView::QVFbView(int id, int w, int h, int d, Rotation r, QWidget *parent)
+        : QVFbAbstractView(parent),
+          viewdepth(d), viewFormat(DefaultFormat), rsh(0), gsh(0), bsh(0), rmax(15), gmax(15), bmax(15),
         contentsWidth(w), contentsHeight(h), gred(1.0), ggreen(1.0), gblue(1.0),
         gammatable(0), refreshRate(30), animation(0),
         hzm(1.0), vzm(1.0), mView(0),
@@ -97,7 +108,7 @@ QVFbView::QVFbView(int id, int w, int h, int d, Rotation r, QWidget *parent)
     connect(mView, SIGNAL(displayDataChanged(const QRect &)),
             SLOT(refreshDisplay(const QRect &)));
 
-    setAttribute(Qt::WA_PaintOnScreen, true);
+    setAttribute(Qt::WA_PaintOnScreen, viewFormat != ARGBFormat);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NoSystemBackground);
@@ -126,9 +137,6 @@ void QVFbView::setRate(int i)
 
 void QVFbView::setGamma(double gr, double gg, double gb)
 {
-    if (viewdepth < 12)
-	return; // not implemented
-
     gred = gr; ggreen = gg; gblue = gb;
 
     switch (viewdepth) {
@@ -140,6 +148,14 @@ void QVFbView::setGamma(double gr, double gg, double gb)
 	gmax = 15;
 	bmax = 15;
 	break;
+    case 15:
+        rsh = 10;
+        gsh = 5;
+        bsh = 0;
+        rmax = 31;
+        gmax = 31;
+        bmax = 31;
+        break;
     case 16:
 	rsh = 11;
 	gsh = 5;
@@ -210,6 +226,11 @@ int QVFbView::displayHeight() const
 int QVFbView::displayDepth() const
 {
     return viewdepth;
+}
+
+QVFbView::PixelFormat QVFbView::displayFormat() const
+{
+    return viewFormat;
 }
 
 QVFbView::Rotation QVFbView::displayRotation() const
@@ -293,147 +314,38 @@ void QVFbView::refreshDisplay(const QRect &r)
     }
 }
 
+static void dim(QRgb* rgb, int n, int brightness)
+{
+    uchar* b = (uchar*)rgb;
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN
+    b++;
+#endif
+    while (n--) {
+        b[0] = (uint)b[0] * brightness / 255;
+        b[1] = (uint)b[1] * brightness / 255;
+        b[2] = (uint)b[2] * brightness / 255;
+        b += 4;
+    }
+}
+
 QImage QVFbView::getBuffer(const QRect &r, int &leading) const
 {
+    const int brightness = mView->brightness();
+    if ( brightness == 0 ) {
+        QImage img(r.size(),QImage::Format_RGB32);
+        img.fill(0);
+        leading = 0;
+        return img;
+    }
+
     static QByteArray buffer;
 
     const int requiredSize = r.width() * r.height() * 4;
 
+    QImage img;
+    leading = 0;
+
     switch (viewdepth) {
-    case 12:
-    case 16: {
-        if (requiredSize > buffer.size())
-            buffer.resize(requiredSize);
-        uchar *b = reinterpret_cast<uchar*>(buffer.data());
-	QImage img(b, r.width(), r.height(), QImage::Format_RGB32);
-	const int rsh = viewdepth == 12 ? 12 : 11;
-	const int gsh = viewdepth == 12 ? 7 : 5;
-	const int bsh = viewdepth == 12 ? 1 : 0;
-	const int rmax = viewdepth == 12 ? 15 : 31;
-	const int gmax = viewdepth == 12 ? 15 : 63;
-	const int bmax = viewdepth == 12 ? 15 : 31;
-	for (int row = 0; row < r.height(); row++) {
-	    QRgb *dptr = (QRgb*)img.scanLine(row);
-	    ushort *sptr = (ushort*)(mView->data() + (r.y()+row)*mView->linestep());
-	    sptr += r.x();
-	    for (int col=0; col < r.width(); col++) {
-		ushort s = *sptr++;
-		*dptr++ = qRgb(qRed(gammatable[(s >> rsh) & rmax]),
-                               qGreen(gammatable[(s >> gsh) & gmax]),
-                               qBlue(gammatable[(s >> bsh) & bmax]));
-		//*dptr++ = qRgb(((s>>rsh)&rmax)*255/rmax,((s>>gsh)&gmax)*255/gmax,((s>>bsh)&bmax)*255/bmax);
-	    }
-	}
-	leading = 0;
-	return img;
-    }
-    case 4: {
-        if (requiredSize > buffer.size())
-            buffer.resize(requiredSize);
-
-        // XXX: hw: replace by drawhelper functionality
-
-        const int pixelsPerByte = 2;
-        const int doAlign = r.x() & 1;
-        const int doTail = (r.width() - doAlign) & 1;
-        const int width8 = (r.width() - doAlign) / pixelsPerByte;
-
-        uchar *b = reinterpret_cast<uchar*>(buffer.data());
-	QImage img(b, r.width(), r.height(), QImage::Format_RGB32);
-	for (int y = 0; y < r.height(); ++y) {
-            const quint8 *sptr = mView->data()
-                                 + (r.y() + y) * mView->linestep()
-                                 + r.x() / pixelsPerByte;
-            quint32 *dptr = reinterpret_cast<quint32*>(img.scanLine(y));
-
-            if (doAlign) {
-                quint8 c = (*sptr++ & 0x0f);
-                c |= (c << 4);
-                *dptr++ = qRgb(c, c, c);
-            }
-
-            for (int i = 0; i < width8; ++i) {
-                quint8 c1 = (*sptr >> 4);
-                quint8 c2 = (*sptr & 0x0f);
-                c1 |= (c1 << 4);
-                c2 |= (c2 << 4);
-		*dptr++ = qRgb(c1, c1, c1);
-		*dptr++ = qRgb(c2, c2, c2);
-                ++sptr;
-	    }
-
-            if (doTail) {
-                quint8 c = *sptr >> 4;
-                c |= (c << 4);
-                *dptr = qRgb(c, c, c);
-            }
-	}
-	leading = 0;
-	return img;
-    }
-    case 18: {
-        // packed into 24 bpp
-        if (requiredSize > buffer.size())
-            buffer.resize(requiredSize);
-        uchar *b = reinterpret_cast<uchar*>(buffer.data());
-	QImage img(b, r.width(), r.height(), QImage::Format_RGB32);
-        const int rsh = 12;
-        const int gsh = 6;
-        const int bsh = 0;
-        const int rmax = 63;
-        const int gmax = 63;
-        const int bmax = 63;
-	for (int row = 0; row < r.height(); row++) {
-	    QRgb *dptr = (QRgb*)img.scanLine(row);
-            uchar *sptr = (uchar*)(mView->data() + (r.y()+row)*mView->linestep());
-	    sptr += r.x()*3;
-	    for (int col=0; col < r.width(); col++) {
-                uint s = *(reinterpret_cast<uint*>(sptr));
-                s &= 0x00ffffff;
-                sptr += 3;
-                *dptr++ = qRgb(qRed(gammatable[(s >> rsh) & rmax]),
-                               qGreen(gammatable[(s >> gsh) & gmax]),
-                               qBlue(gammatable[(s >> bsh) & bmax]));
-	    }
-	}
-	leading = 0;
-	return img;
-    }
-    case 24: {
-        static unsigned char *imgData = 0;
-        if (!imgData) {
-            int bpl = mView->width() *4;
-            imgData = new unsigned char[bpl * mView->height()];
-        }
-        QImage img(imgData, r.width(), r.height(), QImage::Format_RGB32);
-        for (int row = 0; row < r.height(); ++row) {
-            uchar *dptr = img.scanLine(row);
-            const uchar *sptr = mView->data() + (r.y() + row) * mView->linestep();
-            sptr += r.x() * 3;
-            for (int col = 0; col < r.width(); ++col) {
-                *dptr++ = *sptr++;
-                *dptr++ = *sptr++;
-                *dptr++ = *sptr++;
-                dptr++;
-            }
-        }
-        leading = 0;
-        return img;
-    }
-    case 32: {
-        leading = 0;
-	return QImage(mView->data() + r.y() * mView->linestep() + r.x() * 4,
-                      r.width(), r.height(), mView->linestep(),
-                      QImage::Format_RGB32);
-    }
-    case 8: {
-        leading = 0;
-        QImage img(mView->data() + r.y() * mView->linestep() + r.x(),
-                   r.width(), r.height(), mView->linestep(),
-                   QImage::Format_Indexed8);
-        img.setColorTable(mView->clut());
-        return img;
-    }
     case 1: {
         if (requiredSize > buffer.size())
             buffer.resize(requiredSize);
@@ -451,7 +363,7 @@ QImage QVFbView::getBuffer(const QRect &r, int &leading) const
         const int stride = mView->linestep() - (width8 + doAlign);
 
         uchar *b = reinterpret_cast<uchar*>(buffer.data());
-	QImage img(b, r.width(), r.height(), QImage::Format_RGB32);
+	img = QImage(b, r.width(), r.height(), QImage::Format_RGB32);
 	for (int y = 0; y < r.height(); ++y) {
             quint32 *dest = reinterpret_cast<quint32*>(img.scanLine(y));
             quint8 c;
@@ -515,11 +427,109 @@ QImage QVFbView::getBuffer(const QRect &r, int &leading) const
             }
             src += stride;
         }
-	leading = 0;
-	return img;
+        break;
     }
+    case 4: {
+        if (requiredSize > buffer.size())
+            buffer.resize(requiredSize);
+
+        // XXX: hw: replace by drawhelper functionality
+
+        const int pixelsPerByte = 2;
+        const int doAlign = r.x() & 1;
+        const int doTail = (r.width() - doAlign) & 1;
+        const int width8 = (r.width() - doAlign) / pixelsPerByte;
+
+        uchar *b = reinterpret_cast<uchar*>(buffer.data());
+	img = QImage(b, r.width(), r.height(), QImage::Format_RGB32);
+	for (int y = 0; y < r.height(); ++y) {
+            const quint8 *sptr = mView->data()
+                                 + (r.y() + y) * mView->linestep()
+                                 + r.x() / pixelsPerByte;
+            quint32 *dptr = reinterpret_cast<quint32*>(img.scanLine(y));
+
+            if (doAlign) {
+                quint8 c = (*sptr++ & 0x0f);
+                c |= (c << 4);
+                *dptr++ = qRgb(c, c, c);
+            }
+
+            for (int i = 0; i < width8; ++i) {
+                quint8 c1 = (*sptr >> 4);
+                quint8 c2 = (*sptr & 0x0f);
+                c1 |= (c1 << 4);
+                c2 |= (c2 << 4);
+		*dptr++ = qRgb(c1, c1, c1);
+		*dptr++ = qRgb(c2, c2, c2);
+                ++sptr;
+	    }
+
+            if (doTail) {
+                quint8 c = *sptr >> 4;
+                c |= (c << 4);
+                *dptr = qRgb(c, c, c);
+            }
+	}
+        break;
     }
-    return QImage();
+    case 12:
+	img = QImage((const uchar*)(mView->data() + r.y() * mView->linestep() + r.x() * 2),
+                     r.width(), r.height(), mView->linestep(),
+                     QImage::Format_RGB444);
+        break;
+    case 15:
+	img = QImage((const uchar*)(mView->data() + r.y() * mView->linestep() + r.x() * 2),
+                     r.width(), r.height(), mView->linestep(),
+                     QImage::Format_RGB555);
+        break;
+    case 16:
+	img = QImage((const uchar*)(mView->data() + r.y() * mView->linestep() + r.x() * 2),
+                     r.width(), r.height(), mView->linestep(),
+                     QImage::Format_RGB16);
+        break;
+    case 18:
+	img = QImage((const uchar*)(mView->data() + r.y() * mView->linestep() + r.x() * 3),
+                     r.width(), r.height(), mView->linestep(),
+                     QImage::Format_RGB666);
+        break;
+    case 24:
+	img = QImage((const uchar*)(mView->data() + r.y() * mView->linestep() + r.x() * 3),
+                      r.width(), r.height(), mView->linestep(),
+                     QImage::Format_RGB888);
+        break;
+    case 32:
+	img = QImage((const uchar*)(mView->data() + r.y() * mView->linestep() + r.x() * 4),
+                     r.width(), r.height(), mView->linestep(),
+                     viewFormat == ARGBFormat ? QImage::Format_ARGB32_Premultiplied : QImage::Format_RGB32);
+        break;
+    case 8:
+        img = QImage(mView->data() + r.y() * mView->linestep() + r.x(),
+                   r.width(), r.height(), mView->linestep(),
+                   QImage::Format_Indexed8);
+        img.setColorTable(mView->clut());
+        if (img.numColors() <= 0)
+            img = QImage();
+        break;
+    }
+
+    if ( brightness != 255 ) {
+        if (img.format() == QImage::Format_Indexed8) {
+            QVector<QRgb> c = img.colorTable();
+            dim(c.data(),c.count(),brightness);
+            img.setColorTable(c);
+        } else {
+            if ( img.format() != QImage::Format_ARGB32_Premultiplied )
+                img = img.convertToFormat(QImage::Format_RGB32);
+
+            // NOTE: calling bits() may change numBytes(), so do not
+            // pass them as parameters (which are evaluated right-to-left).
+            QRgb *b = (QRgb*)img.bits();
+            int n = img.numBytes()/4;
+            dim(b,n,brightness);
+        }
+    }
+
+    return img;
 }
 
 static int findMultiple(int start, double m, int limit, int step)
@@ -625,6 +635,10 @@ void QVFbView::drawScreen(const QRect &rect)
     }
 
     QPainter p(this);
+    if (viewFormat == ARGBFormat) {
+        QPixmap bg(":/res/images/logo.png");
+        p.fillRect(x1,y1,pm.width(), pm.height(), QBrush(bg));
+    }
     p.drawPixmap(x1, y1, pm, leadingX, leadingY, pm.width(), pm.height());
 }
 
@@ -690,6 +704,28 @@ void QVFbView::setLcdScreenEmulation(bool b)
     emulateLcdScreen = b;
 }
 
+void QVFbView::setViewFormat(PixelFormat f)
+{
+    if (viewFormat == f)
+        return;
+    viewFormat = f;
+    setAttribute(Qt::WA_PaintOnScreen, viewFormat != ARGBFormat);
+}
+
+
+bool QVFbView::event(QEvent *e)
+{
+    if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
+        QKeyEvent *ke = static_cast<QKeyEvent*>(e);
+        sendKeyboardData(ke->text(), ke->key(),
+		     ke->modifiers()&(Qt::ShiftModifier|Qt::ControlModifier|Qt::AltModifier),
+                         ke->type() == QEvent::KeyPress, ke->isAutoRepeat());
+        ke->accept();
+        return true;
+    }
+    return QVFbAbstractView::event(e);
+}
+
 void QVFbView::keyPressEvent(QKeyEvent *e)
 {
     sendKeyboardData(e->text(), e->key(),
@@ -739,3 +775,5 @@ void QVFbView::skinKeyReleaseEvent(int code, const QString& text, bool autorep)
     QKeyEvent e(QEvent::KeyRelease,code,0,text,autorep);
     keyReleaseEvent(&e);
 }
+
+QT_END_NAMESPACE

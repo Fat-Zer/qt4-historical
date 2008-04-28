@@ -51,9 +51,11 @@ int main(int argc, char *argv[])
 
     QString locale = QLocale::system().name();
 
+//! [0]
     QTranslator translator;
     translator.load(QString("trollprint_") + locale);
     app.installTranslator(&translator);
+//! [0]
 
     MainWindow mainWindow;
     mainWindow.show();

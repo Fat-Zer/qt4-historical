@@ -45,17 +45,16 @@
   webxmlgenerator.cpp
 */
 
+#include <QtXml>
+
 #include "codemarker.h"
 #include "pagegenerator.h"
 #include "webxmlgenerator.h"
 #include "node.h"
 #include "separator.h"
 #include "tree.h"
-#include <ctype.h>
 
-#include <qdebug.h>
-#include <qlist.h>
-#include <qiterator.h>
+QT_BEGIN_NAMESPACE
 
 #define COMMAND_VERSION                 Doc::alias("version")
 
@@ -71,6 +70,16 @@ WebXMLGenerator::~WebXMLGenerator()
 void WebXMLGenerator::initializeGenerator(const Config &config)
 {
     Generator::initializeGenerator(config);
+
+    project = config.getString(CONFIG_PROJECT);
+
+    projectDescription = config.getString(CONFIG_DESCRIPTION);
+    if (projectDescription.isEmpty() && !project.isEmpty())
+        projectDescription = project + " Reference Documentation";
+
+    projectUrl = config.getString(CONFIG_URL);
+
+    generateIndex = config.getBool(CONFIG_GENERATEINDEX);
 }
 
 void WebXMLGenerator::terminateGenerator()
@@ -92,6 +101,10 @@ void WebXMLGenerator::generateTree(const Tree *tree, CodeMarker *marker)
 {
     tre = tree;
     PageGenerator::generateTree(tree, marker);
+
+    if (generateIndex)
+        tre->generateIndex(outputDir() + "/" + project.toLower() + ".index",
+                           projectUrl, projectDescription, true);
 }
 
 void WebXMLGenerator::startText(const Node *relative, CodeMarker *marker)
@@ -104,8 +117,11 @@ void WebXMLGenerator::startText(const Node *relative, CodeMarker *marker)
     PageGenerator::startText(relative, marker);
 }
 
-int WebXMLGenerator::generateAtom(const Atom *atom, const Node *relative, CodeMarker *marker)
+int WebXMLGenerator::generateAtom(QXmlStreamWriter &writer, const Atom *atom,
+                                  const Node *relative, CodeMarker *marker)
 {
+    Q_UNUSED(writer);
+
     int skipAhead = 0;
 
     switch (atom->type()) {
@@ -115,189 +131,278 @@ int WebXMLGenerator::generateAtom(const Atom *atom, const Node *relative, CodeMa
     return skipAhead;
 }
 
-void WebXMLGenerator::generateClassLikeNode(const InnerNode *inner, CodeMarker *marker)
+void WebXMLGenerator::generateClassLikeNode(const InnerNode *inner,
+                                            CodeMarker *marker)
 {
-    QDomDocument document("WebXML");
-    QDomElement documentElement = document.createElement("document");
-    //documentElement.setAttribute("version", tre->version());
+    QByteArray data;
+    QXmlStreamWriter writer(&data);
+    writer.setAutoFormatting(true);
+    writer.writeStartDocument();
+    writer.writeStartElement("WebXML");
+    writer.writeStartElement("document");
 
-    QDomElement contentElement = generateIndexSections(document, inner, marker);
-    documentElement.appendChild(contentElement);
+    generateIndexSections(writer, inner, marker);
 
-    QDomProcessingInstruction process = document.createProcessingInstruction(
-        "xml", QString("version=\"1.0\" encoding=\"%1\"").arg("iso-8859-1"));
-    document.appendChild(process);
-    document.appendChild(documentElement);
+    writer.writeEndElement(); // document
+    writer.writeEndElement(); // WebXML
+    writer.writeEndDocument();
 
-    out() << document;
+    out() << data;
     out().flush();
 }
 
-void WebXMLGenerator::generateFakeNode( const FakeNode *fake, CodeMarker *marker )
+void WebXMLGenerator::generateFakeNode(const FakeNode *fake, CodeMarker *marker)
 {
-    QDomDocument document("WebXML");
-    QDomElement documentElement = document.createElement("document");
-    //documentElement.setAttribute("version", tre->version());
+    QByteArray data;
+    QXmlStreamWriter writer(&data);
+    writer.setAutoFormatting(true);
+    writer.writeStartDocument();
+    writer.writeStartElement("WebXML");
+    writer.writeStartElement("document");
 
-    QDomElement contentElement = generateIndexSections(document, fake, marker);
-    documentElement.appendChild(contentElement);
+    generateIndexSections(writer, fake, marker);
 
-    QDomProcessingInstruction process = document.createProcessingInstruction(
-        "xml", QString("version=\"1.0\" encoding=\"%1\"").arg("iso-8859-1"));
-    document.appendChild(process);
-    document.appendChild(documentElement);
+    writer.writeEndElement(); // document
+    writer.writeEndElement(); // WebXML
+    writer.writeEndDocument();
 
-    out() << document;
+    out() << data;
     out().flush();
 }
 
-QDomElement WebXMLGenerator::generateIndexSections(QDomDocument &document,
+void WebXMLGenerator::generateIndexSections(QXmlStreamWriter &writer,
                                  const Node *node, CodeMarker *marker)
 {
-    QDomElement element = tre->generateIndexSection(document, node);
+    if (tre->generateIndexSection(writer, node, true)) {
 
-    if (node->isInnerNode()) {
-        const InnerNode *inner = static_cast<const InnerNode *>(node);
-
-        foreach (Node *child, inner->childNodes()) {
-            // Recurse to generate a DOM element for this child node and all
-            // its children.
-            QDomElement childElement = generateIndexSections(document, child, marker);
-            element.appendChild(childElement);
-        }
-/*
-        foreach (Node *child, inner->relatedNodes()) {
-            QDomElement childElement = generateIndexSections(document, child, marker);
-            element.appendChild(childElement);
-        }
-*/
-    }
-
-    // Add documentation to this node if it exists.
-    if (!node->doc().isEmpty()) {
-        QDomElement descriptionElement = document.createElement("description");
+        // Add documentation to this node if it exists.
+        writer.writeStartElement("description");
+        writer.writeAttribute("path", node->doc().location().filePath());
+        writer.writeAttribute("line", QString::number(node->doc().location().lineNo()));
+        writer.writeAttribute("column", QString::number(node->doc().location().columnNo()));
         startText(node, marker);
 
         const Atom *atom = node->doc().body().firstAtom();
         while (atom)
-            atom = addAtomElements(descriptionElement, atom, node, marker);
-        element.appendChild(descriptionElement);
-    }
+            atom = addAtomElements(writer, atom, node, marker);
 
-    return element;
+        QList<Text> alsoList = node->doc().alsoList();
+        supplementAlsoList(node, alsoList);
+
+        if (!alsoList.isEmpty()) {
+            writer.writeStartElement("see-also");
+            for (int i = 0; i < alsoList.size(); ++i) {
+                const Atom *atom = alsoList.at(i).firstAtom();
+                while (atom)
+                    atom = addAtomElements(writer, atom, node, marker);
+            }
+            writer.writeEndElement(); // see-also
+        }
+
+        writer.writeEndElement(); // description
+
+        if (node->isInnerNode()) {
+            const InnerNode *inner = static_cast<const InnerNode *>(node);
+
+            // Recurse to generate an element for this child node and all its children.
+            foreach (Node *child, inner->childNodes())
+                generateIndexSections(writer, child, marker);
+
+            writer.writeStartElement("related");
+            if (inner->relatedNodes().size() > 0) {
+                foreach (Node *child, inner->relatedNodes())
+                    generateIndexSections(writer, child, marker);
+            }
+            writer.writeEndElement(); // related
+        }
+        writer.writeEndElement();
+    }
 }
 
-const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *atom,
-                                      const Node *relative, CodeMarker *marker)
+void WebXMLGenerator::generateInnerNode(const InnerNode *node, CodeMarker *marker)
 {
-    QDomElement atomElement;
-    QDomDocument document = parent.ownerDocument();
-    QDomText textNode;
+    if (!node->url().isNull())
+        return;
 
+    if (node->type() == Node::Fake) {
+        const FakeNode *fakeNode = static_cast<const FakeNode *>(node);
+        if (fakeNode->subType() == FakeNode::ExternalPage)
+            return;
+    }
+
+    if ( node->parent() != 0 ) {
+	beginSubPage( node->location(), fileName(node) );
+	if ( node->type() == Node::Namespace || node->type() == Node::Class) {
+	    generateClassLikeNode(node, marker);
+	} else if ( node->type() == Node::Fake ) {
+	    generateFakeNode(static_cast<const FakeNode *>(node), marker);
+	}
+	endSubPage();
+    }
+
+    NodeList::ConstIterator c = node->childNodes().begin();
+    while ( c != node->childNodes().end() ) {
+	if ((*c)->isInnerNode() && (
+            (*c)->access() != Node::Private || (*c)->status() == Node::Internal))
+	    generateInnerNode( (const InnerNode *) *c, marker );
+	++c;
+    }
+}
+
+const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
+     const Atom *atom, const Node *relative, CodeMarker *marker)
+{
     switch (atom->type()) {
     case Atom::AbstractLeft:
     case Atom::AbstractRight:
         break;
     case Atom::AutoLink:
-        if (!inLink && !inContents && !inSectionHeading) {
-            atomElement = document.createElement("link");
-            atomElement.setAttribute("href", atom->string());
-            textNode = document.createTextNode(atom->string());
-            atomElement.appendChild(textNode);
+        if (!inLink) {
+            writer.writeStartElement("link");
+            writer.writeAttribute("raw", atom->string());
+            const Node *node = findNode(atom, relative, marker);
+            if (node) {
+                writer.writeAttribute("href", tre->fullDocumentLocation(node));
+                QString type = targetType(node);
+                writer.writeAttribute("type", type);
+                switch (node->type()) {
+                case Node::Enum:
+                    writer.writeAttribute("enum", tre->fullDocumentName(node));
+                    break;
+                case Node::Fake:
+                    writer.writeAttribute("page", tre->fullDocumentName(node));
+                    break;
+                default:
+                    ;
+                }
+            } else
+                writer.writeAttribute("href", "");
         }
+        writer.writeCharacters(atom->string());
+        if (!inLink)
+            writer.writeEndElement(); // link
         break;
     case Atom::BaseName:
         break;
     case Atom::BriefLeft:
 
-        atomElement = document.createElement("brief");
-        if (relative->type() == Node::Property) {
-            textNode = document.createTextNode("This property holds ");
-            atomElement.appendChild(textNode);
-        } else {
-            textNode = document.createTextNode("This variable holds ");
-            atomElement.appendChild(textNode);
+        writer.writeStartElement("brief");
+        switch (relative->type()) {
+        case Node::Property:
+            writer.writeCharacters("This property");
+            break;
+        case Node::Variable:
+            writer.writeCharacters("This variable");
+            break;
+        default:
+            break;
         }
-        atom = atom->next();
-        while (atom && atom->type() != Atom::BriefRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
         if (relative->type() == Node::Property || relative->type() == Node::Variable) {
-            textNode = document.createTextNode(".");
-            atomElement.appendChild(textNode);
+            QString str;
+            const Atom *a = atom->next();
+            while (a != 0 && a->type() != Atom::BriefRight) {
+                if (a->type() == Atom::String || a->type() == Atom::AutoLink)
+                    str += a->string();
+                a = a->next();
+            }
+            str[0] = str[0].toLower();
+            if (str.right(1) == ".")
+                str.chop(1);
+
+            QStringList words = str.split(" ");
+            if (!(words.first() == "contains" || words.first() == "specifies"
+                || words.first() == "describes" || words.first() == "defines"
+                || words.first() == "holds" || words.first() == "determines"))
+                out() << " holds ";
+            else
+                out() << " ";
         }
         break;
 
     case Atom::BriefRight:
-        break;
-    case Atom::C:
-        atomElement = document.createElement("teletype");
-        if (inLink)
-            atomElement.setAttribute("type", "normal");
-        else
-            atomElement.setAttribute("type", "highlighted");
+        if (relative->type() == Node::Property || relative->type() == Node::Variable)
+            writer.writeCharacters(".");
 
-        textNode = document.createTextNode(plainCode(atom->string()));
-        atomElement.appendChild(textNode);
+        writer.writeEndElement(); // brief
+        break;
+
+    case Atom::C:
+        writer.writeStartElement("teletype");
+        if (inLink)
+            writer.writeAttribute("type", "normal");
+        else
+            writer.writeAttribute("type", "highlighted");
+
+        writer.writeCharacters(plainCode(atom->string()));
+        writer.writeEndElement(); // teletype
         break;
 
     case Atom::Code:
-        atomElement = document.createElement("code");
-        textNode = document.createTextNode(trimmedTrailing(plainCode(atom->string())));
-        atomElement.appendChild(textNode);
+        writer.writeTextElement("code", trimmedTrailing(plainCode(atom->string())));
         break;
 
     case Atom::CodeBad:
-        atomElement = document.createElement("badcode");
-        textNode = document.createTextNode(trimmedTrailing(plainCode(atom->string())));
-        atomElement.appendChild(textNode);
+        writer.writeTextElement("badcode", trimmedTrailing(plainCode(atom->string())));
         break;
 
     case Atom::CodeNew:
-        {
-            QDomElement paragraphElement = document.createElement("para");
-            QDomText paragraphText = document.createTextNode(
-                                     "you can rewrite it as");
-            paragraphElement.appendChild(paragraphText);
-            parent.appendChild(paragraphElement);
-
-            atomElement = document.createElement("newcode");
-            textNode = document.createTextNode(trimmedTrailing(
-                                               plainCode(atom->string())));
-            atomElement.appendChild(textNode);
-        }
+        writer.writeTextElement("para", "you can rewrite it as");
+        writer.writeTextElement("newcode", trimmedTrailing(plainCode(atom->string())));
         break;
 
     case Atom::CodeOld:
-        {
-            QDomElement paragraphElement = document.createElement("para");
-            QDomText paragraphText = document.createTextNode(
-                                     "For example, if you have code like");
-            paragraphElement.appendChild(paragraphText);
-            parent.appendChild(paragraphElement);
+        writer.writeTextElement("para", "For example, if you have code like");
+        writer.writeTextElement("oldcode", trimmedTrailing(plainCode(atom->string())));
+        break;
 
-            atomElement = document.createElement("oldcode");
-            textNode = document.createTextNode(trimmedTrailing(
-                                               plainCode(atom->string())));
-            atomElement.appendChild(textNode);
-        }
+    case Atom::CodeQuoteArgument:
+        writer.writeCharacters(atom->string());
+        writer.writeEndElement(); // code
+        break;
+
+    case Atom::CodeQuoteCommand:
+        writer.writeStartElement(atom->string());
         break;
 
     case Atom::FootnoteLeft:
-
-        atomElement = document.createElement("footnote");
-        atom = atom->next();
-        while (atom && atom->type() != Atom::FootnoteRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
+        writer.writeStartElement("footnote");
         break;
 
     case Atom::FootnoteRight:
+        writer.writeEndElement(); // footnote
         break;
+
     case Atom::FormatElse:
+        writer.writeStartElement("else");
+        writer.writeEndElement(); // else
+        break;
     case Atom::FormatEndif:
+        writer.writeEndElement(); // raw
+        break;
     case Atom::FormatIf:
+        writer.writeStartElement("raw");
+        writer.writeAttribute("format", atom->string());
         break;
     case Atom::FormattingLeft:
+	{
+            if (atom->string() == ATOM_FORMATTING_BOLD)
+                writer.writeStartElement("bold");
+	    else if (atom->string() == ATOM_FORMATTING_ITALIC)
+                writer.writeStartElement("italic");
+	    else if (atom->string() == ATOM_FORMATTING_UNDERLINE)
+                writer.writeStartElement("underline");
+	    else if (atom->string() == ATOM_FORMATTING_SUBSCRIPT)
+                writer.writeStartElement("subscript");
+	    else if (atom->string() == ATOM_FORMATTING_SUPERSCRIPT)
+                writer.writeStartElement("superscript");
+	    else if (atom->string() == ATOM_FORMATTING_TELETYPE)
+                writer.writeStartElement("teletype");
+	    else if (atom->string() == ATOM_FORMATTING_PARAMETER)
+                writer.writeStartElement("argument");
+	    else if (atom->string() == ATOM_FORMATTING_INDEX)
+                writer.writeStartElement("index");
+        }
+        break;
 /*        out() << formattingLeftMap()[atom->string()];
         if ( atom->string() == ATOM_FORMATTING_PARAMETER ) {
             if ( atom->next() != 0 && atom->next()->type() == Atom::String ) {
@@ -309,8 +414,30 @@ const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *at
                 }
             }
         }*/
-        break;
     case Atom::FormattingRight:
+	{
+            if (atom->string() == ATOM_FORMATTING_BOLD)
+                writer.writeEndElement();
+	    else if (atom->string() == ATOM_FORMATTING_ITALIC)
+                writer.writeEndElement();
+	    else if (atom->string() == ATOM_FORMATTING_UNDERLINE)
+                writer.writeEndElement();
+	    else if (atom->string() == ATOM_FORMATTING_SUBSCRIPT)
+                writer.writeEndElement();
+	    else if (atom->string() == ATOM_FORMATTING_SUPERSCRIPT)
+                writer.writeEndElement();
+	    else if (atom->string() == ATOM_FORMATTING_TELETYPE)
+                writer.writeEndElement();
+	    else if (atom->string() == ATOM_FORMATTING_PARAMETER)
+                writer.writeEndElement();
+	    else if (atom->string() == ATOM_FORMATTING_INDEX)
+                writer.writeEndElement();
+        }
+        if (inLink) {
+            writer.writeEndElement(); // link
+            inLink = false;
+        }
+	break;
 /*        if ( atom->string() == ATOM_FORMATTING_LINK ) {
             if (inLink) {
                 if ( link.isEmpty() ) {
@@ -324,9 +451,12 @@ const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *at
         } else {
             out() << formattingRightMap()[atom->string()];
         }*/
-        break;
     case Atom::GeneratedList:
-/*        if (atom->string() == "annotatedclasses") {
+        writer.writeStartElement("generatedlist");
+        writer.writeAttribute("contents", atom->string());
+        writer.writeEndElement(); // generatedlist
+/*
+        if (atom->string() == "annotatedclasses") {
             generateAnnotatedList(relative, marker, nonCompatClasses);
         } else if (atom->string() == "classes") {
             generateCompactList(relative, marker, nonCompatClasses);
@@ -370,74 +500,97 @@ const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *at
                 QMap<QString, const Node *> groupMembersMap;
                 foreach (Node *node, fake->groupMembers()) {
                     if (node->type() == Node::Fake)
-                        groupMembersMap[node->name()] = node;
+                        groupMembersMap[fullName(node, relative, marker)] = node;
                 }
                 generateAnnotatedList(fake, marker, groupMembersMap);
             }
+        } else if (atom->string() == "relatedinline") {
+            const FakeNode *fake = static_cast<const FakeNode *>(relative);
+            if (fake && !fake->groupMembers().isEmpty()) {
+                // Reverse the list into the original scan order.
+                // Should be sorted.  But on what?  It may not be a
+                // regular class or page definition.
+                QList<const Node *> list;
+                foreach (const Node *node, fake->groupMembers())
+                    list.prepend(node);
+                foreach (const Node *node, list)
+                    generateBody(node, marker );
+            }
         }
+        break;
 */
         break;
     case Atom::Image:
-        atomElement = document.createElement("image");
-        atomElement.setAttribute("href", atom->string());
+        writer.writeStartElement("image");
+        writer.writeAttribute("href", imageFileName(relative, atom->string()));
+        writer.writeEndElement(); // image
         break;
 
     case Atom::InlineImage:
-        atomElement = document.createElement("inlineimage");
-        atomElement.setAttribute("href", atom->string());
+        writer.writeStartElement("inlineimage");
+        writer.writeAttribute("href", imageFileName(relative, atom->string()));
+        writer.writeEndElement(); // inlineimage
         break;
 
     case Atom::ImageText:
         break;
-    case Atom::LegaleseLeft:
-        atomElement = document.createElement("legalese");
-        atom = atom->next();
-        while (atom && atom->type() != Atom::LegaleseRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
 
+    case Atom::LegaleseLeft:
+        writer.writeStartElement("legalese");
         break;
 
     case Atom::LegaleseRight:
+        writer.writeEndElement(); // legalese
         break;
 
     case Atom::Link:
-        atomElement = document.createElement("link");
-        atomElement.setAttribute("href", atom->string());
-        //inLink = true;
-        break;
-
     case Atom::LinkNode:
-        atomElement = document.createElement("link");
-        atomElement.setAttribute("href", atom->string());
-        //inLink = true;
+        if (!inLink) {
+            writer.writeStartElement("link");
+            writer.writeAttribute("raw", atom->string());
+            const Node *node = findNode(atom, relative, marker);
+            if (node) {
+                writer.writeAttribute("href", tre->fullDocumentLocation(node));
+                QString type = targetType(node);
+                writer.writeAttribute("type", type);
+                switch (node->type()) {
+                case Node::Enum:
+                    writer.writeAttribute("enum", tre->fullDocumentName(node));
+                    break;
+                case Node::Fake:
+                    writer.writeAttribute("page", tre->fullDocumentName(node));
+                    break;
+                default:
+                    ;
+                }
+            } else
+                writer.writeAttribute("href", "");
+            inLink = true;
+        }
         break;
 
     case Atom::ListLeft:
-        atomElement = document.createElement("list");
+        writer.writeStartElement("list");
+
         if (atom->string() == ATOM_LIST_BULLET)
-            atomElement.setAttribute("type", "bullet");
+            writer.writeAttribute("type", "bullet");
         else if (atom->string() == ATOM_LIST_TAG)
-            atomElement.setAttribute("type", "definition");
+            writer.writeAttribute("type", "definition");
         else if (atom->string() == ATOM_LIST_VALUE)
-            atomElement.setAttribute("type", "enum");
+            writer.writeAttribute("type", "enum");
         else {
-            atomElement.setAttribute("type", "ordered");
+            writer.writeAttribute("type", "ordered");
             if (atom->string() == ATOM_LIST_UPPERALPHA)
-                atomElement.setAttribute("start", "A");
+                writer.writeAttribute("start", "A");
             else if (atom->string() == ATOM_LIST_LOWERALPHA)
-                atomElement.setAttribute("start", "a");
+                writer.writeAttribute("start", "a");
             else if (atom->string() == ATOM_LIST_UPPERROMAN)
-                atomElement.setAttribute("start", "I");
+                writer.writeAttribute("start", "I");
             else if (atom->string() == ATOM_LIST_LOWERROMAN)
-                atomElement.setAttribute("start", "i");
+                writer.writeAttribute("start", "i");
             else // (atom->string() == ATOM_LIST_NUMERIC)
-                atomElement.setAttribute("start", "1");
+                writer.writeAttribute("start", "1");
         }
-
-        atom = atom->next();
-        while (atom && atom->type() != Atom::ListRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
         break;
 
     case Atom::ListItemNumber:
@@ -445,91 +598,69 @@ const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *at
 
     case Atom::ListTagLeft:
         {
-            atomElement = document.createElement("definition");
+            writer.writeStartElement("definition");
 
-            QDomElement termElement = document.createElement("term");
-            QDomText termTextNode = document.createTextNode(plainCode(
-                        marker->markedUpEnumValue(atom->next()->string(), relative)));
-            termElement.appendChild(termTextNode);
-            atomElement.appendChild(termElement);
-
-            atom = atom->next();
-            while (atom && atom->type() != Atom::ListTagRight)
-                atom = addAtomElements(atomElement, atom, relative, marker);
+            writer.writeTextElement("term", plainCode(
+                marker->markedUpEnumValue(atom->next()->string(), relative)));
         }
         break;
 
     case Atom::ListTagRight:
+        writer.writeEndElement(); // definition
         break;
 
     case Atom::ListItemLeft:
-        atomElement = document.createElement("item");
-        atom = atom->next();
-        while (atom && atom->type() != Atom::ListItemRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("item");
         break;
 
     case Atom::ListItemRight:
+        writer.writeEndElement(); // item
         break;
 
     case Atom::ListRight:
+        writer.writeEndElement(); // list
         break;
 
     case Atom::Nop:
         break;
 
     case Atom::ParaLeft:
-        atomElement = document.createElement("para");
-        atom = atom->next();
-        while (atom && atom->type() != Atom::ParaRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("para");
         break;
 
     case Atom::ParaRight:
+        writer.writeEndElement(); // para
         break;
 
     case Atom::QuotationLeft:
-        atomElement = document.createElement("quote");
-        atom = atom->next();
-        while (atom && atom->type() != Atom::QuotationRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("quote");
         break;
 
     case Atom::QuotationRight:
+        writer.writeEndElement(); // quote
         break;
 
     case Atom::RawString:
-        textNode = document.createTextNode(atom->string());
+        writer.writeCharacters(atom->string());
         break;
 
     case Atom::SectionLeft:
-        atomElement = document.createElement("section");
-        textNode = document.createTextNode(
-                   Doc::canonicalTitle(Text::sectionHeading(atom).toString()));
-        atom = atom->next();
-        while (atom && atom->type() != Atom::SectionRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("section");
+        writer.writeAttribute("id", Doc::canonicalTitle(Text::sectionHeading(atom).toString()));
         break;
 
     case Atom::SectionRight:
+        writer.writeEndElement(); // section
         break;
 
     case Atom::SectionHeadingLeft:
-        atomElement = document.createElement("heading");
-        atomElement.setAttribute("level", atom->string().toInt()); // + hOffset(relative)
-
+        writer.writeStartElement("heading");
+        writer.writeAttribute("level", atom->string()); // + hOffset(relative)
         inSectionHeading = true;
-        atom = atom->next();
-        while (atom && atom->type() != Atom::SectionHeadingRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
         break;
 
     case Atom::SectionHeadingRight:
+        writer.writeEndElement(); // heading
         inSectionHeading = false;
         break;
 
@@ -537,60 +668,60 @@ const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *at
     case Atom::SidebarRight:
         break;
 
+    case Atom::SnippetCommand:
+        writer.writeStartElement(atom->string());
+        break;
+
+    case Atom::SnippetIdentifier:
+        writer.writeAttribute("identifier", atom->string());
+        writer.writeEndElement(); // snippet
+        break;
+
+    case Atom::SnippetLocation:
+        writer.writeAttribute("location", atom->string());
+        break;
+
     case Atom::String:
-        textNode = document.createTextNode(atom->string());
+        writer.writeCharacters(atom->string());
         break;
 
     case Atom::TableLeft:
-        atomElement = document.createElement("table");
-
-        numTableRows = 0;
-        atom = atom->next();
-        while (atom && atom->type() != Atom::TableRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("table");
+        if (atom->string().contains("%"))
+            writer.writeAttribute("width", atom->string());
         break;
 
     case Atom::TableRight:
+        writer.writeEndElement(); // table
         break;
 
     case Atom::TableHeaderLeft:
-        atomElement = document.createElement("header");
-
-        atom = atom->next();
-        while (atom && atom->type() != Atom::TableHeaderRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("header");
         break;
 
     case Atom::TableHeaderRight:
+        writer.writeEndElement(); // header
         break;
 
     case Atom::TableRowLeft:
-        atomElement = document.createElement("row");
-
-        atom = atom->next();
-        while (atom && atom->type() != Atom::TableRowRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("row");
         break;
 
     case Atom::TableRowRight:
+        writer.writeEndElement(); // row
         break;
 
     case Atom::TableItemLeft:
-        atomElement = document.createElement("item");
-        atom = atom->next();
-        while (atom && atom->type() != Atom::TableItemRight)
-            atom = addAtomElements(atomElement, atom, relative, marker);
-
+        writer.writeStartElement("item");
         break;
 
     case Atom::TableItemRight:
+        writer.writeEndElement(); // item
         break;
 
     case Atom::TableOfContents:
-        atomElement = document.createElement("tableofcontents");
+        writer.writeStartElement("tableofcontents");
+        writer.writeAttribute("details", atom->string());
 /*        {
             int numColumns = 1;
             const Node *node = relative;
@@ -615,31 +746,26 @@ const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *at
                 generateTableOfContents(node, marker, sectioningUnit, numColumns,
                                         relative);
         }*/
+        writer.writeEndElement(); // tableofcontents
         break;
 
     case Atom::Target:
-        atomElement = document.createElement("target");
-        atomElement.setAttribute("name", Doc::canonicalTitle(atom->string()));
+        writer.writeStartElement("target");
+        writer.writeAttribute("name", Doc::canonicalTitle(atom->string()));
+        writer.writeEndElement(); // target
         break;
 
     case Atom::UnhandledFormat:
     case Atom::UnknownCommand:
-        textNode = document.createTextNode(atom->string());
+        writer.writeCharacters(atom->typeString());
         break;
     default:
         break;
     }
 
-/*    if (atom)
-        qDebug() << atom->typeString();*/
-    if (!atomElement.isNull())
-        parent.appendChild(atomElement);
-    else if (!textNode.isNull())
-        parent.appendChild(textNode);
-
     if (atom)
         return atom->next();
-    
+
     return 0;
 }
 /*
@@ -648,3 +774,102 @@ const Atom *WebXMLGenerator::addAtomElements(QDomElement &parent, const Atom *at
         atomElement.appendChild(atomValue);
         descriptionElement.appendChild(atomElement);
 */
+
+/*
+    ### Warning: findNode() is a modified version of HtmlGenerator::getLink().
+*/
+const Node *WebXMLGenerator::findNode(const Atom *atom, const Node *relative, CodeMarker *marker)
+{
+    QString link;
+    if (atom->string().contains(":") &&
+            (atom->string().startsWith("file:")
+             || atom->string().startsWith("http:")
+             || atom->string().startsWith("https:")
+             || atom->string().startsWith("ftp:")
+             || atom->string().startsWith("mailto:"))) {
+
+        return 0;
+    } else if (atom->string().count('@') == 1) {
+        return 0;
+    } else {
+        QStringList path;
+        if (atom->string().contains('#')) {
+            path = atom->string().split('#');
+        } else {
+            path.append(atom->string());
+        }
+
+        const Node *node = 0;
+        Atom *targetAtom = 0;
+
+        QString first = path.first().trimmed();
+        if (first.isEmpty()) {
+            node = relative;
+        } else if (first.endsWith(".html")) {
+            node = tre->root()->findNode(first, Node::Fake);
+        } else {
+            node = marker->resolveTarget(first, tre, relative);
+            if (!node)
+                node = tre->findFakeNodeByTitle(first);
+            if (!node)
+                node = tre->findUnambiguousTarget(first, targetAtom);
+        }
+
+        if (node) {
+            if (!node->url().isEmpty())
+                return 0;
+            else
+                path.removeFirst();
+        } else {
+            node = relative;
+        }
+
+        while (!path.isEmpty()) {
+            targetAtom = tre->findTarget(path.first(), node);
+            if (targetAtom == 0)
+                break;
+            path.removeFirst();
+        }
+
+        return node;
+    }
+    return 0;
+}
+
+QString WebXMLGenerator::targetType(const Node *node)
+{
+    switch (node->type()) {
+        case Node::Namespace:
+            return "namespace";
+            break;
+        case Node::Class:
+            return "class";
+            break;
+        case Node::Fake:
+            return "page";
+            break;
+        case Node::Enum:
+            return "enum";
+            break;
+        case Node::Typedef:
+            return "typedef";
+            break;
+        case Node::Property:
+            return "property";
+            break;
+        case Node::Function:
+            return "function";
+            break;
+        case Node::Variable:
+            return "variable";
+            break;
+        case Node::Target:
+            return "target";
+            break;
+        default:
+            return "";
+    }
+    return "";
+}
+
+QT_END_NAMESPACE

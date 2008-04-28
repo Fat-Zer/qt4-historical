@@ -60,6 +60,8 @@
 #include "qtoolbutton.h"
 #include "private/qwidget_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TABBAR
 
 class QTabBarPrivate  : public QWidgetPrivate
@@ -130,5 +132,7 @@ public:
 };
 
 #endif
+
+QT_END_NAMESPACE
 
 #endif

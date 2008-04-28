@@ -1,5 +1,48 @@
 /****************************************************************************
 **
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/****************************************************************************
+**
 ** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt GUI Toolkit.
@@ -40,6 +83,7 @@
     Andrew R. Tefft <teffta at crypt.erie.ge.com>\br
     Andrew Vajoczki <vajoczki at interlog.com>\br
     Andr\eacute Johansen <Andre.Johansen at funcom.no>\br
+    Andr\eacute Kramer <Andre.Kramer at glpg.com>\br     
     Andriy Rysin <arysin at yahoo.com>\br
     Andy Brice <andyb at suntail.net>\br
     Andy Shaw <andy at east.no>\br
@@ -102,6 +146,7 @@
     E. Kevin Hall <hall at boston.sgi.com>\br
     Ed Mackey <emackey at Early.com>\br
     Edmund Taylor <etaylor at interaccess.com>\br
+    Enrique Mat\iacute\c{}as S\aacute\c{}nchez <cronopios at gmail.com>\br
     Eric Bos <Eric.Bos at adelaide.maptek.com.au>\br
     Eric Brunson <brunson at brunson.com>\br
     Eric Jansen <jansen at photon.com>\br
@@ -125,6 +170,7 @@
     Geoffrey Higginson <ghiggins at gulf.uvic.ca>\br
     Georg Filios <Georg.Filios at post.rwth-aachen.de>\br
     George Simunovich <george at cia-g.com>\br
+    Giovanni Bajo <giovannibajo at gmail.com>\br
     Giovanni Carapelli <gcarapel at mbox.vol.it>\br
     Greg Tomalesky <tomalesk at yrkpa.kias.com>\br
     Gregg Jensen <gwj at stl.nexen.com>\br
@@ -136,6 +182,7 @@
     Heiko Gerdau <heiko.gerdau at t-online.de>\br
     Helder Correia <helder.pereira.correia at gmail.com>\br
     Henty Waker <henty at foxbat.sur.uct.ac.za>\br
+    Holger Hans Peter Freyther <zecke at selfish.org>\br
     Hrafnkell Eiriksson <hkelle at mmedia.is>\br
     Ildefonso Junquero Martin-Arroyo <junquero at sainsel.es>\br
     Ingo Stapel <ingo.stapel at tu-clausthal.de>\br
@@ -290,6 +337,7 @@
     Volker Hilsheimer <vohi at gmx.de>\br
     Volker Poplawski <volkerp at stepnet.de>\br
     Warwick Allison <warwick at it.uq.edu.au>\br
+    Witold Wysota <wysota at qtcentre.org>\br
     Xiaojian Li <lixj at monte.rutgers.edu>\br
     Ximenes <ximenes at netset.com>\br
     Y. N. Lo <ynlo at netcom.ca>\br

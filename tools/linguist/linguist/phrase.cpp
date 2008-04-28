@@ -45,10 +45,16 @@
 
 #include <QApplication>
 #include <QFile>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QRegExp>
+#include <QTextCodec>
 #include <QTextStream>
-#include <QtXml>
+#include <QXmlAttributes>
+#include <QXmlDefaultHandler>
+#include <QXmlParseException>
+
+QT_BEGIN_NAMESPACE
 
 static QString protect(const QString & str)
 {
@@ -61,16 +67,56 @@ static QString protect(const QString & str)
     return p;
 }
 
+Phrase::Phrase()
+    : shrtc(-1), m_phraseBook(0)
+{
+}
+
 Phrase::Phrase(const QString &source, const QString &target,
                const QString &definition, int sc)
-    : shrtc(sc), s(source), t(target), d(definition)
+    : shrtc(sc), s(source), t(target), d(definition),
+      m_phraseBook(0)
 {
+}
+
+Phrase::Phrase(const QString &source, const QString &target,
+               const QString &definition, PhraseBook *phraseBook)
+    : shrtc(-1), s(source), t(target), d(definition),
+      m_phraseBook(phraseBook)
+{
+}
+
+void Phrase::setSource(const QString &ns)
+{
+    if (s == ns)
+        return;
+    s = ns;
+    if (m_phraseBook)
+        m_phraseBook->phraseChanged(this);
+}
+
+void Phrase::setTarget(const QString &nt)
+{
+    if (t == nt)
+        return;
+    t = nt;
+    if (m_phraseBook)
+        m_phraseBook->phraseChanged(this);
+}
+
+void Phrase::setDefinition(const QString &nd)
+{
+    if (d == nd)
+        return;
+    d = nd;
+    if (m_phraseBook)
+        m_phraseBook->phraseChanged(this);
 }
 
 bool operator==(const Phrase &p, const Phrase &q)
 {
     return p.source() == q.source() && p.target() == q.target() &&
-        p.definition() == q.definition();
+        p.definition() == q.definition() && p.phraseBook() == q.phraseBook();
 }
 
 class QphHandler : public QXmlDefaultHandler
@@ -122,7 +168,7 @@ bool QphHandler::endElement(const QString & /* namespaceURI */,
     else if (qName == QString(QLatin1String("definition")))
         definition = accum;
     else if (qName == QString(QLatin1String("phrase")))
-        pb->append(Phrase(source, target, definition));
+        pb->m_phrases.append(new Phrase(source, target, definition, pb));
     return true;
 }
 
@@ -145,12 +191,24 @@ bool QphHandler::fatalError(const QXmlParseException &exception)
     return false;
 }
 
-bool PhraseBook::load(const QString &filename)
+PhraseBook::PhraseBook() :
+    m_changed(false)
 {
-    fn = filename;
-    QFile f(filename);
+}
+
+PhraseBook::~PhraseBook()
+{
+    foreach (Phrase *phrase, m_phrases)
+        delete phrase;
+}
+
+bool PhraseBook::load(const QString &fileName)
+{
+    QFile f(fileName);
     if (!f.open(QIODevice::ReadOnly))
         return false;
+
+    m_fileName = fileName;
 
     QXmlInputSource in(&f);
     QXmlSimpleReader reader;
@@ -168,39 +226,78 @@ bool PhraseBook::load(const QString &filename)
     reader.setErrorHandler(0);
     delete hand;
     f.close();
-    if (!ok)
-        clear();
+    if (!ok) {
+        foreach (Phrase *phrase, m_phrases)
+            delete phrase;
+    } else {
+        emit listChanged();
+}
     return ok;
 }
 
-bool PhraseBook::save(const QString &filename) const
+bool PhraseBook::save(const QString &fileName)
 {
-    QFile f(filename);
+    QFile f(fileName);
     if (!f.open(QIODevice::WriteOnly))
         return false;
+
+    m_fileName = fileName;
 
     QTextStream t(&f);
     t.setCodec( QTextCodec::codecForName("UTF-8") );
 
     t << "<!DOCTYPE QPH><QPH>\n";
-    ConstIterator p;
-    for (p = begin(); p != end(); ++p) {
+    foreach (Phrase *p, m_phrases) {
         t << "<phrase>\n";
-        t << "    <source>" << protect( (*p).source() ) << "</source>\n";
-        t << "    <target>" << protect( (*p).target() ) << "</target>\n";
-        if (!(*p).definition().isEmpty())
-            t << "    <definition>" << protect( (*p).definition() )
+        t << "    <source>" << protect( p->source() ) << "</source>\n";
+        t << "    <target>" << protect( p->target() ) << "</target>\n";
+        if (!p->definition().isEmpty())
+            t << "    <definition>" << protect( p->definition() )
               << "</definition>\n";
         t << "</phrase>\n";
     }
     t << "</QPH>\n";
     f.close();
+    setModified(false);
     return true;
 }
 
-QString PhraseBook::friendlyPhraseBookName() const
+void PhraseBook::append(Phrase *phrase)
 {
-    return QFileInfo(fileName()).fileName();
+    m_phrases.append(phrase);
+    phrase->setPhraseBook(this);
+    setModified(true);
+    emit listChanged();
 }
 
+void PhraseBook::remove(Phrase *phrase)
+{
+    m_phrases.removeOne(phrase);
+    phrase->setPhraseBook(0);
+    setModified(true);
+    emit listChanged();
+}
 
+void PhraseBook::setModified(bool modified)
+ {
+     if (m_changed != modified) {
+         emit modifiedChanged(modified);
+         m_changed = modified;
+     }
+}
+
+void PhraseBook::phraseChanged(Phrase *p)
+{
+    Q_UNUSED(p);
+
+    setModified(true);
+}
+
+const QString PhraseBook::friendlyPhraseBookName() const
+{
+    if (!m_fileName.isEmpty())
+        return QFileInfo(m_fileName).fileName();
+    return QString();
+}
+
+QT_END_NAMESPACE

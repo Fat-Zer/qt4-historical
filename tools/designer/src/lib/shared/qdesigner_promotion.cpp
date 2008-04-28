@@ -57,6 +57,8 @@
 #include <QtCore/QCoreApplication>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace {
     // Return a set of on-promotable classes
     const QSet<QString> &nonPromotableClasses() {
@@ -371,3 +373,5 @@ namespace qdesigner_internal {
         }
     }
 }
+
+QT_END_NAMESPACE

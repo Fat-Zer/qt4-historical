@@ -47,6 +47,7 @@
 #include <QPainterPath>
 #include <QWidget>
 
+//! [0]
 class RenderArea : public QWidget
 {
     Q_OBJECT
@@ -66,7 +67,9 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event);
+//! [0]
 
+//! [1]
 private:
     QPainterPath path;
     QColor fillColor1;
@@ -75,5 +78,6 @@ private:
     QColor penColor;
     int rotationAngle;
 };
+//! [1]
 
 #endif

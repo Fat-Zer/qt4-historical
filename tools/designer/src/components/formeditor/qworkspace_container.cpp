@@ -42,8 +42,11 @@
 ****************************************************************************/
 
 #include "qworkspace_container.h"
+#include "qmdiarea_container.h"
 
 #include <QtGui/QWorkspace>
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -51,7 +54,6 @@ QWorkspaceContainer::QWorkspaceContainer(QWorkspace *widget, QObject *parent)
     : QObject(parent),
       m_workspace(widget)
 {
-    Q_ASSERT(m_workspace->windowList(QWorkspace::CreationOrder).isEmpty());
 }
 
 int QWorkspaceContainer::count() const
@@ -61,12 +63,16 @@ int QWorkspaceContainer::count() const
 
 QWidget *QWorkspaceContainer::widget(int index) const
 {
+    if (index < 0)
+        return 0;
     return m_workspace->windowList(QWorkspace::CreationOrder).at(index);
 }
 
 int QWorkspaceContainer::currentIndex() const
 {
-    return m_workspace->windowList(QWorkspace::CreationOrder).indexOf(m_workspace->activeWindow());
+    if (QWidget *aw = m_workspace->activeWindow())
+        return m_workspace->windowList(QWorkspace::CreationOrder).indexOf(aw);
+    return -1;
 }
 
 void QWorkspaceContainer::setCurrentIndex(int index)
@@ -78,33 +84,19 @@ void QWorkspaceContainer::addWidget(QWidget *widget)
 {
     QWidget *frame = m_workspace->addWindow(widget, Qt::Window);
     frame->show();
+    m_workspace->cascade();
+    QMdiAreaContainer::positionNewMdiChild(m_workspace, frame);
 }
 
-void QWorkspaceContainer::insertWidget(int index, QWidget *widget)
+void QWorkspaceContainer::insertWidget(int, QWidget *widget)
 {
-    Q_UNUSED(index);
-
     addWidget(widget);
 }
 
-void QWorkspaceContainer::remove(int index)
+void QWorkspaceContainer::remove(int /* index */)
 {
-    Q_UNUSED(index);
-}
-
-QWorkspaceContainerFactory::QWorkspaceContainerFactory(QExtensionManager *parent)
-    : QExtensionFactory(parent)
-{
-}
-
-QObject *QWorkspaceContainerFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (iid != Q_TYPEID(QDesignerContainerExtension))
-        return 0;
-
-    if (QWorkspace *w = qobject_cast<QWorkspace*>(object))
-        return new QWorkspaceContainer(w, parent);
-
-    return 0;
+    // nothing to do here, reparenting to formwindow is apparently sufficient
 }
 }
+
+QT_END_NAMESPACE

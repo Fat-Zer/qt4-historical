@@ -48,7 +48,9 @@
 #include <QtCore/QPointer>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QLineEdit;
 class QDesignerFormWindowInterface;
@@ -59,7 +61,7 @@ class ListWidgetTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    ListWidgetTaskMenu(QListWidget *button, QObject *parent = 0);
+    explicit ListWidgetTaskMenu(QListWidget *button, QObject *parent = 0);
     virtual ~ListWidgetTaskMenu();
 
     virtual QAction *preferredEditAction() const;
@@ -77,16 +79,9 @@ private:
     QAction *m_editItemsAction;
 };
 
-class ListWidgetTaskMenuFactory: public QExtensionFactory
-{
-    Q_OBJECT
-public:
-    ListWidgetTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
-};
-
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QListWidget, ListWidgetTaskMenu> ListWidgetTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // LISTWIDGET_TASKMENU_H

@@ -51,6 +51,8 @@
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(svgviewer);
+
     QApplication app(argc, argv);
 
     MainWindow window;

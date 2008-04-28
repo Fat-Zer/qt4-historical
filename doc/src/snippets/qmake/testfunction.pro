@@ -1,3 +1,4 @@
+#! [0]
 defineTest(allFiles) {
     files = $$ARGS
 
@@ -8,6 +9,7 @@ defineTest(allFiles) {
     }
     return(true)
 }
+#! [0]
 
 files = delegate.h model.h view.h
 

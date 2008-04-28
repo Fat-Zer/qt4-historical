@@ -42,10 +42,12 @@
 ****************************************************************************/
 
 #include "qdesigner.h"
-#include <QLibraryInfo>
-#include <QDir>
+#include <QtCore/QLibraryInfo>
+#include <QtCore/QDir>
 
 #include <stdlib.h>
+
+QT_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
@@ -53,13 +55,16 @@ int main(int argc, char *argv[])
 
     // report Qt usage for commercial customers with a "metered license" (currently experimental)
 #if QT_EDITION != QT_EDITION_OPENSOURCE
-    QString reporterPath = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator()
-                           + QLatin1String("qtusagereporter");
+    QString reporterPath = QLibraryInfo::location(QLibraryInfo::BinariesPath);
+    reporterPath += QDir::separator();
+    reporterPath += QLatin1String("qtusagereporter");
 #if defined(Q_OS_WIN)
     reporterPath += QLatin1String(".exe");
 #endif
+#ifndef Q_OS_WINCE
     if (QFile::exists(reporterPath))
         ::system(qPrintable(reporterPath + QLatin1String(" designer")));
+#endif
 #endif
 
     QDesigner app(argc, argv);

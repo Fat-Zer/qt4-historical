@@ -1,1 +1,1 @@
-#include "../../src/network/qabstractsocket.h"
+#include "../../src/network/socket/qabstractsocket.h"

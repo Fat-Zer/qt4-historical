@@ -46,6 +46,7 @@
 #include "echowindow.h"
 #include "echointerface.h"
 
+//! [0]
 int main(int argv, char *args[])
 {
     QApplication app(argv, args);
@@ -55,3 +56,4 @@ int main(int argv, char *args[])
 
     return app.exec();
 }
+//! [0]

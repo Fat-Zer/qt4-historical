@@ -69,7 +69,7 @@ void MainWindow::open()
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty()) {
         QFile file(fileName);
-        if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        if (!file.open(QFile::ReadOnly)) {
             QMessageBox::warning(this, tr("Codecs"),
                                  tr("Cannot read file %1:\n%2")
                                  .arg(fileName)

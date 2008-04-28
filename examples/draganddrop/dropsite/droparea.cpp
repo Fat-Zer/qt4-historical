@@ -45,6 +45,7 @@
 
 #include "droparea.h"
 
+//! [DropArea constructor]
 DropArea::DropArea(QWidget *parent)
     : QLabel(parent)
 {
@@ -55,7 +56,9 @@ DropArea::DropArea(QWidget *parent)
     setAutoFillBackground(true);
     clear();
 }
+//! [DropArea constructor]
 
+//! [dragEnterEvent() function]
 void DropArea::dragEnterEvent(QDragEnterEvent *event)
 {
     setText(tr("<drop content>"));
@@ -64,16 +67,22 @@ void DropArea::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
     emit changed(event->mimeData());
 }
+//! [dragEnterEvent() function]
 
+//! [dragMoveEvent() function]
 void DropArea::dragMoveEvent(QDragMoveEvent *event)
 {
     event->acceptProposedAction();
 }
+//! [dragMoveEvent() function]
 
+//! [dropEvent() function part1]
 void DropArea::dropEvent(QDropEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
+//! [dropEvent() function part1]
 
+//! [dropEvent() function part2]
     if (mimeData->hasImage()) {
         setPixmap(qvariant_cast<QPixmap>(mimeData->imageData()));
     } else if (mimeData->hasHtml()) {
@@ -93,17 +102,23 @@ void DropArea::dropEvent(QDropEvent *event)
     } else {
         setText(tr("Cannot display data"));
     }
+//! [dropEvent() function part2]
 
+//! [dropEvent() function part3]    
     setBackgroundRole(QPalette::Dark);
     event->acceptProposedAction();
 }
+//! [dropEvent() function part3]
 
+//! [dragLeaveEvent() function]
 void DropArea::dragLeaveEvent(QDragLeaveEvent *event)
 {
     clear();
     event->accept();
 }
+//! [dragLeaveEvent() function]
 
+//! [clear() function]
 void DropArea::clear()
 {
     setText(tr("<drop content>"));
@@ -111,3 +126,4 @@ void DropArea::clear()
 
     emit changed();
 }
+//! [clear() function]

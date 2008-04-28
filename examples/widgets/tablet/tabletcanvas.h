@@ -53,9 +53,12 @@
 #include <QPen>
 #include <QPoint>
 
+QT_BEGIN_NAMESPACE
 class QPaintEvent;
 class QString;
+QT_END_NAMESPACE
 
+//! [0]
 class TabletCanvas : public QWidget
 {
     Q_OBJECT
@@ -82,7 +85,7 @@ public:
         { return myColor; }
     void setTabletDevice(QTabletEvent::TabletDevice device)
         { myTabletDevice = device; }
-    int max(int a, int b)
+    int maximum(int a, int b)
         { return a > b ? a : b; }
 
 protected:
@@ -107,5 +110,6 @@ private:
     bool deviceDown;
     QPoint polyLine[3];
 };
+//! [0]
 
 #endif

@@ -64,6 +64,8 @@
 #include "qscriptastvisitor_p.h"
 #include "qscriptasm_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QScriptEnginePrivate;
 
 namespace QScript {
@@ -109,7 +111,7 @@ public:
     void iEqual();
     void iFetch(QScriptNameIdImpl *id);
     void iFetchField();
-    void iFetchArguments();
+    void iLazyArguments();
     void iGreatOrEqual();
     void iGreatThan();
     void iIncr();
@@ -133,6 +135,7 @@ public:
     void iLoadString(QScriptNameIdImpl *id);
     void iNewString(QScriptNameIdImpl *id);
     void iLoadThis();
+    void iLoadActivation();
     void iLoadNull();
     void iLoadTrue();
     void iLoadUndefined();
@@ -158,6 +161,7 @@ public:
     void iSub();
     void iStrictEqual();
     void iStrictNotEqual();
+    void iSwap();
     void iThrow();
     void iTypeOf();
     void iURightShift();
@@ -366,5 +370,7 @@ private:
 } // namespace QScript
 
 #endif // QT_NO_SCRIPT
-#endif
 
+QT_END_NAMESPACE
+
+#endif

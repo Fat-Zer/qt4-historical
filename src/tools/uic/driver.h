@@ -45,10 +45,12 @@
 #define DRIVER_H
 
 #include "option.h"
-#include <QHash>
-#include <QString>
-#include <QStringList>
-#include <QTextStream>
+#include <QtCore/QHash>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QTextStream>
+
+QT_BEGIN_NAMESPACE
 
 class QTextStream;
 class DomUI;
@@ -128,5 +130,7 @@ private:
     QHash<QString, bool> m_nameRepository;
     QHash<QString, bool> m_pixmaps;
 };
+
+QT_END_NAMESPACE
 
 #endif // DRIVER_H

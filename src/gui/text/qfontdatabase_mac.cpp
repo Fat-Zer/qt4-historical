@@ -48,6 +48,8 @@
 #include <stdlib.h>
 #include <qendian.h>
 
+QT_BEGIN_NAMESPACE
+
 int qt_mac_pixelsize(const QFontDef &def, int dpi); //qfont_mac.cpp
 int qt_mac_pointsize(const QFontDef &def, int dpi); //qfont_mac.cpp
 
@@ -239,8 +241,9 @@ static const char *styleHint(const QFontDef &request)
 void QFontDatabase::load(const QFontPrivate *d, int script)
 {
     // sanity checks
-    if(!QFontCache::instance)
+    if(!qApp)
         qWarning("QFont: Must construct a QApplication before a QFont");
+
     Q_ASSERT(script >= 0 && script < QUnicodeTables::ScriptCount);
     Q_UNUSED(script);
 
@@ -251,9 +254,9 @@ void QFontDatabase::load(const QFontPrivate *d, int script)
     req.pointSize = 0;
     QFontCache::Key key = QFontCache::Key(req, QUnicodeTables::Common, d->screen);
 
-    if(!(d->engineData = QFontCache::instance->findEngineData(key))) {
+    if(!(d->engineData = QFontCache::instance()->findEngineData(key))) {
         d->engineData = new QFontEngineData;
-        QFontCache::instance->insertEngineData(key, d->engineData);
+        QFontCache::instance()->insertEngineData(key, d->engineData);
     } else {
         d->engineData->ref.ref();
     }
@@ -263,14 +266,13 @@ void QFontDatabase::load(const QFontPrivate *d, int script)
     // set it to the actual pointsize, so QFontInfo will do the right thing
     req.pointSize = qRound(qt_mac_pointsize(d->request, d->dpi));
 
-    QFontEngine *e = QFontCache::instance->findEngine(key);
+    QFontEngine *e = QFontCache::instance()->findEngine(key);
     if(!e && qt_enable_test_font && req.family == QLatin1String("__Qt__Box__Engine__")) {
         e = new QTestFontEngine(req.pixelSize);
         e->fontDef = req;
     }
 
     if(e) {
-        Q_ASSERT(e->type() == QFontEngine::Multi || e->type() == QFontEngine::TestFontEngine);
         e->ref.ref();
         d->engineData->engine = e;
         return; // the font info and fontdef should already be filled
@@ -296,6 +298,8 @@ void QFontDatabase::load(const QFontPrivate *d, int script)
 
     ATSFontFamilyRef familyRef = 0;
     ATSFontRef fontRef = 0;
+
+    QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *db = privateDb();
     if (!db->count)
         initializeDb();
@@ -336,10 +340,73 @@ FamilyFound:
     }
 #endif
 
+#if 1
     QFontEngine *engine = new QFontEngineMacMulti(familyRef, fontRef, fontDef, d->kerning);
+#else
+    ATSFontFamilyRef atsFamily = familyRef;
+    ATSFontFamilyRef atsFontRef = fontRef;
+
+    FMFont fontID;
+    FMFontFamily fmFamily;
+    FMFontStyle fntStyle = 0;
+    fmFamily = FMGetFontFamilyFromATSFontFamilyRef(atsFamily);
+    if (fmFamily == kInvalidFontFamily) {
+        // Use the ATSFont then...
+        fontID = FMGetFontFromATSFontRef(atsFontRef);
+    } else {
+        if (fontDef.weight >= QFont::Bold)
+            fntStyle |= ::bold;
+        if (fontDef.style != QFont::StyleNormal)
+            fntStyle |= ::italic;
+
+        FMFontStyle intrinsicStyle;
+        FMFont fnt = 0;
+        if (FMGetFontFromFontFamilyInstance(fmFamily, fntStyle, &fnt, &intrinsicStyle) == noErr)
+           fontID = FMGetATSFontRefFromFont(fnt);
+    }
+
+    OSStatus status;
+
+    const int maxAttributeCount = 5;
+    ATSUAttributeTag tags[maxAttributeCount + 1];
+    ByteCount sizes[maxAttributeCount + 1];
+    ATSUAttributeValuePtr values[maxAttributeCount + 1];
+    int attributeCount = 0;
+
+    Fixed size = FixRatio(fontDef.pixelSize, 1);
+    tags[attributeCount] = kATSUSizeTag;
+    sizes[attributeCount] = sizeof(size);
+    values[attributeCount] = &size;
+    ++attributeCount;
+
+    tags[attributeCount] = kATSUFontTag;
+    sizes[attributeCount] = sizeof(fontID);
+    values[attributeCount] = &fontID;
+    ++attributeCount;
+
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    if (fontDef.stretch != 100) {
+        transform = CGAffineTransformMakeScale(float(fontDef.stretch) / float(100), 1);
+        tags[attributeCount] = kATSUFontMatrixTag;
+        sizes[attributeCount] = sizeof(transform);
+        values[attributeCount] = &transform;
+        ++attributeCount;
+    }
+
+    ATSUStyle style;
+    status = ATSUCreateStyle(&style);
+    Q_ASSERT(status == noErr);
+
+    Q_ASSERT(attributeCount < maxAttributeCount + 1);
+    status = ATSUSetAttributes(style, attributeCount, tags, sizes, values);
+    Q_ASSERT(status == noErr);
+
+    QFontEngine *engine = new QFontEngineMac(style, fontID, fontDef, /*multiEngine*/ 0);
+    ATSUDisposeStyle(style);
+#endif
     d->engineData->engine = engine;
     engine->ref.ref(); //a ref for the engineData->engine
-    QFontCache::instance->insertEngine(key, engine);
+    QFontCache::instance()->insertEngine(key, engine);
 }
 
 static void registerFont(QFontDatabasePrivate::ApplicationFont *fnt)
@@ -399,6 +466,8 @@ if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
 
 bool QFontDatabase::removeApplicationFont(int handle)
 {
+    QMutexLocker locker(fontDatabaseMutex());
+
     QFontDatabasePrivate *db = privateDb();
     if(handle < 0 || handle >= db->applicationFonts.count())
         return false;
@@ -416,6 +485,8 @@ bool QFontDatabase::removeApplicationFont(int handle)
 
 bool QFontDatabase::removeAllApplicationFonts()
 {
+    QMutexLocker locker(fontDatabaseMutex());
+
     QFontDatabasePrivate *db = privateDb();
     for(int i = 0; i < db->applicationFonts.count(); ++i) {
         if(!removeApplicationFont(i))
@@ -424,3 +495,9 @@ bool QFontDatabase::removeAllApplicationFonts()
     return true;
 }
 
+bool QFontDatabase::supportsThreadedFontRendering()
+{
+    return true;
+}
+
+QT_END_NAMESPACE

@@ -46,6 +46,7 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QComboBox;
 class QDateTimeEdit;
@@ -62,7 +63,9 @@ class QSpinBox;
 class QTabWidget;
 class QTableWidget;
 class QTextEdit;
+QT_END_NAMESPACE
 
+//! [0]
 class WidgetGallery : public QDialog
 {
     Q_OBJECT
@@ -88,6 +91,7 @@ private:
     QComboBox *styleComboBox;
     QCheckBox *useStylePaletteCheckBox;
     QCheckBox *disableWidgetsCheckBox;
+//! [0]
 
     QGroupBox *topLeftGroupBox;
     QRadioButton *radioButton1;
@@ -113,6 +117,8 @@ private:
     QDial *dial;
 
     QProgressBar *progressBar;
+//! [1]
 };
+//! [1]
 
 #endif

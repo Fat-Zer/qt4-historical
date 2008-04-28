@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TABWIDGET
@@ -225,12 +227,13 @@ private:
     Q_DISABLE_COPY(QTabWidget)
     Q_PRIVATE_SLOT(d_func(), void _q_showTab(int))
     Q_PRIVATE_SLOT(d_func(), void _q_removeTab(int))
-
     void setUpLayout(bool = false);
     friend class Q3TabDialog;
 };
 
 #endif // QT_NO_TABWIDGET
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

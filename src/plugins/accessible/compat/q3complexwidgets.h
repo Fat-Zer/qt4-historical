@@ -46,6 +46,8 @@
 
 #include <QtGui/qaccessiblewidget.h>
 
+QT_BEGIN_NAMESPACE
+
 class Q3Header;
 class Q3TitleBar;
 
@@ -82,5 +84,7 @@ public:
 protected:
     Q3TitleBar *titleBar() const;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3COMPLEXWIDGETS_H

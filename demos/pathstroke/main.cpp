@@ -50,13 +50,22 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
-    PathStrokeWidget pathStrokeWidget;
+    bool smallScreen = false;
+    for (int i=0; i<argc; i++)
+        if (QString(argv[i]) == "-small-screen")
+            smallScreen = true;
+
+    PathStrokeWidget pathStrokeWidget(smallScreen);
     QStyle *arthurStyle = new ArthurStyle();
     pathStrokeWidget.setStyle(arthurStyle);
     QList<QWidget *> widgets = qFindChildren<QWidget *>(&pathStrokeWidget);
     foreach (QWidget *w, widgets)
         w->setStyle(arthurStyle);
-    pathStrokeWidget.show();
+
+    if (smallScreen)
+        pathStrokeWidget.showFullScreen();
+    else
+        pathStrokeWidget.show();
 
     return app.exec();
 }

@@ -46,13 +46,16 @@
 #include "draglabel.h"
 #include "dragwidget.h"
 
+//! [0]
 DragWidget::DragWidget(QWidget *parent)
     : QWidget(parent)
 {
     QFile dictionaryFile(":/dictionary/words.txt");
     dictionaryFile.open(QFile::ReadOnly);
     QTextStream inputStream(&dictionaryFile);
+//! [0]
 
+//! [1]
     int x = 5;
     int y = 5;
 
@@ -70,32 +73,42 @@ DragWidget::DragWidget(QWidget *parent)
             }
         }
     }
+//! [1]
 
+//! [2]
     QPalette newPalette = palette();
     newPalette.setColor(QPalette::Window, Qt::white);
     setPalette(newPalette);
 
     setMinimumSize(400, qMax(200, y));
     setWindowTitle(tr("Fridge Magnets"));
+//! [2] //! [3]
     setAcceptDrops(true);
 }
+//! [3]
 
+//! [4]
 void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
+//! [4] //! [5]
     if (event->mimeData()->hasFormat("application/x-fridgemagnet")) {
         if (children().contains(event->source())) {
             event->setDropAction(Qt::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
+//! [5] //! [6]
         }
+//! [6] //! [7]
     } else if (event->mimeData()->hasText()) {
         event->acceptProposedAction();
     } else {
         event->ignore();
     }
 }
+//! [7]
 
+//! [8]
 void DragWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-fridgemagnet")) {
@@ -111,11 +124,14 @@ void DragWidget::dragMoveEvent(QDragMoveEvent *event)
         event->ignore();
     }
 }
+//! [8]
 
+//! [9]
 void DragWidget::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-fridgemagnet")) {
         const QMimeData *mime = event->mimeData();
+//! [9] //! [10]
         QByteArray itemData = mime->data("application/x-fridgemagnet");
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
@@ -132,7 +148,9 @@ void DragWidget::dropEvent(QDropEvent *event)
             event->accept();
         } else {
             event->acceptProposedAction();
+//! [10] //! [11]
         }
+//! [11] //! [12]
     } else if (event->mimeData()->hasText()) {
         QStringList pieces = event->mimeData()->text().split(QRegExp("\\s+"),
                              QString::SkipEmptyParts);
@@ -151,3 +169,4 @@ void DragWidget::dropEvent(QDropEvent *event)
         event->ignore();
     }
 }
+//! [12]

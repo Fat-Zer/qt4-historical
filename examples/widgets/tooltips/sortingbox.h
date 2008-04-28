@@ -48,10 +48,13 @@
 
 #include "shapeitem.h"
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QPoint;
 class QToolButton;
+QT_END_NAMESPACE
 
+//! [0]
 class SortingBox : public QWidget
 {
     Q_OBJECT
@@ -71,7 +74,9 @@ private slots:
     void createNewCircle();
     void createNewSquare();
     void createNewTriangle();
+//! [0]
 
+//! [1]
 private:
     int updateButtonGeometry(QToolButton *button, int x, int y);
     void createShapeItem(const QPainterPath &path, const QString &toolTip,
@@ -83,8 +88,10 @@ private:
     QColor initialItemColor();
     QColor randomItemColor();
     QToolButton *createToolButton(const QString &toolTip, const QIcon &icon,
+//! [1]
                                   const char *member);
 
+//! [2]
     QList<ShapeItem> shapeItems;
     QPainterPath circlePath;
     QPainterPath squarePath;
@@ -97,5 +104,6 @@ private:
     QToolButton *newSquareButton;
     QToolButton *newTriangleButton;
 };
+//! [2]
 
 #endif

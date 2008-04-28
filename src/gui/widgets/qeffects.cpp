@@ -54,6 +54,8 @@
 #include "qtimer.h"
 #include "qdebug.h"
 
+QT_BEGIN_NAMESPACE
+
 /*
   Internal class to get access to protected QWidget-members
 */
@@ -103,6 +105,7 @@ private:
     bool showWidget;
     QTimer anim;
     QTime checkTime;
+    double windowOpacity;
 };
 
 static QAlphaWidget* q_blend = 0;
@@ -116,9 +119,9 @@ QAlphaWidget::QAlphaWidget(QWidget* w, Qt::WindowFlags f)
 #ifndef Q_WS_WIN
     setEnabled(false);
 #endif
-
     setAttribute(Qt::WA_NoSystemBackground, true);
     widget = (QAccessWidget*)w;
+    windowOpacity = w->windowOpacity();
     alpha = 0;
 }
 
@@ -149,32 +152,42 @@ void QAlphaWidget::run(int time)
     checkTime.start();
 
     showWidget = true;
-
-    //This is roughly equivalent to calling setVisible(true) without actually showing the widget
-    widget->setAttribute(Qt::WA_WState_ExplicitShowHide, true);
-    widget->setAttribute(Qt::WA_WState_Hidden, false);
-
-    qApp->installEventFilter(this);
-
-    move(widget->geometry().x(),widget->geometry().y());
-    resize(widget->size().width(), widget->size().height());
-
-    front = QPixmap::grabWidget(widget).toImage();
-    back = QPixmap::grabWindow(QApplication::desktop()->winId(),
-                                widget->geometry().x(), widget->geometry().y(),
-                                widget->geometry().width(), widget->geometry().height()).toImage();
-
-    if (!back.isNull() && checkTime.elapsed() < duration / 2) {
-        mixed = back.copy();
-        pm = QPixmap::fromImage(mixed);
-        show();
-        setEnabled(false);
-
+#if defined(Q_OS_WIN)
+    if (QSysInfo::WindowsVersion >= QSysInfo::WV_2000 && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based) {
+        qApp->installEventFilter(this);
+        widget->setWindowOpacity(0.0);
+        widget->show();
         connect(&anim, SIGNAL(timeout()), this, SLOT(render()));
         anim.start(1);
-    } else {
-        duration = 0;
-        render();
+    } else
+#endif
+    {
+        //This is roughly equivalent to calling setVisible(true) without actually showing the widget
+        widget->setAttribute(Qt::WA_WState_ExplicitShowHide, true);
+        widget->setAttribute(Qt::WA_WState_Hidden, false);
+
+        qApp->installEventFilter(this);
+
+        move(widget->geometry().x(),widget->geometry().y());
+        resize(widget->size().width(), widget->size().height());
+
+        front = QPixmap::grabWidget(widget).toImage();
+        back = QPixmap::grabWindow(QApplication::desktop()->winId(),
+                                    widget->geometry().x(), widget->geometry().y(),
+                                    widget->geometry().width(), widget->geometry().height()).toImage();
+
+        if (!back.isNull() && checkTime.elapsed() < duration / 2) {
+            mixed = back.copy();
+            pm = QPixmap::fromImage(mixed);
+            show();
+            setEnabled(false);
+
+            connect(&anim, SIGNAL(timeout()), this, SLOT(render()));
+            anim.start(1);
+        } else {
+           duration = 0;
+           render();
+        }
     }
 }
 
@@ -248,6 +261,20 @@ void QAlphaWidget::render()
         alpha = tempel / double(duration);
     else
         alpha = 1;
+
+#if defined(Q_OS_WIN)
+    if (QSysInfo::WindowsVersion >= QSysInfo::WV_2000 && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based) {
+        if (alpha >= windowOpacity || !showWidget) {
+            anim.stop();
+            qApp->removeEventFilter(this);
+            widget->setWindowOpacity(windowOpacity);
+            q_blend = 0;
+            deleteLater();
+        } else {
+            widget->setWindowOpacity(alpha);
+        }
+    } else
+#endif
     if (alpha >= 1 || !showWidget) {
         anim.stop();
         qApp->removeEventFilter(this);
@@ -539,12 +566,6 @@ void QRollEffect::scroll()
     }
 }
 
-/*
-  Delete this after timeout
-*/
-
-#include "qeffects.moc"
-
 /*!
     Scroll widget \a w in \a time ms. \a orient may be 1 (vertical), 2
     (horizontal) or 3 (diagonal).
@@ -591,4 +612,13 @@ void qFadeEffect(QWidget* w, int time)
 
     q_blend->run(time);
 }
+
+QT_END_NAMESPACE
+
+/*
+  Delete this after timeout
+*/
+
+#include "qeffects.moc"
+
 #endif //QT_NO_EFFECTS

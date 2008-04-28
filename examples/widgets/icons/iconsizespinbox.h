@@ -46,6 +46,7 @@
 
 #include <QSpinBox>
 
+//! [0]
 class IconSizeSpinBox : public QSpinBox
 {
     Q_OBJECT
@@ -56,5 +57,6 @@ public:
     int valueFromText(const QString &text) const;
     QString textFromValue(int value) const;
 };
+//! [0]
 
 #endif

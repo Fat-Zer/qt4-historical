@@ -47,6 +47,8 @@
 #include "qapplication.h"
 #include "qpainter.h"
 
+QT_BEGIN_NAMESPACE
+
 using namespace Qt;
 
 class Q3WidgetStackPrivate {
@@ -567,3 +569,5 @@ bool Q3WidgetStack::event(QEvent* e)
         updateGeometry(); // propgate layout hints to parent
     return Q3Frame::event(e);
 }
+
+QT_END_NAMESPACE

@@ -45,6 +45,7 @@
 
 #include "echowindow.h"
 
+//! [0]
 EchoWindow::EchoWindow()
 {
     createGUI();
@@ -57,13 +58,17 @@ EchoWindow::EchoWindow()
         button->setEnabled(false);
     }
 }
+//! [0]
 
+//! [1]
 void EchoWindow::sendEcho()
 {
     QString text = echoInterface->echo(lineEdit->text());
     label->setText(text);
 }
+//! [1]
 
+//! [2]
 void EchoWindow::createGUI()
 {
     lineEdit = new QLineEdit;
@@ -84,19 +89,32 @@ void EchoWindow::createGUI()
     layout->addWidget(button, 2, 1, Qt::AlignRight);
     layout->setSizeConstraint(QLayout::SetFixedSize);
 }
+//! [2]
 
+//! [3]
 bool EchoWindow::loadPlugin()
 {
-    QDir pluginDirectory(qApp->applicationDirPath() + "/plugin/");
-    QString fileName = pluginDirectory.entryList(
-        QStringList() << "libechoplugin*").first();
-
-    QPluginLoader pluginLoader(pluginDirectory.absoluteFilePath(fileName));
-    QObject *plugin = pluginLoader.instance();
-    if (plugin) {
-        echoInterface = qobject_cast<EchoInterface *>(plugin);
-    if(echoInterface)
-        return true;
+    QDir pluginsDir(qApp->applicationDirPath());
+#if defined(Q_OS_WIN)
+    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+        pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+    if (pluginsDir.dirName() == "MacOS") {
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
     }
+#endif
+    pluginsDir.cd("plugins");
+    foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
+        QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
+        QObject *plugin = pluginLoader.instance();
+        if (plugin) {
+            echoInterface = qobject_cast<EchoInterface *>(plugin);
+            if (echoInterface)
+                return true;
+        }
+    }
+
     return false;
 }

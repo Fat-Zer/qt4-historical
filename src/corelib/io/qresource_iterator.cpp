@@ -46,6 +46,8 @@
 
 #include <QtCore/qvariant.h>
 
+QT_BEGIN_NAMESPACE
+
 QResourceFileEngineIterator::QResourceFileEngineIterator(QDir::Filters filters,
                                                          const QStringList &filterNames)
     : QAbstractFileEngineIterator(filters, filterNames), index(-1)
@@ -88,3 +90,5 @@ QString QResourceFileEngineIterator::currentFileName() const
         return QString();
     return entries.at(index - 1);
 }
+
+QT_END_NAMESPACE

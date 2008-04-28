@@ -58,37 +58,25 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QList>
+#include <QtCore/QPointer>
 #include <QtCore/QAbstractItemModel>
 
 #include <connectionedit_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
+class QDesignerFormEditorInterface;
 class DomConnection;
 
 namespace qdesigner_internal {
 
 class SignalSlotEditor;
 
-struct ClassInfo
-{
-    ClassInfo(const QString &_class_name = QString(),
-                const QStringList &_member_list = QStringList())
-        : class_name(_class_name), member_list(_member_list) {}
-    QString class_name;
-    QStringList member_list;
-};
-typedef QList<ClassInfo> ClassList;
-enum MemberType { SignalMember, SlotMember };
-
-QStringList objectNameList(QDesignerFormWindowInterface *form);
-QStringList memberList(QDesignerFormWindowInterface *form, QObject *object, MemberType member_type);
-ClassList classList(const QString &obj_name, MemberType member_type,
-                            const QString &peer, QDesignerFormWindowInterface *form);
-
 class SignalSlotConnection : public Connection
 {
 public:
-    SignalSlotConnection(ConnectionEdit *edit, QWidget *source = 0, QWidget *target = 0);
+    explicit SignalSlotConnection(ConnectionEdit *edit, QWidget *source = 0, QWidget *target = 0);
 
     void setSignal(const QString &signal);
     void setSlot(const QString &slot);
@@ -102,6 +90,12 @@ public:
 
     virtual void updateVisibility();
 
+    enum State { Valid, ObjectDeleted, InvalidMethod, NotAncestor };
+    State isValid(const QWidget *background) const;
+
+    // format for messages, etc.
+    QString toString() const;
+
 private:
     QString m_signal, m_slot;
 };
@@ -110,7 +104,8 @@ class ConnectionModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    ConnectionModel(SignalSlotEditor *editor, QObject *parent = 0);
+    explicit ConnectionModel(QObject *parent = 0);
+    void setEditor(SignalSlotEditor *editor = 0);
 
     virtual QModelIndex index(int row, int column,
                               const QModelIndex &parent = QModelIndex()) const;
@@ -135,9 +130,11 @@ private slots:
     void connectionChanged(Connection *con);
 
 private:
-    SignalSlotEditor *m_editor;
+    QPointer<SignalSlotEditor> m_editor;
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // SIGNALSLOTEDITOR_P_H

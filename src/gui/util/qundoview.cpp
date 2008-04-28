@@ -52,6 +52,8 @@
 #include <QtGui/qicon.h>
 #include <private/qlistview_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QUndoModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -254,6 +256,7 @@ QIcon QUndoModel::cleanIcon() const
     \brief The QUndoView class displays the contents of a QUndoStack.
     \since 4.2
     \ingroup misc
+    \ingroup advanced
 
     QUndoView is a QListView which displays the list of commands pushed on an undo stack.
     The most recently executed command is always selected. Selecting a different command
@@ -467,6 +470,8 @@ QIcon QUndoView::cleanIcon() const
     Q_D(const QUndoView);
     return d->model->cleanIcon();
 }
+
+QT_END_NAMESPACE
 
 #include "qundoview.moc"
 

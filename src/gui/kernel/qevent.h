@@ -57,6 +57,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QAction;
@@ -89,6 +91,12 @@ public:
     inline int globalY() const { return g.y(); }
     inline Qt::MouseButton button() const { return b; }
     inline Qt::MouseButtons buttons() const { return mouseState; }
+
+    static QMouseEvent *createExtendedMouseEvent(Type type, const QPointF &pos,
+                                                 const QPoint &globalPos, Qt::MouseButton button,
+                                                 Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+    inline bool hasExtendedInfo() const { return reinterpret_cast<const QMouseEvent *>(d) == this; }
+    QPointF posF() const;
 
 #ifdef QT3_SUPPORT
     QT3_SUPPORT_CONSTRUCTOR QMouseEvent(Type type, const QPoint &pos, Qt::ButtonState button, int state);
@@ -380,6 +388,8 @@ class Q_GUI_EXPORT QContextMenuEvent : public QInputEvent
 public:
     enum Reason { Mouse, Keyboard, Other };
 
+    QContextMenuEvent(Reason reason, const QPoint &pos, const QPoint &globalPos,
+                      Qt::KeyboardModifiers modifiers);
     QContextMenuEvent(Reason reason, const QPoint &pos, const QPoint &globalPos);
     QContextMenuEvent(Reason reason, const QPoint &pos);
     ~QContextMenuEvent();
@@ -708,6 +718,8 @@ Q_GUI_EXPORT QDebug operator<<(QDebug, const QEvent *);
 inline bool operator==(QKeyEvent *e, QKeySequence::StandardKey key){return (e ? e->matches(key) : false);}
 inline bool operator==(QKeySequence::StandardKey key, QKeyEvent *e){return (e ? e->matches(key) : false);}
 #endif // QT_NO_SHORTCUT
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/examples/editabletreemodel.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/editabletreemodel.qdoc -->
 <head>
-  <title>Qt 4.3: Editable Tree Model</title>
+  <title>Qt 4.4: Editable Tree Model</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -12,16 +12,19 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Editable Tree Model<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Editable Tree Model<br /><span class="subtitle"></span>
+</h1>
 <p>Files:</p>
 <ul>
 <li><a href="itemviews-editabletreemodel-mainwindow-cpp.html">itemviews/editabletreemodel/mainwindow.cpp</a></li>
 <li><a href="itemviews-editabletreemodel-mainwindow-h.html">itemviews/editabletreemodel/mainwindow.h</a></li>
+<li><a href="itemviews-editabletreemodel-mainwindow-ui.html">itemviews/editabletreemodel/mainwindow.ui</a></li>
 <li><a href="itemviews-editabletreemodel-treeitem-cpp.html">itemviews/editabletreemodel/treeitem.cpp</a></li>
 <li><a href="itemviews-editabletreemodel-treeitem-h.html">itemviews/editabletreemodel/treeitem.h</a></li>
 <li><a href="itemviews-editabletreemodel-treemodel-cpp.html">itemviews/editabletreemodel/treemodel.cpp</a></li>
 <li><a href="itemviews-editabletreemodel-treemodel-h.html">itemviews/editabletreemodel/treemodel.h</a></li>
 <li><a href="itemviews-editabletreemodel-main-cpp.html">itemviews/editabletreemodel/main.cpp</a></li>
+<li><a href="itemviews-editabletreemodel-editabletreemodel-pro.html">itemviews/editabletreemodel/editabletreemodel.pro</a></li>
 <li><a href="itemviews-editabletreemodel-editabletreemodel-qrc.html">itemviews/editabletreemodel/editabletreemodel.qrc</a></li>
 </ul>
 <p>This example shows how to implement a simple item-based tree model that can be used with other classes the model/view framework.</p>
@@ -46,9 +49,9 @@
 <p>We place an item at the root of the tree of items. This root item corresponds to the null model index, <a href="qmodelindex.html#QModelIndex">QModelIndex()</a>, that is used to represent the parent of a top-level item when handling model indexes. Although the root item does not have a visible representation in any of the standard views, we use its internal list of <a href="qvariant.html">QVariant</a> objects to store a list of strings that will be passed to views for use as horizontal header titles.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/itemviews-editabletreemodel-model.png" /></td><td><b>Accessing data via the model</b><p>In the case shown in the diagram, the piece of information represented by <b>a</b> can be obtained using the standard model/view API:</p>
-<pre> QVariant a = model-&gt;index(0, 0, QModelIndex()).data();</pre>
+<pre>     QVariant a = model-&gt;index(0, 0, QModelIndex()).data();</pre>
 <p>Since each items holds pieces of data for each column in a given row, there can be many model indexes that map to the same <tt>TreeItem</tt> object. For example, the information represented by <b>b</b> can be obtained using the following code:</p>
-<pre> QVariant b = model-&gt;index(1, 0, QModelIndex()).data();</pre>
+<pre>     QVariant b = model-&gt;index(1, 0, QModelIndex()).data();</pre>
 <p>The same underlying <tt>TreeItem</tt> would be accessed to obtain information for the other model indexes in the same row as <b>b</b>.</p>
 </td></tr>
 </table></p>
@@ -323,6 +326,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -46,16 +46,22 @@
 #include "simplestyleplugin.h"
 #include "simplestyle.h"
 
+//! [0]
 QStringList SimpleStylePlugin::keys() const
 {
     return QStringList() << "SimpleStyle";
 }
+//! [0]
 
+//! [1]
 QStyle *SimpleStylePlugin::create(const QString &key)
 {
     if (key.toLower() == "simplestyle")
         return new SimpleStyle;
     return 0;
 }
+//! [1]
 
+QT_BEGIN_NAMESPACE
 Q_EXPORT_PLUGIN2(simplestyleplugin, SimpleStylePlugin)
+QT_END_NAMESPACE

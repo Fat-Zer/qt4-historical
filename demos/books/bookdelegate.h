@@ -49,7 +49,7 @@
 #include <QSize>
 #include <QSqlRelationalDelegate>
 
-class QPainter;
+QT_FORWARD_DECLARE_CLASS(QPainter)
 
 class BookDelegate : public QSqlRelationalDelegate
 {

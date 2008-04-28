@@ -45,13 +45,16 @@
 
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     selectedDate = QDate::currentDate();
     fontSize = 10;
 
     QWidget *centralWidget = new QWidget;
+//! [0]
 
+//! [1]
     QLabel *dateLabel = new QLabel(tr("Date:"));
     QComboBox *monthCombo = new QComboBox;
 
@@ -61,10 +64,12 @@ MainWindow::MainWindow()
     QDateTimeEdit *yearEdit = new QDateTimeEdit;
     yearEdit->setDisplayFormat("yyyy");
     yearEdit->setDateRange(QDate(1753, 1, 1), QDate(8000, 1, 1));
+//! [1]
 
     monthCombo->setCurrentIndex(selectedDate.month() - 1);
     yearEdit->setDate(selectedDate);
 
+//! [2]
     QLabel *fontSizeLabel = new QLabel(tr("Font size:"));
     QSpinBox *fontSizeSpinBox = new QSpinBox;
     fontSizeSpinBox->setRange(1, 64);
@@ -72,12 +77,16 @@ MainWindow::MainWindow()
 
     editor = new QTextBrowser;
     insertCalendar();
+//! [2]
 
+//! [3]
     connect(monthCombo, SIGNAL(activated(int)), this, SLOT(setMonth(int)));
     connect(yearEdit, SIGNAL(dateChanged(QDate)), this, SLOT(setYear(QDate)));
     connect(fontSizeSpinBox, SIGNAL(valueChanged(int)),
             this, SLOT(setFontSize(int)));
+//! [3]
 
+//! [4]
     QHBoxLayout *controlsLayout = new QHBoxLayout;
     controlsLayout->addWidget(dateLabel);
     controlsLayout->addWidget(monthCombo);
@@ -93,20 +102,26 @@ MainWindow::MainWindow()
     centralWidget->setLayout(centralLayout);
 
     setCentralWidget(centralWidget);
+//! [4]
 }
 
+//! [5]
 void MainWindow::insertCalendar()
 {
     editor->clear();
     QTextCursor cursor = editor->textCursor();
+    cursor.beginEditBlock();
 
     QDate date(selectedDate.year(), selectedDate.month(), 1);
+//! [5]
 
+//! [6]
     QTextTableFormat tableFormat;
     tableFormat.setAlignment(Qt::AlignHCenter);
     tableFormat.setBackground(QColor("#e0e0e0"));
     tableFormat.setCellPadding(2);
     tableFormat.setCellSpacing(4);
+//! [6] //! [7]
     QVector<QTextLength> constraints;
     constraints << QTextLength(QTextLength::PercentageLength, 14)
                 << QTextLength(QTextLength::PercentageLength, 14)
@@ -116,14 +131,20 @@ void MainWindow::insertCalendar()
                 << QTextLength(QTextLength::PercentageLength, 14)
                 << QTextLength(QTextLength::PercentageLength, 14);
     tableFormat.setColumnWidthConstraints(constraints);
+//! [7]
 
+//! [8]
     QTextTable *table = cursor.insertTable(1, 7, tableFormat);
+//! [8]
 
+//! [9]
     QTextFrame *frame = cursor.currentFrame();
     QTextFrameFormat frameFormat = frame->frameFormat();
     frameFormat.setBorder(1);
     frame->setFrameFormat(frameFormat);
+//! [9]
 
+//! [10]
     QTextCharFormat format = cursor.charFormat();
     format.setFontPointSize(fontSize);
 
@@ -132,15 +153,21 @@ void MainWindow::insertCalendar()
 
     QTextCharFormat highlightedFormat = boldFormat;
     highlightedFormat.setBackground(Qt::yellow);
+//! [10]
 
+//! [11]
     for (int weekDay = 1; weekDay <= 7; ++weekDay) {
         QTextTableCell cell = table->cellAt(0, weekDay-1);
+//! [11] //! [12]
         QTextCursor cellCursor = cell.firstCursorPosition();
         cellCursor.insertText(QString("%1").arg(QDate::longDayName(weekDay)),
                               boldFormat);
     }
+//! [12]
 
+//! [13]
     table->insertRows(table->rows(), 1);
+//! [13]
 
     while (date.month() == selectedDate.month()) {
         int weekDay = date.dayOfWeek();
@@ -157,25 +184,34 @@ void MainWindow::insertCalendar()
             table->insertRows(table->rows(), 1);
     }
 
+    cursor.endEditBlock();
+//! [14]
     setWindowTitle(tr("Calendar for %1 %2"
         ).arg(QDate::longMonthName(selectedDate.month())
         ).arg(selectedDate.year()));
 }
+//! [14]
 
+//! [15]
 void MainWindow::setFontSize(int size)
 {
     fontSize = size;
     insertCalendar();
 }
+//! [15]
 
+//! [16]
 void MainWindow::setMonth(int month)
 {
     selectedDate = QDate(selectedDate.year(), month + 1, selectedDate.day());
     insertCalendar();
 }
+//! [16]
 
+//! [17]
 void MainWindow::setYear(QDate date)
 {
     selectedDate = QDate(date.year(), selectedDate.month(), selectedDate.day());
     insertCalendar();
 }
+//! [17]

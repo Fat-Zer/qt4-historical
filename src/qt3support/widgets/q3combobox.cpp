@@ -70,6 +70,8 @@
 #include "qaccessible.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3ComboBox q3combobox.h
     \brief The Q3ComboBox widget is a combined button and popup list.
@@ -92,16 +94,11 @@
     Q3ComboBox provides two different constructors. The simplest
     constructor creates an "old-style" combobox in Motif (or Aqua)
     style:
-    \code
-        Q3ComboBox *c = new Q3ComboBox(this, tr("read-only combobox"));
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3combobox.cpp 0
 
     The other constructor creates a new-style combobox in Motif style,
     and can create both read-only and editable comboboxes:
-    \code
-        Q3ComboBox *c1 = new Q3ComboBox(false, this, tr("read-only combobox"));
-        Q3ComboBox *c2 = new Q3ComboBox(true, this, tr("editable combobox"));
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3combobox.cpp 1
 
     New-style comboboxes use a list box in both Motif and Windows
     styles, and both the content size and the on-screen size of the
@@ -732,10 +729,7 @@ void Q3ComboBox::insertStringList( const QStringList &list, int index )
     terminated with 0.
 
     Example:
-    \code
-	static const char* items[] = { "red", "green", "blue", 0 };
-	combo->insertStrList( items );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3combobox.cpp 2
 
     \sa insertStringList()
 */
@@ -1442,6 +1436,8 @@ void Q3ComboBox::mouseDoubleClickEvent( QMouseEvent *e )
 
 void Q3ComboBox::keyPressEvent( QKeyEvent *e )
 {
+    bool handleEventHere = d->usingListBox() || !d->poppedUp;
+
     int c = currentItem();
     if ( ( e->key() == Qt::Key_F4 && e->state() == 0 ) ||
 	 ( e->key() == Qt::Key_Down && (e->state() & Qt::AltModifier) ) ||
@@ -1452,15 +1448,15 @@ void Q3ComboBox::keyPressEvent( QKeyEvent *e )
 	    popup();
 	}
 	return;
-    } else if ( d->usingListBox() && e->key() == Qt::Key_Up ) {
+    } else if ( handleEventHere && e->key() == Qt::Key_Up ) {
 	if ( c > 0 )
 	    setCurrentItem( c-1 );
-    } else if ( d->usingListBox() && e->key() == Qt::Key_Down ) {
+    } else if ( handleEventHere && e->key() == Qt::Key_Down ) {
 	if ( ++c < count() )
 	    setCurrentItem( c );
-    } else if ( d->usingListBox() && e->key() == Qt::Key_Home && ( !d->ed || !d->ed->hasFocus() ) ) {
+    } else if ( handleEventHere && e->key() == Qt::Key_Home && ( !d->ed || !d->ed->hasFocus() ) ) {
 	setCurrentItem( 0 );
-    } else if ( d->usingListBox() && e->key() == Qt::Key_End && ( !d->ed || !d->ed->hasFocus() ) ) {
+    } else if ( handleEventHere && e->key() == Qt::Key_End && ( !d->ed || !d->ed->hasFocus() ) ) {
 	setCurrentItem( count()-1 );
     } else if ( !d->ed && e->ascii() >= 32 && !e->text().isEmpty() ) {
 	if ( !d->completionTimer->isActive() ) {
@@ -2356,5 +2352,7 @@ void Q3ComboBox::hide()
     else if (d->popup())
 	d->popup()->hide();
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_COMBOBOX

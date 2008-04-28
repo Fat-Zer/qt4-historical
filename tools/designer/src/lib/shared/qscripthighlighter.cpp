@@ -45,6 +45,8 @@
 
 #include <QtCore/QSet>
 
+QT_BEGIN_NAMESPACE
+
 static const QSet<QString> &qscriptKeywords() {
     static QSet<QString> keywords;
     if (keywords.empty()) {
@@ -309,7 +311,7 @@ void QScriptHighlighter::highlightBlock(const QString &text)
         lastWasBackSlash = !lastWasBackSlash && c == QLatin1Char('\\');
 
         if (input == InputAlpha)
-            buffer.inline_append(c);
+            buffer += c;
 
         state = table[state][input];
 
@@ -464,3 +466,5 @@ void QScriptHighlighter::highlightKeyword(int currentPos, const QString &buffer)
     }
 }
 }
+
+QT_END_NAMESPACE

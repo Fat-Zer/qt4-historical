@@ -62,12 +62,22 @@
 #include "private/qfont_p.h"
 
 #ifdef Q_WS_WIN
-#include "QtCore/qt_windows.h"
+#   include "QtCore/qt_windows.h"
 #endif
+
+#ifdef Q_WS_MAC
+#   include "private/qt_mac_p.h"
+#   include "QtCore/qmap.h"
+#   include "QtCore/qcache.h"
+#   include "private/qcore_mac_p.h"
+#endif
+
 struct glyph_metrics_t;
-class QChar;
 typedef unsigned int glyph_t;
-class QOpenType;
+
+QT_BEGIN_NAMESPACE
+
+class QChar;
 class QPainterPath;
 
 class QTextEngine;
@@ -124,7 +134,8 @@ public:
     };
     virtual Properties properties() const;
     virtual void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
-    virtual QByteArray getSfntTable(uint /*tag*/) const { return QByteArray(); }
+    QByteArray getSfntTable(uint /*tag*/) const;
+    virtual bool getSfntTableData(uint /*tag*/, uchar * /*buffer*/, uint * /*length*/) const { return false; }
 
     struct FaceId {
         FaceId() : index(0), encoding(0) {}
@@ -140,10 +151,11 @@ public:
     };
     virtual int synthesized() const { return 0; }
 
+    virtual QFixed emSquareSize() const { return ascent(); }
+
     /* returns 0 as glyph index for non existant glyphs */
     virtual bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const = 0;
 
-    virtual QOpenType *openType() const { return 0; }
     virtual void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const {}
     virtual void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
 
@@ -185,43 +197,22 @@ public:
 
     virtual int glyphCount() const;
 
+    HB_Font harfbuzzFont() const;
+    HB_Face harfbuzzFace() const;
+
+    virtual HB_Error getPointInOutline(HB_Glyph glyph, int flags, hb_uint32 point, HB_Fixed *xpos, HB_Fixed *ypos, hb_uint32 *nPoints);
+
     static const uchar *getCMap(const uchar *table, uint tableSize, bool *isSymbolFont, int *cmapSize);
     static quint32 getTrueTypeGlyphIndex(const uchar *cmap, uint unicode);
 
-    QAtomic     ref;
+    QAtomicInt ref;
     QFontDef fontDef;
     uint cache_cost; // amount of mem used in kb by the font
     int cache_count;
     uint fsType : 16;
     bool symbol;
-
-#ifdef Q_WS_WIN
-    int getGlyphIndexes(const QChar *ch, int numChars, QGlyphLayout *glyphs, bool mirrored) const;
-    void getCMap();
-
-    QString        _name;
-    HFONT        hfont;
-    LOGFONT     logfont;
-    uint        stockFont   : 1;
-    uint        useTextOutA : 1;
-    uint        ttf         : 1;
-    union {
-        TEXTMETRICW        w;
-        TEXTMETRICA        a;
-    } tm;
-    int                lw;
-    const unsigned char *cmap;
-    QByteArray cmapTable;
-    void *script_cache;
-    qreal lbearing;
-    qreal rbearing;
-    QFixed designToDevice;
-    int unitsPerEm;
-    QFixed x_height;
-    FaceId _faceId;
-    mutable int synthesized_flags;
-    mutable QFixed lineWidth;
-#endif // Q_WS_WIN
+    mutable HB_FontRec hbFont;
+    mutable HB_Face hbFace;
 #if defined(Q_WS_WIN) || defined(Q_WS_X11) || defined(Q_WS_QWS)
     struct KernPair {
         uint left_right;
@@ -258,6 +249,7 @@ public:
    ~QFontEngineQPF1();
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+    void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
 
     void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
     void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags);
@@ -294,6 +286,7 @@ public:
     ~QFontEngineBox();
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+    void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
 
 #if !defined(Q_WS_X11) && !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
     void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
@@ -370,13 +363,8 @@ protected:
 };
 
 #if defined(Q_WS_MAC)
-#include "private/qt_mac_p.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qcache.h"
 
-#include "private/qcore_mac_p.h"
-
-struct QShaperItem;
+struct QCharAttributes;
 class QFontEngineMacMulti;
 
 class QFontEngineMac : public QFontEngine
@@ -387,6 +375,7 @@ public:
     virtual ~QFontEngineMac();
 
     virtual bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+    virtual void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
 
     virtual glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);
     virtual glyph_metrics_t boundingBox(glyph_t glyph);
@@ -427,18 +416,41 @@ private:
     mutable const unsigned char *cmap;
     mutable bool symbolCMap;
     mutable QByteArray cmapTable;
+    CGAffineTransform transform;
+    QFixed m_ascent;
+    QFixed m_descent;
+    QFixed m_leading;
+    qreal m_maxCharWidth;
+    QFixed m_xHeight;
+    QFixed m_averageCharWidth;
 };
 
 class QFontEngineMacMulti : public QFontEngineMulti
 {
     friend class QFontEngineMac;
 public:
+    // internal
+    struct ShaperItem
+    {
+        inline ShaperItem() : string(0), from(0), length(0),
+        glyphs(0), num_glyphs(0), log_clusters(0), charAttributes(0) {}
+
+        const QChar *string;
+        int from;
+        int length;
+        QGlyphLayout *glyphs;
+        int num_glyphs;
+        unsigned short *log_clusters;
+        const HB_CharAttributes *charAttributes;
+        QTextEngine::ShaperFlags flags;
+    };
+
     QFontEngineMacMulti(const ATSFontFamilyRef &atsFamily, const ATSFontRef &atsFontRef, const QFontDef &fontDef, bool kerning);
     virtual ~QFontEngineMacMulti();
 
     virtual bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags,
-                      QShaperItem *shaperItem) const;
+                      unsigned short *logClusters, const HB_CharAttributes *charAttributes) const;
 
     virtual void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
     virtual void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
@@ -456,8 +468,7 @@ private:
     inline const QFontEngineMac *engineAt(int i) const
     { return static_cast<const QFontEngineMac *>(engines.at(i)); }
 
-    bool stringToCMapInternal(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags,
-                              QShaperItem *shaperItem) const;
+    bool stringToCMapInternal(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags, ShaperItem *item) const;
 
     int fontIndexForFontID(ATSUFontID id) const;
 
@@ -471,15 +482,17 @@ private:
 
 #endif
 
-#if defined(Q_WS_WIN)
-#  include "private/qfontengine_win_p.h"
-#endif
-
 class QTestFontEngine : public QFontEngineBox
 {
 public:
     QTestFontEngine(int size) : QFontEngineBox(size) {}
     Type type() const { return TestFontEngine; }
 };
+
+QT_END_NAMESPACE
+
+#ifdef Q_WS_WIN
+#   include "private/qfontengine_win_p.h"
+#endif
 
 #endif // QFONTENGINE_P_H

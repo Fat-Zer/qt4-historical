@@ -46,10 +46,13 @@
 
 #include <QLabel>
 
+QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDragMoveEvent;
 class QFrame;
+QT_END_NAMESPACE
 
+//! [0]
 class DragLabel : public QLabel
 {
 public:
@@ -61,5 +64,6 @@ protected:
 private:
     QString labelText;
 };
+//! [0]
 
 #endif

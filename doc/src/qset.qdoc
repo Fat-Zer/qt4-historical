@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \class QSet
     \brief The QSet class is a template class that provides a hash-table-based set.
@@ -13,30 +56,19 @@
 
     Here's an example QSet with QString values:
 
-    \code
-        QSet<QString> set;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 0
 
     To insert a value into the set, use insert():
 
-    \code
-        set.insert("one");
-        set.insert("three");
-        set.insert("seven");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 1
 
     Another way to insert items into the set is to use operator<<():
 
-    \code
-        set << "twelve" << "fifteen" << "nineteen";
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 2
 
     To test whether an item belongs to the set or not, use contains():
 
-    \code
-        if (!set.contains("ninety-nine"))
-            ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 3
 
     If you want to navigate through all the values stored in a QSet,
     you can use an iterator. QSet supports both \l{Java-style
@@ -45,33 +77,18 @@
     QSet::const_iterator). Here's how to iterate over a QSet<QWidget
     *> using a Java-style iterator:
 
-    \code
-        QSetIterator<QWidget *> i(set);
-        while (i.hasNext())
-            qDebug() << i.next();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 4
 
     Here's the same code, but using an STL-style iterator:
 
-    \code
-        QSet<QWidget *>::const_iterator i = set.constBegin();
-        while (i != set.constEnd()) {
-            qDebug() << *i;
-            ++i;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 5
 
     QSet is unordered, so an iterator's sequence cannot be assumed to
     be predictable. If ordering by key is required, use a QMap.
 
     To navigate through a QSet, you can also use \l{foreach}:
 
-    \code
-        QSet<QString> set;
-        ...
-        foreach (QString value, set)
-            qDebug() << value;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 6
 
     Items can be removed from the set using remove(). There's also a
     clear() function that removes all items.
@@ -186,12 +203,7 @@
     This function is useful for code that needs to build a huge set
     and wants to avoid repeated reallocation. For example:
 
-    \code
-        QSet<QString> set;
-        set.reserve(20000);
-        for (int i = 0; i < 20000; ++i)
-            set.insert(values[i]);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 7
 
     Ideally, \a size should be slightly more than the maximum number
     of elements expected in the set. \a size doesn't have to be prime,
@@ -595,43 +607,18 @@
     start iterating. Here's a typical loop that prints all the items
     stored in a set:
 
-    \code
-        QSet<QString> set;
-        set << "January" << "February" << ... << "December";
-
-        QSet<QString>::iterator i;
-        for (i = set.begin(); i != set.end(); ++i)
-            qDebug() << *i;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 8
 
     Here's a loop that removes certain items (all those that start
     with 'J') from a set while iterating:
 
-    \code
-        QSet<QString> set;
-        set << "January" << "February" << ... << "December";
-
-        QSet<QString>::iterator i = set.begin();
-        while (i != set.end()) {
-            if ((*i).startsWith('J')) {
-                i = set.erase(i);
-            } else {
-                ++i;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 9
 
     STL-style iterators can be used as arguments to \l{generic
     algorithms}. For example, here's how to find an item in the set
     using the qFind() algorithm:
 
-    \code
-        QSet<QString> set;
-        ...
-        QSet<QString>::iterator it = qFind(set.begin(), set.end(), "Jeanette");
-        if (it != set.end())
-            cout << "Found Jeanette" << endl;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 10
 
     Multiple iterators can be used on the same set. However, you may
     not attempt to modify the container while iterating on it.
@@ -663,26 +650,13 @@
     start iterating. Here's a typical loop that prints all the items
     stored in a set:
 
-    \code
-        QSet<QString> set;
-        set << "January" << "February" << ... << "December";
-
-        QSet<QString>::const_iterator i;
-        for (i = set.begin(); i != set.end(); ++i)
-            qDebug() << *i;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 11
 
     STL-style iterators can be used as arguments to \l{generic
     algorithms}. For example, here's how to find an item in the set
     using the qFind() algorithm:
 
-    \code
-        QSet<QString> set;
-        ...
-        QSet<QString>::iterator it = qFind(set.begin(), set.end(), "Jeanette");
-        if (it != set.constEnd())
-            cout << "Found Jeanette" << endl;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 12
 
     Multiple iterators can be used on the same set. However, you may
     not attempt to modify the container while iterating on it.
@@ -915,13 +889,7 @@
 
     Example:
 
-    \code
-        QSet<QString> set;
-        set << "red" << "green" << "blue" << ... << "black";
-
-        QList<QString> list = set.toList();
-        qSort(list);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 13
 
     \sa fromList(), QList::fromSet(), qSort()
 */
@@ -945,15 +913,7 @@
 
     Example:
 
-    \code
-        QStringList list;
-        list << "Julia" << "Mike" << "Mike" << "Julia" << "Julia";
-
-        QSet<QString> set = QSet<QString>::fromList(list);
-        set.contains("Julia");  // returns true
-        set.contains("Mike");   // returns true
-        set.size();             // returns 2
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qset.qdoc 14
 
     \sa toList(), QList::toSet()
 */

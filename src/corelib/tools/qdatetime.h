@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QDate
@@ -135,7 +137,11 @@ Q_DECLARE_TYPEINFO(QDate, Q_MOVABLE_TYPE);
 class Q_CORE_EXPORT QTime
 {
 public:
-    QTime(): mds(NullTime) {}
+    QTime(): mds(NullTime)
+#if defined(Q_OS_WINCE)
+        , startTick(NullTime)
+#endif
+    {}
     QTime(int h, int m, int s = 0, int ms = 0);
 
     bool isNull() const { return mds == NullTime; }
@@ -181,6 +187,9 @@ private:
     enum TimeFlag { NullTime = -1 };
     inline int ds() const { return mds == -1 ? 0 : mds; }
     int mds;
+#if defined(Q_OS_WINCE)
+    int startTick;
+#endif
 
     friend class QDateTime;
     friend class QDateTimePrivate;
@@ -237,6 +246,9 @@ public:
     inline bool operator>(const QDateTime &other) const { return other < *this; }
     inline bool operator>=(const QDateTime &other) const { return !(*this < other); }
 
+    void setUtcOffset(int seconds);
+    int utcOffset() const;
+
     static QDateTime currentDateTime();
 #ifndef QT_NO_DATESTRING
     static QDateTime fromString(const QString &s, Qt::DateFormat f = Qt::TextDate);
@@ -256,6 +268,7 @@ public:
         else
             return currentDateTime().toUTC();
     }
+    
 #endif
 
 private:
@@ -302,6 +315,8 @@ Q_CORE_EXPORT QDebug operator<<(QDebug, const QDate &);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QTime &);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QDateTime &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

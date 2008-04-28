@@ -52,6 +52,8 @@
 #include <qapplication.h>
 #include <ctype.h>
 
+QT_BEGIN_NAMESPACE
+
 // Uncommend, to show debugging information for the keymapper
 //#define DEBUG_KEYMAPPER
 
@@ -77,7 +79,14 @@ extern Q_CORE_EXPORT QLocale qt_localeFromLCID(LCID id);
 #define VK_OEM_3 0xC0
 #endif
 
-
+#if defined(Q_OS_WINCE)
+bool GetKeyboardState(unsigned char* kbuffer)
+{
+    for (int i=0; i< 256; ++i)
+        kbuffer[i] = GetAsyncKeyState(i);
+    return true;
+}
+#endif
 // Key recorder ------------------------------------------------------------------------[ start ] --
 struct KeyRecord {
     KeyRecord(int c, int a, int s, const QString &t) : code(c), ascii(a), state(s), text(t) {}
@@ -428,6 +437,32 @@ static const Qt::KeyboardModifiers ModsTbl[] = {
     Qt::NoModifier,                                             // Fall-back to raw Key_*
 };
 
+#if defined(Q_OS_WINCE)
+    // Use the KeyTbl to resolve a Qt::Key out of the virtual keys.
+    // In case it is not resolvable, continue using the virtual key itself.
+
+QT_BEGIN_INCLUDE_NAMESPACE
+        
+int ToUnicode(UINT vk, int /*scancode*/, unsigned char* /*kbdBuffer*/, LPWSTR unicodeBuffer, int, int)
+{
+    QT_USE_NAMESPACE
+    QChar* buf = reinterpret_cast< QChar*>(unicodeBuffer);
+    if (KeyTbl[vk] == 0) {
+        buf[0] = vk;
+        return 1;
+    }
+    return 0;
+}
+
+int ToAscii(UINT vk, int scancode, unsigned char *kbdBuffer, LPWSTR unicodeBuffer, int flag)
+{
+    return ToUnicode(vk, scancode, kbdBuffer, unicodeBuffer, 0, flag);
+
+}
+QT_END_INCLUDE_NAMESPACE
+
+#endif
+
 // Translate a VK into a Qt key code, or unicode character
 static inline int toKeyOrUnicode(int vk, int scancode, unsigned char *kbdBuffer, bool *isDeadkey = 0)
 {
@@ -520,7 +555,7 @@ static void qt_show_system_menu(QWidget* tlw)
 #define enabled (MF_BYCOMMAND | MF_ENABLED)
 #define disabled (MF_BYCOMMAND | MF_GRAYED)
 
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     EnableMenuItem(menu, SC_MINIMIZE, (tlw->windowFlags() & Qt::WindowMinimizeButtonHint)?enabled:disabled);
     bool maximized = IsZoomed(tlw->internalWinId());
 
@@ -759,6 +794,8 @@ bool QKeyMapperPrivate::isADeadKey(unsigned int vk_key, unsigned int modifiers)
     return false;
 }
 
+extern bool qt_use_rtl_extensions;
+
 QList<int> QKeyMapperPrivate::possibleKeys(QKeyEvent *e)
 {
     QList<int> result;
@@ -798,7 +835,7 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *widget, const MSG &msg, bool 
     bool isNumpad = (msg.wParam >= VK_NUMPAD0 && msg.wParam <= VK_NUMPAD9);
     quint32 nModifiers = 0;
 
-    if (QSysInfo::WindowsVersion < QSysInfo::WV_NT) {
+    if (QSysInfo::WindowsVersion < QSysInfo::WV_NT || QSysInfo::WindowsVersion & QSysInfo::WV_CE_based) {
         nModifiers |= (GetKeyState(VK_SHIFT  ) < 0 ? ShiftAny : 0);
         nModifiers |= (GetKeyState(VK_CONTROL) < 0 ? ControlAny : 0);
         nModifiers |= (GetKeyState(VK_MENU   ) < 0 ? AltAny : 0);
@@ -857,7 +894,6 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *widget, const MSG &msg, bool 
 
     else {
         // handle Directionality changes (BiDi) with RTL extensions
-        extern bool qt_use_rtl_extensions;
         if (qt_use_rtl_extensions) {
             static int dirStatus = 0;
             if (!dirStatus && state == Qt::ControlModifier
@@ -1093,6 +1129,7 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *widget, const MSG &msg, bool 
 
                 bool store = true;
                 // Alt+<alphanumerical> go to the Win32 menu system if unhandled by Qt
+#if !defined(Q_OS_WINCE)
                 if (msgType == WM_SYSKEYDOWN && !k0 && a) {
                     HWND parent = GetParent(widget->internalWinId());
                     while (parent) {
@@ -1105,6 +1142,7 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *widget, const MSG &msg, bool 
                         parent = GetParent(parent);
                     }
                 }
+#endif
                 if (!store)
                     key_recorder.findKey(msg.wParam, true);
             }
@@ -1134,6 +1172,7 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *widget, const MSG &msg, bool 
                                      (rec ? rec->text : QString()), false, 0, scancode, msg.wParam, nModifiers);
 
                 // don't pass Alt to Windows unless we are embedded in a non-Qt window
+#if !defined(Q_OS_WINCE)
                 if (code == Qt::Key_Alt) {
                     k0 = true;
                     HWND parent = GetParent(widget->internalWinId());
@@ -1145,6 +1184,7 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *widget, const MSG &msg, bool 
                         parent = GetParent(parent);
                     }
                 }
+#endif
             }
         }
     }
@@ -1161,6 +1201,9 @@ bool QKeyMapper::sendKeyEvent(QWidget *widget, bool grab,
                               const QString &text, bool autorepeat, int count,
                               quint32 nativeScanCode, quint32 nativeVirtualKey, quint32 nativeModifiers)
 {
+#if defined(Q_OS_WINCE)
+    Q_UNUSED(grab);
+#endif
     Q_UNUSED(count);
 #if defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
     if (type == QEvent::KeyPress
@@ -1191,3 +1234,5 @@ bool QKeyMapper::sendKeyEvent(QWidget *widget, bool grab,
 
     return e.isAccepted();
 }
+
+QT_END_NAMESPACE

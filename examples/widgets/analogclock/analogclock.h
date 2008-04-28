@@ -46,6 +46,7 @@
 
 #include <QWidget>
 
+//! [0]
 class AnalogClock : public QWidget
 {
     Q_OBJECT
@@ -56,5 +57,6 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
 };
+//! [0]
 
 #endif

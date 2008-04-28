@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \class Q3MemArray
     \brief The Q3MemArray class is a template class that provides arrays of simple types.
@@ -24,46 +67,10 @@
     and less copying of data.
 
     Example:
-    \code
-    #include <q3memarray.h>
-    #include <stdio.h>
-
-    Q3MemArray<int> fib( int num ) // returns fibonacci array
-    {
-	Q_ASSERT( num > 2 );
-	Q3MemArray<int> f( num ); // array of ints
-
-	f[0] = f[1] = 1;
-	for ( int i = 2; i < num; i++ )
-	    f[i] = f[i-1] + f[i-2];
-
-	return f;
-    }
-
-    int main()
-    {
-	Q3MemArray<int> a = fib( 6 ); // get first 6 fibonaccis
-	for ( int i = 0; i < a.size(); i++ )
-	    qDebug( "%d: %d", i, a[i] );
-
-	qDebug( "1 is found %d times", a.contains(1) );
-	qDebug( "5 is found at index %d", a.find(5) );
-
-	return 0;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3memarray.qdoc 0
 
     Program output:
-    \code
-    0: 1
-    1: 1
-    2: 2
-    3: 3
-    4: 5
-    5: 8
-    1 is found 2 times
-    5 is found at index 4
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3memarray.qdoc 1
 
     Note concerning the use of Q3MemArray for manipulating structs or
     classes: Compilers will often pad the size of structs of odd sizes
@@ -72,23 +79,7 @@
     the remaining bytes will typically be uninitialized, this can
     cause find() etc. to fail to find the element. Example:
 
-    \code
-    // MyStruct may be padded to 4 or 8 bytes
-    struct MyStruct
-    {
-	short i; // 2 bytes
-	char c;  // 1 byte
-    };
-
-    Q3MemArray<MyStruct> a(1);
-    a[0].i = 5;
-    a[0].c = 't';
-
-    MyStruct x;
-    x.i = '5';
-    x.c = 't';
-    int i = a.find( x ); // may return -1 if the pad bytes differ
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3memarray.qdoc 2
 
     To work around this, make sure that you use a struct where
     sizeof() returns the same as the sum of the sizes of the members
@@ -377,25 +368,10 @@
     allocating memory or copying data.
 
     Example I (intended use):
-    \code
-    static char bindata[] = { 231, 1, 44, ... };
-    QByteArray	a;
-    a.setRawData( bindata, sizeof(bindata) );	// a points to bindata
-    QDataStream s( a, IO_ReadOnly );		// open on a's data
-    s >> <something>;				// read raw bindata
-    a.resetRawData( bindata, sizeof(bindata) ); // finished
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3memarray.qdoc 3
 
     Example II (you don't want to do this):
-    \code
-    static char bindata[] = { 231, 1, 44, ... };
-    QByteArray	a, b;
-    a.setRawData( bindata, sizeof(bindata) );	// a points to bindata
-    a.resize( 8 );				// will crash
-    b = a;					// will crash
-    a[2] = 123;					// might crash
-    // forget to resetRawData: will crash
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3memarray.qdoc 4
 
     \warning If you do not call resetRawData(), Q3MemArray will attempt
     to deallocate or reallocate the raw data, which might not be too

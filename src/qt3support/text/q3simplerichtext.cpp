@@ -47,6 +47,8 @@
 #include "q3richtext_p.h"
 #include "qapplication.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3SimpleRichTextData
 {
 public:
@@ -119,9 +121,7 @@ void Q3SimpleRichTextData::adjustSize() {
     rich text rendering on a widget \e w, you would normally specify
     the widget's font, for example:
 
-    \code
-    Q3SimpleRichText myrichtext(contents, mywidget->font());
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3simplerichtext.cpp 0
 
     \a context is the optional context of the rich text object. This
     becomes important if \a text contains relative references, for
@@ -417,5 +417,7 @@ void Q3SimpleRichText::setDefaultFont(const QFont &f)
     d->doc->setDefaultFormat(f, QColor());
     d->doc->setText(d->doc->originalText(), d->doc->context());
 }
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_RICHTEXT

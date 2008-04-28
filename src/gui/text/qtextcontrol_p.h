@@ -60,7 +60,10 @@
 #include <QtGui/qtextcursor.h>
 #include <QtGui/qtextformat.h>
 #include <QtGui/qtextedit.h>
+#include <QtGui/qmenu.h>
 #include <QtCore/qrect.h>
+#include <QtGui/qabstracttextdocumentlayout.h>
+#include <QtGui/qtextdocumentfragment.h>
 
 #ifdef QT3_SUPPORT
 #include <QtGui/qtextobject.h>
@@ -68,6 +71,8 @@
 #endif
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -84,7 +89,9 @@ class Q_GUI_EXPORT QTextControl : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QTextControl)
+#ifndef QT_NO_TEXTHTMLPARSER
     Q_PROPERTY(QString html READ toHtml WRITE setHtml NOTIFY textChanged USER true)
+#endif
     Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
     Q_PROPERTY(bool acceptRichText READ acceptRichText WRITE setAcceptRichText)
     Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
@@ -114,10 +121,12 @@ public:
 
     inline QString toPlainText() const
     { return document()->toPlainText(); }
+#ifndef QT_NO_TEXTHTMLPARSER
     inline QString toHtml() const
     { return document()->toHtml(); }
+#endif
 
-    void ensureCursorVisible();
+    virtual void ensureCursorVisible();
 
     virtual QVariant loadResource(int type, const QUrl &name);
 #ifndef QT_NO_CONTEXTMENU
@@ -167,6 +176,12 @@ public:
     void print(QPrinter *printer) const;
 #endif
 
+    virtual int hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const;
+    virtual QRectF blockBoundingRect(const QTextBlock &block) const;
+    QAbstractTextDocumentLayout::PaintContext getPaintContext(QWidget *widget) const;
+
+
+
 public Q_SLOTS:
     void setPlainText(const QString &text);
     void setHtml(const QString &text);
@@ -184,9 +199,13 @@ public Q_SLOTS:
     void selectAll();
 
     void insertPlainText(const QString &text);
+#ifndef QT_NO_TEXTHTMLPARSER
     void insertHtml(const QString &text);
+#endif
 
     void append(const QString &text);
+    void appendHtml(const QString &html);
+    void appendPlainText(const QString &text);
 
     void adjustSize();
 
@@ -202,10 +221,12 @@ Q_SIGNALS:
     // control signals
     void updateRequest(const QRectF &rect = QRectF());
     void documentSizeChanged(const QSizeF &);
+    void blockCountChanged(int newBlockCount);
     void visibilityRequest(const QRectF &rect);
     void microFocusChanged();
     void linkActivated(const QString &link);
     void linkHovered(const QString &);
+    void modificationChanged(bool m);
 
 public:
     // control properties
@@ -242,7 +263,43 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_emitCursorPosChanged(const QTextCursor &))
     Q_PRIVATE_SLOT(d_func(), void _q_deleteSelected())
     Q_PRIVATE_SLOT(d_func(), void _q_copyLink())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateBlock(const QTextBlock &))
+    Q_PRIVATE_SLOT(d_func(), void _q_documentLayoutChanged())
 };
+
+
+#ifndef QT_NO_CONTEXTMENU
+class QUnicodeControlCharacterMenu : public QMenu
+{
+    Q_OBJECT
+public:
+    QUnicodeControlCharacterMenu(QObject *editWidget, QWidget *parent);
+
+private Q_SLOTS:
+    void menuActionTriggered();
+
+private:
+    QObject *editWidget;
+};
+#endif // QT_NO_CONTEXTMENU
+
+
+// also used by QLabel
+class QTextEditMimeData : public QMimeData
+{
+public:
+    inline QTextEditMimeData(const QTextDocumentFragment &aFragment) : fragment(aFragment) {}
+
+    virtual QStringList formats() const;
+protected:
+    virtual QVariant retrieveData(const QString &mimeType, QVariant::Type type) const;
+private:
+    void setup() const;
+
+    mutable QTextDocumentFragment fragment;
+};
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -1,11 +1,40 @@
 /****************************************************************************
 **
-** Qt's global enums etc.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** This file is part of the documentation of the Qt Toolkit.
 **
-** This file is part of the kernel module of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -109,7 +138,17 @@
            setting/clearing the \c WA_MSWindowsUseDirect3D attribute
            on a specific widget. \bold {This functionality is
            experimental}.
-    
+
+    \value AA_DontShowIconsInMenus Actions with the Icon property won't be
+           shown in any menus unless specifically set by the
+           QAction::iconVisibleInMenu property.
+
+           Menus that are currently open or menus already created in the native
+           Mac OS X menubar MAY NOT pick up a change in this attribute. Changes
+           in the QAction::iconVisibleInMenu property will always be picked up.
+
+    \value AA_NativeWindows Ensures that widgets have native windows.
+
     \omitvalue AA_AttributeCount
 */
 
@@ -138,12 +177,6 @@
 
     This enum describes the modifier keys.
 
-    \bold{Note:} On Mac OS X, the \c ControlModifier value corresponds to
-    the Command keys on the Macintosh keyboard, and the \c MetaModifier value
-    corresponds to the Control keys. The \c KeypadModifier value will also be set
-    when an arrow key is pressed as the arrow keys are considered part of the
-    keypad.
-
     \value NoModifier       No modifier key is pressed.
     \value ShiftModifier    A Shift key on the keyboard is pressed.
     \value ControlModifier  A Ctrl key on the keyboard is pressed.
@@ -153,6 +186,15 @@
     \value GroupSwitchModifier X11 only. A Mode_switch key on the keyboard is pressed.
 
     \omitvalue KeyboardModifierMask
+
+    \note On Mac OS X, the \c ControlModifier value corresponds to
+    the Command keys on the Macintosh keyboard, and the \c MetaModifier value
+    corresponds to the Control keys. The \c KeypadModifier value will also be set
+    when an arrow key is pressed as the arrow keys are considered part of the
+    keypad.
+
+    \note On Windows Keyboards, Qt::MetaModifier and Qt::Key_Meta are mapped
+    to the Windows key.
 
     \sa MouseButton Modifier
 */
@@ -427,6 +469,8 @@
     \omitvalue ShowPrefix
     \omitvalue SingleLine
     \omitvalue WordBreak
+    \omitvalue TextForceLeftToRight
+    \omitvalue TextForceRightToLeft
 
     You can use as many modifier flags as you want, except that
     Qt::TextSingleLine and Qt::TextWordWrap cannot be combined.
@@ -472,9 +516,7 @@
     in an event behind the scenes. If you try to use a queued connection and
     get the error message
 
-    \code
-        QObject::connect: Cannot queue arguments of type 'MyType'
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qnamespace.qdoc 0
 
     call qRegisterMetaType() to register the data type before you
     establish the connection.
@@ -486,14 +528,36 @@
     \enum Qt::DateFormat
 
     \value TextDate The default Qt format.
-    \value ISODate ISO 8601 extended format (YYYY-MM-DD, or with time,
-    YYYY-MM-DDTHH:MM:SS).
-    \value LocalDate \e{This attribute has been deprecated.} Use Qt::LocaleDate or
-    Qt::SystemLocaleDate instead.
-    \value SystemLocaleDate The format used by the operating system.
-    \value LocaleDate The format used by the default application locale. This is the
-    locale set with QLocale::setDefault(), or the operating system locale if no
-    default locale has been set.
+
+    \value ISODate ISO 8601 extended format: either \c{YYYY-MM-DD} for dates or
+    \c{YYYY-MM-DDTHH:MM:SS} for combined dates and times.
+
+    \value SystemLocaleShortDate The \l{QLocale::ShortFormat}{short format} used
+    by the \l{QLocale::system()}{operating system}.
+
+    \value SystemLocaleLongDate The \l{QLocale::LongFormat}{long format} used
+    by the \l{QLocale::system()}{operating system}.
+
+    \value DefaultLocaleShortDate The \l{QLocale::ShortFormat}{short format} specified
+    by the \l{QLocale::setDefault()}{application's locale}.
+
+    \value DefaultLocaleLongDate The \l{QLocale::LongFormat}{long format} used
+    by the \l{QLocale::setDefault()}{application's locale}.
+
+    \value SystemLocaleDate \e{This enum value is deprecated.} Use Qt::SystemLocaleShortDate
+    instead (or Qt::SystemLocaleLongDate if you want long dates).
+
+    \value LocaleDate \e{This enum value is deprecated.} Use Qt::DefaultLocaleShortDate
+    instead (or Qt::DefaultLocaleLongDate if you want long dates).
+
+    \value LocalDate \e{This enum value is deprecated.} Use Qt::SystemLocaleShortDate
+    instead (or Qt::SystemLocaleLongDate if you want long dates).
+
+    \note For \c ISODate formats, each \c Y, \c M and \c D represents a single digit
+    of the year, month and day used to specify the date. Each \c H, \c M and \c S
+    represents a single digit of the hour, minute and second used to specify the time.
+    The presence of a literal \c T character is used to separate the date and time when
+    both are specified.
 */
 
 
@@ -502,6 +566,7 @@
 
     \value LocalTime Locale dependent time (Timezones and Daylight Savings Time).
     \value UTC Coordinated Universal Time, replaces Greenwich Mean Time.
+    \value OffsetFromUTC An offset in seconds from Coordinated Universal Time.
 */
 
 /*!
@@ -720,7 +785,7 @@
     \value ZAxis  The Z axis.
 
     \sa QTransform::rotate(), QTransform::rotateRadians()
- */ 
+ */
 
 /*!
     \enum Qt::WidgetAttribute
@@ -800,8 +865,8 @@
     miscellaneous action keys (e.g. Escape, Enter, Backspace,
     PrintScreen) will stop key event compression, even if there are
     more compressible key events available.
-    Not all platforms support this compression, in which case turning
-    it on will have no effect.
+    Platforms other than Mac and X11 do not support this compression,
+    in which case turning it on will have no effect.
     This is set/cleared by the widget's author.
 
     \value WA_LayoutOnEntireRect Indicates that the widget
@@ -838,11 +903,15 @@
     size for widgets in Mac OS X. This attribute is only applicable to
     Mac OS X.
 
+    \value WA_MacVariableSize Indicates the widget can choose between
+        alternative sizes for widgets to avoid clipping.
+        This attribute is only applicable to Mac OS X.
+
     \value WA_MacBrushedMetal Indicates the widget should be drawn in
     the brushed metal style as supported by the windowing system. This
     attribute is only applicable to Mac OS X.
 
-    \omitvalue WA_MacMetalStyle 
+    \omitvalue WA_MacMetalStyle
 
     \value WA_Mapped Indicates that the widget is mapped on screen.
     This is set/cleared by the Qt kernel.
@@ -876,9 +945,9 @@
     not want to receive ChildAdded or ChildRemoved events sent from its
     children. This is set by a widget's author.
 
-    \value WA_NoMouseReplay Used for popup widgets. Indicates that the
+    \value WA_NoMouseReplay Used for pop-up widgets. Indicates that the
     most recent mouse press event should not be replayed when the
-    popup widget closes. The flag is set by the widget's author and
+    pop-up widget closes. The flag is set by the widget's author and
     cleared by the Qt kernel every time the widget receives a new
     mouse event.
 
@@ -891,8 +960,7 @@
     WA_OpaquePaintEvent, newly exposed areas are \e never filled with the
     background (e.g after showing a window for the first time the user
     can see "through" it until the application processes the paint
-    events). Setting this flag implicitly disables double buffering
-    for the widget. This is set/cleared by the widget's author.
+    events). This is set/cleared by the widget's author.
 
     \value WA_OpaquePaintEvent Indicates that the widget paints all its
     pixels when it receives a paint event. It is thus not required for
@@ -914,26 +982,26 @@
     directly onto the screen. Widgets with this attribute set do not
     participate in composition management, i.e. they cannot be
     semi-transparent or shine through semi-transparent overlapping
-    widgets. This is only supported on X11. On Qtopia Core the flag
-    currently only works when set on a top level widget and relies on
-    support from the active screen driver. The flag is set or
+    widgets. This is only supported on X11. On Qt for Embedded Linux,
+    the flag currently only works when set on a top-level widget and
+    relies on support from the active screen driver. The flag is set or
     cleared by the widget's author. For rendering outside of Qt's
     paint system; e.g. if you need to use native X11 painting primitives,
     you need to reimplement QWidget::paintEngine() to return 0 and set
-    this flag.
+    this flag. \note This flag disables double buffering.
 
     \value WA_PaintOutsidePaintEvent Makes it possible to use QPainter
     to paint on the widget outside
     \l{QWidget::paintEvent()}{paintEvent()}. This is not supported on
-    Windows, Mac OS X or Qtopia Core. We recommend that you use this
-    attribute only when porting Qt 3 code to Qt 4.
+    Windows, Mac OS X or Embedded Linux. We recommend that you
+    use this attribute only when porting Qt 3 code to Qt 4.
 
     \value WA_PaintUnclipped Makes all painters operating on this
     widget unclipped. Children of this widget or other widgets in
     front of it do not clip the area the painter can paint on. This
-    flag is only supported for widgets for which the WA_PaintOnScreen 
-    flag is set. The preferred way to do this in a cross platform way 
-    is to create a transparent widget that lies in front of the other 
+    flag is only supported for widgets for which the WA_PaintOnScreen
+    flag is set. The preferred way to do this in a cross platform way
+    is to create a transparent widget that lies in front of the other
     widgets.
 
     \value WA_PendingMoveEvent Indicates that a move event is
@@ -1009,6 +1077,103 @@
     \value WA_StyledBackground Indicates the widget should be drawn
     using a styled background.
 
+    \value WA_ShowWithoutActivating Show the widget without making it
+    active.
+
+    \value WA_NativeWindow Indicates that a native window is created
+    for the widget. Enabling this will also force a native window
+    for the widget's ancestors unless Qt::WA_DontCreateNativeAncestors
+    is set.
+
+    \value WA_DontCreateNativeAncestors Indicates that the widget's
+    ancestors are kept non-native even though the widget itself is
+    native.
+
+    \value WA_X11NetWmWindowTypeDesktop Adds
+    _NET_WM_WINDOW_TYPE_DESKTOP to the window's _NET_WM_WINDOW_TYPE
+    X11 window property. See http://standards.freedesktop.org/wm-spec/
+    for more details. This attribute has no effect on non-X11
+    platforms.
+
+    \value WA_X11NetWmWindowTypeDock Adds _NET_WM_WINDOW_TYPE_DOCK to
+    the window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms.
+
+    \value WA_X11NetWmWindowTypeToolBar Adds
+    _NET_WM_WINDOW_TYPE_TOOLBAR to the window's _NET_WM_WINDOW_TYPE
+    X11 window property. See http://standards.freedesktop.org/wm-spec/
+    for more details. This attribute has no effect on non-X11
+    platforms. Note that Qt automaticaly sets this attribute for
+    QToolBar.
+
+    \value WA_X11NetWmWindowTypeMenu Adds _NET_WM_WINDOW_TYPE_MENU to
+    the window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms. Note that Qt
+    automatically sets this attribute for QMenu when torn-off.
+
+    \value WA_X11NetWmWindowTypeUtility Adds
+    _NET_WM_WINDOW_TYPE_UTILITY to the window's _NET_WM_WINDOW_TYPE
+    X11 window property. See http://standards.freedesktop.org/wm-spec/
+    for more details. This attribute has no effect on non-X11
+    platforms. Note that Qt automatically sets this attribute for the
+    Qt::Tool window type.
+
+    \value WA_X11NetWmWindowTypeSplash Adds _NET_WM_WINDOW_TYPE_SPLASH
+    to the window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms. Note that Qt
+    automatically sets this attribute for the Qt::SplashScreen window
+    type.
+
+    \value WA_X11NetWmWindowTypeDialog Adds _NET_WM_WINDOW_TYPE_DIALOG
+    to the window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms. Note that Qt
+    automatically sets this attribute for the Qt::Dialog and Qt::Sheet
+    window types.
+
+    \value WA_X11NetWmWindowTypeDropDownMenu Adds
+    _NET_WM_WINDOW_TYPE_DROPDOWN_MENU to the window's
+    _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms. Note that Qt
+    automatically sets this attribute for QMenus added to a QMenuBar.
+
+    \value WA_X11NetWmWindowTypePopupMenu Adds
+    _NET_WM_WINDOW_TYPE_POPUP_MENU to the window's _NET_WM_WINDOW_TYPE
+    X11 window property. See http://standards.freedesktop.org/wm-spec/
+    for more details. This attribute has no effect on non-X11
+    platforms. Note that Qt automatically sets this attribute for
+    QMenu.
+
+    \value WA_X11NetWmWindowTypeToolTip Adds
+    _NET_WM_WINDOW_TYPE_TOOLTIP to the window's _NET_WM_WINDOW_TYPE
+    X11 window property. See http://standards.freedesktop.org/wm-spec/
+    for more details. This attribute has no effect on non-X11
+    platforms. Note that Qt automatically sets this attribute for the
+    Qt::ToolTip window type.
+
+    \value WA_X11NetWmWindowTypeNotification Adds
+    _NET_WM_WINDOW_TYPE_NOTIFICATION to the window's
+    _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms.
+
+    \value WA_X11NetWmWindowTypeCombo Adds _NET_WM_WINDOW_TYPE_COMBO
+    to the window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms. Note that Qt
+    automatically sets this attribute for the QComboBox pop-up.
+
+    \value WA_X11NetWmWindowTypeDND Adds _NET_WM_WINDOW_TYPE_DND to
+    the window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms. Note that Qt
+    automatically sets this attribute on the feedback widget used
+    during a drag.
+
     \omitvalue WA_SetLayoutDirection
     \omitvalue WA_InputMethodTransparent
     \omitvalue WA_WState_CompressKeys
@@ -1026,6 +1191,7 @@
     \omitvalue WA_PendingUpdate
     \omitvalue WA_LaidOut
     \omitvalue WA_GrabbedShortcut
+    \omitvalue WA_DontShowOnScreen 
     \omitvalue WA_TransparentForMouseEvents
     \omitvalue WA_InvalidSize
     \omitvalue WA_ForceUpdatesDisabled
@@ -1035,6 +1201,7 @@
     \omitvalue WA_CanHostQMdiSubWindowTitleBar
     \omitvalue WA_AttributeCount
     \omitvalue WA_StyleSheet
+    \omitvalue WA_X11BypassTransientForHint
 */
 
 /*! \typedef Qt::HANDLE
@@ -1058,7 +1225,7 @@
     \value Key_Backspace
     \omitvalue Key_BackSpace
     \value Key_Return
-    \value Key_Enter
+    \value Key_Enter     Typically located on the keypad.
     \value Key_Insert
     \value Key_Delete
     \value Key_Pause
@@ -1078,6 +1245,8 @@
     \value Key_Shift
     \value Key_Control    On Mac OS X, this corresponds to the Command keys.
     \value Key_Meta       On Mac OS X, this corresponds to the Control keys.
+                          On Windows keyboards, this key is mapped to the
+                          Windows key.
     \value Key_Alt
     \value Key_AltGr
     \value Key_CapsLock
@@ -1546,7 +1715,7 @@
                                    e.g. Shift+Tab.
     \value ActiveWindowFocusReason The window system made this window either
                                    active or inactive.
-    \value PopupFocusReason        The application opened/closed a popup that
+    \value PopupFocusReason        The application opened/closed a pop-up that
                                    grabbed/released the keyboard focus.
     \value ShortcutFocusReason     The user typed a label's buddy shortcut
     \value MenuBarFocusReason      The menu bar took focus.
@@ -1620,6 +1789,10 @@
 
     \value WidgetShortcut The shortcut is active when its
     parent widget has focus.
+    \value WidgetWithChildrenShortcut The shortcut is active
+    when its parent widget, or any of it's children has focus.
+    Children which are top-level widgets, except pop-ups, are
+    not affected by this shortcut context.
     \value WindowShortcut The shortcut is active when its
     parent widget is a logical subwidget of the
     active top-level window.
@@ -1671,9 +1844,9 @@
 
     \value Drawer  Indicates that the widget is a Macintosh drawer.
 
-    \value Popup   Indicates that the widget is a popup top-level
+    \value Popup   Indicates that the widget is a pop-up top-level
                    window, i.e. that it is modal, but has a window
-                   system frame appropriate for popup menus.
+                   system frame appropriate for pop-up menus.
 
     \value Tool    Indicates that the widget is a tool window. A tool
                    window is often a small window with a smaller than
@@ -1746,6 +1919,12 @@
            on some window managers on X11 you also have to pass
            Qt::X11BypassWindowManagerHint for this flag to work
            correctly.
+
+    \value WindowOkButtonHint Adds an OK button to the window decoration of a dialog.
+           Only supported for Windows CE.
+
+    \value WindowCancelButtonHint Adds a Cancel button to the window decoration of a dialog.
+           Only supported for Windows CE.
 
     \value WindowType_Mask  A mask for extracting the window type
                             part of the window flags.
@@ -1829,6 +2008,8 @@
     \value WV_CE
     \value WV_CENET
     \value WV_CE_based
+    \value WV_CE_5
+    \value WV_CE_6
 */
 #endif
 
@@ -2207,6 +2388,7 @@
 
     This enum describes the properties of an item:
 
+    \value NoItemFlags It does not have any properties set.
     \value ItemIsSelectable It can be selected.
     \value ItemIsEditable It can be edited.
     \value ItemIsDragEnabled It can be dragged.
@@ -2345,25 +2527,59 @@
     INT_MIN, inclusive. For example, you can define custom priorities
     as being relative to each other:
 
-    \code
-    enum CustomEventPriority
-    {
-        // An important event
-        ImportantEventPriority = Qt::HighEventPriority,
-
-        // A more important event
-        MoreImportantEventPriority = ImportantEventPriority + 1,
-
-        // A critical event
-        CriticalEventPriority = 100 * MoreImportantEventPriority,
-
-        // Not that important
-        StatusEventPriority = Qt::LowEventPriority,
-
-        // These are less important than Status events
-        IdleProcessingDoneEventPriority = StatusEventPriority - 1
-    };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qnamespace.qdoc 1
 
     \sa QCoreApplication::postEvent()
+*/
+/*!
+    \enum Qt::SizeHint
+    \since 4.4
+
+    This enum is used by QGraphicsLayoutItem::sizeHint()
+
+    \value MinimumSize is used to specify the minimum size of a graphics layout item.
+    \value PreferredSize is used to specify the preferred size of a graphics layout item.
+    \value MaximumSize is used to specify the maximum size of a graphics layout item.
+    \value MinimumDescent is used to specify the minimum descent of a text string in a graphics layout item.
+    \omitvalue NSizeHints
+
+    \sa QGraphicsLayoutItem::sizeHint()
+*/
+
+/*!
+    \enum Qt::SizeMode
+    \since 4.4
+
+    This enum is used by QPainter::drawRoundedRect() and QPainterPath::addRoundedRect()
+    functions to specify the radii of rectangle corners with respect to the dimensions
+    of the bounding rectangles specified.
+
+    \value AbsoluteSize Specifies the size using absolute measurements.
+    \value RelativeSize Specifies the size relative to the bounding rectangle,
+                        typically using percentage measurements.
+*/
+
+/*!
+    \enum Qt::WindowFrameSection
+    \since 4.4
+
+    This enum is used to describe parts of a window frame. It is returned by
+    QGraphicsWidget::windowFrameSectionAt() to describe what section of the window
+    frame is under the mouse.
+
+    \value NoSection
+    \value LeftSection
+    \value TopLeftSection
+    \value TopSection
+    \value TopRightSection
+    \value RightSection
+    \value BottomRightSection
+    \value BottomSection
+    \value BottomLeftSection
+    \value TitleBarArea
+
+    \sa QGraphicsWidget::windowFrameEvent()
+    \sa QGraphicsWidget::paintWindowFrame()
+    \sa QGraphicsWidget::windowFrameSectionAt()
+
 */

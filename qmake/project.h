@@ -51,11 +51,15 @@
 #include <qmap.h>
 #include <qmetatype.h>
 
-#define QTSCRIPT_SUPPORT
+#ifndef QT_BUILD_QMAKE_LIBRARY
+#  define QTSCRIPT_SUPPORT
+#endif
 
 #ifdef QTSCRIPT_SUPPORT
 # include <qscriptengine.h>
 #endif
+
+QT_BEGIN_NAMESPACE
 
 class QMakeProperty;
 
@@ -200,5 +204,7 @@ inline QString QMakeProject::first(const QString &v)
 
 inline QMap<QString, QStringList> &QMakeProject::variables()
 { return vars; }
+
+QT_END_NAMESPACE
 
 #endif // PROJECT_H

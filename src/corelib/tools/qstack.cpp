@@ -60,9 +60,7 @@
 
     Example:
 
-    \quotefromfile snippets/qstack/main.cpp
-    \skipto QStack
-    \printuntil cout
+    \snippet doc/src/snippets/qstack/main.cpp 0
 
     The example will output 3, 2, 1 in that order.
 

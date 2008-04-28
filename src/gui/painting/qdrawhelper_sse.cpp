@@ -45,7 +45,9 @@
 
 #include <private/qdrawhelper_sse_p.h>
 
-const CompositionFunctionSolid qt_functionForModeSolid_SSE[] = {
+QT_BEGIN_NAMESPACE
+
+CompositionFunctionSolid qt_functionForModeSolid_SSE[numCompositionFunctions] = {
     comp_func_solid_SourceOver<QSSEIntrinsics>,
     comp_func_solid_DestinationOver<QSSEIntrinsics>,
     comp_func_solid_Clear<QSSEIntrinsics>,
@@ -57,22 +59,10 @@ const CompositionFunctionSolid qt_functionForModeSolid_SSE[] = {
     comp_func_solid_DestinationOut<QSSEIntrinsics>,
     comp_func_solid_SourceAtop<QSSEIntrinsics>,
     comp_func_solid_DestinationAtop<QSSEIntrinsics>,
-    comp_func_solid_XOR<QSSEIntrinsics>,
-    comp_func_solid_Plus,
-    comp_func_solid_Multiply,
-    comp_func_solid_Screen,
-    comp_func_solid_Overlay,
-    comp_func_solid_Darken,
-    comp_func_solid_Lighten,
-    comp_func_solid_ColorDodge,
-    comp_func_solid_ColorBurn,
-    comp_func_solid_HardLight,
-    comp_func_solid_SoftLight,
-    comp_func_solid_Difference,
-    comp_func_solid_Exclusion
+    comp_func_solid_XOR<QSSEIntrinsics>
 };
 
-const CompositionFunction qt_functionForMode_SSE[] = {
+CompositionFunction qt_functionForMode_SSE[numCompositionFunctions] = {
     comp_func_SourceOver<QSSEIntrinsics>,
     comp_func_DestinationOver<QSSEIntrinsics>,
     comp_func_Clear<QSSEIntrinsics>,
@@ -84,19 +74,7 @@ const CompositionFunction qt_functionForMode_SSE[] = {
     comp_func_DestinationOut<QSSEIntrinsics>,
     comp_func_SourceAtop<QSSEIntrinsics>,
     comp_func_DestinationAtop<QSSEIntrinsics>,
-    comp_func_XOR<QSSEIntrinsics>,
-    comp_func_Plus,
-    comp_func_Multiply,
-    comp_func_Screen,
-    comp_func_Overlay,
-    comp_func_Darken,
-    comp_func_Lighten,
-    comp_func_ColorDodge,
-    comp_func_ColorBurn,
-    comp_func_HardLight,
-    comp_func_SoftLight,
-    comp_func_Difference,
-    comp_func_Exclusion
+    comp_func_XOR<QSSEIntrinsics>
 };
 
 void qt_blend_color_argb_sse(int count, const QSpan *spans, void *userData)
@@ -119,5 +97,7 @@ void qt_bitmapblit16_sse(QRasterBuffer *rasterBuffer, int x, int y,
                                                         color, src, width,
                                                         height, stride);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_HAVE_SSE

@@ -46,6 +46,8 @@
 #include "qsqlfield.h"
 #include "qstringlist.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QSqlIndex
     \brief The QSqlIndex class provides functions to manipulate and
@@ -207,14 +209,7 @@ QString QSqlIndex::toString(const QString& prefix, const QString& sep, bool verb
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \code
-    QStringList list = myIndex.toStringList();
-    QStringList::Iterator it = list.begin();
-    while(it != list.end()) {
-        myProcessing(*it);
-        ++it;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlindex.cpp 0
 
 */
 QStringList QSqlIndex::toStringList(const QString& prefix, bool verbose) const
@@ -261,3 +256,4 @@ void QSqlIndex::setCursorName(const QString& cursorName)
     cursor = cursorName;
 }
 
+QT_END_NAMESPACE

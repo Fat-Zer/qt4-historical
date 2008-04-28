@@ -46,6 +46,8 @@
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(context2d);
+
     QApplication app(argc, argv);
     Window win;
     win.show();

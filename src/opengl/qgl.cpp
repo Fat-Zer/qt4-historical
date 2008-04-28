@@ -54,6 +54,13 @@
 #include "qfile.h"
 #include "qlibrary.h"
 
+QT_BEGIN_NAMESPACE
+
+#ifdef QT_OPENGL_ES_CL
+#include "qgl_cl_p.h"
+#endif
+
+
 #if defined(Q_WS_X11) || defined(Q_WS_MAC) || defined(Q_WS_QWS)
 QGLExtensionFuncs QGLContextPrivate::qt_extensionFuncs;
 #endif
@@ -84,6 +91,7 @@ typedef void (APIENTRY *pfn_glCompressedTexImage2DARB) (GLenum, GLint, GLenum, G
                                                         GLsizei, GLint, GLsizei, const GLvoid *);
 static pfn_glCompressedTexImage2DARB qt_glCompressedTexImage2DARB = 0;
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #if defined(Q_WS_X11)
 #include "private/qt_x11_p.h"
 #define INT32 dummy_INT32
@@ -97,10 +105,17 @@ static pfn_glCompressedTexImage2DARB qt_glCompressedTexImage2DARB = 0;
 #endif
 
 #include <stdlib.h> // malloc
+QT_END_INCLUDE_NAMESPACE
 
 #ifndef APIENTRY
 #define APIENTRY
 #endif
+
+Q_GLOBAL_STATIC(QGLSignalProxy, theSignalProxy)
+QGLSignalProxy *QGLSignalProxy::instance()
+{
+    return theSignalProxy();
+}
 
 /*!
     \namespace QGL
@@ -192,36 +207,15 @@ static pfn_glCompressedTexImage2DARB qt_glCompressedTexImage2DARB = 0;
     There are different ways to define the display characteristics of
     a rendering context. One is to create a QGLFormat and make it the
     default for the entire application:
-    \code
-    QGLFormat fmt;
-    fmt.setAlpha(true);
-    fmt.setStereo(true);
-    QGLFormat::setDefaultFormat(fmt);
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 0
 
     Or you can specify the desired format when creating an object of
     your QGLWidget subclass:
-    \code
-    QGLFormat fmt;
-    fmt.setDoubleBuffer(false);                 // single buffer
-    fmt.setDirectRendering(false);              // software rendering
-    MyGLWidget* myWidget = new MyGLWidget(fmt, ...);
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 1
 
     After the widget has been created, you can find out which of the
     requested features the system was able to provide:
-    \code
-    QGLFormat fmt;
-    fmt.setOverlay(true);
-    fmt.setStereo(true);
-    MyGLWidget* myWidget = new MyGLWidget(fmt, ...);
-    if (!myWidget->format().stereo()) {
-        // ok, goggles off
-        if (!myWidget->format().hasOverlay()) {
-            qFatal("Cool hardware required");
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 2
 
     \legalese
         OpenGL is a trademark of Silicon Graphics, Inc. in the
@@ -306,19 +300,7 @@ QGLFormat::QGLFormat()
 
     This constructor makes it easy to specify a certain desired format
     in classes derived from QGLWidget, for example:
-    \code
-    // The rendering in MyGLWidget depends on using
-    // stencil buffer and alpha channel
-    MyGLWidget::MyGLWidget(QWidget* parent)
-        : QGLWidget(QGLFormat(QGL::StencilBuffer | QGL::AlphaChannel), parent)
-    {
-        if (!format().stencil())
-            qWarning("Could not get stencil buffer; results will be suboptimal");
-        if (!format().alpha())
-            qWarning("Could not get alpha channel; results will be suboptimal");
-        ...
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 3
 
     Note that there are \c FormatOption values to turn format settings
     both on and off, e.g. \c DepthBuffer and \c NoDepthBuffer,
@@ -657,15 +639,15 @@ void QGLFormat::setSamples(int numSamples)
     Setting an \a interval value of 0 will turn the vertical refresh syncing
     off, any value higher than 0 will turn the vertical syncing on.
 
-    Under Windows, where the \c{WGL_EXT_swap_control} extension is
-    used, the \a interval parameter can be used to set the minimum
-    number of video frames that are displayed before a buffer swap
-    will occur. In effect, setting the \a interval to 10, means there
-    will be 10 vertical retraces between every buffer swap.
+    Under Windows and under X11, where the \c{WGL_EXT_swap_control}
+    and \c{GLX_SGI_video_sync} extensions are used, the \a interval
+    parameter can be used to set the minimum number of video frames
+    that are displayed before a buffer swap will occur. In effect,
+    setting the \a interval to 10, means there will be 10 vertical
+    retraces between every buffer swap.
 
-    Note that setting the swap interval is only supported under
-    Windows and on Mac OS X. Under Windows the
-    \c{WGL_EXT_swap_control} extension has to be present.
+    Under Windows the \c{WGL_EXT_swap_control} extension has to be present,
+    and under X11 the \c{GLX_SGI_video_sync} extension has to be present.
 */
 void QGLFormat::setSwapInterval(int interval)
 {
@@ -676,8 +658,7 @@ void QGLFormat::setSwapInterval(int interval)
     \since 4.2
 
     Returns the currently set swap interval. -1 is returned if setting
-    the swap interval isn't supported in the system GL implementation
-    (e.g. under X11).
+    the swap interval isn't supported in the system GL implementation.
 */
 int QGLFormat::swapInterval() const
 {
@@ -1156,12 +1137,7 @@ QGLFormat QGLFormat::defaultFormat()
     Sets a new default QGLFormat for the application to \a f. For
     example, to set single buffering as the default instead of double
     buffering, your main() might contain code like this:
-    \code
-    QApplication a(argc, argv);
-    QGLFormat f;
-    f.setDoubleBuffer(false);
-    QGLFormat::setDefaultFormat(f);
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 4
 
     \sa defaultFormat()
 */
@@ -1205,28 +1181,13 @@ QGLFormat QGLFormat::defaultOverlayFormat()
     For example, to get a double buffered overlay context (if
     available), use code like this:
 
-    \code
-    QGLFormat f = QGLFormat::defaultOverlayFormat();
-    f.setDoubleBuffer(true);
-    QGLFormat::setDefaultOverlayFormat(f);
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 5
 
     As usual, you can find out after widget creation whether the
     underlying OpenGL system was able to provide the requested
     specification:
 
-    \code
-    // ...continued from above
-    MyGLWidget* myWidget = new MyGLWidget(QGLFormat(QGL::HasOverlay), ...);
-    if (myWidget->format().hasOverlay()) {
-        // Yes, we got an overlay, let's check _its_ format:
-        QGLContext* olContext = myWidget->overlayContext();
-        if (olContext->format().doubleBuffer())
-            ; // yes, we got a double buffered overlay
-        else
-            ; // no, only single buffered overlays are available
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 6
 
     \sa defaultOverlayFormat()
 */
@@ -1291,7 +1252,7 @@ void QGLContextPrivate::init(QPaintDevice *dev, const QGLFormat &format)
     update = false;
     vi = 0;
 #endif
-#if defined(Q_WS_QWS)
+#if defined(QT_OPENGL_ES)
     dpy = 0;
     cx = 0;
     config = 0;
@@ -1389,7 +1350,7 @@ struct DDSFormat {
 #endif
 
 Q_GLOBAL_STATIC(QGLShareRegister, _qgl_share_reg);
-QGLShareRegister* qgl_share_reg()
+Q_OPENGL_EXPORT QGLShareRegister* qgl_share_reg()
 {
     return _qgl_share_reg();
 }
@@ -1496,7 +1457,7 @@ QGLContext::~QGLContext()
         }
     }
 
-    QGLProxy::signalProxy()->emitAboutToDestroyContext(this);
+    QGLSignalProxy::instance()->emitAboutToDestroyContext(this);
     reset();
     delete d;
 }
@@ -1586,11 +1547,8 @@ GLuint QGLContext::bindTexture(const QString &fileName)
     GLuint tx_id;
     glGenTextures(1, &tx_id);
     glBindTexture(GL_TEXTURE_2D, tx_id);
-#ifndef Q_WS_QWS
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-#else
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-#endif
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     int size;
     int offset = 0;
@@ -1727,28 +1685,19 @@ GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint 
     // from the QOpenGLPaintEngine - in that case we have to force
     // a premultiplied texture format
 
-    if (target == GL_TEXTURE_2D && (tx_w != image.width() || tx_h != image.height()))
+    if (!(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_2_0)
+        && (target == GL_TEXTURE_2D && (tx_w != image.width() || tx_h != image.height())))
+    {
         tx = convertToGLFormat(image.scaled(tx_w, tx_h), clean, texture_format);
-    else
+    } else {
         tx = convertToGLFormat(image, clean, texture_format);
+    }
 
     GLuint tx_id;
     glGenTextures(1, &tx_id);
     glBindTexture(target, tx_id);
     glTexParameterf(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    if (QGLExtensions::glExtensions & QGLExtensions::GenerateMipmap
-        && target == GL_TEXTURE_2D)
-    {
-        glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
-#ifndef Q_WS_QWS
-        glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-#else
-        glTexParameterf(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-#endif
-        glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    } else {
-        glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    }
+    glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glTexImage2D(target, 0, format, tx.width(), tx.height(), 0, texture_format,
                  GL_UNSIGNED_BYTE, tx.bits());
@@ -1910,6 +1859,139 @@ void QGLContext::deleteTexture(QMacCompatGLuint id)
 }
 #endif
 
+// qpaintengine_opengl.cpp
+extern void qt_add_rect_to_array(const QRectF &r, q_vertexType *array);
+
+static void qDrawTextureRect(const QRectF &target, GLint textureWidth, GLint textureHeight, GLenum textureTarget)
+{
+    q_vertexType tx = f2vt(1);
+    q_vertexType ty = f2vt(1);
+
+#ifdef QT_OPENGL_ES
+    Q_UNUSED(textureWidth);
+    Q_UNUSED(textureHeight);
+    Q_UNUSED(textureTarget);
+#else
+    if (textureTarget != GL_TEXTURE_2D) {
+        if (textureWidth == -1 || textureHeight == -1) {
+            glGetTexLevelParameteriv(textureTarget, 0, GL_TEXTURE_WIDTH, &textureWidth);
+            glGetTexLevelParameteriv(textureTarget, 0, GL_TEXTURE_HEIGHT, &textureHeight);
+        }
+
+        tx = f2vt(textureWidth);
+        ty = f2vt(textureHeight);
+    }
+#endif
+
+    q_vertexType texCoordArray[4*2] = {
+        0, ty, tx, ty, tx, 0, 0, 0
+    };
+
+    q_vertexType vertexArray[4*2];
+    qt_add_rect_to_array(target, vertexArray);
+
+    glVertexPointer(2, q_vertexTypeEnum, 0, vertexArray);
+    glTexCoordPointer(2, q_vertexTypeEnum, 0, texCoordArray);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
+/*!
+    \since 4.4
+
+    Draws the given texture, \a textureId, to the given target rectangle,
+    \a target, in OpenGL model space. The \a textureTarget should be a 2D
+    texture target.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLContext::drawTexture(const QRectF &target, GLuint textureId, GLenum textureTarget)
+{
+#ifdef QT_OPENGL_ES
+    if (textureTarget != GL_TEXTURE_2D) {
+        qWarning("QGLContext::drawTexture(): texture target must be GL_TEXTURE_2D on OpenGL ES");
+        return;
+    }
+#else
+    const bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
+    GLint oldTexture;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldTexture);
+#endif
+
+    glEnable(textureTarget);
+    glBindTexture(textureTarget, textureId);
+
+    qDrawTextureRect(target, -1, -1, textureTarget);
+
+#ifdef QT_OPENGL_ES
+    glDisable(textureTarget);
+#else
+    if (!wasEnabled)
+        glDisable(textureTarget);
+    glBindTexture(textureTarget, oldTexture);
+#endif
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLContext::drawTexture(const QRectF &target, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    drawTexture(target, GLuint(textureId), GLenum(textureTarget));
+}
+#endif
+
+/*!
+    \since 4.4
+
+    Draws the given texture at the given \a point in OpenGL model
+    space. The \a textureTarget should be a 2D texture target.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLContext::drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget)
+{
+    // this would be ok on OpenGL ES 2.0, but currently we don't have a define for that
+#ifdef QT_OPENGL_ES
+    Q_UNUSED(point);
+    Q_UNUSED(textureId);
+    Q_UNUSED(textureTarget);
+    qWarning("drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget) not supported with OpenGL ES, use rect version instead");
+#else
+    const bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
+    GLint oldTexture;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &oldTexture);
+
+    glEnable(textureTarget);
+    glBindTexture(textureTarget, textureId);
+
+    GLint textureWidth;
+    GLint textureHeight;
+
+    glGetTexLevelParameteriv(textureTarget, 0, GL_TEXTURE_WIDTH, &textureWidth);
+    glGetTexLevelParameteriv(textureTarget, 0, GL_TEXTURE_HEIGHT, &textureHeight);
+
+    qDrawTextureRect(QRectF(point, QSizeF(textureWidth, textureHeight)), textureWidth, textureHeight, textureTarget);
+
+    if (!wasEnabled)
+        glDisable(textureTarget);
+    glBindTexture(textureTarget, oldTexture);
+#endif
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLContext::drawTexture(const QPointF &point, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    drawTexture(point, GLuint(textureId), GLenum(textureTarget));
+}
+#endif
+
+
 /*!
     This function sets the limit for the texture cache to \a size,
     expressed in kilobytes.
@@ -1961,17 +2043,7 @@ int QGLContext::textureCacheLimit()
     Call create() to create a new GL context that tries to match the
     new format.
 
-    \code
-    QGLContext *cx;
-    //  ...
-    QGLFormat f;
-    f.setStereo(true);
-    cx->setFormat(f);
-    if (!cx->create())
-        exit(); // no OpenGL support, or cannot render on the specified paintdevice
-    if (!cx->format().stereo())
-        exit(); // could not create stereo context
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 7
 
     \sa format(), reset(), create()
 */
@@ -2327,51 +2399,7 @@ const QGLContext* QGLContext::currentContext()
 
     Here is a rough outline of how a QGLWidget subclass might look:
 
-    \code
-    class MyGLDrawer : public QGLWidget
-    {
-        Q_OBJECT        // must include this if you use Qt signals/slots
-
-    public:
-        MyGLDrawer(QWidget *parent)
-            : QGLWidget(parent) {}
-
-    protected:
-
-        void initializeGL()
-        {
-            // Set up the rendering context, define display lists etc.:
-            ...
-            glClearColor(0.0, 0.0, 0.0, 0.0);
-            glEnable(GL_DEPTH_TEST);
-            ...
-        }
-
-        void resizeGL(int w, int h)
-        {
-            // setup viewport, projection etc.:
-            glViewport(0, 0, (GLint)w, (GLint)h);
-            ...
-            glFrustum(...);
-            ...
-        }
-
-        void paintGL()
-        {
-            // draw the scene:
-            ...
-            glRotatef(...);
-            glMaterialfv(...);
-            glBegin(GL_QUADS);
-            glVertex3f(...);
-            glVertex3f(...);
-            ...
-            glEnd();
-            ...
-        }
-
-    };
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 8
 
     If you need to trigger a repaint from places other than paintGL()
     (a typical example is when using \link QTimer timers\endlink to
@@ -2389,6 +2417,16 @@ const QGLContext* QGLContext::currentContext()
 
     You can also share OpenGL display lists between QGLWidgets (see
     the documentation of the QGLWidget constructors for details).
+
+    Note that under Windows, the QGLContext belonging to a QGLWidget
+    has to be recreated when the QGLWidget is reparented. This is
+    necessary due to limitations on the Windows platform. This will
+    most likely cause problems for users that have subclassed and
+    installed their own QGLContext on a QGLWidget. It is possible to
+    work around this issue but putting the QGLWidget inside a dummy
+    widget and then reparenting the dummy widget, instead of the
+    QGLWidget. This will side-step the issue altogether, and is what
+    we recommend for users that need this kind of functionality.
 
     \section1 Overlays
 
@@ -2926,7 +2964,74 @@ void QGLWidget::resizeOverlayGL(int, int)
 }
 
 
+#if !defined(Q_OS_WINCE) && !defined(Q_WS_QWS)
+/*! \reimp */
+bool QGLWidget::event(QEvent *e)
+{
+    Q_D(QGLWidget);
 
+    if (e->type() == QEvent::Paint) {
+        QPoint offset;
+        QPaintDevice *redirectedDevice = d->redirected(&offset);
+        if (redirectedDevice && redirectedDevice->devType() == QInternal::Pixmap) {
+            QPainter p(redirectedDevice);
+            p.drawPixmap(offset, renderPixmap());
+            return true;
+        }
+    }
+
+#if defined(Q_WS_X11)
+    // prevents X errors on some systems, where we get a flush to a
+    // hidden widget
+    if (e->type() == QEvent::Hide) {
+        makeCurrent();
+        glFinish();
+        doneCurrent();
+    } else if (e->type() == QEvent::ParentChange) {
+        if (d->glcx->d_func()->screen != d->xinfo.screen()) {
+            setContext(new QGLContext(d->glcx->requestedFormat(), this));
+            // ### recreating the overlay isn't supported atm
+        }
+    }
+#elif defined(Q_WS_WIN)
+    if (e->type() == QEvent::ParentChange) {
+        QGLContext *newContext = new QGLContext(d->glcx->requestedFormat(), this);
+        qgl_share_reg()->replaceShare(d->glcx, newContext);
+        setContext(newContext);
+        // the overlay needs to be recreated as well
+        delete d->olcx;
+        if (isValid() && context()->format().hasOverlay()) {
+            d->olcx = new QGLContext(QGLFormat::defaultOverlayFormat(), this);
+            if (!d->olcx->create(isSharing() ? d->glcx : 0)) {
+                delete d->olcx;
+                d->olcx = 0;
+                d->glcx->d_func()->glFormat.setOverlay(false);
+            }
+        } else {
+            d->olcx = 0;
+        }
+    } else if (e->type() == QEvent::Show && !format().rgba()) {
+        d->updateColormap();
+    }
+#elif defined(Q_WS_MAC)
+    if (e->type() == QEvent::MacGLWindowChange
+#if 0 //(MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+        && ((QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5 && isWindow())
+            || QSysInfo::MacintoshVersion <= QSysInfo::MV_10_4)
+#endif
+        ) {
+        if (d->needWindowChange) {
+            d->needWindowChange = false;
+            d->glcx->updatePaintDevice();
+            update();
+        }
+        return true;
+    }
+#endif
+
+    return QWidget::event(e);
+}
+#endif
 
 /*!
     \fn void QGLWidget::paintEvent(QPaintEvent *event)
@@ -3031,6 +3136,9 @@ QPixmap QGLWidget::renderPixmap(int w, int h, bool useContext)
     QGLFormat fmt = d->glcx->requestedFormat();
     fmt.setDirectRendering(false);                // Direct is unlikely to work
     fmt.setDoubleBuffer(false);                // We don't need dbl buf
+#ifdef Q_WS_MAC // crash prevention on the Mac - it's unlikely to work anyway
+    fmt.setSampleBuffers(false);
+#endif
 
     QGLContext* ocx = d->glcx;
     ocx->doneCurrent();
@@ -3102,7 +3210,12 @@ QImage QGLWidget::grabFrameBuffer(bool withAlpha)
     } else {
 #if defined (Q_WS_WIN)
         res = QImage(w, h, QImage::Format_Indexed8);
+#ifndef QT_OPENGL_ES
         glReadPixels(0, 0, w, h, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, res.bits());
+#else
+        qWarning("Indexed framebuffers not supported for OpenGL/ES");
+        return QImage();
+#endif
         const QVector<QColor> pal = QColormap::instance().colormap();
         if (pal.size()) {
             res.setNumColors(pal.size());
@@ -3146,7 +3259,7 @@ void QGLWidget::glDraw()
     if (!isValid())
         return;
     makeCurrent();
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     if (d->glcx->deviceIsPixmap())
         glDrawBuffer(GL_FRONT);
 #endif
@@ -3177,7 +3290,7 @@ void QGLWidget::glDraw()
 
 void QGLWidget::qglColor(const QColor& c) const
 {
-#ifdef Q_WS_QWS
+#ifdef QT_OPENGL_ES
     glColor4f(c.red()/255.0, c.green()/255.0, c.blue()/255.0, c.alpha()/255.0);
 #else
     Q_D(const QGLWidget);
@@ -3206,7 +3319,7 @@ void QGLWidget::qglColor(const QColor& c) const
 
 void QGLWidget::qglClearColor(const QColor& c) const
 {
-#ifdef Q_WS_QWS
+#ifdef QT_OPENGL_ES
     glClearColor((GLfloat)c.red() / 255.0, (GLfloat)c.green() / 255.0,
                  (GLfloat)c.blue() / 255.0, (GLfloat) c.alpha() / 255.0);
 #else
@@ -3232,7 +3345,8 @@ void QGLWidget::qglClearColor(const QColor& c) const
     Converts the image \a img into the unnamed format expected by
     OpenGL functions such as glTexImage2D(). The returned image is not
     usable as a QImage, but QImage::width(), QImage::height() and
-    QImage::bits() may be used with OpenGL.
+    QImage::bits() may be used with OpenGL. The GL format used is
+    \c GL_RGBA.
 
     \omit ###
 
@@ -3344,7 +3458,7 @@ int QGLWidget::fontDisplayListBase(const QFont & font, int listBase)
     QString color_key;
     if (font.styleStrategy() != QFont::NoAntialias) {
         GLfloat color[4];
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
         glGetFloatv(GL_CURRENT_COLOR, color);
 #endif
         color_key.sprintf("%f_%f_%f",color[0], color[1], color[2]);
@@ -3373,7 +3487,7 @@ int QGLWidget::fontDisplayListBase(const QFont & font, int listBase)
 
 static void qt_save_gl_state()
 {
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 #endif
@@ -3401,7 +3515,7 @@ static void qt_restore_gl_state()
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     glPopAttrib();
     glPopClientAttrib();
 #endif
@@ -3411,7 +3525,7 @@ static void qt_gl_draw_text(QPainter *p, int x, int y, const QString &str,
                             const QFont &font)
 {
     GLfloat color[4];
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     glGetFloatv(GL_CURRENT_COLOR, &color[0]);
 #endif
 
@@ -3448,6 +3562,14 @@ void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, 
     if (str.isEmpty() || !isValid())
         return;
 
+    GLint view[4];
+#ifndef QT_OPENGL_ES
+    bool use_scissor_testing = glIsEnabled(GL_SCISSOR_TEST);
+    if (!use_scissor_testing)
+        glGetIntegerv(GL_VIEWPORT, &view[0]);
+#else
+    bool use_scissor_testing = false;
+#endif
     int width = d->glcx->device()->width();
     int height = d->glcx->device()->height();
     bool auto_swap = autoBufferSwap();
@@ -3464,7 +3586,7 @@ void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, 
         glViewport(0, 0, width, height);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
         glOrtho(0, width, height, 0, 0, 1);
 #else
         glOrthof(0, width, height, 0, 0, 1);
@@ -3477,6 +3599,17 @@ void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, 
         // disable glClear() as a result of QPainter::begin()
         d->glcx->d_func()->clear_on_painter_begin = false;
         p = new QPainter(this);
+    }
+
+    QRect viewport(view[0], view[1], view[2], view[3]);
+    if (!use_scissor_testing && viewport != rect()) {
+        // if the user hasn't set a scissor box, we set one that
+        // covers the current viewport
+        glScissor(view[0], view[1], view[2], view[3]);
+        glEnable(GL_SCISSOR_TEST);
+    } else if (use_scissor_testing) {
+        // use the scissor box set by the user
+        glEnable(GL_SCISSOR_TEST);
     }
 
     qt_gl_draw_text(p, x, y, str, font);
@@ -3497,9 +3630,6 @@ void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, 
     relative to the currently set projection and model matrices. This
     can be useful if you want to annotate models with text labels and
     have the labels move with the model as it is rotated etc.
-
-    Note that this function only works properly if \c GL_DEPTH_TEST is
-    enabled, and you have a properly initialized depth buffer.
 */
 void QGLWidget::renderText(double x, double y, double z, const QString &str, const QFont &font, int)
 {
@@ -3513,7 +3643,7 @@ void QGLWidget::renderText(double x, double y, double z, const QString &str, con
     int height = d->glcx->device()->height();
     GLdouble model[4][4], proj[4][4];
     GLint view[4];
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     glGetDoublev(GL_MODELVIEW_MATRIX, &model[0][0]);
     glGetDoublev(GL_PROJECTION_MATRIX, &proj[0][0]);
     glGetIntegerv(GL_VIEWPORT, &view[0]);
@@ -3526,6 +3656,14 @@ void QGLWidget::renderText(double x, double y, double z, const QString &str, con
     QPaintEngine *engine = paintEngine();
     QPainter *p;
     bool reuse_painter = false;
+#ifndef QT_OPENGL_ES
+    bool use_depth_testing = glIsEnabled(GL_DEPTH_TEST);
+    bool use_scissor_testing = glIsEnabled(GL_SCISSOR_TEST);
+#else
+    bool use_depth_testing = false;
+    bool use_scissor_testing = false;
+#endif
+
     if (engine->isActive()) {
         reuse_painter = true;
         p = engine->painter();
@@ -3537,10 +3675,17 @@ void QGLWidget::renderText(double x, double y, double z, const QString &str, con
         p = new QPainter(this);
     }
 
+    QRect viewport(view[0], view[1], view[2], view[3]);
+    if (!use_scissor_testing && viewport != rect()) {
+        glScissor(view[0], view[1], view[2], view[3]);
+        glEnable(GL_SCISSOR_TEST);
+    } else if (use_scissor_testing) {
+        glEnable(GL_SCISSOR_TEST);
+    }
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(0, 0, width, height);
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     glOrtho(0, width, height, 0, 0, 1);
 #else
     glOrthof(0, width, height, 0, 0, 1);
@@ -3549,8 +3694,9 @@ void QGLWidget::renderText(double x, double y, double z, const QString &str, con
     glLoadIdentity();
     glAlphaFunc(GL_GREATER, 0.0);
     glEnable(GL_ALPHA_TEST);
-    glEnable(GL_DEPTH_TEST);
-#ifndef Q_WS_QWS
+    if (use_depth_testing)
+        glEnable(GL_DEPTH_TEST);
+#ifndef QT_OPENGL_ES
     glTranslated(0, 0, -win_z);
 #else
     glTranslatef(0, 0, -win_z);
@@ -3671,6 +3817,53 @@ void QGLWidget::deleteTexture(QMacCompatGLuint id)
 {
     Q_D(QGLWidget);
     d->glcx->deleteTexture(GLuint(id));
+}
+#endif
+
+/*!
+    \since 4.4
+
+    Draws the given texture, \a textureId to the given target rectangle,
+    \a target, in OpenGL model space. The \a textureTarget should be a 2D
+    texture target.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLWidget::drawTexture(const QRectF &target, GLuint textureId, GLenum textureTarget)
+{
+    Q_D(QGLWidget);
+    d->glcx->drawTexture(target, textureId, textureTarget);
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLWidget::drawTexture(const QRectF &target, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    Q_D(QGLWidget);
+    d->glcx->drawTexture(target, GLint(textureId), GLenum(textureTarget));
+}
+#endif
+
+/*!
+    \since 4.4
+
+    Draws the given texture, \a textureId, at the given \a point in OpenGL
+    model space. The \a textureTarget should be a 2D texture target.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLWidget::drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget)
+{
+    Q_D(QGLWidget);
+    d->glcx->drawTexture(point, textureId, textureTarget);
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLWidget::drawTexture(const QPointF &point, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    Q_D(QGLWidget);
+    d->glcx->drawTexture(point, GLuint(textureId), GLenum(textureTarget));
 }
 #endif
 
@@ -3822,3 +4015,5 @@ Q_OPENGL_EXPORT const QString qt_gl_library_name()
     return *qt_gl_lib_name();
 }
 #endif
+
+QT_END_NAMESPACE

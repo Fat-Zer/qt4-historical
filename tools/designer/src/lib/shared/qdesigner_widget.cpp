@@ -46,7 +46,22 @@
 
 #include <QtDesigner/QDesignerFormWindowInterface>
 #include <QtGui/QPainter>
+#include <QtGui/QStyle>
+#include <QtGui/QStyleOption>
 #include <QtGui/qevent.h>
+
+QT_BEGIN_NAMESPACE
+
+/* QDesignerDialog / QDesignerWidget are used to paint a grid on QDialog and QWidget main containers
+ * and container extension pages.
+ * The paint routines work as follows:
+ * We need to clean the background here (to make the parent grid disappear in case we are a container page
+ * and to make palette background settings take effect),
+ * which would normally break style sheets with background settings.
+ * So, we manually make the style paint after cleaning. On top comes the grid
+ * In addition, this code works around
+ * the QStyleSheetStyle setting Qt::WA_StyledBackground to false for subclasses of QWidget.
+ */
 
 QDesignerDialog::QDesignerDialog(QDesignerFormWindowInterface *fw, QWidget *parent) :
     QDialog(parent),
@@ -56,12 +71,13 @@ QDesignerDialog::QDesignerDialog(QDesignerFormWindowInterface *fw, QWidget *pare
 
 void QDesignerDialog::paintEvent(QPaintEvent *e)
 {
-    if (m_formWindow && m_formWindow->gridVisible()) {
-        m_formWindow->designerGrid().paint(this, e);
-    } else {
-        QPainter p(this);
-        p.fillRect(e->rect(), palette().brush(QPalette::Window));
-    }
+    QPainter p(this);
+    QStyleOption opt;
+    opt.initFrom(this);
+    p.fillRect(e->rect(), palette().brush(backgroundRole()));
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    if (m_formWindow && m_formWindow->gridVisible())
+        m_formWindow->designerGrid().paint(p, this, e);
 }
 
 QDesignerWidget::QDesignerWidget(QDesignerFormWindowInterface* formWindow, QWidget *parent)  :
@@ -81,13 +97,13 @@ QDesignerFormWindowInterface* QDesignerWidget::formWindow() const
 
 void QDesignerWidget::paintEvent(QPaintEvent *e)
 {
+    QPainter p(this);
+    QStyleOption opt;
+    opt.initFrom(this);
+    p.fillRect(e->rect(), palette().brush(backgroundRole()));
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     if (m_formWindow && m_formWindow->gridVisible())
-        m_formWindow->designerGrid().paint(this, e);
-    else
-        QWidget::paintEvent(e);
+        m_formWindow->designerGrid().paint(p, this, e);
 }
 
-void QDesignerWidget::dragEnterEvent(QDragEnterEvent *)
-{
-//    e->setAccepted(QTextDrag::canDecode(e));
-}
+QT_END_NAMESPACE

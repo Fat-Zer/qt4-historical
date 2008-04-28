@@ -40,7 +40,6 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
 #include "qpaintengine.h"
 #include "qpaintengine_p.h"
 #include "qpainter_p.h"
@@ -48,53 +47,102 @@
 #include "qbitmap.h"
 #include "qapplication.h"
 #include <qdebug.h>
+#include <qmath.h>
 #include <private/qtextengine_p.h>
-#include <private/qmath_p.h>
 #include <qvarlengtharray.h>
+#include <private/qfontengine_p.h>
+
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QTextItem
     \internal
+
+    \brief The QTextItem class provides all the information required to draw
+    text in a custom paint engine.
+
+    When you reimplement your own paint engine, you must reimplement
+    QPaintEngine::drawTextItem(), a function that takes a QTextItem as
+    one of its arguments.
 */
 
+/*!
+  \enum QTextItem::RenderFlag
+
+  \value  RightToLeft         Indicates that the text should be rendered from right to left.
+  \value  Overline               Indicates that QPainter has painted a line above the text.
+  \value  Underline             Indicates that QPainter has painted a line under the text.
+  \value  StrikeOut            Indicates that QPainter has painted a line through the text.
+*/
+
+
+/*!
+    \fn qreal QTextItem::descent() const
+
+    Corresponds to the \l{QFontMetrics::descent()}{descent} of the piece of text that is drawn.
+*/
 qreal QTextItem::descent() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
     return ti->descent.toReal();
 }
 
+/*!
+    \fn qreal QTextItem::ascent() const
+
+    Corresponds to the \l{QFontMetrics::ascent()}{ascent} of the piece of text that is drawn.
+*/
 qreal QTextItem::ascent() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
     return ti->ascent.toReal();
 }
 
+/*!
+    \fn qreal QTextItem::width() const
+
+    Specifies the total width of the text to be drawn.
+*/
 qreal QTextItem::width() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
     return ti->width.toReal();
 }
 
+/*!
+    \fn QTextItem::RenderFlags QTextItem::renderFlags() const
+
+    Returns the render flags used.
+*/
 QTextItem::RenderFlags QTextItem::renderFlags() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
     return ti->flags;
 }
 
+/*!
+    \fn QString QTextItem::text() const
+
+    Returns the text that should be drawn.
+*/
 QString QTextItem::text() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
     return QString(ti->chars, ti->num_chars);
 }
 
+/*!
+    \fn QFont QTextItem::font() const
+
+    Returns the font that should be used to draw the text.
+*/
 QFont QTextItem::font() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
     return ti->f ? *ti->f : QApplication::font();
 }
 
-
-#include <private/qfontengine_p.h>
 
 /*!
   \class QPaintEngine
@@ -245,6 +293,7 @@ QFont QTextItem::font() const
     from QPainters state to the native state is required.
 */
 
+
 static QPaintEngine *qt_polygon_recursion = 0;
 struct QT_Point {
     int x;
@@ -315,13 +364,14 @@ void QPaintEngine::drawPolygon(const QPoint *points, int pointCount, PolygonDraw
     \value MacPrinter
     \value CoreGraphics Mac OS X's Quartz2D (CoreGraphics)
     \value QuickDraw Mac OS X's QuickDraw
-    \value QWindowSystem Qtopia Core
+    \value QWindowSystem Qt for Embedded Linux
     \value PostScript
     \value OpenGL
     \value Picture QPicture format
     \value SVG Scalable Vector Graphics XML format
     \value Raster
     \value Direct3D Windows only, Direct3D based engine
+    \value Pdf Portable Document Format
     \value User First user type ID
     \value MaxUser Last user type ID
 */
@@ -531,8 +581,6 @@ void QPaintEngine::drawImage(const QRectF &r, const QImage &image, const QRectF 
     if (baseSize != sr)
         im = im.copy(qFloor(sr.x()), qFloor(sr.y()),
                      qCeil(sr.width()), qCeil(sr.height()));
-    if (im.depth() == 1)
-        im = im.convertToFormat(QImage::Format_RGB32);
     QPixmap pm = QPixmap::fromImage(im, flags);
     drawPixmap(r, pm, QRectF(QPointF(0, 0), pm.size()));
 }
@@ -681,6 +729,13 @@ void QPaintEngine::drawLines(const QLineF *lines, int lineCount)
 {
     for (int i=0; i<lineCount; ++i) {
         QPointF pts[2] = { lines[i].p1(), lines[i].p2() };
+
+        if (pts[0] == pts[1]) {
+            if (state->pen().capStyle() != Qt::FlatCap)
+                drawPoints(pts, 1);
+            continue;
+        }
+
         drawPolygon(pts, 2, PolylineMode);
     }
 }
@@ -896,3 +951,33 @@ QRect QPaintEngine::systemRect() const
 {
     return d_func()->systemRect;
 }
+
+void QPaintEnginePrivate::drawBoxTextItem(const QPointF &p, const QTextItemInt &ti)
+{
+    if (!ti.num_glyphs)
+        return;
+
+    // any fixes here should probably also be done in QFontEngineBox::draw
+    const int size = qRound(ti.fontEngine->ascent());
+    QVarLengthArray<QFixedPoint> positions;
+    QVarLengthArray<glyph_t> glyphs;
+    QTransform matrix;
+    matrix.translate(p.x(), p.y() - size);
+    ti.fontEngine->getGlyphPositions(ti.glyphs, ti.num_glyphs, matrix, ti.flags, glyphs, positions);
+    if (glyphs.size() == 0)
+        return;
+
+    QSize s(size - 3, size - 3);
+
+    QPainter *painter = q_func()->state->painter();
+    painter->save();
+    painter->setBrush(Qt::NoBrush);
+    QPen pen = painter->pen();
+    pen.setWidthF(ti.fontEngine->lineThickness().toReal());
+    painter->setPen(pen);
+    for (int k = 0; k < positions.size(); k++)
+        painter->drawRect(QRectF(positions[k].toPointF(), s));
+    painter->restore();
+}
+
+QT_END_NAMESPACE

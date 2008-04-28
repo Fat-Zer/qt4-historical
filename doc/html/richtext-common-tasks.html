@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/richtext.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/richtext.qdoc -->
 <head>
-  <title>Qt 4.3: Common Rich Text Editing Tasks</title>
+  <title>Qt 4.4: Common Rich Text Editing Tasks</title>
   <link rel="prev" href="richtext-cursor.html" />
   <link rel="contents" href="richtext.html" />
   <link rel="next" href="richtext-advanced-processing.html" />
@@ -20,7 +20,8 @@
 [<a href="richtext.html">Contents</a>]
 [Next: <a href="richtext-advanced-processing.html">Advanced Rich Text Processing</a>]
 </p>
-<h1 align="center">Common Rich Text Editing Tasks<br /><small></small></h1>
+<h1 class="title">Common Rich Text Editing Tasks<br /><span class="subtitle"></span>
+</h1>
 <ul><li><a href="#using-qtextedit">Using QTextEdit</a></li>
 <li><a href="#selecting-text">Selecting Text</a></li>
 <li><a href="#finding-text">Finding Text</a></li>
@@ -30,15 +31,15 @@
 <a name="using-qtextedit"></a>
 <h2>Using QTextEdit</h2>
 <p>A text editor widget can be constructed and used to display HTML in the following way:</p>
-<pre> QTextEdit *editor = new QTextEdit(parent);
- editor-&gt;setHtml(aStringContainingHTMLtext);
- editor-&gt;show();</pre>
+<pre>     QTextEdit *editor = new QTextEdit(parent);
+     editor-&gt;setHtml(aStringContainingHTMLtext);
+     editor-&gt;show();</pre>
 <p>By default, the text editor contains a document with a root frame, inside which is an empty text block. This document can be obtained so that it can be modified directly by the application:</p>
-<pre> QTextDocument *document = editor-&gt;document();</pre>
+<pre>     QTextDocument *document = editor-&gt;document();</pre>
 <p>The text editor's cursor may also be used to edit a document:</p>
-<pre> QTextCursor cursor = editor-&gt;textCursor();</pre>
+<pre>     QTextCursor cursor = editor-&gt;textCursor();</pre>
 <p>Although a document can be edited using many cursors at once, a <a href="qtextedit.html">QTextEdit</a> only displays a single cursor at a time. Therefore, if we want to update the editor to display a particular cursor or its selection, we need to set the editor's cursor after we have modified the document:</p>
-<pre> editor-&gt;setTextCursor(cursor);</pre>
+<pre>     editor-&gt;setTextCursor(cursor);</pre>
 <a name="selecting-text"></a>
 <h2>Selecting Text</h2>
 <p>Text is selected by moving the cursor using operations that are similar to those performed by a user in a text editor. To select text between two points in the document, we need to position the cursor at the first point then move it using a special mode (<a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a>) with a move operation (<a href="qtextcursor.html#MoveOperation-enum">QTextCursor::MoveOperation</a>). When we select the text, we leave the selection anchor at the old cursor position just as the user might do by holding down the Shift key when selecting text:</p>
@@ -83,6 +84,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

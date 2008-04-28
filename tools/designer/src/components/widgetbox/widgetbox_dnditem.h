@@ -47,8 +47,10 @@
 #include <qdesigner_dnditem_p.h>
 #include "widgetbox_global.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
-class DomWidget;
+class DomUI;
 
 namespace qdesigner_internal {
 
@@ -56,10 +58,12 @@ class QT_WIDGETBOX_EXPORT WidgetBoxDnDItem : public QDesignerDnDItem
 {
 public:
     WidgetBoxDnDItem(QDesignerFormEditorInterface *core,
-                        DomWidget *dom_widget,
-                        const QPoint &global_mouse_pos);
+                     DomUI *dom_ui,
+                     const QPoint &global_mouse_pos);
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // WIDGETBOX_DNDITEM_H

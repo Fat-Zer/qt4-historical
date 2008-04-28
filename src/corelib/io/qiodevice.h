@@ -57,6 +57,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QByteArray;
@@ -141,6 +143,7 @@ Q_SIGNALS:
     void readyRead();
     void bytesWritten(qint64 bytes);
     void aboutToClose();
+    void readChannelFinished();
 #endif
 
 protected:
@@ -169,8 +172,8 @@ private:
 public:
     typedef qint64 Offset;
 
-    inline QT3_SUPPORT int flags() const { return (int) openMode(); }
-    inline QT3_SUPPORT int mode() const { return (int) openMode(); }
+    inline QT3_SUPPORT int flags() const { return static_cast<int>(openMode()); }
+    inline QT3_SUPPORT int mode() const { return static_cast<int>(openMode()); }
     inline QT3_SUPPORT int state() const;
 
     inline QT3_SUPPORT bool isDirectAccess() const { return !isSequential(); }
@@ -243,6 +246,8 @@ inline QT3_SUPPORT int QIODevice::state() const
 class QDebug;
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, QIODevice::OpenMode modes);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

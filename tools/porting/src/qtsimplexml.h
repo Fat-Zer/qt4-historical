@@ -48,6 +48,8 @@
 #include <QMultiMap>
 #include <QMap>
 
+QT_BEGIN_NAMESPACE
+
 class QDomDocument;
 class QDomElement;
 class QDomNode;
@@ -91,5 +93,7 @@ private:
 
     QString errorStr;
 };
+
+QT_END_NAMESPACE
 
 #endif

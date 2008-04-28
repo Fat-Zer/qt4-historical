@@ -49,9 +49,14 @@
 #include "qsocketnotifier.h"
 #include "private/qwidget_p.h"
 #include "private/qthread_p.h"
+#include "private/qapplication_p.h"
 
 #ifndef QT_NO_THREAD
 #  include "qmutex.h"
+
+QT_BEGIN_NAMESPACE
+
+QT_USE_NAMESPACE
 #endif
 
 
@@ -68,6 +73,11 @@ extern bool qt_is_gui_used; //qapplication.cpp
 
 static EventLoopTimerUPP timerUPP = 0;
 
+static inline CFRunLoopRef runLoopForCarbonLoop(EventLoopRef eventLoop)
+{
+    return reinterpret_cast<CFRunLoopRef>(const_cast<void *>(GetCFRunLoopFromEventLoop(eventLoop)));
+}
+
 /*****************************************************************************
   Timers stuff
  *****************************************************************************/
@@ -82,7 +92,7 @@ static void qt_mac_activate_timer(EventLoopTimerRef, void *data)
            and the return (down 4 lines) */
         QTimerEvent e(tmr->id);
         QApplication::sendEvent(tmr->obj, &e);
-        QApplication::flush();
+        qApp->sendPostedEvents();
         return;
     }
     if(tmr->pending)
@@ -102,7 +112,7 @@ void QEventDispatcherMac::registerTimer(int timerId, int interval, QObject *obj)
         return;
     }
 #endif
-    
+
     Q_D(QEventDispatcherMac);
     if (!d->macTimerList)
         d->macTimerList = new MacTimerList;
@@ -149,7 +159,7 @@ bool QEventDispatcherMac::unregisterTimer(int id)
         return false;
     }
 #endif
-    
+
     Q_D(QEventDispatcherMac);
     if(!d->macTimerList || id <= 0)
         return false;                                // not init'd or invalid timer
@@ -184,7 +194,7 @@ bool QEventDispatcherMac::unregisterTimers(QObject *obj)
         return false;
     }
 #endif
-    
+
     Q_D(QEventDispatcherMac);
     if(!d->macTimerList)                                // not initialized
         return false;
@@ -459,7 +469,7 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
 
     bool retVal = false;
     for (;;) {
-        QApplication::sendPostedEvents(0, (flags & QEventLoop::DeferredDeletion) ? -1 : 0);
+//        QApplicationPrivate::sendPostedEvents(0, 0, d->threadData);
         if (d->activateTimers() > 0) //send null timers
             retVal = true;
 
@@ -496,13 +506,13 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
         } while(!d->interrupt && GetNumEventsInQueue(GetMainEventQueue()) > 0);
 
         bool canWait = (!retVal
-                        && d->threadData->canWait
                         && !d->interrupt
                         && (flags & QEventLoop::WaitForMoreEvents)
                         && !d->zero_timer_count);
         if (canWait) {
             emit aboutToBlock();
             while(CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e20, true) == kCFRunLoopRunTimedOut);
+            flags &= ~QEventLoop::WaitForMoreEvents;
             emit awake();
         } else {
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, kEventDurationNoWait, true);
@@ -538,15 +548,14 @@ int QEventDispatcherMacPrivate::activateTimers()
 
 void QEventDispatcherMac::wakeUp()
 {
-    CFRunLoopStop((CFRunLoopRef)GetCFRunLoopFromEventLoop(GetMainEventLoop()));
+    Q_D(QEventDispatcherMac);
+    CFRunLoopSourceSignal(d->postedEventsSource);
+    CFRunLoopWakeUp(runLoopForCarbonLoop(GetMainEventLoop()));
 }
 
 void QEventDispatcherMac::flush()
 {
-    QMacWindowChangeEvent::exec(true);
-
     if(qApp) {
-        qApp->sendPostedEvents();
         QWidgetList tlws = QApplication::topLevelWidgets();
         for(int i = 0; i < tlws.size(); i++) {
             QWidget *tlw = tlws.at(i);
@@ -568,7 +577,7 @@ int qt_mac_send_zero_timers()
 
 class QMacBlockingFunction::Object : public QObject
 {
-    QAtomic ref;
+    QAtomicInt ref;
 public:
     Object() { startTimer(10); }
 
@@ -579,7 +588,7 @@ protected:
     void timerEvent(QTimerEvent *)
     {
         if(qt_mac_send_zero_timers())
-            QApplication::flush();
+            qApp->sendPostedEvents();
     }
 };
 QMacBlockingFunction::Object *QMacBlockingFunction::block = 0;
@@ -609,7 +618,30 @@ QEventDispatcherMacPrivate::QEventDispatcherMacPrivate()
 
 QEventDispatcherMac::QEventDispatcherMac(QObject *parent)
     : QEventDispatcherUNIX(*new QEventDispatcherMacPrivate, parent)
-{ }
+{
+    Q_D(QEventDispatcherMac);
+    CFRunLoopSourceContext context;
+    bzero(&context, sizeof(CFRunLoopSourceContext));
+    context.info = d->threadData;
+    context.equal = QEventDispatcherMacPrivate::postedEventSourceEqualCallback;
+    context.perform = QEventDispatcherMacPrivate::postedEventsSourcePerformCallback;
+    d->postedEventsSource = CFRunLoopSourceCreate(0, 0, &context);
+    Q_ASSERT(d->postedEventsSource);
+    CFRunLoopAddSource(runLoopForCarbonLoop(GetMainEventLoop()), d->postedEventsSource,
+                       kCFRunLoopCommonModes);
+
+}
+
+
+Boolean QEventDispatcherMacPrivate::postedEventSourceEqualCallback(const void *info1, const void *info2)
+{
+    return info1 == info2;
+}
+
+void QEventDispatcherMacPrivate::postedEventsSourcePerformCallback(void *info)
+{
+    QApplicationPrivate::sendPostedEvents(0, 0, static_cast<QThreadData *>(info));
+}
 
 QEventDispatcherMac::~QEventDispatcherMac()
 {
@@ -647,5 +679,10 @@ QEventDispatcherMac::~QEventDispatcherMac()
             CFRelease(socketInfo->socket);
         }
     }
+    CFRunLoopRemoveSource(runLoopForCarbonLoop(GetMainEventLoop()), d->postedEventsSource, kCFRunLoopCommonModes);
+    CFRelease(d->postedEventsSource);
+    d->postedEventsSource = 0;
 }
 
+
+QT_END_NAMESPACE

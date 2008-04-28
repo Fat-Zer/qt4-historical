@@ -52,6 +52,8 @@
 
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 class ArchiveExtractor
 {
 public:
@@ -73,5 +75,7 @@ private:
 
     static QList<ArchiveExtractor *> extractors;
 };
+
+QT_END_NAMESPACE
 
 #endif

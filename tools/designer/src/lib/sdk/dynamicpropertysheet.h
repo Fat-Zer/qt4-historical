@@ -59,6 +59,10 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
+class QString; // FIXME: fool syncqt
+
 class QDesignerDynamicPropertySheetExtension
 {
 public:
@@ -71,6 +75,8 @@ public:
     virtual bool canAddDynamicProperty(const QString &propertyName) const = 0;
 };
 Q_DECLARE_EXTENSION_INTERFACE(QDesignerDynamicPropertySheetExtension, "com.trolltech.Qt.Designer.DynamicPropertySheet")
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

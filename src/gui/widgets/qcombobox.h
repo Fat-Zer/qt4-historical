@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_COMBOBOX
@@ -200,6 +202,7 @@ public:
     void insertItem(int index, const QIcon &icon, const QString &text,
                     const QVariant &userData = QVariant());
     void insertItems(int index, const QStringList &texts);
+    void insertSeparator(int index);
 
     void removeItem(int index);
 
@@ -329,6 +332,8 @@ inline void QComboBox::insertItem(int aindex, const QString &atext,
 { insertItem(aindex, QIcon(), atext, auserData); }
 
 #endif // QT_NO_COMBOBOX
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

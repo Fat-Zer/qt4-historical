@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QVariant;
@@ -132,6 +134,8 @@ Q_DECLARE_SHARED(QPen)
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPen &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

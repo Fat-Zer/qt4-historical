@@ -45,9 +45,11 @@
 #include "qapplication.h"
 #include "qlist.h"
 
+QT_BEGIN_NAMESPACE
+
 struct QTextOptionPrivate
 {
-    QList<qreal> tabStops;
+    QList<QTextOption::Tab> tabStops;
 };
 
 /*!
@@ -134,9 +136,29 @@ QTextOption &QTextOption::operator=(const QTextOption &o)
     Sets the tab positions for the text layout to those specified by
     \a tabStops.
 
-    \sa tabArray(), setTabStop()
+    \sa tabArray(), setTabStop(), setTabs()
 */
 void QTextOption::setTabArray(QList<qreal> tabStops)
+{
+    if (!d)
+        d = new QTextOptionPrivate;
+    QList<QTextOption::Tab> tabs;
+    QTextOption::Tab tab;
+    foreach (qreal pos, tabStops) {
+        tab.position = pos;
+        tabs.append(tab);
+    }
+    d->tabStops = tabs;
+}
+
+/*!
+    \since 4.4
+    Sets the tab positions for the text layout to those specified by
+    \a tabStops.
+
+    \sa tabStops()
+*/
+void QTextOption::setTabs(QList<QTextOption::Tab> tabStops)
 {
     if (!d)
         d = new QTextOptionPrivate;
@@ -150,13 +172,30 @@ void QTextOption::setTabArray(QList<qreal> tabStops)
 */
 QList<qreal> QTextOption::tabArray() const
 {
-    if (d)
-        return d->tabStops;
-    return QList<qreal>();
+    if (!d)
+        return QList<qreal>();
+
+    QList<qreal> answer;
+    QList<QTextOption::Tab>::ConstIterator iter = d->tabStops.constBegin();
+    while(iter != d->tabStops.constEnd()) {
+        answer.append( (*iter).position);
+        ++iter;
+    }
+    return answer;
+}
+
+
+QList<QTextOption::Tab> QTextOption::tabs() const
+{
+    if (!d)
+        return QList<QTextOption::Tab>();
+    return d->tabStops;
 }
 
 /*!
     \class QTextOption
+    \reentrant
+
     \brief The QTextOption class provides a description of general rich text
     properties.
 
@@ -278,15 +317,94 @@ QList<qreal> QTextOption::tabArray() const
   \fn qreal QTextOption::tabStop() const
 
   Returns the distance in device units between tab stops.
+  Convenient function for the above method
 
-  \sa setTabStop(), tabArray()
+  \sa setTabStop(), tabArray(), setTabs(), tabs()
 */
 
 /*!
   \fn void QTextOption::setTabStop(qreal tabStop)
 
-  Sets the distance in device units between tab stops to the value specified
+  Sets the default distance in device units between tab stops to the value specified
   by \a tabStop.
 
-  \sa tabStop(), setTabArray()
+  \sa tabStop(), setTabArray(), setTabs(), tabs()
 */
+
+/*!
+    \enum QTextOption::TabType
+    \since 4.4
+
+    This enum holds the different types of tabulator
+
+    \value LeftTab,     A left-tab
+    \value RightTab,    A right-tab
+    \value CenterTab,   A centered-tab
+    \value DelimiterTab A tab stopping at a certain delimiter-character
+*/
+
+/*!
+    \class QTextOption::Tab
+    \since 4.4
+    Each tab definition is represented by this struct.
+*/
+
+/*!
+    \variable Tab::position
+    Distance from the start of the paragraph.
+    The position of a tab is from the start of the paragraph which implies that when
+    the alignment of the paragraph is set to centered, the tab is interpreted to be
+    moved the same distance as the left ege of the paragraph does.
+    In case the paragraph is set to have a layoutDirection() RightToLeft the position
+    is interpreted to be from the right side of the paragraph with higher numbers moving
+    the tab to the left.
+*/
+
+/*!
+    \variable Tab::type
+    Determine which type is used.
+    In a paragraph that has layoutDirection() RightToLeft the type LeftTab will
+    be interpreted to be a RightTab and vice versa.
+*/
+
+/*!
+    \variable Tab::delimiter
+    If type is DelimitorTab; tab until this char is found in the text.
+*/
+
+/*!
+    \fn Tab::Tab()
+    Creates a default left tab with position 80.
+*/
+
+/*!
+    \fn bool Tab::operator==(const Tab &other) const
+
+    Returns true if tab \a other is equal to this tab;
+    otherwise returns false.
+*/
+
+/*!
+    \fn bool Tab::operator!=(const Tab &other) const
+
+    Returns true if tab \a other is not equal to this tab;
+    otherwise returns false.
+*/
+
+/*!
+  \fn void setTabs(QList<Tab> tabStops)
+  Set the Tab properties to \a tabStops.
+
+  \sa tabStop(), tabs()
+*/
+
+/*!
+  \since 4.4
+  \fn QList<QTextOption::Tab> QTextOption::tabs() const
+  Returns a list of tab positions defined for the text layout.
+
+  \sa tabStop(), setTabs(), setTabStop()
+*/
+
+
+QT_END_NAMESPACE

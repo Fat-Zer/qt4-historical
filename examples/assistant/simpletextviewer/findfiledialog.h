@@ -47,6 +47,7 @@
 #include <QAssistantClient>
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QDialogButtonBox;
 class QLabel;
@@ -54,7 +55,9 @@ class QTextEdit;
 class QToolButton;
 class QTreeWidget;
 class QTreeWidgetItem;
+QT_END_NAMESPACE
 
+//! [0]
 class FindFileDialog : public QDialog
 {
     Q_OBJECT
@@ -93,5 +96,6 @@ private:
 
     QToolButton *browseButton;
 };
+//! [0]
 
 #endif

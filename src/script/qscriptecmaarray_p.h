@@ -60,7 +60,8 @@
 #ifndef QT_NO_SCRIPT
 
 #include "qscriptecmacore_p.h"
-#include "qscriptclassdata_p.h"
+
+QT_BEGIN_NAMESPACE
 
 namespace QScript { namespace Ecma {
 
@@ -70,35 +71,7 @@ public:
     Array(QScriptEnginePrivate *engine);
     virtual ~Array();
 
-    inline QScriptClassInfo *classInfo() const
-        { return m_classInfo; }
-
     virtual void execute(QScriptContextPrivate *context);
-
-    class ArrayClassData: public QScriptClassData
-    {
-        QScriptClassInfo *m_classInfo;
-
-    public:
-        ArrayClassData(QScriptClassInfo *classInfo);
-        virtual ~ArrayClassData();
-
-        inline QScriptClassInfo *classInfo() const
-            { return m_classInfo; }
-
-        virtual void mark(const QScriptValueImpl &object, int generation);
-        virtual bool resolve(const QScriptValueImpl &object,
-                             QScriptNameIdImpl *nameId,
-                             QScript::Member *member,
-                             QScriptValueImpl *base);
-        virtual bool get(const QScriptValueImpl &obj, const Member &m,
-                         QScriptValueImpl *out_value);
-        virtual bool put(QScriptValueImpl *object, const Member &member,
-                         const QScriptValueImpl &value);
-        virtual int extraMemberCount(const QScriptValueImpl &object);
-        virtual bool extraMember(const QScriptValueImpl &object,
-                                 int index, Member *member);
-    };
 
     class Instance: public QScriptObjectData {
     public:
@@ -113,7 +86,7 @@ public:
     };
 
     inline Instance *get(const QScriptValueImpl &object) const
-    { return Instance::get(object, m_classInfo); }
+    { return Instance::get(object, classInfo()); }
 
     void newArray(QScriptValueImpl *result,
                   const QScript::Array &value = QScript::Array());
@@ -155,12 +128,12 @@ protected:
     static QScriptValueImpl method_unshift(QScriptContextPrivate *context,
                                            QScriptEnginePrivate *eng,
                                            QScriptClassInfo *classInfo);
-
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ecma
 
 #endif // QT_NO_SCRIPT
-#endif
 
+QT_END_NAMESPACE
+
+#endif

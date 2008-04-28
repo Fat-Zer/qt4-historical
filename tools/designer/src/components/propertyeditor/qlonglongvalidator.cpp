@@ -43,6 +43,8 @@
 
 #include "qlonglongvalidator.h"
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 // ----------------------------------------------------------------------------
@@ -67,7 +69,7 @@ QValidator::State QLongLongValidator::validate(QString & input, int &) const
 {
     if (input.contains(QLatin1Char(' ')))
         return Invalid;
-    if (input.isEmpty() || (b < 0 && input == QLatin1String("-")))
+    if (input.isEmpty() || (b < 0 && input == QString(QLatin1Char('-'))))
         return Intermediate;
     bool ok;
     qlonglong entered = input.toLongLong(&ok);
@@ -150,3 +152,4 @@ void QULongLongValidator::setTop(qulonglong top)
     setRange(bottom(), top);
 }
 
+QT_END_NAMESPACE

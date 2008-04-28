@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example designer/worldtimeclockplugin
     \title World Time Clock Plugin Example
@@ -45,9 +88,7 @@
     example, is the introduction of the signal and slot in the custom
     widget class:
 
-    \quotefromfile designer/worldtimeclockplugin/worldtimeclock.h
-    \skipto class QDESIGNER_WIDGET_EXPORT WorldTimeClock
-    \printuntil /^\};/
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclock.h 1
 
     Note the use of the QDESIGNER_WIDGET_EXPORT macro. This is needed
     to ensure that \QD can create instances of the widget on some
@@ -80,9 +121,7 @@
     class definition that is specific to this particular custom widget
     is the class name:
 
-    \quotefromfile designer/worldtimeclockplugin/worldtimeclockplugin.h
-    \skipto class WorldTimeClockPlugin
-    \printuntil /^\};/
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclockplugin.h 0
 
     The plugin class provides \QD with basic information about our
     plugin, such as its class name and its include file. Furthermore
@@ -109,9 +148,7 @@
     to remember is to use the Q_EXPORT_PLUGIN2() macro to export the \c
     WorldTimeClockPlugin class for use with \QD:
 
-    \quotefromfile designer/worldtimeclockplugin/worldtimeclockplugin.cpp
-    \skipto Q_EXPORT_PLUGIN2
-    \printuntil Q_EXPORT_PLUGIN2
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclockplugin.cpp 0
 
     Without this macro, there is no way for Qt Designer to use the
     widget.
@@ -121,10 +158,8 @@
     The project file for custom widget plugins needs some additional
     information to ensure that they will work as expected within \QD:
 
-    \quotefromfile designer/worldtimeclockplugin/worldtimeclockplugin.pro
-    \printline CONFIG
-    \skipline TARGET
-    \printline TEMPLATE
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclockplugin.pro 0
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclockplugin.pro 1
 
     The \c TEMPLATE variable's value make \c qmake create the custom
     widget as a library. The \c CONFIG variable contains two values,
@@ -151,17 +186,13 @@
     usual way, and in addition we provide an implementation of the
     plugin interface so that \QD can use the custom widget.
 
-    \skipto HEADERS
-    \printuntil worldtimeclockplugin.cpp
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclockplugin.pro 2
 
     It is important to ensure that the plugin is installed in a location that
     is searched by \QD. We do this by specifying a target path for the project
     and adding it to the list of items to install:
 
-    \code
-        target.path = $$[QT_INSTALL_PLUGINS]/designer
-        INSTALLS += target
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.worldtimeclockplugin.qdoc 0
 
     The custom widget is created as a library, and will be installed
     alongside the other \QD plugins when the project is installed

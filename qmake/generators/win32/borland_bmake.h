@@ -46,6 +46,8 @@
 
 #include "winmakefile.h"
 
+QT_BEGIN_NAMESPACE
+
 class BorlandMakefileGenerator : public Win32MakefileGenerator
 {
     bool init_flag;
@@ -62,5 +64,7 @@ public:
 
 inline BorlandMakefileGenerator::~BorlandMakefileGenerator()
 { }
+
+QT_END_NAMESPACE
 
 #endif // BORLAND_BMAKE_H

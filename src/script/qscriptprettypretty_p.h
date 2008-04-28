@@ -59,6 +59,8 @@
 
 #include "qscriptastvisitor_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTextStream;
 class QScriptEngine;
 class QScriptEnginePrivate;
@@ -309,6 +311,8 @@ protected:
 
     QTextStream &newlineAndIndent();
 
+    void acceptAsBlock(AST::Node *node);
+
 private:
     QScriptEnginePrivate *eng;
     QTextStream &out;
@@ -319,5 +323,6 @@ private:
 
 } // namespace QScript
 
-#endif
+QT_END_NAMESPACE
 
+#endif

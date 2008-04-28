@@ -61,10 +61,17 @@
 #ifndef QT_NO_PRINTER
 
 #include "QtGui/qprinter.h"
+#include "QtGui/qprintengine.h"
 #include "QtGui/qprintdialog.h"
 #include "QtCore/qpointer.h"
 
+#include <limits.h>
+
+QT_BEGIN_NAMESPACE
+
 class QPrintEngine;
+class QPreviewPaintEngine;
+class QPicture;
 
 class QPrinterPrivate
 {
@@ -74,13 +81,16 @@ public:
         : printEngine(0)
         , paintEngine(0)
         , q_ptr(printer)
-        , options(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange)
+        , options(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange |
+                QAbstractPrintDialog::PrintCollateCopies | QAbstractPrintDialog::PrintShowPageSize)
         , printRange(QAbstractPrintDialog::AllPages)
         , minPage(1)
-        , maxPage(1)
+        , maxPage(INT_MAX)
         , fromPage(0)
         , toPage(0)
         , use_default_engine(true)
+        , validPrinter(false)
+        , hasCustomPageMargins(false)
     {
     }
 
@@ -89,19 +99,41 @@ public:
     }
 
     void createDefaultEngines();
+#ifndef QT_NO_PRINTPREVIEWWIDGET
+    QList<const QPicture *> previewPages() const;
+    void setPreviewMode(bool);
+#endif
+
+    void addToManualSetList(QPrintEngine::PrintEnginePropertyKey key);
 
     QPrinter::PrinterMode printerMode;
     QPrinter::OutputFormat outputFormat;
     QPrintEngine *printEngine;
     QPaintEngine *paintEngine;
+
+    QPrintEngine *realPrintEngine;
+    QPaintEngine *realPaintEngine;
+#ifndef QT_NO_PRINTPREVIEWWIDGET
+    QPreviewPaintEngine *previewEngine;
+#endif
+
     QPrinter *q_ptr;
 
     QAbstractPrintDialog::PrintDialogOptions options;
     QAbstractPrintDialog::PrintRange printRange;
     int minPage, maxPage, fromPage, toPage;
 
-    bool use_default_engine;
+    uint use_default_engine : 1;
+    uint had_default_engines : 1;
+
+    uint validPrinter : 1;
+    uint hasCustomPageMargins : 1;
+
+    // Used to remember which properties have been manually set by the user.
+    QList<QPrintEngine::PrintEnginePropertyKey> manualSetList;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PRINTER
 

@@ -48,6 +48,8 @@
 #include <QStringList>
 #include <QList>
 #include <QMap>
+
+QT_BEGIN_NAMESPACE
 /*
     Base class for logger entries;
     description() should return a text for this entry,
@@ -118,5 +120,7 @@ private:
     QList<LogEntry*> logEntries;
     QList<LogEntry*> pendingLogEntries;
 };
+
+QT_END_NAMESPACE
 
 #endif

@@ -46,6 +46,8 @@
 
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -68,5 +70,37 @@ public:
     { }
     mutable int layoutSpacingIndex;
 };
+
+
+#define BEGIN_STYLE_PIXMAPCACHE(a) \
+    QRect rect = option->rect; \
+    QPixmap internalPixmapCache; \
+    QImage imageCache; \
+    QPainter *p = painter; \
+    QString unique = uniqueName((a), option, option->rect.size()); \
+    int txType = painter->deviceTransform().type() | painter->worldTransform().type(); \
+    bool doPixmapCache = UsePixmapCache && txType <= QTransform::TxTranslate; \
+    if (doPixmapCache && QPixmapCache::find(unique, internalPixmapCache)) { \
+        painter->drawPixmap(option->rect.topLeft(), internalPixmapCache); \
+    } else { \
+        if (doPixmapCache) { \
+            rect.setRect(0, 0, option->rect.width(), option->rect.height()); \
+            imageCache = QImage(option->rect.size(), QImage::Format_ARGB32_Premultiplied); \
+            imageCache.fill(0); \
+            p = new QPainter(&imageCache); \
+        }
+
+
+#define END_STYLE_PIXMAPCACHE \
+        if (doPixmapCache) { \
+            p->end(); \
+            delete p; \
+            internalPixmapCache = QPixmap::fromImage(imageCache); \
+            painter->drawPixmap(option->rect.topLeft(), internalPixmapCache); \
+            QPixmapCache::insert(unique, internalPixmapCache); \
+        } \
+    }
+
+QT_END_NAMESPACE
 
 #endif //QSTYLE_P_H

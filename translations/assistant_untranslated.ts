@@ -1,962 +1,996 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
 <context>
-    <name>AssistantServer</name>
+    <name>AboutDialog</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/main.cpp" line="194"/>
-        <source>Qt Assistant</source>
+        <location filename="../tools/assistant/tools/assistant/aboutdialog.cpp" line="31"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BookmarkDialog</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkdialog.cpp" line="113"/>
+        <source>Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BookmarkWidget</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="198"/>
+        <source>Bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/main.cpp" line="195"/>
-        <source>Failed to bind to port %1</source>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="165"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="167"/>
+        <source>You are going to delete a Folder, this will also&lt;br&gt;remove it&apos;s content. Are you sure to continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="286"/>
+        <source>Delete Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="287"/>
+        <source>Rename Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="289"/>
+        <source>Show Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="290"/>
+        <source>Show Bookmark in New Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="292"/>
+        <source>Delete Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="293"/>
+        <source>Rename Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CentralWidget</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="163"/>
+        <source>Add new page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="172"/>
+        <source>Close current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="401"/>
+        <source>Print Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="521"/>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="596"/>
+        <source>Add New Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="597"/>
+        <source>Close This Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="598"/>
+        <source>Close Other Pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="600"/>
+        <source>Add Bookmark for this Page...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="822"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ContentWindow</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/contentwindow.cpp" line="99"/>
+        <source>Open Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/contentwindow.cpp" line="100"/>
+        <source>Open Link in New Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FilterNameDialogClass</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/filternamedialog.ui" line="13"/>
+        <source>FilterNameDialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/filternamedialog.ui" line="25"/>
+        <source>Filter Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FindWidget</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="83"/>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="90"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="95"/>
+        <source>Case Sensitive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="98"/>
+        <source>Whole words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="110"/>
+        <source>&lt;img src=&quot;:/trolltech/assistant/images/wrap.png&quot;&gt;&amp;nbsp;Search wrapped</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>FontPanel</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="43"/>
+        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="35"/>
         <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="56"/>
+        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="46"/>
         <source>&amp;Writing system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="59"/>
+        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="49"/>
         <source>&amp;Family</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="63"/>
+        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="53"/>
         <source>&amp;Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/shared/fontpanel/fontpanel.cpp" line="67"/>
+        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="57"/>
         <source>&amp;Point size</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>FontSettingsDialog</name>
+    <name>HelpViewer</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="33"/>
-        <source>Font Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="40"/>
-        <source>Font settings for:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="44"/>
-        <source>Browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="45"/>
-        <source>Application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/fontsettingsdialog.cpp" line="51"/>
-        <source>Use custom settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>HelpDialog</name>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="46"/>
-        <source>Con&amp;tents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1020"/>
-        <source>Qt Assistant</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="248"/>
-        <source>Open Link in Current Tab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="251"/>
-        <source>Open Link in New Window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="254"/>
-        <source>Open Link in New Tab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="409"/>
-        <source>Prepare...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="346"/>
-        <source>Failed to load keyword index file
-Assistant will not work!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="362"/>
-        <source>Cannot open the index file %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="552"/>
-        <source>Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="546"/>
-        <source>Documentation file %1 does not exist!
-Skipping file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="566"/>
-        <source>Parse Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="554"/>
-        <source>Documentation file %1 is not compatible!
-Skipping file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1068"/>
-        <source>Done</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1022"/>
-        <source>Failed to save fulltext search index
-Assistant will not work!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1050"/>
-        <source>Indexing files...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1065"/>
-        <source>Reading dictionary...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1120"/>
-        <source>Full Text Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1112"/>
-        <source>Using a wildcard within phrases is not allowed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.cpp" line="1121"/>
-        <source>The closing quotation mark is missing.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="27"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="255"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="30"/>
-        <source>&lt;b&gt;Help&lt;/b&gt;&lt;p&gt;Choose the topic you want help on from the contents list, or search the index for keywords.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="42"/>
-        <source>Displays help topics organized by category, index or bookmarks. Another tab inherits the full text search.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="61"/>
-        <source>&lt;b&gt;Help topics organized by category.&lt;/b&gt;&lt;p&gt;Double-click an item to see the topics in that category. To view a topic, just double-click it.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="145"/>
-        <source>column 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="80"/>
-        <source>&amp;Index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="92"/>
-        <source>&amp;Look For:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="102"/>
-        <source>Enter keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="105"/>
-        <source>&lt;b&gt;Enter a keyword.&lt;/b&gt;&lt;p&gt;The list will select an item that matches the entered string best.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="115"/>
-        <source>&lt;b&gt;List of available help topics.&lt;/b&gt;&lt;p&gt;Double-click on an item to open its help page. If more than one is found, you must specify which page you want.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="123"/>
-        <source>&amp;Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="138"/>
-        <source>Displays the list of bookmarks.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="177"/>
-        <source>Add new bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="180"/>
-        <source>Add the currently displayed page as a new bookmark.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="183"/>
-        <source>&amp;New</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="190"/>
-        <source>Delete bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="193"/>
-        <source>Delete the selected bookmark.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="196"/>
-        <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="317"/>
-        <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="234"/>
-        <source>Searching f&amp;or:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="244"/>
-        <source>Enter searchword(s).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="247"/>
-        <source>&lt;b&gt;Enter search word(s).&lt;/b&gt;&lt;p&gt;Enter here the word(s) you are looking for. The words may contain wildcards (*). For a sequence of words quote them.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="257"/>
-        <source>&lt;b&gt;Found documents&lt;/b&gt;&lt;p&gt;This list contains all found documents from the last search. The documents are ordered, i.e. the first document has the most matches.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="264"/>
-        <source>Found &amp;Documents:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="282"/>
-        <source>Display the help page.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="285"/>
-        <source>Display the help page for the full text search.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="288"/>
-        <source>He&amp;lp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="311"/>
-        <source>Start searching.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="314"/>
-        <source>Pressing this button starts the search.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpdialog.ui" line="348"/>
-        <source>Preparing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>HelpWindow</name>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="63"/>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="145"/>
-        <source>Open Link in New Window<byte value="x9"/>Shift+LMB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="64"/>
-        <source>Unable to launch web browser.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="65"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="257"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="92"/>
-        <source>Failed to open link: &apos;%1&apos;</source>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="275"/>
+        <source>&lt;title&gt;Error 404...&lt;/title&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h1&gt;The page could not be found&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="94"/>
-        <source>&lt;div align=&quot;center&quot;&gt;&lt;h1&gt;The page could not be found&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</source>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="357"/>
+        <source>Copy &amp;Link Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="95"/>
-        <source>Error...</source>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="360"/>
+        <source>Open Link in New Tab<byte value="x9"/>Ctrl+LMB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/helpwindow.cpp" line="147"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="169"/>
+        <source>Open Link in New Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="256"/>
+        <source>Unable to launch external application.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>IndexWindow</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/indexwindow.cpp" line="38"/>
+        <source>&amp;Look for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/indexwindow.cpp" line="105"/>
+        <source>Open Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/indexwindow.cpp" line="106"/>
         <source>Open Link in New Tab</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>Index</name>
+    <name>InstallDialog</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/index.cpp" line="355"/>
-        <source>Untitled</source>
+        <location filename="../tools/assistant/tools/assistant/installdialog.ui" line="13"/>
+        <source>Install Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="77"/>
+        <source>Downloading documentation info...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="125"/>
+        <source>Download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="256"/>
+        <source>Done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="167"/>
+        <source>The file %1 already exists. Do you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="178"/>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="185"/>
+        <source>Downloading %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="285"/>
+        <source>Download failed: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="214"/>
+        <source>Documentation info file is corrupt!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="251"/>
+        <source>Download failed: Downloaded file is corrupted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="254"/>
+        <source>Installing documentation %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.cpp" line="276"/>
+        <source>Error while installing documentation:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.ui" line="19"/>
+        <source>Available Documentation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.ui" line="29"/>
+        <source>Install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.ui" line="36"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.ui" line="43"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.ui" line="63"/>
+        <source>Installation Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/installdialog.ui" line="73"/>
+        <source>...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="25"/>
-        <source>Qt Assistant by Trolltech</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="432"/>
+        <source>Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="30"/>
-        <source>Toolbar</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="430"/>
+        <source>Contents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="151"/>
-        <source>&amp;Print...</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="434"/>
+        <source>Bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="162"/>
-        <source>E&amp;xit</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="436"/>
+        <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="179"/>
-        <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="193"/>
-        <source>&amp;Find in Text...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="223"/>
-        <source>&amp;Home</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="237"/>
-        <source>&amp;Previous</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="251"/>
-        <source>&amp;Next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="273"/>
-        <source>About Qt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="284"/>
-        <source>Zoom &amp;in</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="298"/>
-        <source>Zoom &amp;out</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="309"/>
-        <source>New Window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="157"/>
-        <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="158"/>
-        <source>Ctrl+I</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="159"/>
-        <source>Ctrl+B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="310"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="793"/>
         <source>Qt Assistant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="331"/>
-        <source>&amp;Add Bookmark</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="280"/>
+        <source>Unfiltered</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="72"/>
-        <source>Sidebar</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="362"/>
+        <source>Page Set&amp;up...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="90"/>
-        <source>&amp;Window</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="363"/>
+        <source>Print Preview...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="92"/>
-        <source>Minimize</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="364"/>
+        <source>&amp;Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="93"/>
-        <source>Ctrl+M</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="367"/>
+        <source>CTRL+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="127"/>
-        <source>Initializing Qt Assistant...</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="371"/>
+        <source>New &amp;Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="153"/>
-        <source>SHIFT+CTRL+=</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="372"/>
+        <source>CTRL+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="160"/>
-        <source>Ctrl+S</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="373"/>
+        <source>&amp;Close Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="326"/>
-        <source>Ctrl+W</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="374"/>
+        <source>CTRL+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="161"/>
-        <source>Ctrl+]</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="376"/>
+        <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="162"/>
-        <source>Ctrl+[</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="377"/>
+        <source>CTRL+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="169"/>
-        <source>Views</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="381"/>
+        <source>&amp;Copy selected Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="248"/>
-        <source>Displays the main page of a specific documentation set.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="283"/>
-        <source>Open Source Edition</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="287"/>
-        <source>This version of Qt Assistant is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="296"/>
-        <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="329"/>
-        <source>Failed to open about application contents in file: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="471"/>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="715"/>
-        <source>Save Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="715"/>
-        <source>Cannot open file for writing!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="57"/>
-        <source>Go</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="80"/>
-        <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="91"/>
-        <source>&amp;File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="106"/>
-        <source>Boo&amp;kmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="111"/>
-        <source>&amp;Go</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="123"/>
-        <source>&amp;View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="130"/>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="154"/>
-        <source>Print the currently displayed page.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="157"/>
-        <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="165"/>
-        <source>Quit Qt Assistant.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="168"/>
-        <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="182"/>
-        <source>Copy the selected text to the clipboard.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="185"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="385"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="196"/>
-        <source>Open the Find dialog. Qt Assistant will search the currently displayed page for the text you enter.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="388"/>
+        <source>&amp;Find in Text...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="199"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="392"/>
         <source>Ctrl+F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="204"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="395"/>
         <source>Find &amp;Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="207"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="397"/>
         <source>F3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="212"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="400"/>
         <source>Find &amp;Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="215"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="402"/>
         <source>Shift+F3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="226"/>
-        <source>Go to the home page. Qt Assistant&apos;s home page is the Qt Reference Documentation.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="406"/>
+        <source>Preferences...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="229"/>
-        <source>Ctrl+Home</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="410"/>
+        <source>Zoom &amp;in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="240"/>
-        <source>Go to the previous page.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="243"/>
-        <source>Alt+Left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="254"/>
-        <source>Go to the next page.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="257"/>
-        <source>Alt+Right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="262"/>
-        <source>About Qt Assistant</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="265"/>
-        <source>Display further information about Qt Assistant.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="287"/>
-        <source>Zoom in on the document, i.e. increase the font size.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="290"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="414"/>
         <source>Ctrl++</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="301"/>
-        <source>Zoom out on the document, i.e. decrease the font size.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="416"/>
+        <source>Zoom &amp;out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="304"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="420"/>
         <source>Ctrl+-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="312"/>
-        <source>Open a new window.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="422"/>
+        <source>Normal &amp;Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="315"/>
-        <source>Ctrl+N</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="426"/>
+        <source>Ctrl+0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="320"/>
-        <source>&amp;Close</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="431"/>
+        <source>ALT+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="323"/>
-        <source>Close the current window.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="433"/>
+        <source>ALT+I</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="334"/>
-        <source>Add the currently displayed page as a new bookmark.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="435"/>
+        <source>ALT+B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="342"/>
-        <source>What&apos;s This?</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="437"/>
+        <source>ALT+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="348"/>
-        <source>&quot;What&apos;s This?&quot; context sensitive help.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="440"/>
+        <source>&amp;Home</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="351"/>
-        <source>Shift+F1</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="442"/>
+        <source>Ctrl+Home</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="356"/>
-        <source>Add Tab</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="446"/>
+        <source>&amp;Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="359"/>
-        <source>Ctrl+Alt+N</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="453"/>
+        <source>&amp;Forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="364"/>
-        <source>Next Tab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="367"/>
-        <source>Ctrl+Alt+Right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="372"/>
-        <source>Previous Tab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="375"/>
-        <source>Ctrl+Alt+Left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="380"/>
-        <source>Close Tab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="383"/>
-        <source>Ctrl+Alt+Q</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="391"/>
-        <source>Qt Assistant Manual</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="394"/>
-        <source>F1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="399"/>
-        <source>Save Page As...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="402"/>
-        <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="410"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="460"/>
         <source>Sync with Table of Contents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="413"/>
-        <source>Select the page in contents tab.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="467"/>
+        <source>Next Page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.ui" line="418"/>
-        <source>Font Settings...</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="468"/>
+        <source>Ctrl+Alt+Right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/mainwindow.cpp" line="290"/>
-        <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://www.trolltech.com/company/model&quot;&gt;www.trolltech.com/company/model&lt;/a&gt; for an overview of Qt licensing.</source>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="470"/>
+        <source>Previous Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="472"/>
+        <source>Ctrl+Alt+Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="475"/>
+        <source>Add Bookmark...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="476"/>
+        <source>CTRL+B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="479"/>
+        <source>About...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="482"/>
+        <source>Navigation Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="553"/>
+        <source>Toolbars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="568"/>
+        <source>Filter Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="570"/>
+        <source>Filtered by:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="591"/>
+        <source>Address Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="595"/>
+        <source>Address:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="707"/>
+        <source>Could not find the associated content item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="768"/>
+        <source>Open Source Edition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="772"/>
+        <source>This version of Qt Assistant is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="781"/>
+        <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="796"/>
+        <source>About %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="914"/>
+        <source>Updating search index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="301"/>
+        <source>Looking for Qt Documentation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="504"/>
+        <source>&amp;Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="506"/>
+        <source>Minimize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="507"/>
+        <source>Ctrl+M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="508"/>
+        <source>Zoom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="955"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="963"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="360"/>
+        <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="380"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="409"/>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="439"/>
+        <source>&amp;Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="474"/>
+        <source>&amp;Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="478"/>
+        <source>&amp;Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="775"/>
+        <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://trolltech.com/company/about/businessmodel&quot;&gt;http://trolltech.com/company/about/businessmodel&lt;/a&gt; for an overview of Qt licensing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesDialog</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.cpp" line="248"/>
+        <source>Add Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.cpp" line="235"/>
+        <source>Qt Compressed Help Files (*.qch)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.cpp" line="243"/>
+        <source>The specified file is not a valid Qt Help File!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.cpp" line="249"/>
+        <source>The namespace %1 is already registered!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.cpp" line="364"/>
+        <source>Use custom settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesDialogClass</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="13"/>
+        <source>Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="31"/>
+        <source>Fonts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="45"/>
+        <source>Font settings:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="53"/>
+        <source>Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="58"/>
+        <source>Application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="94"/>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="100"/>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="110"/>
+        <source>Attributes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="121"/>
+        <source>1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="129"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="191"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="152"/>
+        <source>Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="158"/>
+        <source>Registered Documentation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="184"/>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="224"/>
+        <source>Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="230"/>
+        <source>Use Http Proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="242"/>
+        <source>Http Proxy:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.ui" line="252"/>
+        <source>Port:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/config.cpp" line="321"/>
-        <source>Qt Assistant by Trolltech</source>
+        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="43"/>
+        <source>New Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="81"/>
+        <source>The specified collection file does not exist!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="197"/>
+        <source>Missing collection file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="94"/>
+        <source>Invalid URL!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="98"/>
+        <source>Missing URL!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="153"/>
+        <source>Unknown widget: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="157"/>
+        <source>Missing widget!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="176"/>
+        <source>The specified Qt help file does not exist!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="181"/>
+        <source>Missing help file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="191"/>
+        <source>Unknown option: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="226"/>
+        <source>Qt Assistant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="52"/>
+        <source>Could not register documentation file
+%1
+
+Reason:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="55"/>
+        <source>Documentation successfully registered.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="62"/>
+        <source>Could not unregister documentation file
+%1
+
+Reason:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="65"/>
+        <source>Documentation successfully unregistered.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="75"/>
+        <source>The specified collection file could not be read!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>TabbedBrowser</name>
+    <name>RemoteControl</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="119"/>
-        <source>...</source>
+        <location filename="../tools/assistant/tools/assistant/remotecontrol.cpp" line="130"/>
+        <source>Debugging Remote Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="205"/>
-        <source>Add page</source>
+        <location filename="../tools/assistant/tools/assistant/remotecontrol.cpp" line="131"/>
+        <source>Received Command: %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SearchWidget</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/searchwidget.cpp" line="146"/>
+        <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="214"/>
-        <source>Close page</source>
+        <location filename="../tools/assistant/tools/assistant/searchwidget.cpp" line="149"/>
+        <source>Copy &amp;Link Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="456"/>
-        <source>New Tab</source>
+        <location filename="../tools/assistant/tools/assistant/searchwidget.cpp" line="188"/>
+        <source>Open Link in New Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="457"/>
-        <source>Close Tab</source>
+        <location filename="../tools/assistant/tools/assistant/searchwidget.cpp" line="160"/>
+        <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.cpp" line="458"/>
-        <source>Close Other Tabs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="27"/>
-        <source>TabbedBrowser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="40"/>
-        <source>Untitled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="102"/>
-        <source>Previous</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="124"/>
-        <source>Next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="143"/>
-        <source>Case Sensitive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="150"/>
-        <source>Whole words</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/tabbedbrowser.ui" line="169"/>
-        <source>&lt;img src=&quot;:/trolltech/assistant/images/wrap.png&quot;&gt;&amp;nbsp;Search wrapped</source>
+        <location filename="../tools/assistant/tools/assistant/searchwidget.cpp" line="187"/>
+        <source>Open Link</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>TopicChooser</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.cpp" line="26"/>
-        <source>Choose a topic for &lt;b&gt;%1&lt;/b&gt;</source>
+        <location filename="../tools/assistant/tools/assistant/topicchooser.cpp" line="26"/>
+        <source>Choose a topic for &lt;b&gt;%1&lt;/b&gt;:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="25"/>
+        <location filename="../tools/assistant/tools/assistant/topicchooser.ui" line="16"/>
         <source>Choose Topic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="28"/>
-        <source>Select a topic from the list and click the &lt;b&gt;Display&lt;/b&gt;-button to open the online help.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="52"/>
+        <location filename="../tools/assistant/tools/assistant/topicchooser.ui" line="37"/>
         <source>&amp;Topics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="62"/>
-        <source>Displays a list of available help topics for the keyword.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="105"/>
+        <location filename="../tools/assistant/tools/assistant/topicchooser.ui" line="88"/>
         <source>&amp;Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="102"/>
-        <source>Open the topic selected in the list.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="121"/>
+        <location filename="../tools/assistant/tools/assistant/topicchooser.ui" line="104"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/assistant/topicchooser.ui" line="118"/>
-        <source>Close the Dialog.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

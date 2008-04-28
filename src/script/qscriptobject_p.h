@@ -48,6 +48,8 @@
 
 #ifndef QT_NO_SCRIPT
 
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -152,9 +154,18 @@ inline void QScriptObject::removeMember(const QScript::Member &member)
     m_objects[member.id()].invalidate();
 }
 
-inline void QScriptObject::finalize()
+inline void QScriptObject::finalize(QScriptEngine *engine)
 {
-    m_data = 0;
+    finalizeData(engine);
+}
+
+inline void QScriptObject::finalizeData(QScriptEngine *engine)
+{
+    if (m_data) {
+        m_data->finalize(engine);
+        delete m_data;
+        m_data = 0;
+    }
 }
 
 inline void QScriptObject::reset()
@@ -167,5 +178,8 @@ inline void QScriptObject::reset()
     m_data = 0;
 }
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
+
 #endif

@@ -62,6 +62,8 @@
 #include <qdesktopwidget.h>
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 /*****************************************************************************
   Externals
  *****************************************************************************/
@@ -341,6 +343,14 @@ QStringList qt_mac_get_open_file_names(const QFileDialogArgs &args, QString *pwd
         }
     }
 
+    QWidget modal_widg(parent, Qt::Sheet);
+    if (options.modality == kWindowModalityWindowModal || options.modality == kWindowModalityAppModal) {
+        //simulate modality prepare:
+        modal_widg.createWinId();
+        QApplicationPrivate::enterModal(&modal_widg);
+        QApplicationPrivate::native_modal_dialog_active = true;
+    }
+    
     NavDialogRun(dlg);
 
     if (selectedFilter) {
@@ -359,15 +369,14 @@ QStringList qt_mac_get_open_file_names(const QFileDialogArgs &args, QString *pwd
         NavCustomControl(dlg, kNavCtlSelectCustomType, &navSpec);
     }
 
-    if (options.modality == kWindowModalityWindowModal) { //simulate modality
-        QWidget modal_widg(parent, Qt::Sheet);
-        modal_widg.createWinId();
-        QApplicationPrivate::enterModal(&modal_widg);
+    if (options.modality == kWindowModalityWindowModal || options.modality == kWindowModalityAppModal) {
+        //simulate modality prepare:
         while (g_nav_blocking)
             qApp->processEvents(QEventLoop::WaitForMoreEvents);
         QApplicationPrivate::leaveModal(&modal_widg);
+        QApplicationPrivate::native_modal_dialog_active = false;
     }
-
+    
     if (!(NavDialogGetUserAction(dlg) &
           (kNavUserActionOpen | kNavUserActionChoose | kNavUserActionNewFolder))) {
         NavDialogDispose(dlg);
@@ -488,6 +497,7 @@ QString qt_mac_get_save_file_name(const QFileDialogArgs &args, QString *pwd,
         }
     }
     NavDialogRun(dlg);
+    
     if (selectedFilter) {
         NavMenuItemSpec navSpec;
         bzero(&navSpec, sizeof(NavMenuItemSpec));
@@ -506,10 +516,12 @@ QString qt_mac_get_save_file_name(const QFileDialogArgs &args, QString *pwd,
     if (options.modality == kWindowModalityWindowModal) { //simulate modality
         QWidget modal_widg(parent, Qt::Sheet);
         modal_widg.createWinId();
+        QApplicationPrivate::native_modal_dialog_active = true;
         QApplicationPrivate::enterModal(&modal_widg);
         while (g_nav_blocking)
             qApp->processEvents(QEventLoop::WaitForMoreEvents);
         QApplicationPrivate::leaveModal(&modal_widg);
+        QApplicationPrivate::native_modal_dialog_active = false;
     }
 
     if (NavDialogGetUserAction(dlg) != kNavUserActionSaveAs) {
@@ -552,4 +564,7 @@ QString qt_mac_get_save_file_name(const QFileDialogArgs &args, QString *pwd,
     return retstr;
 }
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_FILEDIALOG
+

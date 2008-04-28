@@ -47,6 +47,9 @@
 
 #include <QtDesigner/QDesignerFormEditorInterface>
 #include <QtDesigner/QDesignerComponents>
+#include <QtGui/QAction>
+
+QT_BEGIN_NAMESPACE
 
 QDesignerResourceEditor::QDesignerResourceEditor(QDesignerWorkbench *workbench)
     : QDesignerToolWindow(workbench)
@@ -56,7 +59,8 @@ QDesignerResourceEditor::QDesignerResourceEditor(QDesignerWorkbench *workbench)
 
     setCentralWidget(widget);
 
-    setWindowTitle(tr("Resource Editor"));
+    setWindowTitle(tr("Resource Browser"));
+    action()->setObjectName(QLatin1String("__qt_resource_editor_tool_action"));
 }
 
 QDesignerResourceEditor::~QDesignerResourceEditor()
@@ -76,3 +80,4 @@ QRect QDesignerResourceEditor::geometryHint() const
     return r;
 }
 
+QT_END_NAMESPACE

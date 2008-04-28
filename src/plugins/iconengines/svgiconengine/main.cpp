@@ -44,13 +44,15 @@
 #include <qiconengineplugin.h>
 #include <qstringlist.h>
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#if !defined(QT_NO_IMAGEFORMATPLUGIN) && !defined(QT_NO_SVG)
 
 #include "qsvgiconengine.h"
 
 #include <qiodevice.h>
 #include <qbytearray.h>
 #include <qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 class QSvgIconPlugin : public QIconEnginePluginV2
 {
@@ -68,11 +70,13 @@ QIconEngineV2 *QSvgIconPlugin::create(const QString &file)
 {
     QSvgIconEngine *engine = new QSvgIconEngine;
     if (!file.isNull())
-        engine->addFile(file, QSize(), QIcon::Normal, QIcon::On);
+        engine->addFile(file, QSize(), QIcon::Normal, QIcon::Off);
     return engine;
 }
 
 Q_EXPORT_STATIC_PLUGIN(QSvgIconPlugin)
-Q_EXPORT_PLUGIN2(qsvg, QSvgIconPlugin)
+Q_EXPORT_PLUGIN2(qsvgicon, QSvgIconPlugin)
+
+QT_END_NAMESPACE
 
 #endif // !QT_NO_IMAGEFORMATPLUGIN

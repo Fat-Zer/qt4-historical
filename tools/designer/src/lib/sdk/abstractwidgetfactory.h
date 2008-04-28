@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QWidget;
 class QLayout;
@@ -71,6 +73,8 @@ public:
     virtual bool isPassiveInteractor(QWidget *widget) = 0;
     virtual void initialize(QObject *object) const = 0;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

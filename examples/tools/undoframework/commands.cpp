@@ -46,6 +46,7 @@
 #include "commands.h"
 #include "diagramitem.h"
 
+//! [0]
 MoveCommand::MoveCommand(DiagramItem *diagramItem, const QPointF &oldPos,
                  QUndoCommand *parent)
     : QUndoCommand(parent)
@@ -54,7 +55,9 @@ MoveCommand::MoveCommand(DiagramItem *diagramItem, const QPointF &oldPos,
     newPos = diagramItem->pos();
     myOldPos = oldPos;
 }
+//! [0]
 
+//! [1]
 bool MoveCommand::mergeWith(const QUndoCommand *command)
 {
     const MoveCommand *moveCommand = static_cast<const MoveCommand *>(command);
@@ -69,7 +72,9 @@ bool MoveCommand::mergeWith(const QUndoCommand *command)
 
     return true;
 }
+//! [1]
 
+//! [2]
 void MoveCommand::undo()
 {
     myDiagramItem->setPos(myOldPos);
@@ -77,14 +82,18 @@ void MoveCommand::undo()
     setText(QObject::tr("Move %1")
         .arg(createCommandString(myDiagramItem, newPos)));
 }
+//! [2]
 
+//! [3]
 void MoveCommand::redo()
 {
     myDiagramItem->setPos(newPos);
     setText(QObject::tr("Move %1")
         .arg(createCommandString(myDiagramItem, newPos)));
 }
+//! [3]
 
+//! [4]
 DeleteCommand::DeleteCommand(QGraphicsScene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
@@ -95,18 +104,24 @@ DeleteCommand::DeleteCommand(QGraphicsScene *scene, QUndoCommand *parent)
     setText(QObject::tr("Delete %1")
         .arg(createCommandString(myDiagramItem, myDiagramItem->pos())));
 }
+//! [4]
 
+//! [5]
 void DeleteCommand::undo()
 {
     myGraphicsScene->addItem(myDiagramItem);
     myGraphicsScene->update();
 }
+//! [5]
 
+//! [6]
 void DeleteCommand::redo()
 {
     myGraphicsScene->removeItem(myDiagramItem);
 }
+//! [6]
 
+//! [7]
 AddCommand::AddCommand(DiagramItem::DiagramType addType,
                        QGraphicsScene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
@@ -122,13 +137,17 @@ AddCommand::AddCommand(DiagramItem::DiagramType addType,
     setText(QObject::tr("Add %1")
         .arg(createCommandString(myDiagramItem, initialPosition)));
 }
+//! [7]
 
+//! [8]
 void AddCommand::undo()
 {
     myGraphicsScene->removeItem(myDiagramItem);
     myGraphicsScene->update();
 }
+//! [8]
 
+//! [9]
 void AddCommand::redo()
 {
     myGraphicsScene->addItem(myDiagramItem);
@@ -136,6 +155,7 @@ void AddCommand::redo()
     myGraphicsScene->clearSelection();
     myGraphicsScene->update();
 }
+//! [9]
 
 QString createCommandString(DiagramItem *item, const QPointF &pos)
 {

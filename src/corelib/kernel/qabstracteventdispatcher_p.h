@@ -58,6 +58,8 @@
 #include "QtCore/qabstracteventdispatcher.h"
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QAbstractEventDispatcherPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QAbstractEventDispatcher)
@@ -68,5 +70,7 @@ public:
     void init();
     QAbstractEventDispatcher::EventFilter event_filter;
 };
+
+QT_END_NAMESPACE
 
 #endif // QABSTRACTEVENTDISPATCHER_P_H

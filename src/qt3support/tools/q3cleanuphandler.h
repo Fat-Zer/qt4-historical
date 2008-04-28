@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 template<class T>
@@ -102,6 +104,8 @@ public:
     { object = o; return *object; }
     inline void reset() { object = 0; }
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

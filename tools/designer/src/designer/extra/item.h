@@ -47,6 +47,8 @@
 #include <QtCore/QString>
 #include <QtGui/QPixmap>
 
+QT_BEGIN_NAMESPACE
+
 class Item
 {
 public:
@@ -70,11 +72,14 @@ class BusinessCard : public Item
 {
 public:
     BusinessCard(const QString &name, const QString &description, const QString &bigpic)
-        : Item(Item::BusinessCard, QLatin1String(":/qthack/images/bcard.png"),
+        : Item(Item::BusinessCard, QLatin1String(":/trolltech/qthack/images/bcard.png"),
                name, description), m_bigPic(bigpic)
     {}
     inline QString bigPicture() const { return m_bigPic; }
 private:
     QString m_bigPic;
 };
+
+QT_END_NAMESPACE
+
 #endif

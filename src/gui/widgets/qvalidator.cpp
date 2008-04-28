@@ -51,6 +51,8 @@
 #include <limits.h>
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QValidator
     \brief The QValidator class provides validation of input text.
@@ -85,7 +87,7 @@
 
     \list
 
-    \i For a line edit that accepts integers from 10 to 999 inclusive,
+    \i For a line edit that accepts integers from 10 to 1000 inclusive,
     42 and 123 are \l Acceptable, the empty string and 5 are \l
     Intermediate, and "asdf" and 1114 is \l Invalid.
 
@@ -127,8 +129,7 @@
     exist.
 
     \value Invalid       The string is \e clearly invalid.
-    \value Intermediate  The string is a plausible intermediate value
-                         during editing.
+    \value Intermediate  The string is a plausible intermediate value.
     \value Acceptable    The string is acceptable as a final result;
                          i.e. it is valid.
 
@@ -251,41 +252,12 @@ void QValidator::fixup(QString &) const
 
     Example of use:
 
-    \code
-    QValidator *validator = new QIntValidator(100, 999, this);
-    QLineEdit *edit = new QLineEdit(this);
-
-    // the edit lineedit will only accept integers between 100 and 999
-    edit->setValidator(validator);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 0
 
     Below we present some examples of validators. In practice they would
     normally be associated with a widget as in the example above.
 
-    \code
-    QString str;
-    int pos = 0;
-    QIntValidator v(100, 999, this);
-
-    str = "1";
-    v.validate(str, pos);     // returns Intermediate
-    str = "12";
-    v.validate(str, pos);     // returns Intermediate
-
-    str = "123";
-    v.validate(str, pos);     // returns Acceptable
-    str = "678";
-    v.validate(str, pos);     // returns Acceptable
-
-    str = "1234";
-    v.validate(str, pos);     // returns Invalid
-    str = "-123";
-    v.validate(str, pos);     // returns Invalid
-    str = "abc";
-    v.validate(str, pos);     // returns Invalid
-    str = "12cm";
-    v.validate(str, pos);     // returns Invalid
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 1
 
     The minimum and maximum values are set in one call with setRange(),
     or individually with setBottom() and setTop().
@@ -373,26 +345,17 @@ QIntValidator::~QIntValidator()
     \fn QValidator::State QIntValidator::validate(QString &input, int &pos) const
 
     Returns \l Acceptable if the \a input is an integer within the
-    valid range, \l Intermediate if the \a input is an integer outside
-    the valid range and \l Invalid if the \a input is not an integer.
+    valid range, \l Intermediate if the \a input is a prefix of an integer in the
+    valid range, and \l Invalid otherwise.
 
-    Note: If the valid range consists of just positive integers (e.g. 32 to 100)
-    and \a input is a negative integer then Invalid is returned. If \a input
-    has a greater number of digits than an integer in the valid range can have,
-    Invalid is returned.
+    If the valid range consists of just positive integers (e.g., 32 to 100)
+    and \a input is a negative integer, then Invalid is returned. (On the other
+    hand, if the range consists of negative integers (e.g., -100 to -32) and
+    \a input is a positive integer, then Intermediate is returned, because
+    the user might be just about to type the minus (especially for right-to-left
+    languages).
 
-    \code
-    int pos = 0;
-
-    s = "abc";
-    v.validate(s, pos);    // returns Invalid
-
-    s = "5";
-    v.validate(s, pos);    // returns Intermediate
-
-    s = "50";
-    v.validate(s, pos);    // returns Acceptable
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 2
 
     By default, the \a pos parameter is not used by this validator.
 */
@@ -430,22 +393,23 @@ QValidator::State QIntValidator::validate(QString & input, int&) const
     if (t < 0 && buff.startsWith('+'))
         return Invalid;
 
-    bool ok, overflow;
-    qlonglong i = QLocalePrivate::bytearrayToLongLong(buff.constData(), 10, &ok, &overflow);
-    if (overflow)
-        return Invalid;
-    if (!ok)
+    if (buff.size() == 1 && (buff.at(0) == '+' || buff.at(0) == '-'))
         return Intermediate;
 
-    if (i >= b && i <= t)
+    bool ok, overflow;
+    qlonglong entered = QLocalePrivate::bytearrayToLongLong(buff.constData(), 10, &ok, &overflow);
+    if (overflow || !ok)
+        return Invalid;
+    if (entered >= b && entered <= t)
         return Acceptable;
 
-    qlonglong max = qMax(qAbs(b), qAbs(t));
-    qlonglong n = pow10(numDigits(max)) - 1;
-    if (qAbs(i) > n)
-        return Invalid;
-
-    return Intermediate;
+    if (entered >= 0) {
+        // the -entered < b condition is necessary to allow people to type
+        // the minus last (e.g. for right-to-left languages)
+        return (entered > t && -entered < b) ? Invalid : Intermediate;
+    } else {
+        return (entered < b) ? Invalid : Intermediate;
+    }
 }
 
 
@@ -804,51 +768,12 @@ QDoubleValidator::Notation QDoubleValidator::notation() const
     For a brief introduction to Qt's regexp engine, see \l QRegExp.
 
     Example of use:
-    \code
-    // regexp: optional '-' followed by between 1 and 3 digits
-    QRegExp rx("-?\\d{1,3}");
-    QValidator *validator = new QRegExpValidator(rx, this);
-
-    QLineEdit *edit = new QLineEdit(this);
-    edit->setValidator(validator);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 3
 
     Below we present some examples of validators. In practice they would
     normally be associated with a widget as in the example above.
 
-    \code
-    // integers 1 to 9999
-    QRegExp rx("[1-9]\\d{0,3}");
-    // the validator treats the regexp as "^[1-9]\\d{0,3}$"
-    QRegExpValidator v(rx, 0);
-    QString s;
-    int pos = 0;
-
-    s = "0";     v.validate(s, pos);    // returns Invalid
-    s = "12345"; v.validate(s, pos);    // returns Invalid
-    s = "1";     v.validate(s, pos);    // returns Acceptable
-
-    rx.setPattern("\\S+");            // one or more non-whitespace characters
-    v.setRegExp(rx);
-    s = "myfile.txt";  v.validate(s, pos); // Returns Acceptable
-    s = "my file.txt"; v.validate(s, pos); // Returns Invalid
-
-    // A, B or C followed by exactly five digits followed by W, X, Y or Z
-    rx.setPattern("[A-C]\\d{5}[W-Z]");
-    v.setRegExp(rx);
-    s = "a12345Z"; v.validate(s, pos);        // Returns Invalid
-    s = "A12345Z"; v.validate(s, pos);        // Returns Acceptable
-    s = "B12";     v.validate(s, pos);        // Returns Intermediate
-
-    // match most 'readme' files
-    rx.setPattern("read\\S?me(\.(txt|asc|1st))?");
-    rx.setCaseSensitive(false);
-    v.setRegExp(rx);
-    s = "readme";      v.validate(s, pos); // Returns Acceptable
-    s = "README.1ST";  v.validate(s, pos); // Returns Acceptable
-    s = "read me.txt"; v.validate(s, pos); // Returns Invalid
-    s = "readm";       v.validate(s, pos); // Returns Intermediate
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 4
 
     \sa QRegExp, QIntValidator, QDoubleValidator, {Settings Editor Example}
 */
@@ -957,4 +882,6 @@ void QRegExpValidator::setRegExp(const QRegExp& rx)
 
 #endif
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_VALIDATOR

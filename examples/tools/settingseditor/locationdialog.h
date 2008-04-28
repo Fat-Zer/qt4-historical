@@ -47,11 +47,13 @@
 #include <QDialog>
 #include <QSettings>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QDialogButtonBox;
 class QGroupBox;
 class QLabel;
 class QTableWidget;
+QT_END_NAMESPACE
 
 class LocationDialog : public QDialog
 {

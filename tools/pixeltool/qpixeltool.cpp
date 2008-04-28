@@ -43,8 +43,6 @@
 
 #include "qpixeltool.h"
 
-#include <QtAssistant/QAssistantClient>
-
 #include <qapplication.h>
 #include <qdesktopwidget.h>
 #include <qapplication.h>
@@ -55,14 +53,15 @@
 #include <qsettings.h>
 #include <qmenu.h>
 #include <qactiongroup.h>
-#include <QtCore/QLibraryInfo>
 
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 QPixelTool::QPixelTool(QWidget *parent)
-    : QWidget(parent),
-      m_assistantClient(0)
+    : QWidget(parent)
 {
+    setWindowTitle(QLatin1String("PixelTool"));
     QSettings settings(QLatin1String("Trolltech"), QLatin1String("QPixelTool"));
 
     m_freeze = false;
@@ -140,8 +139,8 @@ void QPixelTool::paintEvent(QPaintEvent *)
     int h = height();
 
     if (m_zoom <= 4) {
-        int wext = width() % m_zoom;
-        int hext = height() % m_zoom;
+        int wext = m_zoom - (width()-1) % m_zoom;
+        int hext = m_zoom - (height()-1) % m_zoom;
         p.drawPixmap(0, 0, width() + wext, height() + hext, m_buffer);
     } else {
         p.setPen(Qt::NoPen);
@@ -254,9 +253,6 @@ void QPixelTool::keyPressEvent(QKeyEvent *e)
         break;
     case Qt::Key_Control:
         grabKeyboard();
-        break;
-    case Qt::Key_F1:
-        showHelp();
         break;
     }
 }
@@ -404,7 +400,7 @@ QSize QPixelTool::sizeHint() const
 void QPixelTool::grabScreen()
 {
     QPoint mousePos = QCursor::pos();
-    if (mousePos == m_lastMousePos && !m_autoUpdate || rect().contains(mapToGlobal(mousePos)))
+    if (mousePos == m_lastMousePos && !m_autoUpdate)
         return;
 
     int w = int(width() / float(m_zoom));
@@ -518,14 +514,4 @@ void QPixelTool::saveToFile()
     m_freeze = oldFreeze;
 }
 
-void QPixelTool::showHelp()
-{
-    if (!m_assistantClient)
-        m_assistantClient
-            = new QAssistantClient(
-                QLibraryInfo::location(QLibraryInfo::BinariesPath), this);
-    QString filePath = QLibraryInfo::location(QLibraryInfo::DocumentationPath)
-                       + QLatin1String("/html/pixeltool-manual.html");
-
-    m_assistantClient->showPage(filePath);
-}
+QT_END_NAMESPACE

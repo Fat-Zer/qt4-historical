@@ -59,13 +59,15 @@
 #include "private/qobject_p.h"
 #include "QtCore/qstack.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q_CORE_EXPORT QPersistentModelIndexData
 {
 public:
     QPersistentModelIndexData() : model(0) {}
     QPersistentModelIndexData(const QModelIndex &idx) : index(idx), model(idx.model()) {}
     QModelIndex index;
-    QAtomic ref;
+    QAtomicInt ref;
     const QAbstractItemModel *model;
     static QPersistentModelIndexData *create(const QModelIndex &index);
     static void destroy(QPersistentModelIndexData *data);
@@ -79,7 +81,6 @@ public:
     QAbstractItemModelPrivate() : QObjectPrivate(), supportedDragActions(-1) {}
     void removePersistentIndexData(QPersistentModelIndexData *data);
     void addPersistentIndexData(QPersistentModelIndexData *data);
-    void invalidate(int position);
     void rowsAboutToBeInserted(const QModelIndex &parent, int first, int last);
     void rowsInserted(const QModelIndex &parent, int first, int last);
     void rowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
@@ -131,5 +132,7 @@ public:
 
     Qt::DropActions supportedDragActions;
 };
+
+QT_END_NAMESPACE
 
 #endif // QABSTRACTITEMMODEL_P_H

@@ -121,11 +121,15 @@ void FtpWindow::connectOrDisconnect()
         downloadButton->setEnabled(false);
         connectButton->setEnabled(true);
         connectButton->setText(tr("Connect"));
+#ifndef QT_NO_CURSOR
         setCursor(Qt::ArrowCursor);
+#endif
         return;
     }
 
+#ifndef QT_NO_CURSOR
     setCursor(Qt::WaitCursor);
+#endif
     
     ftp = new QFtp(this);
     connect(ftp, SIGNAL(commandFinished(int, bool)),
@@ -196,7 +200,9 @@ void FtpWindow::cancelDownload()
 
 void FtpWindow::ftpCommandFinished(int, bool error)
 {
+#ifndef QT_NO_CURSOR
     setCursor(Qt::ArrowCursor);
+#endif
 
     if (ftp->currentCommand() == QFtp::ConnectToHost) {
         if (error) {
@@ -272,14 +278,18 @@ void FtpWindow::processItem(QTreeWidgetItem *item, int /*column*/)
         ftp->cd(name);
         ftp->list();
         cdToParentButton->setEnabled(true);
+#ifndef QT_NO_CURSOR
         setCursor(Qt::WaitCursor);
+#endif
         return;
     }
 }
 
 void FtpWindow::cdToParent()
 {
+#ifndef QT_NO_CURSOR
     setCursor(Qt::WaitCursor);
+#endif
     fileList->clear();
     isDirectory.clear();
     currentPath = currentPath.left(currentPath.lastIndexOf('/'));

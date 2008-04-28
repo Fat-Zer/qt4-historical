@@ -51,8 +51,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3ListView>
 
-Q3ListViewPlugin::Q3ListViewPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3ListViewPlugin::Q3ListViewPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3ListViewPlugin::name() const
@@ -71,7 +73,7 @@ QString Q3ListViewPlugin::includeFile() const
 { return QLatin1String("q3listview.h"); }
 
 QIcon Q3ListViewPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3ListViewPlugin::isContainer() const
 { return false; }
@@ -116,3 +118,5 @@ QString Q3ListViewPlugin::domXml() const
 }
 
 
+
+QT_END_NAMESPACE

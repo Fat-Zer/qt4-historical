@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example widgets/lineedits
     \title Line Edits Example
@@ -19,9 +62,7 @@
     The \c Window class inherits QWidget and contains a constructor and several
     slots:
 
-    \quotefromfile widgets/lineedits/window.h
-    \skipto class Window
-    \printuntil /^\};/
+    \snippet examples/widgets/lineedits/window.h 0
 
     The slots are used to update the type of validator used for a given line edit when
     a new validator has been selected in the associated combobox. The line edits
@@ -36,9 +77,7 @@
     We begin by constructing a \l{QGroupBox}{group box} to hold a label, combobox,
     and line edit so that we can demonstrate the QLineEdit::echoMode property:
 
-    \quotefromfile widgets/lineedits/window.cpp
-    \skipto Window::Window
-    \printuntil echoLineEdit->setFocus
+    \snippet examples/widgets/lineedits/window.cpp 0
 
     At this point, none of these widgets have been arranged in layouts. Eventually,
     the \c echoLabel, \c echoComboBox, and \c echoLineEdit will be placed in a
@@ -47,34 +86,29 @@
     Similarly, we construct group boxes and collections of widgets to show the
     effects of QIntValidator and QDoubleValidator on a line edit's contents:
 
-    \skipto validatorGroup
-    \printuntil validatorLineEdit
+    \snippet examples/widgets/lineedits/window.cpp 1
 
     Text alignment is demonstrated by another group of widgets:
 
-    \skipto alignmentGroup
-    \printuntil alignmentLineEdit
+    \snippet examples/widgets/lineedits/window.cpp 2
 
     QLineEdit supports the use of \l{QLineEdit::inputMask}{input masks}.
     These only allow the user to type characters into the line edit that
     follow a simple specification. We construct a group of widgets to
     demonstrate a selection of predefined masks:
 
-    \skipto inputMaskGroup
-    \printuntil inputMaskLineEdit
+    \snippet examples/widgets/lineedits/window.cpp 3
 
     Another useful feature of QLineEdit is its ability to make its contents
     read-only. This property is used to control access to a line edit in the
     following group of widgets:
 
-    \skipto accessGroup
-    \printuntil accessLineEdit
+    \snippet examples/widgets/lineedits/window.cpp 4
 
     Now that all the child widgets have been constructed, we connect signals
     from the comboboxes to slots in the \c Window object:
 
-    \skipto connect
-    \printuntil accessChanged
+    \snippet examples/widgets/lineedits/window.cpp 5
 
     Each of these connections use the QComboBox::activated() signal that
     supplies an integer to the slot. This will be used to efficiently
@@ -83,19 +117,16 @@
     We place each combobox, line edit, and label in a layout for each group
     box, beginning with the layout for the \c echoGroup group box:
 
-    \skipto echoLayout
-    \printuntil setLayout
+    \snippet examples/widgets/lineedits/window.cpp 6
 
     The other layouts are constructed in the same way:
 
-    \skipto validatorLayout
-    \printuntil setLayout(accessLayout)
+    \snippet examples/widgets/lineedits/window.cpp 7
 
     Finally, we place each group box in a grid layout for the \c Window object
     and set the window title:
 
-    \skipto layout
-    \printuntil /^\}/
+    \snippet examples/widgets/lineedits/window.cpp 8
 
     The slots respond to signals emitted when the comboboxes are changed by the
     user.
@@ -103,8 +134,7 @@
     When the combobox for the \gui{Echo} group box is changed, the \c echoChanged()
     slot is called:
 
-    \skipto echoChanged
-    \printuntil /^\}/
+    \snippet examples/widgets/lineedits/window.cpp 9
 
     The slot updates the line edit in the same group box to use an echo mode that
     corresponds to the entry described in the combobox.
@@ -112,8 +142,7 @@
     When the combobox for the \gui{Validator} group box is changed, the
     \c validatorChanged() slot is called:
 
-    \skipto validatorChanged
-    \printuntil /^\}/
+    \snippet examples/widgets/lineedits/window.cpp 10
 
     The slot either creates a new validator for the line edit to use, or it removes
     the validator in use by calling QLineEdit::setValidator() with a zero pointer.
@@ -123,8 +152,7 @@
     When the combobox for the \gui{Alignment} group box is changed, the
     \c alignmentChanged() slot is called:
 
-    \skipto alignmentChanged
-    \printuntil /^\}/
+    \snippet examples/widgets/lineedits/window.cpp 11
 
     This changes the way that text is displayed in the line edit to correspond with
     the description selected in the combobox.
@@ -132,8 +160,7 @@
     The \c inputMaskChanged() slot handles changes to the combobox in the
     \gui{Input Mask} group box:
 
-    \skipto inputMaskChanged
-    \printuntil /^\}/
+    \snippet examples/widgets/lineedits/window.cpp 12
 
     Each entry in the relevant combobox is associated with an input mask. We set
     a new mask by calling the QLineEdit::setMask() function with a suitable string;
@@ -142,8 +169,7 @@
     The \c accessChanged() slot handles changes to the combobox in the
     \gui{Access} group box:
 
-    \skipto accessChanged
-    \printuntil /^\}/
+    \snippet examples/widgets/lineedits/window.cpp 13
 
     Here, we simply associate the \gui{False} and \gui{True} entries in the combobox
     with \c false and \c true values to be passed to QLineEdit::setReadOnly(). This

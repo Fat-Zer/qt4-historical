@@ -50,6 +50,9 @@
 
 #include "node.h"
 #include <QDomElement>
+#include <QXmlStreamWriter>
+
+QT_BEGIN_NAMESPACE
 
 class QStringList;
 class TreePrivate;
@@ -95,12 +98,18 @@ public:
     Atom *findTarget(const QString &target, const Node *node) const;
     const NamespaceNode *root() const { return &roo; }
     void readIndexes(const QStringList &indexFiles);
-    QDomElement generateIndexSection(QDomDocument &document, const Node *node) const;
-    QDomElement generateIndexSections(QDomDocument &document, const Node *node) const;
+    bool generateIndexSection(QXmlStreamWriter &writer, const Node *node,
+                              bool generateInternalNodes = false) const;
+    void generateIndexSections(QXmlStreamWriter &writer, const Node *node,
+                              bool generateInternalNodes = false) const;
     void generateIndex(const QString &fileName, const QString &url,
-                       const QString &title) const;
+                       const QString &title, bool generateInternalNodes = false) const;
+    void generateTagFileCompounds(QXmlStreamWriter &writer, const InnerNode *inner) const;
+    void generateTagFileMembers(QXmlStreamWriter &writer, const InnerNode *inner) const;
+    void generateTagFile(const QString &fileName) const;
     void addExternalLink(const QString &url, const Node *relative);
     QString fullDocumentName(const Node *node) const;
+    QString fullDocumentLocation(const Node *node) const;
 
 private:
     void resolveInheritance(int pass, ClassNode *classe);
@@ -117,5 +126,7 @@ private:
     QString vers;
     TreePrivate *priv;
 };
+
+QT_END_NAMESPACE
 
 #endif

@@ -78,6 +78,8 @@
 #include <Q3IconView>
 #include <Q3ProgressBar>
 
+QT_BEGIN_NAMESPACE
+
 WidgetInfo::WidgetInfo()
 {
 }
@@ -139,7 +141,8 @@ const QMetaObject *WidgetInfo::metaObject(const QString &widgetName)
         return &QWidget::staticMetaObject;
     else if (widgetName == QLatin1String("QDialog"))
         return &QDialog::staticMetaObject;
-    else if (widgetName == QLatin1String("QWizard"))
+    else if (widgetName == QLatin1String("QWizard") || 
+             widgetName == QLatin1String("Q3Wizard"))
         return &Q3Wizard::staticMetaObject;
     else if (widgetName == QLatin1String("QLCDNumber"))
         return &QLCDNumber::staticMetaObject;
@@ -277,3 +280,5 @@ QString WidgetInfo::resolveEnumerator(const QMetaEnum &metaEnum, const QString &
 
     return QString();
 }
+
+QT_END_NAMESPACE

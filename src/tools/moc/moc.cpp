@@ -50,6 +50,8 @@
 // for normalizeTypeInternal
 #include <private/qmetaobject_p.h>
 
+QT_BEGIN_NAMESPACE
+
 // only moc needs this function
 static QByteArray normalizeType(const char *s, bool fixScope = false)
 {
@@ -415,6 +417,12 @@ bool Moc::parseFunction(FunctionDef *def, bool inMacro)
 // like parseFunction, but never aborts with an error
 bool Moc::parseMaybeFunction(FunctionDef *def)
 {
+    def->isVirtual = false;
+    while (test(INLINE) || test(STATIC) || test(VIRTUAL)
+           || testFunctionAttribute(def)) {
+        if (lookup() == VIRTUAL)
+            def->isVirtual = true;
+    }
     def->type = parseType();
     if (def->type.name.isEmpty())
         return false;
@@ -426,12 +434,8 @@ bool Moc::parseMaybeFunction(FunctionDef *def)
     } else {
         Type tempType = parseType();;
         while (!tempType.name.isEmpty() && lookup() != LPAREN) {
-            if (def->type.name == "QT_MOC_COMPAT" || def->type.name == "QT3_SUPPORT")
-                def->isCompat = true;
-            else if (def->type.name == "Q_INVOKABLE")
-                def->isInvokable = true;
-            else if (def->type.name == "Q_SCRIPTABLE")
-                def->isInvokable = def->isScriptable = true;
+            if (testFunctionAttribute(def->type.firstToken, def))
+                ; // fine
             else if (def->type.name == "Q_SIGNAL")
                 def->isSignal = true;
             else if (def->type.name == "Q_SLOT")
@@ -741,11 +745,14 @@ void Moc::generate(FILE *out)
             " much.)\"\n", QT_VERSION_STR);
     fprintf(out, "#endif\n\n");
 
+    fprintf(out, "QT_BEGIN_MOC_NAMESPACE\n");
 
     for (i = 0; i < classList.size(); ++i) {
         Generator generator(&classList[i], metaTypes, out);
         generator.generateCode();
     }
+
+    fprintf(out, "QT_END_MOC_NAMESPACE\n");
 }
 
 
@@ -1177,3 +1184,5 @@ void Moc::checkSuperClasses(ClassDef *def)
     }
 }
 
+
+QT_END_NAMESPACE

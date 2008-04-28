@@ -46,6 +46,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifdef Q_OS_WIN
 #ifdef QT_PROPERTYEDITOR_LIBRARY
 # define QT_PROPERTYEDITOR_EXPORT
@@ -55,5 +57,7 @@
 #else
 #define QT_PROPERTYEDITOR_EXPORT
 #endif
+
+QT_END_NAMESPACE
 
 #endif // PROPERTYEDITOR_GLOBAL_H

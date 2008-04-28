@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \module QAxServer
     \title QAxServer Module
@@ -38,23 +81,10 @@
     An out-of-process executable server is generated from a \c .pro
     file like this:
 
-    \code
-        TEMPLATE = app
-        CONFIG  += qaxserver
-
-        RC_FILE  = qaxserver.rc
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 0
 
     To build an in-process server, use a \c .pro file like this:
-    \code
-        TEMPLATE = lib
-        CONFIG  += qaxserver dll
-
-        DEF_FILE = qaxserver.def
-        RC_FILE  = qaxserver.rc
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 1
 
     The files \c qaxserver.rc and \c qaxserver.def are part of the
     framework and can be used from their usual location (specify a
@@ -86,11 +116,7 @@
     Additionally you can specify a version number using the \c VERSION
     variable, e.g.
 
-    \code
-        TEMPLATE = lib
-        VERSION = 2.5
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 2
 
     The version number specified will be used as the version of the type
     library and of the server when registering.
@@ -185,22 +211,12 @@
     or any existing QObject subclass. If the class is a subclass of QWidget,
     the COM object will be an ActiveX control.
 
-    \code
-        #include <QWidget>
-
-        class MyActiveX : public QWidget
-        {
-            Q_OBJECT
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 3
 
     The Q_OBJECT macro is required to provide the meta object information
     about the widget to the ActiveQt framework.
 
-    \code
-            Q_CLASSINFO("ClassID", "{1D9928BD-4453-4bdd-903D-E525ED17FDE5}")
-            Q_CLASSINFO("InterfaceID", "{99F6860E-2C5A-42ec-87F2-43396F4BE389}")
-            Q_CLASSINFO("EventsID", "{0A3E9F27-E4F1-45bb-9E47-63099BCCD0E3}")
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 4
 
     Use the Q_CLASSINFO() macro to specify the COM identifiers for the COM
     object. \c ClassID and \c InterfaceID are required, while \c EventsID is
@@ -210,9 +226,7 @@
     You can specify additional attributes for each of your classes; see 
     \l{Class Information and Tuning} for details.
 
-    \code
-            Q_PROPERTY(int value READ value WRITE setValue)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 5
 
     Use the Q_PROPERTY() macro to declare properties for the ActiveX control.
 
@@ -227,23 +241,7 @@
     your implementation of QAxFactory::create.
     \endfootnote
 
-    \code
-        public:
-            MyActiveX(QWidget *parent = 0)
-            ...
-
-            int value() const;
-
-        public slots:
-            void setValue(int v);
-            ...
-
-        signals:
-            void valueChange(int v);
-            ...
-
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 6
 
     The ActiveQt framework will expose properties and public slots as ActiveX 
     properties and methods, and signals as ActiveX events, and convert between
@@ -456,14 +454,7 @@
     To make the properties bindable for the ActiveX client, use multiple
     inheritance from the QAxBindable class:
 
-    \code
-        #include <QAxBindable>
-        #include <QWidget>
-
-        class MyActiveX : public QWidget, public QAxBindable
-        {
-            Q_OBJECT
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 7
 
     When implementing the property write functions, use the
     QAxBindable class's requestPropertyChange() and propertyChanged()
@@ -488,14 +479,7 @@
     an implementation of a QAxFactory. The easist way to do this is to use a set
     of macros:
 
-    \code
-        QAXFACTORY_BEGIN("{ad90301a-849e-4e8b-9a91-0a6dc5f6461f}",
-                         "{a8f21901-7ff7-4f6a-b939-789620c03d83}")
-            QAXCLASS(MyWidget)
-            QAXCLASS(MyWidget2)
-            QAXTYPE(MySubType)
-        QAXFACTORY_END()
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 8
 
     This will export \c MyWidget and \c MyWidget2 as COM objects that can be
     created by COM clients, and will register \c MySubType as a type that can
@@ -512,19 +496,7 @@
     server. Use QAxFactory::isServer() to create and run a standard
     application interface, or to prevent a stand-alone execution:
 
-    \code
-        #include <QApplication>
-        #include <QAxFactory>
-
-        int main(int argc, char *argv[])
-        {
-            QApplication app(argc, argv);
-            if (!QAxFactory::isServer()) {
-                // create and show main window
-            }
-            return app.exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 9
 
     This is however not necessary as ActiveQt provides a default implementation
     of a main function. The default implemenation calls QAxFactory::startServer(),
@@ -566,9 +538,7 @@
     macro, the QAxFactory subclass had no appropriate constructor.
     Provide a public class constructor like
 
-    \code
-        MyFactory(const QUuid &, const QUuid &);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 10
 
     for your factory class.
 
@@ -616,18 +586,7 @@
     your installer process, resolve the \c DllRegisterServer symbol and
     call the function:
 
-    \code
-        HMODULE dll = LoadLibrary("myserver.dll");
-        typedef HRESULT(__stdcall *DllRegisterServerProc)();
-        DllRegisterServerProc DllRegisterServer = 
-            (DllRegisterServerProc)GetProcAddress(dll, "DllRegisterServer");
-
-        HRESULT res = E_FAIL;
-        if (DllRegisterServer)
-            res = DllRegisterServer();
-        if (res != S_OK)
-            // error handling
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 11
 
     \section3 Distributing Servers over the Internet
 
@@ -645,14 +604,11 @@
     other Online resources. The examples include INF files that can be used
     to build CAB archives:
 
-    \quotefromfile activeqt/simple/simple.inf
-    \printuntil RegisterServer
+    \snippet examples/activeqt/simple/simple.inf 0
 
     The CABARC tool from Microsoft can easily generate CAB archives:
 
-    \code
-        cabarc N simpleax.cab simpleax.exe simple.inf
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 12
 
     The INF files assume a static build of Qt, so no dependencies to other DLLs
     are listed in the INF files. To distribute an ActiveX server depending on
@@ -664,19 +620,11 @@
     To use the ActiveX controls, e.g. to embed them in a web page, use
     the \c <object> HTML tag. 
 
-    \code
-        <object ID="MyActiveX1" CLASSID="CLSID:ad90301a-849e-4e8b-9a91-0a6dc5f6461f">
-           ...
-        <\object>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 13
 
     To initialize the control's properties, use
 
-    \code
-        <object ID=...>
-            <param name="name" value="value">
-        <\object>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 14
 
     If the web browser supports scripting use JavaScript, VBScript
     and forms to script the control. The
@@ -844,24 +792,7 @@
     own API, and is available in the "Insert Objects" dialog of Microsoft
     Office applications.
 
-    \code
-        class MyActiveX : public QWidget
-        {
-            Q_OBJECT
-            Q_CLASSINFO("Version", "2.0")
-            Q_CLASSINFO("ClassID", "{7a4cffd8-cbcd-4ae9-ae7e-343e1e5710df}")
-            Q_CLASSINFO("InterfaceID", "{6fb035bf-8019-48d8-be51-ef05427d8994}")
-            Q_CLASSINFO("EventsID", "{c42fffdf-6557-47c9-817a-2da2228bc29c}")
-            Q_CLASSINFO("Insertable", "yes")
-            Q_CLASSINFO("ToSuperClass", "MyActiveX")
-            Q_PROPERTY(...)
-
-        public:
-            MyActiveX(QWidget *parent = 0);
-
-            ...
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 15
 
     \section2 Developing Licensed Components
 
@@ -877,14 +808,7 @@
     To mark a Qt class as licensed specify a "LicenseKey" using the
     Q_CLASSINFO() macro.
 
-    \code
-        class MyLicensedControl : public QWidget
-        {
-            Q_OBJECT
-            Q_CLASSINFO("LicenseKey", "<key string>")
-            ...
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 16
 
     The key is required to be able to create an instance of \c MyLicensedControl
     on a machine that is not licensed itself. The licensed developer can now 
@@ -907,38 +831,12 @@
     Create a new subclass of QAxAggregated and use multiple inheritance
     to subclass additional COM interface classes. 
 
-    \code
-        class AxImpl : public QAxAggregated, public ISomeCOMInterface
-        {
-        public:
-            AxImpl() {}
-
-            long queryInterface(const QUuid &iid, void **iface);
-
-            // IUnknown
-            QAXAGG_IUNKNOWN
-
-            // ISomeCOMInterface
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 17
 
     Reimplement the QAxAggregated::queryInterface() function to
     support the additional COM interfaces.
 
-    \code
-        long AxImpl::queryInterface(const QUuid &iid, void **iface)
-        {
-            *iface = 0;
-            if (iid == IID_ISomeCOMInterface)
-                *iface = (ISomeCOMInterface *)this;
-            else
-                return E_NOINTERFACE;
-
-            AddRef();
-            return S_OK;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 18
 
     Since \c ISomeCOMInterface is a subclass of \c IUnknown you will
     have to implement the \c QueryInterface(), \c AddRef(), and \c
@@ -948,12 +846,7 @@
     returned by the QAxAggregated::controllingUnknown() function,
     e.g.
 
-    \code
-        HRESULT AxImpl::QueryInterface(REFIID iid, void **iface)
-        {
-            return controllingUnknown()->QueryInterface(iid, iface);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 19
 
     Do not support the \c IUnknown interface itself in your
     \l{QAxAggregated::queryInterface()}{queryInterface()}
@@ -966,20 +859,7 @@
     QAxBindable::createAggregate() to return a new object of the
     QAxAggregated subclass.
 
-    \code
-        class MyActiveX : public QWidget, public QAxBindable
-        {
-            Q_OBJECT
-
-        public:
-            MyActiveX(QWidget *parent);
-
-            QAxAggregated *createAggregate()
-            {
-                return new AxImpl();
-            }
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qaxserver.qdoc 20
 
     \sa {ActiveQt Framework}
 */

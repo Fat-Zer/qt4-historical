@@ -64,6 +64,8 @@
 
 #ifndef QT_NO_TABBAR
 
+QT_BEGIN_NAMESPACE
+
 inline static bool verticalTabs(QTabBar::Shape shape)
 {
     return shape == QTabBar::RoundedWest
@@ -154,7 +156,7 @@ void QTabBar::initStyleOption(QStyleOptionTab *option, int tabIndex) const
     \class QTabBar
     \brief The QTabBar class provides a tab bar, e.g. for use in tabbed dialogs.
 
-    \ingroup advanced
+    \ingroup basicwidgets
     \mainclass
 
     QTabBar is straightforward to use; it draws the tabs using one of
@@ -258,7 +260,8 @@ void QTabBar::initStyleOption(QStyleOptionTab *option, int tabIndex) const
     \fn void QTabBar::currentChanged(int index)
 
     This signal is emitted when the tab bar's current tab changes. The
-    new current has the given \a index.
+    new current has the given \a index, or -1 if there isn't a new one
+    (for example, if there are no tab in the QTabBar)
 */
 
 int QTabBarPrivate::extraWidth() const
@@ -330,7 +333,8 @@ void QTabBarPrivate::layoutTabs()
     // We put an empty item at the front and back and set its expansive attribute
     // depending on tabAlignment.
     tabChain[tabChainIndex].init();
-    tabChain[tabChainIndex].expansive = tabAlignment != Qt::AlignLeft;
+    tabChain[tabChainIndex].expansive = (tabAlignment != Qt::AlignLeft)
+                                        && (tabAlignment != Qt::AlignJustify);
     tabChain[tabChainIndex].empty = true;
     ++tabChainIndex;
 
@@ -397,7 +401,8 @@ void QTabBarPrivate::layoutTabs()
     Q_ASSERT(tabChainIndex == tabChain.count() - 1); // add an assert just to make sure.
     // Mirror our front item.
     tabChain[tabChainIndex].init();
-    tabChain[tabChainIndex].expansive = tabAlignment != Qt::AlignRight;
+    tabChain[tabChainIndex].expansive = (tabAlignment != Qt::AlignRight)
+                                        && (tabAlignment != Qt::AlignJustify);
     tabChain[tabChainIndex].empty = true;
 
     // Do the calculation
@@ -418,15 +423,17 @@ void QTabBarPrivate::layoutTabs()
             Qt::LayoutDirection ld = q->layoutDirection();
             QRect arrows = QStyle::visualRect(ld, q->rect(),
                                               QRect(available - extra, 0, extra, size.height()));
+            int buttonOverlap = q->style()->pixelMetric(QStyle::PM_TabBar_ScrollButtonOverlap, 0, q);
+            
             if (ld == Qt::LeftToRight) {
                 leftB->setGeometry(arrows.left(), arrows.top(), extra/2, arrows.height());
-                rightB->setGeometry(arrows.right() - extra/2 + 1, arrows.top(),
+                rightB->setGeometry(arrows.right() - extra/2 + buttonOverlap, arrows.top(),
                                     extra/2, arrows.height());
                 leftB->setArrowType(Qt::LeftArrow);
                 rightB->setArrowType(Qt::RightArrow);
             } else {
                 rightB->setGeometry(arrows.left(), arrows.top(), extra/2, arrows.height());
-                leftB->setGeometry(arrows.right() - extra/2 + 1, arrows.top(),
+                leftB->setGeometry(arrows.right() - extra/2 + buttonOverlap, arrows.top(),
                                     extra/2, arrows.height());
                 rightB->setArrowType(Qt::LeftArrow);
                 leftB->setArrowType(Qt::RightArrow);
@@ -676,10 +683,11 @@ void QTabBar::removeTab(int index)
             // we emit that "current has changed", we need to reset this
             // around.
             d->currentIndex = -1;
-            if (index == d->tabList.size()) {
-                setCurrentIndex(d->validIndex(index - 1) ? index - 1 : 0);
+            if (d->tabList.size() > 0) {
+                int newIndex = (index == d->tabList.size()) ? index-1 : index;
+                setCurrentIndex(newIndex);
             } else {
-                setCurrentIndex(d->validIndex(index) ? index : 0);
+                emit currentChanged(-1);
             }
         } else if (index < d->currentIndex) {
             setCurrentIndex(d->currentIndex - 1);
@@ -931,6 +939,8 @@ int QTabBar::tabAt(const QPoint &position) const
 /*!
     \property QTabBar::currentIndex
     \brief the index of the tab bar's visible tab
+
+    The current index is -1 if there is no current tab.
 */
 
 int QTabBar::currentIndex() const
@@ -971,7 +981,7 @@ QSize QTabBar::iconSize() const
     Q_D(const QTabBar);
     if (d->iconSize.isValid())
         return d->iconSize;
-    int iconExtent = style()->pixelMetric(QStyle::PM_TabBarIconSize);
+    int iconExtent = style()->pixelMetric(QStyle::PM_TabBarIconSize, 0, this);
     return QSize(iconExtent, iconExtent);
 
 }
@@ -1260,7 +1270,7 @@ void QTabBar::paintEvent(QPaintEvent *)
         }
         // If this tab is partially obscured, make a note of it so that we can pass the information
         // along when we draw the tear.
-        if ((!verticalTabs && (!rtl && tab.rect.left() < 0) || (rtl && tab.rect.right() > width()))
+        if (((!verticalTabs && (!rtl && tab.rect.left() < 0)) || (rtl && tab.rect.right() > width()))
             || (verticalTabs && tab.rect.top() < 0)) {
             cut = i;
             cutTab = tab;
@@ -1406,6 +1416,7 @@ void QTabBar::setElideMode(Qt::TextElideMode mode)
 {
     Q_D(QTabBar);
     d->elideMode = mode;
+    d->refresh();
 }
 
 /*!
@@ -1447,6 +1458,8 @@ void QTabBar::setUsesScrollButtons(bool useButtons)
     Use currentChanged() instead.
 */
 
+
+QT_END_NAMESPACE
 
 #include "moc_qtabbar.cpp"
 

@@ -45,6 +45,7 @@
 
 #include "mainwindow.h"
 
+//! [0]
 int main(int argv, char *args[])
 {
     Q_INIT_RESOURCE(undoframework);
@@ -56,3 +57,4 @@ int main(int argv, char *args[])
 
     return app.exec();
 }
+//! [0]

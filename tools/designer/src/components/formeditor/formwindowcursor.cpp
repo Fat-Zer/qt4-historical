@@ -55,6 +55,8 @@ TRANSLATOR qdesigner_internal::FormWindowCursor
 
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 FormWindowCursor::FormWindowCursor(FormWindow *fw, QObject *parent)
@@ -211,3 +213,5 @@ void FormWindowCursor::resetWidgetProperty(QWidget *widget, const QString &name)
 }
 
 }
+
+QT_END_NAMESPACE

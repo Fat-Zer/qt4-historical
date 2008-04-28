@@ -46,13 +46,15 @@
 
 #include "ui_previewwidget.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 class PreviewWidget: public QWidget
 {
     Q_OBJECT
 public:
-    PreviewWidget(QWidget *parent);
+    explicit PreviewWidget(QWidget *parent);
     virtual ~PreviewWidget();
 
 private:
@@ -60,5 +62,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // PREVIEWWIDGET_H

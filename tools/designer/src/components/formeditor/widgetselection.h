@@ -50,7 +50,8 @@
 #include <QtCore/QHash>
 #include <QtCore/QPointer>
 
-class QDesignerTaskMenuExtension;
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QMouseEvent;
 class QPaintEvent;
@@ -74,7 +75,6 @@ public:
         Bottom,
         LeftBottom,
         Left,
-        TaskMenu,
 
         TypeCount
     };
@@ -95,6 +95,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e);
 
 private:
+    void changeGridLayoutItemSpan();
     void trySetGeometry(QWidget *w, int x, int y, int width, int height);
     void tryResize(QWidget *w, int width, int height);
 
@@ -124,22 +125,21 @@ public:
 
     QWidget *widget() const;
 
-    QDesignerTaskMenuExtension *taskMenuExtension() const
-    { return m_taskMenu; }
-
     QDesignerFormEditorInterface *core() const;
 
     virtual bool eventFilter(QObject *object, QEvent *event);
 
-protected:
-    QHash<int, WidgetHandle*> m_handles;
-    InvisibleWidget *m_topWidget;
-    QPointer<QWidget> m_wid;
+    enum  WidgetState { UnlaidOut, LaidOut, ManagedGridLayout };
+    static WidgetState widgetState(const QDesignerFormEditorInterface *core, QWidget *w);
+
+private:
+    WidgetHandle *m_handles[WidgetHandle::TypeCount];
+    QPointer<QWidget> m_widget;
     FormWindow *m_formWindow;
-    QDesignerTaskMenuExtension *m_taskMenu;
 };
 
 }  // namespace qdesigner_internal
 
+QT_END_NAMESPACE
 
 #endif // WIDGETSELECTION_H

@@ -58,6 +58,8 @@
 #include "QtGui/qlayoutitem.h"
 #include "QtGui/qstyle.h"
 
+QT_BEGIN_NAMESPACE
+
 template <typename T> class QVector;
 
 struct QLayoutStruct
@@ -110,7 +112,7 @@ Q_GUI_EXPORT QSize qSmartMaxSize(const QSize &sizeHint,
 Q_GUI_EXPORT QSize qSmartMaxSize(const QWidgetItem *i, Qt::Alignment align = 0);
 Q_GUI_EXPORT QSize qSmartMaxSize(const QWidget *w, Qt::Alignment align = 0);
 
-int qSmartSpacing(const QLayout *layout, QStyle::PixelMetric pm);
+Q_GUI_EXPORT int qSmartSpacing(const QLayout *layout, QStyle::PixelMetric pm);
 
 /*
   Modify total maximum (max), total expansion (exp), and total empty
@@ -126,7 +128,7 @@ static inline void qMaxExpCalc(int & max, bool &exp, bool &empty,
         if (boxexp)
             max = qMax(max, boxmax);
     } else {
-        if (boxexp || empty && (!boxempty || max == 0))
+        if (boxexp || (empty && (!boxempty || max == 0)))
             max = boxmax;
         else if (empty == boxempty)
             max = qMin(max, boxmax);
@@ -134,5 +136,7 @@ static inline void qMaxExpCalc(int & max, bool &exp, bool &empty,
     exp = exp || boxexp;
     empty = empty && boxempty;
 }
+
+QT_END_NAMESPACE
 
 #endif // QLAYOUTENGINE_P_H

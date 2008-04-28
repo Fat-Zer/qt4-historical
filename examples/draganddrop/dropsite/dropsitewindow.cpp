@@ -46,6 +46,7 @@
 #include "droparea.h"
 #include "dropsitewindow.h"
 
+//! [constructor part1]
 DropSiteWindow::DropSiteWindow()
 {
     abstractLabel = new QLabel(tr("This example accepts drags from other "
@@ -53,11 +54,15 @@ DropSiteWindow::DropSiteWindow()
                                   "provided by the drag object."));
     abstractLabel->setWordWrap(true);
     abstractLabel->adjustSize();
+//! [constructor part1]
 
+//! [constructor part2]
     dropArea = new DropArea;
     connect(dropArea, SIGNAL(changed(const QMimeData *)),
             this, SLOT(updateFormatsTable(const QMimeData *)));
+//! [constructor part2]
 
+//! [constructor part3]
     QStringList labels;
     labels << tr("Format") << tr("Content");
 
@@ -66,7 +71,9 @@ DropSiteWindow::DropSiteWindow()
     formatsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     formatsTable->setHorizontalHeaderLabels(labels);
     formatsTable->horizontalHeader()->setStretchLastSection(true);
+//! [constructor part3]
 
+//! [constructor part4]
     clearButton = new QPushButton(tr("Clear"));
     quitButton = new QPushButton(tr("Quit"));
 
@@ -76,7 +83,9 @@ DropSiteWindow::DropSiteWindow()
 
     connect(quitButton, SIGNAL(pressed()), this, SLOT(close()));
     connect(clearButton, SIGNAL(pressed()), dropArea, SLOT(clear()));
+//! [constructor part4]
 
+//! [constructor part5]
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(abstractLabel);
     mainLayout->addWidget(dropArea);
@@ -87,18 +96,24 @@ DropSiteWindow::DropSiteWindow()
     setWindowTitle(tr("Drop Site"));
     setMinimumSize(350, 500);
 }
+//! [constructor part5]
 
+//! [updateFormatsTable() part1]
 void DropSiteWindow::updateFormatsTable(const QMimeData *mimeData)
 {
     formatsTable->setRowCount(0);
     if (!mimeData)
         return;
+//! [updateFormatsTable() part1]
 
+//! [updateFormatsTable() part2]        
     foreach (QString format, mimeData->formats()) {
         QTableWidgetItem *formatItem = new QTableWidgetItem(format);
         formatItem->setFlags(Qt::ItemIsEnabled);
         formatItem->setTextAlignment(Qt::AlignTop | Qt::AlignLeft);
+//! [updateFormatsTable() part2]
 
+//! [updateFormatsTable() part3]
         QString text;
         if (format == "text/plain") {
             text = mimeData->text().simplified();
@@ -119,12 +134,15 @@ void DropSiteWindow::updateFormatsTable(const QMimeData *mimeData)
                 text.append(hex + " ");
             }
         }
+//! [updateFormatsTable() part3]   
 
+//! [updateFormatsTable() part4]
         int row = formatsTable->rowCount();
         formatsTable->insertRow(row);
         formatsTable->setItem(row, 0, new QTableWidgetItem(format));
         formatsTable->setItem(row, 1, new QTableWidgetItem(text));
     }
-
+    
     formatsTable->resizeColumnToContents(0);
 }
+//! [updateFormatsTable() part4] 

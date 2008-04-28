@@ -56,6 +56,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3Support)
 
 class Q3TableHeader;
@@ -539,6 +541,8 @@ private:
 
     Q_DISABLE_COPY(Q3Table)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

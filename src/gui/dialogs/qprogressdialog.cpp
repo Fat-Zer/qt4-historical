@@ -59,6 +59,8 @@
 #include <private/qdialog_p.h>
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 // If the operation is expected to take this long (as predicted by
 // progress time), show the progress dialog.
 static const int defaultShowTime = 4000;
@@ -166,7 +168,8 @@ void QProgressDialogPrivate::layout()
             cs.width(), cs.height());
     }
 
-    label->setGeometry(mlr, 0, q->width()-mlr*2, lh);
+    if (label)
+        label->setGeometry(mlr, 0, q->width()-mlr*2, lh);
     bar->setGeometry(mlr, lh+sp, q->width()-mlr*2, bh.height());
 }
 
@@ -214,9 +217,7 @@ void QProgressDialogPrivate::retranslateStrings()
   to use for the programmer. Do the operation in a loop, call \l setValue() at
   intervals, and check for cancellation with wasCanceled(). For example:
 
-  \quotefromfile snippets/dialogs/dialogs.cpp
-  \skipto QProgressDialog progress("Copying files...", "Abort Copy", 0, numFiles, this);
-  \printuntil progress.setValue(numFiles);
+  \snippet doc/src/snippets/dialogs/dialogs.cpp 3
 
   A modeless progress dialog is suitable for operations that take
   place in the background, where the user is able to interact with the
@@ -229,19 +230,17 @@ void QProgressDialogPrivate::retranslateStrings()
   canceled() signal to a slot that stops the operation, and call \l
   setValue() at intervals. For example:
 
-  \skipto Operation constructor
-  \printuntil }
-  \printuntil }
-  \printuntil }
+  \snippet doc/src/snippets/dialogs/dialogs.cpp 4
+  \codeline
+  \snippet doc/src/snippets/dialogs/dialogs.cpp 5
+  \codeline
+  \snippet doc/src/snippets/dialogs/dialogs.cpp 6
 
   In both modes the progress dialog may be customized by
   replacing the child widgets with custom widgets by using setLabel(),
   setBar(), and setCancelButton().
   The functions setLabelText() and setCancelButtonText()
   set the texts shown.
-
-  The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
-  how to use QProgressDialog as well as other built-in Qt dialogs.
 
   \image plastique-progressdialog.png A progress dialog shown in the Plastique widget style.
 
@@ -291,8 +290,8 @@ QProgressDialog::QProgressDialog(QWidget *parent, Qt::WindowFlags f)
    setValue(0). As each file is processed call setValue(1), setValue(2),
    etc., finally calling setValue(50) after examining the last file.
 
-   The \a parent argument is the dialog's parent widget. The  and widget flags,
-   \a f, are passed to the QDialog::QDialog() constructor.
+   The \a parent argument is the dialog's parent widget. The parent, \a parent, and
+   widget flags, \a f, are passed to the QDialog::QDialog() constructor.
 
   \sa setLabelText(), setLabel(), setCancelButtonText(), setCancelButton(),
   setMinimum(), setMaximum()
@@ -453,6 +452,10 @@ void QProgressDialog::setCancelButtonText(const QString &cancelButtonText)
 void QProgressDialog::setBar(QProgressBar *bar)
 {
     Q_D(QProgressDialog);
+    if (!bar) {
+        qWarning("QProgressDialog::setBar: Cannot set a null progress bar");
+        return;
+    }
 #ifndef QT_NO_DEBUG
     if (value() > 0)
         qWarning("QProgressDialog::setBar: Cannot set a new progress bar "
@@ -664,7 +667,7 @@ void QProgressDialog::setValue(int progress)
 QSize QProgressDialog::sizeHint() const
 {
     Q_D(const QProgressDialog);
-    QSize sh = d->label->sizeHint();
+    QSize sh = d->label ? d->label->sizeHint() : QSize(0, 0);
     QSize bh = d->bar->sizeHint();
     int margin = style()->pixelMetric(QStyle::PM_DefaultTopLevelMargin);
     int spacing = style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing);
@@ -809,4 +812,6 @@ void QProgressDialog::forceShow()
     d->shown_once = true;
 }
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_PROGRESSDIALOG

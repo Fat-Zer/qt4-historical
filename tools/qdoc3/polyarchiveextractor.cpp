@@ -48,6 +48,8 @@
 #include "command.h"
 #include "polyarchiveextractor.h"
 
+QT_BEGIN_NAMESPACE
+
 PolyArchiveExtractor::PolyArchiveExtractor( const QStringList& extensions,
 					    const QString& commandFormat )
     : ArchiveExtractor( extensions ), cmd( commandFormat )
@@ -64,3 +66,5 @@ void PolyArchiveExtractor::extractArchive( const Location& location,
 {
     executeCommand( location, cmd, QStringList() << filePath << outputDir );
 }
+
+QT_END_NAMESPACE

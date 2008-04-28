@@ -47,11 +47,22 @@
 #include <qatomic.h>
 #include "qmutex_p.h"
 
+QT_BEGIN_NAMESPACE
+
 QMutexPrivate::QMutexPrivate(QMutex::RecursionMode mode)
-    : recursive(mode == QMutex::Recursive), contenders(0), owner(0), count(0),
-      event(QT_WA_INLINE(CreateEventW(0, FALSE, FALSE, 0),
-                         CreateEventA(0, FALSE, FALSE, 0)))
+    : recursive(mode == QMutex::Recursive), contenders(0), owner(0), count(0)
 {
+    if (QSysInfo::WindowsVersion == 0) {
+        // mutex was created before initializing WindowsVersion. this
+        // can happen when creating the resource file engine handler,
+        // for example. try again with just the A version
+#ifndef Q_OS_WINCE
+        event = CreateEventA(0, FALSE, FALSE, 0);
+#endif
+    } else {
+        event = QT_WA_INLINE(CreateEventW(0, FALSE, FALSE, 0),
+                             CreateEventA(0, FALSE, FALSE, 0));
+    }
     if (!event)
         qWarning("QMutexPrivate::QMutexPrivate: Cannot create event");
 }
@@ -69,3 +80,5 @@ bool QMutexPrivate::wait(int timeout)
 
 void QMutexPrivate::wakeUp()
 { SetEvent(event); }
+
+QT_END_NAMESPACE

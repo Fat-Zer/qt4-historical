@@ -43,6 +43,8 @@
 
 #include "qscriptastvisitor_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace AST {
 
 Visitor::Visitor()
@@ -54,3 +56,5 @@ Visitor::~Visitor()
 }
 
 } } // namespace QScript::AST
+
+QT_END_NAMESPACE

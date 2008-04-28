@@ -49,6 +49,8 @@ const int textSimilarityThreshold = 190;
 #include <QString>
 #include <QList>
 
+QT_BEGIN_NAMESPACE
+
 class MetaTranslator;
 
 struct Candidate {
@@ -72,7 +74,7 @@ typedef QList<Candidate> CandidateList;
 struct CoMatrix;
 /**
  * This class is more efficient for searching through a large array of candidate strings, since we only
- * have to construct the CoMatrix for the \a stringToMatch once, 
+ * have to construct the CoMatrix for the \a stringToMatch once,
  * after that we just call getSimilarityScore(strCandidate).
  * \sa getSimilarityScore
  */
@@ -92,5 +94,7 @@ int getSimilarityScore(const QString &str1, const char* str2);
 CandidateList similarTextHeuristicCandidates( const MetaTranslator *tor,
 					      const char *text,
 					      int maxCandidates );
+
+QT_END_NAMESPACE
 
 #endif

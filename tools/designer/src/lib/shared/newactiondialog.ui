@@ -47,31 +47,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>299</width>
-    <height>181</height>
+    <width>363</width>
+    <height>156</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>New Action...</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <layout class="QGridLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item row="0" column="1" >
-      <widget class="QLineEdit" name="editActionText" />
-     </item>
+    <layout class="QFormLayout" name="formLayout" >
      <item row="0" column="0" >
       <widget class="QLabel" name="label" >
        <property name="text" >
@@ -82,53 +67,13 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1" >
-      <layout class="QHBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QToolButton" name="iconButton" >
-         <property name="text" >
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="removeIconButton" >
-         <property name="text" >
-          <string>...</string>
-         </property>
-         <property name="icon" >
-          <iconset resource="../../components/formeditor/formeditor.qrc" >:/trolltech/formeditor/images/mac/editdelete.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
-        <string>&amp;Icon:</string>
-       </property>
-       <property name="buddy" >
-        <cstring>iconButton</cstring>
+     <item row="0" column="1" >
+      <widget class="QLineEdit" name="editActionText" >
+       <property name="minimumSize" >
+        <size>
+         <width>255</width>
+         <height>0</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -145,17 +90,47 @@
      <item row="1" column="1" >
       <widget class="QLineEdit" name="editObjectName" />
      </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>&amp;Icon:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>iconSelector</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <layout class="QHBoxLayout" name="horizontalLayout" >
+       <item>
+        <widget class="qdesigner_internal::IconSelector" native="1" name="iconSelector" />
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
     </layout>
    </item>
    <item>
-    <spacer>
+    <spacer name="verticalSpacer" >
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
-       <width>281</width>
-       <height>261</height>
+       <width>0</width>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -173,21 +148,25 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qdesigner_internal::IconSelector</class>
+   <extends>QWidget</extends>
+   <header>iconselector_p.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>editActionText</tabstop>
   <tabstop>editObjectName</tabstop>
-  <tabstop>iconButton</tabstop>
-  <tabstop>removeIconButton</tabstop>
  </tabstops>
- <resources>
-  <include location="../../components/formeditor/formeditor.qrc" />
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

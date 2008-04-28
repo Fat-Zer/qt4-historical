@@ -48,6 +48,7 @@
 #include "imagedelegate.h"
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     centralWidget = new QWidget;
@@ -73,7 +74,9 @@ MainWindow::MainWindow()
 
     resize(minimumSizeHint());
 }
+//! [0]
 
+//! [1]
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Icons"),
@@ -81,14 +84,18 @@ void MainWindow::about()
                "different modes (active, normal, disabled, and selected) and "
                "states (on and off) based on a set of images."));
 }
+//! [1]
 
+//! [2]
 void MainWindow::changeStyle(bool checked)
 {
     if (!checked)
         return;
 
     QAction *action = qobject_cast<QAction *>(sender());
+//! [2] //! [3]
     QStyle *style = QStyleFactory::create(action->data().toString());
+//! [3] //! [4]
     Q_ASSERT(style);
     QApplication::setStyle(style);
 
@@ -107,7 +114,9 @@ void MainWindow::changeStyle(bool checked)
 
     changeSize();
 }
+//! [4]
 
+//! [5]
 void MainWindow::changeSize(bool checked)
 {
     if (!checked)
@@ -138,7 +147,9 @@ void MainWindow::changeSize(bool checked)
     previewArea->setSize(QSize(extent, extent));
     otherSpinBox->setEnabled(otherRadioButton->isChecked());
 }
+//! [5]
 
+//! [6]
 void MainWindow::changeIcon()
 {
     QIcon icon;
@@ -165,18 +176,27 @@ void MainWindow::changeIcon()
                 state = QIcon::On;
             } else {
                 state = QIcon::Off;
+//! [6] //! [7]
             }
+//! [7]
 
+//! [8]
             QString fileName = item0->data(Qt::UserRole).toString();
             QImage image(fileName);
             if (!image.isNull())
                 icon.addPixmap(QPixmap::fromImage(image), mode, state);
+//! [8] //! [9]
         }
+//! [9] //! [10]
     }
+//! [10]
 
+//! [11]
     previewArea->setIcon(icon);
 }
+//! [11]
 
+//! [12]
 void MainWindow::addImages()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
@@ -187,13 +207,19 @@ void MainWindow::addImages()
         foreach (QString fileName, fileNames) {
             int row = imagesTable->rowCount();
             imagesTable->setRowCount(row + 1);
+//! [12]
 
+//! [13]
             QString imageName = QFileInfo(fileName).baseName();
+//! [13] //! [14]
             QTableWidgetItem *item0 = new QTableWidgetItem(imageName);
             item0->setData(Qt::UserRole, fileName);
             item0->setFlags(item0->flags() & ~Qt::ItemIsEditable);
+//! [14]
 
+//! [15]
             QTableWidgetItem *item1 = new QTableWidgetItem(tr("Normal"));
+//! [15] //! [16]
             QTableWidgetItem *item2 = new QTableWidgetItem(tr("Off"));
 
             if (guessModeStateAct->isChecked()) {
@@ -207,9 +233,13 @@ void MainWindow::addImages()
 
                 if (fileName.contains("_on"))
                     item2->setText(tr("On"));
+//! [16] //! [17]
             }
+//! [17]
 
+//! [18]
             imagesTable->setItem(row, 0, item0);
+//! [18] //! [19]
             imagesTable->setItem(row, 1, item1);
             imagesTable->setItem(row, 2, item2);
             imagesTable->openPersistentEditor(item1);
@@ -219,12 +249,15 @@ void MainWindow::addImages()
         }
     }
 }
+//! [19]
 
+//! [20]
 void MainWindow::removeAllImages()
 {
     imagesTable->setRowCount(0);
     changeIcon();
 }
+//! [20]
 
 void MainWindow::createPreviewGroupBox()
 {
@@ -237,6 +270,7 @@ void MainWindow::createPreviewGroupBox()
     previewGroupBox->setLayout(layout);
 }
 
+//! [21]
 void MainWindow::createImagesGroupBox()
 {
     imagesGroupBox = new QGroupBox(tr("Images"));
@@ -244,8 +278,11 @@ void MainWindow::createImagesGroupBox()
     imagesTable = new QTableWidget;
     imagesTable->setSelectionMode(QAbstractItemView::NoSelection);
     imagesTable->setItemDelegate(new ImageDelegate(this));
+//! [21]
 
+//! [22]
     QStringList labels;
+//! [22] //! [23]
     labels << tr("Image") << tr("Mode") << tr("State");
 
     imagesTable->horizontalHeader()->setDefaultSectionSize(90);
@@ -255,15 +292,20 @@ void MainWindow::createImagesGroupBox()
     imagesTable->horizontalHeader()->setResizeMode(1, QHeaderView::Fixed);
     imagesTable->horizontalHeader()->setResizeMode(2, QHeaderView::Fixed);
     imagesTable->verticalHeader()->hide();
+//! [23]
 
+//! [24]
     connect(imagesTable, SIGNAL(itemChanged(QTableWidgetItem *)),
+//! [24] //! [25]
             this, SLOT(changeIcon()));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(imagesTable);
     imagesGroupBox->setLayout(layout);
 }
+//! [25]
 
+//! [26]
 void MainWindow::createIconSizeGroupBox()
 {
     iconSizeGroupBox = new QGroupBox(tr("Icon Size"));
@@ -279,7 +321,9 @@ void MainWindow::createIconSizeGroupBox()
     otherSpinBox = new IconSizeSpinBox;
     otherSpinBox->setRange(8, 128);
     otherSpinBox->setValue(64);
+//! [26]
 
+//! [27]
     connect(smallRadioButton, SIGNAL(toggled(bool)),
             this, SLOT(changeSize(bool)));
     connect(largeRadioButton, SIGNAL(toggled(bool)),
@@ -312,7 +356,9 @@ void MainWindow::createIconSizeGroupBox()
     layout->setRowStretch(4, 1);
     iconSizeGroupBox->setLayout(layout);
 }
+//! [27]
 
+//! [28]
 void MainWindow::createActions()
 {
     addImagesAct = new QAction(tr("&Add Images..."), this);
@@ -347,7 +393,9 @@ void MainWindow::createActions()
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
+//! [28]
 
+//! [29]
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -368,14 +416,18 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 }
+//! [29]
 
+//! [30]
 void MainWindow::createContextMenu()
 {
     imagesTable->setContextMenuPolicy(Qt::ActionsContextMenu);
     imagesTable->addAction(addImagesAct);
     imagesTable->addAction(removeAllImagesAct);
 }
+//! [30]
 
+//! [31]
 void MainWindow::checkCurrentStyle()
 {
     foreach (QAction *action, styleActionGroup->actions()) {
@@ -390,3 +442,4 @@ void MainWindow::checkCurrentStyle()
         delete candidate;
     }
 }
+//! [31]

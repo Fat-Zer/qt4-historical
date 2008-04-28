@@ -57,6 +57,8 @@
 
 #include <QtCore/private/qeventdispatcher_glib_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QGuiEventDispatcherGlibPrivate;
 
 class QGuiEventDispatcherGlib : public QEventDispatcherGlib
@@ -72,5 +74,7 @@ public:
 
     void startingUp();
 };
+
+QT_END_NAMESPACE
 
 #endif // QGUIEVENTDISPATCHER_GLIB_P_H

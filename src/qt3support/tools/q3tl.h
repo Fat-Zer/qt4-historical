@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 template <typename T, typename LessThan>
@@ -204,6 +206,8 @@ inline void qBubbleSort(Container &c)
 {
     qBubbleSort(c.begin(), c.end());
 }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

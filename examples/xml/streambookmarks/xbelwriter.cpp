@@ -45,12 +45,15 @@
 
 #include "xbelwriter.h"
 
+//! [0]
 XbelWriter::XbelWriter(QTreeWidget *treeWidget)
     : treeWidget(treeWidget)
 {
     setAutoFormatting(true);
 }
+//! [0]
 
+//! [1]
 bool XbelWriter::writeFile(QIODevice *device)
 {
     setDevice(device);
@@ -65,7 +68,9 @@ bool XbelWriter::writeFile(QIODevice *device)
     writeEndDocument();
     return true;
 }
+//! [1]
 
+//! [2]
 void XbelWriter::writeItem(QTreeWidgetItem *item)
 {
     QString tagName = item->data(0, Qt::UserRole).toString();
@@ -87,3 +92,4 @@ void XbelWriter::writeItem(QTreeWidgetItem *item)
         writeEmptyElement(tagName);
     }
 }
+//! [2]

@@ -46,10 +46,12 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QComboBox;
 class QLabel;
 class QLineEdit;
+QT_END_NAMESPACE
 
 class RegExpDialog : public QDialog
 {

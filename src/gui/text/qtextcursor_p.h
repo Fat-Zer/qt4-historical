@@ -61,6 +61,7 @@
 #include <private/qtextformat_p.h>
 #include "qtextobject.h"
 
+QT_BEGIN_NAMESPACE
 
 class QTextCursorPrivate : public QSharedData
 {
@@ -94,6 +95,8 @@ public:
     inline QTextBlockFormat blockFormat() const
         { return block().blockFormat(); }
 
+    QTextLayout *blockLayout(QTextBlock &block) const;
+
     QTextTable *complexSelectionTable() const;
     void selectedTableCells(int *firstRow, int *numRows, int *firstColumn, int *numColumns) const;
 
@@ -107,6 +110,9 @@ public:
     int anchor;
     int adjusted_anchor;
     int currentCharFormat;
+    bool visualNavigation;
 };
+
+QT_END_NAMESPACE
 
 #endif // QTEXTCURSOR_P_H

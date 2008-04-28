@@ -41,6 +41,7 @@
 **
 ****************************************************************************/
 
+//! [0]
 /* Add C includes here */
 
 #if defined __cplusplus
@@ -51,3 +52,4 @@
 # include <QPushButton>
 # include <QLabel>
 #endif
+//! [0]

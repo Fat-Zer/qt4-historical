@@ -47,6 +47,8 @@ TRANSLATOR qdesigner_internal::StyleSheetEditorDialog
 
 #include "csshighlighter_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 CssHighlighter::CssHighlighter(QTextDocument *document)
@@ -74,7 +76,16 @@ void CssHighlighter::highlightBlock(const QString& text)
     bool lastWasSlash = false;
     int state = previousBlockState(), save_state;
     if (state == -1) {
-        state = save_state = Selector;
+        // As long as the text is empty, leave the state undetermined
+        if (text.isEmpty()) {
+            setCurrentBlockState(-1);
+            return;
+        }
+        // The initial state is based on the precense of a : and the absense of a {.
+        // This is because Qt style sheets support both a full stylesheet as well as
+        // an inline form with just properties.
+        state = save_state = (text.indexOf(QLatin1Char(':')) > -1 &&
+                              text.indexOf(QLatin1Char('{')) == -1) ? Property : Selector;
     } else {
         save_state = state>>16;
         state &= 0x00ff;
@@ -179,3 +190,5 @@ void CssHighlighter::highlight(const QString &text, int start, int length, int s
 }
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

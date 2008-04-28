@@ -59,6 +59,8 @@
 #include "shared_global_p.h"
 #include <QtDesigner/QDesignerPropertyEditorInterface>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 // Extends the QDesignerPropertyEditorInterface by property comment handling and
@@ -71,6 +73,7 @@ public:
     QDesignerPropertyEditor(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
 Q_SIGNALS:
+    void propertyValueChanged(const QString &name, const QVariant &value, bool enableSubPropertyHandling);
     void propertyCommentChanged(const QString &name, const QString &value);
     void resetProperty(const QString &name);
     void addDynamicProperty(const QString &name, const QVariant &value);
@@ -80,9 +83,18 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     virtual void setPropertyComment(const QString &name, const QString &value) = 0;
+    /* Quick update that assumes the actual count of properties has not changed
+     * (as opposed to setObject()). N/A when for example executing a
+     * layout command and margin properties appear. */
     virtual void updatePropertySheet() = 0;
+    virtual void reloadResourceProperties() = 0;
+
+private Q_SLOTS:
+    void slotPropertyChanged(const QString &name, const QVariant &value);
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // DESIGNERPROPERTYEDITOR_H

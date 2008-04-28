@@ -47,6 +47,7 @@
 #include <QDate>
 #include <QSortFilterProxyModel>
 
+//! [0]
 class MySortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
@@ -70,5 +71,6 @@ private:
     QDate minDate;
     QDate maxDate;
 };
+//! [0]
 
 #endif

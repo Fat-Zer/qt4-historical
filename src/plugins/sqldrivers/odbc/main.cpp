@@ -45,6 +45,8 @@
 #include <qstringlist.h>
 #include "../../../sql/drivers/odbc/qsql_odbc.h"
 
+QT_BEGIN_NAMESPACE
+
 class QODBCDriverPlugin : public QSqlDriverPlugin
 {
 public:
@@ -78,3 +80,5 @@ QStringList QODBCDriverPlugin::keys() const
 
 Q_EXPORT_STATIC_PLUGIN(QODBCDriverPlugin)
 Q_EXPORT_PLUGIN2(qsqlodbc, QODBCDriverPlugin)
+
+QT_END_NAMESPACE

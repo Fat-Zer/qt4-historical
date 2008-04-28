@@ -61,6 +61,8 @@
 
 #ifndef QT_NO_PROXYMODEL
 
+QT_BEGIN_NAMESPACE
+
 class QEmptyModel : public QAbstractItemModel
 {
 public:
@@ -92,6 +94,8 @@ public:
     QAbstractItemModel *model;
     QEmptyModel empty;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PROXYMODEL
 

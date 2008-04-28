@@ -58,6 +58,8 @@
 
 #include <ApplicationServices/ApplicationServices.h>
 
+QT_BEGIN_NAMESPACE
+
 /*****************************************************************************
   QFontEngine debug facilities
  *****************************************************************************/
@@ -116,8 +118,6 @@ OSStatus QMacFontPath::closePath(void *data)
     static_cast<QMacFontPath*>(data)->path->closeSubpath();
     return noErr;
 }
-
-#include "qscriptengine_p.h"
 
 QFontEngineMacMulti::QFontEngineMacMulti(const ATSFontFamilyRef &atsFamily, const ATSFontRef &atsFontRef, const QFontDef &fontDef, bool kerning)
     : QFontEngineMulti(0)
@@ -207,7 +207,7 @@ struct QGlyphLayoutInfo
     bool callbackCalled;
     int *mappedFonts;
     QTextEngine::ShaperFlags flags;
-    QShaperItem *shaperItem;
+    QFontEngineMacMulti::ShaperItem *shaperItem;
 };
 
 static OSStatus atsuPostLayoutCallback(ATSULayoutOperationSelector selector, ATSULineRef lineRef, URefCon refCon,
@@ -243,12 +243,12 @@ static OSStatus atsuPostLayoutCallback(ATSULayoutOperationSelector selector, ATS
 
     int nextCharStop = -1;
     int currentClusterGlyph = -1; // first glyph in log cluster
-    QShaperItem *item = 0;
-    if (nfo->shaperItem) {
+    QFontEngineMacMulti::ShaperItem *item = nfo->shaperItem;
+    if (item->charAttributes) {
         item = nfo->shaperItem;
 #if !defined(QT_NO_DEBUG)
         int surrogates = 0;
-        const QString &str = *item->string;
+        const QChar *str = item->string;
         for (int i = item->from; i < item->from + item->length - 1; ++i) {
             surrogates += (str[i].unicode() >= 0xd800 && str[i].unicode() < 0xdc00
                            && str[i+1].unicode() >= 0xdc00 && str[i+1].unicode() < 0xe000);
@@ -294,7 +294,7 @@ static OSStatus atsuPostLayoutCallback(ATSULayoutOperationSelector selector, ATS
             *nfo->numGlyphs -= 1;
         }
 
-        if (item) {
+        if (item->log_clusters) {
             if (charOffset >= nextCharStop) {
                 nfo->glyphs[i].attributes.clusterStart = true;
                 currentClusterGlyph = i;
@@ -311,8 +311,8 @@ static OSStatus atsuPostLayoutCallback(ATSULayoutOperationSelector selector, ATS
 
             // surrogate handling
             if (charOffset < item->length - 1) {
-                QChar current = item->string->at(item->from + charOffset);
-                QChar next = item->string->at(item->from + charOffset + 1);
+                QChar current = item->string[item->from + charOffset];
+                QChar next = item->string[item->from + charOffset + 1];
                 if (current.unicode() >= 0xd800 && current.unicode() < 0xdc00
                     && next.unicode() >= 0xdc00 && next.unicode() < 0xe000) {
                     item->log_clusters[charOffset + 1] = currentClusterGlyph;
@@ -358,30 +358,40 @@ int QFontEngineMacMulti::fontIndexForFontID(ATSUFontID id) const
 
 bool QFontEngineMacMulti::stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const
 {
-    return stringToCMap(str, len, glyphs, nglyphs, flags, /*shaperItem=*/0);
+    return stringToCMap(str, len, glyphs, nglyphs, flags, /*logClusters=*/0, /*charAttributes=*/0);
 }
 
 bool QFontEngineMacMulti::stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags,
-                                  QShaperItem *shaperItem) const
+                                       unsigned short *logClusters, const HB_CharAttributes *charAttributes) const
 {
     if (*nglyphs < len) {
         *nglyphs = len;
         return false;
     }
 
+    ShaperItem shaperItem;
+    shaperItem.string = str;
+    shaperItem.from = 0;
+    shaperItem.length = len;
+    shaperItem.glyphs = glyphs;
+    shaperItem.num_glyphs = *nglyphs;
+    shaperItem.flags = flags;
+    shaperItem.log_clusters = logClusters;
+    shaperItem.charAttributes = charAttributes;
+
     const int maxChars = qMax(1,
                               int(SHRT_MAX / maxCharWidth())
                               - 10 // subtract a few to be on the safe side
                              );
-    if (len < maxChars)
-        return stringToCMapInternal(str, len, glyphs, nglyphs, flags, shaperItem);
+    if (len < maxChars || !charAttributes)
+        return stringToCMapInternal(str, len, glyphs, nglyphs, flags, &shaperItem);
 
     int charIdx = 0;
     int glyphIdx = 0;
-    QShaperItem tmpItem = *shaperItem;
+    ShaperItem tmpItem = shaperItem;
 
     do {
-        tmpItem.from = shaperItem->from + charIdx;
+        tmpItem.from = shaperItem.from + charIdx;
 
         int charCount = qMin(maxChars, len - charIdx);
 
@@ -392,7 +402,7 @@ bool QFontEngineMacMulti::stringToCMap(const QChar *str, int len, QGlyphLayout *
             if (tmpItem.charAttributes[i].whiteSpace) {
                 lastWhitespace = i;
                 break;
-            } if (tmpItem.charAttributes[i].lineBreakType != QCharAttributes::NoBreak) {
+            } if (tmpItem.charAttributes[i].lineBreakType != HB_NoBreak) {
                 lastSoftBreak = i;
             } if (tmpItem.charAttributes[i].charStop) {
                 lastCharStop = i;
@@ -400,32 +410,30 @@ bool QFontEngineMacMulti::stringToCMap(const QChar *str, int len, QGlyphLayout *
         }
         charCount = qMin(lastWhitespace, qMin(lastSoftBreak, lastCharStop)) - tmpItem.from + 1;
 
-        int glyphCount = shaperItem->num_glyphs - glyphIdx;
+        int glyphCount = shaperItem.num_glyphs - glyphIdx;
         if (glyphCount <= 0)
             return false;
         tmpItem.length = charCount;
         tmpItem.num_glyphs = glyphCount;
-        tmpItem.glyphs = shaperItem->glyphs + glyphIdx;
-        tmpItem.log_clusters = shaperItem->log_clusters + charIdx;
-        if (!stringToCMapInternal(tmpItem.string->constData() + tmpItem.from,
-                                  tmpItem.length,
-                                  tmpItem.glyphs,
-                                  &glyphCount,
-                                  flags, &tmpItem)) {
+        tmpItem.glyphs = shaperItem.glyphs + glyphIdx;
+        tmpItem.log_clusters = shaperItem.log_clusters + charIdx;
+        if (!stringToCMapInternal(tmpItem.string + tmpItem.from, tmpItem.length, 
+                                  tmpItem.glyphs, &glyphCount, flags,
+                                  &tmpItem)) {
+            *nglyphs = glyphIdx + glyphCount;
             return false;
-        }
+	}
         for (int i = 0; i < charCount; ++i)
             tmpItem.log_clusters[i] += glyphIdx;
         glyphIdx += glyphCount;
         charIdx += charCount;
     } while (charIdx < len);
-    shaperItem->num_glyphs = *nglyphs = glyphIdx;
+    *nglyphs = glyphIdx;
 
     return true;
 }
 
-bool QFontEngineMacMulti::stringToCMapInternal(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs,
-                                               QTextEngine::ShaperFlags flags, QShaperItem *shaperItem) const
+bool QFontEngineMacMulti::stringToCMapInternal(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags,ShaperItem *shaperItem) const
 {
     //qDebug() << "stringToCMap" << QString(str, len);
 
@@ -665,6 +673,33 @@ QFontEngineMac::QFontEngineMac(ATSUStyle baseStyle, ATSUFontID fontID, const QFo
        fsType = qFromBigEndian<quint16>(tmpFsType);
     else
         fsType = 0;
+
+    if (multiEngine)
+	transform = multiEngine->transform;
+    else
+	transform = CGAffineTransformIdentity;
+    
+    ATSUTextMeasurement metric;
+
+    ATSUGetAttribute(style, kATSUAscentTag, sizeof(metric), &metric, 0);
+    m_ascent = FixRound(metric);
+   
+    ATSUGetAttribute(style, kATSUDescentTag, sizeof(metric), &metric, 0);
+    m_descent = FixRound(metric);
+
+    ATSUGetAttribute(style, kATSULeadingTag, sizeof(metric), &metric, 0);
+    m_leading = FixRound(metric);
+
+    ATSFontMetrics metrics;
+
+    ATSFontGetHorizontalMetrics(FMGetATSFontRefFromFont(fontID), kATSOptionFlagsDefault, &metrics);
+    m_maxCharWidth = metrics.maxAdvanceWidth * fontDef.pointSize;
+
+    ATSFontGetHorizontalMetrics(FMGetATSFontRefFromFont(fontID), kATSOptionFlagsDefault, &metrics);
+    m_xHeight = QFixed::fromReal(metrics.xHeight * fontDef.pointSize);
+
+    ATSFontGetHorizontalMetrics(FMGetATSFontRefFromFont(fontID), kATSOptionFlagsDefault, &metrics);
+    m_averageCharWidth = QFixed::fromReal(metrics.avgAdvanceWidth * fontDef.pointSize);
 }
 
 QFontEngineMac::~QFontEngineMac()
@@ -687,50 +722,57 @@ static inline unsigned int getChar(const QChar *str, int &i, const int len)
 
 bool QFontEngineMac::stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const
 {
-    if (flags & QTextEngine::GlyphIndicesOnly) {
-        if (!cmap) {
-            cmapTable = getSfntTable(MAKE_TAG('c', 'm', 'a', 'p'));
-            int size = 0;
-            cmap = getCMap(reinterpret_cast<const uchar *>(cmapTable.constData()), cmapTable.size(), &symbolCMap, &size);
-            if (!cmap)
-                return false;
+    if (!cmap) {
+        cmapTable = getSfntTable(MAKE_TAG('c', 'm', 'a', 'p'));
+        int size = 0;
+        cmap = getCMap(reinterpret_cast<const uchar *>(cmapTable.constData()), cmapTable.size(), &symbolCMap, &size);
+        if (!cmap)
+            return false;
+    }
+    QGlyphLayout *g = glyphs;
+    if (symbolCMap) {
+        for (int i = 0; i < len; ++i) {
+            unsigned int uc = getChar(str, i, len);
+            g->glyph = getTrueTypeGlyphIndex(cmap, uc);
+            if(!g->glyph && uc < 0x100)
+                g->glyph = getTrueTypeGlyphIndex(cmap, uc + 0xf000);
+            g++;
         }
-        if (symbolCMap) {
-            for (int i = 0; i < len; ++i) {
-                unsigned int uc = getChar(str, i, len);
-                glyphs->glyph = getTrueTypeGlyphIndex(cmap, uc);
-                if(!glyphs->glyph && uc < 0x100)
-                    glyphs->glyph = getTrueTypeGlyphIndex(cmap, uc + 0xf000);
-                glyphs++;
-            }
-        } else {
-            for (int i = 0; i < len; ++i) {
-                unsigned int uc = getChar(str, i, len);
-                glyphs->glyph = getTrueTypeGlyphIndex(cmap, uc);
-                glyphs++;
-            }
+    } else {
+        for (int i = 0; i < len; ++i) {
+            unsigned int uc = getChar(str, i, len);
+            g->glyph = getTrueTypeGlyphIndex(cmap, uc);
+            g++;
         }
-
-        *nglyphs = len;
-        return true;
-    }
-    if (!multiEngine)
-        return false;
-
-    const bool kashidaRequest = (len == 1 && *str == QChar(0x640));
-    if (kashidaRequest && kashidaGlyph.glyph != 0) {
-        *glyphs = kashidaGlyph;
-        *nglyphs = 1;
-        return true;
     }
 
-    bool result = multiEngine->stringToCMap(str, len, glyphs, nglyphs, flags);
+    *nglyphs = g - glyphs;
 
-    if (result && kashidaRequest) {
-        kashidaGlyph = *glyphs;
+    if (!(flags & QTextEngine::GlyphIndicesOnly))
+        recalcAdvances(*nglyphs, glyphs, flags);
+
+    return true;
+}
+
+void QFontEngineMac::recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::ShaperFlags flags) const
+{
+    Q_UNUSED(flags)
+
+    QVarLengthArray<GlyphID> atsuGlyphs(len);
+    for (int i = 0; i < len; ++i)
+        atsuGlyphs[i] = glyphs[i].glyph;
+
+    QVarLengthArray<ATSGlyphScreenMetrics> metrics(len);
+
+    ATSUGlyphGetScreenMetrics(style, len, atsuGlyphs.data(), sizeof(GlyphID),
+                              /* iForcingAntiAlias =*/ false,
+                              /* iAntiAliasSwitch =*/true,
+                              metrics.data());
+
+    for (int i = 0; i < len; ++i) {
+        glyphs[i].advance.x = QFixed::fromReal(metrics[i].deviceAdvance.x);
+        glyphs[i].advance.y = QFixed::fromReal(metrics[i].deviceAdvance.y);
     }
-
-    return result;
 }
 
 glyph_metrics_t QFontEngineMac::boundingBox(const QGlyphLayout *glyphs, int numGlyphs)
@@ -768,47 +810,35 @@ glyph_metrics_t QFontEngineMac::boundingBox(glyph_t glyph)
 
 QFixed QFontEngineMac::ascent() const
 {
-    ATSUTextMeasurement metric;
-    ATSUGetAttribute(style, kATSUAscentTag, sizeof(metric), &metric, 0);
-    return FixRound(metric);
+    return m_ascent;
 }
 
 QFixed QFontEngineMac::descent() const
 {
-    ATSUTextMeasurement metric;
-    ATSUGetAttribute(style, kATSUDescentTag, sizeof(metric), &metric, 0);
-    return FixRound(metric);
+    return m_descent;
 }
 
 QFixed QFontEngineMac::leading() const
 {
-    ATSUTextMeasurement metric;
-    ATSUGetAttribute(style, kATSULeadingTag, sizeof(metric), &metric, 0);
-    return FixRound(metric);
+    return m_leading;
 }
 
 qreal QFontEngineMac::maxCharWidth() const
 {
-    ATSFontMetrics metrics;
-    ATSFontGetHorizontalMetrics(FMGetATSFontRefFromFont(fontID), kATSOptionFlagsDefault, &metrics);
-    return metrics.maxAdvanceWidth * fontDef.pointSize;
+    return m_maxCharWidth;
 }
 
 QFixed QFontEngineMac::xHeight() const
 {
-    ATSFontMetrics metrics;
-    ATSFontGetHorizontalMetrics(FMGetATSFontRefFromFont(fontID), kATSOptionFlagsDefault, &metrics);
-    return QFixed::fromReal(metrics.xHeight * fontDef.pointSize);
+    return m_xHeight;
 }
 
 QFixed QFontEngineMac::averageCharWidth() const
 {
-    ATSFontMetrics metrics;
-    ATSFontGetHorizontalMetrics(FMGetATSFontRefFromFont(fontID), kATSOptionFlagsDefault, &metrics);
-    return QFixed::fromReal(metrics.avgAdvanceWidth * fontDef.pointSize);
+    return m_averageCharWidth;
 }
 
-static void addGlyphsToPath(ATSUStyle style, glyph_t *glyphs, QFixedPoint *positions, int numGlyphs, QPainterPath *path)
+static void addGlyphsToPathHelper(ATSUStyle style, glyph_t *glyphs, QFixedPoint *positions, int numGlyphs, QPainterPath *path)
 {
     if (!numGlyphs)
         return;
@@ -838,7 +868,7 @@ static void addGlyphsToPath(ATSUStyle style, glyph_t *glyphs, QFixedPoint *posit
 void QFontEngineMac::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int numGlyphs, QPainterPath *path,
                                            QTextItem::RenderFlags)
 {
-    ::addGlyphsToPath(style, glyphs, positions, numGlyphs, path);
+    addGlyphsToPathHelper(style, glyphs, positions, numGlyphs, path);
 }
 
 QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
@@ -847,7 +877,7 @@ QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
     QImage im(qRound(br.width)+2, qRound(br.height)+2, QImage::Format_RGB32);
     im.fill(0);
 
-    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+    CGColorSpaceRef colorspace = QCoreGraphicsPaintEngine::macGenericColorSpace();
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
     uint cgflags = kCGImageAlphaNoneSkipFirst;
 #ifdef kCGBitmapByteOrder32Host //only needed because CGImage.h added symbols in the minor version
@@ -860,7 +890,6 @@ QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
     CGContextRef ctx = CGBitmapContextCreate(im.bits(), im.width(), im.height(),
                                              8, im.bytesPerLine(), colorspace,
                                              cgflags);
-    CGColorSpaceRelease(colorspace);
     CGContextSetFontSize(ctx, fontDef.pixelSize);
     CGContextSetShouldAntialias(ctx, fontDef.pointSize > qt_antialiasing_threshold && !(fontDef.styleStrategy & QFont::NoAntialias));
     CGAffineTransform oldTextMatrix = CGContextGetTextMatrix(ctx);
@@ -870,7 +899,7 @@ QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
     if (synthesisFlags & QFontEngine::SynthesizedItalic)
         cgMatrix = CGAffineTransformConcat(cgMatrix, CGAffineTransformMake(1, 0, tanf(14 * acosf(0) / 90), 1, 0, 0));
 
-    cgMatrix = CGAffineTransformConcat(cgMatrix, multiEngine->transform);
+    cgMatrix = CGAffineTransformConcat(cgMatrix, transform);
 
     CGContextSetTextMatrix(ctx, cgMatrix);
     CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
@@ -941,7 +970,7 @@ void QFontEngineMac::draw(CGContextRef ctx, qreal x, qreal y, const QTextItemInt
     if (synthesisFlags & QFontEngine::SynthesizedItalic)
         cgMatrix = CGAffineTransformConcat(cgMatrix, CGAffineTransformMake(1, 0, -tanf(14 * acosf(0) / 90), 1, 0, 0));
 
-    cgMatrix = CGAffineTransformConcat(cgMatrix, multiEngine->transform);
+    cgMatrix = CGAffineTransformConcat(cgMatrix, transform);
 
     CGContextSetTextMatrix(ctx, cgMatrix);
 
@@ -1107,8 +1136,9 @@ void QFontEngineMac::getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_m
     metrics->yoff = QFixed::fromReal(atsuMetrics.deviceAdvance.y);
 
     QFixedPoint p;
-    ::addGlyphsToPath(unscaledStyle, &glyph, &p, 1, path);
+    addGlyphsToPathHelper(unscaledStyle, &glyph, &p, 1, path);
 
     ATSUDisposeStyle(unscaledStyle);
 }
 
+QT_END_NAMESPACE

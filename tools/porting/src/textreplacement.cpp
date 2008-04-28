@@ -43,6 +43,8 @@
 
 #include "textreplacement.h"
 
+QT_BEGIN_NAMESPACE
+
 bool TextReplacements::insert(QByteArray newText, int insertPosition, int currentLenght)
 {
     //bubble sort the new replacement into the list
@@ -96,3 +98,5 @@ TextReplacements &TextReplacements::operator+=(const TextReplacements &other)
     }
     return *this;
 }
+
+QT_END_NAMESPACE

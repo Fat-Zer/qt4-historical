@@ -59,6 +59,8 @@
 #include "private/qiodevice_p.h"
 #include "private/qringbuffer_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QFilePrivate : public QIODevicePrivate
 {
     Q_DECLARE_PUBLIC(QFile)
@@ -89,5 +91,7 @@ private:
     static QFile::EncoderFn encoder;
     static QFile::DecoderFn decoder;
 };
+
+QT_END_NAMESPACE
 
 #endif // QFILE_P_H

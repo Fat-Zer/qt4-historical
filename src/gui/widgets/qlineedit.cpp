@@ -75,6 +75,7 @@
 #include "qlist.h"
 #endif
 #include "qabstractitemview.h"
+#include "private/qstylesheetstyle_p.h"
 
 #ifndef QT_NO_SHORTCUT
 #include "qkeysequence.h"
@@ -83,15 +84,16 @@
 #define ACCEL_KEY(k) QString()
 #endif
 
-#ifdef Q_WS_MAC
-extern void qt_mac_secure_keyboard(bool); //qapplication_mac.cpp
-#endif
-
 #include <limits.h>
 
 #define verticalMargin 1
 #define horizontalMargin 2
 
+QT_BEGIN_NAMESPACE
+
+#ifdef Q_WS_MAC
+extern void qt_mac_secure_keyboard(bool); //qapplication_mac.cpp
+#endif
 
 /*!
     Initialize \a option with the values from this QLineEdit. This method
@@ -1341,7 +1343,7 @@ void QLineEdit::clear()
     d->selend = d->text.length();
     d->removeSelectedText();
     d->separate();
-    d->finishChange(priorState);
+    d->finishChange(priorState, /*update*/false, /*edited*/false);
 }
 
 /*!
@@ -1396,6 +1398,9 @@ void QLineEdit::setReadOnly(bool enable)
     if (d->readOnly != enable) {
         d->readOnly = enable;
         setAttribute(Qt::WA_MacShowFocusRect, !d->readOnly);
+#ifndef QT_NO_CURSOR
+        setCursor(enable ? Qt::ArrowCursor : Qt::IBeamCursor);
+#endif
         update();
     }
 }
@@ -1550,6 +1555,8 @@ bool QLineEdit::event(QEvent * e)
             return true;
 #endif
         d->separate();
+    } else if (e->type() == QEvent::WindowActivate) {
+        QTimer::singleShot(0, this, SLOT(_q_handleWindowActivate()));
     }
 #ifdef QT_KEYPAD_NAVIGATION
     if (QApplication::keypadNavigationEnabled()) {
@@ -1581,6 +1588,14 @@ bool QLineEdit::event(QEvent * e)
             if (d->cursorTimer > 0)
                 killTimer(d->cursorTimer);
             d->cursorTimer = 0;
+
+            if (!d->emitingEditingFinished) {
+                if (hasAcceptableInput() || d->fixup()) {
+                    d->emitingEditingFinished = true;
+                    emit editingFinished();
+                    d->emitingEditingFinished = false;
+                }
+            }
         }
     }
 #endif
@@ -1880,7 +1895,7 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
         end(1);
     }
     else if (event == QKeySequence::MoveToNextChar) {
-#ifndef Q_WS_WIN
+#if !defined(Q_WS_WIN) || defined(QT_NO_COMPLETER)
         if (d->hasSelectedText()) {
 #else
         if (d->hasSelectedText() && d->completer
@@ -1895,7 +1910,7 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
         cursorForward(1, layoutDirection() == Qt::LeftToRight ? 1 : -1);
     }
     else if (event == QKeySequence::MoveToPreviousChar) {
-#ifndef Q_WS_WIN
+#if !defined(Q_WS_WIN) || defined(QT_NO_COMPLETER)
         if (d->hasSelectedText()) {
 #else
         if (d->hasSelectedText() && d->completer
@@ -2065,6 +2080,17 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
         event->ignore();
     else
         event->accept();
+}
+
+/*!
+  \since 4.4
+
+  Returns a rectangle that includes the lineedit cursor.
+*/
+QRect QLineEdit::cursorRect() const
+{
+    Q_D(const QLineEdit);
+    return d->cursorRect();
 }
 
 /*!
@@ -2271,8 +2297,13 @@ void QLineEdit::focusOutEvent(QFocusEvent *e)
     if (d->cursorTimer > 0)
         killTimer(d->cursorTimer);
     d->cursorTimer = 0;
+
+#ifdef QT_KEYPAD_NAVIGATION
+    // editingFinished() is already emitted on LeaveEditFocus
+    if (!QApplication::keypadNavigationEnabled())
+#endif
     if (reason != Qt::PopupFocusReason
-        && !(QApplication::activePopupWidget() && QApplication::activePopupWidget()->parentWidget() == this)) {
+        || !(QApplication::activePopupWidget() && QApplication::activePopupWidget()->parentWidget() == this)) {
         if (!d->emitingEditingFinished) {
             if (hasAcceptableInput() || d->fixup()) {
                 d->emitingEditingFinished = true;
@@ -2307,7 +2338,7 @@ void QLineEdit::paintEvent(QPaintEvent *)
     QPainter p(this);
 
     QRect r = rect();
-    const QPalette &pal = palette();
+    QPalette pal = palette();
 
     QStyleOptionFrameV2 panel;
     initStyleOption(&panel);
@@ -2369,15 +2400,19 @@ void QLineEdit::paintEvent(QPaintEvent *)
     QPoint topLeft = lineRect.topLeft() - QPoint(d->hscroll, d->ascent - fm.ascent());
 
     // draw text, selections and cursors
+#ifndef QT_NO_STYLE_STYLESHEET
+    if (QStyleSheetStyle* cssStyle = qobject_cast<QStyleSheetStyle*>(style())) {
+        cssStyle->focusPalette(this, &panel, &pal);
+    }
+#endif
     p.setPen(pal.text().color());
 
     QVector<QTextLayout::FormatRange> selections;
 #ifdef QT_KEYPAD_NAVIGATION
     if (!QApplication::keypadNavigationEnabled() || hasEditFocus())
 #endif
-    if (d->selstart < d->selend || (d->cursorVisible && d->maskData)) {
+    if (d->selstart < d->selend || (d->cursorVisible && d->maskData && !d->readOnly)) {
         QTextLayout::FormatRange o;
-        const QPalette &pal = palette();
         if (d->selstart < d->selend) {
             o.start = d->selstart;
             o.length = d->selend - d->selstart;
@@ -2398,8 +2433,7 @@ void QLineEdit::paintEvent(QPaintEvent *)
     // invisible if we have a preedit string.
     d->textLayout.draw(&p, topLeft, selections, r);
     if (d->cursorVisible && !d->readOnly && !d->hideCursor)
-        d->textLayout.drawCursor(&p, topLeft, cursor);
-
+        d->textLayout.drawCursor(&p, topLeft, cursor, style()->pixelMetric(QStyle::PM_TextCursorWidth));
 }
 
 
@@ -2497,16 +2531,7 @@ void QLineEditPrivate::drag()
     to extend the standard context menu, reimplement this function, call
     createStandardContextMenu() and extend the menu returned.
 
-    \code
-        void LineEdit::contextMenuEvent(QContextMenuEvent *event)
-        {
-            QMenu *menu = createStandardContextMenu();
-            menu->addAction(tr("My Menu Item"));
-            //...
-            menu->exec(event->globalPos());
-            delete menu;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qlineedit.cpp 0
 
     The \a event parameter is used to obtain the position where
     the mouse cursor was when the event was generated.
@@ -2520,10 +2545,14 @@ void QLineEdit::contextMenuEvent(QContextMenuEvent *event)
     delete menu;
 }
 
+#if defined(Q_WS_WIN)
+    extern bool qt_use_rtl_extensions;
+#endif
+
 /*!  This function creates the standard context menu which is shown
-  when the user clicks on the line edit with the right mouse
-  button. It is called from the default contextMenuEvent() handler.
-  The popup menu's ownership is transferred to the caller.
+        when the user clicks on the line edit with the right mouse
+        button. It is called from the default contextMenuEvent() handler.
+        The popup menu's ownership is transferred to the caller.
 */
 
 QMenu *QLineEdit::createStandardContextMenu()
@@ -2586,7 +2615,6 @@ QMenu *QLineEdit::createStandardContextMenu()
 #endif
 
 #if defined(Q_WS_WIN)
-    extern bool qt_use_rtl_extensions;
     if (!d->readOnly && qt_use_rtl_extensions) {
 #else
     if (!d->readOnly) {
@@ -2614,6 +2642,13 @@ void QLineEdit::changeEvent(QEvent *ev)
 
 void QLineEditPrivate::_q_clipboardChanged()
 {
+}
+
+void QLineEditPrivate::_q_handleWindowActivate()
+{
+    Q_Q(QLineEdit);
+    if (!q->hasFocus() && q->hasSelectedText())
+        q->deselect();
 }
 
 void QLineEditPrivate::_q_deleteSelected()
@@ -2697,7 +2732,8 @@ QRect QLineEditPrivate::cursorRect() const
         c += preeditCursor;
     cix += qRound(l.cursorToX(c));
     int ch = qMin(cr.height(), q->fontMetrics().height() + 1);
-    return QRect(cix-5, vscroll, 10, ch);
+    int w = q->style()->pixelMetric(QStyle::PM_TextCursorWidth);
+    return QRect(cix-5, vscroll, w + 9, ch);
 }
 
 QRect QLineEditPrivate::adjustedContentsRect() const
@@ -2950,6 +2986,13 @@ void QLineEditPrivate::removeSelectedText()
             cursor -= qMin(cursor, selend) - selstart;
         deselect();
         textDirty = true;
+
+        // adjust hscroll to avoid gap
+        const int minRB = qMax(0, -q_func()->fontMetrics().minRightBearing());
+        updateTextLayout();
+        const QTextLine line = textLayout.lineAt(0);
+        const int widthUsed = qRound(line.naturalTextWidth()) + 1 + minRB;
+        hscroll = qMin(hscroll, widthUsed);
     }
 }
 
@@ -3519,6 +3562,8 @@ void QLineEditPrivate::redo() {
     \fn int QLineEdit::midLineWidth() const
     \internal
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qlineedit.cpp"
 

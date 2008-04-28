@@ -47,17 +47,23 @@
 #include <QIcon>
 #include <QXmlStreamReader>
 
+QT_BEGIN_NAMESPACE
 class QTreeWidget;
 class QTreeWidgetItem;
+QT_END_NAMESPACE
 
+//! [0]
 class XbelReader : public QXmlStreamReader
 {
 public:
+//! [1]
     XbelReader(QTreeWidget *treeWidget);
+//! [1]
 
     bool read(QIODevice *device);
 
 private:
+//! [2]
     void readUnknownElement();
     void readXBEL();
     void readTitle(QTreeWidgetItem *item);
@@ -68,9 +74,11 @@ private:
     QTreeWidgetItem *createChildItem(QTreeWidgetItem *item);
 
     QTreeWidget *treeWidget;
+//! [2]
 
     QIcon folderIcon;
     QIcon bookmarkIcon;
 };
+//! [0]
 
 #endif

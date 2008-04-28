@@ -47,7 +47,7 @@
 #include <qwidget.h>
 #include <qpixmap.h>
 
-class QAssistantClient;
+QT_BEGIN_NAMESPACE
 
 class QPixelTool : public QWidget
 {
@@ -80,7 +80,6 @@ public slots:
     void decreaseGridSize() { setGridSize(m_gridSize - 1); }
     void increaseZoom() { setZoom(m_zoom + 1); }
     void decreaseZoom() { setZoom(m_zoom - 1); }
-    void showHelp();
 
 private:
     void grabScreen();
@@ -109,8 +108,8 @@ private:
     QPixmap m_buffer;
 
     QSize m_initialSize;
-
-    QAssistantClient *m_assistantClient;
 };
+
+QT_END_NAMESPACE
 
 #endif // QPIXELTOOL_H

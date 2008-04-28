@@ -60,6 +60,8 @@
         return; \
     }
 
+QT_BEGIN_NAMESPACE
+
 /*
   internal: guesses a descriptive text from a text suited for a menu entry
  */
@@ -81,7 +83,7 @@ static QString qt_strippedText(QString s)
 
 QActionPrivate::QActionPrivate() : group(0), enabled(1), forceDisabled(0),
                                    visible(1), forceInvisible(0), checkable(0), checked(0), separator(0), fontSet(false),
-                                   menuRole(QAction::TextHeuristicRole)
+                                   menuRole(QAction::TextHeuristicRole), iconVisibleInMenu(-1)
 {
 #ifdef QT3_SUPPORT
     static int qt_static_action_id = -1;
@@ -163,6 +165,7 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
 }
 #endif // QT_NO_SHORTCUT
 
+
 /*!
     \class QAction
     \brief The QAction class provides an abstract user interface
@@ -208,13 +211,10 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
     menu and toolbar, then connected to the slot which will perform
     the action. For example:
 
-    \quotefile mainwindows/application/mainwindow.cpp
-    \skipto openAct
-    \printuntil connect
-    \skipto fileMenu->addAction(openAct
-    \printuntil fileMenu->addAction(openAct
-    \skipto fileToolBar->addAction(openAct
-    \printuntil fileToolBar->addAction(openAct
+    \snippet examples/mainwindows/application/mainwindow.cpp 19
+    \codeline
+    \snippet examples/mainwindows/application/mainwindow.cpp 28
+    \snippet examples/mainwindows/application/mainwindow.cpp 31
 
     We recommend that actions are created as children of the window
     they are used in. In most cases actions will be children of
@@ -787,8 +787,6 @@ QString QAction::iconText() const
     return d->iconText;
 }
 
-
-
 /*!
     \property QAction::toolTip
     \brief the action's tooltip
@@ -814,7 +812,7 @@ QString QAction::toolTip() const
     if (d->tooltip.isEmpty()) {
         if (!d->text.isEmpty())
             return qt_strippedText(d->text);
-        return d->iconText;
+        return qt_strippedText(d->iconText);
     }
     return d->tooltip;
 }
@@ -1308,6 +1306,50 @@ QAction::MenuRole QAction::menuRole() const
     return d->menuRole;
 }
 
-#include "moc_qaction.cpp"
-#endif // QT_NO_ACTION
+/*!
+    \property QAction::iconVisibleInMenu
+    \brief Whether or not an action should show an icon in a menu
+    \since 4.4
 
+    In some applications, it may make sense to have actions with icons in the
+    toolbar, but not in menus. If true, the icon (if valid) is shown in the menu, when it
+    is false, it is not shown.
+
+    The default is to follow whether the Qt::AA_DontShowIconsInMenus attribute
+    is set for the application. Explicitly settings this property overrides
+    the presence (or abscence) of the attribute.
+
+    For example:
+    \snippet doc/src/snippets/code/src.gui.kernel.qaction.cpp 0
+
+    \sa QAction::icon QApplication::setAttribute()
+*/
+void QAction::setIconVisibleInMenu(bool visible)
+{
+    Q_D(QAction);
+    if (visible != (bool)d->iconVisibleInMenu) {
+        int oldValue = d->iconVisibleInMenu;
+        d->iconVisibleInMenu = visible;
+        // Only send data changed if we really need to.
+        if (oldValue != -1
+            || (oldValue == -1
+                && visible == !QApplication::instance()->testAttribute(Qt::AA_DontShowIconsInMenus))) {
+            d->sendDataChanged();
+        }
+    }
+}
+
+bool QAction::isIconVisibleInMenu() const
+{
+    Q_D(const QAction);
+    if (d->iconVisibleInMenu == -1) {
+        return !QApplication::instance()->testAttribute(Qt::AA_DontShowIconsInMenus);
+    }
+    return d->iconVisibleInMenu;
+}
+
+QT_END_NAMESPACE
+
+#include "moc_qaction.cpp"
+
+#endif // QT_NO_ACTION

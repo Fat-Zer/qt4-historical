@@ -55,12 +55,24 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdarg.h>
-#include <errno.h>
 #include <string.h>
 
-#if defined(Q_CC_MSVC) && !defined(Q_OS_TEMP)
-#include <crtdbg.h>
+#if !defined(Q_OS_WINCE)
+#  include <errno.h>
+#  if defined(Q_CC_MSVC)
+#    include <crtdbg.h>
+#  endif
 #endif
+
+#ifdef Q_CC_MWERKS
+#include <CoreServices/CoreServices.h>
+#endif
+
+QT_BEGIN_NAMESPACE
+
+/* ### Qt 5: We should get QFlags more typesafe by not allowing implicit
+ * construction from int/uint or bool. See task 181764, or talk to Matthias,
+ * Jasmin or Frans. */
 
 /*!
     \class QFlag
@@ -109,9 +121,7 @@
     Qt::Alignment parameter, which means that any combination of
     Qt::AlignmentFlag values is legal:
 
-    \code
-        label->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 0
 
     If you try to pass a value from another enum, the compiler will
     report an error.
@@ -120,22 +130,7 @@
     the Q_DECLARE_FLAGS() and Q_DECLARE_OPERATORS_FOR_FLAGS().
     For example:
 
-    \code
-        class MyClass
-        {
-        public:
-            enum Option {
-                NoOptions = 0x0,
-                ShowTabs = 0x1,
-                ShowAll = 0x2,
-                SqueezeBlank = 0x4
-            };
-            Q_DECLARE_FLAGS(Options, Option)
-            ...
-        };
-
-        Q_DECLARE_OPERATORS_FOR_FLAGS(MyClass::Options)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 1
 
     You can then use the \c MyClass::Options type to store
     combinations of \c MyClass::Option values.
@@ -325,9 +320,7 @@
 
     The Q_DECLARE_FLAGS() macro expands to
 
-    \code
-        typedef QFlags<Enum> Flags;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 2
 
     \a Enum is the name of an existing enum type, whereas \a Flags is
     the name of the QFlags<\e{Enum}> typedef.
@@ -400,26 +393,14 @@
     return a corresponding template type; the template types can be
     replaced by any other type. For example:
 
-    \code
-        int myValue = 10;
-        int minValue = 2;
-        int maxValue = 6;
-
-        int boundedValue = qBound(minValue, myValue, maxValue);
-        // boundedValue == 6
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 3
 
     <QtGlobal> also contains functions that generate messages from the
     given string argument: qCritical(), qDebug(), qFatal() and
     qWarning(). These functions call the message handler with the
     given message. For example:
 
-    \code
-        if (!driver()->isOpen() || driver()->isOpenError()) {
-            qWarning("QSqlQuery::exec: database not open");
-            return false;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 4
 
     The remaining functions are qRound() and qRound64(), which both
     accept a \l qreal value as their argument returning the value
@@ -565,9 +546,7 @@
 
     Literals of this type can be created using the Q_INT64_C() macro:
 
-    \code
-        qint64 value = Q_INT64_C(932838457459459);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 5
 
     \sa Q_INT64_C(), quint64, qlonglong
 */
@@ -583,9 +562,7 @@
     Literals of this type can be created using the Q_UINT64_C()
     macro:
 
-    \code
-        quint64 value = Q_UINT64_C(932838457459459);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 6
 
     \sa Q_UINT64_C(), qint64, qulonglong
 */
@@ -631,9 +608,7 @@
     This is a typedef for a pointer to a function with the following
     signature:
 
-    \code
-        void myMsgHandler(QtMsgType, const char *);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 7
 
     \sa QtMsgType, qInstallMsgHandler()
 */
@@ -667,9 +642,7 @@
     Wraps the signed 64-bit integer \a literal in a
     platform-independent way. For example:
 
-    \code
-        qint64 value = Q_INT64_C(932838457459459);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 8
 
     \sa qint64, Q_UINT64_C()
 */
@@ -680,9 +653,7 @@
     Wraps the unsigned 64-bit integer \a literal in a
     platform-independent way. For example:
 
-    \code
-        quint64 value = Q_UINT64_C(932838457459459);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 9
 
     \sa quint64, Q_INT64_C()
 */
@@ -711,13 +682,7 @@
 
     Returns the absolute value of \a value. For example:
 
-    \code
-        int absoluteValue;
-        int myValue = -4;
-
-        absoluteValue = qAbs(myValue);
-        // absoluteValue == 4
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 10
 */
 
 /*! \fn int qRound(qreal value)
@@ -725,15 +690,7 @@
 
     Rounds \a value to the nearest integer. For example:
 
-    \code
-        qreal valueA = 2.3;
-        qreal valueB = 2.7;
-
-        int roundedValueA = qRound(valueA);
-        \\ roundedValueA = 2
-        int roundedValueB = qRound(valueB);
-        \\ roundedValueB = 3
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 11
 */
 
 /*! \fn qint64 qRound64(qreal value)
@@ -741,15 +698,7 @@
 
     Rounds \a value to the nearest 64-bit integer. For example:
 
-    \code
-        qreal valueA = 42949672960.3;
-        qreal valueB = 42949672960.7;
-
-        int roundedValueA = qRound(valueA);
-        \\ roundedValueA = 42949672960
-        int roundedValueB = qRound(valueB);
-        \\ roundedValueB = 42949672961
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 12
 */
 
 /*! \fn const T &qMin(const T &value1, const T &value2)
@@ -757,13 +706,7 @@
 
     Returns the minimum of \a value1 and \a value2. For example:
 
-    \code
-        int myValue = 6;
-        int yourValue = 4;
-
-        int minValue = qMin(myValue, yourValue);
-        // minValue == yourValue
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 13
 
     \sa qMax(), qBound()
 */
@@ -773,13 +716,7 @@
 
     Returns the maximum of \a value1 and \a value2. For example:
 
-    \code
-        int myValue = 6;
-        int yourValue = 4;
-
-        int maxValue = qMax(myValue, yourValue);
-        // maxValue == myValue
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 14
 
     \sa qMin(), qBound()
 */
@@ -790,14 +727,7 @@
     Returns \a value bounded by \a min and \a max. This is equivalent
     to qMax(\a min, qMin(\a value, \a max)). For example:
 
-    \code
-        int myValue = 10;
-        int minValue = 2;
-        int maxValue = 6;
-
-        int boundedValue = qBound(minValue, myValue, maxValue);
-        // boundedValue == 6
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 15
 
     \sa qMin(), qMax()
 */
@@ -943,14 +873,7 @@
     You can use QT_VERSION to use the latest Qt features where
     available. For example:
 
-    \code
-        #if QT_VERSION >= 0x040100
-            QIcon icon = style()->standardIcon(QStyle::SP_TrashIcon);
-        #else
-            QPixmap pixmap = style()->standardPixmap(QStyle::SP_TrashIcon);
-            QIcon icon(pixmap);
-        #endif
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 16
 
     \sa QT_VERSION_STR, qVersion()
 */
@@ -1033,6 +956,13 @@ bool qSharedBuild()
 */
 
 /*!
+    \fn QSysInfo::WindowsVersion QSysInfo::windowsVersion()
+
+    Returns the version of the Windows operating system on which the
+    application is run (Windows only).
+*/
+
+/*!
     \variable QSysInfo::MacintoshVersion
     \brief the version of the Macintosh operating system on which
            the application is run (Mac only).
@@ -1074,6 +1004,8 @@ bool qSharedBuild()
 
     \value WV_CE    Windows CE
     \value WV_CENET Windows CE .NET
+    \value WV_CE_5  Windows CE 5.x
+    \value WV_CE_6  Windows CE 6.x
 
     The following masks can be used for testing whether a Windows
     version is MS-DOS-based, NT-based, or CE-based:
@@ -1260,7 +1192,7 @@ bool qSharedBuild()
     \macro Q_WS_QWS
     \relates <QtGlobal>
 
-    Defined on Qtopia Core.
+    Defined on Qt for Embedded Linux.
 
     \sa Q_WS_MAC, Q_WS_WIN, Q_WS_X11
 */
@@ -1298,6 +1230,13 @@ bool qSharedBuild()
     \relates <QtGlobal>
 
     Defined on all supported versions of Windows.
+*/
+
+/*!
+    \macro Q_OS_WINCE
+    \relates <QtGlobal>
+
+    Defined on Windows CE.
 */
 
 /*!
@@ -1616,8 +1555,10 @@ const int QSysInfo::ByteOrder = ((*((unsigned char *) &qt_one) == 0) ? BigEndian
 
 #if !defined(QWS) && defined(Q_OS_MAC)
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "private/qcore_mac_p.h"
 #include "qnamespace.h"
+QT_END_INCLUDE_NAMESPACE
 
 Q_CORE_EXPORT OSErr qt_mac_create_fsref(const QString &file, FSRef *fsref)
 {
@@ -1678,11 +1619,14 @@ static QSysInfo::MacVersion macVersion()
     return QSysInfo::MV_Unknown;
 }
 const QSysInfo::MacVersion QSysInfo::MacintoshVersion = macVersion();
-#elif defined(Q_OS_WIN32) || defined(Q_OS_CYGWIN) || defined(Q_OS_TEMP)
 
+#elif defined(Q_OS_WIN32) || defined(Q_OS_CYGWIN) || defined(Q_OS_WINCE)
+
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qt_windows.h"
+QT_END_INCLUDE_NAMESPACE
 
-static QSysInfo::WinVersion winVersion()
+QSysInfo::WinVersion QSysInfo::windowsVersion()
 {
 #ifndef VER_PLATFORM_WIN32s
 #define VER_PLATFORM_WIN32s            0
@@ -1698,7 +1642,7 @@ static QSysInfo::WinVersion winVersion()
 #endif
 
     static QSysInfo::WinVersion winver = QSysInfo::WV_NT;
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     OSVERSIONINFOA osver;
     osver.dwOSVersionInfoSize = sizeof(osver);
     GetVersionExA(&osver);
@@ -1723,13 +1667,15 @@ static QSysInfo::WinVersion winVersion()
         else
             winver = QSysInfo::WV_95;
         break;
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
     case VER_PLATFORM_WIN32_CE:
-#ifdef Q_OS_TEMP
-        if (qt_cever >= 400)
+        if (qt_cever >= 600)
+            winver = QSysInfo::WV_CE_6;
+        if (qt_cever >= 500)
+            winver = QSysInfo::WV_CE_5;
+        else if (qt_cever >= 400)
             winver = QSysInfo::WV_CENET;
         else
-#endif
             winver = QSysInfo::WV_CE;
         break;
 #endif
@@ -1778,7 +1724,7 @@ static QSysInfo::WinVersion winVersion()
     return winver;
 }
 
-const QSysInfo::WinVersion QSysInfo::WindowsVersion = winVersion();
+const QSysInfo::WinVersion QSysInfo::WindowsVersion = QSysInfo::windowsVersion();
 
 #endif
 
@@ -1795,24 +1741,12 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = winVersion();
 
     Example:
 
-    \code
-        // File: div.cpp
-
-        #include <QtGlobal>
-
-        int divide(int a, int b)
-        {
-            Q_ASSERT(b != 0);
-            return a / b;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 17
 
     If \c b is zero, the Q_ASSERT statement will output the following
     message using the qFatal() function:
 
-    \code
-        ASSERT: "b == 0" in file div.cpp, line 7
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 18
 
     \sa Q_ASSERT_X(), qFatal(), {Debugging Techniques}
 */
@@ -1830,24 +1764,12 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = winVersion();
 
     Example:
 
-    \code
-        // File: div.cpp
-
-        #include <QtGlobal>
-
-        int divide(int a, int b)
-        {
-            Q_ASSERT_X(b != 0, "divide", "division by zero");
-            return a / b;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 19
 
     If \c b is zero, the Q_ASSERT_X statement will output the following
     message using the qFatal() function:
 
-    \code
-        ASSERT failure in divide: "division by zero", file div.cpp, line 7
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 20
 
     \sa Q_ASSERT(), qFatal(), {Debugging Techniques}
 */
@@ -1865,14 +1787,7 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = winVersion();
 
     Example:
 
-    \code
-        int *a;
-
-        Q_CHECK_PTR(a = new int[80]);   // WRONG!
-
-        a = new (nothrow) int[80];      // Right
-        Q_CHECK_PTR(a);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 21
 
     \sa qWarning(), {Debugging Techniques}
 */
@@ -1887,18 +1802,7 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = winVersion();
 
     Q_FUNC_INFO can be conveniently used with qDebug(). For example, this function:
 
-    \code
-        template<typename TInputType>
-        const TInputType &myMin(const TInputType &value1, const TInputType &value2)
-        {
-            qDebug() << Q_FUNC_INFO << "was called with value1:" << value1 << "value2:" << value2;
-
-            if(value1 < value2)
-                return value1;
-            else
-                return value2;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 22
 
     when instantiated with the integer type, will with the GCC compiler produce:
 
@@ -1968,18 +1872,13 @@ Q_CORE_EXPORT unsigned int qt_int_sqrt(unsigned int n)
 #  undef qMemSet
 #endif
 
-void *qMalloc(size_t size) { return ::malloc(size); }
-void qFree(void *ptr) { ::free(ptr); }
-void *qRealloc(void *ptr, size_t size) { return ::realloc(ptr, size); }
 void *qMemCopy(void *dest, const void *src, size_t n) { return memcpy(dest, src, n); }
 void *qMemSet(void *dest, int c, size_t n) { return memset(dest, c, n); }
-
 
 static QtMsgHandler handler = 0;                // pointer to debug handler
 static const int QT_BUFFER_LENGTH = 8192;       // internal buffer length
 
 #ifdef Q_CC_MWERKS
-#include <CoreServices/CoreServices.h>
 extern bool qt_is_gui_used;
 static void mac_default_handler(const char *msg)
 {
@@ -1994,12 +1893,13 @@ static void mac_default_handler(const char *msg)
 #endif // Q_CC_MWERKS
 
 
+
 QString qt_error_string(int errorCode)
 {
     const char *s = 0;
     QString ret;
     if (errorCode == -1) {
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
         errorCode = GetLastError();
 #else
         errorCode = errno;
@@ -2045,6 +1945,10 @@ QString qt_error_string(int errorCode)
             ret = QString::fromLocal8Bit(string);
             LocalFree((HLOCAL)string);
         });
+
+        if (ret.isEmpty() && errorCode == ERROR_MOD_NOT_FOUND)
+            ret = QString::fromLatin1("The specified module could not be found.");
+
 #elif !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && _POSIX_VERSION >= 200112L && !defined(Q_OS_INTEGRITY)
 
         QByteArray buf(1024, '\0');
@@ -2053,7 +1957,7 @@ QString qt_error_string(int errorCode)
 #else
         ret = QString::fromLocal8Bit(strerror(errorCode));
 #endif
-	break; }
+    break; }
     }
     if (s)
         // ######## this breaks moc build currently
@@ -2061,6 +1965,7 @@ QString qt_error_string(int errorCode)
         ret = QString::fromLatin1(s);
     return ret.trimmed();
 }
+
 
 /*!
     \fn QtMsgHandler qInstallMsgHandler(QtMsgHandler handler)
@@ -2088,45 +1993,24 @@ QString qt_error_string(int errorCode)
 
     Example:
 
-    \code
-        #include <qapplication.h>
-        #include <stdio.h>
-        #include <stdlib.h>
-
-        void myMessageOutput(QtMsgType type, const char *msg)
-        {
-            switch (type) {
-            case QtDebugMsg:
-                fprintf(stderr, "Debug: %s\n", msg);
-                break;
-            case QtWarningMsg:
-                fprintf(stderr, "Warning: %s\n", msg);
-                break;
-            case QtCriticalMsg:
-                fprintf(stderr, "Critical: %s\n", msg);
-                break;
-            case QtFatalMsg:
-                fprintf(stderr, "Fatal: %s\n", msg);
-                abort();
-            }
-        }
-
-        int main(int argc, char **argv)
-        {
-            qInstallMsgHandler(myMessageOutput);
-            QApplication app(argc, argv);
-            ...
-            return app.exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 23
 
     \sa qDebug(), qWarning(), qCritical(), qFatal(), QtMsgType,
     {Debugging Techniques}
 */
+#if defined(Q_OS_WIN) && defined(QT_BUILD_CORE_LIB)
+extern bool usingWinMain;
+extern Q_CORE_EXPORT void qWinMsgHandler(QtMsgType t, const char* str);
+#endif
+
 QtMsgHandler qInstallMsgHandler(QtMsgHandler h)
 {
     QtMsgHandler old = handler;
     handler = h;
+#if defined(Q_OS_WIN) && defined(QT_BUILD_CORE_LIB)
+    if (!handler && usingWinMain)
+        handler = qWinMsgHandler;
+#endif
     return old;
 }
 
@@ -2140,9 +2024,10 @@ void qt_message_output(QtMsgType msgType, const char *buf)
     } else {
 #if defined(Q_CC_MWERKS)
         mac_default_handler(buf);
-#elif defined(Q_OS_TEMP)
-        QString fstr(buf);
-        OutputDebugString((fstr + "\n").utf16());
+#elif defined(Q_OS_WINCE)
+        QString fstr = QString::fromLatin1(buf);
+        fstr += QLatin1String("\n");
+        OutputDebugString(reinterpret_cast<const wchar_t *> (fstr.utf16()));
 #else
         fprintf(stderr, "%s\n", buf);
         fflush(stderr);
@@ -2157,14 +2042,19 @@ void qt_message_output(QtMsgType msgType, const char *buf)
         // get the current report mode
         int reportMode = _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_WNDW);
         _CrtSetReportMode(_CRT_ERROR, reportMode);
+#if !defined(Q_OS_WINCE)
         int ret = _CrtDbgReport(_CRT_ERROR, __FILE__, __LINE__, QT_VERSION_STR, buf);
+#else
+        int ret = _CrtDbgReportW(_CRT_ERROR, _CRT_WIDE(__FILE__),
+            __LINE__, _CRT_WIDE(QT_VERSION_STR), reinterpret_cast<const wchar_t *> (QString::fromLatin1(buf).utf16()));
+#endif
         if (ret == 0  && reportMode & _CRTDBG_MODE_WNDW)
             return; // ignore
         else if (ret == 1)
             _CrtDbgBreak();
 #endif
 
-#if defined(Q_OS_UNIX) && defined(QT_DEBUG)
+#if (defined(Q_OS_UNIX) || defined(Q_CC_MINGW)) && defined(QT_DEBUG)
         abort(); // trap; generates core dump
 #else
         exit(1); // goodbye cruel world
@@ -2188,16 +2078,12 @@ void qt_message_output(QtMsgType msgType, const char *buf)
 
     Example:
 
-    \code
-        qDebug("Items in list: %d", myList.size());
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 24
 
     If you include \c <QtDebug>, a more convenient syntax is also
     available:
 
-    \code
-        qDebug() << "Brush:" << myQBrush << "Other value:" << i;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 25
 
     This syntax automatically puts a single space between each item,
     and outputs a newline at the end. It supports many C++ and Qt
@@ -2237,21 +2123,12 @@ void qDebug(const char *msg, ...)
     similar to the C printf() function.
 
     Example:
-    \code
-        void f(int c)
-        {
-            if (c > 200)
-                qWarning("f: bad argument, c == %d", c);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 26
 
     If you include <QtDebug>, a more convenient syntax is
     also available:
 
-    \code
-       qWarning() << "Brush:" << myQBrush << "Other value:"
-       << i;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 27
 
     This syntax inserts a space between each item, and
     appends a newline at the end.
@@ -2286,22 +2163,12 @@ void qWarning(const char *msg, ...)
     to the C printf() function.
 
     Example:
-    \code
-        void load(const QString &fileName)
-        {
-            QFile file(fileName);
-            if (!file.exists())
-                qCritical("File '%s' does not exist!", qPrintable(fileName));
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 28
 
     If you include <QtDebug>, a more convenient syntax is
     also available:
 
-    \code
-       qCritical() << "Brush:" << myQBrush << "Other
-       value:" << i;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 29
 
     A space is inserted between the items, and a newline is
     appended at the end.
@@ -2372,14 +2239,7 @@ void qErrnoWarning(int code, const char *msg, ...)
     similar to the C printf() function.
 
     Example:
-    \code
-        int divide(int a, int b)
-        {
-            if (b == 0)                                // program error
-                qFatal("divide: cannot divide by zero");
-            return a / b;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 30
 
     \warning The internal buffer is limited to 8192 bytes, including
     the '\0'-terminator.
@@ -2405,16 +2265,31 @@ void qFatal(const char *msg, ...)
 QByteArray qgetenv(const char *varName)
 {
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-    size_t requiredSize;
+    size_t requiredSize = 0;
     QByteArray buffer;
     getenv_s(&requiredSize, 0, 0, varName);
     if (requiredSize == 0)
         return buffer;
     buffer.resize(int(requiredSize));
     getenv_s(&requiredSize, buffer.data(), requiredSize, varName);
+    // requiredSize includes the terminating null, which we don't want.
+    Q_ASSERT(buffer.endsWith('\0'));
+    buffer.chop(1);
     return buffer;
 #else
     return QByteArray(::getenv(varName));
+#endif
+}
+
+bool qputenv(const char *varName, const QByteArray& value)
+{
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+    return _putenv_s(varName, value.constData()) == 0;
+#else
+    QByteArray buffer(varName);
+    buffer += "=";
+    buffer += value;
+    return putenv(qstrdup(buffer.constData())) == 0;
 #endif
 }
 
@@ -2428,6 +2303,7 @@ typedef uint SeedStorageType;
 
 typedef QThreadStorage<SeedStorageType *> SeedStorage;
 Q_GLOBAL_STATIC(SeedStorage, randTLS)  // Thread Local Storage for seed value
+
 #endif
 
 /*!
@@ -2450,9 +2326,10 @@ Q_GLOBAL_STATIC(SeedStorage, randTLS)  // Thread Local Storage for seed value
 void qsrand(uint seed)
 {
 #if defined(Q_OS_UNIX) && !defined(QT_NO_THREAD)
-    if (!randTLS()->hasLocalData())
-        randTLS()->setLocalData(new SeedStorageType);
-    *randTLS()->localData() = seed;
+    SeedStorageType *pseed = randTLS()->localData();
+    if (!pseed)
+        randTLS()->setLocalData(pseed = new SeedStorageType);
+    *pseed = seed;
 #else
     // On Windows srand() and rand() already use Thread-Local-Storage
     // to store the seed between calls
@@ -2478,12 +2355,12 @@ void qsrand(uint seed)
 int qrand()
 {
 #if defined(Q_OS_UNIX) && !defined(QT_NO_THREAD)
-    if (!randTLS()->hasLocalData()) {
-        randTLS()->setLocalData(new SeedStorageType);
-        *randTLS()->localData() = 1;
+    SeedStorageType *pseed = randTLS()->localData();
+    if (!pseed) {
+        randTLS()->setLocalData(pseed = new SeedStorageType);
+        *pseed = 1;
     }
-
-    return rand_r(randTLS()->localData());
+    return rand_r(pseed);
 #else
     // On Windows srand() and rand() already use Thread-Local-Storage
     // to store the seed between calls
@@ -2500,20 +2377,14 @@ int qrand()
 
     Example:
 
-    \code
-        forever {
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 31
 
     It is equivalent to \c{for (;;)}.
 
     If you're worried about namespace pollution, you can disable this
     macro by adding the following line to your \c .pro file:
 
-    \code
-        CONFIG += no_keywords
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 32
 
     \sa Q_FOREVER
 */
@@ -2543,9 +2414,7 @@ int qrand()
     If you're worried about namespace pollution, you can disable this
     macro by adding the following line to your \c .pro file:
 
-    \code
-        CONFIG += no_keywords
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 33
 
     \sa Q_FOREACH()
 */
@@ -2563,58 +2432,58 @@ int qrand()
 */
 
 /*!
-    \macro const char *QT_TR_NOOP(const char *sourceText)
+    \macro QT_TR_NOOP(sourceText)
     \relates <QtGlobal>
 
     Marks the string literal \a sourceText for dynamic translation in
     the current context (class), i.e the stored \a sourceText will not
-    be altered. For example:
-
-    \code
-        QString FriendlyConversation::greeting(int type)
-        {
-	    static const char *greeting_strings[] = {
-	        QT_TR_NOOP("Hello"),
-	        QT_TR_NOOP("Goodbye")
-	    };
-	    return tr(greeting_strings[type]);
-        }
-    \endcode
+    be altered.
 
     The macro expands to \a sourceText.
+
+    Example:
+
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 34
 
     \sa QT_TRANSLATE_NOOP(), {Internationalization with Qt}
 */
 
 /*!
-    \macro const char *QT_TRANSLATE_NOOP(const char *context, const char *sourceText)
+    \macro QT_TRANSLATE_NOOP(context, sourceText)
     \relates <QtGlobal>
 
     Marks the string literal \a sourceText for dynamic translation in
     the given \a context, i.e the stored \a sourceText will not be
-    altered. The \a context is typically a class. For example:
-
-    \code
-        static const char *greeting_strings[] = {
-	    QT_TRANSLATE_NOOP("FriendlyConversation", "Hello"),
-	    QT_TRANSLATE_NOOP("FriendlyConversation", "Goodbye")
-        };
-
-        QString FriendlyConversation::greeting(int type)
-        {
-	    return tr(greeting_strings[type]);
-        }
-
-        QString global_greeting(int type)
-        {
-	    return qApp->translate("FriendlyConversation",
-				   greeting_strings[type]);
-        }
-    \endcode
+    altered. The \a context is typically a class and also needs to
+    be specified as string literal.
 
     The macro expands to \a sourceText.
 
-    \sa QT_TR_NOOP(), {Internationalization with Qt}
+    Example:
+
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 35
+
+    \sa QT_TR_NOOP(), QT_TRANSLATE_NOOP3(), {Internationalization with Qt}
+*/
+
+/*!
+    \macro QT_TRANSLATE_NOOP3(context, sourceText, comment)
+    \relates <QtGlobal>
+
+    Marks the string literal \a sourceText for dynamic translation in the
+    given \a context and with \a comment, i.e the stored \a sourceText will
+    not be altered. The \a context is typically a class and also needs to
+    be specified as string literal. The string literal \a comment
+    will be available for translators using e.g. Qt Linguist.
+
+    The macro expands to anonymous struct of the two string
+    literals passed as \a sourceText and \a comment.
+
+    Example:
+
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 36
+
+    \sa QT_TR_NOOP(), QT_TRANSLATE_NOOP(), {Internationalization with Qt}
 */
 
 /*!
@@ -2685,9 +2554,7 @@ int qrand()
 
     Example:
 
-    \code
-        qWarning("%s: %s", qPrintable(key), qPrintable(value));
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 37
 
     \sa qDebug(), qWarning(), qCritical(), qFatal()
 */
@@ -2715,37 +2582,11 @@ int qrand()
 
     Example of a "primitive" type:
 
-    \code
-        struct Point2D
-        {
-            int x;
-            int y;
-        };
-
-        Q_DECLARE_TYPEINFO(Point2D, Q_PRIMITIVE_TYPE);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 38
 
     Example of a movable type:
 
-    \code
-        class Point2D
-        {
-        public:
-            Point2D() { data = new int[2]; }
-            Point2D(const Point2D &other) { ... }
-            ~Point2D() { delete[] data; }
-
-            Point2D &operator=(const Point2D &other) { ... }
-
-            int x() const { return data[0]; }
-            int y() const { return data[1]; }
-
-        private:
-            int *data;
-        };
-
-        Q_DECLARE_TYPEINFO(Point2D, Q_MOVABLE_TYPE);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 39
 */
 
 /*!
@@ -2759,7 +2600,10 @@ int qrand()
 */
 
 #if defined(QT3_SUPPORT) && !defined(QT_NO_SETTINGS)
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <qlibraryinfo.h>
+QT_END_INCLUDE_NAMESPACE
+
 static const char *qInstallLocation(QLibraryInfo::LibraryLocation loc)
 {
     static QByteArray ret;
@@ -2845,6 +2689,8 @@ bool QInternal::activateCallbacks(Callback cb, void **parameters)
     return false;
 }
 
+void qt_set_current_thread_to_main_thread();
+
 bool QInternal::callFunction(InternalFunction func, void **args)
 {
     Q_ASSERT_X(func >= 0,
@@ -2863,9 +2709,34 @@ bool QInternal::callFunction(InternalFunction func, void **args)
         QThreadData::get2((QThread *) *args)->deref();
         return true;
     case QInternal::SetCurrentThreadToMainThread:
-        extern void qt_set_current_thread_to_main_thread();
         qt_set_current_thread_to_main_thread();
         return true;
+    case QInternal::SetQObjectSender: {
+        QObject *receiver = (QObject *) args[0];
+        QObjectPrivate::Sender *sender = new QObjectPrivate::Sender;
+        sender->sender = (QObject *) args[1];
+        sender->signal = *(int *) args[2];
+
+        // Store the old sender as "return value"
+        args[3] = QObjectPrivate::setCurrentSender(receiver, sender);
+        args[4] = sender;
+        return true;
+    }
+    case QInternal::GetQObjectSender: {
+        QObject *receiver = (QObject *) args[0];
+        QObjectPrivate *d = QObjectPrivate::get(receiver);
+        args[1] = d->currentSender ? d->currentSender->sender : 0;
+        return true;
+    }
+    case QInternal::ResetQObjectSender: {
+        QObject *receiver = (QObject *) args[0];
+        QObjectPrivate::Sender *oldSender = (QObjectPrivate::Sender *) args[1];
+        QObjectPrivate::Sender *sender = (QObjectPrivate::Sender *) args[2];
+        QObjectPrivate::resetCurrentSender(receiver, sender, oldSender);
+        delete sender;
+        return true;
+    }
+
     default:
         break;
     }
@@ -2893,18 +2764,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
 
     Use this macro as in the following examples.
 
-    \code
-    #if Q_BYTE_ORDER == Q_BIG_ENDIAN
-    ...
-    #endif
-
-    or
-
-    #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-    ...
-    #endif
-    
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 40
 
     \sa Q_BIG_ENDIAN, Q_LITTLE_ENDIAN
 */
@@ -2919,13 +2779,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
     lowest address. The other bytes follow in increasing order of
     significance.
 
-    \code
-
-    #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-    ...
-    #endif
-    
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 41
 
     \sa Q_BYTE_ORDER, Q_BIG_ENDIAN
 */
@@ -2940,12 +2794,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
     lowest address. The other bytes follow in decreasing order of
     significance.
 
-    \code
-    #if Q_BYTE_ORDER == Q_BIG_ENDIAN
-    ...
-    #endif
-    
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 42
 
     \sa Q_BYTE_ORDER, Q_LITTLE_ENDIAN
 */
@@ -2986,3 +2835,154 @@ bool QInternal::callFunction(InternalFunction func, void **args)
     \l{http://www.aristeia.com/publications.html}{"C++ and the perils of Double-Checked Locking"}
     by Scott Meyers and Andrei Alexandrescu.
 */
+
+/*!
+    \macro QT_NAMESPACE
+    \internal
+
+    If this macro is defined to \c ns all Qt classes are put in a namespace
+    called \c ns. Also, moc will output code putting metaobjects etc.
+    into namespace \c ns.
+
+    \sa QT_BEGIN_NAMESPACE, QT_END_NAMESPACE,
+    QT_PREPEND_NAMESPACE, QT_USE_NAMESPACE,
+    QT_BEGIN_INCLUDE_NAMESPACE, QT_END_INCLUDE_NAMESPACE,
+    QT_BEGIN_MOC_NAMESPACE, QT_END_MOC_NAMESPACE,
+*/
+
+/*!
+    \macro QT_PREPEND_NAMESPACE(identifier)
+    \internal
+
+    This macro qualifies \a identifier with the full namespace.
+    It expands to \c{::QT_NAMESPACE::identifier} if \c QT_NAMESPACE is defined
+    and only \a identifier otherwise.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+    \macro QT_USE_NAMESPACE
+    \internal
+
+    This macro expands to using QT_NAMESPACE if QT_NAMESPACE is defined
+    and nothing otherwise.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+    \macro QT_BEGIN_NAMESPACE
+    \internal
+
+    This macro expands to
+
+    \snippet snippets/code/src.corelib.global.qglobal.cpp begin namespace macro
+
+    if \c QT_NAMESPACE is defined and nothing otherwise. If should always
+    appear in the file-level scope and be followed by \c QT_END_NAMESPACE
+    at the same logical level with respect to preprocessor conditionals
+    in the same file.
+
+    As a rule of thumb, \c QT_BEGIN_NAMESPACE should appear in all Qt header
+    and Qt source files after the last \c{#include} line and before the first
+    declaration. In Qt headers using \c QT_BEGIN_HEADER, \c QT_BEGIN_NAMESPACE
+    follows \c QT_BEGIN_HEADER immediately.
+
+    If that rule can't be followed because, e.g., \c{#include} lines and
+    declarations are wildly mixed, place \c QT_BEGIN_NAMESPACE before
+    the first declaration and wrap the \c{#include} lines in
+    \c QT_BEGIN_INCLUDE_NAMESPACE and \c QT_END_INCLUDE_NAMESPACE.
+
+    When using the \c QT_NAMESPACE feature in user code
+    (e.g., when building plugins statically linked to Qt) where
+    the user code is not intended to go into the \c QT_NAMESPACE
+    namespace, all forward declarations of Qt classes need to
+    be wrapped in \c QT_BEGIN_NAMESPACE and \c QT_END_NAMESPACE.
+    After that, a \c QT_USE_NAMESPACE should follow.
+    No further changes should be needed.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+    \macro QT_END_NAMESPACE
+    \internal
+
+    This macro expands to
+
+    \snippet snippets/code/src.corelib.global.qglobal.cpp end namespace macro
+
+    if \c QT_NAMESPACE is defined and nothing otherwise. It is used to cancel
+    the effect of \c QT_BEGIN_NAMESPACE.
+
+    If a source file ends with a \c{#include} directive that includes a moc file,
+    \c QT_END_NAMESPACE should be placed before that \c{#include}.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+    \macro QT_BEGIN_INCLUDE_NAMESPACE
+    \internal
+
+    This macro is equivalent to \c QT_END_NAMESPACE.
+    It only serves as syntactic sugar and is intended
+    to be used before #include lines within a
+    \c QT_BEGIN_NAMESPACE ... \c QT_END_NAMESPACE block.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+    \macro QT_END_INCLUDE_NAMESPACE
+    \internal
+
+    This macro is equivalent to \c QT_BEGIN_NAMESPACE.
+    It only serves as syntactic sugar and is intended
+    to be used after #include lines within a
+    \c QT_BEGIN_NAMESPACE ... \c QT_END_NAMESPACE block.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+    \macro QT_BEGIN_MOC_NAMESPACE
+    \internal
+
+    This macro is output by moc at the beginning of
+    moc files. It is equivalent to \c QT_USE_NAMESPACE.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+    \macro QT_END_MOC_NAMESPACE
+    \internal
+
+    This macro is output by moc at the beginning of
+    moc files. It expands to nothing.
+
+    \sa QT_NAMESPACE
+*/
+
+/*!
+ \fn bool qFuzzyCompare(double p1, double p2) 
+ \since 4.4
+ \threadsafe
+ 
+ Compares the floating point value \a p1 and \a p2 and
+ returns \c true if they are considered equal, otherwise \c false.
+
+ The two numbers are compared in a relative way, where the
+ exactness is stronger the smaller the numbers are.
+ */
+
+/*!
+ \fn bool qFuzzyCompare(float p1, float p2) 
+ \since 4.4
+ \threadsafe
+ \overload
+ */
+
+QT_END_NAMESPACE

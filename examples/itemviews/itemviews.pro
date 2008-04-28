@@ -1,9 +1,11 @@
 TEMPLATE      = subdirs
-SUBDIRS       = basicsortfiltermodel \
+SUBDIRS       = addressbook \
+                basicsortfiltermodel \
                 chart \
-		coloreditorfactory \
+                coloreditorfactory \
                 customsortfiltermodel \
                 dirview \
+                editabletreemodel \
                 pixelator \
                 puzzle \
                 simpledommodel \

@@ -49,15 +49,22 @@
 #include <qdir.h>
 #if defined(Q_WS_WIN)
 #define _WIN32_IE 0x0500
-#include <private/qpixmap_p.h>
+#include <objbase.h>
+#include <private/qpixmapdata_p.h>
 #include <qpixmapcache.h>
 #elif defined(Q_WS_MAC)
 #include <private/qt_mac_p.h>
+#endif
+#ifdef Q_OS_WINCE
+#include <qfunctions_wince.h>
+#include <Commctrl.h>
 #endif
 
 #ifndef SHGFI_ADDOVERLAYS
 #define SHGFI_ADDOVERLAYS 0x000000020
 #endif
+
+QT_BEGIN_NAMESPACE
 
 /*!
   \class QFileIconProvider
@@ -236,6 +243,7 @@ QIcon QFileIconProviderPrivate::getWinIcon(const QFileInfo &fileInfo) const
     unsigned long val = 0;
 
     //Get the small icon
+#ifndef Q_OS_WINCE
     val = SHGetFileInfo((const WCHAR *)QDir::toNativeSeparators(fileInfo.filePath()).utf16(), 0, &info,
                         sizeof(SHFILEINFO), SHGFI_ICON|SHGFI_SMALLICON|SHGFI_SYSICONINDEX|SHGFI_ADDOVERLAYS);
     if (val) {
@@ -247,8 +255,28 @@ QIcon QFileIconProviderPrivate::getWinIcon(const QFileInfo &fileInfo) const
         }
         DestroyIcon(info.hIcon);
     }
+#else
+      val = SHGetFileInfo((const WCHAR *)QDir::toNativeSeparators(fileInfo.filePath()).utf16(), 0, &info,
+                        sizeof(SHFILEINFO), SHGFI_SMALLICON|SHGFI_SYSICONINDEX);
+      if (val) {
+          pixmap = convertHIconToPixmap(ImageList_GetIcon((HIMAGELIST) val, info.iIcon, ILD_NORMAL));
+          if (!pixmap.isNull()) {
+              retIcon.addPixmap(pixmap);
+              if (!key.isEmpty())
+                  QPixmapCache::insert(key, pixmap);
+          }
+          else {
+              qWarning("QFileIconProviderPrivate::getWinIcon() no small icon found");
+          }
+          DestroyIcon(info.hIcon);
+      }
+      else {
+          qWarning("QFileIconProviderPrivate::getWinIcon() SHGetFileInfo failed");
+      }
+#endif
 
     //Get the big icon
+#ifndef Q_OS_WINCE
     val = SHGetFileInfo((const WCHAR *)QDir::toNativeSeparators(fileInfo.filePath()).utf16(), 0, &info,
                         sizeof(SHFILEINFO), SHGFI_ICON|SHGFI_LARGEICON|SHGFI_SYSICONINDEX|SHGFI_ADDOVERLAYS);
     if (val) {
@@ -256,10 +284,29 @@ QIcon QFileIconProviderPrivate::getWinIcon(const QFileInfo &fileInfo) const
         if (!pixmap.isNull()) {
             retIcon.addPixmap(pixmap);
             if (!key.isEmpty())
-                QPixmapCache::insert(key + QLatin1Char('l'), pixmap);
+                QPixmapCache::insert(key, pixmap);
         }
         DestroyIcon(info.hIcon);
     }
+#else
+    val = SHGetFileInfo((const WCHAR *)QDir::toNativeSeparators(fileInfo.filePath()).utf16(), 0, &info,
+                        sizeof(SHFILEINFO), SHGFI_LARGEICON|SHGFI_SYSICONINDEX);
+    if (val) {
+        pixmap = convertHIconToPixmap(ImageList_GetIcon((HIMAGELIST) val, info.iIcon, ILD_NORMAL), true);
+        if (!pixmap.isNull()) {
+            retIcon.addPixmap(pixmap);
+            if (!key.isEmpty())
+                QPixmapCache::insert(key + QLatin1Char('l'), pixmap);
+        }
+        else {
+            qWarning("QFileIconProviderPrivate::getWinIcon() no large icon found");
+        }
+        DestroyIcon(info.hIcon);
+    }
+    else {
+        qWarning("QFileIconProviderPrivate::getWinIcon() SHGetFileInfo failed");
+    }
+#endif
     return retIcon;
 }
 
@@ -282,7 +329,7 @@ QIcon QFileIconProviderPrivate::getMacIcon(const QFileInfo &fi) const
     status = GetIconRefFromFileInfo(&macRef, macName.length, macName.unicode, kIconServicesCatalogInfoMask, &info, kIconServicesNormalUsageFlag, &iconRef, &iconLabel);
     if (status != noErr)
         return retIcon;
-    extern void qt_mac_constructQIconFromIconRef(const IconRef, const IconRef, QIcon*); // qmacstyle_mac.cpp
+    extern void qt_mac_constructQIconFromIconRef(const IconRef, const IconRef, QIcon*, QStyle::StandardPixmap = QStyle::SP_CustomBase); // qmacstyle_mac.cpp
     qt_mac_constructQIconFromIconRef(iconRef, 0, &retIcon);
     ReleaseIconRef(iconRef);
     return retIcon;
@@ -307,7 +354,7 @@ QIcon QFileIconProvider::icon(const QFileInfo &info) const
         return icon;
 #endif
     if (info.isRoot())
-#ifdef Q_WS_WIN
+#if defined (Q_WS_WIN) && !defined(Q_OS_WINCE)
     {
         uint type = DRIVE_UNKNOWN;
         QT_WA({ type = GetDriveTypeW((wchar_t *)info.absoluteFilePath().utf16()); },
@@ -395,5 +442,6 @@ QString QFileIconProvider::type(const QFileInfo &info) const
     return QApplication::translate("QFileDialog", "Unknown");
 }
 
-#endif
+QT_END_NAMESPACE
 
+#endif

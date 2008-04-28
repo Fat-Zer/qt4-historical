@@ -50,6 +50,8 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
 
+QT_BEGIN_NAMESPACE
+
 QList<ItemDialog *> ItemDialog::openDialogs;
 
 ItemDialog::ItemDialog(QWidget *parent, const Item *item)
@@ -63,7 +65,7 @@ ItemDialog::ItemDialog(QWidget *parent, const Item *item)
     if (bcard) {
         QPixmap pm(bcard->bigPicture());
         if (pm.isNull())
-            pm = QPixmap(QLatin1String(":/qthack/images/qt.png"));
+            pm = QPixmap(QLatin1String(":/trolltech/qthack/images/qt.png"));
         lblPix->setPixmap(pm);
     } else {
         lblPix->setPixmap(item->pixmapName());
@@ -100,3 +102,5 @@ void ItemDialog::closeEvent(QCloseEvent *event)
         itemDialog->activateWindow();
     }
 }
+
+QT_END_NAMESPACE

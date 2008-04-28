@@ -46,11 +46,15 @@
 
 #include <QtGui/QDialog>
 
+QT_BEGIN_NAMESPACE
+
 class VersionDialog : public QDialog
 {
     Q_OBJECT
 public:
-    VersionDialog(QWidget *parent);
+    explicit VersionDialog(QWidget *parent);
 };
+
+QT_END_NAMESPACE
 
 #endif

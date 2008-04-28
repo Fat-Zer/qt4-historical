@@ -47,6 +47,7 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
+//! [0]
     QFontDatabase database;
     QTreeWidget fontTree;
     fontTree.setColumnCount(2);
@@ -66,7 +67,9 @@ int main(int argc, char **argv)
 
             styleItem->setText(1, sizes.trimmed());
         }
+//! [0] //! [1]
     }
+//! [1]
 
     fontTree.resizeColumnToContents(0);
     fontTree.show();

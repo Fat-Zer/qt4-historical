@@ -46,6 +46,7 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QGridLayout;
 class QHBoxLayout;
@@ -55,6 +56,7 @@ class QSlider;
 class QSpinBox;
 class QToolButton;
 class QVBoxLayout;
+QT_END_NAMESPACE
 
 class MoviePlayer : public QWidget
 {

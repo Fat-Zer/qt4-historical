@@ -1,11 +1,40 @@
 /****************************************************************************
 **
-** Explanation of moc and the meta object system.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** This file is part of the documentation of the Qt Toolkit.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -54,8 +83,8 @@
     \o All scripts in Unicode 4.0 that do not require special processing
     \endlist
 
-    On Windows NT/2000/XP, Unix/X11 with FontConfig (client side font support)
-    and Qtopia Core the following languages are also supported:
+    On Windows, Unix/X11 with FontConfig (client side font support)
+    and Qt for Embedded Linux the following languages are also supported:
     \list
     \o Bengali
     \o Devanagari
@@ -64,12 +93,12 @@
     \o Gurmukhi
     \o Kannada
     \o Khmer
-    \o Malayalam (X11 and Qtopia Core only)
-    \o Myanmar (X11 and Qtopia Core only)
+    \o Malayalam
+    \o Myanmar
     \o Syriac
     \o Tamil
     \o Telugu
-    \o Tibetan (X11 and Qtopia Core only)
+    \o Tibetan
     \endlist
 
     Many of these writing systems exhibit special features:
@@ -161,13 +190,7 @@
     to achieve this is to use QObject::tr(). For example, assuming the
     \c LoginWidget is a subclass of QWidget:
 
-    \code
-        LoginWidget::LoginWidget()
-        {
-            QLabel *label = new QLabel(tr("Password:"));
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 0
 
     This accounts for 99% of the user-visible strings you're likely to
     write.
@@ -177,19 +200,7 @@
     appropriate class, or the QCoreApplication::translate() function
     directly:
 
-    \code
-        void some_global_function(LoginWidget *logwid)
-        {
-            QLabel *label = new QLabel(
-                        LoginWidget::tr("Password:"), logwid);
-        }
-
-        void same_global_function(LoginWidget *logwid)
-        {
-            QLabel *label = new QLabel(
-                        qApp->translate("LoginWidget", "Password:"), logwid);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 1
 
     If you need to have translatable text completely
     outside a function, there are two macros to help: QT_TR_NOOP()
@@ -199,36 +210,11 @@
 
     Example of QT_TR_NOOP():
 
-    \code
-        QString FriendlyConversation::greeting(int type)
-        {
-            static const char *greeting_strings[] = {
-                QT_TR_NOOP("Hello"),
-                QT_TR_NOOP("Goodbye")
-            };
-            return tr(greeting_strings[type]);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 2
 
     Example of QT_TRANSLATE_NOOP():
 
-    \code
-        static const char *greeting_strings[] = {
-            QT_TRANSLATE_NOOP("FriendlyConversation", "Hello"),
-            QT_TRANSLATE_NOOP("FriendlyConversation", "Goodbye")
-        };
-
-        QString FriendlyConversation::greeting(int type)
-        {
-            return tr(greeting_strings[type]);
-        }
-
-        QString global_greeting(int type)
-        {
-            return qApp->translate("FriendlyConversation",
-                                   greeting_strings[type]);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 3
 
     If you disable the \c{const char *} to QString automatic
     conversion by compiling your software with the macro \c
@@ -250,42 +236,22 @@
     application, translators won't be able to override it. The
     correct idiom is
 
-    \quotefromfile mainwindows/application/mainwindow.cpp
-    \skipto exitAct = new QAction
-    \printuntil setShortcut
+    \snippet examples/mainwindows/application/mainwindow.cpp 20
 
     \section2 Use QString::arg() for Dynamic Text
 
     The QString::arg() functions offer a simple means for substituting
     arguments:
-    \code
-        void FileCopier::showProgress(int done, int total,
-                                      const QString &currentFile)
-        {
-            label.setText(tr("%1 of %2 files copied.\nCopying: %3")
-                          .arg(done)
-                          .arg(total)
-                          .arg(currentFile));
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 4
 
     In some languages the order of arguments may need to change, and this
     can easily be achieved by changing the order of the % arguments. For
     example:
 
-    \code
-        QString s1 = "%1 of %2 files copied. Copying: %3";
-        QString s2 = "Kopierer nu %3. Av totalt %2 filer er %1 kopiert.";
-
-        qDebug() << s1.arg(5).arg(10).arg("somefile.txt");
-        qDebug() << s2.arg(5).arg(10).arg("somefile.txt");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 5
 
     produces the correct output in English and Norwegian:
-    \code
-    5 of 10 files copied. Copying: somefile.txt
-    Kopierer nu somefile.txt. Av totalt 10 filer er 5 kopiert.
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 6
 
     \section2 Produce Translations
 
@@ -326,18 +292,7 @@
     Before you run \c lupdate, you should prepare a project file. Here's
     an example project file (\c .pro file):
 
-    \code
-        HEADERS         = funnydialog.h \
-                          wackywidget.h
-        SOURCES         = funnydialog.cpp \
-                          main.cpp \
-                          wackywidget.cpp
-        FORMS           = fancybox.ui
-        TRANSLATIONS    = superapp_dk.ts \
-                          superapp_fi.ts \
-                          superapp_no.ts \
-                          superapp_se.ts
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 7
 
     When you run \c lupdate or \c lrelease, you must give the name of the
     project file as a command-line argument.
@@ -368,23 +323,7 @@
     Typically, your application's \c main() function will look like
     this:
 
-    \code
-        int main(int argc, char *argv[])
-        {
-            QApplication app(argc, argv);
-
-            QTranslator qtTranslator;
-            qtTranslator.load("qt_" + QLocale::system().name());
-            app.installTranslator(&qtTranslator);
-
-            QTranslator myappTranslator;
-            myappTranslator.load("myapp_" + QLocale::system().name());
-            app.installTranslator(&myappTranslator);
-
-            ...
-            return app.exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 8
 
     \section2 Support for Encodings
 
@@ -400,12 +339,7 @@
     need to output Cyrillic in the ISO 8859-5 encoding. Code for this
     would be:
 
-    \code
-        QString string = ...; // some Unicode text
-
-        QTextCodec *codec = QTextCodec::codecForName("ISO 8859-5");
-        QByteArray encodedString = codec->fromUnicode(string);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 9
 
     For converting Unicode to local 8-bit encodings, a shortcut is
     available: the QString::toLocal8Bit() function returns such 8-bit
@@ -419,12 +353,7 @@
     demonstrated by this conversion from ISO 8859-5 Cyrillic to Unicode
     conversion:
 
-    \code
-        QByteArray encodedString = ...; // some ISO 8859-5 encoded text
-
-        QTextCodec *codec = QTextCodec::codecForName("ISO 8859-5");
-        QString string = codec->toUnicode(encodedString);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 10
 
     Ideally Unicode I/O should be used as this maximizes the portability
     of documents between users around the world, but in reality it is
@@ -456,16 +385,7 @@
     formats. Such localizations can be accomplished using appropriate tr()
     strings.
 
-    \code
-        void Clock::setTime(const QTime &time)
-        {
-            if (tr("AMPM") == "AMPM") {
-                // 12-hour clock
-            } else {
-                // 24-hour clock
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 11
 
     In the example, for the US we would leave the translation of
     "AMPM" as it is and thereby use the 12-hour clock branch; but in
@@ -490,17 +410,7 @@
     the text displayed by widgets using the \l{QObject::tr()}{tr()} function
     in the usual way. For example:
 
-    \code
-    void QWidget::changeEvent(QEvent *event)
-    {
-        if (e->type() == QEvent::LanguageChange) {
-            titleLabel->setText(tr("Document Title"));
-            ...
-            okPushButton->setText(tr("&OK"));
-        } else
-            QWidget::changeEvent(event);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.i18n.qdoc 12
 
     All other change events should be passed on by calling the default
     implementation of the function.
@@ -522,12 +432,9 @@
     One way to do this is to add translation support to a non-Qt class
     using the Q_DECLARE_TR_FUNCTIONS() macro; for example:
 
-    \quotefromfile snippets/i18n-non-qt-class/myclass.h
-    \skipto class
-    \printto ...
+    \snippet doc/src/snippets/i18n-non-qt-class/myclass.h 0
     \dots
-    \skipto /^\};/
-    \printuntil /^\};/
+    \snippet doc/src/snippets/i18n-non-qt-class/myclass.h 1
 
     This provides the class with \l{QObject::}{tr()} functions that can
     be used to translate strings associated with the class, and makes it

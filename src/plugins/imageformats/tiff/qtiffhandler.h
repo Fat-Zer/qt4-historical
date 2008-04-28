@@ -46,6 +46,8 @@
 
 #include <QtGui/qimageiohandler.h>
 
+QT_BEGIN_NAMESPACE
+
 class QTiffHandler : public QImageIOHandler
 {
 public:
@@ -72,5 +74,7 @@ private:
     void convert32BitOrderBigEndian(const void *source, void *destination, int width);
     int compression;
 };
+
+QT_END_NAMESPACE
 
 #endif // QTIFFHANDLER_H

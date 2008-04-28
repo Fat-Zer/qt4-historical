@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/network/qnetworkproxy.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/kernel/qnetworkproxy.cpp -->
 <head>
-  <title>Qt 4.3: QNetworkProxy Class Reference</title>
+  <title>Qt 4.4: QNetworkProxy Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QNetworkProxy Class Reference<br /><sup><sup>[<a href="qtnetwork.html">QtNetwork</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QNetworkProxy Class Reference<br /><span class="small-subtitle">[<a href="qtnetwork.html">QtNetwork</a> module]</span>
+</h1>
 <p>The QNetworkProxy class provides a network layer proxy. <a href="#details">More...</a></p>
 <pre> #include &lt;QNetworkProxy&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>This class was introduced in Qt 4.1.</p>
@@ -23,7 +24,7 @@
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
-<li><div class="fn"/>enum <b><a href="qnetworkproxy.html#ProxyType-enum">ProxyType</a></b> { DefaultProxy, Socks5Proxy, NoProxy, HttpProxy }</li>
+<li><div class="fn"/>enum <b><a href="qnetworkproxy.html#ProxyType-enum">ProxyType</a></b> { NoProxy, DefaultProxy, Socks5Proxy, HttpProxy, HttpCachingProxy, FtpCachingProxy }</li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -33,6 +34,8 @@
 <li><div class="fn"/><b><a href="qnetworkproxy.html#QNetworkProxy-3">QNetworkProxy</a></b> ( const QNetworkProxy &amp; <i>other</i> )</li>
 <li><div class="fn"/><b><a href="qnetworkproxy.html#dtor.QNetworkProxy">~QNetworkProxy</a></b> ()</li>
 <li><div class="fn"/>QString <b><a href="qnetworkproxy.html#hostName">hostName</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qnetworkproxy.html#isCachingProxy">isCachingProxy</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qnetworkproxy.html#isTransparentProxy">isTransparentProxy</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qnetworkproxy.html#password">password</a></b> () const</li>
 <li><div class="fn"/>quint16 <b><a href="qnetworkproxy.html#port">port</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qnetworkproxy.html#setHostName">setHostName</a></b> ( const QString &amp; <i>hostName</i> )</li>
@@ -42,7 +45,9 @@
 <li><div class="fn"/>void <b><a href="qnetworkproxy.html#setUser">setUser</a></b> ( const QString &amp; <i>user</i> )</li>
 <li><div class="fn"/>QNetworkProxy::ProxyType <b><a href="qnetworkproxy.html#type">type</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qnetworkproxy.html#user">user</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qnetworkproxy.html#operator-not-eq">operator!=</a></b> ( const QNetworkProxy &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>QNetworkProxy &amp; <b><a href="qnetworkproxy.html#operator-eq">operator=</a></b> ( const QNetworkProxy &amp; <i>other</i> )</li>
+<li><div class="fn"/>bool <b><a href="qnetworkproxy.html#operator-eq-eq">operator==</a></b> ( const QNetworkProxy &amp; <i>other</i> ) const</li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -55,17 +60,18 @@
 <h2>Detailed Description</h2>
 <p>The QNetworkProxy class provides a network layer proxy.</p>
 <p>QNetworkProxy provides the method for configuring network layer proxy support to the Qt network classes. The currently supported classes are <a href="qabstractsocket.html">QAbstractSocket</a>, <a href="qtcpsocket.html">QTcpSocket</a>, <a href="qudpsocket.html">QUdpSocket</a>, <a href="qtcpserver.html">QTcpServer</a>, <a href="qhttp.html">QHttp</a> and <a href="qftp.html">QFtp</a>. The proxy support is designed to be as transparent as possible. This means that existing network-enabled applications that you have written should automatically support network proxy using the following code.</p>
-<pre> QNetworkProxy proxy;
- proxy.setType(QNetworkProxy::Socks5Proxy);
- proxy.setHostName(&quot;proxy.example.com&quot;);
- proxy.setPort(1080);
- proxy.setUser(&quot;username&quot;);
- proxy.setPassword(&quot;password&quot;);
- QNetworkProxy::setApplicationProxy(proxy);</pre>
+<pre>         QNetworkProxy proxy;
+         proxy.setType(QNetworkProxy::Socks5Proxy);
+         proxy.setHostName(&quot;proxy.example.com&quot;);
+         proxy.setPort(1080);
+         proxy.setUser(&quot;username&quot;);
+         proxy.setPassword(&quot;password&quot;);
+         QNetworkProxy::setApplicationProxy(proxy);</pre>
 <p>An alternative to setting an application wide proxy is to specify the proxy for individual sockets using <a href="qabstractsocket.html#setProxy">QAbstractSocket::setProxy</a>() and <a href="qtcpserver.html#setProxy">QTcpServer::setProxy</a>(). In this way, it is possible to disable the use of a proxy for specific sockets using the following code:</p>
-<pre> serverSocket-&gt;setProxy(QNetworkProxy::NoProxy);</pre>
+<pre>         serverSocket-&gt;setProxy(QNetworkProxy::NoProxy);</pre>
 <p>Network proxy is not used if the address used in <a href="qabstractsocket.html#connectToHost">connectToHost()</a>, <a href="qudpsocket.html#bind">bind()</a> or <a href="qtcpserver.html#listen">listen()</a> is equivalent to <a href="qhostaddress.html#SpecialAddress-enum">QHostAddress::LocalHost</a> or <a href="qhostaddress.html#SpecialAddress-enum">QHostAddress::LocalHostIPv6</a>.</p>
 <p>Each type of proxy support has certain restrictions associated with it. You should read the <a href="qnetworkproxy.html#ProxyType-enum">ProxyType</a> documentation carefully before selecting a proxy type to use.</p>
+<p><b>Note:</b> Changes made to currently connected sockets do not take effect. If you need to change a connected socket, you should reconnect it.</p>
 <a name="socks5"></a>
 <h3>SOCKS5</h3>
 <p>The SOCKS5 support in Qt 4 is based on <a href="http://www.rfc-editor.org/rfc/rfc1928.txt">RFC 1928</a> and <a href="http://www.rfc-editor.org/rfc/rfc1929.txt">RFC 1929</a>. The supported authentication methods are no authentication and username/password authentication. Both IPv4 and IPv6 are supported, but domain name resolution via the SOCKS server is not supported; i.e&#x2e; all domain names are resolved locally. There are several things to remember when using SOCKS5 with <a href="qudpsocket.html">QUdpSocket</a> and <a href="qtcpserver.html">QTcpServer</a>:</p>
@@ -75,21 +81,27 @@
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QNetworkProxy/ProxyType" />
+<a name="//apple_ref/cpp/econst/QNetworkProxy/NoProxy" />
 <a name="//apple_ref/cpp/econst/QNetworkProxy/DefaultProxy" />
 <a name="//apple_ref/cpp/econst/QNetworkProxy/Socks5Proxy" />
-<a name="//apple_ref/cpp/econst/QNetworkProxy/NoProxy" />
 <a name="//apple_ref/cpp/econst/QNetworkProxy/HttpProxy" />
+<a name="//apple_ref/cpp/econst/QNetworkProxy/HttpCachingProxy" />
+<a name="//apple_ref/cpp/econst/QNetworkProxy/FtpCachingProxy" />
 <h3 class="fn"><a name="ProxyType-enum"></a>enum QNetworkProxy::ProxyType</h3>
 <p>This enum describes the types of network proxying provided in Qt.</p>
+<p>There are two types of proxies that Qt understands: transparent proxies and caching proxies. The first group consists of proxies that can handle any arbitrary data transfer, while the second can only handle specific requests. The caching proxies only make sense for the specific classes where they can be used.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QNetworkProxy::NoProxy</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">No proxying is used</td></tr>
 <tr><td valign="top"><tt>QNetworkProxy::DefaultProxy</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Proxy is determined based on the application proxy set using <a href="qnetworkproxy.html#setApplicationProxy">setApplicationProxy</a>()</td></tr>
 <tr><td valign="top"><tt>QNetworkProxy::Socks5Proxy</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="qnetworkproxy.html#socks5">Socks5</a> proxying is used</td></tr>
-<tr><td valign="top"><tt>QNetworkProxy::NoProxy</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">No proxying is used</td></tr>
-<tr><td valign="top"><tt>QNetworkProxy::HttpProxy</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Http proxying is used</td></tr>
+<tr><td valign="top"><tt>QNetworkProxy::HttpProxy</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">HTTP transparent proxying is used</td></tr>
+<tr><td valign="top"><tt>QNetworkProxy::HttpCachingProxy</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Proxying for HTTP requests only</td></tr>
+<tr><td valign="top"><tt>QNetworkProxy::FtpCachingProxy</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Proxying for FTP requests only</td></tr>
 </table></p>
 <p>While Socks5 proxying works for both Tcp and Udp sockets, Http proxying is limited to Tcp connections. Http proxying also doesn't support binding sockets.</p>
-<p>See also <a href="qnetworkproxy.html#setType">setType</a>() and <a href="qnetworkproxy.html#type">type</a>().</p>
+<p>An HTTP caching proxy only makes sense in the context of an HTTP request, such as those made by <a href="qhttp.html">QHttp</a>. The FTP caching proxy, similarly, only makes sense for FTP requests, such as with <a href="qftp.html">QFtp</a>.</p>
+<p>See also <a href="qnetworkproxy.html#setType">setType</a>(), <a href="qnetworkproxy.html#type">type</a>(), <a href="qnetworkproxy.html#isCachingProxy">isCachingProxy</a>(), and <a href="qnetworkproxy.html#isTransparentProxy">isTransparentProxy</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QNetworkProxy/QNetworkProxy" />
@@ -112,6 +124,14 @@
 <h3 class="fn"><a name="hostName"></a><a href="qstring.html">QString</a> QNetworkProxy::hostName () const</h3>
 <p>Returns the host name of the proxy host.</p>
 <p>See also <a href="qnetworkproxy.html#setHostName">setHostName</a>(), <a href="qnetworkproxy.html#setPort">setPort</a>(), and <a href="qnetworkproxy.html#port">port</a>().</p>
+<a name="//apple_ref/cpp/instm/QNetworkProxy/isCachingProxy" />
+<h3 class="fn"><a name="isCachingProxy"></a>bool QNetworkProxy::isCachingProxy () const</h3>
+<p>Returns true if this proxy type is a caching proxy. Caching proxies only make sense in specific contexts, since they cannot handle arbitrary data transfers.</p>
+<p>See also <a href="qnetworkproxy.html#type">type</a>(), <a href="qnetworkproxy.html#isTransparentProxy">isTransparentProxy</a>(), and <a href="qnetworkproxy.html#ProxyType-enum">QNetworkProxy::ProxyType</a>.</p>
+<a name="//apple_ref/cpp/instm/QNetworkProxy/isTransparentProxy" />
+<h3 class="fn"><a name="isTransparentProxy"></a>bool QNetworkProxy::isTransparentProxy () const</h3>
+<p>Returns true if this proxy type is a transparent proxy. Transparent proxies can handle arbitrary data transfers and can be set on <a href="qtcpsocket.html">QTcpSocket</a> or even as the application's default proxy.</p>
+<p>See also <a href="qnetworkproxy.html#type">type</a>(), <a href="qnetworkproxy.html#isCachingProxy">isCachingProxy</a>(), and <a href="qnetworkproxy.html#ProxyType-enum">QNetworkProxy::ProxyType</a>.</p>
 <a name="//apple_ref/cpp/instm/QNetworkProxy/password" />
 <h3 class="fn"><a name="password"></a><a href="qstring.html">QString</a> QNetworkProxy::password () const</h3>
 <p>Returns the password used for authentication.</p>
@@ -153,14 +173,22 @@
 <h3 class="fn"><a name="user"></a><a href="qstring.html">QString</a> QNetworkProxy::user () const</h3>
 <p>Returns the user name used for authentication.</p>
 <p>See also <a href="qnetworkproxy.html#setUser">setUser</a>(), <a href="qnetworkproxy.html#setPassword">setPassword</a>(), and <a href="qnetworkproxy.html#password">password</a>().</p>
+<a name="//apple_ref/cpp/instm/QNetworkProxy/operator!=" />
+<h3 class="fn"><a name="operator-not-eq"></a>bool QNetworkProxy::operator!= ( const QNetworkProxy &amp; <i>other</i> ) const</h3>
+<p>Compares the value of this network proxy to <i>other</i> and returns true if they differ.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QNetworkProxy/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QNetworkProxy &amp; QNetworkProxy::operator= ( const QNetworkProxy &amp; <i>other</i> )</h3>
 <p>Assigns the value of the network proxy <i>other</i> to this network proxy.</p>
 <p>This function was introduced in Qt 4.2.</p>
+<a name="//apple_ref/cpp/instm/QNetworkProxy/operator==" />
+<h3 class="fn"><a name="operator-eq-eq"></a>bool QNetworkProxy::operator== ( const QNetworkProxy &amp; <i>other</i> ) const</h3>
+<p>Compares the value of this network proxy to <i>other</i> and returns true if they are equal (same proxy type, server as well as username and password)</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

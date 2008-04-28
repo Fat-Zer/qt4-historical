@@ -48,7 +48,9 @@
 
 #include <QtGui/QFileDialog>
 
-PreferencesDialog::PreferencesDialog(QWidget *parentWidget) :
+QT_BEGIN_NAMESPACE
+
+PreferencesDialog::PreferencesDialog(QDesignerFormEditorInterface *core, QWidget *parentWidget) :
     QDialog(parentWidget)
 {
     m_ui = new Ui::PreferencesDialog();
@@ -65,6 +67,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parentWidget) :
     m_ui->m_fontPanel->setCheckable(true);
     m_ui->m_fontPanel->setTitle(tr("Toolwindow Font"));
     m_ui->m_gridPanel->setTitle(tr("Default Grid"));
+
+    m_ui->m_previewConfigurationWidget->setCore(core);
 
     connect(m_ui->m_templatePathListWidget, SIGNAL(itemSelectionChanged()), this, SLOT(templatePathSelectionChanged()));
     connect(m_ui->m_addTemplatePathButton, SIGNAL(clicked()), this, SLOT(addTemplatePath()));
@@ -105,6 +109,8 @@ void PreferencesDialog::setPreferences(const Preferences &p)
         m_ui->m_templatePathListWidget->setCurrentItem(m_ui->m_templatePathListWidget->item(0));
     }
     m_ui->m_gridPanel->setGrid(p.m_defaultGrid);
+    m_ui->m_previewConfigurationWidget->setPreviewConfigurationWidgetState(p.m_previewConfigurationWidgetState);
+    m_ui->m_previewConfigurationWidget->setPreviewConfiguration(p.m_previewConfiguration);
 }
 
 void PreferencesDialog::getPreferences(Preferences &p) const
@@ -120,6 +126,8 @@ void PreferencesDialog::getPreferences(Preferences &p) const
         p.m_additionalTemplatePaths += m_ui->m_templatePathListWidget->item(i)->text();
     }
     p.m_defaultGrid = m_ui->m_gridPanel->grid();
+    p.m_previewConfigurationWidgetState = m_ui->m_previewConfigurationWidget->previewConfigurationWidgetState();
+    p.m_previewConfiguration = m_ui->m_previewConfigurationWidget->previewConfiguration();
 }
 
 void PreferencesDialog::addTemplatePath()
@@ -162,3 +170,5 @@ QString PreferencesDialog::chooseTemplatePath(QWidget *parent)
         rc.remove(rc.size() - 1, 1);
     return rc;
 }
+
+QT_END_NAMESPACE

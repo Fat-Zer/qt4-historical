@@ -47,6 +47,8 @@
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(systray);
+
     QApplication app(argc, argv);
 
     if (!QSystemTrayIcon::isSystemTrayAvailable()) {
@@ -55,6 +57,7 @@ int main(int argc, char *argv[])
                                           "on this system."));
         return 1;
     }
+    QApplication::setQuitOnLastWindowClosed(false);
 
     Window window;
     window.show();

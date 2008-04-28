@@ -43,6 +43,8 @@
 
 #include "qextensionmanager.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QExtensionManager
 
@@ -59,21 +61,7 @@
     The registration of an extension factory is typically made in the
     QDesignerCustomWidgetInterface::initialize() function:
 
-    \code
-        void MyPlugin::initialize(QDesignerFormEditorInterface *formEditor)
-        {
-            if (initialized)
-                return;
-
-            QExtensionManager *manager = formEditor->extensionManager();
-            Q_ASSERT(manager != 0);
-
-            manager->registerExtensions(new MyExtensionFactory(manager),
-                                        Q_TYPEID(QDesignerTaskMenuExtension));
-
-            initialized = true;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.extension.qextensionmanager.cpp 0
 
     The QExtensionManager is not intended to be instantiated
     directly. You can retrieve an interface to \QD's extension manager
@@ -135,10 +123,11 @@ void QExtensionManager::registerExtensions(QAbstractExtensionFactory *factory, c
         return;
     }
 
-    if (!m_extensions.contains(iid))
-        m_extensions.insert(iid, QList<QAbstractExtensionFactory*>());
+    FactoryMap::iterator it = m_extensions.find(iid);
+    if (it == m_extensions.end())
+        it = m_extensions.insert(iid, FactoryList());
 
-    m_extensions[iid].prepend(factory);
+    it.value().prepend(factory);
 }
 
 /*!
@@ -149,13 +138,18 @@ void QExtensionManager::unregisterExtensions(QAbstractExtensionFactory *factory,
 {
     if (iid.isEmpty()) {
         m_globalExtension.removeAll(factory);
-    } else if (m_extensions.contains(iid)) {
-        QList<QAbstractExtensionFactory*> &factories = m_extensions[iid];
-        factories.removeAll(factory);
-
-        if (factories.isEmpty())
-            m_extensions.remove(iid);
+        return;
     }
+
+    const FactoryMap::iterator it = m_extensions.find(iid);
+    if (it == m_extensions.end())
+        return;
+
+    FactoryList &factories = it.value();
+    factories.removeAll(factory);
+
+    if (factories.isEmpty())
+        m_extensions.erase(it);
 }
 
 /*!
@@ -164,13 +158,19 @@ void QExtensionManager::unregisterExtensions(QAbstractExtensionFactory *factory,
 */
 QObject *QExtensionManager::extension(QObject *object, const QString &iid) const
 {
-    QList<QAbstractExtensionFactory*> l = m_extensions.value(iid);
-    l += m_globalExtension;
-
-    foreach (QAbstractExtensionFactory *factory, l) {
-        if (QObject *ext = factory->extension(object, iid))
-            return ext;
+    const FactoryMap::const_iterator it = m_extensions.constFind(iid);
+    if (it != m_extensions.constEnd()) {
+        const FactoryList::const_iterator fcend = it.value().constEnd();
+        for (FactoryList::const_iterator fit = it.value().constBegin(); fit != fcend; ++fit)
+            if (QObject *ext = (*fit)->extension(object, iid))
+                return ext;
     }
+    const FactoryList::const_iterator gfcend =  m_globalExtension.constEnd();
+    for (FactoryList::const_iterator git = m_globalExtension.constBegin(); git != gfcend; ++git)
+        if (QObject *ext = (*git)->extension(object, iid))
+            return ext;
 
     return 0;
 }
+
+QT_END_NAMESPACE

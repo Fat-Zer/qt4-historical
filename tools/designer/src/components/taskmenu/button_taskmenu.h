@@ -44,51 +44,45 @@
 #ifndef BUTTON_TASKMENU_H
 #define BUTTON_TASKMENU_H
 
-#include <QAbstractButton>
-#include <QPointer>
+#include <QtGui/QAbstractButton>
+#include <QtGui/QCommandLinkButton>
+#include <QtCore/QPointer>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
 
-class QDesignerFormWindowInterface;
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
-class InPlaceEditor;
 
 class ButtonTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    ButtonTaskMenu(QAbstractButton *button, QObject *parent = 0);
-    virtual ~ButtonTaskMenu();
+    explicit ButtonTaskMenu(QAbstractButton *button, QObject *parent = 0);
 
     virtual QAction *preferredEditAction() const;
     virtual QList<QAction*> taskActions() const;
 
-private slots:
-    void editText();
-    void editIcon();
-    void updateText(const QString &text);
-    void updateSelection();
+protected:
+    void insertAction(int index, QAction *a);
 
 private:
-    QAbstractButton *m_button;
-    QPointer<QDesignerFormWindowInterface> m_formWindow;
-    QPointer<InPlaceEditor> m_editor;
-    mutable QList<QAction*> m_taskActions;
+    QList<QAction*> m_taskActions;
     QAction *m_preferredEditAction;
 };
 
-class ButtonTaskMenuFactory: public QExtensionFactory
+class CommandLinkButtonTaskMenu: public ButtonTaskMenu
 {
     Q_OBJECT
 public:
-    ButtonTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
+    explicit CommandLinkButtonTaskMenu(QCommandLinkButton *button, QObject *parent = 0);
 };
 
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QCommandLinkButton, CommandLinkButtonTaskMenu>  CommandLinkButtonTaskMenuFactory;
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QAbstractButton, ButtonTaskMenu>  ButtonTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // BUTTON_TASKMENU_H

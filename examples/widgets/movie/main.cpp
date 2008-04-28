@@ -47,6 +47,8 @@
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(movie);
+
     QApplication app(argc, argv);
     MoviePlayer player;
     player.show();

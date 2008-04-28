@@ -46,9 +46,12 @@
 
 #include <QXmlStreamWriter>
 
+QT_BEGIN_NAMESPACE
 class QTreeWidget;
 class QTreeWidgetItem;
+QT_END_NAMESPACE
 
+//! [0]
 class XbelWriter : public QXmlStreamWriter
 {
 public:
@@ -59,5 +62,6 @@ private:
     void writeItem(QTreeWidgetItem *item);
     QTreeWidget *treeWidget;
 };
+//! [0]
 
 #endif

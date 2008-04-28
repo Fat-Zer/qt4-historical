@@ -44,6 +44,8 @@
 
 #include "smallobject.h"
 
+QT_BEGIN_NAMESPACE
+
 int block_t::N = 0;
 static pool mem_pool;
 
@@ -55,3 +57,5 @@ void *SmallObject::operator new(size_t size)
 void SmallObject::operator delete(void * /*p*/ )
 {
 }
+
+QT_END_NAMESPACE

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/q3valuelist.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/q3valuelist.qdoc -->
 <head>
-  <title>Qt 4.3: Q3ValueList Class Reference</title>
+  <title>Qt 4.4: Q3ValueList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3ValueList Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3ValueList Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
+</h1>
 <p>The Q3ValueList class is a value-based template class that provides lists. <a href="#details">More...</a></p>
 <pre> #include &lt;Q3ValueList&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="qlinkedlist.html">QLinkedList&lt;T&gt;</a>.</p>
@@ -70,13 +71,13 @@
 <li><div class="fn"/>T &amp; <b><a href="q3valuelist.html#operator-5b-5d-2">operator[]</a></b> ( Q3ValueList&lt;T&gt;::size_type <i>i</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>44 public functions inherited from <a href="qlinkedlist.html#public-functions">QLinkedList</a></li>
+<li><div class="fn"/>45 public functions inherited from <a href="qlinkedlist.html#public-functions">QLinkedList</a></li>
 </ul>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="q3valuelist.html#operator-lt-lt-144">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const Q3ValueList&lt;T&gt; &amp; <i>l</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="q3valuelist.html#operator-gt-gt-66">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, Q3ValueList&lt;T&gt; &amp; <i>l</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="q3valuelist.html#operator-lt-lt-153">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const Q3ValueList&lt;T&gt; &amp; <i>l</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="q3valuelist.html#operator-gt-gt-69">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, Q3ValueList&lt;T&gt; &amp; <i>l</i> )</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -99,63 +100,63 @@
 <p>In addition, some compilers (e.g&#x2e; Sun CC) might require that the class provides an equality operator (operator==()).</p>
 <p>Q3ValueList's function naming is consistent with the other Qt classes (e.g&#x2e; <a href="qlinkedlist.html#count">count</a>(), <a href="qlinkedlist.html#isEmpty">isEmpty</a>()). Q3ValueList also provides extra functions for compatibility with STL algorithms, such as <a href="qlinkedlist.html#size">size</a>() and <a href="qlinkedlist.html#empty">empty</a>(). Programmers already familiar with the STL <tt>list</tt> may prefer to use the STL-compatible functions.</p>
 <p>Example:</p>
-<pre> class Employee
- {
- public:
-     Employee(): sn(0) {}
-     Employee( const QString&amp; forename, const QString&amp; surname, int salary )
-         : fn(forename), sn(surname), sal(salary)
-     {}
+<pre>     class Employee
+     {
+     public:
+         Employee(): sn(0) {}
+         Employee( const QString&amp; forename, const QString&amp; surname, int salary )
+             : fn(forename), sn(surname), sal(salary)
+         {}
 
-     QString forename() const { return fn; }
-     QString surname() const { return sn; }
-     int salary() const { return sal; }
-     void setSalary( int salary ) { sal = salary; }
+         QString forename() const { return fn; }
+         QString surname() const { return sn; }
+         int salary() const { return sal; }
+         void setSalary( int salary ) { sal = salary; }
 
- private:
-     QString fn;
-     QString sn;
-     int sal;
- };
+     private:
+         QString fn;
+         QString sn;
+         int sal;
+     };
 
- typedef Q3ValueList&lt;Employee&gt; EmployeeList;
- EmployeeList list;
+     typedef Q3ValueList&lt;Employee&gt; EmployeeList;
+     EmployeeList list;
 
- list.append( Employee(&quot;John&quot;, &quot;Doe&quot;, 50000) );
- list.append( Employee(&quot;Jane&quot;, &quot;Williams&quot;, 80000) );
- list.append( Employee(&quot;Tom&quot;, &quot;Jones&quot;, 60000) );
+     list.append( Employee(&quot;John&quot;, &quot;Doe&quot;, 50000) );
+     list.append( Employee(&quot;Jane&quot;, &quot;Williams&quot;, 80000) );
+     list.append( Employee(&quot;Tom&quot;, &quot;Jones&quot;, 60000) );
 
- Employee mary( &quot;Mary&quot;, &quot;Hawthorne&quot;, 90000 );
- list.append( mary );
- mary.setSalary( 100000 );
+     Employee mary( &quot;Mary&quot;, &quot;Hawthorne&quot;, 90000 );
+     list.append( mary );
+     mary.setSalary( 100000 );
 
- EmployeeList::iterator it;
- for ( it = list.begin(); it != list.end(); ++it )
-     cout &lt;&lt; (*it).surname().latin1() &lt;&lt; &quot;, &quot; &lt;&lt;
-             (*it).forename().latin1() &lt;&lt; &quot; earns &quot; &lt;&lt;
-             (*it).salary() &lt;&lt; endl;
+     EmployeeList::iterator it;
+     for ( it = list.begin(); it != list.end(); ++it )
+         cout &lt;&lt; (*it).surname().latin1() &lt;&lt; &quot;, &quot; &lt;&lt;
+                 (*it).forename().latin1() &lt;&lt; &quot; earns &quot; &lt;&lt;
+                 (*it).salary() &lt;&lt; endl;
 
-<span class="comment"> //</span> Output:
-<span class="comment"> //</span> Doe, John earns 50000
-<span class="comment"> //</span> Williams, Jane earns 80000
-<span class="comment"> //</span> Hawthorne, Mary earns 90000
-<span class="comment"> //</span> Jones, Tom earns 60000</pre>
+     // Output:
+     // Doe, John earns 50000
+     // Williams, Jane earns 80000
+     // Hawthorne, Mary earns 90000
+     // Jones, Tom earns 60000</pre>
 <p>Notice that the latest changes to Mary's salary did not affect the value in the list because the list created a copy of Mary's entry.</p>
 <p>There are several ways to find items in the list. The <a href="qlinkedlist.html#begin">begin</a>() and <a href="qlinkedlist.html#end">end</a>() functions return iterators to the beginning and end of the list. The advantage of getting an iterator is that you can move forward or backward from this position by incrementing/decrementing the iterator. The iterator returned by <a href="qlinkedlist.html#end">end</a>() points to the item which is one <i>past</i> the last item in the container. The past-the-end iterator is still associated with the list it belongs to, however it is <i>not</i> dereferenceable; operator*() will not return a well-defined value. If the list is <a href="qlinkedlist.html#empty">empty</a>(), the iterator returned by <a href="qlinkedlist.html#begin">begin</a>() will equal the iterator returned by <a href="qlinkedlist.html#end">end</a>().</p>
 <p>It is safe to have multiple iterators a the list at the same time. If some member of the list is removed, only iterators pointing to the removed member become invalid. Inserting into the list does not invalidate any iterator. For convenience, the function <a href="qlinkedlist.html#last">last</a>() returns a reference to the last item in the list, and <a href="qlinkedlist.html#first">first</a>() returns a reference to the the first item. If the list is <a href="qlinkedlist.html#empty">empty</a>(), both <a href="qlinkedlist.html#last">last</a>() and <a href="qlinkedlist.html#first">first</a>() have undefined behavior (your application will crash or do unpredictable things). Use <a href="qlinkedlist.html#last">last</a>() and <a href="qlinkedlist.html#first">first</a>() with caution, for example:</p>
-<pre> Q3ValueList&lt;int&gt; list;
- list.append( 1 );
- list.append( 2 );
- list.append( 3 );
- ...
- if ( !list.empty() ) {
-     <span class="comment">//</span> OK, modify the first item
-     int&amp; i = list.first();
-     i = 18;
- }
- ...
- Q3ValueList&lt;double&gt; dlist;
- double d = dlist.last(); <span class="comment">//</span> undefined</pre>
+<pre>     Q3ValueList&lt;int&gt; list;
+     list.append( 1 );
+     list.append( 2 );
+     list.append( 3 );
+     ...
+     if ( !list.empty() ) {
+         // OK, modify the first item
+         int&amp; i = list.first();
+         i = 18;
+     }
+     ...
+     Q3ValueList&lt;double&gt; dlist;
+     double d = dlist.last(); // undefined</pre>
 <p>Because Q3ValueList is value-based there is no need to be careful about deleting items in the list. The list holds its own copies and will free them if the corresponding member or the list itself is deleted. You can force the list to free all of its items with <a href="qlinkedlist.html#clear">clear</a>().</p>
 <p>Q3ValueList is shared implicitly, which means it can be copied in constant time, i.e&#x2e; O(1). If multiple Q3ValueList instances share the same data and one needs to modify its contents, this modifying instance makes a copy and modifies its private copy; therefore it does not affect the other instances; this takes O(n) time. This is often called &quot;copy on write&quot;. If a Q3ValueList is being used in a multi-threaded program, you must protect all access to the list. See <a href="qmutex.html">QMutex</a>.</p>
 <p>There are several ways to insert items into the list. The <a href="q3valuelist.html#prepend">prepend</a>() and <a href="q3valuelist.html#append">append</a>() functions insert items at the beginning and the end of the list respectively. The <a href="q3valuelist.html#insert">insert</a>() function comes in several flavors and can be used to add one or more items at specific positions within the list.</p>
@@ -232,22 +233,22 @@
 <h3 class="fn"><a name="fromLast"></a>Q3ValueList&lt;T&gt;::ConstIterator Q3ValueList::fromLast () const</h3>
 <p>Returns an iterator to the last item in the list, or <a href="qlinkedlist.html#end">end</a>() if there is no last item.</p>
 <p>Use the <a href="qlinkedlist.html#end">end</a>() function instead. For example:</p>
-<pre> Q3ValueList&lt;int&gt; l;
- ...
- Q3ValueList&lt;int&gt;::iterator it = l.end();
- --it;
- if ( it != end() )
-     <span class="comment">//</span> ...</pre>
+<pre>     Q3ValueList&lt;int&gt; l;
+     ...
+     Q3ValueList&lt;int&gt;::iterator it = l.end();
+     --it;
+     if ( it != end() )
+         // ...</pre>
 <h3 class="fn"><a name="fromLast-2"></a>Q3ValueList&lt;T&gt;::Iterator Q3ValueList::fromLast ()</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns an iterator to the last item in the list, or <a href="qlinkedlist.html#end">end</a>() if there is no last item.</p>
 <p>Use the <a href="qlinkedlist.html#end">end</a>() function instead. For example:</p>
-<pre> Q3ValueList&lt;int&gt; l;
- ...
- Q3ValueList&lt;int&gt;::iterator it = l.end();
- --it;
- if ( it != end() )
-     <span class="comment">//</span> ...</pre>
+<pre>     Q3ValueList&lt;int&gt; l;
+     ...
+     Q3ValueList&lt;int&gt;::iterator it = l.end();
+     --it;
+     if ( it != end() )
+         // ...</pre>
 <a name="//apple_ref/cpp/instm/Q3ValueList/insert" />
 <h3 class="fn"><a name="insert"></a>Q3ValueList&lt;T&gt;::Iterator Q3ValueList::insert ( Q3ValueList&lt;T&gt;::Iterator <i>it</i>, const T &amp; <i>x</i> )</h3>
 <p>Inserts the value <i>x</i> in front of the item pointed to by the iterator, <i>it</i>.</p>
@@ -316,16 +317,16 @@
 <p>Returns a non-const reference to the item with index <i>i</i>.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-144"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const Q3ValueList&lt;T&gt; &amp; <i>l</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-153"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const Q3ValueList&lt;T&gt; &amp; <i>l</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a list, <i>l</i>, to the stream <i>s</i>. The type T stored in the list must implement the streaming operator.</p>
-<h3 class="fn"><a name="operator-gt-gt-66"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, Q3ValueList&lt;T&gt; &amp; <i>l</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-69"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, Q3ValueList&lt;T&gt; &amp; <i>l</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a list, <i>l</i>, from the stream <i>s</i>. The type T stored in the list must implement the streaming operator.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

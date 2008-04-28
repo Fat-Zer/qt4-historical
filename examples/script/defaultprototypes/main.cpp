@@ -45,12 +45,17 @@
 #include <QtScript>
 #include "prototypes.h"
 
+//! [0]
 Q_DECLARE_METATYPE(QListWidgetItem*)
 Q_DECLARE_METATYPE(QListWidget*)
+//! [0]
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(defaultprototypes);
+
     QApplication app(argc, argv);
+//! [1]
     QScriptEngine engine;
 
     ListWidgetItemPrototype lwiProto;
@@ -60,10 +65,13 @@ int main(int argc, char **argv)
     ListWidgetPrototype lwProto;
     engine.setDefaultPrototype(qMetaTypeId<QListWidget*>(),
                                engine.newQObject(&lwProto));
+//! [1]
 
+//! [2]
     QListWidget listWidget;
     engine.globalObject().setProperty("listWidget",
                                       engine.newQObject(&listWidget));
+//! [2]
 
     QFile file(":/code.js");
     file.open(QIODevice::ReadOnly);

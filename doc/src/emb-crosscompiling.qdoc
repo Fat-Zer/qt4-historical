@@ -42,15 +42,15 @@
 ****************************************************************************/
 
 /*!
-    \page qtopiacore-crosscompiling.html
+    \page qt-embedded-crosscompiling.html
 
-    \title Cross-Compiling Qtopia Core Applications
-    \ingroup qtopiacore
+    \title Cross-Compiling Qt for Embedded Linux Applications
+    \ingroup qt-embedded
 
     Cross-compiling is the process of compiling an application on one
     machine, producing executable code for a different machine or
-    device. To cross-compile a \l {Qtopia Core} application, use the
-    following approach:
+    device. To cross-compile a \l{Qt for Embedded Linux} application,
+    use the following approach:
 
     \tableofcontents
 
@@ -65,20 +65,18 @@
     environment variable. For example, if the current shell is bash,
     ksh, zsh or sh:
 
-    \code
-        export PATH=path/to/cross/compiler:$PATH
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 0
 
     \section1 Step 2: Create a Target Specific qmake Specification
 
     The qmake tool requires a platform and compiler specific \c
     qmake.conf file describing the various default values, to generate
-    the appropriate Makefiles. The standard \l {Qtopia Core}
+    the appropriate Makefiles. The standard \l{Qt for Embedded Linux}
     distribution provides such files for several combinations of
     platforms and compilers. These files are located in the
     distribution's \c mkspecs/qws subdirectory.
 
-    Each platform has a default specification. \l {Qtopia Core} will
+    Each platform has a default specification. \l{Qt for Embedded Linux} will
     use the default specification for the current platform unless told
     otherwise. To override this behavior, you can use the \c configure
     script's \c -platform option to change the specification for the host
@@ -92,24 +90,19 @@
     an ARM architecture, using the GCC toolchain, run the configure
     script at the command line in the following way:
 
-    \code
-        ./configure -embedded arm -xplatform qws/linux-arm-g++ <other options>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 1
 
     If neither of the provided specifications fits your target device,
     you can create your own.  To create a custom \c qmake.conf file,
     just copy and customize an already existing file. For example:
 
-    \code
-        cp path/to/Qtopia/Core/mkspecs/qws/linux-mips-g++/...
-           path/to/Qtopia/Core/mkspecs/qws/linux-myarchitecture-g++/...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 2
 
     Note that it is recommended to copy the entire directory.
 
     Note also that when providing you own qmake specifcation, you must
-    use the \c configure script's \c -xplatform option to make \l
-    {Qtopia Core} aware of the custom \c qmake.conf file.
+    use the \c configure script's \c -xplatform option to make
+    \l{Qt for Embedded Linux} aware of the custom \c qmake.conf file.
 
     \section1 Step 3: Provide Architecture Specific Files
 
@@ -137,10 +130,10 @@
     screen driver is present to make the server process able to put
     the application's widgets on screen.
 
-    \l {Qtopia Core} provides several ready-made mouse, keyboard and
-    screen drivers, see the \l {Qtopia Core Pointer Handling}{pointer
-    handling}, \l {Qtopia Core Character Input}{character input} and
-    \l {Qtopia Core Display Management}{display management}
+    \l{Qt for Embedded Linux} provides several ready-made mouse, keyboard and
+    screen drivers, see the \l{Qt for Embedded Linux Pointer Handling}{pointer
+    handling}, \l{Qt for Embedded Linux Character Input}{character input} and
+    \l{Qt for Embedded Linux Display Management}{display management}
     documentation for details.
 
     In addition, custom drivers can be added by deriving from the
@@ -160,11 +153,7 @@
     architecture as well as the target specific hardware drivers by
     running the \c configure script:
 
-    \code
-        cd path/to/Qtopia/Core
-        ./configure -embedded <architecture> -qt-kbd-<keyboarddriver>
-                    -qt-mouse-<mousedriver> -qt-gfx-<screendriver>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 3
 
     It is also important to make sure that all the third party
     libraries that the application and the Qt libraries require, are
@@ -172,26 +161,17 @@
     libraries are not available, they must be included by running the
     \c configure script with the \c -L and \c -I options. For example:
 
-    \code
-        cd path/to/Qtopia/Core
-        ./configure  <other options>
-                     -L /path/to/libjpeg/libraries -I /path/to/libjpeg/headers
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 4
 
     The JPEG source can be downloaded from \l http://www.ijg.org/. The
-    \l {Qtopia Core} distribution includes a version of the zlib source
-    that can be compiled into the Qtopia core library. If integrators
+    \l{Qt for Embedded Linux} distribution includes a version of the zlib source
+    that can be compiled into the Qt for Embedded Linux library. If integrators
     wish to use a later version of the zlib library, it can be
     downloaded from the \l http://www.gzip.org/zlib/ website.
 
     Then build the executable:
 
-    \code
-        cd path/to/myApplication
-        qmake -project
-        qmake
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 5
 
     That's all. Your target specific executable is ready for deployment.
 
@@ -199,7 +179,7 @@
     \row
     \o \bold {See also:}
 
-    \l {Qtopia Core Architecture} and \l {Deploying Qtopia Core
+    \l{Qt for Embedded Linux Architecture} and \l{Deploying Qt for Embedded Linux
     Applications}.
 
     \endtable

@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_TEXTCODECPLUGIN
@@ -65,6 +67,7 @@ struct Q_CORE_EXPORT QTextCodecFactoryInterface : public QFactoryInterface
 #define QTextCodecFactoryInterface_iid "com.trolltech.Qt.QTextCodecFactoryInterface"
 
 Q_DECLARE_INTERFACE(QTextCodecFactoryInterface, QTextCodecFactoryInterface_iid)
+
 
 class Q_CORE_EXPORT QTextCodecPlugin : public QObject, public QTextCodecFactoryInterface
 {
@@ -87,6 +90,8 @@ private:
 };
 
 #endif // QT_NO_TEXTCODECPLUGIN
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

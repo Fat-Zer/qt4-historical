@@ -44,6 +44,8 @@
 #include "qsqlerror.h"
 #include "qdebug.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSqlError &s)
 {
@@ -241,12 +243,7 @@ QString QSqlError::text() const
     Returns true if an error is set, otherwise false.
 
     Example:
-    \code
-    QSqlQueryModel model;
-    model.setQuery("select * from myTable");
-    if (model.lastError().isValid())
-        qDebug() << model.lastError();
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlerror.cpp 0
 
     \sa type()
 */
@@ -255,3 +252,4 @@ bool QSqlError::isValid() const
     return errorType != NoError;
 }
 
+QT_END_NAMESPACE

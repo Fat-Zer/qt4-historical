@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example widgets/tablet
     \title Tablet Example
@@ -46,15 +89,13 @@
 	   as a top level window.
     \endlist
 
-    \quotefromfile widgets/tablet/mainwindow.h
 
     \section1 MainWindow Class Definition
 
     The \c MainWindow creates a \c TabletCanvas and sets it as its 
     center widget. 
 
-    \skipto /class.*MainWindow/
-    \printuntil /^\};/
+    \snippet examples/widgets/tablet/mainwindow.h 0
 
     The QActions let the user select if the tablets pressure and
     tilt should change the pen width, color alpha component and color
@@ -67,14 +108,12 @@
     lineWidthActionTriggered() slots, which calls functions in \c
     myCanvas.
 
-    \quotefromfile widgets/tablet/mainwindow.cpp
 
     \section1 MainWindow Class Implementation
 
     We start width a look at the constructor \c MainWindow():
 
-    \skipto /::MainWindow/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 0
 
     In the constructor we create the canvas, actions, and menus.
     We set the canvas as the center widget. We also initialize the
@@ -83,16 +122,14 @@
 
     Here is the implementation of \c brushColorAct():
 
-    \skipto /::brushColorAct/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 1
 
     We let the user pick a color with a QColorDialog. If it is valid,
     we set a new drawing color with \c setColor().
 
     Here is the implementation of \c alphaActionTriggered():
 
-    \skipto /::alphaActionTriggered/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 2
 
     The \c TabletCanvas class supports two ways by which the alpha 
     channel of the drawing color can be changed: tablet pressure and
@@ -101,16 +138,14 @@
 
     Here is the implementation of \c lineWidthActionTriggered():
 
-    \skipto /::lineWidthActionTriggered/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 3
 
     We check which action is selected in \c lineWidthGroup, and set
     how the canvas should change the drawing line width.
 
     Here is the implementation of \c saturationActionTriggered():
 
-    \skipto /::saturationActionTriggered/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 4
 
     We check which action is selected in \c colorSaturationGroup, and
     set how the canvas should change the color saturation of the
@@ -118,8 +153,7 @@
 
     Here is the implementation of \c saveAct():
 
-    \skipto /::saveAct/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 5
 
     We use the QFileDialog to let the user select a file to save the
     drawing in. It is the \c TabletCanvas that save the drawing, so we
@@ -127,8 +161,7 @@
 
     Here is the implementation of \c loadAct():
 
-    \skipto /::loadAct/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 6
 
     We let the user select the image file to be opened with
     a QFileDialog; we then ask the canvas to load the image with \c
@@ -136,8 +169,7 @@
 
     Here is the implementation of \c aboutAct():
 
-    \skipto /::aboutAct/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 7
 
     We show a message box with a short description of the example. 
 
@@ -148,11 +180,9 @@
 
     Here is the implementation of \c createActions:
 
-    \skipto /::createActions/
-    \printuntil /^\{/
+    \snippet examples/widgets/tablet/mainwindow.cpp 8
     \dots
-    \skipto /alphaChannelPressureAction/
-    \printto /colorSaturationVTiltAction/
+    \snippet examples/widgets/tablet/mainwindow.cpp 9
 
     We want the user to be able to choose if the drawing color's
     alpha component should be changed by the tablet pressure or tilt.
@@ -162,26 +192,22 @@
     that only one of the actions are checked at any time. The \c
     triggered() signal is emitted when an action is checked.
 
-    \skipto /^\}/
     \dots
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 10
 
     Here is the implementation of \c createMenus():
 
-    \skipto /::createMenus/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/mainwindow.cpp 11
 
     We create the menus of the example and add the actions to them.
 
-    \quotefromfile widgets/tablet/tabletcanvas.h
 
     \section1 TabletCanvas Class Definition
 
     The \c TabletCanvas class provides a surface on which the
     user can draw with a tablet. 
 
-    \skipto /class.*TabletCanvas/
-    \printuntil /^\};/
+    \snippet examples/widgets/tablet/tabletcanvas.h 0
 
     The canvas can change the alpha channel, color saturation,
     and line width of the drawing. We have one enum for each of
@@ -202,38 +228,33 @@
     tabletEvent(); \c paintImage(), \c updateBrush(), and \c
     brushPattern() are helper functions used by \c tabletEvent().
 
-    \quotefromfile widgets/tablet/tabletcanvas.cpp
 
     \section1 TabletCanvas Class Implementation
 
     We start with a look at the constructor:
 
-    \skipto /::TabletCanvas/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 0
 
     In the constructor we initialize our class variables. We need
     to draw the background of our image, as the default is gray.
 
     Here is the implementation of \c saveImage():
 
-    \skipto /::saveImage/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 1
 
     QImage implements functionality to save itself to disk, so we
     simply call \l{QImage::}{save()}.
 
     Here is the implementation of \c loadImage():
 
-    \skipto /::loadImage/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 2
 
     We simply call \l{QImage::}{load()}, which loads the image in \a
     file.
 
     Here is the implementation of \c tabletEvent():
 
-    \skipto /::tabletEvent/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 3
 
     We get three kind of events to this function: TabletPress,
     TabletRelease, and TabletMove, which is generated when a device
@@ -246,15 +267,13 @@
 
     Here is the implementation of \c paintEvent():
 
-    \skipto /::paintEvent/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 4
 
     We simply draw the image to the top left of the widget.
 
     Here is the implementation of \c paintImage():
 
-    \skipto /::paintImage/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 5
 
     In this function we draw on the image based on the movement of the
     device. If the device used on the tablet is a stylus we want to draw a
@@ -266,8 +285,7 @@
     density; we select the style based on the tangential pressure in
     \c brushPattern().
 
-    \skipto /::brushPattern/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 6
 
     We return a brush style with a point density that increases with
     the tangential pressure.
@@ -277,8 +295,7 @@
     colorSaturationType, and \c myColor. We will examine the code to
     set up \c myBrush and \c myPen for each of these variables:
 
-    \skipto /::updateBrush/
-    \printuntil /hValue/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 7
 
     We fetch the current drawingcolor's hue, saturation, value,
     and alpha values. \c hValue and \c vValue are set to the
@@ -288,7 +305,7 @@
     is between the device and the perpendicular of the tablet (see
     QTabletEvent for an illustration).
          
-    \printto /colorSaturationType/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 8
 
     The alpha channel of QColor is given as a number between 0
     and 255 where 0 is transparent and 255 is opaque.
@@ -299,35 +316,33 @@
     the tablet. We select the largest of the vertical and horizontal
     tilt value. 
  
-    \printto /lineWidthType/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 9
 
     The colorsaturation is given as a number between 0 and 255. It is
     set with \l{QColor::}{setHsv()}. We can set the tilt values
     directly, but must multiply the pressure to a number between 0 and
     255.
 
-    \printto /event->pointer/
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 10
 
     The width of the pen increases with the pressure. When the pen
     width is controlled with the tilt we let the width increse with
     the angle between the device and the perpendicular of the tablet.
 
-    \printuntil /^\}/ 
+    \snippet examples/widgets/tablet/tabletcanvas.cpp 11
    
     We finally check wether the pointer is the stylus or the eraser.
     If it is the eraser, we set the color to the background color of
     the image an let the pressure decide the pen width, else we set
     the colors we have set up previously in the function.
 
-    \quotefromfile widgets/tablet/tabletapplication.h
 
     \section1 TabletApplication Class Definition
 
     We inherit QApplication in this class because we want to
     reimplement the \l{QApplication::}{event()} function. 
 
-    \skipto /class.*TabletApplication/
-    \printuntil /^\};/
+    \snippet examples/widgets/tablet/tabletapplication.h 0
 
     We keep a \c TabletCanvas we send the device type of the events we
     handle in the \c event() function to. The TabletEnterProximity
@@ -337,14 +352,12 @@
     Since we want to handle these events we have implemented \c 
     TabletApplication.
 
-    \quotefromfile widgets/tablet/tabletapplication.cpp
 
     \section1 TabletApplication Class Implementation
 
     Here is the implementation of \c event():
 
-    \skipto /::event/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/tabletapplication.cpp 0
 
     We use this function to handle the TabletEnterProximity and
     TabletLeaveProximity events, which is generated when a device
@@ -359,9 +372,7 @@
 
     Here is the examples \c main() function:
 
-    \quotefromfile widgets/tablet/main.cpp
-    \skipto /int main/
-    \printuntil /^\}/
+    \snippet examples/widgets/tablet/main.cpp 0
 
     In the \c main() function we create a \c MainWinow and display it
     as a top level window. We use the \c TabletApplication class. We

@@ -3,6 +3,8 @@ SUBDIRS       = blockingfortuneclient \
  		broadcastreceiver \
                 broadcastsender \
                 chat \
+		download \
+		downloadmanager \
                 fortuneclient \
                 fortuneserver \
                 ftp \

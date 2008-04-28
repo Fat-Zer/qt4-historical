@@ -55,6 +55,7 @@ Server::Server(QWidget *parent)
     quitButton = new QPushButton(tr("Quit"));
     quitButton->setAutoDefault(false);
 
+//! [0] //! [1]
     tcpServer = new QTcpServer(this);
     if (!tcpServer->listen()) {
         QMessageBox::critical(this, tr("Fortune Server"),
@@ -63,11 +64,14 @@ Server::Server(QWidget *parent)
         close();
         return;
     }
+//! [0]
 
     statusLabel->setText(tr("The server is running on port %1.\n"
                             "Run the Fortune Client example now.")
                          .arg(tcpServer->serverPort()));
+//! [1]
 
+//! [2]
     fortunes << tr("You've been leading a dog's life. Stay off the furniture.")
              << tr("You've got to think about tomorrow.")
              << tr("You will be surprised by a loud noise.")
@@ -75,9 +79,12 @@ Server::Server(QWidget *parent)
              << tr("You might have mail.")
              << tr("You cannot kill time without injuring eternity.")
              << tr("Computers are not intelligent. They only think they are.");
+//! [2]
 
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+//! [3]
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(sendFortune()));
+//! [3]
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);
@@ -92,20 +99,27 @@ Server::Server(QWidget *parent)
     setWindowTitle(tr("Fortune Server"));
 }
 
+//! [4]
 void Server::sendFortune()
 {
+//! [5]
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
+//! [4] //! [6]
     out << (quint16)0;
     out << fortunes.at(qrand() % fortunes.size());
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
+//! [6] //! [7]
 
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, SIGNAL(disconnected()),
             clientConnection, SLOT(deleteLater()));
+//! [7] //! [8]
 
     clientConnection->write(block);
     clientConnection->disconnectFromHost();
+//! [5]
 }
+//! [8]

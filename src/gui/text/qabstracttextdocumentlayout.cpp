@@ -48,9 +48,12 @@
 
 #include "qabstracttextdocumentlayout_p.h"
 
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QAbstractTextDocumentLayout
+    \reentrant
+
     \brief The QAbstractTextDocumentLayout class is an abstract base
     class used to implement custom layouts for QTextDocuments.
 
@@ -71,6 +74,13 @@
 
     This signal is emitted when the rectangle \a rect has been
     updated.
+*/
+
+/*!
+   \fn void QAbstractTextDocumentLayout::updateBlock(const QTextBlock &block)
+   \since 4.4
+
+   This signal is emitted when the specified \a block has been updated.
 */
 
 /*!
@@ -149,6 +159,7 @@
 
 /*!
     \class QAbstractTextDocumentLayout::PaintContext
+    \reentrant
 
     \brief The QAbstractTextDocumentLayout::PaintContext class is a
     convenience class defining the parameters of a painter context.
@@ -210,6 +221,7 @@
 
 /*!
     \class QAbstractTextDocumentLayout::Selection
+    \reentrant
 
     \brief The QAbstractTextDocumentLayout::Selection class is a
     convenience class defining the parameters of a selection.
@@ -242,6 +254,8 @@
 QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(QTextDocument *document)
     : QObject(*new QAbstractTextDocumentLayoutPrivate, document)
 {
+    Q_D(QAbstractTextDocumentLayout);
+    d->setDocument(document);
 }
 
 /*!
@@ -250,6 +264,8 @@ QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(QTextDocument *document
 QAbstractTextDocumentLayout::QAbstractTextDocumentLayout(QAbstractTextDocumentLayoutPrivate &p, QTextDocument *document)
     :QObject(p, document)
 {
+    Q_D(QAbstractTextDocumentLayout);
+    d->setDocument(document);
 }
 
 /*!
@@ -351,31 +367,6 @@ void QAbstractTextDocumentLayout::drawInlineObject(QPainter *p, const QRectF &re
         return;
 
     handler.iface->drawObject(p, rect, document(), posInDocument, format);
-
-#if 0
-    if (selType == QTextLayout::Highlight && item.engine()->pal) {
-#if defined (Q_WS_WIN)
-        static QPixmap tile;
-        if (tile.isNull()) {
-            QImage image(128, 128, 32);
-            image.fill((item.engine()->pal->highlight().color().rgb() & 0x00ffffff) | 0x7f000000);
-            image.setAlphaBuffer(true);
-            tile = QPixmap(image);
-        }
-        p->drawTiledPixmap(rect, tile);
-#elif defined (Q_WS_MAC)
-        QColor hl = item.engine()->pal->highlight().color();
-        QBrush brush(QColor(hl.red(), hl.green(), hl.blue(), 127));
-        QPixmap texture = item.engine()->pal->highlight().texture();
-        if(!texture.isNull())
-            brush.setTexture(texture);
-        p->fillRect(rect, brush);
-#else
-        QBrush brush(item.engine()->pal->highlight().color(), Qt::Dense4Pattern);
-        p->fillRect(rect, brush);
-#endif
-    }
-#endif
 }
 
 void QAbstractTextDocumentLayoutPrivate::_q_handlerDestroyed(QObject *obj)
@@ -418,7 +409,8 @@ QTextCharFormat QAbstractTextDocumentLayout::format(int pos)
 */
 QTextDocument *QAbstractTextDocumentLayout::document() const
 {
-    return qobject_cast<QTextDocument *>(parent());
+    Q_D(const QAbstractTextDocumentLayout);
+    return d->document;
 }
 
 /*!
@@ -473,5 +465,6 @@ QPaintDevice *QAbstractTextDocumentLayout::paintDevice() const
     return d->paintDevice;
 }
 
-#include "moc_qabstracttextdocumentlayout.cpp"
+QT_END_NAMESPACE
 
+#include "moc_qabstracttextdocumentlayout.cpp"

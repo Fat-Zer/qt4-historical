@@ -42,6 +42,8 @@
 ****************************************************************************/
 
 #include "score.h"
+#include "colors.h"
+#include "demoitem.h"
 
 Score::Score()
 {
@@ -53,23 +55,30 @@ Score::~Score()
     qDeleteAll(this->index);
 }
 
-void Score::prepare(Movie *movie, LOCK_MODE lockMode)
+void Score::prepare(Movie *movie, RUN_MODE runMode, LOCK_MODE lockMode)
 {
     if (lockMode == LOCK_ITEMS){
         for (int i=0; i<movie->size(); ++i){
+            if (runMode == ONLY_IF_VISIBLE && !movie->at(i)->demoItem()->isVisible())
+                continue;
             movie->at(i)->lockItem(true);
             movie->at(i)->prepare();
         }
     }
     else if (lockMode == UNLOCK_ITEMS){
         for (int i=0; i<movie->size(); ++i){
+            if (runMode == ONLY_IF_VISIBLE && !movie->at(i)->demoItem()->isVisible())
+                continue;
             movie->at(i)->lockItem(false);
             movie->at(i)->prepare();
         }
     }
     else {
-        for (int i=0; i<movie->size(); ++i)
+        for (int i=0; i<movie->size(); ++i){
+            if (runMode == ONLY_IF_VISIBLE && !movie->at(i)->demoItem()->isVisible())
+                continue;
             movie->at(i)->prepare();
+        }
     }
 }
 
@@ -79,6 +88,11 @@ void Score::play(Movie *movie, RUN_MODE runMode)
         for (int i=0; i<movie->size(); ++i)
             if (movie->at(i)->notOwnerOfItem())
                 movie->at(i)->play(true);
+    }
+    else if (runMode == ONLY_IF_VISIBLE){
+        for (int i=0; i<movie->size(); ++i)
+            if (movie->at(i)->demoItem()->isVisible())
+                movie->at(i)->play(runMode == FROM_START);
     }
     else {
         for (int i=0; i<movie->size(); ++i)
@@ -91,32 +105,47 @@ void Score::playMovie(const QString &indexName, RUN_MODE runMode, LOCK_MODE lock
     MovieIndex::iterator movieIterator = this->index.find(indexName);
     if (movieIterator == this->index.end())
         return;
-    
+
     Movie *movie = *movieIterator;
-    this->prepare(movie, lockMode);
+    this->prepare(movie, runMode, lockMode);
     this->play(movie, runMode);
 }
 
 void Score::queueMovie(const QString &indexName, RUN_MODE runMode, LOCK_MODE lockMode)
 {
     MovieIndex::iterator movieIterator = this->index.find(indexName);
-    if (movieIterator == this->index.end())
+    if (movieIterator == this->index.end()){
+        if (Colors::verbose)
+            qDebug() << "Queuing movie:" << indexName << "(does not exist)";
         return;
-    
+    }
+
     Movie *movie = *movieIterator;
-    this->prepare(movie, lockMode);
+    this->prepare(movie, runMode, lockMode);
     this->playList.append(PlayListMember(movie, int(runMode)));
+    if (Colors::verbose)
+        qDebug() << "Queuing movie:" << indexName;
 }
 
 void Score::playQue()
 {
-    for (int i=0; i<this->playList.size(); i++)
+    int movieCount = this->playList.size();
+    for (int i=0; i<movieCount; i++)
         this->play(this->playList.at(i).movie, RUN_MODE(this->playList.at(i).runMode));
     this->playList.clear();
+    if (Colors::verbose)
+        qDebug() << "********* Playing que *********";
 }
 
 void Score::insertMovie(const QString &indexName, Movie *movie)
 {
     this->index.insert(indexName, movie);
+}
+
+Movie *Score::insertMovie(const QString &indexName)
+{
+    Movie *movie = new Movie();
+    insertMovie(indexName, movie);
+    return movie;
 }
 

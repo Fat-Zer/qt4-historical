@@ -52,6 +52,10 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
+class QObject;
+
 class QDESIGNER_SDK_EXPORT QDesignerBrushManagerInterface : public QObject
 {
     Q_OBJECT
@@ -67,12 +71,14 @@ public:
     virtual void setCurrentBrush(const QString &name) = 0;
 
     virtual QPixmap brushPixmap(const QBrush &brush) const = 0;
-signals:
+Q_SIGNALS:
     void brushAdded(const QString &name, const QBrush &brush);
     void brushRemoved(const QString &name);
     void currentBrushChanged(const QString &name, const QBrush &brush);
 
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

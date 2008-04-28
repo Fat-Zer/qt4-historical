@@ -1,9 +1,12 @@
+#! [0]
 TEMPLATE        = lib
 CONFIG         += plugin
 INCLUDEPATH    += ../echowindow
 HEADERS         = echoplugin.h
 SOURCES         = echoplugin.cpp
-TARGET          = echoplugin
+TARGET          = $$qtLibraryTarget(echoplugin)
+DESTDIR         = ../plugins
+#! [0]
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/tools/echoplugin/plugin

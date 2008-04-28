@@ -50,6 +50,8 @@
 #include "text.h"
 #include "tree.h"
 
+QT_BEGIN_NAMESPACE
+
 JavaCodeMarker::JavaCodeMarker()
 {
 }
@@ -197,3 +199,5 @@ const Node *JavaCodeMarker::resolveTarget(const QString &target, const Tree *tre
     }
     return 0;
 }
+
+QT_END_NAMESPACE

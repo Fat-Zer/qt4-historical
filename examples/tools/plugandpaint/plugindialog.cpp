@@ -90,6 +90,7 @@ PluginDialog::PluginDialog(const QString &path, const QStringList &fileNames,
     findPlugins(path, fileNames);
 }
 
+//! [0]
 void PluginDialog::findPlugins(const QString &path,
                                const QStringList &fileNames)
 {
@@ -110,7 +111,9 @@ void PluginDialog::findPlugins(const QString &path,
             populateTreeWidget(plugin, fileName);
     }
 }
+//! [0]
 
+//! [1]
 void PluginDialog::populateTreeWidget(QObject *plugin, const QString &text)
 {
     QTreeWidgetItem *pluginItem = new QTreeWidgetItem(treeWidget);
@@ -136,6 +139,7 @@ void PluginDialog::populateTreeWidget(QObject *plugin, const QString &text)
             addItems(pluginItem, "FilterInterface", iFilter->filters());
     }
 }
+//! [1]
 
 void PluginDialog::addItems(QTreeWidgetItem *pluginItem,
                             const char *interfaceName,

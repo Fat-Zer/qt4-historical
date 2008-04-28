@@ -51,8 +51,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3TextEdit>
 
-Q3TextEditPlugin::Q3TextEditPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3TextEditPlugin::Q3TextEditPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3TextEditPlugin::name() const
@@ -71,7 +73,8 @@ QString Q3TextEditPlugin::includeFile() const
 { return QLatin1String("q3textedit.h"); }
 
 QIcon Q3TextEditPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
+
 
 bool Q3TextEditPlugin::isContainer() const
 { return false; }
@@ -116,3 +119,5 @@ QString Q3TextEditPlugin::domXml() const
 }
 
 
+
+QT_END_NAMESPACE

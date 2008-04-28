@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3Support)
 
 class Q3ServerSocketPrivate;
@@ -86,6 +88,8 @@ private:
     Q3ServerSocketPrivate *d;
     void init( const QHostAddress & address, Q_UINT16 port, int backlog );
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

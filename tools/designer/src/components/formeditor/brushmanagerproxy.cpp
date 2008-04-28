@@ -46,7 +46,9 @@
 #include "qsimpleresource_p.h"
 #include "ui4_p.h"
 
-#include <QDomDocument>
+#include <QtXml/QDomDocument>
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -257,5 +259,7 @@ void BrushManagerProxy::setBrushManager(QtBrushManager *manager)
         }
     }
 }
+
+QT_END_NAMESPACE
 
 #include "moc_brushmanagerproxy.cpp"

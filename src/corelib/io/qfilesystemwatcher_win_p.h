@@ -57,6 +57,8 @@
 
 #include "qfilesystemwatcher_p.h"
 
+#ifndef QT_NO_FILESYSTEMWATCHER
+
 #include <windows.h>
 
 #include <QtCore/qdatetime.h>
@@ -65,6 +67,8 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qmutex.h>
 #include <QtCore/qvector.h>
+
+QT_BEGIN_NAMESPACE
 
 class QWindowsFileSystemWatcherEngine : public QFileSystemWatcherEngine
 {
@@ -87,7 +91,22 @@ private:
     QMutex mutex;
     QVector<HANDLE> handles;
     int msg;
-    QHash<QString, HANDLE> handleForDir;
+
+    class Handle
+    {
+    public:
+        HANDLE handle;
+        uint flags;
+
+        Handle()
+            : handle(INVALID_HANDLE_VALUE), flags(0u)
+        { }
+        Handle(const Handle &other)
+            : handle(other.handle), flags(other.flags)
+        { }
+    };
+    QHash<QString, Handle> handleForDir;
+
     class PathInfo {
     public:
         QString absolutePath;
@@ -119,5 +138,8 @@ private:
     };
     QHash<HANDLE, QHash<QString, PathInfo> > pathInfoForHandle;
 };
+#endif // QT_NO_FILESYSTEMWATCHER
+
+QT_END_NAMESPACE
 
 #endif // QFILESYSTEMWATCHER_WIN_P_H

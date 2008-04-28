@@ -46,50 +46,88 @@
 
 #include "formeditor_global.h"
 #include "actionprovider_p.h"
+#include <extensionfactory_p.h>
 
-#include <QtDesigner/QExtensionFactory>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QToolBar>
 
-#include <QtCore/QPair>
-#include <QtCore/QRect>
-
-class QLayoutWidget;
-class QLayoutSupport;
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
 class FormWindow;
 
-class QT_FORMEDITOR_EXPORT QDesignerActionProvider: public QObject, public QDesignerActionProviderExtension
+class QT_FORMEDITOR_EXPORT ActionProviderBase: public QDesignerActionProviderExtension
+{
+protected:
+    explicit ActionProviderBase(QWidget *widget);
+
+public:
+    virtual void adjustIndicator(const QPoint &pos);
+    virtual Qt::Orientation orientation() const = 0;
+
+protected:
+    virtual QRect indicatorGeometry(const QPoint &pos) const;
+
+private:
+    QWidget *m_indicator;
+};
+
+class QT_FORMEDITOR_EXPORT QToolBarActionProvider: public QObject, public ActionProviderBase
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerActionProviderExtension)
 public:
-    QDesignerActionProvider(QWidget *widget, QObject *parent = 0);
-    virtual ~QDesignerActionProvider();
+    explicit QToolBarActionProvider(QToolBar *widget, QObject *parent = 0);
 
     virtual QRect actionGeometry(QAction *action) const;
     virtual QAction *actionAt(const QPoint &pos) const;
+    Qt::Orientation orientation() const;
 
-    virtual void adjustIndicator(const QPoint &pos);
+protected:
+    virtual QRect indicatorGeometry(const QPoint &pos) const;
 
+private:
+    QToolBar *m_widget;
+};
+
+class QT_FORMEDITOR_EXPORT QMenuBarActionProvider: public QObject, public ActionProviderBase
+{
+    Q_OBJECT
+    Q_INTERFACES(QDesignerActionProviderExtension)
+public:
+    explicit QMenuBarActionProvider(QMenuBar *widget, QObject *parent = 0);
+
+    virtual QRect actionGeometry(QAction *action) const;
+    virtual QAction *actionAt(const QPoint &pos) const;
     Qt::Orientation orientation() const;
 
 private:
-    QWidget *m_widget;
-    QWidget *m_indicator;
+    QMenuBar *m_widget;
 };
 
-class QT_FORMEDITOR_EXPORT QDesignerActionProviderFactory: public QExtensionFactory
+class QT_FORMEDITOR_EXPORT QMenuActionProvider: public QObject, public ActionProviderBase
 {
     Q_OBJECT
-    Q_INTERFACES(QAbstractExtensionFactory)
+    Q_INTERFACES(QDesignerActionProviderExtension)
 public:
-    QDesignerActionProviderFactory(QExtensionManager *parent = 0);
+    explicit QMenuActionProvider(QMenu *widget, QObject *parent = 0);
 
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
+    virtual QRect actionGeometry(QAction *action) const;
+    virtual QAction *actionAt(const QPoint &pos) const;
+    Qt::Orientation orientation() const;
+
+private:
+    QMenu *m_widget;
 };
 
+typedef ExtensionFactory<QDesignerActionProviderExtension, QToolBar, QToolBarActionProvider> QToolBarActionProviderFactory;
+typedef ExtensionFactory<QDesignerActionProviderExtension, QMenuBar, QMenuBarActionProvider> QMenuBarActionProviderFactory;
+typedef ExtensionFactory<QDesignerActionProviderExtension, QMenu, QMenuActionProvider> QMenuActionProviderFactory;
+
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // DEFAULT_ACTIONPROVIDER_H

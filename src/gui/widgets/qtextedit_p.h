@@ -63,8 +63,11 @@
 #include "QtGui/qmenu.h"
 #include "QtGui/qabstracttextdocumentlayout.h"
 #include "QtCore/qbasictimer.h"
+#include "QtCore/qurl.h"
 #include "private/qtextcontrol_p.h"
 #include "qtextedit.h"
+
+QT_BEGIN_NAMESPACE
 
 #ifndef QT_NO_TEXTEDIT
 
@@ -85,7 +88,6 @@ public:
 
     void _q_adjustScrollbars();
     void _q_ensureVisible(const QRectF &rect);
-    void ensureViewportLayouted();
     void relayoutDocument();
 
     void createAutoBulletList();
@@ -103,12 +105,17 @@ public:
 
     void updateDefaultTextOption();
 
+    // re-implemented by QTextBrowser, called by QTextDocument::loadResource
+    virtual QUrl resolveUrl(const QUrl &url) const
+    { return url; }
+
     QTextControl *control;
 
     QTextEdit::AutoFormatting autoFormatting;
     bool tabChangesFocus;
 
     QBasicTimer autoScrollTimer;
+    QPoint autoScrollDragPos;
 
     QTextEdit::LineWrapMode lineWrap;
     int lineWrapColumnOrWidth;
@@ -117,9 +124,9 @@ public:
     uint ignoreAutomaticScrollbarAdjustment : 1;
     uint preferRichText : 1;
     uint showCursorOnInitialShow : 1;
+    uint inDrag : 1;
 
-    // Qt3 COMPAT only
-    // ### non-compat'ed append needs it, too
+    // Qt3 COMPAT only, for setText
     Qt::TextFormat textFormat;
 
     QString anchorToScrollToWhenVisible;
@@ -130,34 +137,7 @@ public:
 };
 #endif // QT_NO_TEXTEDIT
 
-#ifndef QT_NO_CONTEXTMENU
-class QUnicodeControlCharacterMenu : public QMenu
-{
-    Q_OBJECT
-public:
-    QUnicodeControlCharacterMenu(QObject *editWidget, QWidget *parent);
 
-private Q_SLOTS:
-    void menuActionTriggered();
-
-private:
-    QObject *editWidget;
-};
-#endif // QT_NO_CONTEXTMENU
-
-// also used by QLabel
-class QTextEditMimeData : public QMimeData
-{
-public:
-    inline QTextEditMimeData(const QTextDocumentFragment &aFragment) : fragment(aFragment) {}
-
-    virtual QStringList formats() const;
-protected:
-    virtual QVariant retrieveData(const QString &mimeType, QVariant::Type type) const;
-private:
-    void setup() const;
-
-    mutable QTextDocumentFragment fragment;
-};
+QT_END_NAMESPACE
 
 #endif // QTEXTEDIT_P_H

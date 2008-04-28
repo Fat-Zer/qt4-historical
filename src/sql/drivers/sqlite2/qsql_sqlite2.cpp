@@ -65,6 +65,8 @@ typedef struct sqlite_vm sqlite_vm;
 Q_DECLARE_METATYPE(sqlite_vm*)
 Q_DECLARE_METATYPE(sqlite*)
 
+QT_BEGIN_NAMESPACE
+
 static QVariant::Type nameToType(const QString& typeName)
 {
     QString tName = typeName.toUpper();
@@ -532,3 +534,4 @@ QVariant QSQLite2Driver::handle() const
     return qVariantFromValue(d->access);
 }
 
+QT_END_NAMESPACE

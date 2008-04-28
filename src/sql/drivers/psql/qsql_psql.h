@@ -58,6 +58,8 @@ QT_BEGIN_HEADER
 typedef struct pg_conn PGconn;
 typedef struct pg_result PGresult;
 
+QT_BEGIN_NAMESPACE
+
 class QPSQLResultPrivate;
 class QPSQLDriverPrivate;
 class QPSQLDriver;
@@ -71,6 +73,7 @@ public:
     ~QPSQLResult();
 
     QVariant handle() const;
+    void virtual_hook(int id, void *data);
 
 protected:
     void cleanup();
@@ -84,6 +87,8 @@ protected:
     int numRowsAffected();
     QSqlRecord record() const;
     QVariant lastInsertId() const;
+    bool prepare(const QString& query);
+    bool exec();
 
 private:
     QPSQLResultPrivate *d;
@@ -97,7 +102,11 @@ public:
         Version6 = 6,
         Version7 = 7,
         Version71 = 8,
-        Version73 = 9
+        Version73 = 9,
+        Version74 = 10,
+        Version8 = 11,
+        Version81 = 12,
+        Version82 = 13
     };
 
     explicit QPSQLDriver(QObject *parent=0);
@@ -121,17 +130,27 @@ public:
     QVariant handle() const;
 
     QString escapeIdentifier(const QString &identifier, IdentifierType type) const;
-    QString formatValue(const QSqlField &field,
-                                     bool trimStrings) const;
+    QString formatValue(const QSqlField &field, bool trimStrings) const;
 
 protected:
     bool beginTransaction();
     bool commitTransaction();
     bool rollbackTransaction();
+
+protected Q_SLOTS:
+    bool subscribeToNotificationImplementation(const QString &name);
+    bool unsubscribeFromNotificationImplementation(const QString &name);
+    QStringList subscribedToNotificationsImplementation() const;
+
+private Q_SLOTS:
+    void _q_handleNotification(int);
+
 private:
     void init();
     QPSQLDriverPrivate *d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

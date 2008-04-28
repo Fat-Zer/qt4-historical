@@ -47,10 +47,14 @@
 #include <proreader.h>
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QStringList>
 
-// assumes that the list is sorted (or more correctly, that all equal elements are grouped together).
+QT_BEGIN_NAMESPACE
+
+// assumes that the list is sorted (or more correctly, that all equal
+// elements are grouped together).
 void removeDuplicates(QStringList *strings, bool alreadySorted /*= true*/)
 {
     if (!alreadySorted) {
@@ -91,28 +95,24 @@ bool evaluateProFile(const QString &fileName, bool verbose,QMap<QByteArray, QStr
     }
     if (ok) {
         // app/lib template
-        sourceFiles += visitor->absFileNames(QLatin1String("SOURCES"));
-        sourceFiles += visitor->absFileNames(QLatin1String("HEADERS"));
-        QStringList tsFiles = visitor->values(QLatin1String("TRANSLATIONS"));
-        for (int i = 0; i < tsFiles.count(); ++i) {
-            tsFileNames << rootPath.absoluteFilePath(tsFiles.at(i));
-        }
-
+        sourceFiles += visitor->values(QLatin1String("SOURCES"));
+        sourceFiles += visitor->values(QLatin1String("HEADERS"));
+        tsFileNames = visitor->values(QLatin1String("TRANSLATIONS"));
         QStringList trcodec = visitor->values(QLatin1String("CODEC"))
             + visitor->values(QLatin1String("DEFAULTCODEC"))
             + visitor->values(QLatin1String("CODECFORTR"));
+
         if (!trcodec.isEmpty())
             codecForTr = trcodec.last();
 
         QStringList srccodec = visitor->values(QLatin1String("CODECFORSRC"));
-        if (!srccodec.isEmpty()) 
+        if (!srccodec.isEmpty())
             codecForSource = srccodec.last();
-        
-        QStringList forms = visitor->absFileNames(QLatin1String("INTERFACES"))
-            + visitor->absFileNames(QLatin1String("FORMS"))
-            + visitor->absFileNames(QLatin1String("FORMS3"));
-        sourceFiles << forms;
 
+        QStringList forms = visitor->values(QLatin1String("INTERFACES"))
+            + visitor->values(QLatin1String("FORMS"))
+            + visitor->values(QLatin1String("FORMS3"));
+        sourceFiles << forms;
     }
     if (ok) {
         removeDuplicates(&sourceFiles, false);
@@ -165,3 +165,4 @@ QStringList getListOfProfiles(const QStringList &proFiles, bool verbose)
     return profileList;
 }
 
+QT_END_NAMESPACE

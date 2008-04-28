@@ -45,10 +45,13 @@
 
 #include "mainwindow.h"
 
+//! [0]
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     MainWindow mainWin;
     mainWin.show();
+    mainWin.open();
     return app.exec();
 }
+//! [0]

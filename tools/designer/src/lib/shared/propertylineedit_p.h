@@ -59,13 +59,18 @@
 
 #include <QtGui/QLineEdit>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
     // A line edit with a special context menu allowing for adding (escaped) new  lines
     class PropertyLineEdit : public QLineEdit {
         Q_OBJECT
     public:
-        PropertyLineEdit(QWidget *parent, bool wantNewLine);
+        explicit PropertyLineEdit(QWidget *parent);
+        void setWantNewLine(bool nl) {  m_wantNewLine = nl; }
+        bool wantNewLine() const { return m_wantNewLine; }
+
         bool event(QEvent *e);
     protected:
         void contextMenuEvent (QContextMenuEvent *event );
@@ -73,8 +78,10 @@ namespace qdesigner_internal {
         void insertNewLine();
     private:
         void insertText(const QString &);
-        const bool m_wantNewLine;
+        bool m_wantNewLine;
     };
 }
+
+QT_END_NAMESPACE
 
 #endif // PROPERTYLINEEDIT_H

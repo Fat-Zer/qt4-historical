@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QSocketNotifier : public QObject
@@ -85,6 +87,8 @@ private:
     Type sntype;
     bool snenabled;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

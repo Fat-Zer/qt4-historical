@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 
@@ -68,6 +70,8 @@ public:
 public Q_SLOTS:
     virtual void setFormWindow(QDesignerFormWindowInterface *formWindow) = 0;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -43,22 +43,24 @@
 
 #include "metatranslator.h"
 #include "proparser.h"
+#include "qconsole.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
-#include <QTextStream>
-
 #include <errno.h>
 
-typedef QList<MetaTranslatorMessage> TML;
+QT_USE_NAMESPACE
+
+typedef QList<TranslatorMessage> TML;
 
 static void printUsage()
 {
-    fprintf( stderr, "Usage:\n"
+    Console::out(QCoreApplication::tr("Usage:\n"
               "    lrelease [options] project-file\n"
               "    lrelease [options] ts-files [-qm qm-file]\n"
               "Options:\n"
@@ -67,10 +69,13 @@ static void printUsage()
               "           Compress the .qm files\n"
               "    -nounfinished\n"
               "           Do not include unfinished translations\n"
+              "    -removeidentical\n"
+              "           If the translated text is the same as\n"
+              "           the source text, do not include the message\n"
               "    -silent\n"
               "           Don't explain what is being done\n"
               "    -version\n"
-              "           Display the version of lrelease and exit\n" );
+              "           Display the version of lrelease and exit\n" ));
 }
 
 static bool loadTsFile( MetaTranslator& tor, const QString& tsFileName,
@@ -82,81 +87,94 @@ static bool loadTsFile( MetaTranslator& tor, const QString& tsFileName,
 
     bool ok = tor.load( tsFileName );
     if ( !ok )
-        fprintf( stderr,
-                 "lrelease warning: For some reason, I cannot load '%s'\n",
-                 tsFileName.toLatin1().data() );
+        qWarning("lrelease warning: For some reason, I cannot load '%s'\n",
+                 qPrintable(tsFileName));
     return ok;
 }
 
-static void releaseMetaTranslator( const MetaTranslator& tor,
+static void releaseMetaTranslator( MetaTranslator& tor,
                                    const QString& qmFileName, bool verbose,
-                                   bool ignoreUnfinished, bool trimmed )
+                                   bool ignoreUnfinished, bool removeIdentical, bool trimmed )
 {
     if ( verbose )
-        fprintf( stderr, "Updating '%s'...\n", qmFileName.toLatin1().constData() );
+        Console::out(QCoreApplication::tr( "Updating '%1'...\n").arg(qmFileName));
+    if (removeIdentical) {
+        if ( verbose )
+            Console::out(QCoreApplication::tr( "Removing translations equal to source text in '%1'...\n").arg(qmFileName));
+        tor.stripIdenticalSourceTranslations();
+    }
     if ( !tor.release(qmFileName, verbose, ignoreUnfinished,
                       trimmed ? Translator::Stripped
                                : Translator::Everything) )
-        fprintf( stderr,
-                 "lrelease warning: For some reason, I cannot save '%s'\n",
-                 qmFileName.toLatin1().constData() );
+        qWarning("lrelease warning: For some reason, I cannot save '%s'\n",
+                 qPrintable(qmFileName));
 }
 
 static void releaseTsFile( const QString& tsFileName, bool verbose,
-                           bool ignoreUnfinished, bool trimmed )
+                           bool ignoreUnfinished, bool removeIdentical, bool trimmed )
 {
     MetaTranslator tor;
     if ( loadTsFile(tor, tsFileName, verbose) ) {
         QString qmFileName = tsFileName;
         qmFileName.replace( QRegExp(QLatin1String("\\.ts$")), QLatin1String("") );
         qmFileName += QLatin1String(".qm");
+
         releaseMetaTranslator( tor, qmFileName, verbose, ignoreUnfinished,
-                               trimmed );
+                removeIdentical, trimmed );
     }
 }
 
 int main( int argc, char **argv )
 {
+    QCoreApplication app(argc, argv);
+    QStringList args = app.arguments();
+    QTranslator translator;
+    if (translator.load(QLatin1String("lrelease_") + QLocale::system().name()))
+        app.installTranslator(&translator);
+
     bool verbose = true; // the default is true starting with Qt 4.2
     bool ignoreUnfinished = false;
     bool trimmed = false; // the default is false starting with Qt 4.2
+    bool removeIdentical = false;
     MetaTranslator tor;
     QString outputFile;
     int numFiles = 0;
     int i;
 
     for ( i = 1; i < argc; i++ ) {
-        if ( qstrcmp(argv[i], "-compress") == 0 ) {
+        if ( args[i] == QLatin1String("-compress") ) {
             trimmed = true;
             continue;
-	} if ( qstrcmp(argv[i], "-nocompress") == 0 ) {
+	    } else if ( args[i] == QLatin1String("-nocompress") ) {
             trimmed = false;
             continue;
-        } else if ( qstrcmp(argv[i], "-nounfinished") == 0 ) {
+        } else if ( args[i] == QLatin1String("-removeidentical") ) {
+            removeIdentical = true;
+            continue;
+        } else if ( args[i] == QLatin1String("-nounfinished") ) {
             ignoreUnfinished = true;
             continue;
-        } else if ( qstrcmp(argv[i], "-silent") == 0 ) {
+        } else if ( args[i] == QLatin1String("-silent") ) {
             verbose = false;
             continue;
-        } else if ( qstrcmp(argv[i], "-verbose") == 0 ) {
+        } else if ( args[i] == QLatin1String("-verbose") ) {
             verbose = true;
             continue;
-        } else if ( qstrcmp(argv[i], "-version") == 0 ) {
-            fprintf( stderr, "lrelease version %s\n", QT_VERSION_STR );
+        } else if ( args[i] == QLatin1String("-version") ) {
+            Console::out(QCoreApplication::tr( "lrelease version %1\n").arg(QT_VERSION_STR) );
             return 0;
-        } else if ( qstrcmp(argv[i], "-qm") == 0 ) {
+        } else if ( args[i] == QLatin1String("-qm") ) {
             if ( i == argc - 1 ) {
                 printUsage();
                 return 1;
             } else {
                 i++;
-                outputFile = QString::fromLatin1(argv[i]);
-                argv[i][0] = '-';
+                outputFile = args[i];
             }
-        } else if ( qstrcmp(argv[i], "-help") == 0 ) {
+        } else if ( args[i] == QLatin1String("-help") ) {
             printUsage();
             return 0;
-        } else if ( argv[i][0] == '-' ) {
+        } else if ( args[i][0] == QLatin1Char('-') ) {
             printUsage();
             return 1;
         } else {
@@ -170,21 +188,19 @@ int main( int argc, char **argv )
     }
 
     for ( i = 1; i < argc; i++ ) {
-        if ( argv[i][0] == '-' )
+        if ( args[i][0] == '-' || args[i] == outputFile)
             continue;
 
-        QFile f( QString::fromLatin1(argv[i]) );
+        QFile f( args[i] );
         if ( !f.open(QIODevice::ReadOnly) ) {
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-			char buf[100];
-			strerror_s(buf, sizeof(buf), errno);
-			fprintf( stderr,
-                     "lrelease error: Cannot open file '%s': %s\n", argv[i],
-                     buf );
+            char buf[100];
+            strerror_s(buf, sizeof(buf), errno);
+            qWarning("lrelease error: Cannot open file '%s': %s\n",
+                     qPrintable(args[i]), buf);
 #else
-            fprintf( stderr,
-                     "lrelease error: Cannot open file '%s': %s\n", argv[i],
-                     strerror(errno) );
+            qWarning("lrelease error: Cannot open file '%s': %s\n",
+                     qPrintable(args[i]), strerror(errno));
 #endif
             return 1;
         }
@@ -193,35 +209,30 @@ int main( int argc, char **argv )
         QString fullText = t.readAll();
         f.close();
 
-        if ( fullText.contains(QString(QLatin1String("<!DOCTYPE TS>"))) 
+        if ( fullText.contains(QLatin1String("<!DOCTYPE TS>"))
             || fullText.contains(QLatin1String("urn:oasis:names:tc:xliff:document:1.1"))) {
             if ( outputFile.isEmpty() ) {
-                releaseTsFile( QString::fromLatin1(argv[i]), verbose, ignoreUnfinished,
-                               trimmed );
+                releaseTsFile( args[i], verbose, ignoreUnfinished, removeIdentical, trimmed );
             } else {
-                loadTsFile( tor, QString::fromLatin1(argv[i]), verbose );
+                loadTsFile( tor, args[i], verbose );
             }
         } else {
-            QString oldDir = QDir::currentPath();
-            QDir::setCurrent( QFileInfo(QString::fromLatin1(argv[i])).path() );
             QMap<QByteArray, QStringList> varMap;
-            bool ok = evaluateProFile(QString::fromAscii(argv[i]), verbose, &varMap);
+            bool ok = evaluateProFile(args[i], verbose, &varMap );
             if (ok) {
                 QStringList translations = varMap.value("TRANSLATIONS");
                 if (translations.isEmpty()) {
-                    fprintf( stderr,
-                             "lrelease warning: Met no 'TRANSLATIONS' entry in"
+                    qWarning("lrelease warning: Met no 'TRANSLATIONS' entry in"
                              " project file '%s'\n",
-                             argv[i] );
+                             qPrintable(args[i]) );
                 } else {
                     for (QStringList::iterator it = translations.begin(); it != translations.end(); ++it) {
-                        releaseTsFile(*it, verbose, ignoreUnfinished, trimmed);
+                        releaseTsFile(*it, verbose, ignoreUnfinished, removeIdentical, trimmed);
                     }
                 }
 
-                QDir::setCurrent( oldDir );
             } else {
-                fprintf( stderr, "error: lrelease encountered project file functionality that is currently not supported.\n"
+                qWarning("error: lrelease encountered project file functionality that is currently not supported.\n"
                     "You might want to consider using .ts files as input instead of a project file.\n"
                     "Try the following syntax:\n"
                     "    lrelease [options] ts-files [-qm qm-file]\n");
@@ -231,7 +242,7 @@ int main( int argc, char **argv )
 
     if ( !outputFile.isEmpty() )
         releaseMetaTranslator( tor, outputFile, verbose, ignoreUnfinished,
-                              trimmed );
+                              removeIdentical, trimmed );
 
     return 0;
 }

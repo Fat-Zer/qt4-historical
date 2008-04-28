@@ -1,3 +1,4 @@
+#include <QtXml/QtXml>
 #include "extension.h"
 #include "qextensionmanager.h"
 #include "abstractactioneditor.h"

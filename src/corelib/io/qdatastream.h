@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QByteArray;
@@ -81,9 +83,10 @@ public:
         Qt_4_0 = 7,
         Qt_4_1 = Qt_4_0,
         Qt_4_2 = 8,
-        Qt_4_3 = 9
-#if QT_VERSION >= 0x040400
-#error Add Qt_4_4 = Qt_4_3
+        Qt_4_3 = 9,
+        Qt_4_4 = 10
+#if QT_VERSION >= 0x040500
+#error Add Qt_4_5 = Qt_4_4
 #endif
     };
 
@@ -163,9 +166,9 @@ public:
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT QDataStream &readRawBytes(char *str, uint len)
-        { readRawData(str, (int)len); return *this; }
+        { readRawData(str, static_cast<int>(len)); return *this; }
     inline QT3_SUPPORT QDataStream &writeRawBytes(const char *str, uint len)
-        { writeRawData(str, (int)len); return *this; }
+        { writeRawData(str, static_cast<int>(len)); return *this; }
     inline QT3_SUPPORT bool isPrintableData() const { return false; }
     inline QT3_SUPPORT void setPrintableData(bool) {}
 #endif
@@ -416,6 +419,8 @@ Q_OUTOFLINE_TEMPLATE QDataStream &operator<<(QDataStream &out, const QMap<Key, T
 }
 
 #endif // QT_NO_DATASTREAM
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

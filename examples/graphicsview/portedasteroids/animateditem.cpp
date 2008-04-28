@@ -54,10 +54,8 @@ AnimatedPixmapItem::AnimatedPixmapItem(const QList<QPixmap> &animation,
         QPixmap pixmap = animation.at(i);
         Frame frame;
         frame.pixmap = pixmap;
-        QPainterPath path;
-        path.addRegion(pixmap.createHeuristicMask());
-        frame.shape = path;
-        frame.boundingRect = path.controlPointRect();
+        frame.shape = QPainterPath();
+        frame.boundingRect = pixmap.rect();
         frames << frame;
     }
 }
@@ -72,11 +70,8 @@ void AnimatedPixmapItem::setFrame(int frame)
 
 void AnimatedPixmapItem::advance(int phase)
 {
-    if (phase == 1 && !frames.isEmpty()) {
-        setFrame(currentFrame + 1);
-        if (vx || vy)
-            moveBy(vx, vy);
-    }
+    if (phase == 1)
+        moveBy(vx, vy);
 }
 
 QRectF AnimatedPixmapItem::boundingRect() const
@@ -86,11 +81,17 @@ QRectF AnimatedPixmapItem::boundingRect() const
 
 QPainterPath AnimatedPixmapItem::shape() const
 {
-    return frames.at(currentFrame).shape;
+    const Frame &f = frames.at(currentFrame);
+    if (f.shape.isEmpty()) {
+        QPainterPath path;
+        path.addRegion(f.pixmap.createHeuristicMask());
+        const_cast<Frame &>(f).shape = path;
+    }
+    return f.shape;
 }
 
-void AnimatedPixmapItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                               QWidget *widget)
+void AnimatedPixmapItem::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/,
+                               QWidget * /*widget*/)
 {
     painter->drawPixmap(0, 0, frames.at(currentFrame).pixmap);
 }

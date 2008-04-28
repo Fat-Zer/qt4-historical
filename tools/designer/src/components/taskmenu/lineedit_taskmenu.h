@@ -48,47 +48,29 @@
 #include <QtCore/QPointer>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
 
-class QLineEdit;
-class QDesignerFormWindowInterface;
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
-class InPlaceEditor;
+
 class LineEditTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    LineEditTaskMenu(QLineEdit *button, QObject *parent = 0);
-    virtual ~LineEditTaskMenu();
+    explicit LineEditTaskMenu(QLineEdit *button, QObject *parent = 0);
 
     virtual QAction *preferredEditAction() const;
     virtual QList<QAction*> taskActions() const;
 
-private slots:
-    void editText();
-    void editIcon();
-    void updateText(const QString &text);
-    void updateSelection();
-
 private:
-    QLineEdit *m_lineEdit;
-    QPointer<QDesignerFormWindowInterface> m_formWindow;
-    QPointer<InPlaceEditor> m_editor;
-    mutable QList<QAction*> m_taskActions;
+    QList<QAction*> m_taskActions;
     QAction *m_editTextAction;
 };
 
-class LineEditTaskMenuFactory: public QExtensionFactory
-{
-    Q_OBJECT
-public:
-    LineEditTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
-};
-
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QLineEdit, LineEditTaskMenu> LineEditTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // LINEEDIT_TASKMENU_H

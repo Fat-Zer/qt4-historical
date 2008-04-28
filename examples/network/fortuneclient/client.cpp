@@ -46,9 +46,11 @@
 
 #include "client.h"
 
+//! [0]
 Client::Client(QWidget *parent)
     : QDialog(parent)
 {
+//! [0]
     hostLabel = new QLabel(tr("&Server name:"));
     portLabel = new QLabel(tr("S&erver port:"));
 
@@ -72,7 +74,9 @@ Client::Client(QWidget *parent)
     buttonBox->addButton(getFortuneButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
+//! [1]
     tcpSocket = new QTcpSocket(this);
+//! [1]
 
     connect(hostLineEdit, SIGNAL(textChanged(const QString &)),
             this, SLOT(enableGetFortuneButton()));
@@ -81,9 +85,13 @@ Client::Client(QWidget *parent)
     connect(getFortuneButton, SIGNAL(clicked()),
             this, SLOT(requestNewFortune()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+//! [2] //! [3]
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
+//! [2] //! [4]
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+//! [3]
             this, SLOT(displayError(QAbstractSocket::SocketError)));
+//! [4]
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(hostLabel, 0, 0);
@@ -96,31 +104,42 @@ Client::Client(QWidget *parent)
 
     setWindowTitle(tr("Fortune Client"));
     portLineEdit->setFocus();
+//! [5]
 }
+//! [5]
 
+//! [6]
 void Client::requestNewFortune()
 {
     getFortuneButton->setEnabled(false);
     blockSize = 0;
     tcpSocket->abort();
+//! [7]
     tcpSocket->connectToHost(hostLineEdit->text(),
                              portLineEdit->text().toInt());
+//! [7]
 }
+//! [6]
 
+//! [8]
 void Client::readFortune()
 {
+//! [9]
     QDataStream in(tcpSocket);
     in.setVersion(QDataStream::Qt_4_0);
 
     if (blockSize == 0) {
         if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
             return;
+//! [8]
 
+//! [10]
         in >> blockSize;
     }
 
     if (tcpSocket->bytesAvailable() < blockSize)
         return;
+//! [10] //! [11]
 
     QString nextFortune;
     in >> nextFortune;
@@ -129,12 +148,17 @@ void Client::readFortune()
         QTimer::singleShot(0, this, SLOT(requestNewFortune()));
         return;
     }
+//! [11]
 
+//! [12]
     currentFortune = nextFortune;
+//! [9]
     statusLabel->setText(currentFortune);
     getFortuneButton->setEnabled(true);
 }
+//! [12]
 
+//! [13]
 void Client::displayError(QAbstractSocket::SocketError socketError)
 {
     switch (socketError) {
@@ -160,6 +184,7 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
 
     getFortuneButton->setEnabled(true);
 }
+//! [13]
 
 void Client::enableGetFortuneButton()
 {

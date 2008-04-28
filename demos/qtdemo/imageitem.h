@@ -50,16 +50,16 @@
 class ImageItem : public DemoItem
 {
 public:
-    ImageItem(const QString &path, int maxWidth, int maxHeight, QGraphicsScene *scene = 0, QGraphicsItem *parent = 0,
+    ImageItem(const QImage &image, int maxWidth, int maxHeight, QGraphicsScene *scene = 0, QGraphicsItem *parent = 0,
          bool adjustSize = false, float scale = 1.0f);
-    
+
     bool adjustSize;
     float scale;
 protected:
     QImage *createImage(const QMatrix &matrix) const;
 
 private:
-    QString path;
+    QImage image;
     int maxWidth;
     int maxHeight;
 };

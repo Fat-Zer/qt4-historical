@@ -76,8 +76,8 @@ ArthurStyle::ArthurStyle()
 
 void ArthurStyle::drawHoverRect(QPainter *painter, const QRect &r) const
 {
-    double h = r.height();
-    double h2 = r.height() / 2.0;
+    qreal h = r.height();
+    qreal h2 = r.height() / qreal(2);
     QPainterPath path;
     path.addRect(r.x() + h2, r.y() + 0, r.width() - h2 * 2, r.height());
     path.addEllipse(r.x(), r.y(), h, h);

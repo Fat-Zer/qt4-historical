@@ -77,9 +77,11 @@
 #include "private/qfactoryloader_p.h"
 #include "qmutex.h"
 
-#ifndef QT_NO_LIBRARY
+QT_BEGIN_NAMESPACE
+
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QInputContextFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/inputmethods")))
+    (QInputContextFactoryInterface_iid, QLatin1String("/inputmethods")))
 #endif
 
 /*!
@@ -135,7 +137,7 @@ QInputContext *QInputContextFactory::create( const QString& key, QObject *parent
         result = new QMacInputContext;
     }
 #endif
-#ifdef QT_NO_LIBRARY
+#if defined(QT_NO_LIBRARY) || defined(QT_NO_SETTINGS)
     Q_UNUSED(key);
 #else
     if (QInputContextFactoryInterface *factory =
@@ -172,7 +174,7 @@ QStringList QInputContextFactory::keys()
 #if defined(Q_WS_MAC)
     result << QLatin1String("mac");
 #endif
-#ifndef QT_NO_LIBRARY
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     result += loader()->keys();
 #endif // QT_NO_LIBRARY
     return result;
@@ -207,7 +209,7 @@ QStringList QInputContextFactory::languages( const QString &key )
     if (key == QLatin1String("mac"))
         return QStringList(QString());
 #endif
-#ifdef QT_NO_LIBRARY
+#if defined(QT_NO_LIBRARY) || defined(QT_NO_SETTINGS)
     Q_UNUSED(key);
 #else
     if (QInputContextFactoryInterface *factory =
@@ -231,7 +233,7 @@ QString QInputContextFactory::displayName( const QString &key )
     if (key == QLatin1String("xim"))
         return QInputContext::tr( "XIM" );
 #endif
-#ifdef QT_NO_LIBRARY
+#if defined(QT_NO_LIBRARY) || defined(QT_NO_SETTINGS)
     Q_UNUSED(key);
 #else
     if (QInputContextFactoryInterface *factory =
@@ -262,7 +264,7 @@ QString QInputContextFactory::description( const QString &key )
     if (key == QLatin1String("mac"))
         return QInputContext::tr( "Mac OS X input method" );
 #endif
-#ifdef QT_NO_LIBRARY
+#if defined(QT_NO_LIBRARY) || defined(QT_NO_SETTINGS)
     Q_UNUSED(key);
 #else
     if (QInputContextFactoryInterface *factory =
@@ -271,5 +273,7 @@ QString QInputContextFactory::description( const QString &key )
 #endif // QT_NO_LIBRARY
     return QString();
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_IM

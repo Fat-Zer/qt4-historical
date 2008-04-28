@@ -45,6 +45,8 @@
 #include <qstringlist.h>
 #include "../../../sql/drivers/psql/qsql_psql.h"
 
+QT_BEGIN_NAMESPACE
+
 class QPSQLDriverPlugin : public QSqlDriverPlugin
 {
 public:
@@ -78,3 +80,5 @@ QStringList QPSQLDriverPlugin::keys() const
 
 Q_EXPORT_STATIC_PLUGIN(QPSQLDriverPlugin)
 Q_EXPORT_PLUGIN2(qsqlpsql, QPSQLDriverPlugin)
+
+QT_END_NAMESPACE

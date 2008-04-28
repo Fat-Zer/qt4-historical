@@ -58,6 +58,8 @@
 #include "QtCore/qobject.h"
 #include "QtCore/qt_windows.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q_CORE_EXPORT QWinEventNotifier : public QObject
 {
     Q_OBJECT
@@ -88,5 +90,7 @@ private:
     HANDLE handleToEvent;
     bool enabled;
 };
+
+QT_END_NAMESPACE
 
 #endif // QWINEVENTNOTIFIER_P_H

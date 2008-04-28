@@ -44,13 +44,15 @@
 #ifndef TABLEWIDGET_TASKMENU_H
 #define TABLEWIDGET_TASKMENU_H
 
+#include <qdesigner_taskmenu_p.h>
+#include <extensionfactory_p.h>
+
+#include <QtGui/QTableWidget>
 #include <QtCore/QPointer>
 
-#include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+QT_BEGIN_NAMESPACE
 
 class QLineEdit;
-class QTableWidget;
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
@@ -59,7 +61,7 @@ class TableWidgetTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    TableWidgetTaskMenu(QTableWidget *button, QObject *parent = 0);
+    explicit TableWidgetTaskMenu(QTableWidget *button, QObject *parent = 0);
     virtual ~TableWidgetTaskMenu();
 
     virtual QAction *preferredEditAction() const;
@@ -77,16 +79,9 @@ private:
     QAction *m_editItemsAction;
 };
 
-class TableWidgetTaskMenuFactory: public QExtensionFactory
-{
-    Q_OBJECT
-public:
-    TableWidgetTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
-};
-
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QTableWidget, TableWidgetTaskMenu> TableWidgetTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TABLEWIDGET_TASKMENU_H

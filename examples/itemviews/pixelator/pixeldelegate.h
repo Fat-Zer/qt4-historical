@@ -49,12 +49,15 @@
 #include <QModelIndex>
 #include <QSize>
 
+QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QObject;
 class QPainter;
+QT_END_NAMESPACE
 
 static const int ItemSize = 256;
 
+//! [0]
 class PixelDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
@@ -74,5 +77,6 @@ public slots:
 private:
     int pixelSize;
 };
+//! [0]
 
 #endif

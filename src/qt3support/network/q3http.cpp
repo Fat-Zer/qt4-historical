@@ -60,6 +60,8 @@
 #include "q3url.h"
 #include "qhttp.h"
 
+QT_BEGIN_NAMESPACE
+
 //#define Q3HTTP_DEBUG
 
 class Q3HttpPrivate
@@ -352,17 +354,12 @@ void Q3HttpCloseRequest::start( Q3Http *http )
     consists of a name followed by a colon, a single space, and the
     field value. (See RFC 1945.) Field names are case-insensitive. A
     typical header field looks like this:
-    \code
-    content-type: text/html
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 0
 
     In the API the header field name is called the "key" and the
     content is called the "value". You can get and set a header
     field's value by using its key with value() and setValue(), e.g.
-    \code
-    header.setValue( "content-type", "text/html" );
-    QString contentType = header.value( "content-type" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 1
 
     Some fields are so common that getters and setters are provided
     for them as a convenient alternative to using \l value() and
@@ -1019,10 +1016,7 @@ QString Q3HttpRequestHeader::toString() const
     do not use it directly, but rather through a QUrlOperator, for
     example:
 
-    \code
-    QUrlOperator op( "http://www.trolltech.com" );
-    op.get( "index.html" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 2
 
     This code will only work if the Q3Http class is registered; to
     register the class, you must call q3InitNetworkProtocols() before
@@ -1059,12 +1053,7 @@ QString Q3HttpRequestHeader::toString() const
     from the Trolltech home page (i.e. the URL
     http://www.trolltech.com/index.html):
 
-    \code
-    Q3HttpRequestHeader header( "GET", "/index.html" );
-    header.setValue( "Host", "www.trolltech.com" );
-    http->setHost( "www.trolltech.com" );
-    http->request( header );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 3
 
     For the common HTTP requests \c GET, \c POST and \c HEAD, Q3Http
     provides the convenience functions get(), post() and head(). They
@@ -1072,36 +1061,12 @@ QString Q3HttpRequestHeader::toString() const
     special header fields, they are easier to use. The above example
     can also be written as:
 
-    \code
-    http->setHost( "www.trolltech.com" ); // id == 1
-    http->get( "/index.html" );           // id == 2
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 4
 
     For this example the following sequence of signals is emitted
     (with small variations, depending on network traffic, etc.):
 
-    \code
-    requestStarted( 1 )
-    requestFinished( 1, false )
-
-    requestStarted( 2 )
-    stateChanged( Connecting )
-    stateChanged( Sending )
-    dataSendProgress( 77, 77 )
-    stateChanged( Reading )
-    responseHeaderReceived( responseheader )
-    dataReadProgress( 5388, 0 )
-    readyRead( responseheader )
-    dataReadProgress( 18300, 0 )
-    readyRead( responseheader )
-    stateChanged( Connected )
-    requestFinished( 2, false )
-
-    done( false )
-
-    stateChanged( Closing )
-    stateChanged( Unconnected )
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 5
 
     The dataSendProgress() and dataReadProgress() signals in the above
     example are useful if you want to show a \link QProgressBar
@@ -1126,28 +1091,13 @@ QString Q3HttpRequestHeader::toString() const
 
     For example, if you have the following sequence of reqeusts
 
-    \code
-    http->setHost( "www.foo.bar" );       // id == 1
-    http->get( "/index.html" );           // id == 2
-    http->post( "register.html", data );  // id == 3
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 6
 
     and the get() request fails because the host lookup fails, then
     the post() request is never executed and the signals would look
     like this:
 
-    \code
-    requestStarted( 1 )
-    requestFinished( 1, false )
-
-    requestStarted( 2 )
-    stateChanged( HostLookup )
-    requestFinished( 2, true )
-
-    done( true )
-
-    stateChanged( Unconnected )
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 7
 
     You can then get details about the error with the error() and
     errorString() functions. Note that only unexpected behaviour, like
@@ -2368,5 +2318,7 @@ void Q3Http::clientStateChanged( int state )
 	}
     }
 }
+
+QT_END_NAMESPACE
 
 #endif

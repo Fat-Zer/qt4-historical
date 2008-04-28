@@ -46,7 +46,11 @@
 
 #include "dialog.h"
 
+#if !defined(Q_OS_WINCE)
 static const int TotalBytes = 50 * 1024 * 1024;
+#else
+static const int TotalBytes = 5 * 1024 * 1024;
+#endif
 static const int PayloadSize = 65536;
 
 Dialog::Dialog(QWidget *parent)
@@ -91,7 +95,9 @@ void Dialog::start()
 {
     startButton->setEnabled(false);
 
+#ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
 
     bytesWritten = 0;
     bytesReceived = 0;
@@ -143,7 +149,9 @@ void Dialog::updateServerProgress()
     if (bytesReceived == TotalBytes) {
         tcpServerConnection->close();
         startButton->setEnabled(true);
+#ifndef QT_NO_CURSOR
         QApplication::restoreOverrideCursor();
+#endif
     }
 }
 
@@ -175,5 +183,7 @@ void Dialog::displayError(QAbstractSocket::SocketError socketError)
     clientStatusLabel->setText(tr("Client ready"));
     serverStatusLabel->setText(tr("Server ready"));
     startButton->setEnabled(true);
+#ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
+#endif
 }

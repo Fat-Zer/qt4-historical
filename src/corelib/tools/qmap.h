@@ -57,6 +57,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 struct Q_CORE_EXPORT QMapData
@@ -69,7 +71,7 @@ struct Q_CORE_EXPORT QMapData
 
     QMapData *backward;
     QMapData *forward[QMapData::LastLevel + 1];
-    QBasicAtomic ref;
+    QBasicAtomicInt ref;
     int topLevel;
     int size;
     uint randomBits;
@@ -341,7 +343,7 @@ public:
     iterator erase(iterator it);
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT iterator remove(iterator it) { return erase(it); }
-    inline QT3_SUPPORT void erase(const Key &key) { remove(key); }
+    inline QT3_SUPPORT void erase(const Key &aKey) { remove(aKey); }
 #endif
 
     // more Qt
@@ -361,7 +363,7 @@ public:
 #endif
     iterator insertMulti(const Key &key, const T &value);
 #ifdef QT3_SUPPORT
-    inline QT3_SUPPORT iterator replace(const Key &key, const T &value) { return insert(key, value); }
+    inline QT3_SUPPORT iterator replace(const Key &aKey, const T &aValue) { return insert(aKey, aValue); }
 #endif
     QMap<Key, T> &unite(const QMap<Key, T> &other);
 
@@ -389,11 +391,10 @@ template <class Key, class T>
 Q_INLINE_TEMPLATE QMap<Key, T> &QMap<Key, T>::operator=(const QMap<Key, T> &other)
 {
     if (d != other.d) {
-        QMapData *x = other.d;
-        x->ref.ref();
-        x = qAtomicSetPtr(&d, x);
-        if (!x->ref.deref())
-            freeData(x);
+        other.d->ref.ref();
+        if (!d->ref.deref())
+            freeData(d);
+        d = other.d;
         if (!d->sharable)
             detach_helper();
     }
@@ -705,9 +706,9 @@ Q_OUTOFLINE_TEMPLATE void QMap<Key, T>::detach_helper()
         }
         x.d->insertInOrder = false;
     }
-    x.d = qAtomicSetPtr(&d, x.d);
-    if (!x.d->ref.deref())
-        freeData(x.d);
+    if (!d->ref.deref())
+        freeData(d);
+    d = x.d;
 }
 
 template <class Key, class T>
@@ -1013,6 +1014,8 @@ Q_INLINE_TEMPLATE int QMultiMap<Key, T>::count(const Key &key, const T &value) c
 
 Q_DECLARE_ASSOCIATIVE_ITERATOR(Map)
 Q_DECLARE_MUTABLE_ASSOCIATIVE_ITERATOR(Map)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

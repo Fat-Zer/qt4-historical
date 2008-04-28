@@ -46,6 +46,7 @@
 
 #include <QItemDelegate>
 
+//! [0]
 class StarDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -66,5 +67,6 @@ public:
 private slots:
     void commitAndCloseEditor();
 };
+//! [0]
 
 #endif

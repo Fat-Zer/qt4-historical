@@ -44,13 +44,16 @@
 
 #include "qtextimagehandler_p.h"
 
+#include <qapplication.h>
 #include <qtextformat.h>
 #include <qpainter.h>
-#include <qpixmapcache.h>
 #include <qdebug.h>
 #include <private/qtextengine_p.h>
 #include <qpalette.h>
 #include <qtextbrowser.h>
+#include <qthread.h>
+
+QT_BEGIN_NAMESPACE
 
 // set by the mime source factory in Qt3Compat
 QTextImageHandler::ExternalImageLoaderFunction QTextImageHandler::externalLoader = 0;
@@ -62,7 +65,7 @@ static QPixmap getPixmap(QTextDocument *doc, const QTextImageFormat &format)
     QString name = format.name();
     if (name.startsWith(QLatin1String(":/"))) // auto-detect resources
         name.prepend(QLatin1String("qrc"));
-    QUrl url(name);
+    QUrl url = QUrl::fromEncoded(name.toUtf8());
     const QVariant data = doc->resource(QTextDocument::ImageResource, url);
     if (data.type() == QVariant::Pixmap || data.type() == QVariant::Image) {
         pm = qvariant_cast<QPixmap>(data);
@@ -105,10 +108,18 @@ static QSize getPixmapSize(QTextDocument *doc, const QTextImageFormat &format)
     QSize size(width, height);
     if (!hasWidth || !hasHeight) {
         pm = getPixmap(doc, format);
-        if (!hasWidth)
-            size.setWidth(pm.width());
-        if (!hasHeight)
-            size.setHeight(pm.height());
+        if (!hasWidth) {
+            if (!hasHeight)
+                size.setWidth(pm.width());
+            else
+                size.setWidth(qRound(height * (pm.width() / (qreal) pm.height())));
+        }
+        if (!hasHeight) {
+            if (!hasWidth)
+                size.setHeight(pm.height());
+            else
+                size.setHeight(qRound(width * (pm.height() / (qreal) pm.width())));
+        }
     }
 
     qreal scale = 1.0;
@@ -118,6 +129,74 @@ static QSize getPixmapSize(QTextDocument *doc, const QTextImageFormat &format)
         if (pm.isNull())
             pm = getPixmap(doc, format);
         if (!pm.isNull())
+            scale = qreal(pdev->logicalDpiY()) / qreal(qt_defaultDpi());
+    }
+    size *= scale;
+
+    return size;
+}
+
+static QImage getImage(QTextDocument *doc, const QTextImageFormat &format)
+{
+    QImage image;
+
+    QString name = format.name();
+    if (name.startsWith(QLatin1String(":/"))) // auto-detect resources
+        name.prepend(QLatin1String("qrc"));
+    QUrl url = QUrl::fromEncoded(name.toUtf8());
+    const QVariant data = doc->resource(QTextDocument::ImageResource, url);
+    if (data.type() == QVariant::Image) {
+        image = qvariant_cast<QImage>(data);
+    } else if (data.type() == QVariant::ByteArray) {
+        image.loadFromData(data.toByteArray());
+    }
+
+    if (image.isNull()) {
+        QString context;
+#ifndef QT_NO_TEXTBROWSER
+        QTextBrowser *browser = qobject_cast<QTextBrowser *>(doc->parent());
+        if (browser)
+            context = browser->source().toString();
+#endif
+        if (QTextImageHandler::externalLoader)
+            image = QTextImageHandler::externalLoader(name, context);
+
+        if (image.isNull()) { // try direct loading
+            name = format.name(); // remove qrc:/ prefix again
+            if (name.isEmpty() || !image.load(name))
+                return QImage(QLatin1String(":/trolltech/styles/commonstyle/images/file-16.png"));
+        }
+        doc->addResource(QTextDocument::ImageResource, url, image);
+    }
+
+    return image;
+}
+
+static QSize getImageSize(QTextDocument *doc, const QTextImageFormat &format)
+{
+    QImage image;
+
+    const bool hasWidth = format.hasProperty(QTextFormat::ImageWidth);
+    const int width = qRound(format.width());
+    const bool hasHeight = format.hasProperty(QTextFormat::ImageHeight);
+    const int height = qRound(format.height());
+
+    QSize size(width, height);
+    if (!hasWidth || !hasHeight) {
+        image = getImage(doc, format);
+        if (!hasWidth)
+            size.setWidth(image.width());
+        if (!hasHeight)
+            size.setHeight(image.height());
+    }
+
+    qreal scale = 1.0;
+    QPaintDevice *pdev = doc->documentLayout()->paintDevice();
+    if (pdev) {
+        extern int qt_defaultDpi();
+        if (image.isNull())
+            image = getImage(doc, format);
+        if (!image.isNull())
             scale = qreal(pdev->logicalDpiY()) / qreal(qt_defaultDpi());
     }
     size *= scale;
@@ -135,15 +214,23 @@ QSizeF QTextImageHandler::intrinsicSize(QTextDocument *doc, int posInDocument, c
     Q_UNUSED(posInDocument)
     const QTextImageFormat imageFormat = format.toImageFormat();
 
+    if (qApp->thread() != QThread::currentThread())
+        return getImageSize(doc, imageFormat);
     return getPixmapSize(doc, imageFormat);
 }
 
 void QTextImageHandler::drawObject(QPainter *p, const QRectF &rect, QTextDocument *doc, int posInDocument, const QTextFormat &format)
 {
     Q_UNUSED(posInDocument)
-    const QTextImageFormat imageFormat = format.toImageFormat();
-    const QPixmap pixmap = getPixmap(doc, imageFormat);
+        const QTextImageFormat imageFormat = format.toImageFormat();
 
-    p->drawPixmap(rect, pixmap, pixmap.rect());
+    if (qApp->thread() != QThread::currentThread()) {
+        const QImage image = getImage(doc, imageFormat);
+        p->drawImage(rect, image, image.rect());
+    } else {
+        const QPixmap pixmap = getPixmap(doc, imageFormat);
+        p->drawPixmap(rect, pixmap, pixmap.rect());
+    }
 }
 
+QT_END_NAMESPACE

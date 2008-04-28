@@ -1,7 +1,8 @@
 TEMPLATE      = subdirs
 CONFIG       += ordered
-SUBDIRS       = screenshot \
-                systray
+SUBDIRS       = screenshot
+
+contains(QT_CONFIG, svg): SUBDIRS += systray
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/desktop

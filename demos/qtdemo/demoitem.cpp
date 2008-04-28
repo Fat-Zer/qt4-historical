@@ -89,7 +89,7 @@ void DemoItem::setNeverVisible(bool never)
             }
         }
     }
-*/    
+*/
 }
 
 void DemoItem::setRecursiveVisible(bool visible){
@@ -149,7 +149,7 @@ void DemoItem::setPosUsingSheepDog(const QPointF &dest, const QRectF &sceneFence
     float itemWidth = this->boundingRect().width();
     float itemHeight = this->boundingRect().height();
     float fenceRight = sceneFence.x() + sceneFence.width();
-    float fenceBottom = sceneFence.y() + sceneFence.height();   
+    float fenceBottom = sceneFence.y() + sceneFence.height();
 
     if (this->scenePos().x() < sceneFence.x()) this->moveBy(this->mapFromScene(QPointF(sceneFence.x(), 0)).x(), 0);
     if (this->scenePos().x() > fenceRight - itemWidth) this->moveBy(this->mapFromScene(QPointF(fenceRight - itemWidth, 0)).x(), 0);
@@ -218,7 +218,7 @@ bool DemoItem::validateImage()
                 painter.fillRect(image->rect(), QColor(255, 0, 0, 50));
                 painter.end();
             }
-            
+
             this->sharedImage->unscaledBoundingRect = this->sharedImage->matrix.inverted().mapRect(image->rect());
             if (Colors::usePixmaps){
                 if (image->isNull())
@@ -251,9 +251,13 @@ void DemoItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(widget);
 
     if (this->validateImage()){
+
+        bool wasSmoothPixmapTransform = painter->testRenderHint(QPainter::SmoothPixmapTransform);
+        painter->setRenderHint(QPainter::SmoothPixmapTransform);
+
         if (Colors::noRescale){
             // Let the painter scale the image for us.
-            // This may degrade both quality and performance  
+            // This may degrade both quality and performance
             if (this->sharedImage->image)
                 painter->drawImage(this->pos(), *this->sharedImage->image);
             else
@@ -269,5 +273,10 @@ void DemoItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
             else
                 painter->drawPixmap(QPointF(x, y), *this->sharedImage->pixmap);
         }
+
+        if (!wasSmoothPixmapTransform) {
+            painter->setRenderHint(QPainter::SmoothPixmapTransform, false);
+        }
+
     }
 }

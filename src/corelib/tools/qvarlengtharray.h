@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 // Prealloc = 256 by default, specified in qcontainerfwd.h
@@ -105,7 +107,11 @@ public:
         const int idx = s++;
         if (s == a)
             realloc(s, s<<1);
-        ptr[idx] = t;
+        if (QTypeInfo<T>::isComplex) {
+            new (ptr + idx) T(t);
+        } else {
+            ptr[idx] = t;
+        }
     }
     void append(const T *buf, int size);
 
@@ -223,6 +229,8 @@ Q_OUTOFLINE_TEMPLATE void QVarLengthArray<T, Prealloc>::realloc(int asize, int a
     if (oldPtr != reinterpret_cast<T *>(array) && oldPtr != ptr)
         qFree(oldPtr);
 }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

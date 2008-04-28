@@ -1,6 +1,50 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
   \page examples-overview.html
   \title An Overview of Qt's Examples
+  \brief A short guide to the different categories of examples included with Qt.
   \ingroup howto
 
   Qt is supplied with a variety of examples that cover almost every aspect
@@ -149,6 +193,14 @@
 
   Additionally, it is now possible to move objects between threads.
 
+  \section1 \l{Qt Examples#Concurrent Programming}{Concurrent Programming}
+
+  The QtConcurrent namespace includes a collection of classes and functions
+  for straightforward concurrent programming.
+
+  These examples show how to apply the basic techniques of concurrent
+  programming to simple problems.
+
   \section1 \l{Qt Examples#Network}{Network}
 
   \l{Qt Examples#Network}{\inlineimage network-examples.png
@@ -170,6 +222,11 @@
   Qt's SAX compliant classes allow you to parse XML incrementally; the DOM
   classes enable more complex document-level operations to be performed on
   XML files.
+
+  \section1 \l{Qt Examples#XML Patterns: XQuery & XPath}{XML Patterns: XQuery & XPath}
+
+  Qt provides an XQuery & XPath engine, QtXmlPatterns, that can be used on XML files
+  and custom data models, similar to the model/view framework.
 
   \section1 \l{Qt Examples#OpenGL}{OpenGL}
 
@@ -242,14 +299,14 @@
   These examples demonstrate the fundamental aspects of scripting applications
   with Qt.
 
-  \section1 \l{Qt Examples#Qtopia Core}{Qtopia Core}
+  \section1 \l{Qt Examples#Qt for Embedded Linux}{Qt for Embedded Linux}
 
-  \l{Qt Examples#Qtopia Core}{\inlineimage qtopiacore-examples.png
+  \l{Qt Examples#Qt for Embedded Linux}{\inlineimage qt-embedded-examples.png
   }
 
-  Qtopia Core is an implementation of Qt for embedded Linux. These examples
-  show how to take advantage of features specifically designed for use on
-  systems with limited resources, specialized hardware, and small screens.
+  These examples show how to take advantage of features specifically designed
+  for use on systems with limited resources, specialized hardware, and small
+  screens.
 
   \section1 \l{Qt Examples#ActiveQt}{ActiveQt}
 

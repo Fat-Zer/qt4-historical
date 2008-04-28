@@ -64,6 +64,8 @@
 
 #ifndef QT_NO_LISTVIEW
 
+QT_BEGIN_NAMESPACE
+
 class QListViewItem
 {
     friend class QListViewPrivate;
@@ -141,7 +143,7 @@ public:
     inline QModelIndex modelIndex(int row) const;
     inline int rowCount() const;
 
-    inline QStyleOptionViewItemV3 viewOptions() const;
+    inline QStyleOptionViewItemV4 viewOptions() const;
     inline QWidget *viewport() const;
     inline QRect clipRect() const;
 
@@ -262,6 +264,7 @@ public:
     QListViewItem indexToListViewItem(const QModelIndex &index) const;
 
     void clear();
+    void updateContentsSize();
 };
 
 class QListViewPrivate: public QAbstractItemViewPrivate
@@ -313,7 +316,7 @@ public:
 
     QRect mapToViewport(const QRect &rect, bool greedy = false) const;
 
-    QModelIndex closestIndex(const QPoint &target, const QVector<QModelIndex> &candidates) const;
+    QModelIndex closestIndex(const QRect &target, const QVector<QModelIndex> &candidates) const;
     QSize itemSize(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
     bool selectionAllowed(const QModelIndex &index) const
@@ -407,7 +410,7 @@ inline QModelIndex QCommonListViewBase::modelIndex(int row) const
     { return dd->model->index(row, dd->column, dd->root); }
 inline int QCommonListViewBase::rowCount() const { return dd->model->rowCount(dd->root); }
 
-inline QStyleOptionViewItemV3 QCommonListViewBase::viewOptions() const { return dd->viewOptionsV3(); }
+inline QStyleOptionViewItemV4 QCommonListViewBase::viewOptions() const { return dd->viewOptionsV4(); }
 inline QWidget *QCommonListViewBase::viewport() const { return dd->viewport; }
 inline QRect QCommonListViewBase::clipRect() const { return dd->clipRect(); }
 
@@ -426,6 +429,8 @@ inline void QCommonListViewBase::clearIntersections() const { dd->intersectVecto
 inline void QCommonListViewBase::appendToIntersections(const QModelIndex &idx) const { dd->intersectVector.append(idx); }
 
 inline bool QCommonListViewBase::isRightToLeft() const { return qq->isRightToLeft(); }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_LISTVIEW
 

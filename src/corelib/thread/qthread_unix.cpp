@@ -70,12 +70,15 @@
 #   undef qDebug
 # endif
 # include <CoreServices/CoreServices.h>
+
 # ifdef old_qDebug
 #   undef qDebug
 #   define qDebug QT_NO_QDEBUG_MACRO
 #   undef old_qDebug
 # endif
 #endif
+
+QT_BEGIN_NAMESPACE
 
 #ifndef QT_NO_THREAD
 
@@ -121,7 +124,8 @@ QThreadData *QThreadData::current()
             data->thread = new QAdoptedThread(data);
             data->deref();
         }
-        (void) q_atomic_test_and_set_ptr(&QCoreApplicationPrivate::theMainThread, 0, data->thread);
+        if (!QCoreApplicationPrivate::theMainThread)
+            QCoreApplicationPrivate::theMainThread = data->thread;
     }
     return data;
 }
@@ -647,3 +651,6 @@ void QThread::setPriority(Priority priority)
 }
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE
+

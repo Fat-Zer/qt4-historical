@@ -49,8 +49,10 @@
 #ifdef Q_OS_WIN
 #include "qpaintengine.h"
 #include <private/qimage_p.h>
-#include <private/qpixmap_p.h>
+#include <private/qpixmap_raster_p.h>
 #endif
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QPixmapCache
@@ -88,19 +90,25 @@
     \sa QCache, QPixmap
 */
 
-static int cache_limit = 1024;                        // 1024 KB cache limit
+#if defined(Q_WS_QWS) || defined(Q_OS_WINCE)
+static int cache_limit = 2048; // 2048 KB cache limit for embedded
+#else
+static int cache_limit = 10240; // 10 MB cache limit for desktop
+#endif
 
+// XXX: hw: is this a general concept we need to abstract?
 class QDetachedPixmap : public QPixmap
 {
 public:
     QDetachedPixmap(const QPixmap &pix) : QPixmap(pix)
     {
 #ifdef Q_OS_WIN
-        if (!data->image.isNull() && data->image.d->paintEngine
-            && !data->image.d->paintEngine->isActive())
+        QRasterPixmapData *d = static_cast<QRasterPixmapData*>(data);
+        if (!d->image.isNull() && d->image.d->paintEngine
+            && !d->image.d->paintEngine->isActive())
         {
-            delete data->image.d->paintEngine;
-            data->image.d->paintEngine = 0;
+            delete d->image.d->paintEngine;
+            d->image.d->paintEngine = 0;
         }
 #endif
     }
@@ -128,7 +136,9 @@ private:
     int ps;
     bool t;
 };
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qpixmapcache.moc"
+QT_END_INCLUDE_NAMESPACE
 
 /*
   This is supposed to cut the cache size down by about 80-90% in a
@@ -214,17 +224,7 @@ Q_GLOBAL_STATIC(QPMCache, pm_cache)
     find(const QString&, QPixmap&) instead.
 
     Example:
-    \code
-        QPixmap* pp;
-        QPixmap p;
-        if ((pp=QPixmapCache::find("my_big_image", pm))) {
-            p = *pp;
-        } else {
-            p.load("bigimage.png");
-            QPixmapCache::insert("my_big_image", new QPixmap(p));
-        }
-        painter->drawPixmap(0, 0, p);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qpixmapcache.cpp 0
 */
 
 QPixmap *QPixmapCache::find(const QString &key)
@@ -239,14 +239,7 @@ QPixmap *QPixmapCache::find(const QString &key)
     returns true; otherwise it leaves \a pm alone and returns false.
 
     Example:
-    \code
-        QPixmap pm;
-        if (!QPixmapCache::find("my_big_image", pm)) {
-            pm.load("bigimage.png");
-            QPixmapCache::insert("my_big_image", pm);
-        }
-        painter->drawPixmap(0, 0, pm);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qpixmapcache.cpp 1
 */
 
 bool QPixmapCache::find(const QString &key, QPixmap& pm)
@@ -328,3 +321,4 @@ void QPixmapCache::clear()
     pm_cache()->clear();
 }
 
+QT_END_NAMESPACE

@@ -58,7 +58,9 @@
 #include <qt_windows.h>
 #endif
 
-int main(int argc, char * argv[])
+QT_BEGIN_NAMESPACE
+
+int runUic3(int argc, char * argv[])
 {
     bool impl = false;
     bool wrap = false;
@@ -404,4 +406,11 @@ int main(int argc, char * argv[])
     }
 
     return 0;
+}
+
+QT_END_NAMESPACE
+
+int main(int argc, char * argv[])
+{
+    return QT_PREPEND_NAMESPACE(runUic3(argc, argv));
 }

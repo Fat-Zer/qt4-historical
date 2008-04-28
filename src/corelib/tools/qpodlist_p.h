@@ -61,6 +61,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 template<class T, int Prealloc>
@@ -255,6 +257,8 @@ Q_OUTOFLINE_TEMPLATE void QPodList<T, Prealloc>::realloc(int asize, int aalloc)
     if (oldPtr != reinterpret_cast<T *>(array) && oldPtr != ptr)
         qFree(oldPtr);
 }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

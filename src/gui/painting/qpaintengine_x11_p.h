@@ -63,11 +63,13 @@
 #include "private/qpainter_p.h"
 #include "private/qpolygonclipper_p.h"
 
+typedef unsigned long Picture;
+
+QT_BEGIN_NAMESPACE
+
 class QX11PaintEnginePrivate;
 class QFontEngineFT;
 class QXRenderTessellator;
-
-typedef unsigned long Picture;
 
 struct qt_float_point
 {
@@ -94,7 +96,7 @@ public:
     void updateClipRegion_dev(const QRegion &region, Qt::ClipOperation op);
 
     void drawLines(const QLine *lines, int lineCount);
-    inline void drawLines(const QLineF *lines, int lineCount) { QPaintEngine::drawLines(lines, lineCount); }
+    void drawLines(const QLineF *lines, int lineCount);
 
     void drawRects(const QRect *rects, int rectCount);
     inline void drawRects(const QRectF *rects, int rectCount) { QPaintEngine::drawRects(rects, rectCount); }
@@ -103,7 +105,7 @@ public:
     void drawPoints(const QPointF *points, int pointCount);
 
     void drawEllipse(const QRect &r);
-    inline void drawEllipse(const QRectF &r) { QPaintEngine::drawEllipse(r); }
+    void drawEllipse(const QRectF &r);
 
     virtual void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
     inline void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
@@ -124,7 +126,6 @@ public:
 protected:
     QX11PaintEngine(QX11PaintEnginePrivate &dptr);
 
-    void drawBox(const QPointF &p, const QTextItemInt &si);
     void drawXLFD(const QPointF &p, const QTextItemInt &si);
 #ifndef QT_NO_FONTCONFIG
     void drawFreetype(const QPointF &p, const QTextItemInt &si);
@@ -181,6 +182,12 @@ public:
                             || (cpen.widthF() > 0 && has_complex_xform)
                             || (render_hints & QPainter::Antialiasing);
     }
+    void decideCoordAdjust() {
+        adjust_coords = !(render_hints & QPainter::Antialiasing)
+                        && (has_alpha_pen
+                            || (has_alpha_brush && has_pen && !has_alpha_pen)
+                            || (cpen.style() > Qt::SolidLine));
+    }
     void clipPolygon_dev(const QPolygonF &poly, QPolygonF *clipped_poly);
 
     Display *dpy;
@@ -208,12 +215,14 @@ public:
     uint has_complex_xform : 1;
     uint has_custom_pen : 1;
     uint use_path_fallback : 1;
+    uint adjust_coords : 1;
     uint has_clipping : 1;
     uint adapted_brush_origin : 1;
     uint adapted_pen_origin : 1;
     uint has_pen : 1;
     uint has_brush : 1;
     uint has_texture : 1;
+    uint has_alpha_texture : 1;
     uint has_pattern : 1;
     uint has_alpha_pen : 1;
     uint has_alpha_brush : 1;
@@ -229,5 +238,7 @@ public:
     QXRenderTessellator *tessellator;
 #endif
 };
+
+QT_END_NAMESPACE
 
 #endif // QPAINTENGINE_X11_P_H

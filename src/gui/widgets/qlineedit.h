@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_LINEEDIT
@@ -213,6 +215,7 @@ public:
     QVariant inputMethodQuery(Qt::InputMethodQuery) const;
     bool event(QEvent *);
 protected:
+    QRect cursorRect() const;
 
 public:
 #ifdef QT3_SUPPORT
@@ -263,6 +266,7 @@ private:
     Q_DISABLE_COPY(QLineEdit)
     Q_DECLARE_PRIVATE(QLineEdit)
     Q_PRIVATE_SLOT(d_func(), void _q_clipboardChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_handleWindowActivate())
     Q_PRIVATE_SLOT(d_func(), void _q_deleteSelected())
 #ifndef QT_NO_COMPLETER
     Q_PRIVATE_SLOT(d_func(), void _q_completionHighlighted(QString))
@@ -270,6 +274,8 @@ private:
 };
 
 #endif // QT_NO_LINEEDIT
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

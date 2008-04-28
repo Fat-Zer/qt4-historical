@@ -47,6 +47,8 @@
 #include "qwidget.h"
 #include "qevent.h"
 
+QT_BEGIN_NAMESPACE
+
 /*! \class Q3WhatsThis
     \compat
 */
@@ -208,13 +210,13 @@ bool Q3WhatsThis::clicked(const QString & /* href */)
     when clicked. You will often use this with a tool bar as \a
     parent:
 
-    \code
-	(void)QWhatsThis::whatsThisButton( my_help_tool_bar );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3whatsthis.cpp 0
 */
 QToolButton *Q3WhatsThis::whatsThisButton(QWidget * parent)
 {
     return QWhatsThis::whatsThisButton(parent);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_WHATSTHIS

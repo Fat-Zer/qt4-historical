@@ -63,6 +63,8 @@
 #include <private/qaction_p.h>
 #include <private/qmenu_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QToolButtonPrivate : public QAbstractButtonPrivate
 {
     Q_DECLARE_PUBLIC(QToolButton)
@@ -72,6 +74,7 @@ public:
     void _q_buttonPressed();
     void popupTimerDone();
     void _q_updateButtonDown();
+    void _q_menuTriggered(QAction *);
 #endif
     void _q_actionTriggered();
     QPointer<QAction> menuAction; //the menu set by the user (setMenu)
@@ -88,6 +91,8 @@ public:
     QAction *defaultAction;
 #ifndef QT_NO_MENU
     bool hasMenu() const;
+    //workaround for task 177850
+    QList<QAction *> actionsCopy;
 #endif
 #ifdef QT3_SUPPORT
     bool userDefinedPopupDelay;
@@ -155,7 +160,7 @@ bool QToolButtonPrivate::hasMenu() const
     adjust it with setPopupDelay().
 
     \table 100%
-    \row \o \inlineimage assistant-toolbar1.png Qt Assistant's toolbar with tool buttons
+    \row \o \inlineimage toolbar.png Qt Assistant's toolbar with tool buttons
     \row \o Qt Assistant's toolbar contains tool buttons that are associated
          with actions used in other parts of the main window.
     \endtable
@@ -286,7 +291,9 @@ void QToolButtonPrivate::init()
     q->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed,
                                  QSizePolicy::ToolButton));
 
+#ifndef QT_NO_MENU
     QObject::connect(q, SIGNAL(pressed()), q, SLOT(_q_buttonPressed()));
+#endif
 
     setLayoutItemMargins(QStyle::SE_ToolButtonLayoutItem);
 
@@ -312,8 +319,12 @@ void QToolButton::initStyleOption(QStyleOptionToolButton *option) const
     if (parentWidget()) {
 #ifdef QT3_SUPPORT
         if (parentWidget()->inherits("Q3ToolBar")) {
-            int iconSize = style()->pixelMetric(QStyle::PM_ToolBarIconSize, option, this);
-            option->iconSize = d->icon.actualSize(QSize(iconSize, iconSize));
+            if ( iconSize().isValid()) {
+                option->iconSize = this->iconSize();
+            } else {
+                int iconSize = style()->pixelMetric(QStyle::PM_ToolBarIconSize, option, this);
+                option->iconSize = d->icon.actualSize(QSize(iconSize, iconSize));
+            }
             forceNoText = d->toolButtonStyle == Qt::ToolButtonIconOnly;
         } else
 #endif
@@ -563,6 +574,7 @@ void QToolButtonPrivate::_q_actionTriggered()
         emit q->triggered(action);
 }
 
+
 /*!
     \reimp
  */
@@ -640,7 +652,7 @@ void QToolButton::mousePressEvent(QMouseEvent *e)
 #ifndef QT_NO_MENU
     QStyleOptionToolButton opt;
     initStyleOption(&opt);
-    if (e->button() == Qt::LeftButton && d->popupMode == MenuButtonPopup) {
+    if (e->button() == Qt::LeftButton && (d->popupMode == MenuButtonPopup)) {
         QRect popupr = style()->subControlRect(QStyle::CC_ToolButton, &opt,
                                                QStyle::SC_ToolButtonMenu, this);
         if (popupr.isValid() && popupr.contains(e->pos())) {
@@ -816,7 +828,7 @@ void QToolButtonPrivate::_q_buttonPressed()
 
     if (delay > 0 && popupMode == QToolButton::DelayedPopup)
         popupTimer.start(delay, q);
-    else if  (popupMode == QToolButton::InstantPopup)
+    else if (popupMode == QToolButton::InstantPopup)
         q->showMenu();
 }
 
@@ -832,8 +844,6 @@ void QToolButtonPrivate::popupTimerDone()
     bool mustDeleteActualMenu = false;
     if(menuAction) {
         actualMenu = menuAction->menu();
-        if (q->actions().size() > 1)
-            qWarning("QToolButton: Menu in setMenu() overriding actions set in addAction!");
     } else if (defaultAction && defaultAction->menu()) {
         actualMenu = defaultAction->menu();
     } else {
@@ -890,15 +900,23 @@ void QToolButtonPrivate::popupTimerDone()
     p.ry() += 1;
     QPointer<QToolButton> that = q;
     actualMenu->setNoReplayFor(q);
+    if (!mustDeleteActualMenu) //only if action are not in this widget
+        QObject::connect(actualMenu, SIGNAL(triggered(QAction*)), q, SLOT(_q_menuTriggered(QAction*)));
     QObject::connect(actualMenu, SIGNAL(aboutToHide()), q, SLOT(_q_updateButtonDown()));
     actualMenu->d_func()->causedPopup.widget = q;
     actualMenu->d_func()->causedPopup.action = defaultAction;
+    actionsCopy = q->actions(); //(the list of action may be modified in slots)
     actualMenu->exec(p);
     QObject::disconnect(actualMenu, SIGNAL(aboutToHide()), q, SLOT(_q_updateButtonDown()));
     if (mustDeleteActualMenu)
         delete actualMenu;
+    else
+        QObject::disconnect(actualMenu, SIGNAL(triggered(QAction*)), q, SLOT(_q_menuTriggered(QAction*)));
+
     if (!that)
         return;
+
+    actionsCopy.clear();
 
     if (repeat)
         q->setAutoRepeat(true);
@@ -912,6 +930,13 @@ void QToolButtonPrivate::_q_updateButtonDown()
         q->setDown(false);
     else
         q->repaint();
+}
+
+void QToolButtonPrivate::_q_menuTriggered(QAction *action)
+{
+    Q_Q(QToolButton);
+    if (action && !actionsCopy.contains(action))
+        emit q->triggered(action);
 }
 #endif // QT_NO_MENU
 
@@ -1172,6 +1197,9 @@ QToolButton::QToolButton(QToolButtonPrivate &dd, QWidget *parent)
 
     Use setToolButtonStyle() instead.
 */
+
+QT_END_NAMESPACE
+
 #include "moc_qtoolbutton.cpp"
 
 #endif

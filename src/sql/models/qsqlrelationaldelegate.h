@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Sql)
 
 class QSqlRelationalDelegate: public QItemDelegate
@@ -119,6 +121,8 @@ void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex 
 }
 
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

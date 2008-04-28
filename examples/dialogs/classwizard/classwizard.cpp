@@ -45,6 +45,7 @@
 
 #include "classwizard.h"
 
+//! [0] //! [1]
 ClassWizard::ClassWizard(QWidget *parent)
     : QWizard(parent)
 {
@@ -53,14 +54,19 @@ ClassWizard::ClassWizard(QWidget *parent)
     addPage(new CodeStylePage);
     addPage(new OutputFilesPage);
     addPage(new ConclusionPage);
+//! [0]
 
     setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner.png"));
     setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
 
     setWindowTitle(tr("Class Wizard"));
+//! [2]
 }
+//! [1] //! [2]
 
+//! [3]
 void ClassWizard::accept()
+//! [3] //! [4]
 {
     QByteArray className = field("className").toByteArray();
     QByteArray baseClass = field("baseClass").toByteArray();
@@ -70,6 +76,7 @@ void ClassWizard::accept()
     QString outputDir = field("outputDir").toString();
     QString header = field("header").toString();
     QString implementation = field("implementation").toString();
+//! [4]
 
     QByteArray block;
 
@@ -104,9 +111,9 @@ void ClassWizard::accept()
     block += "public:\n";
 
     if (field("qobjectCtor").toBool()) {
-        block += "    " + className + "(QObject *parent);\n";
+        block += "    " + className + "(QObject *parent = 0);\n";
     } else if (field("qwidgetCtor").toBool()) {
-        block += "    " + className + "(QWidget *parent);\n";
+        block += "    " + className + "(QWidget *parent = 0);\n";
     } else if (field("defaultCtor").toBool()) {
         block += "    " + className + "();\n";
         if (field("copyCtor").toBool()) {
@@ -189,9 +196,13 @@ void ClassWizard::accept()
     }
     implementationFile.write(block);
 
+//! [5]
     QDialog::accept();
+//! [5] //! [6]
 }
+//! [6]
 
+//! [7]
 IntroPage::IntroPage(QWidget *parent)
     : QWizardPage(parent)
 {
@@ -209,15 +220,19 @@ IntroPage::IntroPage(QWidget *parent)
     layout->addWidget(label);
     setLayout(layout);
 }
+//! [7]
 
+//! [8] //! [9]
 ClassInfoPage::ClassInfoPage(QWidget *parent)
     : QWizardPage(parent)
 {
+//! [8]
     setTitle(tr("Class Information"));
     setSubTitle(tr("Specify basic information about the class for which you "
                    "want to generate skeleton source code files."));
     setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo1.png"));
 
+//! [10]
     classNameLabel = new QLabel(tr("&Class name:"));
     classNameLineEdit = new QLineEdit;
     classNameLabel->setBuddy(classNameLineEdit);
@@ -228,7 +243,9 @@ ClassInfoPage::ClassInfoPage(QWidget *parent)
 
     qobjectMacroCheckBox = new QCheckBox(tr("Generate Q_OBJECT &macro"));
 
+//! [10]
     groupBox = new QGroupBox(tr("C&onstructor"));
+//! [9]
 
     qobjectCtorRadioButton = new QRadioButton(tr("&QObject-style constructor"));
     qwidgetCtorRadioButton = new QRadioButton(tr("Q&Widget-style constructor"));
@@ -241,15 +258,18 @@ ClassInfoPage::ClassInfoPage(QWidget *parent)
     connect(defaultCtorRadioButton, SIGNAL(toggled(bool)),
             copyCtorCheckBox, SLOT(setEnabled(bool)));
 
+//! [11] //! [12]
     registerField("className*", classNameLineEdit);
     registerField("baseClass", baseClassLineEdit);
     registerField("qobjectMacro", qobjectMacroCheckBox);
+//! [11]
     registerField("qobjectCtor", qobjectCtorRadioButton);
     registerField("qwidgetCtor", qwidgetCtorRadioButton);
     registerField("defaultCtor", defaultCtorRadioButton);
     registerField("copyCtor", copyCtorCheckBox);
 
     QVBoxLayout *groupBoxLayout = new QVBoxLayout;
+//! [12]
     groupBoxLayout->addWidget(qobjectCtorRadioButton);
     groupBoxLayout->addWidget(qwidgetCtorRadioButton);
     groupBoxLayout->addWidget(defaultCtorRadioButton);
@@ -264,8 +284,11 @@ ClassInfoPage::ClassInfoPage(QWidget *parent)
     layout->addWidget(qobjectMacroCheckBox, 2, 0, 1, 2);
     layout->addWidget(groupBox, 3, 0, 1, 2);
     setLayout(layout);
+//! [13]
 }
+//! [13]
 
+//! [14]
 CodeStylePage::CodeStylePage(QWidget *parent)
     : QWizardPage(parent)
 {
@@ -274,6 +297,7 @@ CodeStylePage::CodeStylePage(QWidget *parent)
     setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo2.png"));
 
     commentCheckBox = new QCheckBox(tr("&Start generated files with a "
+//! [14]
                                        "comment"));
     commentCheckBox->setChecked(true);
 
@@ -314,9 +338,12 @@ CodeStylePage::CodeStylePage(QWidget *parent)
     layout->addWidget(includeBaseCheckBox, 3, 0, 1, 3);
     layout->addWidget(baseIncludeLabel, 4, 1);
     layout->addWidget(baseIncludeLineEdit, 4, 2);
+//! [15]
     setLayout(layout);
 }
+//! [15]
 
+//! [16]
 void CodeStylePage::initializePage()
 {
     QString className = field("className").toString();
@@ -337,6 +364,7 @@ void CodeStylePage::initializePage()
         baseIncludeLineEdit->setText("\"" + baseClass.toLower() + ".h\"");
     }
 }
+//! [16]
 
 OutputFilesPage::OutputFilesPage(QWidget *parent)
     : QWizardPage(parent)
@@ -372,6 +400,7 @@ OutputFilesPage::OutputFilesPage(QWidget *parent)
     setLayout(layout);
 }
 
+//! [17]
 void OutputFilesPage::initializePage()
 {
     QString className = field("className").toString();
@@ -379,6 +408,7 @@ void OutputFilesPage::initializePage()
     implementationLineEdit->setText(className.toLower() + ".cpp");
     outputDirLineEdit->setText(QDir::convertSeparators(QDir::tempPath()));
 }
+//! [17]
 
 ConclusionPage::ConclusionPage(QWidget *parent)
     : QWizardPage(parent)

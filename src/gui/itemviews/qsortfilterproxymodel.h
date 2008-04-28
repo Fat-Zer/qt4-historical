@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QSortFilterProxyModelPrivate;
@@ -186,6 +188,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_sourceColumnsAboutToBeRemoved(const QModelIndex &source_parent, int start, int end))
     Q_PRIVATE_SLOT(d_func(), void _q_sourceColumnsRemoved(const QModelIndex &source_parent, int start, int end))
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

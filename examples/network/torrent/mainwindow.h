@@ -50,11 +50,13 @@
 
 #include "torrentclient.h"
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QCloseEvent;
 class QLabel;
 class QProgressDialog;
 class QSlider;
+QT_END_NAMESPACE
 class TorrentView;
 
 class MainWindow : public QMainWindow

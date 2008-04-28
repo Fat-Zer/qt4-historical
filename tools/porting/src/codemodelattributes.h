@@ -47,6 +47,8 @@
 #include "codemodelwalker.h"
 #include "translationunit.h"
 
+QT_BEGIN_NAMESPACE
+
 class CodeModelAttributes : public CodeModelWalker
 {
 public:
@@ -66,5 +68,7 @@ private:
 
     TranslationUnit  m_translationUnit;
 };
+
+QT_END_NAMESPACE
 
 #endif

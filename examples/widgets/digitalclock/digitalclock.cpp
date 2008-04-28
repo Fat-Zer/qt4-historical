@@ -45,6 +45,7 @@
 
 #include "digitalclock.h"
 
+//! [0]
 DigitalClock::DigitalClock(QWidget *parent)
     : QLCDNumber(parent)
 {
@@ -59,8 +60,11 @@ DigitalClock::DigitalClock(QWidget *parent)
     setWindowTitle(tr("Digital Clock"));
     resize(150, 60);
 }
+//! [0]
 
+//! [1]
 void DigitalClock::showTime()
+//! [1] //! [2]
 {
     QTime time = QTime::currentTime();
     QString text = time.toString("hh:mm");
@@ -68,3 +72,4 @@ void DigitalClock::showTime()
         text[2] = ' ';
     display(text);
 }
+//! [2]

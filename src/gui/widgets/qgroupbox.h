@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_GROUPBOX
@@ -62,7 +64,7 @@ class Q_GUI_EXPORT QGroupBox : public QWidget
     Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(bool flat READ isFlat WRITE setFlat)
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
-    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled USER true)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked DESIGNABLE isCheckable NOTIFY toggled USER true)
 public:
     explicit QGroupBox(QWidget* parent=0);
     explicit QGroupBox(const QString &title, QWidget* parent=0);
@@ -114,6 +116,8 @@ private:
 };
 
 #endif // QT_NO_GROUPBOX
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

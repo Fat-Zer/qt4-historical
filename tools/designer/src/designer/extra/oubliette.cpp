@@ -62,6 +62,8 @@
 #include "itemdialog.h"
 #include <stdio.h>
 
+QT_BEGIN_NAMESPACE
+
 static const int TileWidth = 32;
 static const int TileHeight = 32;
 
@@ -112,7 +114,7 @@ void Oubliette::paintEvent(QPaintEvent *pe)
 
     QPoint pt = m_character.position();
     QPixmap pm;
-    QString pcString = QLatin1String(":/qthack/images/human.png");
+    QString pcString = QLatin1String(":/trolltech/qthack/images/human.png");
     QPixmapCache::find(pcString, pm);
     if (pm.isNull()) {
         pm = QPixmap(pcString);
@@ -162,13 +164,13 @@ void Oubliette::fillTile(QPainter *p, int x, int y, Tile le)
     QString str;
     switch (le.type) {
     case Tile::ClosedDoor:
-        str = QLatin1String(":/qthack/images/dngn_closed_door.png");
+        str = QLatin1String(":/trolltech/qthack/images/dngn_closed_door.png");
         break;
     case Tile::OpenDoor:
-        str = QLatin1String(":/qthack/images/dngn_open_door.png");
+        str = QLatin1String(":/trolltech/qthack/images/dngn_open_door.png");
         break;
     case Tile::Wall:
-        str = QLatin1String(":/qthack/images/dngn_rock_wall_07.png");
+        str = QLatin1String(":/trolltech/qthack/images/dngn_rock_wall_07.png");
         break;
     case Tile::Floor:
         break;
@@ -365,3 +367,5 @@ void Oubliette::showVictory()
     if (value == 1)
         QApplication::instance()->quit();
 }
+
+QT_END_NAMESPACE

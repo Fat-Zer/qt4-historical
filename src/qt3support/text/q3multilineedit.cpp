@@ -54,6 +54,7 @@
 #include "qtimer.h"
 #include <private/q3richtext_p.h>
 
+QT_BEGIN_NAMESPACE
 
 /*!
   \class Q3MultiLineEdit qmultilineedit.h
@@ -530,5 +531,7 @@ QString Q3MultiLineEdit::textLine(int line) const
     str.truncate(str.length() - 1);
     return str;
 }
+
+QT_END_NAMESPACE
 
 #endif

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/opengl/qgl.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/opengl/qgl.cpp -->
 <head>
-  <title>Qt 4.3: QGLContext Class Reference</title>
+  <title>Qt 4.4: QGLContext Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QGLContext Class Reference<br /><sup><sup>[<a href="qtopengl.html">QtOpenGL</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QGLContext Class Reference<br /><span class="small-subtitle">[<a href="qtopengl.html">QtOpenGL</a> module]</span>
+</h1>
 <p>The QGLContext class encapsulates an OpenGL rendering context. <a href="#details">More...</a></p>
 <pre> #include &lt;QGLContext&gt;</pre><ul>
 <li><a href="qglcontext-members.html">List of all members, including inherited members</a></li>
@@ -31,6 +32,8 @@
 <li><div class="fn"/>void <b><a href="qglcontext.html#deleteTexture">deleteTexture</a></b> ( GLuint <i>id</i> )</li>
 <li><div class="fn"/>QPaintDevice * <b><a href="qglcontext.html#device">device</a></b> () const</li>
 <li><div class="fn"/>virtual void <b><a href="qglcontext.html#doneCurrent">doneCurrent</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qglcontext.html#drawTexture">drawTexture</a></b> ( const QRectF &amp; <i>target</i>, GLuint <i>textureId</i>, GLenum <i>textureTarget</i> = GL_TEXTURE_2D )</li>
+<li><div class="fn"/>void <b><a href="qglcontext.html#drawTexture-2">drawTexture</a></b> ( const QPointF &amp; <i>point</i>, GLuint <i>textureId</i>, GLenum <i>textureTarget</i> = GL_TEXTURE_2D )</li>
 <li><div class="fn"/>QGLFormat <b><a href="qglcontext.html#format">format</a></b> () const</li>
 <li><div class="fn"/>void * <b><a href="qglcontext.html#getProcAddress">getProcAddress</a></b> ( const QString &amp; <i>proc</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qglcontext.html#isSharing">isSharing</a></b> () const</li>
@@ -143,6 +146,16 @@
 <a name="//apple_ref/cpp/instm/QGLContext/doneCurrent" />
 <h3 class="fn"><a name="doneCurrent"></a>void QGLContext::doneCurrent ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Makes no GL context the current context. Normally, you do not need to call this function; <a href="qglcontext.html">QGLContext</a> calls it as necessary.</p>
+<a name="//apple_ref/cpp/instm/QGLContext/drawTexture" />
+<h3 class="fn"><a name="drawTexture"></a>void QGLContext::drawTexture ( const <a href="qrectf.html">QRectF</a> &amp; <i>target</i>, GLuint <i>textureId</i>, GLenum <i>textureTarget</i> = GL_TEXTURE_2D )</h3>
+<p>Draws the given texture, <i>textureId</i>, to the given target rectangle, <i>target</i>, in OpenGL model space. The <i>textureTarget</i> should be a 2D texture target.</p>
+<p>Equivalent to the corresponding QGLContext::drawTexture().</p>
+<p>This function was introduced in Qt 4.4.</p>
+<h3 class="fn"><a name="drawTexture-2"></a>void QGLContext::drawTexture ( const <a href="qpointf.html">QPointF</a> &amp; <i>point</i>, GLuint <i>textureId</i>, GLenum <i>textureTarget</i> = GL_TEXTURE_2D )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Draws the given texture at the given <i>point</i> in OpenGL model space. The <i>textureTarget</i> should be a 2D texture target.</p>
+<p>Equivalent to the corresponding <a href="qglcontext.html#drawTexture">QGLContext::drawTexture</a>().</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QGLContext/format" />
 <h3 class="fn"><a name="format"></a><a href="qglformat.html">QGLFormat</a> QGLContext::format () const</h3>
 <p>Returns the frame buffer format that was obtained (this may be a subset of what was requested).</p>
@@ -181,15 +194,15 @@
 <h3 class="fn"><a name="setFormat"></a>void QGLContext::setFormat ( const <a href="qglformat.html">QGLFormat</a> &amp; <i>format</i> )</h3>
 <p>Sets a <i>format</i> for this context. The context is <a href="qglcontext.html#reset">reset</a>.</p>
 <p>Call <a href="qglcontext.html#create">create</a>() to create a new GL context that tries to match the new format.</p>
-<pre> QGLContext *cx;
-<span class="comment"> //</span>  ...
- QGLFormat f;
- f.setStereo(true);
- cx-&gt;setFormat(f);
- if (!cx-&gt;create())
-     exit(); <span class="comment">//</span> no OpenGL support, or cannot render on the specified paintdevice
- if (!cx-&gt;format().stereo())
-     exit(); <span class="comment">//</span> could not create stereo context</pre>
+<pre>     QGLContext *cx;
+     //  ...
+     QGLFormat f;
+     f.setStereo(true);
+     cx-&gt;setFormat(f);
+     if (!cx-&gt;create())
+         exit(); // no OpenGL support, or cannot render on the specified paintdevice
+     if (!cx-&gt;format().stereo())
+         exit(); // could not create stereo context</pre>
 <p>See also <a href="qglcontext.html#format">format</a>(), <a href="qglcontext.html#reset">reset</a>(), and <a href="qglcontext.html#create">create</a>().</p>
 <a name="//apple_ref/cpp/instm/QGLContext/setInitialized" />
 <h3 class="fn"><a name="setInitialized"></a>void QGLContext::setInitialized ( bool <i>on</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -220,6 +233,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

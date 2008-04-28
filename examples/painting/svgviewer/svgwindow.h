@@ -48,8 +48,10 @@
 #include <QScrollArea>
 #include <QString>
 
+QT_BEGIN_NAMESPACE
 class QKeyEvent;
 class QMouseEvent;
+QT_END_NAMESPACE
 
 class SvgWindow : public QScrollArea
 {

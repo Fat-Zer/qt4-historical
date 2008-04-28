@@ -46,9 +46,12 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QLabel;
 class QSpinBox;
+QT_END_NAMESPACE
 
+//! [0]
 class CalculatorForm : public QWidget
 {
     Q_OBJECT
@@ -65,5 +68,6 @@ private:
     QSpinBox *ui_inputSpinBox2;
     QLabel *ui_outputWidget;
 };
+//! [0]
 
 #endif

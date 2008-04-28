@@ -44,8 +44,11 @@
 #ifndef CALCULATORFORM_H
 #define CALCULATORFORM_H
 
+//! [0]
 #include "ui_calculatorform.h"
+//! [0]
 
+//! [1]
 class CalculatorForm : public QWidget
 {
     Q_OBJECT
@@ -60,5 +63,6 @@ private slots:
 private:
     Ui::CalculatorForm ui;
 };
+//! [1]
 
 #endif

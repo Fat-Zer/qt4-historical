@@ -54,6 +54,7 @@
 #define GL_MULTISAMPLE  0x809D
 #endif
 
+//! [0]
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
@@ -76,12 +77,15 @@ GLWidget::GLWidget(QWidget *parent)
     setMinimumSize(200, 200);
     setWindowTitle(tr("Overpainting a Scene"));
 }
+//! [0]
 
+//! [1]
 GLWidget::~GLWidget()
 {
     makeCurrent();
     glDeleteLists(object, 1);
 }
+//! [1]
 
 void GLWidget::setXRotation(int angle)
 {
@@ -104,10 +108,12 @@ void GLWidget::setZRotation(int angle)
         zRot = angle;
 }
 
+//! [2]
 void GLWidget::initializeGL()
 {
     object = makeObject();
 }
+//! [2]
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
@@ -132,9 +138,12 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 void GLWidget::paintEvent(QPaintEvent *event)
 {
     makeCurrent();
+//! [4]
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
+//! [4]
 
+//! [6]
     qglClearColor(trolltechPurple.dark());
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
@@ -146,7 +155,9 @@ void GLWidget::paintEvent(QPaintEvent *event)
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
     setupViewport(width(), height());
+//! [6]
 
+//! [7]
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glTranslated(0.0, 0.0, -10.0);
@@ -154,12 +165,15 @@ void GLWidget::paintEvent(QPaintEvent *event)
     glRotated(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotated(zRot / 16.0, 0.0, 0.0, 1.0);
     glCallList(object);
+//! [7]
 
+//! [8]
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+//! [8]
 
-    QPainter painter;
-    painter.begin(this);
+//! [10]
+    QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     foreach (Bubble *bubble, bubbles) {
         if (bubble->rect().intersects(event->rect()))
@@ -168,17 +182,22 @@ void GLWidget::paintEvent(QPaintEvent *event)
     drawInstructions(&painter);
     painter.end();
 }
+//! [10]
 
+//! [11]
 void GLWidget::resizeGL(int width, int height)
 {
     setupViewport(width, height);
 }
+//! [11]
 
+//! [12]
 void GLWidget::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
     createBubbles(20 - bubbles.count());
 }
+//! [12]
 
 QSize GLWidget::sizeHint() const
 {
@@ -294,6 +313,7 @@ void GLWidget::createBubbles(int number)
     }
 }
 
+//! [13]
 void GLWidget::animate()
 {
     QMutableListIterator<Bubble*> iter(bubbles);
@@ -304,7 +324,9 @@ void GLWidget::animate()
     }
     update();
 }
+//! [13]
 
+//! [14]
 void GLWidget::setupViewport(int width, int height)
 {
     int side = qMin(width, height);
@@ -315,7 +337,9 @@ void GLWidget::setupViewport(int width, int height)
     glOrtho(-0.5, +0.5, +0.5, -0.5, 4.0, 15.0);
     glMatrixMode(GL_MODELVIEW);
 }
+//! [14]
 
+//! [15]
 void GLWidget::drawInstructions(QPainter *painter)
 {
     QString text = tr("Click and drag with the left mouse button "
@@ -326,6 +350,8 @@ void GLWidget::drawInstructions(QPainter *painter)
     QRect rect = metrics.boundingRect(0, 0, width() - 2*border, int(height()*0.125),
                                       Qt::AlignCenter | Qt::TextWordWrap, text);
     painter->setRenderHint(QPainter::TextAntialiasing);
+    painter->fillRect(QRect(0, 0, width(), rect.height() + 2*border),
+                     QColor(0, 0, 0, 127));
     painter->setPen(Qt::white);
     painter->fillRect(QRect(0, 0, width(), rect.height() + 2*border),
                       QColor(0, 0, 0, 127));
@@ -333,3 +359,4 @@ void GLWidget::drawInstructions(QPainter *painter)
                       rect.width(), rect.height(),
                       Qt::AlignCenter | Qt::TextWordWrap, text);
 }
+//! [15]

@@ -50,6 +50,8 @@
 #include <Qt3Support/Q3ListView>
 #include <Qt3Support/Q3Header>
 
+QT_BEGIN_NAMESPACE
+
 inline QHash<QString, DomProperty *> propertyMap(const QList<DomProperty *> &properties) // ### remove me
 {
     QHash<QString, DomProperty *> map;
@@ -99,13 +101,32 @@ bool Q3ListViewExtraInfo::saveWidgetExtraInfo(DomWidget *ui_widget)
         ptext->setAttributeName(QLatin1String("text"));
         ptext->setElementString(str);
 
+        DomProperty *pclickable = new DomProperty();
+        pclickable->setAttributeName(QLatin1String("clickable"));
+        pclickable->setElementBool(header->isClickEnabled(i) ? QLatin1String("true") : QLatin1String("false"));
+
+        DomProperty *presizable = new DomProperty();
+        presizable->setAttributeName(QLatin1String("resizable"));
+        presizable->setElementBool(header->isResizeEnabled(i) ? QLatin1String("true") : QLatin1String("false"));
+
         properties.append(ptext);
+        properties.append(pclickable);
+        properties.append(presizable);
 
         c->setElementProperty(properties);
         columns.append(c);
     }
 
     ui_widget->setElementColumn(columns);
+
+    QList<DomItem *> items;
+    Q3ListViewItem *child = listView->firstChild();
+    while (child) {
+        items.append(saveQ3ListViewItem(child));
+        child = child->nextSibling();
+    }
+    ui_widget->setElementItem(items);
+
 
     return true;
 }
@@ -151,6 +172,32 @@ bool Q3ListViewExtraInfo::loadWidgetExtraInfo(DomWidget *ui_widget)
     }
 
     return true;
+}
+
+DomItem *Q3ListViewExtraInfo::saveQ3ListViewItem(Q3ListViewItem *item) const
+{
+    DomItem *pitem = new DomItem();
+    QList<DomProperty *> properties;
+    const int columnCount = static_cast<Q3ListView*>(widget())->columns();
+    for (int i = 0; i < columnCount; ++i) {
+        DomString *str = new DomString();
+        str->setText(item->text(i));
+
+        DomProperty *ptext = new DomProperty();
+        ptext->setAttributeName(QLatin1String("text"));
+        ptext->setElementString(str);
+
+        properties.append(ptext);
+    }
+    pitem->setElementProperty(properties);
+    QList<DomItem *> items;
+    Q3ListViewItem *child = item->firstChild();
+    while (child) {
+        items.append(saveQ3ListViewItem(child));
+        child = child->nextSibling();
+    }
+    pitem->setElementItem(items);
+    return pitem;
 }
 
 void Q3ListViewExtraInfo::initializeQ3ListViewItems(const QList<DomItem *> &items, Q3ListViewItem *parentItem)
@@ -200,3 +247,5 @@ QObject *Q3ListViewExtraInfoFactory::createExtension(QObject *object, const QStr
 
     return 0;
 }
+
+QT_END_NAMESPACE

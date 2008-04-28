@@ -98,7 +98,37 @@ void DemoItemAnimation::play(bool fromStart, bool force)
 {
     this->fromStart = fromStart;
     this->forcePlay = force;
-    
+
+    QPointF currPos = this->demoItem()->pos();
+
+    // If the item that this animation controls in currently under the
+    // control of another animation, stop that animation first
+    if (this->demoItem()->currentAnimation)
+        this->demoItem()->currentAnimation->timeline->stop();
+    this->demoItem()->currentAnimation = this;
+    this->timeline->stop();
+
+    if (Colors::noAnimations && !this->forcePlay){
+        this->timeline->setCurrentTime(1);
+        this->demoItem()->setPos(this->posAt(1));
+    }
+    else{
+        if (this->demoItem()->isVisible())
+            // If the item is already visible, start the animation from
+            // the items current position rather than from start.
+            this->setPosAt(0.0, currPos);
+        else
+            this->setPosAt(0.0, this->startPos);
+
+        if (this->fromStart){
+            this->timeline->setCurrentTime(0);
+            this->demoItem()->setPos(this->posAt(0));
+        }
+    }
+
+    if (this->inOrOut == ANIM_IN)
+        this->demoItem()->setRecursiveVisible(true);
+
     if (this->startDelay){
         QTimer::singleShot(this->startDelay, this, SLOT(playWithoutDelay()));
         return;
@@ -109,35 +139,9 @@ void DemoItemAnimation::play(bool fromStart, bool force)
 
 void DemoItemAnimation::playWithoutDelay()
 {
-    QPointF currPos = this->demoItem()->pos();
-    
-    // If the item that this animation controls in currently under the
-    // control of another animation, stop that animation first
-    if (this->demoItem()->currentAnimation)
-        this->demoItem()->currentAnimation->timeline->stop();   
-    this->demoItem()->currentAnimation = this;
-    this->timeline->stop();
-
-    if (Colors::noAnimations && !this->forcePlay){
-        this->timeline->setCurrentTime(1);
-    }
-    else{
-        if (this->fromStart)
-            this->timeline->setCurrentTime(0);
-
-        if (this->demoItem()->isVisible())
-            // If the item is already visible, start the animation from
-            // the items current position rather than from start.  
-            this->setPosAt(0.0, currPos);
-        else
-            this->setPosAt(0.0, this->startPos);
-    }
-
-    this->demoItem()->setPos(this->posAt(this->timeline->currentTime()));
-    this->demoItem()->setRecursiveVisible(true);
     if (this->moveOnPlay && !(Colors::noAnimations && !this->forcePlay))
         this->timeline->start();
-    this->demoItem()->animationStarted(this->inOrOut);       
+    this->demoItem()->animationStarted(this->inOrOut);
 }
 
 void DemoItemAnimation::stop(bool reset)

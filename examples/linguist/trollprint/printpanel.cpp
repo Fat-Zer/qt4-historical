@@ -45,6 +45,7 @@
 
 #include "printpanel.h"
 
+//! [0]
 PrintPanel::PrintPanel(QWidget *parent)
     : QWidget(parent)
 {
@@ -52,15 +53,19 @@ PrintPanel::PrintPanel(QWidget *parent)
     QLabel *label = new QLabel(tr("<b>TROLL PRINT</b>"));
     label->setAlignment(Qt::AlignCenter);
 */
+//! [0]
 
+//! [1]
     twoSidedGroupBox = new QGroupBox(tr("2-sided"));
     twoSidedEnabledRadio = new QRadioButton(tr("Enabled"));
     twoSidedDisabledRadio = new QRadioButton(tr("Disabled"));
+//! [1] //! [2]
     twoSidedDisabledRadio->setChecked(true);
 
     colorsGroupBox = new QGroupBox(tr("Colors"));
     colorsEnabledRadio = new QRadioButton(tr("Enabled"));
     colorsDisabledRadio = new QRadioButton(tr("Disabled"));
+//! [2]
     colorsDisabledRadio->setChecked(true);
 
     QHBoxLayout *twoSidedLayout = new QHBoxLayout;

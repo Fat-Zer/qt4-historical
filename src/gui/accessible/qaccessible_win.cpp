@@ -40,10 +40,12 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
 #include "qaccessible.h"
-
 #ifndef QT_NO_ACCESSIBILITY
+
+#ifdef Q_OS_WINCE
+#include "qguifunctions_wince.h"
+#endif
 
 #include "qapplication.h"
 #include "qlibrary.h"
@@ -55,6 +57,9 @@
 #if WINVER >= 0x0600
 #include <winuser.h>
 #else
+#  if defined(Q_OS_WINCE)
+#    include <bldver.h>
+#  endif
 #include <winable.h>
 #endif
 
@@ -63,9 +68,13 @@
 #include <comdef.h>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 //#define DEBUG_SHOW_ATCLIENT_COMMANDS
 #ifdef DEBUG_SHOW_ATCLIENT_COMMANDS
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <qdebug.h>
+QT_END_INCLUDE_NAMESPACE
 
 void showDebug(const char* funcName, const QAccessibleInterface *iface)
 {
@@ -104,7 +113,7 @@ void QAccessible::updateAccessibility(QObject *o, int who, Event reason)
     case Alert:
         {
 #ifndef QT_NO_MESSAGEBOX
-            QMessageBox *mb = ::qobject_cast<QMessageBox*>(o);
+            QMessageBox *mb = qobject_cast<QMessageBox*>(o);
             if (mb) {
                 switch (mb->icon()) {
                 case QMessageBox::Warning:
@@ -132,18 +141,31 @@ void QAccessible::updateAccessibility(QObject *o, int who, Event reason)
     }
 
     if (soundName.size()) {
+#ifndef QT_NO_SETTINGS
         QSettings settings(QLatin1String("HKEY_CURRENT_USER\\AppEvents\\Schemes\\Apps\\.Default\\") +
                                          QString::fromLatin1(soundName.constData()), QSettings::NativeFormat);
         QString file = settings.value(QLatin1String(".Current/.")).toString();
-        if (!file.isEmpty())
-            PlaySoundA(soundName.constData(), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT );
-    }
+#else
+		QString file;
+#endif
+		if (!file.isEmpty()) {
+	        QT_WA({
+				PlaySoundW(reinterpret_cast<const wchar_t *> (QString::fromLatin1(soundName).utf16()), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT );
+			} , {
+				PlaySoundA(soundName.constData(), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT );
+			});
+		}
+	}
 
     if (!isActive())
         return;
 
     typedef void (WINAPI *PtrNotifyWinEvent)(DWORD, HWND, LONG, LONG);
 
+#if defined(Q_OS_WINCE) // ### TODO: check for NotifyWinEvent in CE 6.0
+    // There is no user32.lib nor NotifyWinEvent for CE
+    return;
+#else
     static PtrNotifyWinEvent ptrNotifyWinEvent = 0;
     static bool resolvedNWE = false;
     if (!resolvedNWE) {
@@ -190,6 +212,7 @@ void QAccessible::updateAccessibility(QObject *o, int who, Event reason)
     if (reason != MenuCommand) { // MenuCommand is faked
         ptrNotifyWinEvent(reason, w->winId(), OBJID_CLIENT, who);
     }
+#endif // Q_OS_WINCE
 }
 
 void QAccessible::setRootObject(QObject *o)
@@ -1154,4 +1177,6 @@ HRESULT STDMETHODCALLTYPE QWindowsAccessible::ContextSensitiveHelp(BOOL)
     return S_OK;
 }
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_ACCESSIBILITY

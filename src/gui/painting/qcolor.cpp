@@ -62,6 +62,7 @@ static bool allowX11ColorNames = false;
 #include <stdio.h>
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QColor
@@ -159,15 +160,7 @@ static bool allowX11ColorNames = false;
     represents a fully transparent color, while 255 represents a fully
     opaque color. For example:
 
-    \code
-    // Specfiy semi-transparent red
-    painter.setBrush(QColor(255, 0, 0, 127));
-    painter.drawRect(0, 0, width()/2, height());
-
-    // Specify semi-transparend blue
-    painter.setBrush(QColor(0, 0, 255, 127));
-    painter.drawRect(0, 0, width(), height()/2);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qcolor.cpp 0
 
     The code above produces the following output:
 
@@ -1398,7 +1391,7 @@ QColor QColor::toHsv() const
     const qreal min = Q_MIN_3(r, g, b);
     const qreal delta = max - min;
     color.ct.ahsv.value = qRound(max * USHRT_MAX);
-    if (qFuzzyCompare(delta, qreal(0.0))) {
+    if (qFuzzyCompare(delta + 1, 1)) {
         // achromatic case, hue is undefined
         color.ct.ahsv.hue = USHRT_MAX;
         color.ct.ahsv.saturation = 0;
@@ -2066,6 +2059,8 @@ QDebug operator<<(QDebug dbg, const QColor &c)
 QDataStream &operator<<(QDataStream &stream, const QColor &color)
 {
     if (stream.version() < 7) {
+        if (!color.isValid())
+            return stream << quint32(0x49000000);
         quint32 p = (quint32)color.rgb();
         if (stream.version() == 1) // Swap red and blue
             p = ((p << 16) & 0xff0000) | ((p >> 16) & 0xff) | (p & 0xff00ff00);
@@ -2102,6 +2097,10 @@ QDataStream &operator>>(QDataStream &stream, QColor &color)
     if (stream.version() < 7) {
         quint32 p;
         stream >> p;
+        if (p == 0x49000000) {
+            color.invalidate();
+            return stream;
+        }
         if (stream.version() == 1) // Swap red and blue
             p = ((p << 16) & 0xff0000) | ((p >> 16) & 0xff) | (p & 0xff00ff00);
         color.setRgb(p);
@@ -2254,3 +2253,5 @@ QDataStream &operator>>(QDataStream &stream, QColor &color)
 
     \sa QColor::rgb(), QColor::rgba()
 */
+
+QT_END_NAMESPACE

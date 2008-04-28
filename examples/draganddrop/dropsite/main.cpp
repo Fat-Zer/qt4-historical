@@ -45,6 +45,7 @@
 
 #include "dropsitewindow.h"
 
+//! [main() function]
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -52,3 +53,4 @@ int main(int argc, char *argv[])
     window.show();
     return app.exec();
 }
+//! [main() function]

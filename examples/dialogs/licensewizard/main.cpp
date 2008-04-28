@@ -50,6 +50,8 @@
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(licensewizard);
+
     QApplication app(argc, argv);
 
     QString translatorFileName = QLatin1String("qt_");

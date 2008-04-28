@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example linguist/trollprint
     \title Troll Print Example
@@ -24,26 +67,20 @@
 
     The \c PrintPanel class is defined in \c printpanel.h.
 
-    \quotefromfile linguist/trollprint/printpanel.h
-    \skipto public QWidget
-    \printuntil Q_OBJECT
+    \snippet examples/linguist/trollprint/printpanel.h 0
 
     \c PrintPanel is a QWidget. It needs the \c Q_OBJECT macro for \c
     tr() to work properly.
 
     The implementation file is \c printpanel.cpp.
 
-    \quotefromfile linguist/trollprint/printpanel.cpp
-    \skipto PrintPanel
-    \printuntil /^.\//
+    \snippet examples/linguist/trollprint/printpanel.cpp 0
 
     Some of the code is commented out in Troll Print 1.0; you will
     uncomment it later, for Troll Print 1.1.
 
-    \quotefromfile linguist/trollprint/printpanel.cpp
-    \skipto twoSidedGroupBox =
-    \printuntil "Disabled"
-    \printuntil "Disabled"
+    \snippet examples/linguist/trollprint/printpanel.cpp 1
+    \snippet examples/linguist/trollprint/printpanel.cpp 2
 
     Notice the two occurrences of \c tr("Enabled") and of \c
     tr("Disabled") in PrintPanel. Since both "Enabled"s and "Disabled"s
@@ -59,15 +96,12 @@
     surprises. In the implementation, \c mainwindow.cpp, we have some
     user-visible source texts that must be marked for translation.
 
-    \quotefromfile linguist/trollprint/mainwindow.cpp
-    \skipto setWindowTitle
-    \printline setWindowTitle
+    \snippet examples/linguist/trollprint/mainwindow.cpp 0
 
     We must translate the window title.
 
-    \skipto ::createActions
-    \printuntil ::createMenus
-    \printuntil /^\}/
+    \snippet examples/linguist/trollprint/mainwindow.cpp 1
+    \snippet examples/linguist/trollprint/mainwindow.cpp 3
 
     We also need to translate the actions and menus. Note that the
     two argument form of \c tr() is used for the keyboard
@@ -75,9 +109,7 @@
     the translator has to indicate what function that accelerator
     will perform.
 
-    \quotefromfile linguist/trollprint/main.cpp
-    \skipto QTranslator
-    \printuntil installTranslator
+    \snippet examples/linguist/trollprint/main.cpp 0
 
     The \c main() function in \c main.cpp is the same as the one in
     the \l{linguist/arrowpad}{Arrow Pad} example. In particular, it
@@ -116,18 +148,12 @@
     second argument "two-sided" in the appropriate \c tr() calls to the
     first pair of radio buttons:
 
-    \code
-        twoSidedEnabledRadio = new QRadioButton(tr("Enabled", "two-sided"));
-        twoSidedDisabledRadio = new QRadioButton(tr("Disabled", "two-sided"));
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.trollprint.qdoc 0
 
     and add the second argument "colors" in the appropriate \c tr() calls
     for the second pair of radio buttons:
 
-    \code
-        colorsEnabledRadio = new QRadioButton(tr("Enabled", "colors"), colors);
-        colorsDisabledRadio = new QRadioButton(tr("Disabled", "colors"), colors);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.trollprint.qdoc 1
 
     Now run \c lupdate and open \c trollprint_pt.ts with \e {Qt Linguist}. You
     should now see two changes.
@@ -167,16 +193,7 @@
     the translations. This can be achieved by using a \c TRANSLATOR comment
     in the source code:
 
-    \code
-        /*
-           TRANSLATOR MainWindow
-
-           In this application the whole application is a MainWindow.
-           Choose Help|About from the menu bar to see some text
-           belonging to MainWindow.
-
-           ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.trollprint.qdoc 2
 
     Try adding these comments to some source files, particularly to
     dialog classes, describing the navigation necessary to reach the
@@ -191,17 +208,7 @@
     correct. Comments that provide good navigation information can save
     them time:
 
-    \code
-        /*
-            TRANSLATOR ZClientErrorDialog
-
-     Choose Client|Edit to reach the Client Edit dialog, then choose
-     Client Specification from the drop down list at the top and pick
-     client Bartel Leendert van der Waerden. Now check the Profile
-     checkbox and then click the Start Processing button. You should
-     now see a pop up window with the text "Error: Name too long!".
-     This window is a ZClientErrorDialog.
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.trollprint.qdoc 3
 
     \section1 Troll Print 1.1
 

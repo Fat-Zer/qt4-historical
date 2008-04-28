@@ -53,6 +53,8 @@
 #include <QtCore/QPointer>
 #include <QtCore/QMap>
 
+QT_BEGIN_NAMESPACE
+
 class QAction;
 class QActionGroup;
 class QUndoGroup;
@@ -66,7 +68,7 @@ class QT_FORMEDITOR_EXPORT FormWindowManager: public QDesignerFormWindowManagerI
 {
     Q_OBJECT
 public:
-    FormWindowManager(QDesignerFormEditorInterface *core, QObject *parent = 0);
+    explicit FormWindowManager(QDesignerFormEditorInterface *core, QObject *parent = 0);
     virtual ~FormWindowManager();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -119,9 +121,11 @@ private slots:
     void slotActionVerticalLayoutActivated();
     void slotActionSplitHorizontalActivated();
     void slotActionSplitVerticalActivated();
+    void slotActionFormLayoutActivated();
     void slotActionGridLayoutActivated();
     void slotActionBreakLayoutActivated();
     void slotActionAdjustSizeActivated();
+    void slotActionSimplifyLayoutActivated();
 
     void slotUpdateActions();
 
@@ -132,6 +136,7 @@ private:
 
     void layoutContainerHorizontal();
     void layoutContainerVertical();
+    void layoutContainerFormLayout();
     void layoutContainerGrid();
 
     void setCurrentUndoStack(QUndoStack *stack);
@@ -172,5 +177,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // FORMWINDOWMANAGER_H

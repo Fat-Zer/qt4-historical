@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_FILEICONPROVIDER
@@ -71,9 +73,11 @@ private:
     Q_DISABLE_COPY(QFileIconProvider)
 };
 
-#endif
+#endif // QT_NO_FILEICONPROVIDER
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 
-#endif
+#endif // QFILEICONPROVIDER_H
 

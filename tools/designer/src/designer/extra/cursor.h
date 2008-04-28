@@ -47,6 +47,8 @@
 #include <QtCore/QPoint>
 #include <QtCore/QList>
 
+QT_BEGIN_NAMESPACE
+
 class Item;
 
 class Cursor
@@ -68,5 +70,7 @@ private:
     int m_totalSteps;
 
 };
+
+QT_END_NAMESPACE
 
 #endif

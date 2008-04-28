@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \title Calendar Widget Example
     \example widgets/calendarwidget
@@ -57,12 +100,9 @@
 
     Here is the definition of the \c Window class:
 
-    \quotefromfile widgets/calendarwidget/window.h
-    \skipto /class Window/
-    \printuntil firstDayLabel
+    \snippet examples/widgets/calendarwidget/window.h 0
     \dots
-    \skipto mayFirstCheckBox
-    \printuntil /^\};/
+    \snippet examples/widgets/calendarwidget/window.h 1
 
     As is often the case with classes that represent self-contained
     windows, most of the API is private. We will review the private
@@ -72,9 +112,7 @@
 
     Let's now review the class implementation, starting with the constructor:
 
-    \quotefromfile widgets/calendarwidget/window.cpp
-    \skipto /::Window/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 0
 
     We start by creating the four \l{QGroupBox}es and their child
     widgets (including the QCalendarWidget) using four private \c
@@ -94,8 +132,7 @@
 
     Let's move on to the \c createPreviewGroupBox() function:
 
-    \skipto ::createPreviewGroupBox
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 9
 
     The \gui Preview group box contains only one widget: the
     QCalendarWidget. We set it up, connect its
@@ -107,8 +144,7 @@
     and several widgets are set up the same way; we look at parts of
     its implementation here and skip the rest:
 
-    \skipto /::createGeneralOptionsGroupBox/
-    \printuntil /firstDayLabel->setBuddy/
+    \snippet examples/widgets/calendarwidget/window.cpp 10
     \dots
 
     We start with the setup of the \gui{Week starts on} combobox.
@@ -122,8 +158,7 @@
     C++ will happily convert any enum value to \c int.
 
     \dots
-    \skipto /connect/
-    \printuntil /verticalHeaderChanged/
+    \snippet examples/widgets/calendarwidget/window.cpp 11
     \dots
 
     After creating the widgets, we connect the signals and slots. We
@@ -131,16 +166,14 @@
     public slots provided by QComboBox.
 
     \dots
-    \skipto /firstDayChanged/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 12
 
     At the end of the function, we call the slots that update the calendar to ensure
     that the QCalendarWidget is synchronized with the other widgets on startup.
 
     Let's now take a look at the \c createDatesGroupBox() private function:
 
-    \skipto /::createDatesGroupBox/
-    \printto /connect/
+    \snippet examples/widgets/calendarwidget/window.cpp 13
 
     In this function, we create the \gui {Minimum Date}, \gui {Maximum Date},
     and \gui {Current Date} editor widgets,
@@ -149,11 +182,9 @@
     set in \c createPrivewGroupBox(); we can then set the widgets
     default values to the calendars values.
 
-    \skipto /connect/
-    \printto /QGridLayout/
+    \snippet examples/widgets/calendarwidget/window.cpp 14
     \dots
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 15
 
     We connect the \c currentDateEdit's
     \l{QDateEdit::}{dateChanged()} signal directly to the calendar's
@@ -165,21 +196,20 @@
 
     Here is the \c createTextFormatsGroup() function:
 
-    \skipto /::createTextFormatsGroup/
-    \printto /headerTextFormatCombo/
+    \snippet examples/widgets/calendarwidget/window.cpp 16
 
     We set up the \gui {Weekday Color} and \gui {Weekend Color} comboboxes
     using \c createColorCombo(), which instantiates a QComboBox and
     populates it with colors ("Red", "Blue", etc.).
 
-    \printto /connect/
+    \snippet examples/widgets/calendarwidget/window.cpp 17
 
     The \gui {Header Text Format} combobox lets the user change the
     text format (bold, italic, or plain) used for horizontal and
     vertical headers. The \gui {First Friday in blue} and \gui {May 1
     in red} check box affect the rendering of specific dates.
 
-    \printto /QHBoxLayout/
+    \snippet examples/widgets/calendarwidget/window.cpp 18
 
     We connect the check boxes and comboboxes to various private
     slots. The \gui {First Friday in blue} and \gui {May 1 in red}
@@ -187,8 +217,7 @@
     which is also called when the calendar switches month.
 
     \dots
-    \skipto reformatHeaders(
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 19
 
     At the end of \c createTextFormatsGroupBox(), we call private
     slots to synchronize the QCalendarWidget with the other widgets.
@@ -197,8 +226,7 @@
     functions. Let's now take a look at the other private functions
     and slots.
 
-    \skipto /::createColorCombo/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 20
 
     In \c createColorCombo(), we create a combobox and populate it with
     standard colors. The second argument to QComboBox::addItem()
@@ -207,9 +235,7 @@
     This function was used to set up the \gui {Weekday Color}
     and \gui {Weekend Color} comboboxes.
 
-    \quotefromfile widgets/calendarwidget/window.cpp
-    \skipto /::firstDayChanged/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 1
 
     When the user changes the \gui {Week starts on} combobox's
     value, \c firstDayChanged() is invoked with the index of the
@@ -221,14 +247,12 @@
     verticalHeaderChanged() are very similar to \c firstDayChanged(),
     so they are omitted.
 
-    \skipto /::selectedDateChanged/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 2
 
     The \c selectedDateChanged() updates the \gui{Current Date}
     editor to reflect the current state of the QCalendarWidget.
 
-    \skipto /::minimumDateChanged/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 3
 
     When the user changes the minimum date, we tell the
     QCalenderWidget. We also update the \gui {Maximum Date} editor,
@@ -236,14 +260,12 @@
     date, QCalendarWidget will automatically adapt its maximum date
     to avoid a contradicting state.
 
-    \skipto /::maximumDateChanged/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 4
 
     \c maximumDateChanged() is implemented similarly to \c
     minimumDateChanged().
 
-    \skipto /::weekdayFormatChanged/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 5
 
     Each combobox item has a QColor object as user data corresponding to the
     item's text. After fetching the colors from the comboboxes, we
@@ -254,15 +276,13 @@
     specify various character formatting information. In this
     example, we only show a subset of the possibilities.
 
-    \skipto /::weekendFormatChanged/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 6
 
     \c weekendFormatChanged() is the same as \c
     weekdayFormatChanged(), except that it affects Saturday and
     Sunday instead of Monday to Friday.
 
-    \skipto /::reformatHeaders/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 7
 
     The \c reformatHeaders() slot is called when the user
     changes the text format of
@@ -271,8 +291,7 @@
     have been to store \l{QTextCharFormat} values alongside the combobox
     items.)
 
-    \skipto /::reformatCalendarPage/
-    \printuntil /^\}/
+    \snippet examples/widgets/calendarwidget/window.cpp 8
 
     In \c reformatCalendarPage(), we set the text format of the first
     Friday in the month and May 1 in the current year. The text

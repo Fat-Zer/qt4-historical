@@ -1,3 +1,4 @@
+//! [0]
 function Calculator(ui)
 {
     this.ui = ui;
@@ -46,6 +47,7 @@ function Calculator(ui)
         equalButton.clicked.connect(this, "equalClicked");
     }
 }
+//! [0]
 
 Calculator.prototype.abortOperation = function()
 {
@@ -69,6 +71,7 @@ Calculator.prototype.calculate = function(rightOperand, pendingOperator)
     return true;
 }
 
+//! [1]
 Calculator.prototype.digitClicked = function()
 {
     var digitValue = __qt_sender__.text - 0;
@@ -80,6 +83,7 @@ Calculator.prototype.digitClicked = function()
     }
     this.ui.display.text += digitValue;
 }
+//! [1]
 
 Calculator.prototype.unaryOperatorClicked = function()
 {
@@ -153,7 +157,7 @@ Calculator.prototype.multiplicativeOperatorClicked = function()
 
 Calculator.prototype.equalClicked = function()
 {
-    operand = this.ui.display.text - 0;
+    var operand = this.ui.display.text - 0;
 
     if (this.pendingMultiplicativeOperator.length != 0) {
         if (!this.calculate(operand, this.pendingMultiplicativeOperator)) {
@@ -188,6 +192,7 @@ Calculator.prototype.pointClicked = function()
     this.waitingForOperand = false;
 }
 
+//! [2]
 Calculator.prototype.changeSignClicked = function()
 {
     var text = this.ui.display.text;
@@ -200,6 +205,7 @@ Calculator.prototype.changeSignClicked = function()
     }
     this.ui.display.text = text;
 }
+//! [2]
 
 Calculator.prototype.backspaceClicked = function()
 {

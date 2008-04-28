@@ -1,5 +1,48 @@
 /****************************************************************************
 **
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/****************************************************************************
+**
 ** Drag and drop documentation.
 **
 ** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
@@ -62,13 +105,9 @@
     \l{QWidget::mousePressEvent()}{mousePressEvent()} and start a drag
     and drop operation:
 
-    \quotefromfile snippets/dragging/mainwindow.cpp
-    \skipto mousePressEvent
-    \printuntil drag->exec
+    \snippet doc/src/snippets/dragging/mainwindow.cpp 0
     \dots 8
-    \skipto statusBar
-    \skipto }
-    \printuntil /^\}/
+    \snippet doc/src/snippets/dragging/mainwindow.cpp 2
 
     Although the user may take some time to complete the dragging operation,
     as far as the application is concerned the exec() function is a blocking
@@ -83,20 +122,15 @@
     \l{QWidget::mousePressEvent()}{mousePressEvent()} function to record to
     start position of the drag:
 
-    \quotefromfile snippets/draganddrop/dragwidget.cpp
-    \skipto mousePressEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 6
 
     Later, in \l{QWidget::mouseMoveEvent()}{mouseMoveEvent()}, we can determine
     whether a drag should begin, and construct a drag object to handle the
     operation:
 
-    \quotefromfile snippets/draganddrop/dragwidget.cpp
-    \skipto mouseMoveEvent
-    \printuntil drag->exec(
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 7
     \dots
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 8
 
     This particular approach uses the \l QPoint::manhattanLength() function
     to get a rough estimate of the distance between where the mouse click
@@ -114,14 +148,10 @@
     a QWidget subclass, making it possible to usefully implement drop event
     handlers:
 
-    \quotefromfile snippets/dropevents/window.cpp
-    \skipto Window::Window
-    \printuntil /^\{/
+    \snippet doc/src/snippets/dropevents/window.cpp 0
     \dots
-    \skipto setAcceptDrops(true);
-    \printuntil setAcceptDrops(true);
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/dropevents/window.cpp 1
+    \snippet doc/src/snippets/dropevents/window.cpp 2
 
     The dragEnterEvent() function is typically used to inform Qt about the
     types of data that the widget accepts.
@@ -132,8 +162,7 @@
     The following code shows how dragEnterEvent() can be reimplemented to
     tell the drag and drop system that we can only handle plain text:
 
-    \skipto dragEnterEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/dropevents/window.cpp 3
 
     The dropEvent() is used to unpack dropped data and handle it in way that
     is suitable for your application.
@@ -142,8 +171,7 @@
     QTextBrowser and a QComboBox is filled with the list of MIME types that
     are used to describe the data:
 
-    \skipto dropEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/dropevents/window.cpp 4
 
     In this case, we accept the proposed action without checking what it is.
     In a real world application, it may be necessary to return from the
@@ -234,16 +262,13 @@
     format. The following code takes a pixmap from a label and stores it
     as a Portable Network Graphics (PNG) file in a QMimeData object:
 
-    \quotefromfile snippets/separations/finalwidget.cpp
-    \skipto QByteArray output
-    \printuntil mimeData->setData
+    \snippet doc/src/snippets/separations/finalwidget.cpp 0
 
     Of course, for this case we could have simply used
     \l{QMimeData::setImageData()}{setImageData()} instead to supply image data
     in a variety of formats:
 
-    \skipto setImageData
-    \printuntil setImageData
+    \snippet doc/src/snippets/separations/finalwidget.cpp 1
 
     The QByteArray approach is still useful in this case because it provides
     greater control over the amount of data stored in the QMimeData object.
@@ -265,12 +290,9 @@
     example, we may want to ensure that dragging always moves objects in
     the widget:
 
-    \quotefromfile snippets/draganddrop/dragwidget.cpp
-    \skipto mouseMoveEvent
-    \printuntil drag->exec
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 7
     \dots
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 8
 
     The action returned by the exec() function may default to a
     \c CopyAction if the information is dropped into another application
@@ -282,30 +304,22 @@
     the dragEnterEvent() and let the user decide which they want to accept
     later:
 
-    \quotefromfile snippets/draganddrop/dragwidget.cpp
-    \skipto dragEnterEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 0
 
     When a drop occurs in the widget, the dropEvent() handler function is
     called, and we can deal with each possible action in turn. First, we
     deal with drag and drop operations within the same widget:
 
-    \quotefromfile snippets/draganddrop/dragwidget.cpp
-    \skipto dropEvent
-    \printuntil return
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 1
 
     In this case, we refuse to deal with move operations. Each type of drop
     action that we accept is checked and dealt with accordingly:
 
-    \skipto if
-    \printuntil Process the data
-    \skipto }
-    \printuntil Process the data
-    \skipto }
-    \printto End of quote
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 2
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 3
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 4
     \dots
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/draganddrop/dragwidget.cpp 5
 
     Note that we checked for individual drop actions in the above code.
     As mentioned above in the section on
@@ -324,9 +338,7 @@
     is within those areas. For example, the following code accepts any proposed
     drop actions when the cursor is over a child widget (\c dropFrame):
 
-    \quotefromfile snippets/droprectangle/window.cpp
-    \skipto dragMoveEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/droprectangle/window.cpp 0
 
     The dragMoveEvent() can also be used if you need to give visual
     feedback during a drag and drop operation, to scroll the window, or
@@ -338,9 +350,7 @@
     the clipboard. To access this, you need to obtain a QClipboard object
     from the QApplication object:
 
-    \quotefromfile widgets/charactermap/mainwindow.cpp
-    \skipto QApplication::clipboard
-    \printuntil QApplication::clipboard
+    \snippet examples/widgets/charactermap/mainwindow.cpp 3
 
     The QMimeData class is used to represent data that is transferred to and
     from the clipboard. To put data on the clipboard, you can use the
@@ -355,9 +365,7 @@
     For example, we can copy the contents of a QLineEdit to the clipboard
     with the following code:
 
-    \quotefromfile widgets/charactermap/mainwindow.cpp
-    \skipto clipboard->setText
-    \printuntil clipboard->setText
+    \snippet examples/widgets/charactermap/mainwindow.cpp 11
 
     Data with different MIME types can also be put on the clipboard.
     Construct a QMimeData object and set data with setData() function in
@@ -370,18 +378,14 @@
     signal. For example, we can monitor the clipboard by connecting this
     signal to a slot in a widget:
 
-    \quotefromfile snippets/clipboard/clipwindow.cpp
-    \skipto connect(clipboard
-    \printuntil connect(clipboard
+    \snippet doc/src/snippets/clipboard/clipwindow.cpp 0
 
     The slot connected to this signal can read the data on the clipboard
     using one of the MIME types that can be used to represent it:
 
-    \skipto ClipWindow::updateClipboard
-    \printuntil data =
+    \snippet doc/src/snippets/clipboard/clipwindow.cpp 1
     \dots
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/clipboard/clipwindow.cpp 2
 
     The \l{QClipboard::selectionChanged()}{selectionChanged()} signal can
     be used on X11 to monitor the mouse selection.
@@ -440,7 +444,10 @@
 
 /*!
     \page porting4-dnd.html
-    \title Porting to Qt 4 (Drag and Drop)
+    \title Porting to Qt 4 - Drag and Drop
+    \contentspage {Porting Guides}{Contents}
+    \previouspage Porting to Qt 4 - Virtual Functions
+    \nextpage Porting .ui Files to Qt 4
     \ingroup porting
     \brief An overview of the porting process for applications that use drag and drop.
 
@@ -464,14 +471,7 @@
     \l{Q3DragObject::}{drag()} function is called, and it receives no information
     about how the operation ended.
 
-    \code
-    void MyQt3Widget::customStartDragFunction()
-    {
-        QDragObject *d = new QTextDrag( myHighlightedText(), this );
-        d->dragCopy();
-        // do NOT delete d.
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.dnd.qdoc 0
 
     Similarly, in Qt 4, drag operations are also initiated when a QDrag object
     is constructed and its \l{QDrag::}{exec()} function is called. In contrast,
@@ -481,16 +481,11 @@
     can receive information about how the operation ended from the value returned
     by \l{QDrag::}{exec()}.
 
-    \quotefromfile snippets/porting4-dropevents/window.cpp
-    \skipto mousePressEvent
-    \printuntil {
-    \skipto if (
-    \printuntil drag->exec
+    \snippet doc/src/snippets/porting4-dropevents/window.cpp 2
+    \snippet doc/src/snippets/porting4-dropevents/window.cpp 3
     \dots 8
-    \skipto accept
-    \printuntil }
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/porting4-dropevents/window.cpp 4
+    \snippet doc/src/snippets/porting4-dropevents/window.cpp 5
 
     A key difference in the above code is the use of the QMimeData class to hold
     information about the data that is transferred. Qt 3 relies on subclasses
@@ -516,23 +511,13 @@
     indicating success or failure of these checks via the event's
     \l{QDragEnterEvent::}{accept()} function, as shown in this simple example:
 
-    \code
-    void MyQt3Widget::dragEnterEvent(QDragEnterEvent* event)
-    {
-        event->accept(
-            QTextDrag::canDecode(event) ||
-            QImageDrag::canDecode(event)
-        );
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.dnd.qdoc 1
 
     In Qt 4, you can examine the MIME type describing the data to determine
     whether the widget should accept the event or, for common data types, you
     can use convenience functions:
 
-    \quotefromfile snippets/porting4-dropevents/window.cpp
-    \skipto dragEnterEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/porting4-dropevents/window.cpp 0
 
     The widget has some control over the type of drag and drop operation to be
     performed. In the above code, the action proposed by the drag source is
@@ -545,25 +530,11 @@
     accept dropped data in the form of text or images might provide an
     implementation of \l{QWidget::}{dropEvent()} that looks like the following:
 
-    \code
-    void MyQt3Widget::dropEvent(QDropEvent* event)
-    {
-        QImage image;
-        QString text;
-
-        if ( QImageDrag::decode(event, image) ) {
-            insertImageAt(image, event->pos());
-        } else if ( QTextDrag::decode(event, text) ) {
-            insertTextAt(text, event->pos());
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.dnd.qdoc 2
 
     In Qt 4, the event is handled in a similar way:
 
-    \quotefromfile snippets/porting4-dropevents/window.cpp
-    \skipto dropEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/porting4-dropevents/window.cpp 1
 
     It is also possible to extract data stored for a particular MIME type if it
     was specified by the drag source.

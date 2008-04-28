@@ -46,12 +46,15 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QMenu;
 class QStatusBar;
+QT_END_NAMESPACE
 class TabletCanvas;
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -108,5 +111,6 @@ private:
     QMenu *lineWidthMenu;
     QMenu *alphaChannelMenu;
 };
+//! [0]
 
 #endif

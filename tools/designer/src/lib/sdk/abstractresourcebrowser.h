@@ -50,6 +50,10 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
+class QWidget; // FIXME: fool syncqt
+
 class QDESIGNER_SDK_EXPORT QDesignerResourceBrowserInterface: public QWidget
 {
     Q_OBJECT
@@ -60,10 +64,12 @@ public:
     virtual void setCurrentPath(const QString &filePath) = 0;
     virtual QString currentPath() const = 0;
 
-signals:
+Q_SIGNALS:
     void currentPathChanged(const QString &filePath);
     void pathActivated(const QString &filePath);
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

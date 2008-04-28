@@ -43,6 +43,7 @@
 
 #include "imageitem.h"
 
+//! [0]
 ImageItem::ImageItem(int id, const QPixmap &pixmap, QGraphicsItem *parent,
                      QGraphicsScene *scene)
     : QGraphicsPixmapItem(pixmap, parent, scene)
@@ -58,7 +59,9 @@ ImageItem::ImageItem(int id, const QPixmap &pixmap, QGraphicsItem *parent,
 
     adjust();
 }
+//! [0]
 
+//! [1]
 void ImageItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     timeLine.setDirection(QTimeLine::Forward);
@@ -71,7 +74,9 @@ void ImageItem::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
     if (timeLine.state() == QTimeLine::NotRunning)
         timeLine.start();
 }
+//! [1]
 
+//! [2]
 void ImageItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
 {
     timeLine.setDirection(QTimeLine::Backward);
@@ -81,7 +86,9 @@ void ImageItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
     if (timeLine.state() == QTimeLine::NotRunning)
         timeLine.start();
 }
+//! [2]
 
+//! [3]
 void ImageItem::setFrame(int frame)
 {
     adjust();
@@ -91,22 +98,29 @@ void ImageItem::setFrame(int frame)
     scale(1 + frame / 330.0, 1 + frame / 330.0);
     translate(-center.x(), -center.y());
 }
+//! [3]
 
+//! [4]
 void ImageItem::adjust()
 {
     QMatrix matrix;
     matrix.scale(150/ boundingRect().width(), 120/ boundingRect().height());
     setMatrix(matrix);
 }
+//! [4]
 
+//! [5]
 int ImageItem::id()
 {
     return recordId;
 }
+//! [5]
 
+//! [6]
 void ImageItem::updateItemPosition()
 {
     setZValue(z);
 }
+//! [6]
 
 

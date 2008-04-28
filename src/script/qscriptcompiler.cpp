@@ -54,6 +54,8 @@
 
 #include <QtCore/QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript {
 
 class Compare : protected AST::Visitor
@@ -443,7 +445,7 @@ bool Compiler::visit(AST::ObjectLiteral *node)
     iNewObject();
 
     FetchName fetchName(m_eng);
-
+    bool was = generateReferences(false);
     for (AST::PropertyNameAndValueList *it = node->properties; it != 0; it = it->next) {
         iDuplicate();
 
@@ -455,6 +457,7 @@ bool Compiler::visit(AST::ObjectLiteral *node)
         it->value->accept(this);
         iPutField();
     }
+    generateReferences(was);
 
     return false;
 }
@@ -463,10 +466,10 @@ bool Compiler::visit(AST::IdentifierExpression *node)
 {
     Q_ASSERT(node->name != 0);
 
+    if (node->name == m_eng->idTable()->id_arguments)
+        iLazyArguments();
     if (m_generateReferences)
         iResolve(node->name);
-    else if (node->name == m_eng->idTable()->id_arguments)
-        iFetchArguments();
     else
         iFetch(node->name);
 
@@ -483,12 +486,16 @@ bool Compiler::visit(AST::FunctionDeclaration *node)
 
 bool Compiler::visit(AST::FunctionExpression *node)
 {
+    iNewClosure(node);
     if (node->name) {
-        iResolve(node->name);
-        iNewClosure(node);
-        iAssign();
-    } else {
-        iNewClosure(node);
+        iDuplicate();
+        iLoadActivation();
+        iSwap();
+        iLoadString(node->name);
+        iSwap();
+        iMakeReference();
+        iSwap();
+        iPutField();
     }
     return false;
 }
@@ -754,8 +761,6 @@ bool Compiler::visit(AST::IfStatement *node)
 
     if (! node->ko) {
         patchInstruction(cond, nextInstructionOffset() - cond);
-        if (!m_instructions.isEmpty() && m_instructions.last().op == QScriptInstruction::OP_Ret)
-            iNop();
     } else {
         int terminator = nextInstructionOffset();
         iBranch(0);
@@ -764,6 +769,8 @@ bool Compiler::visit(AST::IfStatement *node)
         patchInstruction(cond, terminator + 1 - cond);
         patchInstruction(terminator, nextInstructionOffset() - terminator);
     }
+    if (!m_instructions.isEmpty() && m_instructions.last().op == QScriptInstruction::OP_Ret)
+        iNop();
 
     return false;
 }
@@ -792,8 +799,8 @@ bool Compiler::visit(AST::WhileStatement *node)
     Loop *previousLoop = changeActiveLoop(&m_loops[node]);
     m_activeLoop->continueLabel.offset = nextInstructionOffset();
 
-    int again = nextInstructionOffset();
     iLine(node);
+    int again = nextInstructionOffset();
     node->expression->accept(this);
 
     int cond = nextInstructionOffset();
@@ -828,13 +835,13 @@ bool Compiler::visit(AST::DoWhileStatement *node)
 {
     Loop *previousLoop = changeActiveLoop(&m_loops[node]);
     int again = nextInstructionOffset();
+    iLine(node);
     bool was = iterationStatement(true);
     node->statement->accept(this);
     iterationStatement(was);
 
     m_activeLoop->continueLabel.offset = nextInstructionOffset();
 
-    iLine(node->expression);
     node->expression->accept(this);
 
     iBranchTrue(again - nextInstructionOffset());
@@ -858,6 +865,7 @@ bool Compiler::visit(AST::ForEachStatement *node)
 {
     Loop *previousLoop = changeActiveLoop(&m_loops[node]);
 
+    iLine(node);
     node->expression->accept(this);
     iNewEnumeration();
     iDuplicate();
@@ -865,7 +873,6 @@ bool Compiler::visit(AST::ForEachStatement *node)
 
     int again = nextInstructionOffset();
     m_activeLoop->continueLabel.offset = again;
-    iLine(node);
     iDuplicate();
     iHasNextElement();
     int cond = nextInstructionOffset();
@@ -903,6 +910,7 @@ bool Compiler::visit(AST::LocalForEachStatement *node)
 {
     Loop *previousLoop = changeActiveLoop(&m_loops[node]);
 
+    iLine(node);
     node->declaration->accept(this);
     node->expression->accept(this);
     iNewEnumeration();
@@ -911,7 +919,6 @@ bool Compiler::visit(AST::LocalForEachStatement *node)
 
     int again = nextInstructionOffset();
     m_activeLoop->continueLabel.offset = again;
-    iLine(node);
     iDuplicate();
     iHasNextElement();
     int cond = nextInstructionOffset();
@@ -949,10 +956,10 @@ void Compiler::visitForInternal(AST::Statement *node, AST::ExpressionNode *condi
 
     int again = nextInstructionOffset();
     if (condition != 0) {
-        iLine(condition);
+//        iLine(condition);
         condition->accept(this);
     } else {
-        iLine(node);
+//        iLine(node);
         iLoadNumber(1);
     }
 
@@ -1392,9 +1399,9 @@ bool Compiler::visit(AST::LabelledStatement *node)
 {
     Loop *loop = findLoop(node->label);
     if (loop != 0) {
-        m_compilationUnit.setValid(false);
         QString str = m_eng->toString(node->label);
-        m_compilationUnit.setErrorMessage(QString::fromUtf8("duplicate label `%1'").arg(str));
+        m_compilationUnit.setError(QString::fromUtf8("duplicate label `%1'").arg(str),
+                                   node->startLine);
         return false;
     }
 
@@ -1442,8 +1449,8 @@ void Compiler::endVisit(AST::ContinueStatement *node)
 
     Loop *loop = findLoop(node->label);
     if (! loop) {
-        m_compilationUnit.setErrorMessage(QString::fromUtf8("label not found"));
-        m_compilationUnit.setValid(false);
+        m_compilationUnit.setError(QString::fromUtf8("label not found"),
+                                   node->startLine);
         return;
     }
 
@@ -1460,8 +1467,8 @@ void Compiler::endVisit(AST::BreakStatement *node)
 {
     Loop *loop = findLoop(node->label);
     if (! loop) {
-        m_compilationUnit.setErrorMessage(QString::fromUtf8("label not found"));
-        m_compilationUnit.setValid(false);
+        m_compilationUnit.setError(QString::fromUtf8("label not found"),
+                                   node->startLine);
         return;
     }
 
@@ -1551,9 +1558,12 @@ void Compiler::iLoadUndefined()
 
 void Compiler::iLoadThis()
 {
-    QScriptValueImpl arg0;
-    m_eng->newNameId(&arg0, m_eng->idTable()->id_this);
-    pushInstruction(QScriptInstruction::OP_LoadThis, arg0);
+    pushInstruction(QScriptInstruction::OP_LoadThis);
+}
+
+void Compiler::iLoadActivation()
+{
+    pushInstruction(QScriptInstruction::OP_LoadActivation);
 }
 
 void Compiler::iLoadNull()
@@ -1579,6 +1589,11 @@ void Compiler::iLoadString(QScriptNameIdImpl *id)
 void Compiler::iDuplicate()
 {
     pushInstruction(QScriptInstruction::OP_Duplicate);
+}
+
+void Compiler::iSwap()
+{
+    pushInstruction(QScriptInstruction::OP_Swap);
 }
 
 void Compiler::iResolve(QScriptNameIdImpl *id)
@@ -1613,9 +1628,9 @@ void Compiler::iFetchField()
     pushInstruction(QScriptInstruction::OP_FetchField);
 }
 
-void Compiler::iFetchArguments()
+void Compiler::iLazyArguments()
 {
-    pushInstruction(QScriptInstruction::OP_FetchArguments);
+    pushInstruction(QScriptInstruction::OP_LazyArguments);
 }
 
 void Compiler::iRet()
@@ -2051,5 +2066,7 @@ Compiler::Loop *Compiler::findLoop(QScriptNameIdImpl *name)
 
 
 } // namespace QScript
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

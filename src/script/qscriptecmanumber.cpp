@@ -53,37 +53,29 @@
 
 #include <QtCore/QtDebug>
 #include <QtCore/qnumeric.h>
+#include <math.h>
+
+QT_BEGIN_NAMESPACE
 
 namespace QScript { namespace Ecma {
 
 Number::Number(QScriptEnginePrivate *eng):
-    Core(eng)
+    Core(eng, QLatin1String("Number"), QScriptClassInfo::NumberType)
 {
-    m_classInfo = eng->registerClass(QLatin1String("Number"));
-
-    publicPrototype.invalidate();
     newNumber(&publicPrototype, 0);
 
     eng->newConstructor(&ctor, this, publicPrototype);
 
-    QScriptValue::PropertyFlags flags = QScriptValue::SkipInEnumeration;
+    addPrototypeFunction(QLatin1String("toString"), method_toString, 0);
+    addPrototypeFunction(QLatin1String("toLocaleString"), method_toLocaleString, 0);
+    addPrototypeFunction(QLatin1String("valueOf"), method_valueOf, 0);
+    addPrototypeFunction(QLatin1String("toFixed"), method_toFixed, 0);
+    addPrototypeFunction(QLatin1String("toExponential"), method_toExponential, 0);
+    addPrototypeFunction(QLatin1String("toPrecision"), method_toPrecision, 0);
 
-    publicPrototype.setProperty(QLatin1String("toString"),
-                                eng->createFunction(method_toString, 0, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("toLocaleString"),
-                                eng->createFunction(method_toLocaleString, 0, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("valueOf"),
-                                eng->createFunction(method_valueOf, 0, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("toFixed"),
-                                eng->createFunction(method_toFixed, 0, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("toExponential"),
-                                eng->createFunction(method_toExponential, 0, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("toPrecision"),
-                                eng->createFunction(method_toPrecision, 0, m_classInfo), flags);
-
-    flags = QScriptValue::Undeletable
-            | QScriptValue::ReadOnly
-            | QScriptValue::SkipInEnumeration;
+    QScriptValue::PropertyFlags flags = QScriptValue::Undeletable
+                                        | QScriptValue::ReadOnly
+                                        | QScriptValue::SkipInEnumeration;
     ctor.setProperty(QLatin1String("NaN"),
                      QScriptValueImpl(eng, qSNaN()), flags);
     ctor.setProperty(QLatin1String("NEGATIVE_INFINITY"),
@@ -109,6 +101,9 @@ Number::~Number()
 
 void Number::execute(QScriptContextPrivate *context)
 {
+#ifndef Q_SCRIPT_NO_EVENT_NOTIFY
+    engine()->notifyFunctionEntry(context);
+#endif
     qsreal value;
     if (context->argumentCount() > 0)
         value = context->argument(0).toNumber();
@@ -125,6 +120,9 @@ void Number::execute(QScriptContextPrivate *context)
         obj.setPrototype(publicPrototype);
         context->setReturnValue(obj);
     }
+#ifndef Q_SCRIPT_NO_EVENT_NOTIFY
+    engine()->notifyFunctionExit(context);
+#endif
 }
 
 void Number::newNumber(QScriptValueImpl *result, qsreal value)
@@ -140,6 +138,27 @@ QScriptValueImpl Number::method_toString(QScriptContextPrivate *context, QScript
         return context->throwError(QScriptContext::TypeError,
                                    QLatin1String("Number.prototype.toString"));
 
+    QScriptValueImpl arg = context->argument(0);
+    if (!arg.isUndefined()) {
+        int radix = arg.toInt32();
+        if (radix < 2 || radix > 36)
+            return context->throwError(QString::fromLatin1("Number.prototype.toString: %0 is not a valid radix")
+                                       .arg(radix));
+        if (radix != 10) {
+            QString str;
+            qsreal num = self.internalValue().toInteger();
+            do {
+                char c = (char)::fmod(num, radix);
+                if (c < 10)
+                    c += '0';
+                else
+                    c = c - 10 + 'a';
+                str.prepend(QLatin1Char(c));
+                num = ::floor(num / radix);
+            } while (num != 0);
+            return QScriptValueImpl(eng, str);
+        }
+    }
     QString str = self.internalValue().toString();
     return (QScriptValueImpl(eng, str));
 }
@@ -218,5 +237,7 @@ QScriptValueImpl Number::method_toPrecision(QScriptContextPrivate *context, QScr
 }
 
 } } // namespace QScript::Ecma
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

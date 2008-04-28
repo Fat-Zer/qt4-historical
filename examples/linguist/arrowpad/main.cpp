@@ -45,15 +45,20 @@
 
 #include "mainwindow.h"
 
+//! [0]
 int main(int argc, char *argv[])
+//! [0] //! [1]
 {
     QApplication app(argc, argv);
 
     QString locale = QLocale::system().name();
 
+//! [2]
     QTranslator translator;
+//! [2] //! [3]
     translator.load(QString("arrowpad_") + locale);
     app.installTranslator(&translator);
+//! [1] //! [3]
 
     MainWindow mainWindow;
     mainWindow.show();

@@ -58,6 +58,8 @@
 #include <qvector.h>
 #include <qrect.h>
 
+QT_BEGIN_NAMESPACE
+
 class QBspTree
 {
 public:
@@ -113,5 +115,7 @@ private:
     QVector<Node> nodes;
     mutable QVector< QVector<int> > leaves; // the leaves are just indices into the items
 };
+
+QT_END_NAMESPACE
 
 #endif // QBSPTREE_P_H

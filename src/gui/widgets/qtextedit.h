@@ -59,6 +59,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QStyleSheet;
@@ -81,7 +83,9 @@ class Q_GUI_EXPORT QTextEdit : public QAbstractScrollArea
     QDOC_PROPERTY(QTextOption::WrapMode wordWrapMode READ wordWrapMode WRITE setWordWrapMode)
     Q_PROPERTY(int lineWrapColumnOrWidth READ lineWrapColumnOrWidth WRITE setLineWrapColumnOrWidth)
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
+#ifndef QT_NO_TEXTHTMLPARSER
     Q_PROPERTY(QString html READ toHtml WRITE setHtml NOTIFY textChanged USER true)
+#endif    
     Q_PROPERTY(QString plainText READ toPlainText WRITE setPlainText DESIGNABLE false)
     Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
     Q_PROPERTY(int tabStopWidth READ tabStopWidth WRITE setTabStopWidth)
@@ -148,6 +152,7 @@ public:
     bool fontUnderline() const;
     bool fontItalic() const;
     QColor textColor() const;
+    QColor textBackgroundColor() const;
     QFont currentFont() const;
     Qt::Alignment alignment() const;
 
@@ -185,14 +190,17 @@ public:
 
     inline QString toPlainText() const
     { return document()->toPlainText(); }
+#ifndef QT_NO_TEXTHTMLPARSER
     inline QString toHtml() const
     { return document()->toHtml(); }
+#endif
 
     void ensureCursorVisible();
 
     virtual QVariant loadResource(int type, const QUrl &name);
 #ifndef QT_NO_CONTEXTMENU
     QMenu *createStandardContextMenu();
+    QMenu *createStandardContextMenu(const QPoint &position);
 #endif
 
     QTextCursor cursorForPosition(const QPoint &pos) const;
@@ -236,11 +244,14 @@ public Q_SLOTS:
     void setFontUnderline(bool b);
     void setFontItalic(bool b);
     void setTextColor(const QColor &c);
+    void setTextBackgroundColor(const QColor &c);
     void setCurrentFont(const QFont &f);
     void setAlignment(Qt::Alignment a);
 
     void setPlainText(const QString &text);
+#ifndef QT_NO_TEXTHTMLPARSER
     void setHtml(const QString &text);
+#endif
     void setText(const QString &text);
 
 #ifndef QT_NO_CLIPBOARD
@@ -256,7 +267,9 @@ public Q_SLOTS:
     void selectAll();
 
     void insertPlainText(const QString &text);
+#ifndef QT_NO_TEXTHTMLPARSER
     void insertHtml(const QString &text);
+#endif // QT_NO_TEXTHTMLPARSER
 
     void append(const QString &text);
 
@@ -402,9 +415,13 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_adjustScrollbars())
     Q_PRIVATE_SLOT(d_func(), void _q_ensureVisible(const QRectF &))
     friend class QTextEditControl;
+    friend class QTextDocument;
+    friend class QTextControl;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QTextEdit::AutoFormatting)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

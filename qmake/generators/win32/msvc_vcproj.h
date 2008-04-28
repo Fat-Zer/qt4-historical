@@ -47,7 +47,9 @@
 #include "winmakefile.h"
 #include "msvc_objectmodel.h"
 
-enum target {
+QT_BEGIN_NAMESPACE
+
+enum Target {
     Application,
     SharedLib,
     StaticLib
@@ -97,7 +99,7 @@ protected:
     QString fixFilename(QString ofile) const;
 
     void initOld();
-    void initProject();
+    virtual void initProject();
     void initConfiguration();
     void initCompilerTool();
     void initLinkerTool();
@@ -107,6 +109,7 @@ protected:
     void initCustomBuildTool();
     void initPreBuildEventTools();
     void initPostBuildEventTools();
+    void initDeploymentTool();
     void initPreLinkEventTools();
     void initRootFiles();
     void initSourceFiles();
@@ -118,7 +121,7 @@ protected:
     void initLexYaccFiles();
     void initExtraCompilerOutputs();
 
-    target projectTarget;
+    Target projectTarget;
 
     // Used for single project
     VCProjectSingleConfig vcProject;
@@ -145,5 +148,7 @@ inline bool VcprojGenerator::findLibraries()
 {
     return Win32MakefileGenerator::findLibraries("MSVCPROJ_LIBS");
 }
+
+QT_END_NAMESPACE
 
 #endif // MSVC_VCPROJ_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qmake-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qmake-manual.qdoc -->
 <head>
-  <title>Qt 4.3: Running qmake</title>
+  <title>Qt 4.4: Running qmake</title>
   <link rel="prev" href="qmake-project-files.html" />
   <link rel="contents" href="qmake-manual.html" />
   <link rel="next" href="qmake-platform-notes.html" />
@@ -20,7 +20,8 @@
 [<a href="qmake-manual.html">Contents</a>]
 [Next: <a href="qmake-platform-notes.html">qmake Platform Notes</a>]
 </p>
-<h1 align="center">Running qmake<br /><small></small></h1>
+<h1 class="title">Running qmake<br /><span class="subtitle"></span>
+</h1>
 <p>The behavior of <tt>qmake</tt> can be customized when it is run by specifying various options on the command line. These allow the build process to be fine-tuned, provide useful diagnostic information, and can be used to specify the target platform for your project.</p>
 <ul><li><a href="#command-line-options">Command-Line Options</a></li>
 <ul><li><a href="#syntax">Syntax</a></li>
@@ -34,7 +35,7 @@
 <a name="syntax"></a>
 <h3>Syntax</h3>
 <p>The syntax used to run <tt>qmake</tt> takes the following simple form:</p>
-<pre> qmake [mode] [options] files</pre>
+<pre>         qmake [mode] [options] files</pre>
 <p><tt>qmake</tt> supports two different modes of operation: In the default mode, <tt>qmake</tt> will use the description in a project file to generate a Makefile, but it is also possible to use <tt>qmake</tt> to generate project files. If you want to explicitly set the mode, you must specify it before all other options. The <tt>mode</tt> can be either of the following two values:</p>
 <ul>
 <li><tt>-makefile</tt> <br /> <tt>qmake</tt> output will be a Makefile.</li>
@@ -70,7 +71,7 @@
 </ul>
 <a name="makefilemode"></a><a name="makefile-mode-options"></a>
 <h3>Makefile Mode Options</h3>
-<pre> qmake -makefile [options] files</pre>
+<pre>         qmake -makefile [options] files</pre>
 <p>In Makefile mode, <tt>qmake</tt> will generate a Makefile that is used to build the project. Additionally, the following options may be used in this mode to influence the way the project file is generated:</p>
 <ul>
 <li><tt>-after</tt> <br /> <tt>qmake</tt> will process assignments given on the command line after the specified files.</li>
@@ -80,13 +81,13 @@
 <li><tt>-spec</tt> spec <br /> <tt>qmake</tt> will use <i>spec</i> as a path to platform and compiler information, and the value of <tt>QMAKESPEC</tt> will be ignored.</li>
 </ul>
 <p>You may also pass <tt>qmake</tt> assignments on the command line; they will be processed before all of the files specified. For example:</p>
-<pre> qmake -makefile -unix -o Makefile &quot;CONFIG+=test&quot; test.pro</pre>
+<pre>         qmake -makefile -unix -o Makefile &quot;CONFIG+=test&quot; test.pro</pre>
 <p>This will generate a Makefile, from test.pro with Unix pathnames. However many of the specified options aren't necessary as they are the default. Therefore, the line can be simplified on Unix to:</p>
-<pre> qmake &quot;CONFIG+=test&quot; test.pro</pre>
+<pre>         qmake &quot;CONFIG+=test&quot; test.pro</pre>
 <p>If you are certain you want your variables processed after the files specified, then you may pass the <tt>-after</tt> option. When this is specified, all assignments on the command line after the <tt>-after</tt> option will be postponed until after the specified files are parsed.</p>
 <a name="projectmode"></a><a name="project-mode-options"></a>
 <h3>Project Mode Options</h3>
-<pre> qmake -project [options] files</pre>
+<pre>         qmake -project [options] files</pre>
 <p>In project mode, <tt>qmake</tt> will generate a project file. Additionally, you may supply the following options in this mode:</p>
 <ul>
 <li><tt>-r</tt> <br /> <tt>qmake</tt> will look through supplied directories recursively</li>
@@ -103,6 +104,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

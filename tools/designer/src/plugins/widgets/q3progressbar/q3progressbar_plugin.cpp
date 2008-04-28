@@ -47,8 +47,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3ProgressBar>
 
-Q3ProgressBarPlugin::Q3ProgressBarPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3ProgressBarPlugin::Q3ProgressBarPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3ProgressBarPlugin::name() const
@@ -67,7 +69,7 @@ QString Q3ProgressBarPlugin::includeFile() const
 { return QLatin1String("Qt3Support/Q3ProgressBar"); }
 
 QIcon Q3ProgressBarPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3ProgressBarPlugin::isContainer() const
 { return false; }
@@ -83,3 +85,5 @@ void Q3ProgressBarPlugin::initialize(QDesignerFormEditorInterface *core)
     Q_UNUSED(core);
     m_initialized = true;
 }
+
+QT_END_NAMESPACE

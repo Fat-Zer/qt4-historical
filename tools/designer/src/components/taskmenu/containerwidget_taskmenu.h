@@ -44,23 +44,34 @@
 #ifndef CONTAINERWIDGER_TASKMENU_H
 #define CONTAINERWIDGER_TASKMENU_H
 
+#include <qdesigner_taskmenu_p.h>
+#include <shared_enums_p.h>
+
+#include <extensionfactory_p.h>
+
 #include <QtCore/QPointer>
 
-#include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormWindowInterface;
 class QDesignerFormEditorInterface;
 class QDesignerContainerExtension;
 class QAction;
+class QMdiArea;
+class QWorkspace;
+class QMenu;
 
 namespace qdesigner_internal {
+
+class PromotionTaskMenu;
+
+// ContainerWidgetTaskMenu: Task menu for containers with extension
 
 class ContainerWidgetTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    ContainerWidgetTaskMenu(QWidget *widget, QObject *parent = 0);
+    explicit ContainerWidgetTaskMenu(QWidget *widget, ContainerType type, QObject *parent = 0);
     virtual ~ContainerWidgetTaskMenu();
 
     virtual QAction *preferredEditAction() const;
@@ -71,33 +82,61 @@ private slots:
     void addPage();
     void addPageAfter();
 
+protected:
+    QDesignerContainerExtension *containerExtension() const;
+    QList<QAction*> &containerActions() { return m_taskActions; }
+    int pageCount() const;
+
 private:
-    QDesignerFormEditorInterface *core() const;
     QDesignerFormWindowInterface *formWindow() const;
-    QDesignerContainerExtension *containterExtension() const;
 
 private:
-    QWidget *m_containerWidget;
-    QPointer<QDesignerFormWindowInterface> m_formWindow;
-    QList<QAction*> m_taskActions;
+    static QString pageMenuText(ContainerType ct, int index, int count);
+    bool canDeletePage() const;
 
-    QAction *m_actionPreviousPage;
-    QAction *m_actionNextPage;
+    const ContainerType m_type;
+    QWidget *m_containerWidget;
+    QDesignerFormEditorInterface *m_core;
+    PromotionTaskMenu *m_pagePromotionTaskMenu;
+    QAction *m_pageMenuAction;
+    QMenu *m_pageMenu;
+    QList<QAction*> m_taskActions;
     QAction *m_actionDeletePage;
-    QAction *m_actionInsertPage;
-    QAction *m_actionInsertPageAfter;
+};
+
+// MdiContainerWidgetTaskMenu: Provide tile/cascade for MDI containers in addition
+
+class MdiContainerWidgetTaskMenu : public ContainerWidgetTaskMenu {
+    Q_OBJECT
+public:
+    explicit MdiContainerWidgetTaskMenu(QMdiArea *m, QObject *parent = 0);
+    explicit MdiContainerWidgetTaskMenu(QWorkspace *m, QObject *parent = 0);
+
+    virtual QList<QAction*> taskActions() const;
+private:
+    void initializeActions();
+
+    QAction *m_nextAction;
+    QAction *m_previousAction;
+    QAction *m_tileAction;
+    QAction *m_cascadeAction;
 };
 
 class ContainerWidgetTaskMenuFactory: public QExtensionFactory
 {
     Q_OBJECT
 public:
-    ContainerWidgetTaskMenuFactory(QExtensionManager *extensionManager = 0);
+    explicit ContainerWidgetTaskMenuFactory(QDesignerFormEditorInterface *core, QExtensionManager *extensionManager = 0);
 
 protected:
     virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
+
+private:
+    QDesignerFormEditorInterface *m_core;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // CONTAINERWIDGER_TASKMENU_H

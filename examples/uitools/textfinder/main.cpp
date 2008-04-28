@@ -44,6 +44,7 @@
 #include <QApplication>
 #include "textfinder.h"
 
+//! [0]
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(textfinder);
@@ -54,3 +55,4 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+//! [0]

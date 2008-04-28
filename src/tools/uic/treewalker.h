@@ -44,7 +44,9 @@
 #ifndef TREEWALKER_H
 #define TREEWALKER_H
 
-#include <QList>
+#include <QtCore/QList>
+
+QT_BEGIN_NAMESPACE
 
 class DomUI;
 class DomLayoutDefault;
@@ -127,5 +129,7 @@ struct TreeWalker
     virtual void acceptConnectionHints(DomConnectionHints *connectionHints);
     virtual void acceptConnectionHint(DomConnectionHint *connectionHint);
 };
+
+QT_END_NAMESPACE
 
 #endif // TREEWALKER_H

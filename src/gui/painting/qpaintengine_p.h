@@ -60,20 +60,28 @@
 #include "QtGui/qregion.h"
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QPaintDevice;
 
 class QPaintEnginePrivate
 {
     Q_DECLARE_PUBLIC(QPaintEngine)
 public:
-    QPaintEnginePrivate() : pdev(0), q_ptr(0) { }
+    QPaintEnginePrivate() : pdev(0), q_ptr(0), currentClipWidget(0) { }
     virtual ~QPaintEnginePrivate() { }
     QPaintDevice *pdev;
     QPaintEngine *q_ptr;
     QRegion systemClip;
+    QPainterPath oldSystemClipPath;
+    QWidget *currentClipWidget;
+
+    void drawBoxTextItem(const QPointF &p, const QTextItemInt &ti);
 
 private:
     QRect systemRect;
 };
+
+QT_END_NAMESPACE
 
 #endif // QPAINTENGINE_P_H

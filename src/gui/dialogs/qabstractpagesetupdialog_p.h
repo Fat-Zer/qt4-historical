@@ -56,9 +56,13 @@
 //
 //
 
+#include "private/qdialog_p.h"
+
 #ifndef QT_NO_PRINTDIALOG
 
-#include "private/qdialog_p.h"
+#include "qpagesetupdialog.h"
+
+QT_BEGIN_NAMESPACE
 
 class QPrinter;
 
@@ -67,8 +71,17 @@ class QAbstractPageSetupDialogPrivate : public QDialogPrivate
     Q_DECLARE_PUBLIC(QAbstractPageSetupDialog)
 
 public:
+    QAbstractPageSetupDialogPrivate() : printer(0), pageSetupDialogOptions(0) {}
+    void addEnabledOption(QPageSetupDialog::PageSetupDialogOption option) { pageSetupDialogOptions |= option; }
+    void setEnabledOptions(QPageSetupDialog::PageSetupDialogOptions options) { pageSetupDialogOptions = options; }
+    QPageSetupDialog::PageSetupDialogOptions enabledOptions() const { return pageSetupDialogOptions; }
+    bool isOptionEnabled(QPageSetupDialog::PageSetupDialogOption option) const { return pageSetupDialogOptions & option; }
+
     QPrinter *printer;
+    QPageSetupDialog::PageSetupDialogOptions pageSetupDialogOptions;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PRINTDIALOG
 

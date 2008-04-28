@@ -57,6 +57,8 @@
 #include "node.h"
 #include "text.h"
 
+QT_BEGIN_NAMESPACE
+
 class ClassNode;
 class Config;
 class CodeMarker;
@@ -141,10 +143,10 @@ private:
                            const QList<RelatedClass> &classes,
                            CodeMarker *marker);
 
-    QRegExp amp;
-    QRegExp lt;
-    QRegExp gt;
-    QRegExp quot;
+    QString amp;
+    QString lt;
+    QString gt;
+    QString quot;
     QRegExp tag;
 
     static QList<Generator *> generators;
@@ -157,5 +159,7 @@ private:
     static QString outDir;
     static QString project;
 };
+
+QT_END_NAMESPACE
 
 #endif

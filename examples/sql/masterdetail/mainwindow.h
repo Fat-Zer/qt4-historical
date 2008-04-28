@@ -48,6 +48,7 @@
 #include <QMainWindow>
 #include <QModelIndex>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QFile;
 class QGroupBox;
@@ -55,6 +56,7 @@ class QLabel;
 class QListWidget;
 class QSqlRelationalTableModel;
 class QTableView;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

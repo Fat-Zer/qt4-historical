@@ -43,6 +43,10 @@
 
 #include "abstractformwindowmanager.h"
 
+#include <QtCore/QMap>
+
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerFormWindowManagerInterface
 
@@ -59,15 +63,7 @@
     the QDesignerFormEditorInterface::formWindowManager()
     function. For example:
 
-    \code
-        QDesignerFormWindowManagerInterface *manager = 0;
-        QDesignerFormWindowInterface *formWindow = 0;
-
-        manager = formEditor->formWindowManager();
-        formWindow = manager->formWindow(0);
-
-        manager->setActiveFormWindow(formWindow);
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindowmanager.cpp 0
 
     When implementing a custom widget plugin, a pointer to \QD's
     current QDesignerFormEditorInterface object (\c formEditor in the
@@ -103,6 +99,24 @@
     \sa QDesignerFormEditorInterface, QDesignerFormWindowInterface
 */
 
+// ------------- QDesignerFormWindowManagerInterfacePrivate
+
+struct QDesignerFormWindowManagerInterfacePrivate {
+    QDesignerFormWindowManagerInterfacePrivate();
+    QAction *m_simplifyLayoutAction;
+    QAction *m_formLayoutAction;
+};
+
+QDesignerFormWindowManagerInterfacePrivate::QDesignerFormWindowManagerInterfacePrivate() :
+    m_simplifyLayoutAction(0),
+    m_formLayoutAction(0)
+{
+}
+
+typedef QMap<const QDesignerFormWindowManagerInterface *, QDesignerFormWindowManagerInterfacePrivate *> FormWindowManagerPrivateMap;
+
+Q_GLOBAL_STATIC(FormWindowManagerPrivateMap, g_FormWindowManagerPrivateMap)
+
 /*!
     Constructs an interface with the given \a parent for the form window
     manager.
@@ -110,6 +124,7 @@
 QDesignerFormWindowManagerInterface::QDesignerFormWindowManagerInterface(QObject *parent)
     : QObject(parent)
 {
+    g_FormWindowManagerPrivateMap()->insert(this, new QDesignerFormWindowManagerInterfacePrivate);
 }
 
 /*!
@@ -117,6 +132,11 @@ QDesignerFormWindowManagerInterface::QDesignerFormWindowManagerInterface(QObject
 */
 QDesignerFormWindowManagerInterface::~QDesignerFormWindowManagerInterface()
 {
+    FormWindowManagerPrivateMap *fwmpm = g_FormWindowManagerPrivateMap();
+    const FormWindowManagerPrivateMap::iterator it = fwmpm->find(this);
+    Q_ASSERT(it !=  fwmpm->end());
+    delete it.value();
+    fwmpm->erase(it);
 }
 
 /*!
@@ -257,6 +277,35 @@ QAction *QDesignerFormWindowManagerInterface::actionGridLayout() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "form layout" action. The
+    function returns the original action.
+
+FormWindowManagerPrivateMap *fwmpm = g_FormWindowManagerPrivateMap();    \sa QAction
+    \since 4.4
+*/
+
+QAction *QDesignerFormWindowManagerInterface::actionFormLayout() const
+{
+    const QDesignerFormWindowManagerInterfacePrivate *d = g_FormWindowManagerPrivateMap()->value(this);
+    Q_ASSERT(d);
+    return d->m_formLayoutAction;
+}
+
+/*!
+    Sets the "form layout" action to \a action.
+
+    \internal
+    \since 4.4
+*/
+
+void QDesignerFormWindowManagerInterface::setActionFormLayout(QAction *action)
+{
+    QDesignerFormWindowManagerInterfacePrivate *d = g_FormWindowManagerPrivateMap()->value(this);
+    Q_ASSERT(d);
+    d->m_formLayoutAction = action;
+}
+
+/*!
     Allows you to intervene and control \QD's "break layout" action. The
     function returns the original action.
 
@@ -276,6 +325,35 @@ QAction *QDesignerFormWindowManagerInterface::actionBreakLayout() const
 QAction *QDesignerFormWindowManagerInterface::actionAdjustSize() const
 {
     return 0;
+}
+
+/*!
+    Allows you to intervene and control \QD's "simplify layout" action. The
+    function returns the original action.
+
+    \sa QAction
+    \since 4.4
+*/
+
+QAction *QDesignerFormWindowManagerInterface::actionSimplifyLayout() const
+{
+    const QDesignerFormWindowManagerInterfacePrivate *d = g_FormWindowManagerPrivateMap()->value(this);
+    Q_ASSERT(d);
+    return d->m_simplifyLayoutAction;
+}
+
+/*!
+    Sets the "simplify layout" action to \a action.
+
+    \internal
+    \since 4.4
+*/
+
+void QDesignerFormWindowManagerInterface::setActionSimplifyLayout(QAction *action)
+{
+    QDesignerFormWindowManagerInterfacePrivate *d = g_FormWindowManagerPrivateMap()->value(this);
+    Q_ASSERT(d);
+    d->m_simplifyLayoutAction = action;
 }
 
 /*!
@@ -422,3 +500,5 @@ QAction *QDesignerFormWindowManagerInterface::actionRedo() const
 
     \internal
 */
+
+QT_END_NAMESPACE

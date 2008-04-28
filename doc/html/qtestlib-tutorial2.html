@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qtestlib.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtestlib.qdoc -->
 <head>
-  <title>Qt 4.3: Chapter 2: Data Driven Testing</title>
+  <title>Qt 4.4: Chapter 2: Data Driven Testing</title>
   <link rel="prev" href="qtestlib-tutorial1.html" />
   <link rel="contents" href="qtestlib-tutorial.html" />
   <link rel="next" href="qtestlib-tutorial3.html" />
@@ -20,17 +20,19 @@
 [<a href="qtestlib-tutorial.html">Contents</a>]
 [Next: <a href="qtestlib-tutorial3.html">Chapter 3</a>]
 </p>
-<h1 align="center">Chapter 2: Data Driven Testing<br /><small></small></h1>
+<h1 class="title">Chapter 2: Data Driven Testing<br /><span class="subtitle"></span>
+</h1>
 <p>Files:</p>
 <ul>
 <li><a href="qtestlib-tutorial2-testqstring-cpp.html">qtestlib/tutorial2/testqstring.cpp</a></li>
+<li><a href="qtestlib-tutorial2-tutorial2-pro.html">qtestlib/tutorial2/tutorial2.pro</a></li>
 </ul>
 <p>In this chapter we will demonstrate how to execute a test multiple times with different test data.</p>
 <p>So far, we have hard coded the data we wanted to test into our test function. If we add more test data, the function might look like this:</p>
-<pre> QCOMPARE(QString(&quot;hello&quot;).toUpper(), QString(&quot;HELLO&quot;));
- QCOMPARE(QString(&quot;Hello&quot;).toUpper(), QString(&quot;HELLO&quot;));
- QCOMPARE(QString(&quot;HellO&quot;).toUpper(), QString(&quot;HELLO&quot;));
- QCOMPARE(QString(&quot;HELLO&quot;).toUpper(), QString(&quot;HELLO&quot;));</pre>
+<pre>     QCOMPARE(QString(&quot;hello&quot;).toUpper(), QString(&quot;HELLO&quot;));
+     QCOMPARE(QString(&quot;Hello&quot;).toUpper(), QString(&quot;HELLO&quot;));
+     QCOMPARE(QString(&quot;HellO&quot;).toUpper(), QString(&quot;HELLO&quot;));
+     QCOMPARE(QString(&quot;HELLO&quot;).toUpper(), QString(&quot;HELLO&quot;));</pre>
 <p>To prevent that the function ends up being cluttered by repetitive code, <a href="qtestlib-manual.html#qtestlib">QTestLib</a> supports adding test data to a test function. All we need is to add another private slot to our test class:</p>
 <pre> class TestQString: public QObject
  {
@@ -88,6 +90,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

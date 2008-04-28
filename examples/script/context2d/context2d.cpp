@@ -527,8 +527,8 @@ void Context2D::arc(qreal xc, qreal yc, qreal radius,
 
     //### this is also due to switched coordinate system
     // we would end up with a 0 span instead of 360
-    if (!(qFuzzyCompare(span + (ea - sa), 0.0) &&
-          qFuzzyCompare(qAbs(span), 360.0))) {
+    if (!(qFuzzyCompare(span + (ea - sa) + 1, 1) &&
+          qFuzzyCompare(qAbs(span), 360))) {
         span   += ea - sa;
     }
 

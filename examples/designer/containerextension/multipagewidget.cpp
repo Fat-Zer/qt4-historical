@@ -119,12 +119,15 @@ QWidget* MultiPageWidget::widget(int index)
 
 QString MultiPageWidget::pageTitle() const
 {
-    return stackWidget->currentWidget()->windowTitle();
+    if (const QWidget *currentWidget = stackWidget->currentWidget())
+        return currentWidget->windowTitle();
+    return QString();
 }
 
 void MultiPageWidget::setPageTitle(QString const &newTitle)
 {
     comboBox->setItemText(currentIndex(), newTitle);
-    stackWidget->currentWidget()->setWindowTitle(newTitle);
+    if (QWidget *currentWidget = stackWidget->currentWidget())
+        currentWidget->setWindowTitle(newTitle);
     emit pageTitleChanged(newTitle);
 }

@@ -63,6 +63,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QSessionManager;
@@ -79,6 +81,9 @@ class QDecoration;
 
 class QApplication;
 class QApplicationPrivate;
+#if defined(qApp)
+#undef qApp
+#endif
 #define qApp (static_cast<QApplication *>(QCoreApplication::instance()))
 
 class Q_GUI_EXPORT QApplication : public QCoreApplication
@@ -98,6 +103,9 @@ class Q_GUI_EXPORT QApplication : public QCoreApplication
     Q_PROPERTY(bool quitOnLastWindowClosed  READ quitOnLastWindowClosed WRITE setQuitOnLastWindowClosed)
 #ifndef QT_NO_STYLE_STYLESHEET
     Q_PROPERTY(QString styleSheet READ styleSheet WRITE setStyleSheet)
+#endif
+#ifdef Q_OS_WINCE
+    Q_PROPERTY(int autoMaximizeThreshold READ autoMaximizeThreshold WRITE setAutoMaximizeThreshold)
 #endif
 
 public:
@@ -272,6 +280,10 @@ public Q_SLOTS:
 #ifndef QT_NO_STYLE_STYLESHEET
     void setStyleSheet(const QString& sheet);
 #endif
+#ifdef Q_OS_WINCE
+    void setAutoMaximizeThreshold(const int threshold);
+    int autoMaximizeThreshold() const;
+#endif
     static void closeAllWindows();
     static void aboutQt();
 
@@ -354,11 +366,12 @@ private:
     friend class QDirectPainterPrivate;
 #endif
 
-    Q_PRIVATE_SLOT(d_func(), void _q_tryEmitLastWindowClosed())
 #if defined(Q_WS_MAC) || defined(Q_WS_X11)
     Q_PRIVATE_SLOT(d_func(), void _q_alertTimeOut())
 #endif
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

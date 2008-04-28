@@ -49,6 +49,8 @@
 
 #ifndef QT_NO_TEXTCODECPLUGIN
 
+QT_BEGIN_NAMESPACE
+
 class CNTextCodecs : public QTextCodecPlugin
 {
 public:
@@ -139,5 +141,7 @@ QTextCodec *CNTextCodecs::createForName(const QByteArray &name)
 
 Q_EXPORT_STATIC_PLUGIN(CNTextCodecs)
 Q_EXPORT_PLUGIN2(qcncodecs, CNTextCodecs)
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TEXTCODECPLUGIN

@@ -46,6 +46,7 @@
 
 #include "tabletcanvas.h"
 
+//! [0]
 TabletCanvas::TabletCanvas()
 {
     myBrush = QBrush();
@@ -61,12 +62,16 @@ TabletCanvas::TabletCanvas()
     colorSaturationType = NoSaturation;
     lineWidthType = LineWidthPressure;
 }
+//! [0]
 
+//! [1]
 bool TabletCanvas::saveImage(const QString &file)
 {
     return image.save(file);
 }
+//! [1]
 
+//! [2]
 bool TabletCanvas::loadImage(const QString &file)
 {
     bool success = image.load(file);
@@ -77,7 +82,9 @@ bool TabletCanvas::loadImage(const QString &file)
     }
     return false;
 }
+//! [2]
 
+//! [3]
 void TabletCanvas::tabletEvent(QTabletEvent *event)
 {
 
@@ -106,13 +113,17 @@ void TabletCanvas::tabletEvent(QTabletEvent *event)
     }
     update();
 }
+//! [3]
 
+//! [4]
 void TabletCanvas::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.drawImage(QPoint(0, 0), image);
 }
+//! [4]
 
+//! [5]
 void TabletCanvas::paintImage(QPainter &painter, QTabletEvent *event)
 {
     QPoint brushAdjust(10, 10);
@@ -138,7 +149,9 @@ void TabletCanvas::paintImage(QPainter &painter, QTabletEvent *event)
             qWarning("Unsupported tablet device.");
     }
 }
+//! [5]
 
+//! [6]
 Qt::BrushStyle TabletCanvas::brushPattern(qreal value)
 {
     int pattern = int((value) * 100.0) % 7;
@@ -162,7 +175,9 @@ Qt::BrushStyle TabletCanvas::brushPattern(qreal value)
             return Qt::Dense7Pattern;
     }
 }
+//! [6]
 
+//! [7]
 void TabletCanvas::updateBrush(QTabletEvent *event)
 {
     int hue, saturation, value, alpha;
@@ -170,18 +185,20 @@ void TabletCanvas::updateBrush(QTabletEvent *event)
 
     int vValue = int(((event->yTilt() + 60.0) / 120.0) * 255);
     int hValue = int(((event->xTilt() + 60.0) / 120.0) * 255);
+//! [7] //! [8]
 
     switch (alphaChannelType) {
         case AlphaPressure:
             myColor.setAlpha(int(event->pressure() * 255.0));
             break;
         case AlphaTilt:
-            myColor.setAlpha(max(abs(vValue - 127), abs(hValue - 127)));
+            myColor.setAlpha(maximum(abs(vValue - 127), abs(hValue - 127)));
             break;
         default:
             myColor.setAlpha(255);
     }
 
+//! [8] //! [9]
     switch (colorSaturationType) {
         case SaturationVTilt:
             myColor.setHsv(hue, vValue, value, alpha);
@@ -196,17 +213,19 @@ void TabletCanvas::updateBrush(QTabletEvent *event)
             ;
     }
 
+//! [9] //! [10]
     switch (lineWidthType) {
         case LineWidthPressure:
             myPen.setWidthF(event->pressure() * 10 + 1);
             break;
         case LineWidthTilt:
-            myPen.setWidthF(max(abs(vValue - 127), abs(hValue - 127)) / 12);
+            myPen.setWidthF(maximum(abs(vValue - 127), abs(hValue - 127)) / 12);
             break;
         default:
             myPen.setWidthF(1);
     }
 
+//! [10] //! [11]
     if (event->pointerType() == QTabletEvent::Eraser) {
         myBrush.setColor(Qt::white);
         myPen.setColor(Qt::white);
@@ -216,3 +235,4 @@ void TabletCanvas::updateBrush(QTabletEvent *event)
         myPen.setColor(myColor);
     }
 }
+//! [11]

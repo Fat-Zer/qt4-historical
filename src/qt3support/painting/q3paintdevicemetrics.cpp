@@ -43,6 +43,8 @@
 
 #include "q3paintdevicemetrics.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3PaintDeviceMetrics qpaintdevicemetrics.h
     \brief The Q3PaintDeviceMetrics class provides information about a
@@ -55,10 +57,7 @@
     This class provides the information. For example, to compute the
     aspect ratio of a paint device:
 
-    \code
-        Q3PaintDeviceMetrics pdm(myWidget);
-        double aspect = (double)pdm.widthMM() / (double)pdm.heightMM();
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.painting.q3paintdevicemetrics.cpp 0
 
     Q3PaintDeviceMetrics contains methods to provide the width and
     height of a device in both pixels (width() and height()) and
@@ -149,3 +148,4 @@
     \internal
 */
 
+QT_END_NAMESPACE

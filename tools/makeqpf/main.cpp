@@ -48,6 +48,8 @@
 
 #include <private/qfontengine_p.h>
 
+QT_BEGIN_NAMESPACE
+
 static void help()
 {
     printf("usage:\n");
@@ -63,8 +65,12 @@ static int gui(const QString &customFont = QString())
     return qApp->exec();
 }
 
+QT_END_NAMESPACE
+
 int main(int argc, char **argv)
 {
+    QT_USE_NAMESPACE
+
     QApplication app(argc, argv);
     app.setOrganizationName(QLatin1String("Trolltech"));
     app.setApplicationName(QLatin1String("MakeQPF"));

@@ -50,6 +50,8 @@
 #include <qimage.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /* WGL_WGLEXT_PROTOTYPES */
 typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
 typedef HPBUFFERARB (WINAPI * PFNWGLCREATEPBUFFERARBPROC) (HDC hDC, int iPixelFormat, int iWidth, int iHeight, const int *piAttribList);
@@ -169,42 +171,19 @@ typedef BOOL (WINAPI * PFNWGLSETPBUFFERATTRIBARBPROC) (HPBUFFERARB hPbuffer, con
 
 QGLFormat pfiToQGLFormat(HDC hdc, int pfi);
 
-bool QGLPixelBufferPrivate::init(const QSize &size, const QGLFormat &f, QGLWidget *shareWidget)
+static void qt_format_to_attrib_list(bool has_render_texture, const QGLFormat &f, int attribs[])
 {
-    QGLWidget dmy;
-    dmy.makeCurrent(); // needed for wglGetProcAddress() to succeed
-
-    PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB =
-        (PFNWGLCREATEPBUFFERARBPROC) wglGetProcAddress("wglCreatePbufferARB");
-    PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB =
-        (PFNWGLGETPBUFFERDCARBPROC) wglGetProcAddress("wglGetPbufferDCARB");
-    PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB =
-        (PFNWGLQUERYPBUFFERARBPROC) wglGetProcAddress("wglQueryPbufferARB");
-    PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB =
-        (PFNWGLCHOOSEPIXELFORMATARBPROC) wglGetProcAddress("wglChoosePixelFormatARB");
-
-    if (!wglCreatePbufferARB) // assumes that if one can be resolved, all of them can
-        return false;
-
-    dc = GetDC(dmy.winId());
-    Q_ASSERT(dc);
-
-    PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB =
-        (PFNWGLGETEXTENSIONSSTRINGARBPROC) wglGetProcAddress("wglGetExtensionsStringARB");
-
-    if (wglGetExtensionsStringARB) {
-        QString extensions(QLatin1String(wglGetExtensionsStringARB(dc)));
-        has_render_texture = extensions.contains(QLatin1String("WGL_ARB_render_texture"));
-    }
-
-    int attribs[40];
     int i = 0;
     attribs[i++] = WGL_SUPPORT_OPENGL_ARB;
     attribs[i++] = TRUE;
     attribs[i++] = WGL_DRAW_TO_PBUFFER_ARB;
     attribs[i++] = TRUE;
-    attribs[i++] = WGL_BIND_TO_TEXTURE_RGBA_ARB;
-    attribs[i++] = TRUE;
+
+    if (has_render_texture) {
+        attribs[i++] = WGL_BIND_TO_TEXTURE_RGBA_ARB;
+        attribs[i++] = TRUE;
+    }
+
     attribs[i++] = WGL_COLOR_BITS_ARB;
     attribs[i++] = 32;
     attribs[i++] = WGL_DOUBLE_BUFFER_ARB;
@@ -258,11 +237,53 @@ bool QGLPixelBufferPrivate::init(const QSize &size, const QGLFormat &f, QGLWidge
     //     attribs[i++] = f.samples() == -1 ? 16 : f.samples();
     // }
     attribs[i] = 0;
+}
+
+bool QGLPixelBufferPrivate::init(const QSize &size, const QGLFormat &f, QGLWidget *shareWidget)
+{
+    QGLWidget dmy;
+    dmy.makeCurrent(); // needed for wglGetProcAddress() to succeed
+
+    PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB =
+        (PFNWGLCREATEPBUFFERARBPROC) wglGetProcAddress("wglCreatePbufferARB");
+    PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB =
+        (PFNWGLGETPBUFFERDCARBPROC) wglGetProcAddress("wglGetPbufferDCARB");
+    PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB =
+        (PFNWGLQUERYPBUFFERARBPROC) wglGetProcAddress("wglQueryPbufferARB");
+    PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB =
+        (PFNWGLCHOOSEPIXELFORMATARBPROC) wglGetProcAddress("wglChoosePixelFormatARB");
+
+    if (!wglCreatePbufferARB) // assumes that if one can be resolved, all of them can
+        return false;
+
+    dc = GetDC(dmy.winId());
+    Q_ASSERT(dc);
+
+    PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB =
+        (PFNWGLGETEXTENSIONSSTRINGARBPROC) wglGetProcAddress("wglGetExtensionsStringARB");
+
+    if (wglGetExtensionsStringARB) {
+        QString extensions(QLatin1String(wglGetExtensionsStringARB(dc)));
+        has_render_texture = extensions.contains(QLatin1String("WGL_ARB_render_texture"));
+    }
+
+    int attribs[40];
+    qt_format_to_attrib_list(has_render_texture, f, attribs);
 
     // Find pbuffer capable pixel format.
     unsigned int num_formats = 0;
     int pixel_format;
     wglChoosePixelFormatARB(dc, attribs, 0, 1, &pixel_format, &num_formats);
+
+    // some GL implementations don't support pbuffers with accum
+    // buffers, so try that before we give up
+    if (num_formats == 0 && f.accum()) {
+        QGLFormat tmp = f;
+        tmp.setAccum(false);
+        qt_format_to_attrib_list(has_render_texture, tmp, attribs);
+        wglChoosePixelFormatARB(dc, attribs, 0, 1, &pixel_format, &num_formats);
+    }
+
     if (num_formats == 0) {
         qWarning("QGLPixelBuffer: Unable to find a pixel format with pbuffer  - giving up.");
         ReleaseDC(dmy.winId(), dc);
@@ -348,16 +369,24 @@ void QGLPixelBuffer::releaseFromDynamicTexture()
 
 bool QGLPixelBuffer::hasOpenGLPbuffers()
 {
-    QGLWidget dmy;
-    dmy.makeCurrent();
+    bool ret = false;
+    QGLWidget *dmy = 0;
+    if (!QGLContext::currentContext()) {
+        dmy = new QGLWidget;
+        dmy->makeCurrent();
+    }
     PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB =
         (PFNWGLGETEXTENSIONSSTRINGARBPROC) wglGetProcAddress("wglGetExtensionsStringARB");
     if (wglGetExtensionsStringARB) {
         QString extensions(QLatin1String(wglGetExtensionsStringARB(wglGetCurrentDC())));
         if (extensions.contains(QLatin1String("WGL_ARB_pbuffer"))
             && extensions.contains(QLatin1String("WGL_ARB_pixel_format"))) {
-            return true;
+            ret = true;
         }
     }
-    return false;
+    if (dmy)
+        delete dmy;
+    return ret;
 }
+
+QT_END_NAMESPACE

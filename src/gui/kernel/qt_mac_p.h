@@ -63,6 +63,11 @@
 #include "QtGui/qpainter.h"
 #include "QtGui/qwidget.h"
 #include "private/qwidget_p.h"
+#ifndef QT_MAC_NO_QUICKDRAW
+#include "qpaintdevice.h"
+#endif
+
+QT_BEGIN_NAMESPACE
 
 /* Event masks */
 // internal Qt types
@@ -102,7 +107,7 @@ public:
     static bool blocking() { return block != 0; }
 };
 
-class QMacCocoaAutoReleasePool
+class Q_GUI_EXPORT QMacCocoaAutoReleasePool
 {
 private:
     void *pool;
@@ -215,7 +220,7 @@ public:
 
 extern QPaintDevice *qt_mac_safe_pdev; //qapplication_mac.cpp
 #ifndef QT_MAC_NO_QUICKDRAW
-#include "qpaintdevice.h"
+
 extern WindowPtr qt_mac_window_for(const QWidget*); //qwidget_mac.cpp
 class QMacSavedPortInfo
 {
@@ -344,5 +349,7 @@ public:
 #ifdef check
 # undef check
 #endif
+
+QT_END_NAMESPACE
 
 #endif // QT_MAC_P_H

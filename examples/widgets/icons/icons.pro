@@ -13,3 +13,13 @@ target.path = $$[QT_INSTALL_EXAMPLES]/widgets/icons
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS icons.pro images
 sources.path = $$[QT_INSTALL_EXAMPLES]/widgets/icons
 INSTALLS += target sources
+
+wince*: {
+    imageFiles.sources = images/*
+    wincewm*: {
+        imageFiles.path = "/My Documents/My Pictures"
+    } else {
+        imageFiles.path    = images
+    }
+    DEPLOYMENT += imageFiles
+}

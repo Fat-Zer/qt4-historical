@@ -47,21 +47,19 @@
 // sdk
 #include <QtDesigner/QExtensionManager>
 
-// shared
-#include <qdesigner_widget_p.h>
-
-
 #include <QtGui/QLayout>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
 #include <QtCore/qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
 LinePropertySheet::LinePropertySheet(Line *object, QObject *parent)
     : QDesignerPropertySheet(object, parent)
 {
-    m_fakeProperties.clear();
+    clearFakeProperties();
 }
 
 LinePropertySheet::~LinePropertySheet()
@@ -70,7 +68,7 @@ LinePropertySheet::~LinePropertySheet()
 
 bool LinePropertySheet::isVisible(int index) const
 {
-    QString name = propertyName(index);
+    const QString name = propertyName(index);
 
     if (name == QLatin1String("frameShape"))
         return false;
@@ -87,18 +85,4 @@ QString LinePropertySheet::propertyGroup(int index) const
     return QDesignerPropertySheet::propertyGroup(index);
 }
 
-LinePropertySheetFactory::LinePropertySheetFactory(QExtensionManager *parent)
-    : QExtensionFactory(parent)
-{
-}
-
-QObject *LinePropertySheetFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (iid != Q_TYPEID(QDesignerPropertySheetExtension))
-        return 0;
-
-    if (Line *o = qobject_cast<Line*>(object))
-        return new LinePropertySheet(o, parent);
-
-    return 0;
-}
+QT_END_NAMESPACE

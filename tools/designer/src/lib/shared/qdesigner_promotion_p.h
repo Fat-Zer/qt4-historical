@@ -59,6 +59,8 @@
 
 #include <QtDesigner/QDesignerPromotionInterface>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 
 namespace qdesigner_internal {
@@ -66,7 +68,7 @@ namespace qdesigner_internal {
     class  QDESIGNER_SHARED_EXPORT  QDesignerPromotion : public QDesignerPromotionInterface
     {
     public:
-        QDesignerPromotion(QDesignerFormEditorInterface *core);
+        explicit QDesignerPromotion(QDesignerFormEditorInterface *core);
 
         virtual PromotedClasses promotedClasses() const;
 
@@ -92,5 +94,7 @@ namespace qdesigner_internal {
         QDesignerFormEditorInterface *m_core;
     };
 }
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNERPROMOTION_H

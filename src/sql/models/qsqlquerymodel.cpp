@@ -49,6 +49,8 @@
 
 #include "qsqlquerymodel_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #define QSQL_PREFETCH 255
 
 void QSqlQueryModelPrivate::prefetch(int limit)
@@ -109,10 +111,7 @@ void QSqlQueryModelPrivate::initColOffsets(int size)
     the lower-level QSqlQuery and can be used to provide data to
     view classes such as QTableView. For example:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto QSqlQueryModel_snippets
-    \skipto QSqlQueryModel *model
-    \printuntil show()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 16
 
     We set the model's query, then we set up the labels displayed in
     the view header.
@@ -120,15 +119,13 @@ void QSqlQueryModelPrivate::initColOffsets(int size)
     QSqlQueryModel can also be used to access a database
     programmatically, without binding it to a view:
 
-    \skipto QSqlQueryModel model;
-    \printuntil int salary =
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 21
 
     The code snippet above extracts the \c salary field from record 4 in
     the result set of the query \c{SELECT * from employee}. Assuming
     that \c salary is column 2, we can rewrite the last line as follows:
 
-    \skipto int salary =
-    \printline int salary =
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 22
 
     The model is read-only by default. To make it read-write, you
     must subclass it and reimplement setData() and flags(). Another
@@ -182,10 +179,7 @@ QSqlQueryModel::~QSqlQueryModel()
 
     To force fetching of the entire database, you can use the following:
 
-    \code
-    while (myModel->canFetchMore())
-        myModel->fetchMore();
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.models.qsqlquerymodel.cpp 0
 
     \a parent should always be an invalid QModelIndex.
 
@@ -383,12 +377,7 @@ void QSqlQueryModel::setQuery(const QSqlQuery &query)
     was an error setting the query.
 
     Example:
-    \code
-    QSqlQueryModel model;
-    model.setQuery("select * from MyTable");
-    if (model.lastError().isValid())
-        qDebug() << model.lastError();
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.models.qsqlquerymodel.cpp 1
 
     \sa query(), queryChange(), lastError()
 */
@@ -521,10 +510,7 @@ QSqlRecord QSqlQueryModel::record() const
     By default, inserted columns are empty. To fill them with data,
     reimplement data() and handle any inserted column separately:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto QSqlQueryModel_snippets
-    \skipto MyModel::data(
-    \printuntil /^\}/
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 23
 
     \sa removeColumns()
 */
@@ -603,3 +589,4 @@ QModelIndex QSqlQueryModel::indexInQuery(const QModelIndex &item) const
                        item.internalPointer());
 }
 
+QT_END_NAMESPACE

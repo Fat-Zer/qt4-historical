@@ -46,8 +46,11 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QGroupBox;
+QT_END_NAMESPACE
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -61,5 +64,6 @@ private:
     QGroupBox *createNonExclusiveGroup();
     QGroupBox *createPushButtonGroup();
 };
+//! [0]
 
 #endif

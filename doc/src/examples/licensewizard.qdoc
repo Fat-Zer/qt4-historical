@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example dialogs/licensewizard
     \title License Wizard Example
@@ -38,9 +81,7 @@
     registering their copy of a fictitious software product. Here's
     the class definition:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.h
-    \skipto class LicenseWizard :
-    \printuntil /^\};$/
+    \snippet examples/dialogs/licensewizard/licensewizard.h 1
 
     The class's public API is limited to a constructor and an enum.
     The enum defines the IDs associated with the various pages:
@@ -58,33 +99,30 @@
     that they must be unique and different from -1. IDs allow us to
     refer to pages.
 
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto ::LicenseWizard
-    \printuntil setStartId
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 2
 
     In the constructor, we create the five pages, insert them into
     the wizard using QWizard::setPage(), and set \c Page_Intro to be
     the first page.
 
-    \printline Q_WS_MAC
-    \printuntil endif
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 3
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 4
 
     We set the style to \l{QWizard::}{ModernStyle} on all platforms
     except Mac OS X,
 
-    \printline setOption
-    \printuntil /^\}$/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 5
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 6
 
     We configure the QWizard to show a \gui Help button, which is
     connected to our \c showHelp() slot. We also set the
     \l{QWizard::}{LogoPixmap} for all pages that have a header (i.e.,
     \c EvaluatePage, \c RegisterPage, and \c DetailsPage).
 
-    \printline ::showHelp
-    \printuntil break
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 9
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 11
     \dots
-    \skipto default:
-    \printuntil /^\}$/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 13
 
     In \c showHelp(), we display help texts that are appropiate for
     the current page. If the user clicks \gui Help twice for the same
@@ -98,13 +136,9 @@
 
     Here's the definition and implementation of \c{IntroPage}:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.h
-    \skipto class IntroPage :
-    \printuntil };
-
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto ::IntroPage
-    \printuntil }
+    \snippet examples/dialogs/licensewizard/licensewizard.h 4
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 16
 
     A page inherits from QWizardPage. We set a
     \l{QWizardPage::}{title} and a
@@ -114,8 +148,8 @@
     to display a watermark pixmap on the first and last pages, and to
     have a header on the other pages.)
 
-    \printuntil IntroPage::nextId
-    \printuntil /^\}$/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 17
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 19
 
     The \c nextId() function returns the ID for \c EvaluatePage if
     the \gui{Evaluate the product for 30 days} option is checked;
@@ -125,19 +159,13 @@
 
     The \c EvaluatePage is slightly more involved:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.h
-    \skipto class EvaluatePage :
-    \printuntil };
-
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto ::EvaluatePage
-    \printuntil nameLineEdit = new
+    \snippet examples/dialogs/licensewizard/licensewizard.h 5
+    \codeline
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 20
     \dots
-    \skipto registerField
-    \printuntil email
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 21
     \dots
-    \skipto /^\}$/
-    \printline }
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 22
 
     First, we set the page's \l{QWizardPage::}{title}
     and \l{QWizardPage::}{subTitle}.
@@ -152,8 +180,7 @@
 
     Resetting the page amounts to clearing the two text fields.
 
-    \skipto EvaluatePage::nextId()
-    \printuntil /^\}$/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 23
 
     The next page is always the \c ConclusionPage.
 
@@ -162,18 +189,14 @@
     The \c RegisterPage and \c DetailsPage are very similar to \c
     EvaluatePage. Let's go directly to the \c ConclusionPage:
 
-    \quotefromfile dialogs/licensewizard/licensewizard.h
-    \skipto class ConclusionPage :
-    \printuntil };
+    \snippet examples/dialogs/licensewizard/licensewizard.h 6
 
     This time, we reimplement QWizardPage::initializePage() and
     QWidget::setVisible(), in addition to
     \l{QWizardPage::}{nextId()}. We also declare a private slot:
     \c printButtonClicked().
 
-    \quotefromfile dialogs/licensewizard/licensewizard.cpp
-    \skipto ::nextId
-    \printuntil /^\}/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 18
 
     The default implementation of QWizardPage::nextId() returns
     the page with the next ID, or -1 if the current page has the
@@ -182,8 +205,7 @@
     but to avoid relying on such subtle behavior, we reimplement
     \l{QWizardPage::}{nextId()} to return -1.
 
-    \skipto ConclusionPage::initializePage
-    \printuntil /^\}$/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 27
 
     We use QWizard::hasVisitedPage() to determine the type of
     license agreement the user has chosen. If the user filled the \c
@@ -193,8 +215,7 @@
     upgrade key and skipped the \c DetailsPage, the license text is
     an Update License Agreement.
 
-    \skipto ::setVisible
-    \printuntil /^\}/
+    \snippet examples/dialogs/licensewizard/licensewizard.cpp 28
 
     We want to display a \gui Print button in the wizard when the \c
     ConclusionPage is up. One way to accomplish this is to reimplement

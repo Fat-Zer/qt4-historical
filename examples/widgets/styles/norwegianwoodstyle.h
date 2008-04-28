@@ -47,8 +47,11 @@
 #include <QMotifStyle>
 #include <QPalette>
 
+QT_BEGIN_NAMESPACE
 class QPainterPath;
+QT_END_NAMESPACE
 
+//! [0]
 class NorwegianWoodStyle : public QMotifStyle
 {
     Q_OBJECT
@@ -73,5 +76,6 @@ private:
                            const QPixmap &pixmap);
     static QPainterPath roundRectPath(const QRect &rect);
 };
+//! [0]
 
 #endif

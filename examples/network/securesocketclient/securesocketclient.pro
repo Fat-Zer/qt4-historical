@@ -11,6 +11,6 @@ QT        += network
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/network/securesocketclient
-sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS securesocketclient.pro images
+sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS *.pro *.png *.jpg images
 sources.path = $$[QT_INSTALL_EXAMPLES]/network/securesocketclient
 INSTALLS += target sources

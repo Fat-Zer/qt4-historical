@@ -55,10 +55,18 @@
 #include <png.h>
 #include <pngconf.h>
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 #define CALLBACK_CALL_TYPE        __cdecl
 #else
 #define CALLBACK_CALL_TYPE
+#endif
+
+QT_BEGIN_NAMESPACE
+
+#if defined(Q_OS_WINCE) && defined(STANDARDSHELL_UI_MODEL)
+#  define Q_INTERNAL_WIN_NO_THROW __declspec(nothrow)
+#else
+#  define Q_INTERNAL_WIN_NO_THROW
 #endif
 
 #ifdef QT_LSB
@@ -67,7 +75,9 @@
 // These structs are documented to not change, so fork as much as
 // we need. In the future, we should use the propper accessors, though.
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <setjmp.h>
+QT_END_INCLUDE_NAMESPACE
 
 struct png_info_struct
 {
@@ -167,7 +177,6 @@ struct png_struct_def
 };
 
 #endif // QT_LSB
-
 
 /*
   All PNG files load to the minimal QImage equivalent.
@@ -436,7 +445,7 @@ public:
 /*!
     \internal
 */
-bool QPngHandlerPrivate::readPngHeader()
+bool Q_INTERNAL_WIN_NO_THROW QPngHandlerPrivate::readPngHeader()
 {
     state = Error;
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,0,0,0);
@@ -505,7 +514,7 @@ bool QPngHandlerPrivate::readPngHeader()
 /*!
     \internal
 */
-bool QPngHandlerPrivate::readPngImage(QImage *outImage)
+bool Q_INTERNAL_WIN_NO_THROW QPngHandlerPrivate::readPngImage(QImage *outImage)
 {
     if (state == Error)
         return false;
@@ -720,18 +729,33 @@ bool QPNGImageWriter::writeImage(const QImage& image, int off_x, int off_y)
     return writeImage(image, -1, QString(), off_x, off_y);
 }
 
-bool QPNGImageWriter::writeImage(const QImage& image_in, int quality_in, const QString &description,
+bool Q_INTERNAL_WIN_NO_THROW QPNGImageWriter::writeImage(const QImage& image_in, int quality_in, const QString &description,
                                  int off_x_in, int off_y_in)
 {
 #ifdef QT_NO_IMAGE_TEXT
     Q_UNUSED(description);
 #endif
 
-    QImage image = image_in;
-    if(image.format() == QImage::Format_ARGB32_Premultiplied)
-        image = image.convertToFormat(QImage::Format_ARGB32);
-    else if (image.format() == QImage::Format_RGB16)
-        image = image.convertToFormat(QImage::Format_RGB32);
+    QImage image;
+    switch (image_in.format()) {
+    case QImage::Format_ARGB32_Premultiplied:
+    case QImage::Format_ARGB4444_Premultiplied:
+    case QImage::Format_ARGB8555_Premultiplied:
+    case QImage::Format_ARGB8565_Premultiplied:
+    case QImage::Format_ARGB6666_Premultiplied:
+        image = image_in.convertToFormat(QImage::Format_ARGB32);
+        break;
+    case QImage::Format_RGB16:
+    case QImage::Format_RGB444:
+    case QImage::Format_RGB555:
+    case QImage::Format_RGB666:
+    case QImage::Format_RGB888:
+        image = image_in.convertToFormat(QImage::Format_RGB32);
+        break;
+    default:
+        image = image_in;
+        break;
+    }
 
     QPoint offset = image.offset();
     int off_x = off_x_in + offset.x();
@@ -1008,5 +1032,7 @@ QByteArray QPngHandler::name() const
 {
     return "png";
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_IMAGEFORMAT_PNG

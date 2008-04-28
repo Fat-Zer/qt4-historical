@@ -47,6 +47,8 @@
 #include <qlist.h>
 #include <qstring.h>
 
+QT_BEGIN_NAMESPACE
+
 class QMakeProject;
 class MakefileGenerator;
 
@@ -71,5 +73,7 @@ public:
     virtual int type() const { return -1; }
     virtual bool write(const QString &oldpwd) = 0;
 };
+
+QT_END_NAMESPACE
 
 #endif // METAMAKEFILE_H

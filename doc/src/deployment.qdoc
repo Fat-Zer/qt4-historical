@@ -2,6 +2,49 @@
 **
 ** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
 **
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
 ** This file is part of the Qt GUI Toolkit.
 ** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
 **
@@ -62,6 +105,7 @@
     \row
         \o \l {QtSvg}
         \o \l {QtXml}
+        \o \l {QtXmlPatterns}
         \o \l {QtDesigner}
         \o \l {QtAssistant}
         \o \l {Qt3Support}
@@ -97,7 +141,7 @@
         \o \l{Deploying an Application on Qt/X11}{Qt/X11}
         \o \l{Deploying an Application on Qt/Windows}{Qt/Windows}
         \o \l{Deploying an Application on Qt/Mac}{Qt/Mac}
-        \o \l{Deploying Qtopia Core Applications}{Qtopia Core}
+        \o \l{Deploying Qt for Embedded Linux Applications}{Qt for Embedded Linux}
     \endlist
 
     \sa Installation {Window System Specific Notes}
@@ -139,11 +183,7 @@
     To use this approach, you must start by installing a static version
     of the Qt library:
 
-    \code
-        cd /path/to/Qt
-        ./configure -static -prefix /path/to/Qt <other parameters>
-        make sub-src
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 0
 
     We specify the prefix so that we do not overwrite the existing Qt
     installation. The example above only builds the Qt libraries,
@@ -162,20 +202,12 @@
     makefile and rebuild the application. First, we must go into the
     directory that contains the application:
 
-    \code
-        cd /path/to/Qt/examples/tools/plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 1
 
     Now run qmake to create a new makefile for the application, and do
     a clean build to create the statically linked executable:
 
-    \code
-        make clean
-        PATH=/path/to/Qt/bin:$PATH
-        export PATH
-        qmake -config release
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 2
 
     You probably want to link against the release libraries, and you
     can specify this when invoking \c qmake. Note that we must set the
@@ -184,9 +216,7 @@
     To check that the application really links statically with Qt, run
     the \c ldd tool (available on most Unices):
 
-    \code
-        ldd ./application
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 3
 
     Verify that the Qt libraries are not mentioned in the output.
 
@@ -234,28 +264,17 @@
     the \l {tools/plugandpaint}{Plug & Paint} application. First, we
     must go into the directory that contains the application:
 
-    \code
-        cd /path/to/Qt/examples/tools/plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 4
 
     Now run qmake to create a new makefile for the application, and do
     a clean build to create the dynamically linked executable:
 
-    \code
-        make clean
-        qmake -config release
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 5
 
     This builds the core application, the following will build the
     plugins:
 
-    \code
-        cd ../plugandpaintplugins
-        make clean
-        qmake -config release
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 6
 
     If everything compiled and linked without any errors, we will get
     a \c plugandpaint executable and the \c libpnp_basictools.so and
@@ -303,17 +322,7 @@
     third approach since it is the most flexible. For example, a \c
     plugandpaint.sh script will look like this:
 
-    \code
-        #!/bin/sh
-        appname=`basename $0 | sed s,\.sh$,,`
-        dirname=`dirname $0`
-        if [ "${dirname:0:1}" != "/" ]; then
-        dirname=$PWD/$dirname
-        fi
-        LD_LIBRARY_PATH=$dirname
-        export LD_LIBRARY_PATH
-        $dirname/$appname $*
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 7
 
     By running this script instead of the executable, you are sure
     that the Qt libraries will be found by the dynamic linker. Note
@@ -326,9 +335,7 @@
     \c plugins directory, or you can set the \c DESTDIR in the
     plugins' project files:
 
-    \code
-        DESTDIR = /path/to/Qt/plugandpaint/plugins
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 8
 
     An archive distributing all the Qt libraries, and all the plugins,
     required to run the \l {tools/plugandpaint}{Plug & Paint}
@@ -375,9 +382,7 @@
     application using QApplication::addLibraryPath() or
     QApplication::setLibraryPaths().
 
-    \code
-        qApp->addLibraryPath("/some/other/path");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 9
 
     \section1 Application Dependencies
 
@@ -386,9 +391,7 @@
     To find out which libraries your application depends on, run the
     \c ldd tool (available on most Unices):
 
-    \code
-        ldd ./application
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 10
 
     This will list all the shared library dependencies for your
     application. Depending on configuration, these libraries must be
@@ -426,7 +429,10 @@
 
     Your application may also depend on one or more Qt plugins, such
     as the JPEG image format plugin or a SQL driver plugin. Be sure
-    to distribute any Qt plugins that you need with your application.
+    to distribute any Qt plugins that you need with your application,
+    and note that each type of plugin should be located within a
+    specific subdirectory (such as \c imageformats or \c sqldrivers)
+    within your distribution directory, as described below.
 
     The search path for Qt plugins (as well as a few other paths) is
     hard-coded into the QtCore library. By default, the first plugin
@@ -448,6 +454,10 @@
     library.
 
     \endlist
+
+    The \l{How to Create Qt Plugins} document outlines the issues you
+    need to pay attention to when building and deploying plugins for
+    Qt applications.
 */
 
 /*!
@@ -479,18 +489,13 @@
     built statically. To do this, go to a command prompt and type the
     following:
 
-    \code
-        cd C:\path\to\Qt
-        configure -static <any other options you need>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 11
 
     Remember to specify any other options you need, such as data base
     drivers, as arguments to \c configure. Once \c configure has
     finished, type the following:
 
-    \code
-        nmake sub-src
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 12
 
     This will build Qt statically. Note that unlike with a dynamic build,
     building Qt statically will result in libraries without version numbers;
@@ -498,25 +503,24 @@
     in all the examples, but if you use MinGW you must use
     \c mingw32-make instead.
 
+    \note If you later need to reconfigure and rebuild Qt from the
+    same location, ensure that all traces of the previous configuration are
+    removed by entering the build directory and typing \c{nmake distclean}
+    before running \c configure again.
+
     \section2 Linking the Application to the Static Version of Qt
 
     Once Qt has finished building we can build the \l
     {tools/plugandpaint}{Plug & Paint} application. First we must go
     into the directory that contains the application:
 
-    \code
-        cd examples\tools\plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 13
 
     We must then run \c qmake to create a new makefile for the
     application, and do a clean build to create the statically linked
     executable:
 
-    \code
-        nmake clean
-        qmake -config release
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 14
 
     You probably want to link against the release libraries, and you
     can specify this when invoking \c qmake. Now, provided that
@@ -565,28 +569,17 @@
     the \l {tools/plugandpaint}{Plug & Paint} application. First, we
     must go into the directory that contains the application:
 
-    \code
-        cd examples\tools\plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 15
 
     Now run \c qmake to create a new makefile for the application, and
     do a clean build to create the dynamically linked executable:
 
-    \code
-        nmake clean
-        qmake -config release
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 16
 
     This builds the core application, the following will build the
     plugins:
 
-    \code
-        cd ..\plugandpaintplugins
-        nmake clean
-        qmake -config release
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 17
 
     If everything compiled and linked without any errors, we will get
     a \c plugandpaint.exe executable and the \c pnp_basictools.dll and
@@ -627,10 +620,7 @@
     So to make the plugins available to our application, we have to
     create the \c plugins subdirectory and copy over the relevant DLLs:
 
-    \code
-        plugins\pnp_basictools.dll
-        plugins\pnp_extrafilters.dll
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 18
 
     An archive distributing all the Qt DLLs and application
     specific plugins required to run the \l {tools/plugandpaint}{Plug
@@ -683,9 +673,7 @@
     using QApplication::addLibraryPath() or
     QApplication::setLibraryPaths().
 
-    \code
-        qApp->addLibraryPath("C:\some\other\path");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 19
 
     One benefit of using plugins is that they can easily be made
     available to a whole family of applications.
@@ -713,16 +701,11 @@
     into the DLL binary. In Qt 4.1.3 and later we have the following
     \c CONFIG options for embedding manifests:
 
-    \code
-        embed_manifest_dll
-        embed_manifest_exe
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 20
 
     To use the options, add
 
-    \code
-        CONFIG += embed_manifest_exe
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 21
 
     to your .pro file. The \c embed_manifest_dll option is enabled by default.
 
@@ -735,9 +718,7 @@
 
     To bundle the run time libraries with your application, copy the directory
 
-    \code
-        <Visual Studio Install Path>\VC\redist\<Architecture>\Microsoft.VC80.CRT
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 22
 
     into the folder where your executable is, so that you are including a
     \c Microsoft.VC80.CRT directory alongside your application's executable.
@@ -745,9 +726,7 @@
     to remove the manifest from the plugins (embedded as a resource) by
     adding this to the pro file of the plugins you are compiling:
 
-\code
-    CONFIG-=embed_manifest_dll
-\endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 23
 
     If this is not done, plugins will not load on some systems. 
 
@@ -773,9 +752,7 @@
     \l{Dependency Walker} tool. All you need to do is to run it like
     this:
 
-    \code
-        depends <application executable>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 24
 
     This will provide a list of the libraries that your application
     depends on and other information.
@@ -822,16 +799,17 @@
 
     Your application may also depend on one or more Qt plugins, such
     as the JPEG image format plugin or a SQL driver plugin. Be sure
-    to distribute any Qt plugins that you need with your application.
+    to distribute any Qt plugins that you need with your application,
+    and note that each type of plugin should be located within a
+    specific subdirectory (such as \c imageformats or \c sqldrivers)
+    within your distribution directory, as described below.
 
     The search path for Qt plugins (as well as a few other paths) is
     hard-coded into the QtCore library. By default, the first plugin
     search path will be hard-coded to be a \c plugins subdirectory of
     the Qt installation:
 
-    \code
-    C:<path to Qt>\plugins
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 25
 
     Pre-determined paths like this one have certain disadvantages.
     For example, they may not exist on the target machine. For that
@@ -850,6 +828,10 @@
     hard-coded paths in the QtCore library.
 
     \endlist
+
+    The \l{How to Create Qt Plugins} document outlines the issues you
+    need to pay attention to when building and deploying plugins for
+    Qt applications.
 */
 
 /*!
@@ -889,9 +871,7 @@
     command line application on Unix and Windows. You probably don't
     want to run it in a bundle: Add this to your application's .pro:
 
-    \code
-        CONFIG-=app_bundle
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 26
 
     This will tell \c qmake not to put the executable inside a
     bundle. Please refer to the \l {Deploying an application on
@@ -918,11 +898,7 @@
     that you will not be able to use plugins and you must build in all
     the image formats, SQL drivers, etc..
 
-    \code
-        cd /path/to/Qt
-        ./configure -static <other parameters>
-        make sub-src
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 27
 
     You can check the various options that are available by running \c
     configure -help.
@@ -933,18 +909,12 @@
     makefile and rebuild the application. First, we must go into the
     directory that contains the application:
 
-    \code
-        cd /path/to/Qt/examples/tools/plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 28
 
     Now run \c qmake to create a new makefile for the application, and do
     a clean build to create the statically linked executable:
 
-    \code
-        make clean
-        qmake -config release
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 29
 
     You probably want to link against the release libraries, and you
     can specify this when invoking \c qmake. If you have Xcode Tools
@@ -966,32 +936,12 @@
     You can check what other libraries your application links to using
     the \c otool:
 
-    \code
-        otool -L plugandpaint.app/Contents/MacOs/plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 30
 
     Here is what the output looks like for the static \l
     {tools/plugandpaint}{Plug & Paint}:
 
-    \code
-        plugandpaint.app/Contents/MacOS/plugandpaint:
-        /System/Library/Frameworks/Carbon.framework/Versions/A/Carbon
-                (compatibility version 2.0.0, current version 128.0.0)
-        /System/Library/Frameworks/QuickTime.framework/Versions/A/QuickTime
-                (compatibility version 1.0.0, current version 10.0.0)
-        /usr/lib/libz.1.dylib
-                (compatibility version 1.0.0, current version 1.2.3)
-        /System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices
-                (compatibility version 1.0.0, current version 22.0.0)
-        /usr/lib/libstdc++.6.dylib
-                (compatibility version 7.0.0, current version 7.3.0)
-        /usr/lib/libgcc_s.1.dylib
-                (compatibility version 1.0.0, current version 1.0.0)
-        /usr/lib/libmx.A.dylib
-                (compatibility version 1.0.0, current version 92.0.0)
-        /usr/lib/libSystem.B.dylib
-                (compatibility version 1.0.0, current version 88.0.0)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 31
 
     For more information, see the \l {Application Dependencies}
     section.
@@ -1005,15 +955,11 @@
     and replace link lines for the Qt libraries with the absolute path
     to the static libraries. For example, replace
 
-    \code
-        -lQtGui
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 32
 
     with
 
-    \code
-        /where/static/qt/lib/is/libQtGui.a
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 33
 
     The \l {tools/plugandpaint}{Plug & Paint} example consists of
     several components: The core application (\l
@@ -1061,60 +1007,25 @@
     {tools/plugandpaint}{Plug & Paint} application. First, we must go
     into the directory that contains the application:
 
-    \code
-        cd /path/to/Qt/examples/tools/plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 34
 
     Now run qmake to create a new makefile for the application, and do
     a clean build to create the dynamically linked executable:
 
-    \code
-        make clean
-        qmake -config release
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 35
 
     This builds the core application, the following will build the
     plugins:
 
-    \code
-        cd ../plugandpaintplugins
-        make clean
-        qmake -config release
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 36
 
     Now run the \c otool for the Qt frameworks, for example Qt Gui:
 
-    \code
-        otool -L QtGui.framework/QtGui
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 37
 
     You will get the following output:
 
-    \code
-        QtGui.framework/QtGui:
-        /path/to/Qt/lib/QtGui.framework/Versions/4.0/QtGui
-                (compatibility version 4.0.0, current version 4.0.1)
-        /System/Library/Frameworks/Carbon.framework/Versions/A/Carbon
-                (compatibility version 2.0.0, current version 128.0.0)
-        /System/Library/Frameworks/QuickTime.framework/Versions/A/QuickTime
-                (compatibility version 1.0.0, current version 10.0.0)
-        /path/to/Qt/QtCore.framework/Versions/4.0/QtCore
-                (compatibility version 4.0.0, current version 4.0.1)
-        /usr/lib/libz.1.dylib
-                (compatibility version 1.0.0, current version 1.2.3)
-        /System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices
-                (compatibility version 1.0.0, current version 22.0.0)
-        /usr/lib/libstdc++.6.dylib
-                (compatibility version 7.0.0, current version 7.3.0)
-        /usr/lib/libgcc_s.1.dylib
-                (compatibility version 1.0.0, current version 1.0.0)
-        /usr/lib/libmx.A.dylib
-                (compatibility version 1.0.0, current version 92.0.0)
-        /usr/lib/libSystem.B.dylib
-                (compatibility version 1.0.0, current version 88.0.0)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 38
 
     For the Qt frameworks, the first line (i.e. \c
     {path/to/Qt/lib/QtGui.framework/Versions/4.0/QtGui (compatibility
@@ -1142,13 +1053,7 @@
     the bundle. We will assume that we are in the directory where we
     built the bundle.
 
-    \code
-        mkdir plugandpaint.app/Contents/Frameworks
-        cp -R /path/to/Qt/lib/QtCore.framework
-                plugandpaint.app/Contents/Frameworks
-        cp -R /path/to/Qt/lib/QtGui.framework
-               plugandpaint.app/Contents/Frameworks
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 39
 
     First we create a \c Frameworks directory inside the bundle. This
     follows the Mac OS X application convention. We then copy the
@@ -1156,12 +1061,7 @@
     symbolic links, and we want to preserve them, we use the \c -R
     option.
 
-    \code
-        install_name_tool -id @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore
-               plugandpaint.app/Contents/Frameworks/QtCore.framework/Versions/4.0/QtCore
-        install_name_tool -id @executable_path/../Frameworks/QtGui.framework/Versions/4.0/QtGui
-               plugandpaint.app/Contents/Frameworks/QtGui.framework/Versions/4.0/QtGui
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 40
 
     Then we run \c install_name_tool to set the identification names
     for the frameworks. The first argument after \c -id is the new
@@ -1172,14 +1072,7 @@
     frameworks will be located "one directory up and over" in the \c
     Frameworks directory.
 
-    \code
-        install_name_tool -change path/to/Qt/lib/QtCore.framework/Versions/4.0/QtCore
-                @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore
-                plugandpaint.app/Contents/MacOs/plugandpaint
-        install_name_tool -change path/to/qt/lib/QtGui.framework/Versions/4.0/QtGui
-                @executable_path/../Frameworks/QtGui.framework/Versions/4.0/QtGui
-                plugandpaint.app/Contents/MacOs/plugandpaint
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 41
 
     Now, the dynamic linker knows where to look for QtCore and
     QtGui. Then we must make the application aware of the library
@@ -1190,11 +1083,7 @@
     Finally, since the QtGui framework depends on QtCore, we must
     remember to change the reference for QtGui:
 
-    \code
-        install_name_tool -change path/to/Qt/lib/QtCore.framework/Versions/4.0/QtCore
-                @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore
-                plugandpaint.app/Contents/Frameworks/QtGui.framework/Versions/4.0/QtGui
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 42
 
     After all this we can run \c otool again and see that the
     application will look in the right locations.
@@ -1217,53 +1106,20 @@
     in the \c plugandpaint directory. So, in this example, all we need
     to do is move this directory:
 
-    \code
-        mv plugins plugandpaint.app/Contents
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 43
 
     If we run \c otool on for example the \l
     {tools/plugandpaintplugins/basictools}{Basic Tools} plugin's \c
     .dylib file we get the following information.
 
-    \code
-        libpnp_basictools.dylib:
-        libpnp_basictools.dylib
-               (compatibility version 0.0.0, current version 0.0.0)
-        /path/to/Qt/lib/QtGui.framework/Versions/4.0/QtGui
-               (compatibility version 4.0.0, current version 4.0.1)
-        /System/Library/Frameworks/Carbon.framework/Versions/A/Carbon
-               (compatibility version 2.0.0, current version 128.0.0)
-        /System/Library/Frameworks/QuickTime.framework/Versions/A/QuickTime
-               (compatibility version 1.0.0, current version 10.0.0)
-        /path/to/Qt/lib/QtCore.framework/Versions/4.0/QtCore
-               (compatibility version 4.0.0, current version 4.0.1)
-        /usr/lib/libz.1.dylib
-               (compatibility version 1.0.0, current version 1.2.3)
-        /System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices
-               (compatibility version 1.0.0, current version 22.0.0)
-        /usr/lib/libstdc++.6.dylib
-               (compatibility version 7.0.0, current version 7.3.0)
-        /usr/lib/libgcc_s.1.dylib
-               (compatibility version 1.0.0, current version 1.0.0)
-        /usr/lib/libmx.A.dylib
-               (compatibility version 1.0.0, current version 92.0.0)
-        /usr/lib/libSystem.B.dylib
-               (compatibility version 1.0.0, current version 88.0.0)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 44
 
     Then we can see that the plugin links to the Qt frameworks it was
     built against. Since we want the plugins to use the framework in
     the application bundle we change them the same way as we did for
     the application. For example for the Basic Tools plugin:
 
-    \code
-        install_name_tool -change /path/to/Qt/lib/QtCore.framework/Versions/4.0/QtCore
-                @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore
-                plugandpaint.app/Contents/plugins/libpnp_basictools.dylib
-        install_name_tool -change /path/to/Qt/lib/QtGui.framework/Versions/4.0/QtGui
-                @executable_path/../Frameworks/QtGui.framework/Versions/4.0/QtGui
-                plugandpaint.app/Contents/plugins/libpnp_basictools.dylib
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 45
 
 
     We must also modify the code in \c
@@ -1271,13 +1127,7 @@
     directory since the plugins live in the bundle. Add the following
     code to the \c mainwindow.cpp file:
 
-    \code
-        #elif defined(Q_OS_MAC)
-        if (pluginsDir.dirName() == "MacOS") {
-            pluginsDir.cdUp();
-        }
-        #endif
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 46
 
     \table
     \row
@@ -1294,33 +1144,18 @@
 
     Copy Qt's image format plugins into the bundle:
 
-    \code
-        cp -R /path/to/Qt/plugins/imageformats
-                pluginandpaint.app/Contents/plugins
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 47
 
     Use \c install_name_tool to link the plugins to the frameworks in
     the bundle:
 
-    \code
-        install_name_tool -change /path/to/Qt/lib/QtGui.framework/Versions/4.0/QtGui
-                @executable_path/../Frameworks/QtGui.framework/Versions/4.0/QtGui
-                plugandpaint.app/Contents/plugins/imageformats/libqjpeg.dylib
-        install_name_tool -change /path/to/Qt/lib/QtCore.framework/Versions/4.0/QtCore
-                @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore
-                plugandpaint.app/Contents/plugins/imageformats/libqjpeg.dylib
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 48
 
     Then we update the source code in \c tools/plugandpaint/main.cpp
     to look for the the new plugins. After constructing the
     QApplication, we add the following code:
 
-    \code
-        QDir dir(QApplication::applicationDirPath());
-        dir.cdUp();
-        dir.cd("plugins");
-        QApplication::setLibraryPaths(QStringList(dir.absolutePath()));
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 49
 
     First, we tell the application to only look for plugins in this
     directory. In our case, this is what we want since we only want to
@@ -1352,9 +1187,9 @@
     statically or as frameworks, the application is ready to be
     distributed. Apple provides a fair bit of information about how to
     do this and instead of repeating it here, we recommend that you
-    consult their \l {
-    http://developer.apple.com/documentation/DeveloperTools/Conceptual/SoftwareDistribution/SoftwareDistribution.html
-    }{software distribution} documentation.
+    consult their \l
+    {http://developer.apple.com/documentation/DeveloperTools/Conceptual/SoftwareDistribution/index.html}{software delivery}
+    documentation.
 
     Although the process of deploying an application do have some
     pitfalls, once you know the various issues you can easily create
@@ -1366,7 +1201,10 @@
 
     Your application may also depend on one or more Qt plugins, such
     as the JPEG image format plugin or a SQL driver plugin. Be sure
-    to distribute any Qt plugins that you need with your application.
+    to distribute any Qt plugins that you need with your application,
+    and note that each type of plugin should be located within a
+    specific subdirectory (such as \c imageformats or \c sqldrivers)
+    within your distribution directory, as described below.
 
     The search path for Qt plugins (as well as a few other paths) is
     hard-coded into the QtCore library. By default, the first plugin
@@ -1389,15 +1227,17 @@
 
     \endlist
 
+    The \l{How to Create Qt Plugins} document outlines the issues you
+    need to pay attention to when building and deploying plugins for
+    Qt applications.
+
     \section2 Additional Libraries
 
     You can check which libraries your application is linking against
     by using the \c otool tool. To use \c otool, all you need to do is
     to run it like this:
 
-    \code
-        otool -L MyApp.app/Contents/MacOS/MyApp
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 50
 
     Unlike the deployment processes on \l {Deploying an Application on
     Qt/X11}{X11} and \l {Deploying an Application on
@@ -1428,9 +1268,7 @@
     change the \c MACOSX_DEPLOYMENT_TARGET environment variable to get weak
     linking to work for your application. You can add:
 
-    \code
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.3
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 51
 
     to your .pro file and qmake will take care of this for you.
 
@@ -1453,6 +1291,27 @@
     Apple's \c gcc_select(1) command line tool to switch the default
     complier on your system.
 
+    \section3 Deploying Phonon Applications on Mac OS X
+
+    \list
+        \o If you build your Phonon application on Tiger, it will work on
+           Tiger, Leopard and Panther.
+        \o If you build your application on Leopard, it will \bold not work
+        on Panther unless you rename the libraries with the following command
+        after you have built your application:
+
+        \snippet doc/src/snippets/code/doc.src.deployment.qdoc 51a
+
+        This command must be invoked in the directory where
+        \c{libphonon_qt7.dylib} is located, usually in 
+        \c{yourapp.app/Contents/plugins/phonon_backend/}.
+
+        \o If you are using Leopard, but would like to build your application
+        against Tiger, you can use:
+
+        \snippet doc/src/snippets/code/doc.src.deployment.qdoc 51b
+    \endlist
+
     \section2 Architecture Dependencies
 
     The Qt/Mac libraries, tools, and examples can be built "universal"
@@ -1462,9 +1321,7 @@
     PowerPC hardware you will need to pass the universal SDK as a
     command line argument to the Qt configure command. For example:
 
-    \code
-         ./configure (other arguments) -universal -sdk /Developer/SDKs/MacOSX10.4u.sdk
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 52
 
     From 4.1.1 the Qt binary package is already universal.
 
@@ -1474,7 +1331,7 @@
     tool to stitch them together. This is beyond the scope of this
     document and is not something we have tried, but Apple documents
     it on their \l
-    {http://developer.apple.com/documentation}{developer website}.
+    {http://developer.apple.com/documentation/}{developer website}.
 
     Once you have a universal Qt, \a qmake will generate makefiles
     that will build for its host architecture by default. If you want
@@ -1484,10 +1341,7 @@
     add both to the \c CONFIG line. PowerPC users also need an
     SDK. For example:
 
-    \code
-        QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
-        CONFIG+=x86 ppc
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.deployment.qdoc 53
 
     Besides \c lipo, you can also check your binaries with the \c file(1)
     command line tool or the Finder.

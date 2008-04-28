@@ -42,12 +42,12 @@
 ****************************************************************************/
 
 /*!
-    \page qtopiacore-charinput.html
+    \page qt-embedded-charinput.html
 
-    \title Qtopia Core Character Input
-    \ingroup qtopiacore
+    \title Qt for Embedded Linux Character Input
+    \ingroup qt-embedded
 
-    When running a \l {Qtopia Core} application, it either runs as a
+    When running a \l {Qt for Embedded Linux} application, it either runs as a
     server or connects to an existing server.  The keyboard driver is
     loaded by the server application when it starts running, using
     Qt's \l {How to Create Qt Plugins}{plugin system}.
@@ -84,13 +84,11 @@
 
     \section1 Available Keyboard Drivers
 
-    \l {Qtopia Core} provides ready-made drivers for the SL5000, Yopy,
+    \l {Qt for Embedded Linux} provides ready-made drivers for the SL5000, Yopy,
     Vr41XX, console (TTY) and USB protocols. Run the \c configure
     script to list the available drivers:
 
-    \code
-        ./configure -help
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-charinput.qdoc 0
 
     Note that the console keyboard driver also handles console
     switching (\bold{Ctrl+Alt+F1}, ..., \bold{Ctrl+Alt+F10}) and
@@ -100,16 +98,14 @@
     enabled. The various drivers can be enabled and disabled using the
     \c configure script. For example:
 
-    \code
-        configure -qt-kbd-s15000
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-charinput.qdoc 1
 
     Custom keyboard drivers can be implemented by subclassing the
     QWSKeyboardHandler class and creating a keyboard driver plugin
-    (derived from the QKbdDriverPlugin class). \l {Qtopia Core}'s
+    (derived from the QKbdDriverPlugin class). The default
     implementation of the QKbdDriverFactory class will automatically
     detect the plugin, loading the driver into the server application
-    at runtime.
+    at run-time.
 
     \section1 Specifying a Keyboard Driver
 
@@ -117,9 +113,7 @@
     variable. For example (if the current shell is bash, ksh, zsh or
     sh):
 
-    \code
-         export QWS_KEYBOARD=<driver>[:<driver specific options>]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-charinput.qdoc 2
 
     The \c <driver> argument are \c SL5000, \c Yopy, \c VR41xx, \c
     TTY, \c USB and \l {QKbdDriverPlugin::keys()}{keys} identifying
@@ -128,11 +122,7 @@
 
     Multiple keyboard drivers can be specified in one go:
 
-    \code
-         export QWS_KEYBOARD="<driver>[:<driver specific options>]
-                 <driver>[:<driver specific options>]
-                 <driver>[:<driver specific options>]"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-charinput.qdoc 3
 
     Input will be read from all specified drivers.
 */

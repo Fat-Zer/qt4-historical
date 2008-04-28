@@ -48,12 +48,14 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QLabel;
 class QProgressBar;
 class QPushButton;
 class QTcpServer;
 class QTcpSocket;
+QT_END_NAMESPACE
 
 class Dialog : public QDialog
 {

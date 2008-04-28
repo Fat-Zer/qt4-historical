@@ -62,6 +62,8 @@
 
 #ifndef QT_NO_DOCKWIDGET
 
+QT_BEGIN_NAMESPACE
+
 class QGridLayout;
 class QWidgetResizeHandler;
 class QRubberBand;
@@ -147,9 +149,9 @@ public:
     void setGeometry(const QRect &r);
 
     enum Role { Content, CloseButton, FloatButton, TitleBar, RoleCount };
-    QWidget *widget(Role r) const;
-    void setWidget(Role r, QWidget *w);
-    QLayoutItem *item(Role r) const;
+    QWidget *widgetForRole(Role r) const;
+    void setWidgetForRole(Role r, QWidget *w);
+    QLayoutItem *itemForRole(Role r) const;
 
     QRect titleArea() const { return _titleArea; }
 
@@ -186,7 +188,7 @@ private:
 inline QLayoutItem *QDockWidgetItem::dockWidgetChildItem() const
 {
     if (QDockWidgetLayout *layout = dockWidgetLayout())
-        return layout->item(QDockWidgetLayout::Content);
+        return layout->itemForRole(QDockWidgetLayout::Content);
     return 0;
 }
 
@@ -197,6 +199,8 @@ inline QDockWidgetLayout *QDockWidgetItem::dockWidgetLayout() const
         return qobject_cast<QDockWidgetLayout*>(w->layout());
     return 0;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_DOCKWIDGET
 

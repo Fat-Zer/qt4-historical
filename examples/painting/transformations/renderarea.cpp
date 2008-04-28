@@ -45,6 +45,7 @@
 
 #include "renderarea.h"
 
+//! [0]
 RenderArea::RenderArea(QWidget *parent)
     : QWidget(parent)
 {
@@ -56,29 +57,39 @@ RenderArea::RenderArea(QWidget *parent)
     xBoundingRect = fontMetrics.boundingRect(tr("x"));
     yBoundingRect = fontMetrics.boundingRect(tr("y"));
 }
+//! [0]
 
+//! [1]
 void RenderArea::setOperations(const QList<Operation> &operations)
 {
     this->operations = operations;
     update();
 }
+//! [1]
 
+//! [2]
 void RenderArea::setShape(const QPainterPath &shape)
 {
     this->shape = shape;
     update();
 }
+//! [2]
 
+//! [3]
 QSize RenderArea::minimumSizeHint() const
 {
     return QSize(182, 182);
 }
+//! [3]
 
+//! [4]
 QSize RenderArea::sizeHint() const
 {
     return QSize(232, 232);
 }
+//! [4]
 
+//! [5]
 void RenderArea::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
@@ -86,18 +97,26 @@ void RenderArea::paintEvent(QPaintEvent *event)
     painter.fillRect(event->rect(), QBrush(Qt::white));
 
     painter.translate(66, 66);
+//! [5]
 
+//! [6]
     painter.save();
     transformPainter(painter);
     drawShape(painter);
     painter.restore();
+//! [6]
 
+//! [7]
     drawOutline(painter);
+//! [7]
 
+//! [8]
     transformPainter(painter);
     drawCoordinates(painter);
 }
+//! [8]
 
+//! [9]
 void RenderArea::drawCoordinates(QPainter &painter)
 {
     painter.setPen(Qt::red);
@@ -114,7 +133,9 @@ void RenderArea::drawCoordinates(QPainter &painter)
     painter.drawText(0 - yBoundingRect.width() / 2,
                      60 + yBoundingRect.height() / 2, tr("y"));
 }
+//! [9]
 
+//! [10]
 void RenderArea::drawOutline(QPainter &painter)
 {
     painter.setPen(Qt::darkGreen);
@@ -122,12 +143,16 @@ void RenderArea::drawOutline(QPainter &painter)
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(0, 0, 100, 100);
 }
+//! [10]
 
+//! [11]
 void RenderArea::drawShape(QPainter &painter)
 {
     painter.fillPath(shape, Qt::blue);
 }
+//! [11]
 
+//! [12]
 void RenderArea::transformPainter(QPainter &painter)
 {
     for (int i = 0; i < operations.size(); ++i) {
@@ -147,3 +172,4 @@ void RenderArea::transformPainter(QPainter &painter)
         }
     }
 }
+//! [12]

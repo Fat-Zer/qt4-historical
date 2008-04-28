@@ -46,16 +46,20 @@
 
 #include "qdesigner_toolwindow.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWorkbench;
 
 class QDesignerObjectInspector: public QDesignerToolWindow
 {
     Q_OBJECT
 public:
-    QDesignerObjectInspector(QDesignerWorkbench *workbench);
+    explicit QDesignerObjectInspector(QDesignerWorkbench *workbench);
     virtual ~QDesignerObjectInspector();
 
     virtual QRect geometryHint() const;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_OBJECTINSPECTOR_H

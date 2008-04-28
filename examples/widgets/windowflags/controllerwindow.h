@@ -48,12 +48,15 @@
 
 #include "previewwindow.h"
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QGroupBox;
 class QLabel;
 class QPushButton;
 class QRadioButton;
+QT_END_NAMESPACE
 
+//! [0]
 class ControllerWindow : public QWidget
 {
     Q_OBJECT
@@ -97,5 +100,6 @@ private:
     QCheckBox *windowStaysOnTopCheckBox;
     QCheckBox *customizeWindowHintCheckBox;
 };
+//! [0]
 
 #endif

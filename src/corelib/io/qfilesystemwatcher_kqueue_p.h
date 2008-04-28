@@ -64,6 +64,8 @@
 
 struct kevent;
 
+QT_BEGIN_NAMESPACE
+
 class QKqueueFileSystemWatcherEngine : public QFileSystemWatcherEngine
 {
     Q_OBJECT
@@ -89,5 +91,7 @@ private:
     QHash<QString, int> pathToID;
     QHash<int, QString> idToPath;
 };
+
+QT_END_NAMESPACE
 
 #endif // FILEWATCHER_KQUEUE_P_H

@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_MAINWINDOW
@@ -60,6 +62,7 @@ class QToolTipGroup;
 class Q3MainWindowPrivate;
 class Q3MainWindowLayout;
 class Q3PopupMenu;
+class QHideDock;
 template<class T> class QList;
 
 class Q_COMPAT_EXPORT Q3MainWindow: public QWidget
@@ -258,6 +261,8 @@ Q_COMPAT_EXPORT QTextStream &operator>>(QTextStream &, Q3MainWindow &);
 #endif
 
 #endif // QT_NO_MAINWINDOW
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

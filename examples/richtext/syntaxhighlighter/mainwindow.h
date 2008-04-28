@@ -48,8 +48,11 @@
 
 #include "highlighter.h"
 
+QT_BEGIN_NAMESPACE
 class QTextEdit;
+QT_END_NAMESPACE
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -70,5 +73,6 @@ private:
     QTextEdit *editor;
     Highlighter *highlighter;
 };
+//! [0]
 
 #endif

@@ -47,6 +47,8 @@
 #include "ui_finddialog.h"
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
+
 class FindDialog : public QDialog, public Ui::FindDialog
 {
     Q_OBJECT
@@ -56,11 +58,14 @@ public:
     FindDialog(QWidget *parent = 0);
 
 signals:
-    void findNext(const QString& text, int where, bool matchCase);
+    void findNext(const QString& text, int where, bool matchCase, bool ignoreAccelerators);
 
 private slots:
     void emitFindNext();
     void verifyText(const QString &);
+    void find();
 };
+
+QT_END_NAMESPACE
 
 #endif

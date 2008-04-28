@@ -69,11 +69,16 @@
 #include "qpainterpath.h"
 #include "qmotifstyle_p.h"
 #include "qdialogbuttonbox.h"
+#include "qformlayout.h"
 #include <limits.h>
+#include <QtGui/qgraphicsproxywidget.h>
+#include <QtGui/qgraphicsview.h>
 
 #ifdef Q_WS_X11
 #include "qx11info_x11.h"
 #endif
+
+QT_BEGIN_NAMESPACE
 
 // old constants that might still be useful...
 static const int motifItemFrame         = 2;    // menu item frame width
@@ -1191,9 +1196,9 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                     mode = QIcon::Active;
                 QPixmap pixmap;
                 if (menuitem->checkType != QStyleOptionMenuItem::NotCheckable && menuitem->checked)
-                    pixmap = menuitem->icon.pixmap(pixelMetric(PM_SmallIconSize), mode, QIcon::On);
+                    pixmap = menuitem->icon.pixmap(pixelMetric(PM_SmallIconSize, opt, widget), mode, QIcon::On);
                 else
-                    pixmap = menuitem->icon.pixmap(pixelMetric(PM_SmallIconSize), mode);
+                    pixmap = menuitem->icon.pixmap(pixelMetric(PM_SmallIconSize, opt, widget), mode);
 
                 int pixw = pixmap.width();
                 int pixh = pixmap.height();
@@ -1452,14 +1457,6 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
                 }
             }
 
-            if (toolbutton->subControls & SC_ToolButtonMenu) {
-                tool.rect = menuarea;
-                tool.state = mflags;
-                if (mflags & (State_Sunken | State_On | State_Raised))
-                    drawPrimitive(PE_IndicatorButtonDropDown, &tool, p, widget);
-                drawPrimitive(PE_IndicatorArrowDown, &tool, p, widget);
-            }
-
             if ((toolbutton->state & State_HasFocus) && (!focus || !focus->isVisible())) {
                 QStyleOptionFocusRect fr;
                 fr.QStyleOption::operator=(*toolbutton);
@@ -1470,6 +1467,20 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
             int fw = pixelMetric(PM_DefaultFrameWidth, opt, widget);
             label.rect = button.adjusted(fw, fw, -fw, -fw);
             drawControl(CE_ToolButtonLabel, &label, p, widget);
+
+            if (toolbutton->subControls & SC_ToolButtonMenu) {
+                tool.rect = menuarea;
+                tool.state = mflags;
+                if (mflags & (State_Sunken | State_On | State_Raised))
+                    drawPrimitive(PE_IndicatorButtonDropDown, &tool, p, widget);
+                drawPrimitive(PE_IndicatorArrowDown, &tool, p, widget);
+            } else if (toolbutton->features & QStyleOptionToolButton::HasMenu) {
+                int mbi = pixelMetric(PM_MenuButtonIndicator, toolbutton, widget);
+                QRect ir = toolbutton->rect;
+                QStyleOptionToolButton newBtn = *toolbutton;
+                newBtn.rect = QRect(ir.right() + 5 - mbi, ir.height() - mbi + 4, mbi - 6, mbi - 6);
+                drawPrimitive(PE_IndicatorArrowDown, &newBtn, p, widget);
+            }
         }
         break;
 #ifndef QT_NO_SPINBOX
@@ -1647,15 +1658,21 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
         }
         break;
 
+#ifndef QT_NO_SCROLLBAR
     case CC_ScrollBar: {
         if (opt->subControls & SC_ScrollBarGroove)
             qDrawShadePanel(p, opt->rect, opt->palette, true,
                             pixelMetric(PM_DefaultFrameWidth, opt, widget),
                             &opt->palette.brush((opt->state & State_Enabled) ? QPalette::Mid : QPalette::Window));
 
-        QCommonStyle::drawComplexControl(cc, opt, p, widget);
+        if (const QStyleOptionSlider *scrollbar = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
+            QStyleOptionSlider newScrollbar = *scrollbar;
+            if (scrollbar->minimum == scrollbar->maximum)
+                newScrollbar.state |= State_Enabled; // make sure that the slider is drawn.
+            QCommonStyle::drawComplexControl(cc, &newScrollbar, p, widget);
+        }
         break; }
-
+#endif
 
     case CC_Q3ListView:
         if (opt->subControls & (SC_Q3ListViewBranch | SC_Q3ListViewExpand)) {
@@ -1888,9 +1905,9 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
             bs.setHeight(opt->rect.height()/2 - fw);
             bs.setWidth(qMin(bs.height() * 8 / 5, opt->rect.width() / 4)); // 1.6 -approximate golden mean
             bs = bs.expandedTo(QApplication::globalStrut());
-            int y = fw;
+            int y = fw + spinbox->rect.y();
             int x, lx, rx;
-            x = opt->rect.width() - y - bs.width();
+            x = spinbox->rect.x() + opt->rect.width() - fw - bs.width();
             lx = fw;
             rx = x - fw * 2;
             const int margin = spinbox->frame ? 4 : 0;
@@ -1903,18 +1920,17 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
             case SC_SpinBoxDown:
                 if (spinbox->buttonSymbols == QAbstractSpinBox::NoButtons)
                     return QRect();
-
                 return visualRect(spinbox->direction, spinbox->rect,
                                   QRect(x, y + bs.height() + 1, bs.width(), bs.height() - 1));
             case SC_SpinBoxEditField:
                 if (spinbox->buttonSymbols == QAbstractSpinBox::NoButtons)
                     return visualRect(spinbox->direction, spinbox->rect,
-                                      QRect(lx + margin, fw + margin,
+                                      QRect(lx + margin, y + margin,
                                             spinbox->rect.width() - 2*fw - 2*margin,
                                             spinbox->rect.height() - 2*fw - 2*margin));
 
                 return visualRect(spinbox->direction, spinbox->rect,
-                                  QRect(lx + margin, fw + margin, rx - margin,
+                                  QRect(lx + margin, y + margin, rx - margin,
                                         spinbox->rect.height() - 2*fw - 2 * margin));
             case SC_SpinBoxFrame:
                 return visualRect(spinbox->direction, spinbox->rect, spinbox->rect);
@@ -2592,6 +2608,16 @@ bool QMotifStyle::event(QEvent *e)
 {
     if(e->type() == QEvent::FocusIn) {
         if (QWidget *focusWidget = QApplication::focusWidget()) {
+#ifndef QT_NO_GRAPHICSVIEW
+            if (QGraphicsView *graphicsView = qobject_cast<QGraphicsView *>(focusWidget)) {
+                QGraphicsItem *focusItem = graphicsView->scene() ? graphicsView->scene()->focusItem() : 0;
+                if (focusItem && focusItem->type() == QGraphicsProxyWidget::Type) {
+                    QGraphicsProxyWidget *proxy = static_cast<QGraphicsProxyWidget *>(focusItem);
+                    if (proxy->widget())
+                        focusWidget = proxy->widget()->focusWidget();
+                }
+            }
+#endif
             if(!focus)
                 focus = new QFocusFrame(focusWidget);
             focus->setWidget(focusWidget);
@@ -2689,4 +2715,6 @@ QPalette QMotifStyle::standardPalette() const
     return palette;
 }
 
-#endif
+QT_END_NAMESPACE
+
+#endif // !defined(QT_NO_STYLE_MOTIF) || defined(QT_PLUGIN)

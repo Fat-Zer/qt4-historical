@@ -51,7 +51,10 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QAction;
+class QActionGroup;
 class QDesignerFormEditorInterface;
 class DomUI;
 class QWidget;
@@ -79,8 +82,10 @@ public:
     virtual QAction *actionSplitHorizontal() const;
     virtual QAction *actionSplitVertical() const;
     virtual QAction *actionGridLayout() const;
+    QAction *actionFormLayout() const;
     virtual QAction *actionBreakLayout() const;
     virtual QAction *actionAdjustSize() const;
+    QAction *actionSimplifyLayout() const;
 
     virtual QDesignerFormWindowInterface *activeFormWindow() const;
 
@@ -102,7 +107,17 @@ public Q_SLOTS:
     virtual void addFormWindow(QDesignerFormWindowInterface *formWindow);
     virtual void removeFormWindow(QDesignerFormWindowInterface *formWindow);
     virtual void setActiveFormWindow(QDesignerFormWindowInterface *formWindow);
+
+protected:
+    void setActionFormLayout(QAction *action);
+    void setActionSimplifyLayout(QAction *action);
+
+private:
+    QDesignerFormWindowManagerInterface(const QDesignerFormWindowManagerInterface &other);
+    QDesignerFormWindowManagerInterface &operator = (const QDesignerFormWindowManagerInterface &other);
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

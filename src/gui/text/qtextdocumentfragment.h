@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextStream;
@@ -68,17 +70,23 @@ public:
     bool isEmpty() const;
 
     QString toPlainText() const;
+#ifndef QT_NO_TEXTHTMLPARSER
     QString toHtml() const;
     QString toHtml(const QByteArray &encoding) const;
+#endif // QT_NO_TEXTHTMLPARSER
 
     static QTextDocumentFragment fromPlainText(const QString &plainText);
+#ifndef QT_NO_TEXTHTMLPARSER
     static QTextDocumentFragment fromHtml(const QString &html);
     static QTextDocumentFragment fromHtml(const QString &html, const QTextDocument *resourceProvider);
+#endif // QT_NO_TEXTHTMLPARSER
 
 private:
     QTextDocumentFragmentPrivate *d;
     friend class QTextCursor;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

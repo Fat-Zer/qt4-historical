@@ -49,37 +49,34 @@ TRANSLATOR qdesigner_internal::QDesignerPromotionDialog
 #include "promotionmodel_p.h"
 #include "iconloader_p.h"
 #include "widgetdatabase_p.h"
+#include "signalslotdialog_p.h"
 
 #include <QtDesigner/QDesignerFormEditorInterface>
 #include <QtDesigner/QDesignerFormWindowInterface>
 #include <QtDesigner/QDesignerPromotionInterface>
 #include <QtDesigner/QDesignerWidgetDataBaseItemInterface>
+#include <abstractdialoggui_p.h>
 
 #include <QtCore/QTimer>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
+#include <QtGui/QFormLayout>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QTreeView>
 #include <QtGui/QHeaderView>
 #include <QtGui/QPushButton>
 #include <QtGui/QItemSelectionModel>
 #include <QtGui/QItemSelection>
-#include <QtGui/QMessageBox>
 #include <QtGui/QComboBox>
 #include <QtGui/QLineEdit>
 #include <QtGui/QCheckBox>
 #include <QtGui/QRegExpValidator>
 #include <QtGui/QLabel>
 #include <QtGui/QSpacerItem>
+#include <QtGui/QMenu>
+#include <QtGui/QAction>
 
-
-// Add a row consisting of widget and a description label to a grid.
-static void addGridRow(const QString &description, QGridLayout *gridLayout, QWidget *w, int &row) {
-    QLabel *label = new QLabel(description);
-    gridLayout->addWidget(label, row, 0);
-    gridLayout->addWidget(w, row, 1);
-    ++row;
-}
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
     // PromotionParameters
@@ -114,13 +111,12 @@ namespace qdesigner_internal {
             m_baseClassCombo->setCurrentIndex(selectedBaseClass);
 
         // Grid
-        QGridLayout *gridLayout = new QGridLayout();
-        int row = 0;
-        addGridRow(tr("Base class name:"),     gridLayout, m_baseClassCombo, row);
-        addGridRow(tr("Promoted class name:"), gridLayout, m_classNameEdit, row);
-        addGridRow(tr("Header file:"),         gridLayout, m_includeFileEdit, row);
-        addGridRow(tr("Global include"),       gridLayout, m_globalIncludeCheckBox, row);
-        hboxLayout->addLayout(gridLayout);
+        QFormLayout *formLayout = new QFormLayout();
+        formLayout->addRow(tr("Base class name:"),     m_baseClassCombo);
+        formLayout->addRow(tr("Promoted class name:"), m_classNameEdit);
+        formLayout->addRow(tr("Header file:"),         m_includeFileEdit);
+        formLayout->addRow(tr("Global include"),       m_globalIncludeCheckBox);
+        hboxLayout->addLayout(formLayout);
         hboxLayout->addItem(new QSpacerItem(15, 0, QSizePolicy::Fixed, QSizePolicy::Ignored));
         // Button box
         QVBoxLayout *buttonLayout = new QVBoxLayout();
@@ -197,7 +193,7 @@ namespace qdesigner_internal {
             m_baseClassCombo->setCurrentIndex (index);
     }
 
-    // QDesignerPromotionDialog
+    // --------------- QDesignerPromotionDialog
     QDesignerPromotionDialog::QDesignerPromotionDialog(QDesignerFormEditorInterface *core,
                                                        QWidget *parent,
                                                        const QString &promotableWidgetClassName,
@@ -205,6 +201,7 @@ namespace qdesigner_internal {
         QDialog(parent),
         m_mode(promotableWidgetClassName.isEmpty() || promoteTo == 0 ? ModeEdit : ModeEditChooseClass),
         m_promotableWidgetClassName(promotableWidgetClassName),
+        m_core(core),
         m_promoteTo(promoteTo),
         m_promotion(core->promotion()),
         m_model(new PromotionModel(core)),
@@ -226,9 +223,13 @@ namespace qdesigner_internal {
         // tree view
         m_treeView->setModel (m_model);
         m_treeView->setMinimumWidth(450);
+        m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
         connect(m_treeView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
                 this, SLOT(slotSelectionChanged(QItemSelection, QItemSelection)));
+
+        connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)),
+                this, SLOT(slotTreeViewContextMenu(QPoint)));
 
         QHeaderView *headerView = m_treeView->header();
         headerView->setResizeMode(QHeaderView::ResizeToContents);
@@ -422,7 +423,32 @@ namespace qdesigner_internal {
         }
     }
 
+    void QDesignerPromotionDialog::slotTreeViewContextMenu(const QPoint &pos) {
+        unsigned flags;
+        const QDesignerWidgetDataBaseItemInterface *dbItem = databaseItemAt(m_treeView->selectionModel()->selection(), flags);
+        if (!dbItem)
+            return;
+
+        QMenu menu;
+        QAction *signalSlotAction = menu.addAction(tr("Change signals/slots..."));
+        connect(signalSlotAction, SIGNAL(triggered()), this, SLOT(slotEditSignalsSlots()));
+
+        menu.exec(m_treeView->viewport()->mapToGlobal(pos));
+    }
+
+    void  QDesignerPromotionDialog::slotEditSignalsSlots() {
+        unsigned flags;
+        const QDesignerWidgetDataBaseItemInterface *dbItem = databaseItemAt(m_treeView->selectionModel()->selection(), flags);
+        if (!dbItem)
+            return;
+
+        SignalSlotDialog::editPromotedClass(m_core, dbItem->name(), this);
+    }
+
     void QDesignerPromotionDialog::displayError(const QString &message) {
-        QMessageBox::critical(this, tr("%1 - Error").arg(windowTitle()), message,  QMessageBox::Close);
+        m_core->dialogGui()->message(this, QDesignerDialogGuiInterface::PromotionErrorMessage, QMessageBox::Warning,
+                                     tr("%1 - Error").arg(windowTitle()), message,  QMessageBox::Close);
     }
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

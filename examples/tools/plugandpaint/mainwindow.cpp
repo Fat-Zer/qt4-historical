@@ -127,6 +127,7 @@ void MainWindow::brushWidth()
         paintArea->setBrushWidth(newWidth);
 }
 
+//! [0]
 void MainWindow::changeBrush()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -135,7 +136,9 @@ void MainWindow::changeBrush()
 
     paintArea->setBrush(iBrush, brush);
 }
+//! [0]
 
+//! [1]
 void MainWindow::insertShape()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -145,7 +148,9 @@ void MainWindow::insertShape()
     if (!path.isEmpty())
         paintArea->insertShape(path);
 }
+//! [1]
 
+//! [2]
 void MainWindow::applyFilter()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -156,6 +161,7 @@ void MainWindow::applyFilter()
                                               this);
     paintArea->setImage(image);
 }
+//! [2]
 
 void MainWindow::about()
 {
@@ -164,11 +170,13 @@ void MainWindow::about()
                "applications that can be extended through plugins."));
 }
 
+//! [3]
 void MainWindow::aboutPlugins()
 {
     PluginDialog dialog(pluginsDir.path(), pluginFileNames, this);
     dialog.exec();
 }
+//! [3]
 
 void MainWindow::createActions()
 {
@@ -227,10 +235,12 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutPluginsAct);
 }
 
+//! [4]
 void MainWindow::loadPlugins()
 {
     foreach (QObject *plugin, QPluginLoader::staticInstances())
         populateMenus(plugin);
+//! [4] //! [5]
 
     pluginsDir = QDir(qApp->applicationDirPath());
 
@@ -245,21 +255,29 @@ void MainWindow::loadPlugins()
     }
 #endif
     pluginsDir.cd("plugins");
+//! [5]
 
+//! [6]
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
         if (plugin) {
             populateMenus(plugin);
             pluginFileNames += fileName;
+//! [6] //! [7]
         }
+//! [7] //! [8]
     }
+//! [8]
 
+//! [9]
     brushMenu->setEnabled(!brushActionGroup->actions().isEmpty());
     shapesMenu->setEnabled(!shapesMenu->actions().isEmpty());
     filterMenu->setEnabled(!filterMenu->actions().isEmpty());
 }
+//! [9]
 
+//! [10]
 void MainWindow::populateMenus(QObject *plugin)
 {
     BrushInterface *iBrush = qobject_cast<BrushInterface *>(plugin);
@@ -275,6 +293,7 @@ void MainWindow::populateMenus(QObject *plugin)
     if (iFilter)
         addToMenu(plugin, iFilter->filters(), filterMenu, SLOT(applyFilter()));
 }
+//! [10]
 
 void MainWindow::addToMenu(QObject *plugin, const QStringList &texts,
                            QMenu *menu, const char *member,

@@ -1,1 +1,1 @@
-#include "../../../src/network/qsslsocket_openssl_p.h"
+#include "../../../src/network/ssl/qsslsocket_openssl_p.h"

@@ -1,3 +1,4 @@
+#! [0]
 defineReplace(headersAndSources) {
     variable = $$1
     names = $$eval($$variable)
@@ -16,6 +17,7 @@ defineReplace(headersAndSources) {
     }
     return($$headers $$sources)
 }
+#! [0]
 
 defineReplace(matchingFiles) {
     names = $$ARGS

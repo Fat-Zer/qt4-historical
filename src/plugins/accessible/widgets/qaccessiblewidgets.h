@@ -51,6 +51,8 @@
 
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class QTextEdit;
 class QStackedWidget;
 class QToolBox;
@@ -305,11 +307,14 @@ public:
     int childCount() const;
     int navigate(RelationFlag relation, int entry, QAccessibleInterface **iface) const;
     int indexOfChild(const QAccessibleInterface *iface) const;
+    int childAt(int x, int y) const;
     QMainWindow *mainWindow() const;
 
 };
 #endif //QT_NO_MAINWINDOW
 
 #endif // QT_NO_ACCESSIBILITY
+
+QT_END_NAMESPACE
 
 #endif // QACESSIBLEWIDGETS_H

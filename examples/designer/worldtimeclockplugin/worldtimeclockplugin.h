@@ -46,6 +46,7 @@
 
 #include <QDesignerCustomWidgetInterface>
 
+//! [0]
 class WorldTimeClockPlugin : public QObject,
                              public QDesignerCustomWidgetInterface
 {
@@ -70,5 +71,6 @@ public:
 private:
     bool initialized;
 };
+//! [0]
 
 #endif

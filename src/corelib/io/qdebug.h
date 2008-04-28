@@ -56,6 +56,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QDebug
@@ -117,7 +119,6 @@ public:
     { stream->ts << m; return *this; }
 };
 
-Q_CORE_EXPORT_INLINE QDebug qWarning() { return QDebug(QtWarningMsg); }
 Q_CORE_EXPORT_INLINE QDebug qCritical() { return QDebug(QtCriticalMsg); }
 
 inline QDebug &QDebug::operator=(const QDebug &other)
@@ -245,6 +246,16 @@ inline QNoDebug operator<<(QNoDebug debug, const T &) { return debug; }
 #endif
 
 #endif
+
+#if !defined(QT_NO_WARNING_OUTPUT)
+Q_CORE_EXPORT_INLINE QDebug qWarning() { return QDebug(QtWarningMsg); }
+#else
+#undef qWarning
+inline QNoDebug qWarning() { return QNoDebug(); }
+#define qWarning QT_NO_QWARNING_MACRO
+#endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

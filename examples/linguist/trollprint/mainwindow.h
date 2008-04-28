@@ -46,8 +46,10 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
+QT_END_NAMESPACE
 class PrintPanel;
 
 class MainWindow : public QMainWindow

@@ -63,22 +63,26 @@
 #include <QtCore/QMap>
 #include <QtCore/QSet>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 
+class QPixmap;
+class QtResourceSet;
+
 namespace qdesigner_internal {
+
+class DesignerPixmapCache;
+class DesignerIconCache;
 
 // Form builder used for previewing forms
 class QDESIGNER_SHARED_EXPORT QDesignerFormBuilder: public QFormBuilder
 {
 public:
     enum Mode {
-        // Use container extension to populate containers. Disable scripts.
         DisableScripts,
-        // Use container extension to populate containers as well as scripts
-        UseScriptAndContainerExtension,
-        // Experimental: Use scripts to populate the container
-        UseScriptForContainerExtension
+        EnableScripts
     };
 
     QDesignerFormBuilder(QDesignerFormEditorInterface *core, Mode mode);
@@ -95,9 +99,17 @@ public:
     // Create a preview widget (for integrations) or return 0. The widget has to be embedded into a main window.
     // Experimental, depending on script support.
     static QWidget *createPreview(const QDesignerFormWindowInterface *fw, const QString &styleName /* ="" */,
+                                  const QString &appStyleSheet  /* ="" */,
                                   ScriptErrors *scriptErrors, QString *errorMessage);
     // Convenience that pops up message boxes in case of failures.
     static QWidget *createPreview(const QDesignerFormWindowInterface *fw, const QString &styleName = QString());
+    //  Create a preview widget (for integrations) or return 0. The widget has to be embedded into a main window.
+    static QWidget *createPreview(const QDesignerFormWindowInterface *fw, const QString &styleName, const QString &appStyleSheet, QString *errorMessage);
+    // Convenience that pops up message boxes in case of failures.
+    static QWidget *createPreview(const QDesignerFormWindowInterface *fw, const QString &styleName, const QString &appStyleSheet);
+
+    // Create a preview image
+    static QPixmap createPreviewPixmap(const QDesignerFormWindowInterface *fw, const QString &styleName = QString(), const QString &appStyleSheet = QString());
 
 protected:
     using QFormBuilder::createDom;
@@ -107,6 +119,7 @@ protected:
     virtual DomWidget *createDom(QWidget *widget, DomWidget *ui_parentWidget, bool recursive = true);
     virtual QWidget *create(DomWidget *ui_widget, QWidget *parentWidget);
     virtual QLayout *create(DomLayout *ui_layout, QLayout *layout, QWidget *parentWidget);
+    virtual void createResources(DomResources *resources);
 
     virtual QWidget *createWidget(const QString &widgetName, QWidget *parentWidget, const QString &name);
     virtual bool addItem(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget);
@@ -119,15 +132,23 @@ protected:
 
     virtual void loadExtraInfo(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget);
 
+    QtResourceSet *internalResourceSet() const { return m_tempResourceSet; }
+
 private:
-    bool addItemContainerExtension(QWidget *widget, QWidget *parentWidget);
     QDesignerFormEditorInterface *m_core;
     const Mode m_mode;
-    
+
     typedef QSet<QWidget *> WidgetSet;
     WidgetSet m_customWidgetsWithScript;
+
+    DesignerPixmapCache *m_pixmapCache;
+    DesignerIconCache *m_iconCache;
+    bool m_ignoreCreateResources;
+    QtResourceSet *m_tempResourceSet;
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_FORMBUILDER_H

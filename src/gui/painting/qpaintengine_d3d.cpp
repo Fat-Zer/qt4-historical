@@ -47,12 +47,11 @@
 #include "private/qdrawhelper_p.h"
 #include "private/qfont_p.h"
 #include "private/qfontengine_p.h"
-#include "private/qmath_p.h"
 #include "private/qpaintengine_p.h"
 #include "private/qtessellator_p.h"
 #include <private/qbezier_p.h>
 #include <private/qpainter_p.h>
-#include <private/qpixmap_p.h>
+#include <private/qpixmap_raster_p.h>
 #include <private/qpolygonclipper_p.h>
 #include <qbuffer.h>
 #include <qcache.h>
@@ -60,14 +59,18 @@
 #include <qfileinfo.h>
 #include <qlibrary.h>
 #include <qlibraryinfo.h>
+#include <qmath.h>
 #include <qpaintdevice.h>
 #include <qpixmapcache.h>
 
+#include <qwidget.h>
 #include <d3d9.h>
 #include <d3dx9.h>
 
 #include <mmintrin.h>
 #include <xmmintrin.h>
+
+QT_BEGIN_NAMESPACE
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -2507,8 +2510,8 @@ void QD3DDrawHelper::addTrap(const Trapezoid &trap)
     qreal _rightA = (qreal)_w/_h;
     qreal _rightB = topRightX - _rightA * topRightY;
 
-    qreal invLeftA = qFuzzyCompare(_leftA, 0.0) ? 0.0 : 1.0 / _leftA;
-    qreal invRightA = qFuzzyCompare(_rightA, 0.0) ? 0.0 : 1.0 / _rightA;
+    qreal invLeftA = qFuzzyCompare(_leftA + 1, 1) ? 0.0 : 1.0 / _leftA;
+    qreal invRightA = qFuzzyCompare(_rightA + 1, 1) ? 0.0 : 1.0 / _rightA;
 
     vertex v1 = { {1.f, top - 1.f, 0.5f}, 0.f,
         top, bottom, invLeftA, -invRightA,
@@ -2971,7 +2974,7 @@ qreal calculateAngle(qreal dx, qreal dy)
 {
     qreal angle;
 
-    if (qFuzzyCompare(dx, 0.0)) {
+    if (qFuzzyCompare(dx + 1, 1)) {
         angle = (dy < 0) ? -M_PI/2 : M_PI/2;
     } else {
         angle = atanf(dy/dx);
@@ -3643,8 +3646,9 @@ void QDirect3DPaintEnginePrivate::prepareItem(QD3DBatchItem *item) {
     int brushmode = 0;
     m_statemanager->startStateBlock();
     if ((item->m_info & QD3DBatchItem::BI_PIXMAP) || (item->m_info & QD3DBatchItem::BI_IMAGE)) {
+        QRasterPixmapData *data = static_cast<QRasterPixmapData*>(item->m_pixmap.data);
         IDirect3DTexture9 *tex = (item->m_info & QD3DBatchItem::BI_PIXMAP) ?
-                                 item->m_pixmap.data->texture : item->m_texture;
+                                 data->texture : item->m_texture;
         m_statemanager->setTexture(tex);
         brushmode = 5;
     }
@@ -3657,10 +3661,12 @@ void QDirect3DPaintEnginePrivate::prepareItem(QD3DBatchItem *item) {
     if (item->m_info & QD3DBatchItem::BI_COMPLEXBRUSH) {
         const QBrush brush = item->m_brush;
         switch (brush.style()) {
-            case Qt::TexturePattern:
-                m_statemanager->setTexture(brush.texture().data->texture, QGradient::RepeatSpread);
+    	    case Qt::TexturePattern: {
+                QRasterPixmapData *data = static_cast<QRasterPixmapData*>(brush.texture().data);
+                m_statemanager->setTexture(data->texture, QGradient::RepeatSpread);
                 brushmode = 1;
                 break;
+	    }
             case Qt::LinearGradientPattern:
                 m_statemanager->setTexture(m_gradient_cache->
                     getBuffer(brush.gradient()->stops(), item->m_opacity),
@@ -3680,9 +3686,11 @@ void QDirect3DPaintEnginePrivate::prepareItem(QD3DBatchItem *item) {
                 m_statemanager->setFocalDistance(item->m_distance);
                 brushmode = 4;
                 break;
-            default:
-                m_statemanager->setTexture(getPattern(brush.style()).data->texture, QGradient::RepeatSpread);
+    	    default: {
+                QRasterPixmapData *data = static_cast<QRasterPixmapData*>(getPattern(brush.style()).data);
+                m_statemanager->setTexture(data->texture, QGradient::RepeatSpread);
                 brushmode = 5;
+	    }
         };
     }
 
@@ -3717,8 +3725,9 @@ void QDirect3DPaintEnginePrivate::cleanupItem(QD3DBatchItem *item)
 
 void QDirect3DPaintEnginePrivate::verifyTexture(const QPixmap &pm)
 {
-    if (!pm.data->texture) {
-        QImage im = pm.data->image;
+    QRasterPixmapData *pmData = static_cast<QRasterPixmapData*>(pm.data);
+    if (!pmData->texture) {
+        QImage im = pmData->image;
         // bitmaps are drawn with the current pen color
         if (im.depth() == 1) {
             QVector<QRgb> colors(2);
@@ -3728,13 +3737,13 @@ void QDirect3DPaintEnginePrivate::verifyTexture(const QPixmap &pm)
         }
         im = im.convertToFormat(QImage::Format_ARGB32);
         if (FAILED(m_d3d_device->CreateTexture(im.width(), im.height(), 1, 0,
-                                                 D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pm.data->texture, 0)))
+                                                 D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pmData->texture, 0)))
         {
             qWarning("QDirect3DPaintEngine: unable to create Direct3D texture from pixmap.");
             return;
         }
         D3DLOCKED_RECT rect;
-        if (FAILED(pm.data->texture->LockRect(0, &rect, 0, 0))) {
+        if (FAILED(pmData->texture->LockRect(0, &rect, 0, 0))) {
             qDebug() << "QDirect3DPaintEngine: unable to lock texture rect.";
             return;
         }
@@ -3743,7 +3752,7 @@ void QDirect3DPaintEnginePrivate::verifyTexture(const QPixmap &pm)
 
         Q_ASSERT((rect.Pitch/4) == (im.bytesPerLine()/4));
         memcpy(dst, src, rect.Pitch*im.height());
-        pm.data->texture->UnlockRect(0);
+        pmData->texture->UnlockRect(0);
     }
 }
 
@@ -3877,7 +3886,7 @@ void QDirect3DPaintEnginePrivate::flushBatch()
 
 QDirect3DPaintEngine::QDirect3DPaintEngine()
     : QPaintEngine(*(new QDirect3DPaintEnginePrivate),
-                   PaintEngineFeatures(AllFeatures))
+                   PaintEngineFeatures(AllFeatures & ~ObjectBoundingModeGradients))
 { }
 
 QDirect3DPaintEngine::~QDirect3DPaintEngine()
@@ -4565,5 +4574,7 @@ bool QDirect3DPaintEngine::hasDirect3DSupport()
     Q_D(QDirect3DPaintEngine);
     return d->m_supports_d3d;
 }
+
+QT_END_NAMESPACE
 
 #include "qpaintengine_d3d.moc"

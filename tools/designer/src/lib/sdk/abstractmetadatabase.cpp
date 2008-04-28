@@ -44,6 +44,8 @@
 // sdk
 #include "abstractmetadatabase.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerMetaDataBaseInterface
     \brief The QDesignerMetaDataBaseInterface class provides an interface to Qt Designer's
@@ -167,3 +169,4 @@ QDesignerMetaDataBaseInterface::~QDesignerMetaDataBaseInterface()
     \sa enabled()
 */
 
+QT_END_NAMESPACE

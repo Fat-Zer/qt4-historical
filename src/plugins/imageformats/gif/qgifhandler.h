@@ -53,6 +53,8 @@
 #include <QtGui/qimage.h>
 #include <QtCore/qbytearray.h>
 
+QT_BEGIN_NAMESPACE
+
 class QGIFFormat;
 class QGifHandler : public QImageIOHandler
 {
@@ -89,5 +91,7 @@ private:
     int frameNumber;
     mutable QSize nextSize;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGIFHANDLER_H

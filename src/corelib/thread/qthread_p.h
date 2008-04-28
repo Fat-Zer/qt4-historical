@@ -48,9 +48,9 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of QAbstractItemModel*.  This header file may change from version
-// to version without notice, or even be removed.
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
 //
 // We mean it.
 //
@@ -61,8 +61,10 @@
 #include "QtCore/qmutex.h"
 #include "QtCore/qstack.h"
 #include "QtCore/qwaitcondition.h"
-#include "QtCore/qhash.h"
+#include "QtCore/qmap.h"
 #include "private/qobject_p.h"
+
+QT_BEGIN_NAMESPACE
 
 class QAbstractEventDispatcher;
 class QEventLoop;
@@ -100,17 +102,16 @@ public:
     // insertionOffset == set by sendPostedEvents to tell postEvent() where to start insertions
     int insertionOffset;
 
-    int numPostedEvents;
     QMutex mutex;
 
     inline QPostEventList()
-        : QList<QPostEvent>(), recursion(0), startOffset(0), insertionOffset(0), numPostedEvents(0)
+        : QList<QPostEvent>(), recursion(0), startOffset(0), insertionOffset(0)
     { }
 };
 
 class Q_CORE_EXPORT QThreadData
 {
-    QAtomic _ref;
+    QAtomicInt _ref;
 
 public:
     QThreadData(int initialRefCount = 1);
@@ -124,11 +125,14 @@ public:
 
     QThread *thread;
     bool quitNow;
+    int loopLevel;
     QAbstractEventDispatcher *eventDispatcher;
     QStack<QEventLoop *> eventLoops;
     QPostEventList postEventList;
     bool canWait;
-    QHash<int, void *> tls;
+    QMap<int, void *> tls;
+
+    QMutex mutex;
 };
 
 #ifndef QT_NO_THREAD
@@ -159,7 +163,7 @@ public:
     static void finish(void *arg);
 #endif
 
-#ifdef Q_OS_WIN32
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     HANDLE handle;
     unsigned int id;
     int waiters;
@@ -186,12 +190,7 @@ public:
 
     static QThread *createThreadForAdoption();
 private:
-    inline void run()
-    {
-        // this function should never be called, it is implemented
-        // only so that we can instantiate the object
-        qFatal("QAdoptedThread::run(): Internal error, this implementation should never be called.");
-    }
+    void run();
 };
 
 #else // QT_NO_THREAD
@@ -212,5 +211,7 @@ public:
 };
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE
 
 #endif // QTHREAD_P_H

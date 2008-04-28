@@ -64,6 +64,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QBrush;
@@ -89,7 +91,8 @@ public:
         Antialiasing = 0x01,
         TextAntialiasing = 0x02,
         SmoothPixmapTransform = 0x04,
-        HighQualityAntialiasing = 0x08
+        HighQualityAntialiasing = 0x08,
+        NonCosmeticDefaultPen = 0x10
     };
 
     Q_DECLARE_FLAGS(RenderHints, RenderHint)
@@ -198,7 +201,7 @@ public:
 
     void setWorldMatrix(const QMatrix &matrix, bool combine = false);
     const QMatrix &worldMatrix() const;
-    
+
     void setWorldTransform(const QTransform &matrix, bool combine = false);
     const QTransform &worldTransform() const;
 
@@ -272,6 +275,9 @@ public:
     void drawEllipse(const QRect &r);
     inline void drawEllipse(int x, int y, int w, int h);
 
+    inline void drawEllipse(const QPointF &center, qreal rx, qreal ry);
+    inline void drawEllipse(const QPoint &center, int rx, int ry);
+
     void drawPolyline(const QPointF *points, int pointCount);
     inline void drawPolyline(const QPolygonF &polyline);
     void drawPolyline(const QPoint *points, int pointCount);
@@ -298,6 +304,13 @@ public:
     void drawChord(const QRectF &rect, int a, int alen);
     inline void drawChord(int x, int y, int w, int h, int a, int alen);
     inline void drawChord(const QRect &, int a, int alen);
+
+    void drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
+                         Qt::SizeMode mode = Qt::AbsoluteSize);
+    inline void drawRoundedRect(int x, int y, int w, int h, qreal xRadius, qreal yRadius,
+                                Qt::SizeMode mode = Qt::AbsoluteSize);
+    inline void drawRoundedRect(const QRect &rect, qreal xRadius, qreal yRadius,
+                                Qt::SizeMode mode = Qt::AbsoluteSize);
 
     void drawRoundRect(const QRectF &r, int xround = 25, int yround = 25);
     inline void drawRoundRect(int x, int y, int w, int h, int = 25, int = 25);
@@ -347,6 +360,8 @@ public:
     void drawText(const QPointF &p, const QString &s);
     inline void drawText(const QPoint &p, const QString &s);
     inline void drawText(int x, int y, const QString &s);
+
+    void drawText(const QPointF &p, const QString &str, int tf, int justificationPadding);
 
     void drawText(const QRectF &r, int flags, const QString &text, QRectF *br=0);
     void drawText(const QRect &r, int flags, const QString &text, QRect *br=0);
@@ -477,6 +492,7 @@ private:
     friend class QWin32PaintEnginePrivate;
     friend class QRasterPaintEngine;
     friend class QAlphaPaintEngine;
+    friend class QPreviewPaintEngine;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPainter::RenderHints)
@@ -623,9 +639,31 @@ inline void QPainter::drawRoundRect(const QRect &rect, int xRnd, int yRnd)
     drawRoundRect(QRectF(rect), xRnd, yRnd);
 }
 
+inline void QPainter::drawRoundedRect(int x, int y, int w, int h, qreal xRadius, qreal yRadius,
+                            Qt::SizeMode mode)
+{
+    drawRoundedRect(QRectF(x, y, w, h), xRadius, yRadius, mode);
+}
+
+inline void QPainter::drawRoundedRect(const QRect &rect, qreal xRadius, qreal yRadius,
+                            Qt::SizeMode mode)
+{
+    drawRoundedRect(QRectF(rect), xRadius, yRadius, mode);
+}
+
 inline void QPainter::drawEllipse(int x, int y, int w, int h)
 {
     drawEllipse(QRect(x, y, w, h));
+}
+
+inline void QPainter::drawEllipse(const QPointF &center, qreal rx, qreal ry)
+{
+    drawEllipse(QRectF(center.x() - rx, center.y() - ry, 2 * rx, 2 * ry));
+}
+
+inline void QPainter::drawEllipse(const QPoint &center, int rx, int ry)
+{
+    drawEllipse(QRect(center.x() - rx, center.y() - ry, 2 * rx, 2 * ry));
 }
 
 inline void QPainter::drawArc(const QRect &r, int a, int alen)
@@ -856,6 +894,8 @@ inline void QPainter::drawPicture(const QPoint &pt, const QPicture &p)
     drawPicture(QPointF(pt), p);
 }
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

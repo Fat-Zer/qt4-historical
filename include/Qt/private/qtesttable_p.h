@@ -1,1 +1,1 @@
-#include "../../../tools/qtestlib/src/qtesttable_p.h"
+#include "../../../src/testlib/qtesttable_p.h"

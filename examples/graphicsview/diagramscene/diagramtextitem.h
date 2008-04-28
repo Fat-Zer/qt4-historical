@@ -47,11 +47,14 @@
 #include <QGraphicsTextItem>
 #include <QPen>
 
+QT_BEGIN_NAMESPACE
 class QFocusEvent;
 class QGraphicsItem;
 class QGraphicsScene;
 class QGraphicsSceneMouseEvent;
+QT_END_NAMESPACE
 
+//! [0]
 class DiagramTextItem : public QGraphicsTextItem
 {
     Q_OBJECT
@@ -71,9 +74,8 @@ signals:
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     void focusOutEvent(QFocusEvent *event);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 };
+//! [0]
 
 #endif

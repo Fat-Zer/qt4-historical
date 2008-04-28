@@ -44,6 +44,10 @@
 #ifndef QEVENT_P_H
 #define QEVENT_P_H
 
+#include <QtCore/qglobal.h>
+
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -72,5 +76,21 @@ protected:
     quint32 nModifiers;
     friend class QKeyEvent;
 };
+
+// ### Qt 5: remove
+class Q_GUI_EXPORT QMouseEventEx : public QMouseEvent
+{
+public:
+    QMouseEventEx(Type type, const QPointF &pos, const QPoint &globalPos,
+                  Qt::MouseButton button, Qt::MouseButtons buttons,
+                  Qt::KeyboardModifiers modifiers);
+    ~QMouseEventEx();
+
+protected:
+    QPointF posF;
+    friend class QMouseEvent;
+};
+
+QT_END_NAMESPACE
 
 #endif // QEVENT_P_H

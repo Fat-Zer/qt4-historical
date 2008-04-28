@@ -44,16 +44,18 @@
 #ifndef QATOMIC_ARCH_H
 #define QATOMIC_ARCH_H
 
-#include "QtCore/qglobal.h"
-
 QT_BEGIN_HEADER
+
+#include "QtCore/qglobal.h"
 
 #if defined(QT_ARCH_ALPHA)
 #  include "QtCore/qatomic_alpha.h"
 #elif defined(QT_ARCH_ARM)
 #  include "QtCore/qatomic_arm.h"
-#elif defined(QT_ARCH_BOUNDSCHECKER)
-#  include "QtCore/qatomic_boundschecker.h"
+#elif defined(QT_ARCH_AVR32)
+#  include "QtCore/qatomic_avr32.h"
+#elif defined(QT_ARCH_BFIN)
+#  include "QtCore/qatomic_bfin.h"
 #elif defined(QT_ARCH_GENERIC)
 #  include "QtCore/qatomic_generic.h"
 #elif defined(QT_ARCH_I386)
@@ -74,6 +76,8 @@ QT_BEGIN_HEADER
 #  include "QtCore/qatomic_sparc.h"
 #elif defined(QT_ARCH_WINDOWS)
 #  include "QtCore/qatomic_windows.h"
+#elif defined(QT_ARCH_WINDOWSCE)
+#  include "QtCore/qatomic_windowsce.h"
 #elif defined(QT_ARCH_X86_64)
 #  include "QtCore/qatomic_x86_64.h"
 #else

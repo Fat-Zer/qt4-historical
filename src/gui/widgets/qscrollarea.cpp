@@ -54,6 +54,7 @@
 #include "qdebug.h"
 #include "private/qlayoutengine_p.h"
 
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QScrollArea
@@ -70,15 +71,7 @@
     widget can be viewed. The child widget must be specified with
     setWidget(). For example:
 
-    \code
-        QLabel *imageLabel = new QLabel;
-        QImage image("happyguy.png");
-        imageLabel->setPixmap(QPixmap::fromImage(image));
-
-        scrollArea = new QScrollArea;
-        scrollArea->setBackgroundRole(QPalette::Dark);
-        scrollArea->setWidget(imageLabel);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qscrollarea.cpp 0
 
     The code above creates a scroll area (shown in the images below)
     containing an image label. When scaling the image, the scroll area
@@ -191,6 +184,15 @@ void QScrollAreaPrivate::updateScrollBars()
 
     QSize min = qSmartMinSize(widget);
     QSize max = qSmartMaxSize(widget);
+
+    if (resizable) {
+        if ((widget->layout() ? widget->layout()->hasHeightForWidth() : widget->sizePolicy().hasHeightForWidth())) {
+            QSize p_hfw = p.expandedTo(min).boundedTo(max);
+            int h = widget->heightForWidth( p_hfw.width() );
+            min = QSize(p_hfw.width(), qMax(p_hfw.height(), h));
+        }
+    }
+
     if ((resizable && m.expandedTo(min) == m && m.boundedTo(max) == m)
         || (!resizable && m.expandedTo(widget->size()) == m))
         p = m; // no scroll bars needed
@@ -227,6 +229,9 @@ QWidget *QScrollArea::widget() const
     The \a widget becomes a child of the scroll area, and will be
     destroyed when the scroll area is deleted or when a new widget is
     set.
+    
+    The widget's \l{QWidget::setAutoFillBackground()}{autoFillBackground}
+    property will be set to \c{true}.
 
     Note that if the scroll area is visible when the \a widget is
     added, you must \l{QWidget::}{show()} it explicitly.
@@ -493,5 +498,7 @@ Qt::Alignment QScrollArea::alignment() const
     Q_D(const QScrollArea);
     return d->alignment;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCROLLAREA

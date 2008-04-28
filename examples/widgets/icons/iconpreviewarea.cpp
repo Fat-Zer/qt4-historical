@@ -45,6 +45,7 @@
 
 #include "iconpreviewarea.h"
 
+//! [0]
 IconPreviewArea::IconPreviewArea(QWidget *parent)
     : QWidget(parent)
 {
@@ -73,13 +74,17 @@ IconPreviewArea::IconPreviewArea(QWidget *parent)
         }
     }
 }
+//! [0]
 
+//! [1]
 void IconPreviewArea::setIcon(const QIcon &icon)
 {
     this->icon = icon;
     updatePixmapLabels();
 }
+//! [1]
 
+//! [2]
 void IconPreviewArea::setSize(const QSize &size)
 {
     if (size != this->size) {
@@ -87,14 +92,18 @@ void IconPreviewArea::setSize(const QSize &size)
         updatePixmapLabels();
     }
 }
+//! [2]
 
+//! [3]
 QLabel *IconPreviewArea::createHeaderLabel(const QString &text)
 {
     QLabel *label = new QLabel(tr("<b>%1</b>").arg(text));
     label->setAlignment(Qt::AlignCenter);
     return label;
 }
+//! [3]
 
+//! [4]
 QLabel *IconPreviewArea::createPixmapLabel()
 {
     QLabel *label = new QLabel;
@@ -107,7 +116,9 @@ QLabel *IconPreviewArea::createPixmapLabel()
     label->setMinimumSize(132, 132);
     return label;
 }
+//! [4]
 
+//! [5]
 void IconPreviewArea::updatePixmapLabels()
 {
     for (int i = 0; i < NumModes; ++i) {
@@ -130,3 +141,4 @@ void IconPreviewArea::updatePixmapLabels()
         }
     }
 }
+//! [5]

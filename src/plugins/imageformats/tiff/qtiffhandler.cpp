@@ -50,6 +50,8 @@ extern "C" {
 #include "tiffio.h"
 }
 
+QT_BEGIN_NAMESPACE
+
 tsize_t qtiffReadProc(thandle_t fd, tdata_t buf, tsize_t size)
 {
     QIODevice* device = static_cast<QTiffHandler*>(fd)->device();
@@ -121,8 +123,9 @@ bool QTiffHandler::canRead(QIODevice *device)
 
     // current implementation uses TIFFClientOpen which needs to be
     // able to seek, so sequential devices are not supported
-    return !device->isSequential()
-        && (device->peek(4) == "\x49\x49\x2A\x00" || device->peek(4) == "\x4D\x4D\x00\x2A");
+    QByteArray header = device->peek(4);
+    return header == QByteArray::fromRawData("\x49\x49\x2A\x00", 4)
+           || header == QByteArray::fromRawData("\x4D\x4D\x00\x2A", 4);
 }
 
 bool QTiffHandler::read(QImage *image)
@@ -146,11 +149,11 @@ bool QTiffHandler::read(QImage *image)
         uint32 height = 0;
         TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &width);
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &height);
-        tiffImage = QImage(width, height, QImage::Format_ARGB32);
         size_t npixels = width * height;
         uint32 *raster = reinterpret_cast<uint32*>(_TIFFmalloc(tsize_t(npixels * sizeof(uint32))));
         if (raster != 0) {
             if (TIFFReadRGBAImage(tiff, width, height, raster, 0)) {
+                tiffImage = QImage(width, height, QImage::Format_ARGB32);
                 for (uint32 y=0; y<height; ++y)
                     convert32BitOrder(&raster[(height-y-1)*width], tiffImage.scanLine(y), width);
             }
@@ -296,3 +299,5 @@ void QTiffHandler::convert32BitOrderBigEndian(const void *source, void *destinat
                     | (p & 0x000000ff) << 8;
     }
 }
+
+QT_END_NAMESPACE

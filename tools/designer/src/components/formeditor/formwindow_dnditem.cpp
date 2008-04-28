@@ -50,6 +50,8 @@
 #include "formwindow_dnditem.h"
 #include "formwindow.h"
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 static QWidget *decorationFromWidget(QWidget *w)
@@ -65,7 +67,8 @@ static QWidget *decorationFromWidget(QWidget *w)
 static DomUI *widgetToDom(QWidget *widget, FormWindow *form)
 {
     QDesignerResource builder(form);
-    return builder.copy(QList<QWidget*>() << widget);
+    builder.setSaveRelative(false);
+    return builder.copy(FormBuilderClipboard(widget));
 }
 
 FormWindowDnDItem::FormWindowDnDItem(QDesignerDnDItemInterface::DropType type, FormWindow *form,
@@ -93,4 +96,4 @@ DomUI *FormWindowDnDItem::domUi() const
     return result;
 }
 
-
+QT_END_NAMESPACE

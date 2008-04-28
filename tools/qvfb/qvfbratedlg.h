@@ -46,6 +46,8 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
+
 class QLabel;
 class QSlider;
 
@@ -68,5 +70,7 @@ private:
     QSlider *rateSlider;
     int oldRate;
 };
+
+QT_END_NAMESPACE
 
 #endif

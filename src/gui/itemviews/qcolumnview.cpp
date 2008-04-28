@@ -56,6 +56,8 @@
 #include <qdebug.h>
 #include <qpainterpath.h>
 
+QT_BEGIN_NAMESPACE
+
 #define ANIMATION_DURATION_MSEC 150
 
 /*!
@@ -63,6 +65,7 @@
     \class QColumnView
     \brief The QColumnView class provides a model/view implementation of a column view.
     \ingroup model-view
+    \ingroup advanced
     \mainclass
 
     QColumnView displays a model in a number of QListViews, one for each
@@ -178,8 +181,10 @@ void QColumnView::setRootIndex(const QModelIndex &index)
     Q_ASSERT(d->columns.count() == 0);
 
     QAbstractItemView *view = d->createColumn(index, true);
-    view->selectionModel()->deleteLater();
-    view->setSelectionModel(selectionModel());
+    if (view->selectionModel())
+        view->selectionModel()->deleteLater();
+    if (view->model())
+        view->setSelectionModel(selectionModel());
 
     QAbstractItemView::setRootIndex(index);
     d->updateScrollbars();
@@ -494,7 +499,7 @@ void QColumnView::setSelection(const QRect &rect, QItemSelectionModel::Selection
 /*!
     \reimp
 */
-void QColumnView::setSelectionModel(QItemSelectionModel * newSelectionModel)
+void QColumnView::setSelectionModel(QItemSelectionModel *newSelectionModel)
 {
     Q_D(const QColumnView);
     for (int i = 0; i < d->columns.size(); ++i) {
@@ -743,52 +748,65 @@ QAbstractItemView *QColumnViewPrivate::createColumn(const QModelIndex &index, bo
  */
 QAbstractItemView *QColumnView::createColumn(const QModelIndex &index)
 {
-    Q_D(QColumnView);
-
     QListView *view = new QListView(viewport());
-    view->setFrameShape(QFrame::NoFrame);
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    view->setMinimumWidth(100);
-    view->setAttribute(Qt::WA_MacShowFocusRect, false);
 
-    // Copy the 'view' behavior
+    initializeColumn(view);
+
+    view->setRootIndex(index);
+    if (model()->canFetchMore(index))
+        model()->fetchMore(index);
+
+    return view;
+}
+
+/*!
+    Copies the behavior and options of the column view and applies them to
+    the \a column such as the iconSize(), textElideMode() and
+    alternatingRowColors(). This can be useful when reimplementing
+    createColumn().
+
+    \since 4.4
+    \sa createColumn()
+ */
+void QColumnView::initializeColumn(QAbstractItemView *column) const
+{
+    Q_D(const QColumnView);
+
+    column->setFrameShape(QFrame::NoFrame);
+    column->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    column->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    column->setMinimumWidth(100);
+    column->setAttribute(Qt::WA_MacShowFocusRect, false);
+
 #ifndef QT_NO_DRAGANDDROP
-    view->setDragDropMode(dragDropMode());
-    view->setDragDropOverwriteMode(dragDropOverwriteMode());
-    view->setDropIndicatorShown(showDropIndicator());
+    column->setDragDropMode(dragDropMode());
+    column->setDragDropOverwriteMode(dragDropOverwriteMode());
+    column->setDropIndicatorShown(showDropIndicator());
 #endif
-    view->setAlternatingRowColors(alternatingRowColors());
-    view->setAutoScroll(hasAutoScroll());
-    view->setEditTriggers(editTriggers());
-    view->setHorizontalScrollMode(horizontalScrollMode());
-    view->setIconSize(iconSize());
-    view->setSelectionBehavior(selectionBehavior());
-    view->setSelectionMode(selectionMode());
-    view->setTabKeyNavigation(tabKeyNavigation());
-    view->setTextElideMode(textElideMode());
-    view->setVerticalScrollMode(verticalScrollMode());
+    column->setAlternatingRowColors(alternatingRowColors());
+    column->setAutoScroll(hasAutoScroll());
+    column->setEditTriggers(editTriggers());
+    column->setHorizontalScrollMode(horizontalScrollMode());
+    column->setIconSize(iconSize());
+    column->setSelectionBehavior(selectionBehavior());
+    column->setSelectionMode(selectionMode());
+    column->setTabKeyNavigation(tabKeyNavigation());
+    column->setTextElideMode(textElideMode());
+    column->setVerticalScrollMode(verticalScrollMode());
 
-    view->setModel(model());
+    column->setModel(model());
 
     // Copy the custom delegate per row
     QMapIterator<int, QPointer<QAbstractItemDelegate> > i(d->rowDelegates);
     while (i.hasNext()) {
         i.next();
-        view->setItemDelegateForRow(i.key(), i.value());
+        column->setItemDelegateForRow(i.key(), i.value());
     }
 
     // set the delegate to be the columnview delegate
-    QAbstractItemDelegate *delegate = view->itemDelegate();
-    view->setItemDelegate(d->itemDelegate);
+    QAbstractItemDelegate *delegate = column->itemDelegate();
+    column->setItemDelegate(d->itemDelegate);
     delete delegate;
-
-    view->setRootIndex(index);
-
-    if (model()->canFetchMore(index))
-        model()->fetchMore(index);
-
-    return view;
 }
 
 /*!
@@ -811,7 +829,8 @@ QWidget *QColumnView::previewWidget() const
 
     \sa previewWidget(), updatePreviewWidget()
 */
-void QColumnView::setPreviewWidget(QWidget *widget) {
+void QColumnView::setPreviewWidget(QWidget *widget)
+{
     Q_D(QColumnView);
     d->setPreviewWidget(widget);
 }
@@ -1075,7 +1094,7 @@ void QColumnViewDelegate::paint(QPainter *painter,
     bool reverse = (option.direction == Qt::RightToLeft);
     int width = ((option.rect.height() * 2) / 3);
     // Modify the options to give us room to add an arrow
-    QStyleOptionViewItemV3 opt = option;
+    QStyleOptionViewItemV4 opt = option;
     if (reverse)
         opt.rect.adjust(width,0,0,0);
     else
@@ -1102,7 +1121,8 @@ void QColumnViewDelegate::paint(QPainter *painter,
     }
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qcolumnview.cpp"
 
 #endif // QT_NO_COLUMNVIEW
-

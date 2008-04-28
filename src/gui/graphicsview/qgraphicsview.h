@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #if !defined(QT_NO_GRAPHICSVIEW) || (QT_EDITION & QT_MODULE_GRAPHICSVIEW) != QT_MODULE_GRAPHICSVIEW
@@ -64,8 +66,8 @@ class QGraphicsViewPrivate;
 class Q_GUI_EXPORT QGraphicsView : public QAbstractScrollArea
 {
     Q_OBJECT
-    Q_FLAGS(QPainter::RenderHints CacheMode)
-    Q_ENUMS(ViewportAnchor DragMode ViewportUpdateMode OptimizationFlags)
+    Q_FLAGS(QPainter::RenderHints CacheMode OptimizationFlags)
+    Q_ENUMS(ViewportAnchor DragMode ViewportUpdateMode)
     Q_PROPERTY(QBrush backgroundBrush READ backgroundBrush WRITE setBackgroundBrush)
     Q_PROPERTY(QBrush foregroundBrush READ foregroundBrush WRITE setForegroundBrush)
     Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive)
@@ -105,7 +107,8 @@ public:
         FullViewportUpdate,
         MinimalViewportUpdate,
         SmartViewportUpdate,
-        NoViewportUpdate
+        NoViewportUpdate,
+        BoundingRectViewportUpdate
     };
 
     enum OptimizationFlag {
@@ -239,6 +242,7 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void focusInEvent(QFocusEvent *event);
+    bool focusNextPrevChild(bool next);
     void focusOutEvent(QFocusEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -263,11 +267,13 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QGraphicsView)
+    Q_DISABLE_COPY(QGraphicsView)
 #ifndef QT_NO_CURSOR
     Q_PRIVATE_SLOT(d_func(), void _q_setViewportCursor(const QCursor &))
     Q_PRIVATE_SLOT(d_func(), void _q_unsetViewportCursor())
 #endif
     friend class QGraphicsSceneWidget;
+    friend class QGraphicsScene;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGraphicsView::CacheMode)
@@ -297,6 +303,8 @@ inline QPolygon QGraphicsView::mapFromScene(qreal ax, qreal ay, qreal w, qreal h
 { return mapFromScene(QRectF(ax, ay, w, h)); }
 
 #endif // QT_NO_GRAPHICSVIEW
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

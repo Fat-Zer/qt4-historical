@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QFileSystemWatcherPrivate;
@@ -80,6 +82,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_fileChanged(const QString &path, bool removed))
     Q_PRIVATE_SLOT(d_func(), void _q_directoryChanged(const QString &path, bool removed))
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

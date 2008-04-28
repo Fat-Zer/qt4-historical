@@ -53,6 +53,8 @@ TRANSLATOR qdesigner_internal::SignalSlotEditorPlugin
 
 #include <QtGui/QAction>
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 SignalSlotEditorPlugin::SignalSlotEditorPlugin()
@@ -74,6 +76,7 @@ void SignalSlotEditorPlugin::initialize(QDesignerFormEditorInterface *core)
     Q_ASSERT(!isInitialized());
 
     m_action = new QAction(tr("Edit Signals/Slots"), this);
+    m_action->setObjectName(QLatin1String("__qt_edit_signals_slots_action"));
     m_action->setShortcut(tr("F4"));
     QIcon icon(QIcon(core->resourceLocation() + QLatin1String("/signalslottool.png")));
     m_action->setIcon(icon);
@@ -131,3 +134,5 @@ void SignalSlotEditorPlugin::activeFormWindowChanged(QDesignerFormWindowInterfac
 {
     m_action->setEnabled(formWindow != 0);
 }
+
+QT_END_NAMESPACE

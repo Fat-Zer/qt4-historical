@@ -75,7 +75,7 @@ QImage *LetterItem::createImage(const QMatrix &matrix) const
         brush.setSpread(QLinearGradient::PadSpread);
         brush.setColorAt(0.0, QColor(206, 246, 117, 200));
         brush.setColorAt(1.0, QColor(206, 246, 117, 60));
-        painter.setBrush(brush);       
+        painter.setBrush(brush);
         painter.drawEllipse(0, 0, 25, 25);
         painter.setFont(Colors::tickerFont());
         painter.setPen(QColor(255, 255, 255, 255));

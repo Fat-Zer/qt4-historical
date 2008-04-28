@@ -46,6 +46,8 @@
 
 #include "makefile.h"
 
+QT_BEGIN_NAMESPACE
+
 class UnixMakefileGenerator : public MakefileGenerator
 {
     bool init_flag, include_deps;
@@ -82,5 +84,7 @@ private:
 
 inline UnixMakefileGenerator::~UnixMakefileGenerator()
 { }
+
+QT_END_NAMESPACE
 
 #endif // UNIXMAKE_H

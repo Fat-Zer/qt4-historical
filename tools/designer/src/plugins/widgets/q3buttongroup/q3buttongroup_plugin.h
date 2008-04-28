@@ -48,12 +48,14 @@
 
 #include <Qt3Support/Q3ButtonGroup>
 
+QT_BEGIN_NAMESPACE
+
 class Q3ButtonGroupPlugin: public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
-    Q3ButtonGroupPlugin(QObject *parent = 0);
+    Q3ButtonGroupPlugin(const QIcon &icon, QObject *parent = 0);
     virtual ~Q3ButtonGroupPlugin();
 
     virtual QString name() const;
@@ -86,6 +88,9 @@ public:
 
 private:
     bool m_initialized;
+    QIcon m_icon;
 };
+
+QT_END_NAMESPACE
 
 #endif

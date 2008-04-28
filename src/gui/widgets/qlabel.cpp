@@ -55,6 +55,8 @@
 #include <qurl.h>
 #include "qlabel_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QLabel
     \brief The QLabel widget provides a text or image display.
@@ -100,22 +102,13 @@
     the bottom right corner (both lines being flush with the right
     side of the label):
 
-    \code
-    QLabel *label = new QLabel(this);
-    label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    label->setText("first line\nsecond line");
-    label->setAlignment(Qt::AlignBottom | Qt::AlignRight);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qlabel.cpp 0
 
     A QLabel is often used as a label for an interactive widget. For
     this use QLabel provides a useful mechanism for adding an
     mnemonic (see QKeysequence) that will set the keyboard focus to
     the other widget (called the QLabel's "buddy"). For example:
-    \code
-    QLineEdit* phoneEdit = new QLineEdit(this);
-    QLabel* phoneLabel = new QLabel("&Phone:", this);
-    phoneLabel->setBuddy(phoneEdit);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qlabel.cpp 1
 
     In this example, keyboard focus is transferred to the label's
     buddy (the QLineEdit) when the user presses Alt+P. If the buddy
@@ -607,6 +600,8 @@ void QLabel::setMargin(int margin)
 QSize QLabelPrivate::sizeForWidth(int w) const
 {
     Q_Q(const QLabel);
+    if(q->minimumWidth() > 0)
+        w = qMax(w, q->minimumWidth());
     QSize contentsMargin(leftmargin + rightmargin, topmargin + bottommargin);
 
     QRect br;
@@ -684,7 +679,7 @@ QSize QLabelPrivate::sizeForWidth(int w) const
     }
 
     const QSize contentsSize(br.width() + hextra, br.height() + vextra);
-    return contentsSize + contentsMargin;
+    return (contentsSize + contentsMargin).expandedTo(q->minimumSize());
 }
 
 
@@ -1093,15 +1088,7 @@ void QLabelPrivate::updateLabel()
     In a dialog, you might create two data entry widgets and a label
     for each, and set up the geometry layout so each label is just to
     the left of its data entry widget (its "buddy"), for example:
-    \code
-    QLineEdit *nameEd  = new QLineEdit(this);
-    QLabel    *nameLb  = new QLabel("&Name:", this);
-    nameLb->setBuddy(nameEd);
-    QLineEdit *phoneEd = new QLineEdit(this);
-    QLabel    *phoneLb = new QLabel("&Phone:", this);
-    phoneLb->setBuddy(phoneEd);
-    // (layout setup not shown)
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qlabel.cpp 2
 
     With the code above, the focus jumps to the Name field when the
     user presses Alt+N, and to the Phone field when the user presses
@@ -1423,10 +1410,14 @@ void QLabelPrivate::ensureTextPopulated() const
     if (control) {
         QTextDocument *doc = control->document();
         if (textDirty) {
+#ifndef QT_NO_TEXTHTMLPARSER
             if (isRichText)
                 doc->setHtml(text);
             else
                 doc->setPlainText(text);
+#else
+            doc->setPlainText(text);
+#endif
             doc->setUndoRedoEnabled(false);
         }
     }
@@ -1582,5 +1573,7 @@ QMenu *QLabelPrivate::createStandardContextMenu(const QPoint &pos)
 
     \sa linkHovered()
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qlabel.cpp"

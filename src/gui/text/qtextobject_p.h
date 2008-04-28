@@ -58,6 +58,8 @@
 #include "QtGui/qtextobject.h"
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTextDocumentPrivate;
 
 class QTextObjectPrivate : public QObjectPrivate
@@ -97,5 +99,7 @@ public:
     QList<QTextFrame *> childFrames;
     QTextFrameLayoutData *layoutData;
 };
+
+QT_END_NAMESPACE
 
 #endif // QTEXTOBJECT_P_H

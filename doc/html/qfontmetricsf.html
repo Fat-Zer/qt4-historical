@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/gui/text/qfontmetrics.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/text/qfontmetrics.cpp -->
 <head>
-  <title>Qt 4.3: QFontMetricsF Class Reference</title>
+  <title>Qt 4.4: QFontMetricsF Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,9 +13,11 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QFontMetricsF Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QFontMetricsF Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+</h1>
 <p>The QFontMetricsF class provides font metrics information. <a href="#details">More...</a></p>
-<pre> #include &lt;QFontMetricsF&gt;</pre><ul>
+<pre> #include &lt;QFontMetricsF&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<ul>
 <li><a href="qfontmetricsf-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -69,10 +71,10 @@
 <p>For each character, you can get its <a href="qfontmetricsf.html#width">width</a>(), <a href="qfontmetricsf.html#leftBearing">leftBearing</a>() and <a href="qfontmetricsf.html#rightBearing">rightBearing</a>() and find out whether it is in the font using <a href="qfontmetricsf.html#inFont">inFont</a>(). You can also treat the character as a string, and use the string functions on it.</p>
 <p>The string functions include <a href="qfontmetricsf.html#width">width</a>(), to return the width of a string in pixels (or points, for a printer), <a href="qfontmetricsf.html#boundingRect">boundingRect</a>(), to return a rectangle large enough to contain the rendered string, and <a href="qfontmetricsf.html#size">size</a>(), to return the size of that rectangle.</p>
 <p>Example:</p>
-<pre> QFont font(&quot;times&quot;, 24);
- QFontMetricsF fm(font);
- qreal pixelsWide = fm.width(&quot;What's the width of this text?&quot;);
- qreal pixelsHigh = fm.height();</pre>
+<pre>     QFont font(&quot;times&quot;, 24);
+     QFontMetricsF fm(font);
+     qreal pixelsWide = fm.width(&quot;What's the width of this text?&quot;);
+     qreal pixelsHigh = fm.height();</pre>
 <p>See also <a href="qfont.html">QFont</a>, <a href="qfontinfo.html">QFontInfo</a>, and <a href="qfontdatabase.html">QFontDatabase</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -290,6 +292,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

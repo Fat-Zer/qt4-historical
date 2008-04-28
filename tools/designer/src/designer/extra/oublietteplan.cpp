@@ -42,16 +42,23 @@
 ****************************************************************************/
 
 #include <QtCore/QTextStream>
+#include <QtCore/QDateTime>
 #include "oublietteplan.h"
 #include "tile.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <time.h>
 
+QT_BEGIN_NAMESPACE
+
 OublietteLevel::OublietteLevel(int width, int height, int totalFeatures)
     : m_size(width, height), m_totalFeatures(totalFeatures), m_totalItems(0)
 {
+#ifndef Q_OS_WINCE
     srand(::time(0));
+#else
+    srand(QDateTime::currentDateTime().toTime_t());
+#endif
     m_map = new Tile[m_size.width() * m_size.height()];
     generateOubliette();
 }
@@ -352,3 +359,5 @@ void OublietteLevel::addItemToTile(int x, int y, const Item *item)
 {
     m_map[y * m_size.width() + x].items.append(item);
 }
+
+QT_END_NAMESPACE

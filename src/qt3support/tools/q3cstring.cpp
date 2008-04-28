@@ -51,6 +51,7 @@
 #include <ctype.h>
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
 
 /*****************************************************************************
   Q3CString member functions
@@ -282,9 +283,7 @@
     be at most \a maxsize bytes long including the '\0'-terminator.
 
     Example:
-    \code
-    Q3CString str("helloworld", 6); // assigns "hello" to str
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 0
 
     If \a str contains a 0 byte within the first \a maxsize bytes, the
     resulting Q3CString will be terminated by this 0. If \a str is 0 a
@@ -325,14 +324,7 @@
     returns false. A null string is also an empty string.
 
     Example:
-    \code
-    Q3CString a;                // a.data() == 0,  a.size() == 0, a.length() == 0
-    Q3CString b == "";        // b.data() == "", b.size() == 1, b.length() == 0
-    a.isNull();                // true  because a.data() == 0
-    a.isEmpty();        // true  because a.length() == 0
-    b.isNull();                // false because b.data() == ""
-    b.isEmpty();        // true  because b.length() == 0
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 1
 
     \sa isEmpty(), length(), size()
 */
@@ -368,10 +360,7 @@
     Equivalent to calling \c resize(pos+1).
 
     Example:
-    \code
-    Q3CString s = "truncate this string";
-    s.truncate(5);                      // s == "trunc"
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 2
 
     \sa resize()
 */
@@ -388,13 +377,7 @@
     returns.
 
     Example:
-    \code
-    Q3CString s;
-    s.sprintf("%d - %s", 1, "first");                // result < 256 chars
-
-    Q3CString big(25000);                        // very long string
-    big.sprintf("%d - %s", 2, longString);        // result < 25000 chars
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 3
 
     \warning All vsprintf() implementations will write past the end of
     the target string (*this) if the \a format specification and
@@ -438,10 +421,7 @@ Q3CString &Q3CString::sprintf(const char *format, ...)
     truncate is true, then the returned string is a left(\a width).
 
     Example:
-    \code
-    Q3CString s("apple");
-    Q3CString t = s.leftJustify(8, '.');  // t == "apple..."
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 4
 
     \sa rightJustify()
 */
@@ -475,10 +455,7 @@ Q3CString Q3CString::leftJustify(uint width, char fill, bool truncate) const
     truncate is true, then the returned string is a left(\a width).
 
     Example:
-    \code
-    Q3CString s("pie");
-    Q3CString t = s.rightJustify(8, '.');  // t == ".....pie"
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 5
 
     \sa leftJustify()
 */
@@ -1051,6 +1028,7 @@ bool Q3CString::setExpand(uint index, char c)
     \overload
 
     \relates Q3CString
-
     Returns a string which consists of the concatenation of \a c and \a s.
 */
+
+QT_END_NAMESPACE

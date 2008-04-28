@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QAction;
@@ -74,6 +76,9 @@ public:
 
     virtual int id() const;
     virtual bool mergeWith(const QUndoCommand *other);
+
+    int childCount() const;
+    const QUndoCommand *child(int index) const;
 
 private:
     Q_DISABLE_COPY(QUndoCommand)
@@ -124,6 +129,8 @@ public:
     void setUndoLimit(int limit);
     int undoLimit() const;
 
+    const QUndoCommand *command(int index) const;
+
 public Q_SLOTS:
     void setClean();
     void setIndex(int idx);
@@ -145,6 +152,8 @@ private:
 };
 
 #endif // QT_NO_UNDOSTACK
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

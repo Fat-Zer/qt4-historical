@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class DomUI;
 class QDesignerDnDItemInterface;
 
@@ -133,7 +135,9 @@ public:
     virtual bool save() = 0;
 };
 
-Q_DECLARE_METATYPE(QDesignerWidgetBoxInterface::Widget)
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(QT_PREPEND_NAMESPACE(QDesignerWidgetBoxInterface::Widget))
 
 QT_END_HEADER
 

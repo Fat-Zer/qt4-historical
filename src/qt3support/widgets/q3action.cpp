@@ -57,6 +57,8 @@
 #include "qstatusbar.h"
 #include "qaction.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3Action q3action.h
     \brief The Q3Action class provides an abstract user interface
@@ -213,16 +215,16 @@ Q3ActionPrivate::~Q3ActionPrivate()
         ++itci;
         QComboBox* combo = ci->combo;
         combo->clear();
-        Q3ActionGroup *group = ::qobject_cast<Q3ActionGroup*>(action->parent());
+        Q3ActionGroup *group = qobject_cast<Q3ActionGroup*>(action->parent());
         if (group) {
             QObjectList siblings = group->queryList("Q3Action");
 
             for (int i = 0; i < siblings.size(); ++i) {
-                Q3Action *sib = ::qobject_cast<Q3Action*>(siblings.at(i));
+                Q3Action *sib = qobject_cast<Q3Action*>(siblings.at(i));
                 sib->removeFrom(combo);
             }
             for (int i = 0; i < siblings.size(); ++i) {
-                Q3Action *sib = ::qobject_cast<Q3Action*>(siblings.at(i));
+                Q3Action *sib = qobject_cast<Q3Action*>(siblings.at(i));
                 if (sib == action)
                     continue;
                 sib->addTo(combo);
@@ -1019,7 +1021,7 @@ void Q3Action::toolButtonToggled(bool on)
 bool Q3Action::addTo(QWidget* w)
 {
 #ifndef QT_NO_TOOLBAR
-    if (::qobject_cast<Q3ToolBar*>(w)) {
+    if (qobject_cast<Q3ToolBar*>(w)) {
         if (objectName() == QLatin1String("qt_separator_action")) {
             ((Q3ToolBar*)w)->addSeparator();
         } else {
@@ -1203,7 +1205,7 @@ void Q3Action::clearStatusText()
 bool Q3Action::removeFrom(QWidget* w)
 {
 #ifndef QT_NO_TOOLBAR
-    if (::qobject_cast<Q3ToolBar*>(w)) {
+    if (qobject_cast<Q3ToolBar*>(w)) {
         QList<QToolButton*>::Iterator it(d->toolbuttons.begin());
         QToolButton* btn;
         while (it != d->toolbuttons.end()) {
@@ -1218,7 +1220,7 @@ bool Q3Action::removeFrom(QWidget* w)
         }
     } else
 #endif
-    if (::qobject_cast<Q3PopupMenu*>(w)) {
+    if (qobject_cast<Q3PopupMenu*>(w)) {
         QList<Q3ActionPrivate::MenuItem*>::Iterator it(d->menuitems.begin());
         Q3ActionPrivate::MenuItem* mi;
         while (it != d->menuitems.end()) {
@@ -1233,7 +1235,7 @@ bool Q3Action::removeFrom(QWidget* w)
                 delete mi;
             }
         }
-    } else if (::qobject_cast<QComboBox*>(w)) {
+    } else if (qobject_cast<QComboBox*>(w)) {
         QList<Q3ActionPrivate::ComboItem*>::Iterator it(d->comboitems.begin());
         Q3ActionPrivate::ComboItem *ci;
         while (it != d->comboitems.end()) {
@@ -1245,7 +1247,7 @@ bool Q3Action::removeFrom(QWidget* w)
                 delete ci;
             }
         }
-    } else if (::qobject_cast<QMenu*>(w)) {
+    } else if (qobject_cast<QMenu*>(w)) {
         QList<Q3ActionPrivate::Action4Item*>::Iterator it(d->action4items.begin());
         Q3ActionPrivate::Action4Item *a4i;
         while (it != d->action4items.end()) {
@@ -1380,7 +1382,7 @@ void Q3ActionGroupPrivate::update(const Q3ActionGroup* that)
     }
     for (QList<Q3ActionGroupPrivate::MenuItem*>::Iterator pu(menuitems.begin()); pu != menuitems.end(); ++pu) {
         QWidget* parent = (*pu)->popup->parentWidget();
-        if (::qobject_cast<Q3PopupMenu*>(parent)) {
+        if (qobject_cast<Q3PopupMenu*>(parent)) {
             Q3PopupMenu* ppopup = (Q3PopupMenu*)parent;
             ppopup->setItemEnabled((*pu)->id, that->isEnabled());
             ppopup->setItemVisible((*pu)->id, that->isVisible());
@@ -1390,7 +1392,7 @@ void Q3ActionGroupPrivate::update(const Q3ActionGroup* that)
     }
     for (QList<Q3PopupMenu*>::Iterator pm(popupmenus.begin()); pm != popupmenus.end(); ++pm) {
         Q3PopupMenu *popup = *pm;
-        Q3PopupMenu *parent = ::qobject_cast<Q3PopupMenu*>(popup->parentWidget());
+        Q3PopupMenu *parent = qobject_cast<Q3PopupMenu*>(popup->parentWidget());
         if (!parent)
             continue;
 
@@ -1671,7 +1673,7 @@ bool Q3ActionGroup::addTo(QWidget *w)
         if (d->dropdown) {
             if (!d->exclusive) {
                 QList<Q3Action*>::Iterator it(d->actions.begin());
-                if (!(*it))
+                if (it == d->actions.end() || !(*it))
                     return true;
 
                 Q3Action *defAction = *it;
@@ -1750,7 +1752,7 @@ bool Q3ActionGroup::addTo(QWidget *w)
         }
     } else
 #endif
-    if (::qobject_cast<Q3PopupMenu*>(w)) {
+    if (qobject_cast<Q3PopupMenu*>(w)) {
         Q3PopupMenu *popup;
         if (d->dropdown) {
             Q3PopupMenu *menu = (Q3PopupMenu*)w;
@@ -1786,7 +1788,7 @@ bool Q3ActionGroup::addTo(QWidget *w)
         }
         return true;
     }
-    if (::qobject_cast<QMenu*>(w)) {
+    if (qobject_cast<QMenu*>(w)) {
         QMenu *menu = (QMenu*)w;
         if (d->dropdown) {
             Q3ActionGroupPrivate::Action4Item *ai = new Q3ActionGroupPrivate::Action4Item;
@@ -1824,7 +1826,7 @@ bool Q3ActionGroup::removeFrom(QWidget* w)
         (*it)->removeFrom(w);
 
 #ifndef QT_NO_TOOLBAR
-    if (::qobject_cast<Q3ToolBar*>(w)) {
+    if (qobject_cast<Q3ToolBar*>(w)) {
         QList<QComboBox*>::Iterator cb(d->comboboxes.begin());
         while (cb != d->comboboxes.end()) {
             QComboBox *box = *cb;
@@ -1841,7 +1843,7 @@ bool Q3ActionGroup::removeFrom(QWidget* w)
         }
     } else
 #endif
-    if (::qobject_cast<Q3PopupMenu*>(w)) {
+    if (qobject_cast<Q3PopupMenu*>(w)) {
         QList<Q3ActionGroupPrivate::MenuItem*>::Iterator pu(d->menuitems.begin());
         while (pu != d->menuitems.end()) {
             Q3ActionGroupPrivate::MenuItem *mi = *pu;
@@ -1851,7 +1853,7 @@ bool Q3ActionGroup::removeFrom(QWidget* w)
             delete mi->popup;
         }
     }
-    if (::qobject_cast<QMenu*>(w)) {
+    if (qobject_cast<QMenu*>(w)) {
         QList<Q3ActionGroupPrivate::Action4Item*>::Iterator it(d->action4items.begin());
         Q3ActionGroupPrivate::Action4Item *a4i;
         while (it != d->action4items.end()) {
@@ -2229,5 +2231,7 @@ void Q3ActionGroup::addedTo(int index, Q3PopupMenu *menu)
 
     Use add(\a action) instead.
 */
+
+QT_END_NAMESPACE
 
 #endif

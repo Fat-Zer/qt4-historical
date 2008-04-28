@@ -55,6 +55,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 struct QBrushData;
@@ -123,7 +125,7 @@ private:
     friend class QRasterPaintEnginePrivate;
     friend struct QSpanData;
     friend class QPainter;
-    friend bool hasPixmapTexture(const QBrush& brush);
+    friend bool qHasPixmapTexture(const QBrush& brush);
     void detach(Qt::BrushStyle newStyle);
     void init(const QColor &color, Qt::BrushStyle bs);
     QBrushData *d;
@@ -156,12 +158,12 @@ Q_GUI_EXPORT QDebug operator<<(QDebug, const QBrush &);
 
 struct QBrushData
 {
-    QAtomic ref;
+    QAtomicInt ref;
     Qt::BrushStyle style;
     QColor color;
     QTransform transform;
+    QRect sourceRect;
     uint hasTransform : 1;
-    uint forceTextureClamp : 1;
 };
 
 inline Qt::BrushStyle QBrush::style() const { return d->style; }
@@ -307,6 +309,8 @@ public:
     qreal angle() const;
     void setAngle(qreal angle);
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

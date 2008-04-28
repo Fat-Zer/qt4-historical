@@ -150,6 +150,7 @@ EdgeItem::EdgeItem( NodeItem *from, NodeItem *to )
     to->addInEdge( this );
     setLine( QLineF(int(from->x()), int(from->y()), int(to->x()), int(to->y()) ));
     setZValue( 127 );
+    setBoundingRegionGranularity(0.05);
 }
 
 void EdgeItem::setFromPoint( int x, int y )
@@ -202,12 +203,7 @@ FigureEditor::FigureEditor(
 
 void FigureEditor::clear()
 {
-    QList<QGraphicsItem *> list = scene()->items();
-    QList<QGraphicsItem *>::Iterator it = list.begin();
-    for (; it != list.end(); ++it) {
-	if ( *it )
-	    delete *it;
-    }
+    scene()->clear();
 }
 
 BouncyLogo::BouncyLogo() :
@@ -682,6 +678,8 @@ void Main::addMesh()
 			      this, "progress", TRUE );
 #endif
 
+    canvas.update();
+    
     Q3MemArray<NodeItem*> lastRow(cols);
     for ( int j = 0; j < rows; j++ ) {
 	int n = j%2 ? cols-1 : cols;

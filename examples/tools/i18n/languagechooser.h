@@ -48,10 +48,12 @@
 #include <QMap>
 #include <QStringList>
 
+QT_BEGIN_NAMESPACE
 class QAbstractButton;
 class QCheckBox;
 class QDialogButtonBox;
 class QGroupBox;
+QT_END_NAMESPACE
 class MainWindow;
 
 class LanguageChooser : public QDialog

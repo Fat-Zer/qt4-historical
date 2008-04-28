@@ -44,14 +44,27 @@
 #include "abstractformwindow.h"
 #include "inplace_editor.h"
 
+#include <QtDesigner/QDesignerFormWindowInterface>
+#include <QtDesigner/QDesignerFormWindowCursorInterface>
+#include <QtDesigner/QDesignerPropertySheetExtension>
+#include <QtDesigner/QDesignerFormEditorInterface>
+#include <QtDesigner/QDesignerLanguageExtension>
+#include <QtDesigner/QExtensionManager>
+
+#include <QtCore/QVariant>
+
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
+
+// ----------------- InPlaceEditor
 
 InPlaceEditor::InPlaceEditor(QWidget *widget,
                              TextPropertyValidationMode validationMode,
                              QDesignerFormWindowInterface *fw,
                              const QString& text,
                              const QRect& r) :
-    TextPropertyEditor(EmbeddingInPlace, validationMode, widget),
+    TextPropertyEditor(widget, EmbeddingInPlace, validationMode),
     m_InPlaceWidgetHelper(this, widget, fw)
 {
     setAlignment(m_InPlaceWidgetHelper.alignment());
@@ -59,13 +72,57 @@ InPlaceEditor::InPlaceEditor(QWidget *widget,
 
     setText(text);
     selectAll();
-        
+
     setGeometry(QRect(widget->mapTo(widget->window(), r.topLeft()), r.size()));
     setFocus();
     show();
 
     connect(this, SIGNAL(editingFinished()),this, SLOT(close()));
- 
+}
+
+
+// -------------- TaskMenuInlineEditor
+
+TaskMenuInlineEditor::TaskMenuInlineEditor(QWidget *w, TextPropertyValidationMode vm,
+                                           const QString &property, QObject *parent) :
+    QObject(parent),
+    m_vm(vm),
+    m_property(property),
+    m_widget(w)
+{
+}
+
+void TaskMenuInlineEditor::editText()
+{
+    m_formWindow = QDesignerFormWindowInterface::findFormWindow(m_widget);
+    if (m_formWindow.isNull())
+        return;
+    // Close as soon as a different widget is selected
+    connect(m_formWindow, SIGNAL(selectionChanged()), this, SLOT(updateSelection()));
+
+    // get old value
+    QDesignerFormEditorInterface *core = m_formWindow->core();
+    const QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(core->extensionManager(), m_widget);
+    const int index = sheet->indexOf(m_property);
+    if (index == -1)
+        return;
+    const QString oldValue = sheet->property(index).toString();
+
+    m_editor = new InPlaceEditor(m_widget, m_vm, m_formWindow, oldValue, editRectangle());
+    connect(m_editor, SIGNAL(textChanged(QString)), this, SLOT(updateText(QString)));
+}
+
+void TaskMenuInlineEditor::updateText(const QString &text)
+{
+    m_formWindow->cursor()->setProperty(m_property, QVariant(text));
+}
+
+void TaskMenuInlineEditor::updateSelection()
+{
+    if (m_editor)
+        m_editor->deleteLater();
 }
 
 }
+
+QT_END_NAMESPACE

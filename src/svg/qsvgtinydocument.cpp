@@ -42,16 +42,20 @@
 ****************************************************************************/
 
 #include "qsvgtinydocument_p.h"
+
+#ifndef QT_NO_SVG
+
 #include "qsvghandler_p.h"
 #include "qsvgfont_p.h"
 
 #include "qpainter.h"
-#include "qxml.h"
 #include "qfile.h"
 #include "qbytearray.h"
 #include "qqueue.h"
 #include "qstack.h"
 #include "qdebug.h"
+
+QT_BEGIN_NAMESPACE
 
 QSvgTinyDocument::QSvgTinyDocument()
     : QSvgStructureNode(0),
@@ -104,16 +108,11 @@ void QSvgTinyDocument::draw(QPainter *p, const QRectF &bounds)
         m_time.start();
     }
 
-    if (m_viewBox.isNull()) {
-        QMatrix matx = QMatrix();
-        m_viewBox = transformedBounds(matx);
-    }
-
     p->save();
 
     //sets default style on the painter
     //### not the most optimal way
-    adjustWindowBounds(p, bounds, m_viewBox);
+    mapSourceToTarget(p, bounds);
     p->setPen(Qt::NoPen);
     p->setBrush(Qt::black);
     p->setRenderHint(QPainter::Antialiasing);
@@ -132,7 +131,7 @@ void QSvgTinyDocument::draw(QPainter *p, const QRectF &bounds)
 
 
 void QSvgTinyDocument::draw(QPainter *p, const QString &id,
-                            const QRectF &boundingWindow)
+                            const QRectF &bounds)
 {
     QSvgNode *node = scopeNode(id);
 
@@ -143,11 +142,10 @@ void QSvgTinyDocument::draw(QPainter *p, const QString &id,
 
     p->save();
 
-    QMatrix matx = QMatrix();
-    QRectF bounds = node->transformedBounds(matx);
+    const QRectF elementBounds = node->transformedBounds(QMatrix());
 
-    adjustWindowBounds(p, boundingWindow, bounds);
-    matx = p->worldMatrix();
+    mapSourceToTarget(p, bounds, elementBounds);
+    QMatrix matx = p->worldMatrix();
 
     //XXX set default style on the painter
     p->setPen(Qt::NoPen);
@@ -238,35 +236,35 @@ void QSvgTinyDocument::draw(QPainter *p)
     draw(p, QRectF());
 }
 
-void QSvgTinyDocument::adjustWindowBounds(QPainter *p,
-                                          const QRectF &d,
-                                          const QRectF &c)
+void QSvgTinyDocument::mapSourceToTarget(QPainter *p, const QRectF &targetRect, const QRectF &sourceRect)
 {
-    QPaintDevice *dev = p->device();
-    QRectF current = c;
-
-    if (current.isNull()) {
-        if (!m_size.isEmpty()) {
-            current = QRectF(0, 0, m_size.width(), m_size.height());
+    QRectF target = targetRect;
+    if (target.isNull()) {
+        QPaintDevice *dev = p->device();
+        QRectF deviceRect(0, 0, dev->width(), dev->height());
+        if (deviceRect.isNull()) {
+            if (sourceRect.isNull())
+                target = QRectF(QPointF(0, 0), size());
+            else
+                target = QRectF(QPointF(0, 0), sourceRect.size());
         } else {
-            current = QRectF(0, 0, 100, 100);
+            target = deviceRect;
         }
     }
-    QRectF desired = d.isNull() ? QRectF(0, 0, dev->width(), dev->height()) : d;
 
-    if (current != desired) {
+    QRectF source = sourceRect;
+    if (source.isNull())
+        source = viewBox();
+
+    if (source != target && !source.isNull()) {
         QMatrix mat;
-        mat.scale(desired.width()/current.width(),
-                  desired.height()/current.height());
-        QRectF c2 = mat.mapRect(current);
-        p->translate(desired.x()-c2.x(),
-                     desired.y()-c2.y());
-        p->scale(desired.width()/current.width(),
-                 desired.height()/current.height());
-
-        //qDebug()<<"two "<<mat<<", pt = "<<QPointF(desired.x()-c2.x(),
-        //                                          desired.y()-c2.y());
-
+        mat.scale(target.width() / source.width(),
+                  target.height() / source.height());
+        QRectF c2 = mat.mapRect(source);
+        p->translate(target.x() - c2.x(),
+                     target.y() - c2.y());
+        p->scale(target.width() / source.width(),
+                 target.height() / source.height());
     }
 }
 
@@ -343,3 +341,6 @@ void QSvgTinyDocument::setFramesPerSecond(int num)
     m_fps = num;
 }
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG

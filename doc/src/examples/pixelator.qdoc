@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example itemviews/pixelator
     \title Pixelator Example
@@ -33,9 +76,7 @@
 
     The \c ImageModel class is defined as follows:
 
-    \quotefromfile itemviews/pixelator/imagemodel.h
-    \skipto class ImageModel
-    \printuntil /^\};/
+    \snippet examples/itemviews/pixelator/imagemodel.h 0
 
     Since we only require a simple, read-only table model, we only need to implement
     functions to indicate the dimensions of the image and supply data to other
@@ -47,14 +88,11 @@
 
     The constructor is trivial:
 
-    \quotefromfile itemviews/pixelator/imagemodel.cpp
-    \skipto ImageModel::ImageModel
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/imagemodel.cpp 0
 
     The \c setImage() function sets the image that will be used by the model:
    
-    \skipto ::setImage(
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/imagemodel.cpp 1
 
     The QAbstractItemModel::reset() call tells the view(s) that the model
     has changed.
@@ -62,9 +100,8 @@
     The \c rowCount() and \c columnCount() functions return the height and width of
     the image respectively:
 
-    \skipto ImageModel::rowCount
-    \printuntil ImageModel::columnCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/imagemodel.cpp 2
+    \snippet examples/itemviews/pixelator/imagemodel.cpp 3
 
     Since the image is a simple two-dimensional structure, the \c parent arguments
     to these functions are unused. They both simply return the relevant size from
@@ -73,8 +110,7 @@
     The \c data() function returns data for the item that corresponds to a given
     model index in a format that is suitable for a particular role:
 
-    \skipto ImageModel::data
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/imagemodel.cpp 4
 
     In this implementation, we only check that the model index is valid, and that
     the role requested is the \l{Qt::ItemDataRole}{DisplayRole}. If so, the function
@@ -87,8 +123,7 @@
 
     The \c headerData() function is also reimplemented:
 
-    \skipto ::headerData(
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/imagemodel.cpp 5
 
     We return (1, 1) as the size hint for a header item. If we
     didn't, the headers would default to a larger size, preventing
@@ -99,9 +134,7 @@
 
     The \c PixelDelegate class is defined as follows:
 
-    \quotefromfile itemviews/pixelator/pixeldelegate.h
-    \skipto class PixelDelegate
-    \printuntil /^\};/
+    \snippet examples/itemviews/pixelator/pixeldelegate.h 0
 
     This class provides only basic features for a delegate so, unlike the
     \l{Spin Box Delegate Example}{Spin Box Delegate} example, we subclass
@@ -119,9 +152,7 @@
     also called to ensure that the delegate is set up with a parent object,
     if one is supplied:
 
-    \quotefromfile itemviews/pixelator/pixeldelegate.cpp
-    \skipto PixelDelegate::PixelDelegate
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 0
 
     Each item is rendered by the delegate's
     \l{QAbstractItemDelegate::paint()}{paint()} function. The view calls this
@@ -129,8 +160,7 @@
     delegate should use to correctly draw the item, and an index to the item in
     the model:
 
-    \skipto PixelDelegate::paint
-    \printuntil fillRect
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 1
 
     The first task the delegate has to perform is to draw the item's background
     correctly. Usually, selected items appear differently to non-selected items,
@@ -139,8 +169,8 @@
 
     The radius of each circle is calculated in the following lines of code:
 
-    \printline int size
-    \printuntil return
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 3
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 4
 
     First, the largest possible radius of the circle is determined by taking the
     smallest dimension of the style option's \c rect attribute.
@@ -149,23 +179,22 @@
     scaling the brightness to fit within the item and subtracting it from the
     largest possible radius.
 
-    \printline save
-    \printline setRenderHint
-    \printline Qt::NoPen
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 5
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 6
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 7
 
     We save the painter's state, turn on antialiasing (to obtain smoother
     curves), and turn off the pen.
 
-    \printline State_Selected
-    \printuntil Qt::black
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 8
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 9
 
     The foreground of the item (the circle representing a pixel) must be
     rendered using an appropriate brush. For unselected items, we will use a
     solid black brush; selected items are drawn using a predefined brush from
     the style option's palette.
 
-    \skipto painter->drawEllipse
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 10
 
     Finally, we paint the circle within the rectangle specified by the style
     option and we call \l{QPainter::}{restore()} on the painter.
@@ -180,14 +209,12 @@
     returns a size for the item based on the predefined pixel size, initially set
     up in the constructor:
 
-    \skipto PixelDelegate::sizeHint
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 11
 
     The delegate's size is updated whenever the pixel size is changed.
     We provide a custom slot to do this:
 
-    \skipto PixelDelegate::setPixelSize
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/pixeldelegate.cpp 12
 
     \section1 Using The Custom Delegate
 
@@ -201,12 +228,9 @@
     In the constructor, we set up a table view, turn off its grid, and hide its
     headers:
 
-    \quotefromfile itemviews/pixelator/mainwindow.cpp
-    \skipto MainWindow
-    \printuntil /^\{/
+    \snippet examples/itemviews/pixelator/mainwindow.cpp 0
     \dots
-    \skipto view = new QTableView
-    \printuntil setModel
+    \snippet examples/itemviews/pixelator/mainwindow.cpp 1
 
     This enables the items to be drawn without any gaps between them. Removing
     the headers also prevents the user from adjusting the sizes of individual
@@ -220,8 +244,7 @@
     The custom delegate is constructed with the main window as its parent, so
     that it will be deleted correctly later, and we set it on the table view.
 
-    \skipto PixelDelegate
-    \printuntil setItemDelegate
+    \snippet examples/itemviews/pixelator/mainwindow.cpp 2
 
     Each item in the table view will be rendered by the \c PixelDelegate
     instance.
@@ -229,25 +252,21 @@
     We construct a spin box to allow the user to change the size of each "pixel"
     drawn by the delegate:
 
-    \skipto pixelSizeLabel
-    \printuntil setValue
+    \snippet examples/itemviews/pixelator/mainwindow.cpp 3
 
     This spin box is connected to the custom slot we implemented in the
     \c PixelDelegate class. This ensures that the delegate always draws each
     pixel at the currently specified size:
 
-    \skipto connect(pixelSizeSpinBox
-    \printuntil updateView
+    \snippet examples/itemviews/pixelator/mainwindow.cpp 4
     \dots
-    \skipto /^\}/
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/mainwindow.cpp 5
 
     We also connect the spin box to a slot in the \c MainWindow class. This
     forces the view to take into account the new size hints for each item;
     these are provided by the delegate in its \c sizeHint() function.
 
-    \skipto MainWindow::updateView
-    \printuntil /^\}/
+    \snippet examples/itemviews/pixelator/mainwindow.cpp 6
 
     We explicitly resize the columns and rows to match the
     \gui{Pixel size} combobox.

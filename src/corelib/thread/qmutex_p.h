@@ -56,6 +56,10 @@
 // We mean it.
 //
 
+#include <QtCore/qglobal.h>
+
+QT_BEGIN_NAMESPACE
+
 class QMutexPrivate {
 public:
     QMutexPrivate(QMutex::RecursionMode mode);
@@ -66,7 +70,7 @@ public:
     void wakeUp();
 
     const bool recursive;
-    QAtomic contenders;
+    QAtomicInt contenders;
     ulong owner;
     uint count;
 
@@ -74,9 +78,11 @@ public:
     volatile bool wakeup;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
-#elif defined(Q_OS_WIN32)
+#elif defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     HANDLE event;
 #endif
 };
+
+QT_END_NAMESPACE
 
 #endif // QMUTEX_P_H

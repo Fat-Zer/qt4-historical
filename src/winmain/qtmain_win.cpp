@@ -56,17 +56,24 @@
   initializes Qt.
 */
 
-#if defined(Q_OS_TEMP)
+QT_BEGIN_NAMESPACE
+
+#if defined(Q_OS_WINCE)
 extern void __cdecl qWinMain(HINSTANCE, HINSTANCE, LPSTR, int, int &, QVector<char *> &);
 #else
 extern void qWinMain(HINSTANCE, HINSTANCE, LPSTR, int, int &, QVector<char *> &);
 #endif
 
+QT_END_NAMESPACE
+
+QT_USE_NAMESPACE
+
+
 #if defined(QT_NEEDS_QMAIN)
 int qMain(int, char **);
 #define main qMain
 #else
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 extern "C" int __cdecl main(int, char **);
 #else
 extern "C" int main(int, char **);
@@ -79,7 +86,7 @@ extern "C" int main(int, char **);
   application.
 */
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPWSTR /*wCmdParam*/, int cmdShow)
 #else
 extern "C"
@@ -94,18 +101,24 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR /*cmdPara
         cmdParam = GetCommandLineA();
     });
 
+#if defined(Q_OS_WINCE)
+    TCHAR appName[256];
+    GetModuleFileName(0, appName, 255);
+    cmdParam = QString(QLatin1String("\"%1\" ")).arg(QString::fromUtf16(appName)).toLocal8Bit() + cmdParam;
+#endif
+
     int argc = 0;
     QVector<char *> argv(8);
     qWinMain(instance, prevInstance, cmdParam.data(), cmdShow, argc, argv);
 
-#ifdef Q_OS_TEMP
+#if defined(Q_OS_WINCE)
     TCHAR uniqueAppID[256];
     GetModuleFileName(0, uniqueAppID, 255);
-    QString uid = QString::fromUcs2(uniqueAppID).lower().remove('\\');
+    QString uid = QString::fromUtf16(uniqueAppID).toLower().replace(QString(QLatin1String("\\")), QString(QLatin1String("_")));
 
     // If there exists an other instance of this application
     // it will be the owner of a mutex with the unique ID.
-    HANDLE mutex = CreateMutex(NULL, TRUE, uid.ucs2());
+    HANDLE mutex = CreateMutex(NULL, TRUE, uid.utf16());
     if (mutex && ERROR_ALREADY_EXISTS == GetLastError()) {
         CloseHandle(mutex);
 
@@ -114,14 +127,19 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR /*cmdPara
         // as the registered class name for the windows
         // created. Set the first instance's window to the
         // foreground, else just terminate.
-        UINT msgNo = RegisterWindowMessage(uid.ucs2());
-        HWND aHwnd = FindWindow(QString::number(msgNo).ucs2(), 0);
+        // Use bitwise 0x01 OR to reactivate window state if
+        // it was hidden
+        UINT msgNo = RegisterWindowMessage(uid.utf16());
+        HWND aHwnd = FindWindow(QString::number(msgNo).utf16(), 0);
         if (aHwnd)
-            SetForegroundWindow(aHwnd);
+            SetForegroundWindow((HWND)(((ULONG)aHwnd) | 0x01));
         return 0;
     }
-#endif // Q_OS_TEMP
+#endif // Q_OS_WINCE
 
     int result = main(argc, argv.data());
+#if defined(Q_OS_WINCE)
+    CloseHandle(mutex);
+#endif
     return result;
 }

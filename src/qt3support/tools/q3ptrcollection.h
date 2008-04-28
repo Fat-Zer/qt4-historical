@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class Q3GVector;
@@ -75,6 +77,8 @@ protected:
     virtual Item     newItem(Item);		// create object
     virtual void     deleteItem(Item) = 0;	// delete object
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

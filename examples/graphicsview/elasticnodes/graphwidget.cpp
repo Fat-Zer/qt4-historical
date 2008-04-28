@@ -59,6 +59,7 @@ GraphWidget::GraphWidget()
     scene->setSceneRect(-200, -200, 400, 400);
     setScene(scene);
     setCacheMode(CacheBackground);
+    setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     setResizeAnchor(AnchorViewCenter);
@@ -104,7 +105,7 @@ GraphWidget::GraphWidget()
     node8->setPos(0, 50);
     node9->setPos(50, 50);
 
-    scale(0.8, 0.8);
+    scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("Elastic Nodes"));
 }
@@ -131,10 +132,10 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         centerNode->moveBy(20, 0);
         break;
     case Qt::Key_Plus:
-        scaleView(1.2);
+        scaleView(qreal(1.2));
         break;
     case Qt::Key_Minus:
-        scaleView(1 / 1.2);
+        scaleView(1 / qreal(1.2));
         break;
     case Qt::Key_Space:
     case Qt::Key_Enter:
@@ -204,7 +205,7 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
                     sceneRect.width() - 4, sceneRect.height() - 4);
     QString message(tr("Click and drag the nodes around, and zoom with the mouse "
                        "wheel or the '+' and '-' keys"));
-    
+
     QFont font = painter->font();
     font.setBold(true);
     font.setPointSize(14);

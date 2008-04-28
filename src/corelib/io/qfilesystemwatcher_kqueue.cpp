@@ -57,6 +57,8 @@
 #include <sys/time.h>
 #include <fcntl.h>
 
+QT_BEGIN_NAMESPACE
+
 // #define KEVENT_DEBUG
 #ifdef KEVENT_DEBUG
 #  define DEBUG qDebug
@@ -330,3 +332,5 @@ void QKqueueFileSystemWatcherEngine::run()
         } while (r > 0);
     }
 }
+
+QT_END_NAMESPACE

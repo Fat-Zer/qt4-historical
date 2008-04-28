@@ -46,6 +46,8 @@
 
 #include "ui_stringlisteditor.h"
 #include <QtCore/QStringList>
+
+QT_BEGIN_NAMESPACE
 class QStringListModel;
 
 namespace qdesigner_internal {
@@ -86,5 +88,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // STRINGLISTEDITOR_H

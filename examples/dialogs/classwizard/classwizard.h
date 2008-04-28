@@ -46,12 +46,15 @@
 
 #include <QWizard>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QRadioButton;
+QT_END_NAMESPACE
 
+//! [0]
 class ClassWizard : public QWizard
 {
     Q_OBJECT
@@ -61,7 +64,9 @@ public:
 
     void accept();
 };
+//! [0]
 
+//! [1]
 class IntroPage : public QWizardPage
 {
     Q_OBJECT
@@ -72,7 +77,9 @@ public:
 private:
     QLabel *label;
 };
+//! [1]
 
+//! [2]
 class ClassInfoPage : public QWizardPage
 {
     Q_OBJECT
@@ -92,7 +99,9 @@ private:
     QRadioButton *defaultCtorRadioButton;
     QCheckBox *copyCtorCheckBox;
 };
+//! [2]
 
+//! [3]
 class CodeStylePage : public QWizardPage
 {
     Q_OBJECT
@@ -112,6 +121,7 @@ private:
     QLineEdit *macroNameLineEdit;
     QLineEdit *baseIncludeLineEdit;
 };
+//! [3]
 
 class OutputFilesPage : public QWizardPage
 {

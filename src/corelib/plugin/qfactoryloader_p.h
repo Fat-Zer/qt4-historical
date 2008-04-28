@@ -59,7 +59,9 @@
 #include "QtCore/qstringlist.h"
 #include "private/qlibrary_p.h"
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
+
+QT_BEGIN_NAMESPACE
 
 class QFactoryLoaderPrivate;
 
@@ -70,7 +72,6 @@ class Q_CORE_EXPORT QFactoryLoader : public QObject
 
 public:
     QFactoryLoader(const char *iid,
-                   const QStringList &paths = QStringList(),
                    const QString &suffix = QString(),
                    Qt::CaseSensitivity = Qt::CaseSensitive);
     ~QFactoryLoader();
@@ -78,7 +79,12 @@ public:
     QStringList keys() const;
     QObject *instance(const QString &key) const;
 
+    void update();
+
+    static void refreshAll();
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_LIBRARY
 

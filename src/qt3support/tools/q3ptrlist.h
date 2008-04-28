@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 template<class type>
@@ -190,6 +192,8 @@ public:
     Q3PtrListIterator<type>& operator=(const Q3PtrListIterator<type>&it)
 			      { Q3GListIterator::operator=(it); return *this; }
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

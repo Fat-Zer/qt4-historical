@@ -52,6 +52,8 @@
 #include <QStringList>
 #include <QList>
 
+QT_BEGIN_NAMESPACE
+
 class FileSymbol;
 class TokenStream;
 class Error;
@@ -241,5 +243,7 @@ private:
     Parser(const Parser& source);
     void operator = (const Parser& source);
 };
+
+QT_END_NAMESPACE
 
 #endif

@@ -62,7 +62,9 @@
 
 
 class KALedMeter;
+QT_BEGIN_NAMESPACE
 class QLCDNumber;
+QT_END_NAMESPACE
 
 class KAstTopLevel : public Q3MainWindow
 {

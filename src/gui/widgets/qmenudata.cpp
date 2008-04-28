@@ -46,6 +46,8 @@
 #include <qaction.h>
 #include <private/qaction_p.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QMenuItem
     \brief The QMenuItem class represents an item in a menu.
@@ -90,4 +92,7 @@ int QMenuItem::signalValue() const
 {
     return d_func()->param;
 }
+
+QT_END_NAMESPACE
+
 #endif

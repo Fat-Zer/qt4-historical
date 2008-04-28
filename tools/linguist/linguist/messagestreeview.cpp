@@ -47,7 +47,9 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QItemDelegate>
 
-class MessagesItemDelegate : public QItemDelegate 
+QT_BEGIN_NAMESPACE
+
+class MessagesItemDelegate : public QItemDelegate
 {
 public:
     MessagesItemDelegate(QObject *parent) : QItemDelegate(parent) {}
@@ -63,27 +65,21 @@ public:
                 opt.font.setBold(true);
                 QItemDelegate::paint(painter, opt, index);
                 return;
-            } 
-        } 
+            }
+        }
         QItemDelegate::paint(painter, option, index);
     }
 };
 
 MessagesTreeView::MessagesTreeView(QWidget *parent) : QTreeView(parent)
 {
-    setRootIsDecorated(true);
-    setItemsExpandable(true);
+    setRootIsDecorated(false);
+    setItemsExpandable(false);
     setUniformRowHeights(true);
     setAlternatingRowColors(true);
-    QPalette pal = palette();
-    setPalette(pal);
-
-    setSelectionBehavior(QAbstractItemView::SelectRows);
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    setAllColumnsShowFocus(true);
 
     setItemDelegate(new MessagesItemDelegate(this));
-    header()->setSortIndicatorShown(true);
-    header()->setClickable(true);
     header()->setMovable(false);
     setSortingEnabled(true);
 }
@@ -96,4 +92,7 @@ void MessagesTreeView::setModel(QAbstractItemModel * model)
     header()->setResizeMode(1, QHeaderView::Interactive);
     header()->setResizeMode(2, QHeaderView::Stretch);
     header()->setClickable(true);
+    setColumnHidden(3, true);
 }
+
+QT_END_NAMESPACE

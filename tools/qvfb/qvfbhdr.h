@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #define QT_VFB_MOUSE_PIPE           "/tmp/.qtvfb_mouse-%1"
@@ -68,6 +70,7 @@ struct QVFbHeader
     QRgb clut[256];
     int viewerVersion;
     int serverVersion;
+    int brightness; // since 4.4.0
 };
 
 struct QVFbKeyData
@@ -78,6 +81,8 @@ struct QVFbKeyData
     bool press;
     bool repeat;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

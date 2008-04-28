@@ -46,12 +46,14 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QGroupBox;
 class QLabel;
 class QListWidget;
 class QMenu;
 class QRadioButton;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

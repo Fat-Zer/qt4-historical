@@ -46,6 +46,7 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QDataWidgetMapper;
 class QLabel;
 class QLineEdit;
@@ -53,6 +54,7 @@ class QPushButton;
 class QSpinBox;
 class QStandardItemModel;
 class QTextEdit;
+QT_END_NAMESPACE
 
 class Window : public QWidget
 {

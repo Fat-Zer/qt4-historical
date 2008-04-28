@@ -50,6 +50,8 @@
 
 #include "pagegenerator.h"
 
+QT_BEGIN_NAMESPACE
+
 class ManGenerator : public PageGenerator
 {
 public:
@@ -73,5 +75,7 @@ private:
 
     QString date;
 };
+
+QT_END_NAMESPACE
 
 #endif

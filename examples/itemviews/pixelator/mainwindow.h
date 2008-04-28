@@ -47,8 +47,10 @@
 #include <QMainWindow>
 
 class ImageModel;
+QT_BEGIN_NAMESPACE
 class QAction;
 class QTableView;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

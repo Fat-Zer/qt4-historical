@@ -63,6 +63,8 @@
 #include "QtCore/qvarlengtharray.h"
 #include "QtCore/qvector.h"
 
+QT_BEGIN_NAMESPACE
+
 class QSqlQueryModelPrivate: public QAbstractItemModelPrivate
 {
     Q_DECLARE_PUBLIC(QSqlQueryModel)
@@ -81,5 +83,7 @@ public:
     QVector<QHash<int, QVariant> > headers;
     QVarLengthArray<int, 56> colOffsets; // used to calculate indexInQuery of columns
 };
+
+QT_END_NAMESPACE
 
 #endif // QSQLQUERYMODEL_P_H

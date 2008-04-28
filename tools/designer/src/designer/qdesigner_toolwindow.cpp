@@ -51,12 +51,18 @@
 #include <QtGui/QAction>
 #include <QtGui/QCloseEvent>
 
+QT_BEGIN_NAMESPACE
+
 QDesignerToolWindow::QDesignerToolWindow(QDesignerWorkbench *workbench, QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags),
       m_workbench(workbench),
       m_saveSettings(false)
 {
     Q_ASSERT(workbench != 0);
+
+#ifndef Q_WS_MAC
+    setWindowIcon(qDesigner->windowIcon());
+#endif    
 
     m_action = new QAction(this);
     m_action->setShortcutContext(Qt::ApplicationShortcut);
@@ -155,3 +161,5 @@ Qt::DockWidgetArea QDesignerToolWindow::dockWidgetAreaHint() const
     return Qt::RightDockWidgetArea;
 }
 
+
+QT_END_NAMESPACE

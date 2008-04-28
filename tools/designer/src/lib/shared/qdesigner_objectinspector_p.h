@@ -59,6 +59,8 @@
 #include <QtDesigner/QDesignerObjectInspectorInterface>
 #include <QtCore/QList>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerDnDItemInterface;
 
 namespace qdesigner_internal {
@@ -96,5 +98,7 @@ public slots:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // DESIGNEROBJECTINSPECTOR_H

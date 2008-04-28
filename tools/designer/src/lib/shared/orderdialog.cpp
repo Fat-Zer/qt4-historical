@@ -46,74 +46,149 @@ TRANSLATOR qdesigner_internal::OrderDialog
 */
 
 #include "orderdialog_p.h"
-#include <QtDesigner/QDesignerFormWindowInterface>
+#include "iconloader_p.h"
+#include "ui_orderdialog.h"
 
-using namespace qdesigner_internal;
+#include <QtDesigner/QExtensionManager>
+#include <QtDesigner/QDesignerFormEditorInterface>
+#include <QtDesigner/QDesignerContainerExtension>
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QModelIndex>
+#include <QtGui/QPushButton>
 
-OrderDialog::OrderDialog(QDesignerFormWindowInterface *form, QWidget *parent)
-    : QDialog(parent), m_pages(0)
+QT_BEGIN_NAMESPACE
+
+// OrderDialog: Used to reorder the pages of QStackedWidget and QToolBox.
+// Provides up and down buttons as well as  DnD via QAbstractItemView::InternalMove mode
+namespace qdesigner_internal {
+
+OrderDialog::OrderDialog(QWidget *parent) :
+    QDialog(parent),
+    m_ui(new Ui::OrderDialog),
+    m_format(PageOrderFormat)
 {
-    ui.setupUi(this);
+    m_ui->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    m_form = form;
+    m_ui->upButton->setIcon(createIconSet(QString::fromUtf8("up.png")));
+    m_ui->downButton->setIcon(createIconSet(QString::fromUtf8("down.png")));
+    m_ui->buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
+    connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), SIGNAL(clicked()), this, SLOT(slotReset()));
+    // Catch the remove operation of a DnD operation in QAbstractItemView::InternalMove mode to enable buttons
+    // Selection mode is 'contiguous' to enable DnD of groups
+    connect(m_ui->pageList->model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(slotEnableButtonsAfterDnD()));
 
-    ui.upButton->setEnabled(false);
-    ui.downButton->setEnabled(false);
+    m_ui->upButton->setEnabled(false);
+    m_ui->downButton->setEnabled(false);
 }
 
 OrderDialog::~OrderDialog()
 {
+    delete  m_ui;
 }
 
-void OrderDialog::setPageList(QList<QWidget*> *pages)
+void OrderDialog::setDescription(const QString &d)
 {
-    m_pages = pages;
-    for (int i=0; i<pages->count(); ++i) {
+     m_ui->groupBox->setTitle(d);
+}
+
+void OrderDialog::setPageList(const QWidgetList &pages)
+{
+    // The QWidget* are stored in a map indexed by the old index.
+    // The old index is set as user data on the item instead of the QWidget*
+    // because DnD is enabled which requires the user data to serializable
+    m_orderMap.clear();
+    const int count = pages.count();
+    for (int i=0; i < count; ++i)
+        m_orderMap.insert(i, pages.at(i));
+    buildList();
+}
+
+void OrderDialog::buildList()
+{
+    m_ui->pageList->clear();
+    const OrderMap::const_iterator cend = m_orderMap.constEnd();
+    for (OrderMap::const_iterator it = m_orderMap.constBegin(); it != cend; ++it) {
         QListWidgetItem *item = new QListWidgetItem();
-        item->setText(tr("Index %1 (%2)").arg(i).arg(pages->at(i)->objectName()));
-        QVariant v;
-        qVariantSetValue<QWidget*>(v, pages->at(i));
-        item->setData(Qt::UserRole, v);
-        ui.pageList->addItem(item);
+        const int index = it.key();
+        switch (m_format) {
+        case PageOrderFormat:
+            item->setText(tr("Index %1 (%2)").arg(index).arg(it.value()->objectName()));
+            break;
+        case TabOrderFormat:
+            item->setText(tr("%1 %2").arg(index+1).arg(it.value()->objectName()));
+            break;
+        }
+        item->setData(Qt::UserRole, QVariant(index));
+        m_ui->pageList->addItem(item);
     }
 
-    if (ui.pageList->count() > 0)
-        ui.pageList->setCurrentRow(0);
+    if (m_ui->pageList->count() > 0)
+        m_ui->pageList->setCurrentRow(0);
 }
 
-void OrderDialog::accept()
+void OrderDialog::slotReset()
 {
-    m_pages->clear();
-    for (int i=0; i<ui.pageList->count(); ++i)
-    {
-        if (QWidget *w = qvariant_cast<QWidget*>(ui.pageList->item(i)->data(Qt::UserRole)))
-            m_pages->append(w);
+    buildList();
+}
+
+QWidgetList OrderDialog::pageList() const
+{
+    QWidgetList rc;
+    const int count = m_ui->pageList->count();
+    for (int i=0; i < count; ++i) {
+        const int oldIndex = m_ui->pageList->item(i)->data(Qt::UserRole).toInt();
+        rc.append(m_orderMap.value(oldIndex));
     }
-    QDialog::accept();
+    return rc;
 }
 
 void OrderDialog::on_upButton_clicked()
 {
-    int row = ui.pageList->currentRow();
+    const int row = m_ui->pageList->currentRow();
     if (row <= 0)
         return;
 
-    ui.pageList->insertItem(row - 1, ui.pageList->takeItem(row));
-    ui.pageList->setCurrentRow(row - 1);
+    m_ui->pageList->insertItem(row - 1, m_ui->pageList->takeItem(row));
+    m_ui->pageList->setCurrentRow(row - 1);
 }
 
 void OrderDialog::on_downButton_clicked()
 {
-    int row = ui.pageList->currentRow();
-    if (row == -1 || row == ui.pageList->count() - 1)
+    const int row = m_ui->pageList->currentRow();
+    if (row == -1 || row == m_ui->pageList->count() - 1)
         return;
 
-    ui.pageList->insertItem(row + 1, ui.pageList->takeItem(row));
-    ui.pageList->setCurrentRow(row + 1);
+    m_ui->pageList->insertItem(row + 1, m_ui->pageList->takeItem(row));
+    m_ui->pageList->setCurrentRow(row + 1);
 }
 
-void OrderDialog::on_pageList_currentRowChanged(int)
+void OrderDialog::slotEnableButtonsAfterDnD()
 {
-    ui.upButton->setEnabled(true);
-    ui.downButton->setEnabled(true);
+    enableButtons(m_ui->pageList->currentRow());
 }
+
+void OrderDialog::on_pageList_currentRowChanged(int r)
+{
+    enableButtons(r);
+}
+
+void OrderDialog::enableButtons(int r)
+{
+    m_ui->upButton->setEnabled(r > 0);
+    m_ui->downButton->setEnabled(r >= 0 && r < m_ui->pageList->count() - 1);
+}
+
+QWidgetList OrderDialog::pagesOfContainer(const QDesignerFormEditorInterface *core, QWidget *container)
+{
+    QWidgetList rc;
+    if (QDesignerContainerExtension* ce = qt_extension<QDesignerContainerExtension*>(core->extensionManager(), container)) {
+        const int count = ce->count();
+        for (int i = 0; i < count ;i ++)
+            rc.push_back(ce->widget(i));
+    }
+    return rc;
+}
+
+}
+
+QT_END_NAMESPACE

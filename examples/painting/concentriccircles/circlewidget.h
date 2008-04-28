@@ -46,6 +46,7 @@
 
 #include <QWidget>
 
+//! [0]
 class CircleWidget : public QWidget
 {
     Q_OBJECT
@@ -70,5 +71,6 @@ private:
     bool antialiased;
     int frameNo;
 };
+//! [0]
 
 #endif

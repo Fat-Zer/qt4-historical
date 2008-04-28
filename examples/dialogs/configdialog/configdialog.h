@@ -46,9 +46,11 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QListWidget;
 class QListWidgetItem;
 class QStackedWidget;
+QT_END_NAMESPACE
 
 class ConfigDialog : public QDialog
 {

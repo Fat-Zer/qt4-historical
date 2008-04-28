@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QUndoViewPrivate;
 class QUndoStack;
 class QUndoGroup;
@@ -93,6 +95,8 @@ public Q_SLOTS:
 private:
     Q_DISABLE_COPY(QUndoView)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -63,6 +63,8 @@
 
 #ifndef QT_NO_TABLEWIDGET
 
+QT_BEGIN_NAMESPACE
+
 // workaround for VC++ 6.0 linker bug
 typedef bool(*LessThan)(const QPair<QTableWidgetItem*,int>&,const QPair<QTableWidgetItem*,int>&);
 
@@ -190,7 +192,7 @@ class QTableWidgetPrivate : public QTableViewPrivate
     Q_DECLARE_PUBLIC(QTableWidget)
 public:
     QTableWidgetPrivate() : QTableViewPrivate() {}
-    inline QTableModel *model() const { return ::qobject_cast<QTableModel*>(q_func()->model()); }
+    inline QTableModel *model() const { return qobject_cast<QTableModel*>(q_func()->model()); }
     void setup();
 
     // view signals
@@ -215,6 +217,8 @@ public:
     QTableWidgetItem *q;
     int id;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TABLEWIDGET
 

@@ -49,6 +49,7 @@
 #include <QPair>
 #include <QString>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QDialogButtonBox;
 class QLabel;
@@ -56,7 +57,9 @@ class QLineEdit;
 class QTableWidget;
 class QTextEdit;
 class QWidget;
+QT_END_NAMESPACE
 
+//! [0]
 class DetailsDialog : public QDialog
 {
     Q_OBJECT
@@ -85,5 +88,6 @@ private:
     QTextEdit *addressEdit;
     QDialogButtonBox *buttonBox;
 };
+//! [0]
 
 #endif

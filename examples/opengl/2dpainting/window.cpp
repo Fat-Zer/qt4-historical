@@ -46,6 +46,7 @@
 #include "widget.h"
 #include "window.h"
 
+//! [0]
 Window::Window()
     : QWidget()
 {
@@ -70,3 +71,4 @@ Window::Window()
 
     setWindowTitle(tr("2D Painting on Native and OpenGL Widgets"));
 }
+//! [0]

@@ -54,6 +54,8 @@
 #include "tokenizer.h"
 #include "tree.h"
 
+QT_BEGIN_NAMESPACE
+
 #define CONFIG_QUICK                    "quick"
 #define CONFIG_REPLACES                 "replaces"
 
@@ -156,7 +158,7 @@ void QsCodeParser::parseHeaderFile( const Location& location,
     }
 
     Location fileLocation( filePath );
-    FileTokenizer fileTokenizer( fileLocation, in );
+    Tokenizer fileTokenizer( fileLocation, in );
     int tok = fileTokenizer.getToken();
     while ( tok != Tok_Eoi ) {
 	if ( tok == Tok_Ident ) {
@@ -881,3 +883,5 @@ bool QsCodeParser::rightWordBoundary( const QString& str, int pos )
 {
     return isWord( str[pos - 1] ) && !isWord( str[pos] );
 }
+
+QT_END_NAMESPACE

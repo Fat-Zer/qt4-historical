@@ -80,9 +80,10 @@ void ExampleContent::animationStopped(int id)
 
 QString ExampleContent::loadDescription()
 {
+    QByteArray ba = MenuManager::instance()->getHtml(this->name);
+
     QDomDocument exampleDoc;
-    QFile exampleFile(MenuManager::instance()->info[this->name]["docfile"]);
-    exampleDoc.setContent(&exampleFile);
+    exampleDoc.setContent(ba, false);
 
     QDomNodeList paragraphs = exampleDoc.elementsByTagName("p");
     if (paragraphs.length() < 1 && Colors::verbose)
@@ -99,8 +100,8 @@ QString ExampleContent::loadDescription()
 
 bool ExampleContent::isSummary(const QString &text)
 {
-    return (text.indexOf(QRegExp(QString(
-            "((The|This) )?(%1 )?.*(example|demo)").arg(this->name), Qt::CaseInsensitive)) != -1);
+    return (!text.contains("[") &&
+        text.indexOf(QRegExp(QString("(In )?((The|This) )?(%1 )?.*(tutorial|example|demo|application)").arg(this->name), Qt::CaseInsensitive)) != -1);
 }
 
 QString ExampleContent::extractTextFromParagraph(const QDomNode &parentNode)
@@ -140,10 +141,11 @@ void ExampleContent::createContent()
     // Create the items:
     this->heading = new HeadingItem(this->name, this->scene(), this);
     this->description = new DemoTextItem(this->loadDescription(), Colors::contentFont(),
-                                            Colors::heading, 500, this->scene(), this);
+        Colors::heading, 500, this->scene(), this);
     int imgHeight = 340 - int(this->description->boundingRect().height()) + 50;
-    this->screenshot = new ImageItem(MenuManager::instance()->info[this->name]["imgfile"],
-                                            550, imgHeight, this->scene(), this);
+    this->screenshot = new ImageItem(QImage::fromData(MenuManager::instance()->getImage(this->name)),
+          550, imgHeight, this->scene(), this);
+
     // Place the items on screen:
     this->heading->setPos(0, 3);
     this->description->setPos(0, this->heading->pos().y() + this->heading->boundingRect().height() + 10);

@@ -45,6 +45,10 @@
 #ifndef FOV_H
 #define FOV_H
 
+#include <QtCore/qglobal.h>
+
+QT_BEGIN_NAMESPACE
+
 class OublietteLevel;
 
 class FOV
@@ -78,4 +82,7 @@ private:
 	bool scanCell(OublietteLevel *map, int x, int y);
 	void applyCell(OublietteLevel *map, int x, int y);
 };
+
+QT_END_NAMESPACE
+
 #endif

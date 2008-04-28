@@ -45,8 +45,9 @@
 #define WINDOW_H
 
 #include <QSystemTrayIcon>
-#include <QWidget>
+#include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QCheckBox;
 class QComboBox;
@@ -57,8 +58,10 @@ class QMenu;
 class QPushButton;
 class QSpinBox;
 class QTextEdit;
+QT_END_NAMESPACE
 
-class Window : public QWidget
+//! [0]
+class Window : public QDialog
 {
     Q_OBJECT
 
@@ -107,5 +110,6 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
 };
+//! [0]
 
 #endif

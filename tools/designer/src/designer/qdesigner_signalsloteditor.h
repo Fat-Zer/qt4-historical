@@ -46,16 +46,20 @@
 
 #include "qdesigner_toolwindow.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWorkbench;
 
 class QDesignerSignalSlotEditor: public QDesignerToolWindow
 {
     Q_OBJECT
 public:
-    QDesignerSignalSlotEditor(QDesignerWorkbench *workbench);
+    explicit QDesignerSignalSlotEditor(QDesignerWorkbench *workbench);
     virtual ~QDesignerSignalSlotEditor();
 
     virtual QRect geometryHint() const;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_SIGNALSLOTEDITOR_H

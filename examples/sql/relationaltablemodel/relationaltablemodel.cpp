@@ -48,25 +48,34 @@
 
 void initializeModel(QSqlRelationalTableModel *model)
 {
+//! [0]
     model->setTable("employee");
+//! [0]
 
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+//! [1]
     model->setRelation(2, QSqlRelation("city", "id", "name"));
+//! [1] //! [2]
     model->setRelation(3, QSqlRelation("country", "id", "name"));
+//! [2]
 
+//! [3]
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Name"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("City"));
     model->setHeaderData(3, Qt::Horizontal, QObject::tr("Country"));
+//! [3]
 
     model->select();
 }
 
 QTableView *createView(const QString &title, QSqlTableModel *model)
 {
+//! [4]
     QTableView *view = new QTableView;
     view->setModel(model);
     view->setItemDelegate(new QSqlRelationalDelegate(view));
+//! [4]
     view->setWindowTitle(title);
     return view;
 }

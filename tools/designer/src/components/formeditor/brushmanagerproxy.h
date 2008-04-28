@@ -46,6 +46,8 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 
 namespace qdesigner_internal {
@@ -57,7 +59,7 @@ class BrushManagerProxy : public QObject
 {
     Q_OBJECT
 public:
-    BrushManagerProxy(QDesignerFormEditorInterface *core, QObject *parent = 0);
+    explicit BrushManagerProxy(QDesignerFormEditorInterface *core, QObject *parent = 0);
     ~BrushManagerProxy();
 
     void setBrushManager(QtBrushManager *manager);
@@ -71,5 +73,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif

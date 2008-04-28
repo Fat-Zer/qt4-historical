@@ -43,13 +43,15 @@
 
 #include "qdatastream.h"
 #include "qdebug.h"
-#include "qmath_p.h"
 #include "qmatrix.h"
 #include "qregion.h"
 #include "qpainterpath.h"
 #include "qvariant.h"
+#include <qmath.h>
 
 #include <limits.h>
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QMatrix
@@ -109,9 +111,7 @@
     \row
     \o \inlineimage qmatrix-simpletransformation.png
     \o
-    \quotefromfile snippets/matrix/matrix.cpp
-    \skipto SimpleTransformation::paintEvent
-    \printuntil }
+    \snippet doc/src/snippets/matrix/matrix.cpp 0
     \endtable
 
     Although these functions are very convenient, it can be more
@@ -123,9 +123,7 @@
     \row
     \o \inlineimage qmatrix-combinedtransformation.png
     \o
-    \quotefromfile snippets/matrix/matrix.cpp
-    \skipto CombinedTransformation::paintEvent
-    \printuntil }
+    \snippet doc/src/snippets/matrix/matrix.cpp 1
     \endtable
 
     \section1 Basic Matrix Operations
@@ -141,10 +139,7 @@
     QMatrix transforms a point in the plane to another point using the
     following formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 0
 
     The point \e (x, y) is the original point, and \e (x', y') is the
     transformed point. \e (x', y') can be transformed back to \e (x,
@@ -176,9 +171,7 @@
     \row
     \o \inlineimage qmatrix-combinedtransformation.png
     \o
-    \quotefromfile snippets/matrix/matrix.cpp
-    \skipto BasicOperations::paintEvent
-    \printuntil }
+    \snippet doc/src/snippets/matrix/matrix.cpp 2
     \endtable
 
     \sa QPainter, {The Coordinate System}, {demos/affine}{Affine
@@ -329,10 +322,7 @@ void QMatrix::setMatrix(qreal m11, qreal m12, qreal m21, qreal m22,
 
     The coordinates are transformed using the following formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 1
 
     The point (x, y) is the original point, and (x', y') is the
     transformed point.
@@ -402,13 +392,7 @@ QRect QMatrix::mapRect(const QRect &rect) const
         ymin = qMin(ymin, y);
         xmax = qMax(xmax, x);
         ymax = qMax(ymax, y);
-        qreal w = xmax - xmin;
-        qreal h = ymax - ymin;
-        xmin -= (xmin - x0) / w;
-        ymin -= (ymin - y0) / h;
-        xmax -= (xmax - x0) / w;
-        ymax -= (ymax - y0) / h;
-        result = QRect(qRound(xmin), qRound(ymin), qRound(xmax)-qRound(xmin)+1, qRound(ymax)-qRound(ymin)+1);
+        result = QRect(qRound(xmin), qRound(ymin), qRound(xmax)-qRound(xmin), qRound(ymax)-qRound(ymin));
     }
     return result;
 }
@@ -423,10 +407,7 @@ QRect QMatrix::mapRect(const QRect &rect) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 2
 
     If rotation or shearing has been specified, this function returns
     the \e bounding rectangle. To retrieve the exact region the given
@@ -821,10 +802,7 @@ QRegion QMatrix::mapToRegion(const QRect &rect) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 3
 
     Polygons and rectangles behave slightly differently when
     transformed (due to integer rounding), so
@@ -1246,3 +1224,4 @@ QDebug operator<<(QDebug dbg, const QMatrix &m)
     Use the mapRect() function instead.
 */
 
+QT_END_NAMESPACE

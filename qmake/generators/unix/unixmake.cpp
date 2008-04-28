@@ -1,10 +1,10 @@
 /****************************************************************************
-**
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
-**
-** This file is part of the qmake application of the Qt Toolkit.
-**
-** This file may be used under the terms of the GNU General Public
+ **
+ ** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+ **
+ ** This file is part of the qmake application of the Qt Toolkit.
+ **
+ ** This file may be used under the terms of the GNU General Public
 ** License versions 2.0 or 3.0 as published by the Free Software
 ** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
 ** included in the packaging of this file.  Alternatively you may (at
@@ -35,11 +35,11 @@
 ** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
 ** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
 ** granted herein.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
 
 #include "unixmake.h"
 #include "option.h"
@@ -50,6 +50,8 @@
 #include <time.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 void
 UnixMakefileGenerator::init()
 {
@@ -57,14 +59,6 @@ UnixMakefileGenerator::init()
         return;
     init_flag = true;
 
-    if(!project->isEmpty("QMAKE_FAILED_REQUIREMENTS")) /* no point */
-        return;
-
-    QStringList &configs = project->values("CONFIG");
-
-    //defaults
-    if(project->isEmpty("ICON") && !project->isEmpty("RC_FILE"))
-        project->values("ICON") = project->values("RC_FILE");
     if(project->isEmpty("QMAKE_EXTENSION_SHLIB")) {
         if(project->isEmpty("QMAKE_CYGWIN_SHLIB")) {
             project->values("QMAKE_EXTENSION_SHLIB").append("so");
@@ -72,6 +66,13 @@ UnixMakefileGenerator::init()
             project->values("QMAKE_EXTENSION_SHLIB").append("dll");
         }
     }
+
+    if(!project->isEmpty("QMAKE_FAILED_REQUIREMENTS")) /* no point */
+        return;
+
+    QStringList &configs = project->values("CONFIG");
+    if(project->isEmpty("ICON") && !project->isEmpty("RC_FILE"))
+        project->values("ICON") = project->values("RC_FILE");
     if(project->isEmpty("QMAKE_EXTENSION_PLUGIN"))
         project->values("QMAKE_EXTENSION_PLUGIN").append(project->first("QMAKE_EXTENSION_SHLIB"));
     if(project->isEmpty("QMAKE_COPY_FILE"))
@@ -126,7 +127,7 @@ UnixMakefileGenerator::init()
     project->values("QMAKE_ORIG_DESTDIR") = project->values("DESTDIR");
     project->values("QMAKE_LIBS") += escapeFilePaths(project->values("LIBS"));
     if((!project->isEmpty("QMAKE_LIB_FLAG") && !project->isActiveConfig("staticlib")) ||
-         (project->isActiveConfig("qt") &&  project->isActiveConfig("plugin"))) {
+       (project->isActiveConfig("qt") &&  project->isActiveConfig("plugin"))) {
         if(configs.indexOf("dll") == -1) configs.append("dll");
     } else if(!project->isEmpty("QMAKE_APP_FLAG") || project->isActiveConfig("dll")) {
         configs.removeAll("staticlib");
@@ -250,14 +251,18 @@ UnixMakefileGenerator::init()
             if(project->isActiveConfig("plugin")) {
                 if(!project->isEmpty("QMAKE_PLUGIN_BUNDLE_NAME"))
                     bundle = unescapeFilePath(project->first("QMAKE_PLUGIN_BUNDLE_NAME"));
-                if(!bundle.endsWith(".plugin"))
+                if(!project->isEmpty("QMAKE_BUNDLE_EXTENSION") && !bundle.endsWith(project->first("QMAKE_BUNDLE_EXTENSION")))
+                    bundle += project->first("QMAKE_BUNDLE_EXTENSION");
+                else if(!bundle.endsWith(".plugin"))
                     bundle += ".plugin";
-                if(project->isEmpty("QMAKE_BUNDLE_LOCATION"))
+                if(!project->isEmpty("QMAKE_BUNDLE_LOCATION"))
                     project->values("QMAKE_BUNDLE_LOCATION").append("Contents/MacOS");
             } else {
                 if(!project->isEmpty("QMAKE_FRAMEWORK_BUNDLE_NAME"))
                     bundle = unescapeFilePath(project->first("QMAKE_FRAMEWORK_BUNDLE_NAME"));
-                if(!bundle.endsWith(".framework"))
+                if(!project->isEmpty("QMAKE_BUNDLE_EXTENSION") && !bundle.endsWith(project->first("QMAKE_BUNDLE_EXTENSION")))
+                    bundle += project->first("QMAKE_BUNDLE_EXTENSION");
+                else if(!bundle.endsWith(".framework"))
                     bundle += ".framework";
             }
         }
@@ -484,7 +489,7 @@ UnixMakefileGenerator::findLibraries()
                         QString lib_stub;
                         for(QList<QMakeLocalFileName>::Iterator dep_it = libdirs.begin(); dep_it != libdirs.end(); ++dep_it) {
                             if(exists((*dep_it).local() + Option::dir_sep + "lib" + stub +
-                                             "." + (*extit))) {
+                                      "." + (*extit))) {
                                 lib_stub = stub;
                                 break;
                             }
@@ -518,11 +523,11 @@ UnixMakefileGenerator::findLibraries()
 }
 
 QString linkLib(const QString &file, const QString &libName) {
-  QString ret;
-  QRegExp reg("^.*lib(" + QRegExp::escape(libName) + "[^./=]*).*$");
-  if(reg.exactMatch(file))
-    ret = "-l" + reg.cap(1);
-  return ret;
+    QString ret;
+    QRegExp reg("^.*lib(" + QRegExp::escape(libName) + "[^./=]*).*$");
+    if(reg.exactMatch(file))
+        ret = "-l" + reg.cap(1);
+    return ret;
 }
 
 void
@@ -845,3 +850,5 @@ UnixMakefileGenerator::escapeFilePath(const QString &path) const
     }
     return ret;
 }
+
+QT_END_NAMESPACE

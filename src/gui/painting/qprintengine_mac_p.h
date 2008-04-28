@@ -62,6 +62,8 @@
 #include "private/qpaintengine_mac_p.h"
 #include "private/qpainter_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QPrinterPrivate;
 class QMacPrintEnginePrivate;
 class QMacPrintEngine : public QPaintEngine, public QPrintEngine
@@ -97,6 +99,7 @@ public:
     virtual void drawEllipse(const QRectF &r);
     virtual void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
     virtual void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
+    virtual void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, Qt::ImageConversionFlags flags);
     virtual void drawTextItem(const QPointF &p, const QTextItem &ti);
     virtual void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
     virtual void drawPath(const QPainterPath &);
@@ -121,9 +124,18 @@ public:
     bool fullPage;
     QPaintEngine *paintEngine;
     bool suppressStatus;
+    bool hasCustomPaperSize;
+    QSizeF customSize;
+    bool hasCustomPageMargins;
+    qreal leftMargin;
+    qreal topMargin;
+    qreal rightMargin;
+    qreal bottomMargin;
+    QHash<QMacPrintEngine::PrintEnginePropertyKey, QVariant> valueCache;
     QMacPrintEnginePrivate() : mode(QPrinter::ScreenResolution), state(QPrinter::Idle),
                                orient(QPrinter::Portrait), format(0), settings(0), session(0),
-                               paintEngine(0), suppressStatus(false) {}
+                               paintEngine(0), suppressStatus(false), hasCustomPaperSize(false),
+                               hasCustomPageMargins(false) {}
     ~QMacPrintEnginePrivate() {
         if (session) {
             PMRelease(session);
@@ -136,11 +148,13 @@ public:
     }
     void initialize();
     bool newPage_helper();
-    void setPageSize(QPrinter::PageSize ps);
-    QPrinter::PageSize pageSize() const;
+    void setPaperSize(QPrinter::PaperSize ps);
+    QPrinter::PaperSize paperSize() const;
     QList<QVariant> supportedResolutions() const;
-
+    bool shouldSuppressStatus() const;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PRINTER
 

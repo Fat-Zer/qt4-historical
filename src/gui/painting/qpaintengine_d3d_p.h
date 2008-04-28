@@ -58,6 +58,8 @@
 #include "QtGui/qpaintengine.h"
 #include <d3d9.h>
 
+QT_BEGIN_NAMESPACE
+
 class QDirect3DPaintEnginePrivate;
 class QDirect3DPaintEngine : public QPaintEngine
 {
@@ -114,5 +116,7 @@ private:
     friend class QPixmap;
     friend class QD3DGlyphCache;
 };
+
+QT_END_NAMESPACE
 
 #endif

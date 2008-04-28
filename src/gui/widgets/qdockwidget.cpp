@@ -65,7 +65,11 @@
 #include <qmacstyle_mac.h>
 #endif
 
-extern QString qt_setWindowTitle_helperHelper(const QString&, QWidget*); // qwidget.cpp
+QT_BEGIN_NAMESPACE
+
+extern QString qt_setWindowTitle_helperHelper(const QString&, const QWidget*); // qwidget.cpp
+
+extern QHash<QByteArray, QFont> *qt_app_fonts_hash(); // qapplication.cpp
 
 static inline bool hasFeature(const QDockWidget *dockwidget, QDockWidget::DockWidgetFeature feature)
 { return (dockwidget->features() & feature) == feature; }
@@ -96,9 +100,6 @@ static inline bool hasFeature(const QDockWidget *dockwidget, QDockWidget::DockWi
     +-------------------------------+
 
 */
-
-
-
 
 /******************************************************************************
 ** QDockWidgetTitleButton
@@ -131,9 +132,9 @@ QSize QDockWidgetTitleButton::sizeHint() const
 {
     ensurePolished();
 
-    int size = 2*style()->pixelMetric(QStyle::PM_DockWidgetTitleBarButtonMargin);
+    int size = 2*style()->pixelMetric(QStyle::PM_DockWidgetTitleBarButtonMargin, 0, this);
     if (!icon().isNull()) {
-        int iconSize = style()->pixelMetric(QStyle::PM_SmallIconSize);
+        int iconSize = style()->pixelMetric(QStyle::PM_SmallIconSize, 0, this);
         const QPixmap pm = icon().pixmap(iconSize);
         size += qMax(pm.width(), pm.height());
     }
@@ -158,7 +159,7 @@ void QDockWidgetTitleButton::paintEvent(QPaintEvent *)
     QPainter p(this);
 
     QRect r = rect();
-    QStyleOption opt;
+    QStyleOptionToolButton opt;
     opt.init(this);
     opt.state |= QStyle::State_AutoRaise;
 
@@ -175,17 +176,14 @@ void QDockWidgetTitleButton::paintEvent(QPaintEvent *)
         style()->drawPrimitive(QStyle::PE_PanelButtonTool, &opt, &p, this);
     }
 
-    int shiftHorizontal = opt.state & QStyle::State_Sunken ? style()->pixelMetric(QStyle::PM_ButtonShiftHorizontal, &opt, this) : 0;
-    int shiftVertical = opt.state & QStyle::State_Sunken ? style()->pixelMetric(QStyle::PM_ButtonShiftVertical, &opt, this) : 0;
-
-    r.adjust(2, 2, -2, -2);
-    r.translate(shiftHorizontal, shiftVertical);
-
-    QPixmap pm = icon().pixmap(style()->pixelMetric(QStyle::PM_SmallIconSize), isEnabled() ?
-                                underMouse() ? QIcon::Active : QIcon::Normal
-                                    : QIcon::Disabled,
-                                isDown() ? QIcon::On : QIcon::Off);
-    style()->drawItemPixmap(&p, r, Qt::AlignCenter, pm);
+    opt.icon = icon();
+    opt.subControls = 0;
+    opt.activeSubControls = 0;
+    opt.features = QStyleOptionToolButton::None;
+    opt.arrowType = Qt::NoArrow;
+    int size = style()->pixelMetric(QStyle::PM_SmallIconSize, 0, this);
+    opt.iconSize = QSize(size, size);
+    style()->drawComplexControl(QStyle::CC_ToolButton, &opt, &p, this);
 }
 
 /******************************************************************************
@@ -204,7 +202,7 @@ QDockWidgetLayout::~QDockWidgetLayout()
 
 bool QDockWidgetLayout::nativeWindowDeco() const
 {
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+#if defined(Q_WS_X11) || defined(Q_WS_QWS) || defined(Q_OS_WINCE)
     return false;
 #else
     return parentWidget()->isWindow() && item_list[QDockWidgetLayout::TitleBar] == 0;
@@ -271,12 +269,12 @@ QSize QDockWidgetLayout::sizeFromContent(const QSize &content, bool floating) co
     QDockWidget *w = qobject_cast<QDockWidget*>(parentWidget());
     bool customTitleBar = item_list[TitleBar] != 0;
     bool nativeDeco = floating && !customTitleBar;
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+#if defined(Q_WS_X11) || defined(Q_WS_QWS) || defined(Q_OS_WINCE)
     nativeDeco = false;
 #endif
 
     int fw = floating && !nativeDeco
-            ? w->style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth, 0, 0)
+            ? w->style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth, 0, w)
             : 0;
 
     const int th = titleHeight();
@@ -336,20 +334,20 @@ QSize QDockWidgetLayout::minimumSize() const
     return sizeFromContent(content, w->isFloating());
 }
 
-QWidget *QDockWidgetLayout::widget(Role r) const
+QWidget *QDockWidgetLayout::widgetForRole(Role r) const
 {
     QLayoutItem *item = item_list.at(r);
     return item == 0 ? 0 : item->widget();
 }
 
-QLayoutItem *QDockWidgetLayout::item(Role r) const
+QLayoutItem *QDockWidgetLayout::itemForRole(Role r) const
 {
     return item_list.at(r);
 }
 
-void QDockWidgetLayout::setWidget(Role r, QWidget *w)
+void QDockWidgetLayout::setWidgetForRole(Role r, QWidget *w)
 {
-    QWidget *old = widget(r);
+    QWidget *old = widgetForRole(r);
     if (old != 0) {
         old->hide();
         removeWidget(old);
@@ -357,7 +355,7 @@ void QDockWidgetLayout::setWidget(Role r, QWidget *w)
 
     if (w != 0) {
         addChildWidget(w);
-        item_list[r] = new QWidgetItem(w);
+        item_list[r] = new QWidgetItemV2(w);
         w->show();
     } else {
         item_list[r] = 0;
@@ -380,7 +378,7 @@ int QDockWidgetLayout::minimumTitleWidth() const
 {
     QDockWidget *q = qobject_cast<QDockWidget*>(parentWidget());
 
-    if (QWidget *title = widget(TitleBar))
+    if (QWidget *title = widgetForRole(TitleBar))
         return pick(verticalTitleBar, title->minimumSizeHint());
 
     QSize closeSize(0, 0);
@@ -404,7 +402,7 @@ int QDockWidgetLayout::titleHeight() const
 {
     QDockWidget *q = qobject_cast<QDockWidget*>(parentWidget());
 
-    if (QWidget *title = widget(TitleBar))
+    if (QWidget *title = widgetForRole(TitleBar))
         return perp(verticalTitleBar, title->sizeHint());
 
     QSize closeSize(0, 0);
@@ -420,7 +418,6 @@ int QDockWidgetLayout::titleHeight() const
     QFontMetrics titleFontMetrics = q->fontMetrics();
 #ifdef Q_WS_MAC
     if (qobject_cast<QMacStyle *>(q->style())) {
-        extern QHash<QByteArray, QFont> *qt_app_fonts_hash(); // qapplication.cpp
         QFont font = qt_app_fonts_hash()->value("QToolButton", q->font());
         titleFontMetrics = QFontMetrics(font);
     }
@@ -438,7 +435,7 @@ void QDockWidgetLayout::setGeometry(const QRect &geometry)
     bool nativeDeco = nativeWindowDeco();
 
     int fw = q->isFloating() && !nativeDeco
-            ? q->style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth, 0, 0)
+            ? q->style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth, 0, q)
             : 0;
 
     if (nativeDeco) {
@@ -555,12 +552,14 @@ void QDockWidgetPrivate::init()
     QDockWidgetLayout *layout = new QDockWidgetLayout(q);
 
     QAbstractButton *button = new QDockWidgetTitleButton(q);
+    button->setObjectName(QLatin1String("qt_dockwidget_floatbutton"));
     QObject::connect(button, SIGNAL(clicked()), q, SLOT(_q_toggleTopLevel()));
-    layout->setWidget(QDockWidgetLayout::FloatButton, button);
+    layout->setWidgetForRole(QDockWidgetLayout::FloatButton, button);
 
     button = new QDockWidgetTitleButton(q);
+    button->setObjectName(QLatin1String("qt_dockwidget_closebutton"));
     QObject::connect(button, SIGNAL(clicked()), q, SLOT(close()));
-    layout->setWidget(QDockWidgetLayout::CloseButton, button);
+    layout->setWidgetForRole(QDockWidgetLayout::CloseButton, button);
 
     resizer = new QWidgetResizeHandler(q);
     resizer->setMovingEnabled(false);
@@ -626,7 +625,7 @@ void QDockWidgetPrivate::updateButtons()
     QStyleOptionDockWidget opt;
     q->initStyleOption(&opt);
 
-    bool customTitleBar = layout->widget(QDockWidgetLayout::TitleBar) != 0;
+    bool customTitleBar = layout->widgetForRole(QDockWidgetLayout::TitleBar) != 0;
     bool nativeDeco = layout->nativeWindowDeco();
     bool hideButtons = nativeDeco || customTitleBar;
 
@@ -634,13 +633,13 @@ void QDockWidgetPrivate::updateButtons()
     bool canFloat = hasFeature(q, QDockWidget::DockWidgetFloatable);
 
     QAbstractButton *button
-        = qobject_cast<QAbstractButton*>(layout->widget(QDockWidgetLayout::FloatButton));
-    button->setIcon(q->style()->standardIcon(QStyle::SP_TitleBarNormalButton));
+        = qobject_cast<QAbstractButton*>(layout->widgetForRole(QDockWidgetLayout::FloatButton));
+    button->setIcon(q->style()->standardIcon(QStyle::SP_TitleBarNormalButton, &opt, q));
     button->setVisible(canFloat && !hideButtons);
 
     button
-        = qobject_cast <QAbstractButton*>(layout->widget(QDockWidgetLayout::CloseButton));
-    button->setIcon(q->style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+        = qobject_cast <QAbstractButton*>(layout->widgetForRole(QDockWidgetLayout::CloseButton));
+    button->setIcon(q->style()->standardIcon(QStyle::SP_TitleBarCloseButton, &opt, q));
     button->setVisible(canClose && !hideButtons);
 
     q->setAttribute(Qt::WA_ContentsPropagated,
@@ -666,6 +665,8 @@ void QDockWidgetPrivate::initDrag(const QPoint &pos, bool nca)
     Q_ASSERT(win != 0);
     QMainWindowLayout *layout = qobject_cast<QMainWindowLayout*>(win->layout());
     Q_ASSERT(layout != 0);
+    if (layout->layoutState.indexOf(q).isEmpty()) //The dock widget has not been added into the main window
+        return;
     if (layout->pluggingWidget != 0) // the main window is animating a docking operation
         return;
 
@@ -718,7 +719,7 @@ void QDockWidgetPrivate::endDrag(bool abort)
         Q_ASSERT(layout != 0);
 
         if (abort || !layout->plug(state->widgetItem)) {
-            if (::hasFeature(q, QDockWidget::DockWidgetFloatable)) {
+            if (hasFeature(q, QDockWidget::DockWidgetFloatable)) {
                 if (state->ownWidgetItem)
                     delete state->widgetItem;
                 layout->restore();
@@ -733,7 +734,7 @@ void QDockWidgetPrivate::endDrag(bool abort)
                 QDockWidgetLayout *myLayout
                     = qobject_cast<QDockWidgetLayout*>(q->layout());
                 resizer->setActive(QWidgetResizeHandler::Resize,
-                                    myLayout->widget(QDockWidgetLayout::TitleBar) != 0);
+                                    myLayout->widgetForRole(QDockWidgetLayout::TitleBar) != 0);
 #endif
                 undockedGeometry = q->geometry();
                 q->activateWindow();
@@ -778,7 +779,7 @@ void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
         if (!titleArea.contains(event->pos()))
             return;
         // check if the tool window is movable... do nothing if it is not
-        if (!::hasFeature(q, QDockWidget::DockWidgetMovable))
+        if (!hasFeature(q, QDockWidget::DockWidgetMovable))
             return;
 
         if (qobject_cast<QMainWindow*>(q->parentWidget()) == 0)
@@ -814,7 +815,7 @@ void QDockWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *event)
             return;
         if (!titleArea.contains(event->pos()))
             return;
-        if (!::hasFeature(q, QDockWidget::DockWidgetFloatable))
+        if (!hasFeature(q, QDockWidget::DockWidgetFloatable))
             return;
         _q_toggleTopLevel();
     }
@@ -999,8 +1000,8 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
     Qt::WindowFlags flags = floating ? Qt::Tool : Qt::Widget;
 
     QDockWidgetLayout *layout = qobject_cast<QDockWidgetLayout*>(q->layout());
-    bool nativeDeco = floating && layout->widget(QDockWidgetLayout::TitleBar) == 0;
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+    bool nativeDeco = floating && layout->widgetForRole(QDockWidgetLayout::TitleBar) == 0;
+#if defined(Q_WS_X11) || defined(Q_WS_QWS) || defined(Q_OS_WINCE)
     nativeDeco = false;
 #endif
 
@@ -1031,8 +1032,14 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
     if (!hidden)
         q->show();
 
-    if (floating != wasFloating)
+    if (floating != wasFloating) {
         emit q->topLevelChanged(floating);
+        if (!floating) {
+            QMainWindowLayout *mwlayout = qobject_cast<QMainWindowLayout *>(q->parentWidget()->layout());
+            if (mwlayout)
+                emit q->dockLocationChanged(mwlayout->dockWidgetArea(q));
+        }
+    }
 
     resizer->setActive(QWidgetResizeHandler::Resize, !unplug && floating && !nativeDeco);
 }
@@ -1055,7 +1062,7 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
     \image mainwindow-docks.png
 
     Dock windows can be moved inside their current area, moved into
-    new areas and floated (e.g. undocked) by the end-user.  The
+    new areas and floated (e.g., undocked) by the end-user.  The
     QDockWidget API allows the programmer to restrict the dock widgets
     ability to move, float and close, as well as the areas in which
     they can be placed.
@@ -1076,7 +1083,7 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
     implemented in the child widget. QDockWidget will respect them, adjusting
     its own constraints to include the frame and title. Size constraints
     should not be set on the QDockWidget itself, because they change depending
-    on wether it is docked; a docked QDockWidget has no frame and a smaller title
+    on whether it is docked; a docked QDockWidget has no frame and a smaller title
     bar.
 
     \sa QMainWindow, {Dock Widgets Example}
@@ -1158,7 +1165,7 @@ QDockWidget::~QDockWidget()
 QWidget *QDockWidget::widget() const
 {
     QDockWidgetLayout *layout = qobject_cast<QDockWidgetLayout*>(this->layout());
-    return layout->widget(QDockWidgetLayout::Content);
+    return layout->widgetForRole(QDockWidgetLayout::Content);
 }
 
 /*!
@@ -1169,7 +1176,7 @@ QWidget *QDockWidget::widget() const
 void QDockWidget::setWidget(QWidget *widget)
 {
     QDockWidgetLayout *layout = qobject_cast<QDockWidgetLayout*>(this->layout());
-    layout->setWidget(QDockWidgetLayout::Content, widget);
+    layout->setWidgetForRole(QDockWidgetLayout::Content, widget);
 }
 
 /*!
@@ -1221,15 +1228,14 @@ void QDockWidget::setFloating(bool floating)
 
     QRect r = d->undockedGeometry;
 
+    d->setWindowState(floating, false, floating ? r : QRect());
     if (floating && r.isNull()) {
         QDockWidgetLayout *layout = qobject_cast<QDockWidgetLayout*>(this->layout());
         QRect titleArea = layout->titleArea();
         int h = layout->verticalTitleBar ? titleArea.width() : titleArea.height();
         QPoint p = mapToGlobal(QPoint(h, h));
-        r = QRect(p, size());
+        move(p);
     }
-
-    d->setWindowState(floating, false, floating ? r : QRect());
 }
 
 /*!
@@ -1308,7 +1314,7 @@ void QDockWidget::paintEvent(QPaintEvent *event)
 
     QDockWidgetLayout *layout
         = qobject_cast<QDockWidgetLayout*>(this->layout());
-    bool customTitleBar = layout->widget(QDockWidgetLayout::TitleBar) != 0;
+    bool customTitleBar = layout->widgetForRole(QDockWidgetLayout::TitleBar) != 0;
     bool nativeDeco = layout->nativeWindowDeco();
 
     if (!nativeDeco && !customTitleBar) {
@@ -1503,14 +1509,7 @@ QAction * QDockWidget::toggleViewAction() const
     \i When DockWidgetVerticalTitleBar is set on QDockWidget, the title
        bar widget is repositioned accordingly. In resizeEvent(), the title
        bar should check what orientation it should assume:
-       \code
-       QDockWidget *dockWidget = qobject_cast<QDockWidget*>(parentWidget());
-       if (dockWidget->features() & QDockWidget::DockWidgetVerticalTitleBar) {
-           // I need to be vertical
-       } else {
-           // I need to be horizontal
-       }
-       \endcode
+       \snippet doc/src/snippets/code/src.gui.widgets.qdockwidget.cpp 0
 
     \i The title bar widget must have a valid QWidget::sizeHint() and
        QWidget::minimumSizeHint(). These functions should take into account
@@ -1529,8 +1528,12 @@ void QDockWidget::setTitleBarWidget(QWidget *widget)
     Q_D(QDockWidget);
     QDockWidgetLayout *layout
         = qobject_cast<QDockWidgetLayout*>(this->layout());
-    layout->setWidget(QDockWidgetLayout::TitleBar, widget);
+    layout->setWidgetForRole(QDockWidgetLayout::TitleBar, widget);
     d->updateButtons();
+    if (isWindow()) {
+        //this ensures the native decoration is drawn
+        d->setWindowState(true /*floating*/, true /*unplug*/);
+    }
 }
 
 /*!
@@ -1545,9 +1548,12 @@ QWidget *QDockWidget::titleBarWidget() const
 {
     QDockWidgetLayout *layout
         = qobject_cast<QDockWidgetLayout*>(this->layout());
-    return layout->widget(QDockWidgetLayout::TitleBar);
+    return layout->widgetForRole(QDockWidgetLayout::TitleBar);
 }
+
+QT_END_NAMESPACE
 
 #include "qdockwidget.moc"
 #include "moc_qdockwidget.cpp"
+
 #endif // QT_NO_DOCKWIDGET

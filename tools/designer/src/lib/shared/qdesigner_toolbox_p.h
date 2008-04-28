@@ -56,43 +56,39 @@
 #define QDESIGNER_TOOLBOX_H
 
 #include "shared_global_p.h"
+#include "qdesigner_propertysheet_p.h"
+#include "qdesigner_utils_p.h"
+#include <QtGui/QPalette>
 
-#include <QtGui/QToolBox>
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
     class PromotionTaskMenu;
 }
 
+class QToolBox;
+
 class QAction;
 class QMenu;
 
-class QDESIGNER_SHARED_EXPORT QDesignerToolBox : public QToolBox
+class QDESIGNER_SHARED_EXPORT QToolBoxHelper : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString currentItemText READ currentItemText WRITE setCurrentItemText STORED false DESIGNABLE true)
-    Q_PROPERTY(QString currentItemName READ currentItemName WRITE setCurrentItemName STORED false DESIGNABLE true)
-    Q_PROPERTY(QIcon currentItemIcon READ currentItemIcon WRITE setCurrentItemIcon STORED false DESIGNABLE true)
-    Q_PROPERTY(QString currentItemToolTip READ currentItemToolTip WRITE setCurrentItemToolTip STORED false DESIGNABLE true)
+
+    explicit QToolBoxHelper(QToolBox *toolbox);
 public:
-    QDesignerToolBox(QWidget *parent = 0);
-
-    QString currentItemText() const;
-    void setCurrentItemText(const QString &itemText);
-
-    QString currentItemName() const;
-    void setCurrentItemName(const QString &itemName);
-
-    QIcon currentItemIcon() const;
-    void setCurrentItemIcon(const QIcon &itemIcon);
-
-    QString currentItemToolTip() const;
-    void setCurrentItemToolTip(const QString &itemToolTip);
+    // Install helper on QToolBox
+    static void install(QToolBox *toolbox);
+    static QToolBoxHelper *helperOf(const QToolBox *toolbox);
+    // Convenience to add a menu on a toolbox
+    static QMenu *addToolBoxContextMenuActions(const QToolBox *toolbox, QMenu *popup);
 
     QPalette::ColorRole currentItemBackgroundRole() const;
     void setCurrentItemBackgroundRole(QPalette::ColorRole role);
-    
+
     // Add context menu and return page submenu or 0.
-    QMenu *addContextMenuActions(QMenu *popup);
+
+    QMenu *addContextMenuActions(QMenu *popup) const;
 
 private slots:
     void removeCurrentPage();
@@ -101,15 +97,40 @@ private slots:
     void changeOrder();
     void slotCurrentChanged(int index);
 
-protected:
-    void itemInserted(int index);
-
 private:
+    QToolBox *m_toolbox;
     QAction *m_actionDeletePage;
     QAction *m_actionInsertPage;
     QAction *m_actionInsertPageAfter;
     QAction *m_actionChangePageOrder;
     qdesigner_internal::PromotionTaskMenu* m_pagePromotionTaskMenu;
 };
+
+// PropertySheet to handle the page properties
+class QDESIGNER_SHARED_EXPORT QToolBoxWidgetPropertySheet : public QDesignerPropertySheet {
+public:
+    explicit QToolBoxWidgetPropertySheet(QToolBox *object, QObject *parent = 0);
+
+    virtual void setProperty(int index, const QVariant &value);
+    virtual QVariant property(int index) const;
+    virtual bool reset(int index);
+    virtual bool isEnabled(int index) const;
+
+    // Check whether the property is to be saved. Returns false for the page
+    // properties (as the property sheet has no concept of 'stored')
+    static bool checkProperty(const QString &propertyName);
+
+private:
+    enum ToolBoxProperty { PropertyCurrentItemText, PropertyCurrentItemName, PropertyCurrentItemIcon,
+                           PropertyCurrentItemToolTip,  PropertyTabSpacing, PropertyToolBoxNone };
+
+    static ToolBoxProperty toolBoxPropertyFromName(const QString &name);
+    QToolBox *m_toolBox;
+    QMap<int, qdesigner_internal::PropertySheetIconValue> m_pageToIcon;
+};
+
+typedef QDesignerPropertySheetFactory<QToolBox, QToolBoxWidgetPropertySheet> QToolBoxWidgetPropertySheetFactory;
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_TOOLBOX_H

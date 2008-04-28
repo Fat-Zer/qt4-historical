@@ -16,3 +16,4 @@ target.path = $$[QT_INSTALL_DEMOS]/chip
 sources.files = $$SOURCES $$HEADERS $$RESOURCES *.png *.pro *.html *.doc images
 sources.path = $$[QT_INSTALL_DEMOS]/chip
 INSTALLS += target sources
+

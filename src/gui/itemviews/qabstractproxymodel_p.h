@@ -60,13 +60,19 @@
 
 #ifndef QT_NO_PROXYMODEL
 
+QT_BEGIN_NAMESPACE
+
 class QAbstractProxyModelPrivate : public QAbstractItemModelPrivate
 {
     Q_DECLARE_PUBLIC(QAbstractProxyModel)
 public:
     QAbstractProxyModelPrivate() : QAbstractItemModelPrivate(), model(0) {}
     QAbstractItemModel *model;
+    void _q_sourceModelDestroyed();
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_PROXYMODEL
+
 #endif // QABSTRACTPROXYMODEL_P_H

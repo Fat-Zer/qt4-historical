@@ -50,6 +50,8 @@
 #include <qlibrary.h>
 #include <qimage.h>
 
+QT_BEGIN_NAMESPACE
+
 // #define DEPTH_BUFFER
 #define QGL_FUNC_CONTEXT QGLContext *ctx = d_ptr->ctx;
 
@@ -144,7 +146,7 @@ void QGLFramebufferObjectPrivate::init(const QSize &sz, QGLFramebufferObject::At
     glBindTexture(target, texture);
     glTexImage2D(target, 0, internal_format, size.width(), size.height(), 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -186,7 +188,7 @@ void QGLFramebufferObjectPrivate::init(const QSize &sz, QGLFramebufferObject::At
         Q_ASSERT(!glIsRenderbufferEXT(depth_stencil_buffer));
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth_stencil_buffer);
         Q_ASSERT(glIsRenderbufferEXT(depth_stencil_buffer));
-#ifdef Q_WS_QWS
+#ifdef QT_OPENGL_ES
 #define GL_DEPTH_COMPONENT16 0x81A5
         glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT16, size.width(), size.height());
 #else
@@ -314,7 +316,7 @@ void QGLFramebufferObjectPrivate::init(const QSize &sz, QGLFramebufferObject::At
     \sa size(), texture(), attachment()
 */
 
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
 #define DEFAULT_FORMAT GL_RGBA8
 #else
 #define DEFAULT_FORMAT GL_RGBA
@@ -586,6 +588,57 @@ bool QGLFramebufferObject::hasOpenGLFramebufferObjects()
     return (QGLExtensions::glExtensions & QGLExtensions::FramebufferObject);
 }
 
+/*!
+    \since 4.4
+
+    Draws the given texture, \a textureId, to the given target rectangle,
+    \a target, in OpenGL model space. The \a textureTarget should be a 2D
+    texture target.
+
+    The framebuffer object should be bound when calling this function.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLFramebufferObject::drawTexture(const QRectF &target, GLuint textureId, GLenum textureTarget)
+{
+    Q_D(QGLFramebufferObject);
+    d->ctx->drawTexture(target, textureId, textureTarget);
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLFramebufferObject::drawTexture(const QRectF &target, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    Q_D(QGLFramebufferObject);
+    d->ctx->drawTexture(target, textureId, textureTarget);
+}
+#endif
+
+/*!
+    \since 4.4
+
+    Draws the given texture, \a textureId, at the given \a point in OpenGL
+    model space. The \a textureTarget should be a 2D texture target.
+
+    The framebuffer object should be bound when calling this function.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLFramebufferObject::drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget)
+{
+    Q_D(QGLFramebufferObject);
+    d->ctx->drawTexture(point, textureId, textureTarget);
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLFramebufferObject::drawTexture(const QPointF &point, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    Q_D(QGLFramebufferObject);
+    d->ctx->drawTexture(point, textureId, textureTarget);
+}
+#endif
+
 extern int qt_defaultDpi();
 
 /*! \reimp */
@@ -668,3 +721,5 @@ QGLFramebufferObject::Attachment QGLFramebufferObject::attachment() const
         return d->fbo_attachment;
     return NoAttachment;
 }
+
+QT_END_NAMESPACE

@@ -46,9 +46,12 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QPushButton;
 class QTextEdit;
+QT_END_NAMESPACE
 
+//! [0]
 class PreviewWindow : public QWidget
 {
     Q_OBJECT
@@ -62,5 +65,6 @@ private:
     QTextEdit *textEdit;
     QPushButton *closeButton;
 };
+//! [0]
 
 #endif

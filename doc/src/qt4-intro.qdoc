@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt4-intro.html
     \title What's New in Qt 4
@@ -37,21 +80,41 @@
 
     The following features have been added to Qt since the first release of Qt 4:
 
+    In Qt 4.3:
+    \list
+    \o Support for different \l{The Qt 4 Main Window Classes}{main window paradigms and styles},
+       such as those found in Visual Studio or KDevelop.
+    \o The \l{QtScript} module, providing support for application scripting with ECMAScript.
+    \o Improved graphics features, including an experimental Direct3D paint engine
+       and improved provision for hardware accelerated rendering with OpenGL, and
+       support for OpenGL ES in Qt for Embedded Linux.
+    \o \l{QSvgGenerator}{Scalable Vector Graphics (SVG) export}, allowing SVG drawings to
+       be created using the standard QPainter API.
+    \o Support for arbitrary matrix transformations and set operations on painter paths.
+    \o Native look and feel on Windows Vista; improved look and feel on Mac OS X.
+    \o An improved \l{QMdiArea}{Multiple Document Interface (MDI)} implementation.
+    \o Continuous improvements to \QD, including support for
+       \l{Qt Designer's Widget Editing Mode#The Property Editor}{dynamic properties}.
+    \o Support for Secure Socket Layer (SSL) communications via the QSslSocket class.
+    \o Support for XML Localization Interchange File Format (XLIFF) files in \QL.
+    \o A new font subsystem for Qtopia Core (Qt for Embedded Linux).
+    \endlist
+
     In Qt 4.2:
     \list
     \o The \l{Graphics View} framework for producing interactive graphics.
     \o \l{Desktop Integration}{Desktop integration} facilities for applications.
     \o \l{Qt Style Sheets} enable easy, yet powerful customization of
-    user interfaces.
+       user interfaces.
     \o Support for the \l{intro-to-dbus.html}{D-Bus} Inter-Process Communication (IPC) and Remote Procedure Calling (RPC) mechanism.
     \o An \l{Undo Framework}{Undo framework} based on the
-    \l{Books about GUI Design#Design Patterns}{Command pattern}.
+       \l{Books about GUI Design#Design Patterns}{Command pattern}.
     \o Support for model-based \l{QCompleter}{text completion} in standard and
-    custom widgets.
+       custom widgets.
     \o New widgets and GUI features, such as QCalendarWidget and
-    QGLFramebufferObject.
+       QGLFramebufferObject.
     \o Classes to provide higher level application infrastructure, such as
-    QFileSystemWatcher and QDataWidgetMapper.
+       QFileSystemWatcher and QDataWidgetMapper.
     \endlist
 
     In Qt 4.1:
@@ -142,15 +205,11 @@
     link your application against QtCore and QtGui. To remove the
     dependency upon QtGui, add the line
 
-    \code
-        QT -= gui
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 0
 
     to your .pro file. To enable the other libraries, add the line
 
-    \code
-        QT += network opengl sql qt3support
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 1
 
     Another change to the build system is that moc now understands
     preprocessor directives. qmake automatically passes the defines set
@@ -160,31 +219,21 @@
     To compile code that uses .ui files, you will also need this line in
     the .pro file:
 
-    \code
-        CONFIG += uic3
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 2
 
     \section1 Include Syntax
 
     The syntax for including Qt class definitions has become
 
-    \code
-        #include <QClassName>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 3
 
     For example:
 
-    \code
-        #include <QString>
-        #include <QApplication>
-        #include <QSqlTableModel>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 4
 
     This is guaranteed to work for any public Qt class. The old syntax,
 
-    \code
-        #include <qclassname.h>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 5
 
     still works, but we encourage you to switch to the new syntax.
 
@@ -198,9 +247,7 @@
     To include the definitions for all the classes in a library, simply
     specify the name of that library. For example:
 
-    \code
-        #include <QtCore>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 6
 
     \section1 Namespaces
 
@@ -212,9 +259,7 @@
     to access a constant that is part of the Qt namespace, prefix it
     with \c Qt:: (e.g., \c{Qt::yellow}), or add the directive
 
-    \code
-        using namespace Qt;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 7
 
     at the top of your source files, after your \c #include
     directives. If you use the \c{using namespace} syntax you don't
@@ -244,10 +289,7 @@
     \list
     \o  Code that used it looked confusing, for example:
 
-        \code
-        QLabel *label1 = new QLabel("Hello", this);
-        QLabel *label2 = new QLabel(this, "Hello");
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 8
 
         \c label1 is a QLabel that displays the text "Hello"; \c
         label2 is a QLabel with no text, with the object name
@@ -257,13 +299,7 @@
         they blindly followed Qt's convention and provided a "const
         char *name" in their subclasses's constructors. For example:
 
-        \code
-        MyWidget::MyWidget(QWidget *parent, const char *name)
-            : QWidget(parent, name)
-        {
-            ...
-        }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 9
 
     \o  The name parameter was in Qt since version 1, and it always
         was documented as: "It is not very useful in the current
@@ -298,23 +334,12 @@
 
     Here's the Qt 3 idiom to cast a type to a subtype:
 
-    \code
-        // DEPRECATED
-        if (obj->inherits("QPushButton")) {
-            QPushButton *pushButton = (QPushButton *)obj;
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 10
 
     The Qt 4 idiom is both cleaner and safer, because typos will always
     result in compiler errors:
 
-    \code
-        QPushButton *pushButton = qobject_cast<QPushButton *>(obj);
-        if (pushButton) {
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 11
 
     \section1 QPointer<T>
 
@@ -325,13 +350,7 @@
 
     Example:
 
-    \code
-        QLabel *label = new QLabel;
-        QPointer<QLabel> safeLabel = label;
-        safeLabel->setText("Hello world!");
-        delete label;
-        // safeLabel is now 0, whereas label is a dangling pointer
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 12
 
     QPointer<T> is more or less the same as the old QGuardedPtr<T> class,
     except that it is now implemented in a much more lightweight manner
@@ -371,9 +390,7 @@
 
     To enable the Qt 3 support classes and functions, add the line
 
-    \code
-        QT += qt3support
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 13
 
     to your \c .pro file.
 
@@ -381,43 +398,40 @@
     in a compiler warning (e.g., "'find' is deprecated"). If you want to turn
     off that warning, add the line
 
-    \code
-        DEFINES += QT3_SUPPORT
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 14
 
     to your \c .pro file.
 
     If you want to use compatibility functions but don't want to link
     against the Qt3Support library, add the line
 
-    \code
-        DEFINES += QT3_SUPPORT_WARNINGS
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 15
 
     or
 
-    \code
-        DEFINES += QT3_SUPPORT
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-intro.qdoc 16
 
     to your \c .pro file, depending on whether you want compatibility
     function calls to generate compiler warnings or not.
 */
 
 /*!
-  \page qt4-3-intro.html
-  \title What's New in Qt 4.3
+  \page qt4-4-intro.html
+  \title What's New in Qt 4.4
 
-  Qt 4.3 provides many improvements and enhancements over the previous releases
+  Qt 4.4 provides many improvements and enhancements over the previous releases
   in the Qt 4 series. This documents covers the most important features in this
   release, separated by category.
 
-  A comprehensive list of changes between Qt 4.2 and Qt 4.3 is included
-  in the \c changes-4.3.0 file
-  \l{http://www.trolltech.com/developer/notes/changes/changes-4.3.0}{available
-  online}. Changes between this release and the previous release are provided
-  in the \c{changes-4.3.5} file (also
-  \l{http://www.trolltech.com/developer/notes/changes/changes-4.3.5}{available online}).
+  A comprehensive list of changes between Qt 4.3 and Qt 4.4 is included
+  in the \c changes-4.4.0 file
+  \l{http://www.trolltech.com/developer/notes/changes/changes-4.4.0}{available
+  online}.
+  \omit
+  Changes between this release and the previous release are provided
+  in the \c{changes-4.4.0} file (also
+  \l{http://www.trolltech.com/developer/notes/changes/changes-4.4.0}{available online}).
+  \endomit
 
   A list of other Qt 4 features can be found on the
   \bold{\l{What's New in Qt 4}} page.
@@ -426,273 +440,122 @@
 
   \tableofcontents
 
-  \section1 Main Window Styles
+  \section1 Qt WebKit Integration
 
-  The \l{Main Window and Related Classes}{main window classes} now
-  provide support for different main window paradigms, such as
-  those found in Visual Studio or KDevelop.
+  As Web-based technologies and services become more important to users, access
+  to an integrated browser component has become a requirement for application
+  developers.
 
-  Dock widgets occupying the same area can now be arranged in horizontal,
-  vertical or collapsible tabs. Collapsible tabs are oriented according to
-  the location of dock widgets around the main window's central area.
+  Qt 4.4 includes the QtWebKit module which provides a Qt-style API for the open
+  source WebKit browser engine, making it possible for developers to use a fully-featured
+  Web browser to display documents and access online services. The module also
+  provides a level of integration beyond support for simple Web browsing tasks,
+  enabling other application components to communicate with the browser via
+  Qt's \l{signals and slots} inter-object communication mechanism.
 
-  \raw HTML
-  <table align="center" width="80%">
-  <tr><td>
-  \endraw
-  \inlineimage mainwindow-vertical-tabs.png
-  \raw HTML
-  </td><td>
-  \endraw
-  \inlineimage mainwindow-custom-dock.png
-  \raw HTML
-  </td></tr>
-  </table>
-  \endraw
+  \image browser-demo.png
 
-  API improvements to QDockWidget enable dock widgets to be given custom
-  title bars and window styles, and also include support for vertical title
-  bars.
+  A \l{Browser}{Web browser demo application} is provided as a proof of concept
+  to show what can be achieved with Qt and WebKit.
 
-  \image mainwindow-vertical-dock.png
+  \section1 Multimedia API
 
-  Additionally, support for animations has been extended to tool bars,
-  resulting in more sophisticated effects when tool bars and dock widgets
-  are rearranged. See the \l{Main Window} demonstration for an extensive
-  tour of these new features.
+  Long-awaited multimedia support for Qt applications has arrived in the form of
+  the \l{Phonon Overview}{Phonon Multimedia Framework}, created in partnership
+  with the KDE community. This allows developers to write cross-platform code
+  for playing audio and video streams from files or over the network.
 
-  \section1 QtScript - Application Scripting with ECMAScript
+  A graph-based architecture provides an intuitive, extensible way to configure
+  Phonon for playback. The use of native multimedia backends for each platform
+  enables applications to support platform-specific media formats in addition to
+  those commonly used on multiple platforms.
 
-  This release introduces the \l{QtScript}{QtScript module}, providing a
-  script engine for the ECMAScript language, based on the \l{ECMA-262}
-  standard, that is designed to enable easier integration of scripting
-  facilities into end-user applications.
+  \image mediaplayer-demo.png
 
-  \image qtscript-context2d.png
+  \l{Qt Examples#Phonon Multimedia Framework}{Examples and demonstrations}
+  provided with Qt show how to use Phonon for your multimedia applications.
 
-  Scripts access application functionality via QObjects that are
-  specifically created and exposed by each application. Information
-  about the available child objects, properties, signals and slots is
-  provided by Qt's \l{Qt Object Model}{object model}. This means that,
-  in many cases, script-enabling an application requires little effort
-  on the part of the developer.
+  \section1 XQuery and XPath Support
 
-  \image qtscript-calculator.png
+  The new QtXmlPatterns module provides facilities for XML processing beyond that
+  supported by the QtXml module. Support for XQuery 1.0 and XPath 2.0 are provided
+  in a way that integrates use of the query language and its data types with
+  standard features in Qt, such as \l{QAbstractXmlNodeModel}{data models} and
+  \l{signals and slots}.
 
-  A set of examples are included to show how classes and functions written
-  in C++ can be exposed to the script engine, including
-  \l{QtScript Calculator Example}{a port} of the
-  \l{Calculator Example}{Calculator example} which shows how a
-  QtScript can be used with a user interface created with \QD.
+  \section1 Widgets in Graphics View
 
-  \section1 Improved Graphics Support
+  Many applications that use the interactive features provided by the \l{Graphics View}
+  framework also use separate Qt widgets to control the way scenes are displayed to the
+  user, often providing controls to allow zooming and rotation. Other specialized
+  applications need to provide standard Qt widgets alongside graphics items within
+  graphics scenes themselves.
 
-  To improve graphics performance on Windows, this release includes an
-  experimental Direct3D paint engine to provide native hardware
-  acceleration on Windows systems with suitable graphics hardware.
-  Although we have conducted internal testing with a selection of
-  graphics cards, we cannot guarantee that this feature will work
-  correctly with all hardware or drivers. Please report feedback on
-  this feature via the \l{Task Tracker}.
+  \image embeddeddialogs-demo.png
 
-  Qt's interoperability with the Scalable Vector Graphics (SVG) file
-  format has been improved by the introduction of the QSvgGenerator class,
-  a paint device that can be used to save Qt rendering operations in
-  the form of an SVG drawing.
-  This class can be used alongside the existing QSvgWidget and QSvgRenderer
-  classes to provide full input/output support for vector graphics.
+  Qt 4.4 provides a set of classes to allow standard Qt widgets to be added to
+  graphics scenes, augmenting the collection of
+  \l{Graphics View Classes}{Graphics View classes}. Widgets used in this way
+  remain just as functional and responsive as normal widgets
 
-  The OpenGL paint engine has been heavily improved to take advantage of
-  new features in modern graphics hardware. Through the extensive usage of
-  fragment programs, users with suitable graphics hardware can expect to
-  experience much
-  faster and higher quality rendering when OpenGL is used.
-  Support for an additional anti-aliasing mode for OpenGL allows developers
-  to choose between high quality rendering or speed when older or
-  less-capable hardware is used.
+  \section1 Concurrent Programming
 
-  The QTransform class adds support for arbitrary matrix operations on
-  two-dimensional coordinates, allowing perspective transformations to
-  be applied to 2D graphics.
+  The QtConcurrent framework builds on Qt's threading features to make it easier to
+  write certain kinds of multi-threaded application by integrating implementations
+  of the well-known map-reduce and filter-reduce algorithms with Qt's container
+  classes and object model.
 
-  Support for set operations on paths has been added to QPainterPath,
-  improving support for clipping and animations.
+  A synchonous (blocking) API is supplemented with an asynchronous (non-blocking)
+  APIs which uses the concept of \l{QFuture}{futures} to handle synchronization
+  between a main thread and several worker threads, simplifying the delivery of
+  results.
 
-  An object bounding mode for gradients that enables them to be defined
-  in terms of the bounding rectangle of the objects they are applied to.
+  \section1 Improved Help System
 
-  \section1 New Widgets and Desktop Integration Enhancements
+  Qt Assistant has been redesigned to use a self-contained help format for documentation
+  packages that makes it easier to maintain collections of documents. The indexing
+  facilities provided by Qt Assistant have been improved to allow multiple co-existing
+  collections of documents to be searched, and results from advanced searches are
+  presented in a familiar webpage-style result page.
 
-  Applications running on Windows Vista automatically support animations
-  and other Vista-related enhancements through the use of the new
-  QWindowsVistaStyle class, providing a widget style that gives Qt
-  applications a native look and feel on Windows Vista.
+  With the arrival of the new help formats, the way Qt applications provide online
+  help has also been updated. Qt Assistant has been improved to support automation
+  as a child process of any Qt application, allowing applications to request specific
+  items of documentation, perform searches, and even customize the user interface of
+  Qt Assistant itself.
 
-  Qt 4.3 also provides a number of new and redesigned widgets, including
-  the QWizard class which supports application wizard functionality
-  in a variety of native styles, including one for Windows Vista
-  applications.
+  \section1 Printing System Improvements
 
-  \table
-  \row \o \inlineimage qtwizard-modern1.png
-       \o \inlineimage qtwizard-mac2.png
-       \o \inlineimage qtwizard-aero2.png
-  \endtable
+  Improvements to printing in Qt 4.4 include support for custom page sizes and
+  custom margins, as well as the ability to programatically enumerate printers via
+  the new QPrinterInfo class.
 
-  Unified toolbar support on Mac OS X improves the look and feel of
-  applications by blending adjacent toolbars and window title bars
-  together.
+  \image qprintpreviewdialog.png
 
-  \image macintosh-unified-toolbar.png
+  A couple of new classes, QPrintPreviewWidget and QPrintPreviewDialog, have been
+  added to make it easy to add a print preview to an application. The QPrintDialog
+  and QPageSetupDialog classes for X11 have been redesigned to be easier to use.
 
-  Qt's range of model/view classes has been expanded to include the
-  QColumnView class, an animated list view similar to that found on
-  small-screen devices.
+  \section1 Qt for Windows CE
 
-  The QMdiArea class provides an Multiple Document Interface (MDI)
-  widget that is intended to provide a more consistent API for developers
-  to use and more predictable behavior for users.
-  The API has been designed to be very similar to that provided by
-  QWorkspace in order to make porting between the two widgets a
-  straightforward task.
+  Qt 4.4 is the first release to include provision for Windows CE as
+  a supported platform. Qt for Windows CE contains all functions
+  necessary to develop end-to-end applications, as well as integrated
+  developer tools, such as powerful graphical user interface (GUI) and
+  forms builder and robust features for translation of applications
+  into new languages.
 
-  \image plastique-filedialog.png
+  \image qt-for-wince-landscape.png
 
-  On X11, QFileDialog has been optimized to perform better with directories
-  containing large numbers of files, automatically updates when files are
-  added or removed, and has a brand new look and feel.
+  \section1 Qt for Embedded Linux
 
-  A platform-independent way to notify users about activity in a window
-  is provided by the QApplication::alert() function. This alerts the user
-  by using the appropriate notification mechanism for their chosen platform
-  and environment.
+  Qt 4.4 contains a number of improvements specifically for the Embedded Linux platform,
+  many of which are related to performance and extending the range of supported display
+  hardware. These include a screen driver DirectFB and a driver that uses the ATI Handheld
+  Interface library.
 
-  QWidget now provides a \l{QWidget::}{locale} property that can be used
-  to give individual windows, dialogs and widgets different look and feel
-  different languages and regions.
+  \image embedded-demo-launcher.png
 
-  Almost all standard widgets can be styled with \l{Qt Style Sheets},
-  making it easier to customize the appearance of applications.
-
-  An enhanced layout system accommodates many special cases for
-  Mac OS X, enabling Mac OS X style to provide a faithful Mac look and
-  feel.
-
-  \section1 Qt Designer Improvements
-
-  \QD has seen a number of improvements since Qt 4.2, many of
-  which are focused on making the application easier to use. Other
-  improvements track other additions and new features in Qt, such as new
-  widgets and support for application scripting.
-
-  Support for
-  \l{Qt Designer's Widget Editing Mode#The Property Editor}{dynamic properties}
-  enables standard Qt widgets and user-created forms to be customized with
-  extra information from within \QD.
-
-  \image designer-adding-dynamic-property.png
-
-  The property editor has been updated to support the new margin and spacing
-  properties added to Qt as part of improvements to the layout system.
-
-  Selection handling has been improved to allow properties to be changed
-  when more than one widget has been selected.
-
-  Drag and drop support has been extended to allow widgets to be dragged to
-  the object inspector. Additionally, images can be dragged from the resource
-  editor to the action editor and to image/icon properties in the property
-  editor.
-
-  A new preferences dialog introduces the ability to set tool window fonts
-  (added at the request of Japanese customers).
-
-  Improved selection behaviour in the signal slot editor by introducing
-  transparent connection labels and ensuring that widgets are selected
-  in preference to connection labels.
-
-  \omit
-  Integration with the QtScript module enables the widget construction process
-  to be extended using QtScript, making it possible for designers to produce
-  appearance and style-related customizations to forms. Developers can also
-  take advantage of this feature to set up widgets for use in \QD and
-  other situations.
-  \endomit
-
-  Improved handling of promoted widgets makes it easier and more convenient
-  to work with placeholders for custom widgets; promotion candidates are now
-  displayed in the form's context menu. Multiple widgets in a selection can
-  now be promoted at the same time.
-
-  Custom widget plugin support has been extended to provide error reporting
-  for cases where plugins fail to load. Additionally, \QD is now able
-  to scan for newly installed custom widget plugins.
-
-  \QD's configuration options have been extended to allow the default
-  form editor grid setting to be set, enabling the grid setting to be specified
-  on a per-form basis.
-
-  Enabled multi-line plain and rich text editing for labels.
-
-  \section1 Extended and Improved Infrastructure
-
-  The QtNetwork module has been extended to include
-  support for Secure Socket Layer (SSL) communications via the QSslSocket
-  class. As a result, QHttp is now able to provide support for the HTTPS
-  protocol.
-
-  Qt's network proxying facilties have been extended to cover HTTP CONNECT
-  proxying, and also include support for Cram-MD5 and NTLM authentication.
-
-  \l{Qt Linguist} has been extended to provide support for XML Localization
-  Interchange File Format (XLIFF) files, improving interoperability with
-  third party tools and services that support this format.
-
-  The QtXml module has been expanded with classes to provide
-  a streaming API for handling XML: QXmlStreamReader and
-  QXmlStreamWriter complement Qt's existing range of SAX and DOM-based
-  classes.
-
-  Support for the MSYS environment for MinGW on Windows.
-
-  Qt's threading has been enhanced to include support for timed try-locks
-  in QMutex, QReadWriteLock and QSemaphore. Additionally, a
-  \l{Qt::}{BlockingQueuedConnection} connection type has been introduced
-  to complement \l{Qt::}{DirectConnection} and \l{Qt::}{QueuedConnection}.
-
-  QThread has been updated to provide an \l{QThread::}{idealThreadCount()}
-  function. This takes various system-specific factors into account to
-  determine the optimal number of threads that can be run on a given
-  system.
-
-  The event system \l{QCoreApplication::postEvent()}{has been extended}
-  to allow events to be posted with specific priorities, enabling
-  applications to prioritize certain types of event depending on the
-  activities they are performing.
-
-  QDir has been enhanced with the \l{QDir::}{addSearchPath()} function to
-  provide
-  an extensible mechanism, allowing search paths to be added at run time
-  to \l{The Qt Resource System}{Qt's resource system}.
-
-  The new QDirIterator class provides a convenient and less resource-intensive
-  way to traverse large directory structures.
-
-  \omit
-  Support for Unicode 5.
-  \endomit
-
-  \section1 Qtopia Core
-
-  As in Qt 4.2, many improvements to Qt's graphics support and rendering
-  performance are specific to Qtopia Core. These include general speed
-  optimizations, accelerated graphics API improvements, and additional
-  support for OpenGL ES.
-
-  A new font subsystem has been implemented that allows glyphs rendered at
-  run time to be shared between applications. A new pre-rendered font format
-  (QPF2) has also been implemented together with a new \c makeqpf tool to
-  generate them.
-
-  In addition, support for custom font engine plugins has been added through
-  the QAbstractFontEngine and QFontEnginePlugin classes.
+  In addition, a new selection of demonstrations and examples has been included to
+  showcase the graphical features of Qt for Embedded Linux.
 */

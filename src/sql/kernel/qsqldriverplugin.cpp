@@ -43,6 +43,8 @@
 
 #include "qsqldriverplugin.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QSqlDriverPlugin
     \brief The QSqlDriverPlugin class provides an abstract base for custom QSqlDriver plugins.
@@ -104,3 +106,5 @@ QSqlDriverPlugin::QSqlDriverPlugin(QObject *parent)
 QSqlDriverPlugin::~QSqlDriverPlugin()
 {
 }
+
+QT_END_NAMESPACE

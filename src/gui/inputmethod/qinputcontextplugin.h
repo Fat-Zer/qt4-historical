@@ -64,6 +64,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #if !defined(QT_NO_IM) && !defined(QT_NO_LIBRARY)
@@ -98,6 +100,8 @@ public:
 };
 
 #endif // QT_NO_IM
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

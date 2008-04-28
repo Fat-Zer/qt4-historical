@@ -58,15 +58,17 @@
 #include "javawritedeclaration.h"
 #endif
 
-#include <QDomDocument>
-#include <QFileInfo>
-#include <QRegExp>
-#include <QTextStream>
-#include <QDateTime>
+#include <QtXml/QDomDocument>
+#include <QtCore/QFileInfo>
+#include <QtCore/QRegExp>
+#include <QtCore/QTextStream>
+#include <QtCore/QDateTime>
 
 #if defined Q_WS_WIN
 #include <qt_windows.h>
 #endif
+
+QT_BEGIN_NAMESPACE
 
 Uic::Uic(Driver *d)
      : drv(d),
@@ -314,7 +316,11 @@ bool Uic::isContainer(const QString &className) const
 {
     return customWidgetsInfo()->extends(className, QLatin1String("QStackedWidget"))
         || customWidgetsInfo()->extends(className, QLatin1String("QToolBox"))
-        || customWidgetsInfo()->extends(className, QLatin1String("QTabWidget"));
+        || customWidgetsInfo()->extends(className, QLatin1String("QTabWidget"))
+        || customWidgetsInfo()->extends(className, QLatin1String("QScrollArea"))
+        || customWidgetsInfo()->extends(className, QLatin1String("QMdiArea"))
+        || customWidgetsInfo()->extends(className, QLatin1String("QWizard"))
+        || customWidgetsInfo()->extends(className, QLatin1String("QDockWidget"));
 }
 
 bool Uic::isStatusBar(const QString &className) const
@@ -332,3 +338,5 @@ bool Uic::isMenu(const QString &className) const
     return customWidgetsInfo()->extends(className, QLatin1String("QMenu"))
         || customWidgetsInfo()->extends(className, QLatin1String("QPopupMenu"));
 }
+
+QT_END_NAMESPACE

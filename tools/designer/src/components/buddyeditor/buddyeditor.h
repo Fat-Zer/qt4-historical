@@ -48,8 +48,13 @@
 
 #include <connectionedit_p.h>
 #include <QtCore/QPointer>
+#include <QtCore/QSet>
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormWindowInterface;
+
+class QLabel;
 
 namespace qdesigner_internal {
 
@@ -67,17 +72,23 @@ public:
 public slots:
     virtual void updateBackground();
     virtual void widgetRemoved(QWidget *w);
+    void autoBuddy();
 
 protected:
     virtual QWidget *widgetAt(const QPoint &pos) const;
     virtual Connection *createConnection(QWidget *source, QWidget *destination);
     virtual void endConnection(QWidget *target, const QPoint &pos);
+    virtual void createContextMenu(QMenu &menu);
 
 private:
+    QWidget *findBuddy(QLabel *l, const QWidgetList &existingBuddies) const;
+
     QPointer<QDesignerFormWindowInterface> m_formWindow;
     bool m_updating;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif

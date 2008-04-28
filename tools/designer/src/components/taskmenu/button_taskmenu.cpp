@@ -49,33 +49,74 @@ TRANSLATOR qdesigner_internal::ButtonTaskMenu
 #include "inplace_editor.h"
 
 #include <QtDesigner/QDesignerFormWindowInterface>
-#include <QtDesigner/QDesignerFormWindowCursorInterface>
 
 #include <QtGui/QAction>
 #include <QtGui/QStyle>
 #include <QtGui/QStyleOption>
 
-#include <QtCore/QEvent>
-#include <QtCore/QVariant>
-#include <QtCore/qdebug.h>
+QT_BEGIN_NAMESPACE
 
-using namespace qdesigner_internal;
+namespace qdesigner_internal {
 
-ButtonTaskMenu::ButtonTaskMenu(QAbstractButton *button, QObject *parent)
-    : QDesignerTaskMenu(button, parent),
-      m_button(button),
-      m_preferredEditAction(new QAction(tr("Change text..."), this))
+// -------- Text area editor
+class ButtonTextTaskMenuInlineEditor : public  TaskMenuInlineEditor
 {
-    connect(m_preferredEditAction, SIGNAL(triggered()), this, SLOT(editText()));
+public:
+    ButtonTextTaskMenuInlineEditor(QAbstractButton *button, QObject *parent);
+
+protected:
+    virtual QRect editRectangle() const;
+};
+
+ButtonTextTaskMenuInlineEditor::ButtonTextTaskMenuInlineEditor(QAbstractButton *button, QObject *parent) :
+      TaskMenuInlineEditor(button, ValidationMultiLine, QLatin1String("text"), parent)
+{
+}
+
+QRect ButtonTextTaskMenuInlineEditor::editRectangle() const
+{
+    QWidget *w = widget();
+    QStyleOptionButton opt;
+    opt.init(w);
+    return w->style()->subElementRect(QStyle::SE_PushButtonContents, &opt, w);
+}
+
+// -------- Command link button description editor
+class LinkDescriptionTaskMenuInlineEditor : public  TaskMenuInlineEditor
+{
+public:
+    LinkDescriptionTaskMenuInlineEditor(QAbstractButton *button, QObject *parent);
+
+protected:
+    virtual QRect editRectangle() const;
+};
+
+LinkDescriptionTaskMenuInlineEditor::LinkDescriptionTaskMenuInlineEditor(QAbstractButton *button, QObject *parent) :
+      TaskMenuInlineEditor(button, ValidationMultiLine, QLatin1String("description"), parent)
+{
+}
+
+QRect LinkDescriptionTaskMenuInlineEditor::editRectangle() const
+{
+    QWidget *w = widget(); // TODO: What is the exact description area?
+    QStyleOptionButton opt;
+    opt.init(w);
+    return w->style()->subElementRect(QStyle::SE_PushButtonContents, &opt, w);
+}
+
+// ----------- ButtonTaskMenu:
+
+ButtonTaskMenu::ButtonTaskMenu(QAbstractButton *button, QObject *parent)  :
+    QDesignerTaskMenu(button, parent),
+    m_preferredEditAction(new QAction(tr("Change text..."), this))
+{
+    TaskMenuInlineEditor *textEditor = new ButtonTextTaskMenuInlineEditor(button, this);
+    connect(m_preferredEditAction, SIGNAL(triggered()), textEditor, SLOT(editText()));
     m_taskActions.append(m_preferredEditAction);
 
     QAction *sep = new QAction(this);
     sep->setSeparator(true);
     m_taskActions.append(sep);
-}
-
-ButtonTaskMenu::~ButtonTaskMenu()
-{
 }
 
 QAction *ButtonTaskMenu::preferredEditAction() const
@@ -88,51 +129,22 @@ QList<QAction*> ButtonTaskMenu::taskActions() const
     return m_taskActions + QDesignerTaskMenu::taskActions();
 }
 
-void ButtonTaskMenu::editText()
+void ButtonTaskMenu::insertAction(int index, QAction *a)
 {
-    m_formWindow = QDesignerFormWindowInterface::findFormWindow(m_button);
-    if (!m_formWindow.isNull()) {
-        connect(m_formWindow, SIGNAL(selectionChanged()), this, SLOT(updateSelection()));
-        Q_ASSERT(m_button->parentWidget() != 0);
-        
-        QStyleOptionButton opt;
-        opt.init(m_button);
-        const QRect r = m_button->style()->subElementRect(QStyle::SE_PushButtonContents, &opt, m_button);
-
-        m_editor = new InPlaceEditor(m_button, ValidationMultiLine, m_formWindow,m_button->text(),r);
-
-        connect(m_editor, SIGNAL(textChanged(QString)), this, SLOT(updateText(QString)));
-    }
+    m_taskActions.insert(index, a);
 }
 
-void ButtonTaskMenu::editIcon()
+// -------------- CommandLinkButtonTaskMenu
+
+CommandLinkButtonTaskMenu::CommandLinkButtonTaskMenu(QCommandLinkButton *button, QObject *parent) :
+    ButtonTaskMenu(button, parent)
 {
+    TaskMenuInlineEditor *descriptonEditor = new LinkDescriptionTaskMenuInlineEditor(button, this);
+    QAction *descriptionAction = new QAction(tr("Change description..."), this);
+    connect(descriptionAction, SIGNAL(triggered()), descriptonEditor, SLOT(editText()));
+    insertAction(1, descriptionAction);
 }
 
-ButtonTaskMenuFactory::ButtonTaskMenuFactory(QExtensionManager *extensionManager)
-    : QExtensionFactory(extensionManager)
-{
 }
 
-QObject *ButtonTaskMenuFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (QAbstractButton *button = qobject_cast<QAbstractButton*>(object)) {
-        if (iid == Q_TYPEID(QDesignerTaskMenuExtension)) {
-            return new ButtonTaskMenu(button, parent);
-        }
-    }
-
-    return 0;
-}
-
-void ButtonTaskMenu::updateText(const QString &text)
-{
-    m_formWindow->cursor()->setProperty(QLatin1String("text"), QVariant(text));
-}
-
-void ButtonTaskMenu::updateSelection()
-{
-    if (m_editor)
-        m_editor->deleteLater();
-}
-
+QT_END_NAMESPACE

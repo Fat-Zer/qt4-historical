@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLBUTTON
@@ -131,6 +133,7 @@ private:
 #ifndef QT_NO_MENU
     Q_PRIVATE_SLOT(d_func(), void _q_buttonPressed())
     Q_PRIVATE_SLOT(d_func(), void _q_updateButtonDown())
+    Q_PRIVATE_SLOT(d_func(), void _q_menuTriggered(QAction*))
 #endif
     Q_PRIVATE_SLOT(d_func(), void _q_actionTriggered())
 
@@ -190,6 +193,8 @@ public Q_SLOTS:
 };
 
 #endif // QT_NO_TOOLBUTTON
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

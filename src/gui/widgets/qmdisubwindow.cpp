@@ -150,13 +150,16 @@
 #include <QWhatsThis>
 #include <QToolTip>
 #include <QMainWindow>
-#include <QStatusBar>
-#include <QAbstractScrollArea>
 #include <QScrollBar>
 #include <QDebug>
 #if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC)
 #include <QMacStyle>
 #endif
+#include <QMdiArea>
+
+QT_BEGIN_NAMESPACE
+
+using namespace QMdi;
 
 static const QStyle::SubControl SubControls[] =
 {
@@ -226,6 +229,16 @@ static inline bool isChildOfQMdiSubWindow(const QWidget *child)
     return false;
 }
 
+static inline bool isChildOfTabbedQMdiArea(const QMdiSubWindow *child)
+{
+    Q_ASSERT(child);
+    if (QMdiArea *mdiArea = child->mdiArea()) {
+        if (mdiArea->viewMode() == QMdiArea::TabbedView)
+            return true;
+    }
+    return false;
+}
+
 template<typename T>
 static inline ControlElement<T> *ptr(QWidget *widget)
 {
@@ -236,37 +249,30 @@ static inline ControlElement<T> *ptr(QWidget *widget)
     return 0;
 }
 
-static inline QString originalWindowTitle(QMdiSubWindow *mdiChild)
+QString QMdiSubWindowPrivate::originalWindowTitle()
 {
-    Q_ASSERT(mdiChild);
-    QString originalTitle = mdiChild->window()->windowTitle();
-    int index = originalTitle.indexOf(QString::fromLatin1(" - ["));
-    if (index != -1)
-        return originalTitle.left(index);
-    if (originalTitle.isEmpty())
-        return originalTitle;
-    QList<QMdiSubWindow *> windows = qFindChildren<QMdiSubWindow *>(mdiChild->window());
-    foreach (QMdiSubWindow *window, windows) {
-        if (window->windowTitle() == originalTitle)
-            return QString();
+    Q_Q(QMdiSubWindow);
+    if (originalTitle.isNull()) {
+        originalTitle = q->window()->windowTitle();
+        if (originalTitle.isNull())
+            originalTitle = QLatin1String("");
     }
     return originalTitle;
 }
 
-static inline void setNewWindowTitle(QMdiSubWindow *mdiChild)
+void QMdiSubWindowPrivate::setNewWindowTitle()
 {
-    Q_ASSERT(mdiChild);
-    if (!mdiChild)
-        return;
-    QString childTitle = mdiChild->windowTitle();
+    Q_Q(QMdiSubWindow);
+    QString childTitle = q->windowTitle();
     if (childTitle.isEmpty())
         return;
-    QString original = originalWindowTitle(mdiChild);
+    QString original = originalWindowTitle();
     if (!original.isEmpty()) {
-        mdiChild->window()->setWindowTitle(QMdiSubWindow::tr("%1 - [%2]")
-                                           .arg(original, childTitle));
+        if (!original.contains(QMdiSubWindow::tr("- [%1]").arg(childTitle)))
+            q->window()->setWindowTitle(QMdiSubWindow::tr("%1 - [%2]").arg(original, childTitle));
+
     } else {
-        mdiChild->window()->setWindowTitle(childTitle);
+        q->window()->setWindowTitle(childTitle);
     }
 }
 
@@ -282,6 +288,74 @@ static inline QRgb colorref2qrgb(COLORREF col)
 }
 #endif
 
+#ifndef QT_NO_TOOLTIP
+static void showToolTip(QHelpEvent *helpEvent, QWidget *widget, const QStyleOptionComplex &opt,
+                        QStyle::ComplexControl complexControl, QStyle::SubControl subControl)
+{
+    Q_ASSERT(helpEvent);
+    Q_ASSERT(helpEvent->type() == QEvent::ToolTip);
+    Q_ASSERT(widget);
+
+#if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC)
+    // Native Mac windows don't show tool tip.
+    if (qobject_cast<QMacStyle *>(widget->style()))
+        return;
+#endif
+
+    const QRect rect = widget->style()->subControlRect(complexControl, &opt, subControl, widget);
+
+    // Convert CC_MdiControls to CC_TitleBar. Sub controls of different complex
+    // controls cannot be in the same switch as they might have the same value.
+    if (complexControl == QStyle::CC_MdiControls) {
+        if (subControl == QStyle::SC_MdiMinButton)
+            subControl = QStyle::SC_TitleBarMinButton;
+        else if (subControl == QStyle::SC_MdiCloseButton)
+            subControl = QStyle::SC_TitleBarCloseButton;
+        else if (subControl == QStyle::SC_MdiNormalButton)
+            subControl = QStyle::SC_TitleBarNormalButton;
+        else
+            subControl = QStyle::SC_None;
+    }
+
+    QString toolTip;
+
+    switch (subControl) {
+    case QStyle::SC_TitleBarMinButton:
+        toolTip = QMdiSubWindow::tr("Minimize");
+        break;
+    case QStyle::SC_TitleBarMaxButton:
+        toolTip = QMdiSubWindow::tr("Maximize");
+        break;
+    case QStyle::SC_TitleBarUnshadeButton:
+        toolTip = QMdiSubWindow::tr("Unshade");
+        break;
+    case QStyle::SC_TitleBarShadeButton:
+        toolTip = QMdiSubWindow::tr("Shade");
+        break;
+    case QStyle::SC_TitleBarNormalButton:
+        if (widget->isMaximized() || !qobject_cast<QMdiSubWindow *>(widget))
+            toolTip = QMdiSubWindow::tr("Restore Down");
+        else
+            toolTip = QMdiSubWindow::tr("Restore");
+        break;
+    case QStyle::SC_TitleBarCloseButton:
+        toolTip = QMdiSubWindow::tr("Close");
+        break;
+    case QStyle::SC_TitleBarContextHelpButton:
+        toolTip = QMdiSubWindow::tr("Help");
+        break;
+    case QStyle::SC_TitleBarSysMenu:
+        toolTip = QMdiSubWindow::tr("Menu");
+        break;
+    default:
+        break;
+    }
+
+    QToolTip::showText(helpEvent->globalPos(), toolTip, widget, rect);
+}
+#endif // QT_NO_TOOLTIP
+
+namespace QMdi {
 /*
     \class ControlLabel
     \internal
@@ -290,7 +364,7 @@ class ControlLabel : public QWidget
 {
     Q_OBJECT
 public:
-    ControlLabel(QWidget *parent = 0);
+    ControlLabel(QMdiSubWindow *subWindow, QWidget *parent = 0);
 
     QSize sizeHint() const;
 
@@ -310,10 +384,12 @@ private:
     bool isPressed;
     void updateWindowIcon();
 };
+} // namespace QMdi
 
-ControlLabel::ControlLabel(QWidget *parent)
+ControlLabel::ControlLabel(QMdiSubWindow *subWindow, QWidget *parent)
     : QWidget(parent), isPressed(false)
 {
+    Q_UNUSED(subWindow);
     setFocusPolicy(Qt::NoFocus);
     updateWindowIcon();
     setFixedSize(label.size());
@@ -334,6 +410,14 @@ bool ControlLabel::event(QEvent *event)
 {
     if (event->type() == QEvent::WindowIconChange)
         updateWindowIcon();
+#ifndef QT_NO_TOOLTIP
+    else if (event->type() == QEvent::ToolTip) {
+        QStyleOptionTitleBar options;
+        options.initFrom(this);
+        showToolTip(static_cast<QHelpEvent *>(event), this, options,
+                    QStyle::CC_TitleBar, QStyle::SC_TitleBarSysMenu);
+    }
+#endif
     return QWidget::event(event);
 }
 
@@ -393,11 +477,12 @@ void ControlLabel::updateWindowIcon()
 {
     QIcon menuIcon = windowIcon();
     if (menuIcon.isNull())
-        menuIcon = style()->standardIcon(QStyle::SP_TitleBarMenuButton);
+        menuIcon = style()->standardIcon(QStyle::SP_TitleBarMenuButton, 0, parentWidget());
     label = menuIcon.pixmap(16, 16);
     update();
 }
 
+namespace QMdi {
 /*
     \class ControllerWidget
     \internal
@@ -406,7 +491,7 @@ class ControllerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ControllerWidget(QWidget *parent = 0);
+    ControllerWidget(QMdiSubWindow *subWindow, QWidget *parent = 0);
     QSize sizeHint() const;
     void setControlVisible(QMdiSubWindowPrivate::WindowStateAction action, bool visible);
     inline bool hasVisibleControls() const
@@ -434,23 +519,28 @@ private:
     QStyle::SubControl hoverControl;
     QStyle::SubControls visibleControls;
     void initStyleOption(QStyleOptionComplex *option) const;
+    QMdiArea *mdiArea;
     inline QStyle::SubControl getSubControl(const QPoint &pos) const
     {
         QStyleOptionComplex opt;
         initStyleOption(&opt);
-        return style()->hitTestComplexControl(QStyle::CC_MdiControls, &opt, pos, this);
+        return style()->hitTestComplexControl(QStyle::CC_MdiControls, &opt, pos, mdiArea);
     }
 };
+} // namespace QMdi
 
 /*
     \internal
 */
-ControllerWidget::ControllerWidget(QWidget *parent)
+ControllerWidget::ControllerWidget(QMdiSubWindow *subWindow, QWidget *parent)
     : QWidget(parent),
       activeControl(QStyle::SC_None),
       hoverControl(QStyle::SC_None),
-      visibleControls(QStyle::SC_None)
+      visibleControls(QStyle::SC_None),
+      mdiArea(0)
 {
+    if (subWindow->parentWidget())
+        mdiArea = qobject_cast<QMdiArea *>(subWindow->parentWidget()->parentWidget());
     setFocusPolicy(Qt::NoFocus);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     setMouseTracking(true);
@@ -465,7 +555,7 @@ QSize ControllerWidget::sizeHint() const
     QStyleOptionComplex opt;
     initStyleOption(&opt);
     QSize size(48, 16);
-    return style()->sizeFromContents(QStyle::CT_MdiControls, &opt, size, this);
+    return style()->sizeFromContents(QStyle::CT_MdiControls, &opt, size, mdiArea);
 }
 
 void ControllerWidget::setControlVisible(QMdiSubWindowPrivate::WindowStateAction action, bool visible)
@@ -504,7 +594,7 @@ void ControllerWidget::paintEvent(QPaintEvent * /*paintEvent*/)
         opt.state |= QStyle::State_MouseOver;
     }
     QPainter painter(this);
-    style()->drawComplexControl(QStyle::CC_MdiControls, &opt, &painter, this);
+    style()->drawComplexControl(QStyle::CC_MdiControls, &opt, &painter, mdiArea);
 }
 
 /*
@@ -579,24 +669,11 @@ void ControllerWidget::leaveEvent(QEvent * /*event*/)
 bool ControllerWidget::event(QEvent *event)
 {
 #ifndef QT_NO_TOOLTIP
-    if (event->type() != QEvent::ToolTip)
-        return QWidget::event(event);
-
-    QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
-    QStyle::SubControl subControl = getSubControl(helpEvent->pos());
-    switch (subControl) {
-    case QStyle::SC_MdiCloseButton:
-        QToolTip::showText(helpEvent->globalPos(), QMdiSubWindow::tr("Close"));
-        break;
-    case QStyle::SC_MdiMinButton:
-        QToolTip::showText(helpEvent->globalPos(), QMdiSubWindow::tr("Minimize"));
-        break;
-    case QStyle::SC_MdiNormalButton:
-        QToolTip::showText(helpEvent->globalPos(), QMdiSubWindow::tr("Restore Down"));
-        break;
-    default:
-        QToolTip::hideText();
-        break;
+    if (event->type() == QEvent::ToolTip) {
+        QStyleOptionComplex opt;
+        initStyleOption(&opt);
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+        showToolTip(helpEvent, this, opt, QStyle::CC_MdiControls, getSubControl(helpEvent->pos()));
     }
 #endif // QT_NO_TOOLTIP
     return QWidget::event(event);
@@ -654,6 +731,25 @@ ControlContainer::~ControlContainer()
 /*
     \internal
 */
+QMenuBar *QMdiSubWindowPrivate::menuBar() const
+{
+#if defined(QT_NO_MAINWINDOW)
+    return 0;
+#else
+    Q_Q(const QMdiSubWindow);
+    if (!q->isMaximized() || drawTitleBarWhenMaximized() || isChildOfTabbedQMdiArea(q))
+        return 0;
+
+    if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(q->window()))
+        return mainWindow->menuBar();
+
+    return 0;
+#endif
+}
+
+/*
+    \internal
+*/
 void ControlContainer::showButtonsInMenuBar(QMenuBar *menuBar)
 {
     if (!menuBar || !mdiChild || mdiChild->windowFlags() & Qt::FramelessWindowHint)
@@ -681,7 +777,7 @@ void ControlContainer::showButtonsInMenuBar(QMenuBar *menuBar)
         }
         m_controllerWidget->show();
     }
-    setNewWindowTitle(mdiChild);
+    mdiChild->d_func()->setNewWindowTitle();
 }
 
 /*
@@ -738,9 +834,9 @@ void ControlContainer::removeButtonsFromMenuBar(QMenuBar *menuBar)
     }
     m_menuBar->update();
     if (child)
-        setNewWindowTitle(child);
+        child->d_func()->setNewWindowTitle();
     else if (mdiChild)
-        mdiChild->window()->setWindowTitle(originalWindowTitle(mdiChild));
+        mdiChild->window()->setWindowTitle(mdiChild->d_func()->originalWindowTitle());
 }
 
 #endif // QT_NO_MENUBAR
@@ -764,6 +860,7 @@ QMdiSubWindowPrivate::QMdiSubWindowPrivate()
 #ifndef QT_NO_RUBBERBAND
       rubberBand(0),
 #endif
+      userMinimumSize(0,0),
       resizeEnabled(true),
       moveEnabled(true),
       isInInteractiveMode(false),
@@ -826,7 +923,7 @@ void QMdiSubWindowPrivate::_q_enterInteractiveMode()
         pressPos = QPoint(q->width() / 2, titleBarHeight() - 1);
     } else if (actions[ResizeAction] && actions[ResizeAction] == action) {
         currentOperation = q->isLeftToRight() ? BottomRightResize : BottomLeftResize;
-        int offset = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth) / 2;
+        int offset = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth, 0, q) / 2;
         int x = q->isLeftToRight() ? q->width() - offset : offset;
         pressPos = QPoint(x, q->height() - offset);
     } else {
@@ -944,19 +1041,19 @@ void QMdiSubWindowPrivate::createSystemMenu()
     systemMenu = new QMenu(q);
     const QStyle *style = q->style();
     addToSystemMenu(RestoreAction, QMdiSubWindow::tr("&Restore"), SLOT(showNormal()));
-    actions[RestoreAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarNormalButton));
+    actions[RestoreAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarNormalButton, 0, q));
     actions[RestoreAction]->setEnabled(false);
     addToSystemMenu(MoveAction, QMdiSubWindow::tr("&Move"), SLOT(_q_enterInteractiveMode()));
     addToSystemMenu(ResizeAction, QMdiSubWindow::tr("&Size"), SLOT(_q_enterInteractiveMode()));
     addToSystemMenu(MinimizeAction, QMdiSubWindow::tr("Mi&nimize"), SLOT(showMinimized()));
-    actions[MinimizeAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarMinButton));
+    actions[MinimizeAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarMinButton, 0, q));
     addToSystemMenu(MaximizeAction, QMdiSubWindow::tr("Ma&ximize"), SLOT(showMaximized()));
-    actions[MaximizeAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarMaxButton));
+    actions[MaximizeAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarMaxButton, 0, q));
     addToSystemMenu(StayOnTopAction, QMdiSubWindow::tr("Stay on &Top"), SLOT(_q_updateStaysOnTopHint()));
     actions[StayOnTopAction]->setCheckable(true);
     systemMenu->addSeparator();
     addToSystemMenu(CloseAction, QMdiSubWindow::tr("&Close"), SLOT(close()));
-    actions[CloseAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarCloseButton));
+    actions[CloseAction]->setIcon(style->standardIcon(QStyle::SP_TitleBarCloseButton, 0, q));
 #if !defined(QT_NO_SHORTCUT)
     actions[CloseAction]->setShortcut(QKeySequence::Close);
 #endif
@@ -1010,7 +1107,8 @@ void QMdiSubWindowPrivate::updateGeometryConstraints()
     if (!q->parent())
         return;
 
-    internalMinimumSize = q->minimumSizeHint();
+    internalMinimumSize = (!q->isMinimized() && !q->minimumSize().isNull()) 
+                          ? q->minimumSize() : q->minimumSizeHint();
     int margin, minWidth;
     sizeParameters(&margin, &minWidth);
     q->setContentsMargins(margin, titleBarHeight(), margin, margin);
@@ -1171,9 +1269,9 @@ void QMdiSubWindowPrivate::setNormalMode()
         q->setVisible(false);
 
     // Restore minimum size if set by user.
-    if (userMinimumSize.isValid()) {
+    if (!userMinimumSize.isNull()) {
         q->setMinimumSize(userMinimumSize);
-        userMinimumSize = QSize(-1, -1);
+        userMinimumSize = QSize(0, 0);
     }
 
     // Show the internal widget if it was hidden by us,
@@ -1254,19 +1352,14 @@ void QMdiSubWindowPrivate::setMaximizeMode()
 
     updateGeometryConstraints();
 
-    if (!drawTitleBarWhenMaximized() && wasVisible) {
-#ifndef QT_NO_MAINWINDOW
-        if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(q->window())) {
-#ifdef QT_NO_MENUBAR
-            Q_UNUSED(mainWindow);
-#else
-            showButtonsInMenuBar(mainWindow->menuBar());
+    if (wasVisible) {
+#ifndef QT_NO_MENUBAR
+        if (QMenuBar *mBar = menuBar())
+            showButtonsInMenuBar(mBar);
+        else
 #endif
-        } else
-#endif // QT_NO_MAINWINDOW
-        if (!controlContainer) {
+        if (!controlContainer)
             controlContainer = new ControlContainer(q);
-        }
     }
 
     QWidget *parent = q->parentWidget();
@@ -1323,17 +1416,10 @@ void QMdiSubWindowPrivate::setActive(bool activate)
         Qt::WindowStates oldWindowState = q->windowState();
         ensureWindowState(Qt::WindowActive);
         emit q->aboutToActivate();
-        if (q->isMaximized() && !drawTitleBarWhenMaximized()) {
-#ifndef QT_NO_MAINWINDOW
-            if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(q->window())) {
-#ifdef QT_NO_MENUBAR
-                Q_UNUSED(mainWindow);
-#else
-                showButtonsInMenuBar(mainWindow->menuBar());
+#ifndef QT_NO_MENUBAR
+        if (QMenuBar *mBar = menuBar())
+            showButtonsInMenuBar(mBar);
 #endif
-            }
-#endif // QT_NO_MAINWINDOW
-        }
         Q_ASSERT(isActive);
         emit q->windowStateChanged(oldWindowState, q->windowState());
     } else if (!activate && isActive) {
@@ -1355,7 +1441,7 @@ void QMdiSubWindowPrivate::setActive(bool activate)
         ensureWindowState(Qt::WindowActive);
     }
 
-    int frameWidth = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth);
+    int frameWidth = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth, 0, q);
     int titleBarHeight = this->titleBarHeight();
     QRegion windowDecoration = QRegion(0, 0, q->width(), q->height());
     windowDecoration -= QRegion(frameWidth, titleBarHeight, q->width() - 2 * frameWidth,
@@ -1439,7 +1525,7 @@ QRegion QMdiSubWindowPrivate::getRegion(Operation operation) const
     int width = q->width();
     int height = q->height();
     int titleBarHeight = this->titleBarHeight();
-    int frameWidth = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth);
+    int frameWidth = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth, 0, q);
     int cornerConst = titleBarHeight - frameWidth;
     int titleBarConst = 2 * titleBarHeight;
 
@@ -1511,7 +1597,7 @@ QMdiSubWindowPrivate::Operation QMdiSubWindowPrivate::getOperation(const QPoint 
     return None;
 }
 
-extern QString qt_setWindowTitle_helperHelper(const QString &, QWidget *);
+extern QString qt_setWindowTitle_helperHelper(const QString&, const QWidget*);
 
 /*!
     \internal
@@ -1611,7 +1697,7 @@ int QMdiSubWindowPrivate::titleBarHeight(const QStyleOptionTitleBar &options) co
         return 0;
     }
 
-    int height = q->style()->pixelMetric(QStyle::PM_TitleBarHeight, &options);
+    int height = q->style()->pixelMetric(QStyle::PM_TitleBarHeight, &options, q);
 #if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC)
     // ### Fix mac style, the +4 pixels hack is not necessary anymore
     if (qobject_cast<QMacStyle *>(q->style()))
@@ -1638,7 +1724,7 @@ void QMdiSubWindowPrivate::sizeParameters(int *margin, int *minWidth) const
     if (q->isMaximized() && !drawTitleBarWhenMaximized())
         *margin = 0;
     else
-        *margin = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth);
+        *margin = q->style()->pixelMetric(QStyle::PM_MdiSubWindowFrameWidth, 0, q);
 
     QStyleOptionTitleBar opt = this->titleBarOptions();
     int tempWidth = 0;
@@ -1663,7 +1749,11 @@ bool QMdiSubWindowPrivate::drawTitleBarWhenMaximized() const
     Q_Q(const QMdiSubWindow);
     if (q->window()->testAttribute(Qt::WA_CanHostQMdiSubWindowTitleBar))
         return false;
-#if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC)
+
+    if (isChildOfTabbedQMdiArea(q))
+        return false;
+
+#if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC) || defined(Q_OS_WINCE)
     return true;
 #else
     if (q->style()->styleHint(QStyle::SH_Workspace_FillSpaceOnMaximize, 0, q))
@@ -1675,6 +1765,7 @@ bool QMdiSubWindowPrivate::drawTitleBarWhenMaximized() const
     if (!mainWindow || !qobject_cast<QMenuBar *>(mainWindow->menuWidget())
         || mainWindow->menuWidget()->isHidden())
         return true;
+
     return isChildOfQMdiSubWindow(q);
 #endif
 #endif
@@ -1689,6 +1780,9 @@ void QMdiSubWindowPrivate::showButtonsInMenuBar(QMenuBar *menuBar)
 {
     Q_Q(QMdiSubWindow);
     Q_ASSERT(q->isMaximized() && !drawTitleBarWhenMaximized());
+
+    if (isChildOfTabbedQMdiArea(q))
+        return;
 
     removeButtonsFromMenuBar();
     if (!controlContainer)
@@ -1723,10 +1817,10 @@ void QMdiSubWindowPrivate::showButtonsInMenuBar(QMenuBar *menuBar)
 */
 void QMdiSubWindowPrivate::removeButtonsFromMenuBar()
 {
-    if (!controlContainer)
-        return;
-
     Q_Q(QMdiSubWindow);
+
+    if (!controlContainer || isChildOfTabbedQMdiArea(q))
+        return;
 
     QMenuBar *currentMenuBar = 0;
 #ifndef QT_NO_MAINWINDOW
@@ -1745,6 +1839,7 @@ void QMdiSubWindowPrivate::removeButtonsFromMenuBar()
     topLevelWindow->removeEventFilter(q);
     if (baseWidget && !drawTitleBarWhenMaximized())
         topLevelWindow->setWindowModified(false);
+    originalTitle = QString::null;
 }
 
 #endif // QT_NO_MENUBAR
@@ -1768,7 +1863,7 @@ void QMdiSubWindowPrivate::updateWindowTitle(bool isRequestFromChild)
     ignoreWindowTitleChange = true;
     q->setWindowTitle(titleWidget->windowTitle());
     if (q->maximizedButtonsWidget())
-        setNewWindowTitle(q);
+        setNewWindowTitle();
     ignoreWindowTitleChange = false;
 }
 
@@ -2049,7 +2144,7 @@ QSize QMdiSubWindowPrivate::iconSize() const
     Q_Q(const QMdiSubWindow);
     if (!q->parent() || q->windowFlags() & Qt::FramelessWindowHint)
         return QSize(-1, -1);
-    return QSize(q->style()->pixelMetric(QStyle::PM_MdiSubWindowMinimizedWidth), titleBarHeight());
+    return QSize(q->style()->pixelMetric(QStyle::PM_MdiSubWindowMinimizedWidth, 0, q), titleBarHeight());
 }
 
 #ifndef QT_NO_SIZEGRIP
@@ -2152,7 +2247,7 @@ QMdiSubWindow::QMdiSubWindow(QWidget *parent, Qt::WindowFlags flags)
     // We don't want the menu icon by default on mac.
 #ifndef Q_WS_MAC
     if (windowIcon().isNull())
-        d->menuIcon = style()->standardIcon(QStyle::SP_TitleBarMenuButton);
+        d->menuIcon = style()->standardIcon(QStyle::SP_TitleBarMenuButton, 0, this);
     else
         d->menuIcon = windowIcon();
 #endif
@@ -2255,8 +2350,10 @@ QWidget *QMdiSubWindow::widget() const
 QWidget *QMdiSubWindow::maximizedButtonsWidget() const
 {
     Q_D(const QMdiSubWindow);
-    if (isVisible() && d->controlContainer && isMaximized() && !d->drawTitleBarWhenMaximized())
+    if (isVisible() && d->controlContainer && isMaximized() && !d->drawTitleBarWhenMaximized()
+        && !isChildOfTabbedQMdiArea(this)) {
         return d->controlContainer->controllerWidget();
+    }
     return 0;
 }
 
@@ -2266,8 +2363,10 @@ QWidget *QMdiSubWindow::maximizedButtonsWidget() const
 QWidget *QMdiSubWindow::maximizedSystemMenuIconWidget() const
 {
     Q_D(const QMdiSubWindow);
-    if (isVisible() && d->controlContainer && isMaximized() && !d->drawTitleBarWhenMaximized())
+    if (isVisible() && d->controlContainer && isMaximized() && !d->drawTitleBarWhenMaximized()
+        && !isChildOfTabbedQMdiArea(this)) {
         return d->controlContainer->systemMenuLabel();
+    }
     return 0;
 }
 
@@ -2450,6 +2549,24 @@ void QMdiSubWindow::showSystemMenu()
 #endif // QT_NO_MENU
 
 /*!
+    Returns the area containing this sub-window, or 0 if there is none.
+
+    \sa QMdiArea::addSubWindow()
+*/
+QMdiArea *QMdiSubWindow::mdiArea() const
+{
+    QWidget *parent = parentWidget();
+    while (parent) {
+        if (QMdiArea *area = qobject_cast<QMdiArea *>(parent)) {
+            if (area->viewport() == parentWidget())
+                return area;
+        }
+        parent = parent->parentWidget();
+    }
+    return 0;
+}
+
+/*!
     Calling this function makes the subwindow enter the shaded mode.
     When the subwindow is shaded, only the title bar is visible.
 
@@ -2511,7 +2628,7 @@ void QMdiSubWindow::showShaded()
 
     d->updateGeometryConstraints();
     // Update minimum size to internalMinimumSize if set by user.
-    if (minimumSize().isValid()) {
+    if (!minimumSize().isNull()) {
         d->userMinimumSize = minimumSize();
         setMinimumSize(d->internalMinimumSize);
     }
@@ -2624,6 +2741,7 @@ bool QMdiSubWindow::eventFilter(QObject *object, QEvent *event)
 #ifndef QT_NO_MENUBAR
         } else if (maximizedButtonsWidget() && d->controlContainer->menuBar() && d->controlContainer->menuBar()
                    ->cornerWidget(Qt::TopRightCorner) == maximizedButtonsWidget()) {
+            d->originalTitle = QString::null;
             if (d->baseWidget && d->baseWidget->windowTitle() == windowTitle())
                 d->updateWindowTitle(true);
             else
@@ -2753,7 +2871,7 @@ bool QMdiSubWindow::event(QEvent *event)
     case QEvent::WindowIconChange:
         d->menuIcon = windowIcon();
         if (d->menuIcon.isNull())
-            d->menuIcon = style()->standardIcon(QStyle::SP_TitleBarMenuButton);
+            d->menuIcon = style()->standardIcon(QStyle::SP_TitleBarMenuButton, 0, this);
         if (d->controlContainer)
             d->controlContainer->updateWindowIcon(d->menuIcon);
         if (!maximizedSystemMenuIconWidget())
@@ -2765,6 +2883,12 @@ bool QMdiSubWindow::event(QEvent *event)
     case QEvent::FontChange:
         d->font = font();
         break;
+#ifndef QT_NO_TOOLTIP
+    case QEvent::ToolTip:
+        showToolTip(static_cast<QHelpEvent *>(event), this, d->titleBarOptions(),
+                    QStyle::CC_TitleBar, d->hoveredSubControl);
+        break;
+#endif
     default:
         break;
     }
@@ -2798,10 +2922,9 @@ void QMdiSubWindow::showEvent(QShowEvent *showEvent)
     d->updateDirtyRegions();
     // Show buttons in the menu bar if they're already not there.
     // We want to do this when QMdiSubWindow becomes visible after being hidden.
-#if !defined(QT_NO_MENUBAR) && !defined(QT_NO_MAINWINDOW)
-    if (isMaximized() && d->controlContainer && !d->drawTitleBarWhenMaximized()) {
-        if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(window())) {
-            QMenuBar *menuBar = mainWindow->menuBar();
+#ifndef QT_NO_MENUBAR
+    if (d->controlContainer) {
+        if (QMenuBar *menuBar = d->menuBar()) {
             if (menuBar->cornerWidget(Qt::TopRightCorner) != maximizedButtonsWidget())
                 d->showButtonsInMenuBar(menuBar);
         }
@@ -3396,6 +3519,8 @@ QSize QMdiSubWindow::minimumSizeHint() const
 
     return QSize(minWidth, minHeight).expandedTo(QApplication::globalStrut());
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qmdisubwindow.cpp"
 #include "qmdisubwindow.moc"

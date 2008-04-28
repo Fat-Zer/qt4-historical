@@ -49,12 +49,17 @@
 
 #include <QtCore/qplugin.h>
 #include <QtGui/QIcon>
+#include <QtCore/QDebug>
 
 #include <Qt3Support/Q3MainWindow>
 #include <Qt3Support/Q3ToolBar>
+#include <QtGui/QMainWindow>
+#include <QtGui/QToolBar>
 
-Q3ToolBarPlugin::Q3ToolBarPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3ToolBarPlugin::Q3ToolBarPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3ToolBarPlugin::name() const
@@ -73,13 +78,28 @@ QString Q3ToolBarPlugin::includeFile() const
 { return QLatin1String("q3listview.h"); }
 
 QIcon Q3ToolBarPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3ToolBarPlugin::isContainer() const
 { return false; }
 
 QWidget *Q3ToolBarPlugin::createWidget(QWidget *parent)
-{ return new Q3ToolBar(qobject_cast<Q3MainWindow*>(parent)); }
+{
+    if (!parent)
+        return new Q3ToolBar;
+    // If there is a parent, it must be a Q3MainWindow
+    if (Q3MainWindow *mw3 = qobject_cast<Q3MainWindow*>(parent))
+        return new Q3ToolBar(mw3);
+    // Somebody hacked up a form?
+    if (QMainWindow *mw4 = qobject_cast<QMainWindow*>(parent)) {
+        qDebug() << "*** WARNING QMainWindow was passed as a parent widget of Q3ToolBar. Creating a QToolBar...";
+        return new QToolBar(mw4);
+    }
+    // Can't be helped
+    const QString msg = QString::fromUtf8("*** WARNING Parent widget of Q3ToolBar must be a Q3MainWindow (%1)!").arg(QLatin1String(parent->metaObject()->className()));
+    qDebug() << msg;
+    return 0;
+}
 
 bool Q3ToolBarPlugin::isInitialized() const
 { return m_initialized; }
@@ -106,3 +126,5 @@ QString Q3ToolBarPlugin::domXml() const
 { return QString(); }
 
 
+
+QT_END_NAMESPACE

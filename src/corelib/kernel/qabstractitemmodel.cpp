@@ -54,6 +54,8 @@
 
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 class QPersistentModelIndexDataLessThan
 {
 public:
@@ -398,6 +400,8 @@ QModelIndex QPersistentModelIndex::child(int row, int column) const
 
 /*!
   Returns the data for the given \a role for the item referred to by the index.
+
+  \sa Qt::ItemDataRole, QAbstractItemModel::setData()
 */
 QVariant QPersistentModelIndex::data(int role) const
 {
@@ -539,22 +543,19 @@ void QAbstractItemModelPrivate::addPersistentIndexData(QPersistentModelIndexData
 
 }
 
-void QAbstractItemModelPrivate::invalidate(int position)
-{
-    // no need to make invalidate recursive, since the *AboutToBeRemoved functions
-    // will register indexes to be invalidated recursively
-    persistent.indexes[position]->index = QModelIndex();
-}
-
 void QAbstractItemModelPrivate::rowsAboutToBeInserted(const QModelIndex &parent,
                                                       int first, int last)
 {
+    Q_Q(QAbstractItemModel);
     Q_UNUSED(last);
     QList<int> persistent_moved;
-    for (int position = 0; position < persistent.indexes.count(); ++position) {
-        QModelIndex index = persistent.indexes.at(position)->index;
-        if (index.isValid() && index.parent() == parent && index.row() >= first)
-            persistent_moved.append(position);
+    if (first < q->rowCount(parent)) {
+        for (int position = 0; position < persistent.indexes.count(); ++position) {
+            const QModelIndex &index = persistent.indexes.at(position)->index;
+            if (index.row() >= first && index.isValid() && index.parent() == parent) {
+                persistent_moved.append(position);
+            }
+        }
     }
     persistent.moved.push(persistent_moved);
 }
@@ -615,19 +616,27 @@ void QAbstractItemModelPrivate::rowsRemoved(const QModelIndex &parent,
             q_func()->index(old.row() - count, old.column(), parent);
     }
     QList<int> persistent_invalidated = persistent.invalidated.pop();
-    for (int j = 0; j < persistent_invalidated.count(); ++j)
-        invalidate(persistent_invalidated.at(j));
+    for (int j = 0; j < persistent_invalidated.count(); ++j) {
+        int position = persistent_invalidated.at(j);
+        persistent.indexes.at(position)->index = QModelIndex();
+    }
+    // if indexes were invalidated we need to restore the sorted order
+    if (!persistent_invalidated.isEmpty())
+        qSort(persistent.indexes);
 }
 
 void QAbstractItemModelPrivate::columnsAboutToBeInserted(const QModelIndex &parent,
                                                          int first, int last)
 {
+    Q_Q(QAbstractItemModel);
     Q_UNUSED(last);
     QList<int> persistent_moved;
-    for (int position = 0; position < persistent.indexes.count(); ++position) {
-        QModelIndex index = persistent.indexes.at(position)->index;
-        if (index.isValid() && index.parent() == parent && index.column() >= first)
-            persistent_moved.append(position);
+    if (first < q->columnCount(parent)) {
+        for (int position = 0; position < persistent.indexes.count(); ++position) {
+            const QModelIndex &index = persistent.indexes.at(position)->index;
+            if (index.column() >= first && index.isValid() && index.parent() == parent)
+                persistent_moved.append(position);
+        }
     }
     persistent.moved.push(persistent_moved);
 }
@@ -688,8 +697,13 @@ void QAbstractItemModelPrivate::columnsRemoved(const QModelIndex &parent,
             q_func()->index(old.row(), old.column() - count, parent);
     }
     QList<int> persistent_invalidated = persistent.invalidated.pop();
-    for (int j = 0; j < persistent_invalidated.count(); ++j)
-        invalidate(persistent_invalidated.at(j));
+    for (int j = 0; j < persistent_invalidated.count(); ++j) {
+        int position = persistent_invalidated.at(j);
+        persistent.indexes.at(position)->index = QModelIndex();
+    }
+    // if indexes were invalidated we need to restore the sorted order
+    if (!persistent_invalidated.isEmpty())
+        qSort(persistent.indexes);
 }
 
 void QAbstractItemModelPrivate::reset()
@@ -736,9 +750,10 @@ void QAbstractItemModelPrivate::reset()
     The sibling() function allows you to traverse items in the model on the
     same level as the index.
 
-    Model indexes can become invalid over time so they should be used
-    immediately and then discarded. If you need to keep a model index
-    over time use a QPersistentModelIndex.
+    \note Model indexes should be used immediately and then discarded. You
+    should not rely on indexes to remain valid after calling model functions
+    that change the structure of the model or delete items. If you need to
+    keep a model index over time use a QPersistentModelIndex.
 
     \sa \link model-view-programming.html Model/View Programming\endlink QPersistentModelIndex QAbstractItemModel
 */
@@ -1075,6 +1090,11 @@ void QAbstractItemModelPrivate::reset()
     only items in the first column have children. For that case, when reimplementing
     this function in a subclass the column of the returned QModelIndex would be 0.
 
+    \note When reimplementing this function in a subclass, be careful to avoid
+    calling QModelIndex member functions, such as QModelIndex::parent(), since
+    indexes belonging to your model will simply call your implementation, leading
+    to infinite recursion.
+
     \sa createIndex()
 */
 
@@ -1208,9 +1228,7 @@ QAbstractItemModel::~QAbstractItemModel()
     In most subclasses, the number of columns is independent of the
     \a parent. For example:
 
-    \quotefromfile itemviews/simpledommodel/dommodel.cpp
-    \skipto ::columnCount
-    \printuntil /^\}/
+    \snippet examples/itemviews/simpledommodel/dommodel.cpp 2
 
     \bold{Tip:} When implementing a table based model, columnCount() should return 0 when
     the parent is valid.
@@ -1853,6 +1871,10 @@ void QAbstractItemModel::revert()
   Returns the data for the given \a role and \a section in the header
   with the specified \a orientation.
 
+  For horizontal headers, the section number corresponds to the column
+  number of items shown beneath it. For vertical headers, the section
+  number typically to the row number of items shown alongside it.
+
   \sa Qt::ItemDataRole, setHeaderData(), QHeaderView
 */
 
@@ -2025,9 +2047,7 @@ bool QAbstractItemModel::decodeData(int row, int column, const QModelIndex &pare
 
     For example, as shown in the diagram, we insert three rows before
     row 2, so \a first is 2 and \a last is 4:
-    \code
-    beginInsertRows(parent, 2, 4);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 0
     This inserts the three new rows as rows 2, 3, and 4.
     \row
     \o \inlineimage modelview-begin-append-rows.png Appending rows
@@ -2036,9 +2056,7 @@ bool QAbstractItemModel::decodeData(int row, int column, const QModelIndex &pare
     For example, as shown in the diagram, we append two rows to a
     collection of 4 existing rows (ending in row 3), so \a first is 4
     and \a last is 5:
-    \code
-    beginInsertRows(parent, 4, 5);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 1
     This appends the two new rows as rows 4 and 5.
     \endtable
 
@@ -2089,9 +2107,7 @@ void QAbstractItemModel::endInsertRows()
 
     For example, as shown in the diagram, we remove the two rows from
     row 2 to row 3, so \a first is 2 and \a last is 3:
-    \code
-    beginRemoveRows(parent, 2, 3);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 2
     \endtable
 
     \sa endRemoveRows()
@@ -2141,9 +2157,7 @@ void QAbstractItemModel::endRemoveRows()
 
     For example, as shown in the diagram, we insert three columns before
     column 4, so \a first is 4 and \a last is 6:
-    \code
-    beginInsertColumns(parent, 4, 6);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 3
     This inserts the three new columns as columns 4, 5, and 6.
     \row
     \o \inlineimage modelview-begin-append-columns.png Appending columns
@@ -2152,9 +2166,7 @@ void QAbstractItemModel::endRemoveRows()
     For example, as shown in the diagram, we append three columns to a
     collection of six existing columns (ending in column 5), so \a first
     is 6 and \a last is 8:
-    \code
-    beginInsertColumns(parent, 6, 8);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 4
     This appends the two new columns as columns 6, 7, and 8.
     \endtable
 
@@ -2205,9 +2217,7 @@ void QAbstractItemModel::endInsertColumns()
 
     For example, as shown in the diagram, we remove the three columns
     from column 4 to column 6, so \a first is 4 and \a last is 6:
-    \code
-    beginRemoveColumns(parent, 4, 6);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 5
     \endtable
 
     \sa endRemoveColumns()
@@ -2756,3 +2766,5 @@ bool QAbstractListModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
     Returns true if this model index is smaller than the \a other
     model index; otherwise returns false.
 */
+
+QT_END_NAMESPACE

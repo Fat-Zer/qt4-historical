@@ -50,6 +50,8 @@
 #include "qmetaobject.h"
 #include "qmap.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3SqlPropertyMapPrivate
 {
 public:
@@ -85,44 +87,13 @@ public:
     Q3SqlForm, you must install your own Q3SqlPropertyMap for that table
     or form. Example:
 
-    \code
-    Q3SqlPropertyMap *myMap  = new Q3SqlPropertyMap();
-    Q3SqlForm        *myForm = new Q3SqlForm(this);
-    MyEditor myEditor(this);
-
-    // Set the Q3SqlForm's record buffer to the update buffer of
-    // a pre-existing Q3SqlCursor called 'cur'.
-    myForm->setRecord(cur->primeUpdate());
-
-    // Install the customized map
-    myMap->insert("MyEditor", "content");
-    myForm->installPropertyMap(myMap); // myForm now owns myMap
-    ...
-    // Insert a field into the form that uses a myEditor to edit the
-    // field 'somefield'
-    myForm->insert(&myEditor, "somefield");
-
-    // Update myEditor with the value from the mapped database field
-    myForm->readFields();
-    ...
-    // Let the user edit the form
-    ...
-    // Update the database fields with the values in the form
-    myForm->writeFields();
-    ...
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlpropertymap.cpp 0
 
     You can also replace the global Q3SqlPropertyMap that is used by
     default. (Bear in mind that Q3SqlPropertyMap takes ownership of the
     new default map.)
 
-    \code
-    Q3SqlPropertyMap *myMap = new Q3SqlPropertyMap;
-
-    myMap->insert("MyEditor", "content");
-    Q3SqlPropertyMap::installDefaultMap(myMap);
-    ...
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlpropertymap.cpp 1
 
     \sa Q3DataTable, Q3SqlForm, Q3SqlEditorFactory
 */
@@ -301,5 +272,7 @@ void Q3SqlPropertyMap::installDefaultMap(Q3SqlPropertyMap * map)
     defaultmap = map;
     qsql_cleanup_property_map.add(&defaultmap);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SQL_FORM

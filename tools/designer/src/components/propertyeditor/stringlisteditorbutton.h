@@ -49,20 +49,22 @@
 #include <QtCore/QStringList>
 #include <QtGui/QToolButton>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 class QT_PROPERTYEDITOR_EXPORT StringListEditorButton: public QToolButton
 {
     Q_OBJECT
 public:
-    StringListEditorButton(const QStringList &stringList, QWidget *parent = 0);
+    explicit StringListEditorButton(const QStringList &stringList, QWidget *parent = 0);
     virtual ~StringListEditorButton();
 
     inline QStringList stringList() const
     { return m_stringList; }
 
 signals:
-    void changed();
+    void stringListChanged(const QStringList &stringList);
 
 public slots:
     void setStringList(const QStringList &stringList);
@@ -75,5 +77,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // STRINGLISTEDITORBUTTON_H

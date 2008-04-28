@@ -47,6 +47,7 @@
 #include <QtGui>
 #include <QtSql>
 
+//! [0]
 class InformationWindow : public QDialog
 {
     Q_OBJECT
@@ -59,12 +60,16 @@ public:
 
 signals:
     void imageChanged(int id, const QString &fileName);
+//! [0]
 
+//! [1]
 private slots:
     void revert();
     void submit();
     void enableButtons(bool enable = true);
+//! [1]
 
+//! [2]
 private:
     void createButtons();
 
@@ -83,5 +88,6 @@ private:
 
     QDataWidgetMapper *mapper;
 };
+//! [2]
 
 #endif

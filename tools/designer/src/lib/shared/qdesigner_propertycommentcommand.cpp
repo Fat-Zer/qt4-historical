@@ -53,6 +53,8 @@
 #include <QtGui/QApplication>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 SetPropertyCommentCommand::Entry::Entry(QObject* object, const QString &oldCommentValue) :
@@ -204,3 +206,5 @@ void SetPropertyCommentCommand::undo()
 }
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

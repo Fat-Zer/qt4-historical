@@ -52,9 +52,12 @@
 #include <QTimer>
 
 class Bubble;
+QT_BEGIN_NAMESPACE
 class QPaintEvent;
 class QWidget;
+QT_END_NAMESPACE
 
+//! [0]
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
@@ -62,6 +65,7 @@ class GLWidget : public QGLWidget
 public:
     GLWidget(QWidget *parent = 0);
     ~GLWidget();
+//! [0]
 
     QSize sizeHint() const;
     int xRotation() const { return xRot; }
@@ -73,6 +77,7 @@ public slots:
     void setYRotation(int angle);
     void setZRotation(int angle);
 
+//! [1]
 protected:
     void initializeGL();
     void paintEvent(QPaintEvent *event);
@@ -88,6 +93,7 @@ private:
     GLuint makeObject();
     void createBubbles(int number);
     void drawInstructions(QPainter *painter);
+//! [1]
     void extrude(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2);
     void normalizeAngle(int *angle);
     void quad(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2,
@@ -101,8 +107,10 @@ private:
     QPoint lastPos;
     QColor trolltechGreen;
     QColor trolltechPurple;
+//! [4]
     QList<Bubble*> bubbles;
     QTimer animationTimer;
 };
+//! [4]
 
 #endif

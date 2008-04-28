@@ -51,11 +51,13 @@
 // We acheive this, by having the data() return the entire file path for
 // the display role. Note that the Qt::EditRole over which the QCompleter
 // looks for matches is left unchanged
+//! [0]
 class DirModel : public QDirModel
 {
 public:
     DirModel(QObject *parent = 0);
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 };
+//! [0]
 
 #endif

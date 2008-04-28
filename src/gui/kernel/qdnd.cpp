@@ -63,6 +63,8 @@
 #include "qdebug.h"
 #include <ctype.h>
 
+QT_BEGIN_NAMESPACE
+
 // These pixmaps approximate the images in the Windows User Interface Guidelines.
 
 // XPM
@@ -327,7 +329,7 @@ QDragManager::QDragManager()
 
 #ifdef Q_WS_WIN
     n_cursor = 4;
-#else 
+#else
     n_cursor = 3;
 #endif
 
@@ -387,7 +389,7 @@ QPixmap QDragManager::dragCursor(Qt::DropAction action) const
     else if (action == Qt::IgnoreAction)
         return pm_cursor[3];
 #endif
-    return 0;
+    return QPixmap();
 }
 
 bool QDragManager::hasCustomDragCursors() const
@@ -688,3 +690,5 @@ QDropData::~QDropData()
 {
 }
 #endif // QT_NO_DRAGANDDROP
+
+QT_END_NAMESPACE

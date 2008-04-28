@@ -49,6 +49,8 @@
 #include <QtGui/QWidget>
 #include <QtGui/qevent.h>
 
+QT_BEGIN_NAMESPACE
+
 static const bool defaultSnap = true;
 static const bool defaultVisible = true;
 static const int DEFAULT_GRID = 10;
@@ -113,10 +115,14 @@ void  Grid::addToVariantMap(QVariantMap& vm, bool forceKeys) const
     valueToVariantMap(m_deltaY, DEFAULT_GRID, QLatin1String(KEY_DELTAY), vm, forceKeys);
 }
 
-void Grid::paint(QWidget *widget, QPaintEvent *e, bool needFrame) const
+void Grid::paint(QWidget *widget, QPaintEvent *e) const
 {
     QPainter p(widget);
-    p.fillRect(e->rect(), widget->palette().brush(widget->backgroundRole()));
+    paint(p, widget, e);
+}
+
+void Grid::paint(QPainter &p, const QWidget *widget, QPaintEvent *e) const
+{
     p.setPen(widget->palette().dark().color());
 
     if (m_visible) {
@@ -137,9 +143,6 @@ void Grid::paint(QWidget *widget, QPaintEvent *e, bool needFrame) const
             p.drawPoints( &(*points.begin()), points.count());
             points.clear();
         }
-    }
-    if (needFrame) {
-        p.drawRect(e->rect());
     }
 }
 
@@ -171,4 +174,7 @@ int Grid::widgetHandleAdjustY(int y) const
 {
     return m_snapY ? (y / m_deltaY) * m_deltaY + 1 : y;
 }
+
 }
+
+QT_END_NAMESPACE

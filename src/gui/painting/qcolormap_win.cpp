@@ -46,6 +46,12 @@
 #include "qvector.h"
 #include "qt_windows.h"
 
+#if defined(Q_OS_WINCE)
+#include "qguifunctions_wince.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
 class QColormapPrivate
 {
 public:
@@ -53,7 +59,7 @@ public:
         : ref(1), mode(QColormap::Direct), depth(0), hpal(0)
     { }
 
-    QAtomic ref;
+    QAtomicInt ref;
 
     QColormap::Mode mode;
     int depth;
@@ -189,3 +195,5 @@ const QVector<QColor> QColormap::colormap() const
 QColormap &QColormap::operator=(const QColormap &colormap)
 { qAtomicAssign(d, colormap.d); return *this; }
 
+
+QT_END_NAMESPACE

@@ -50,6 +50,7 @@
 class ImageItem;
 class InformationWindow;
 
+//! [0]
 class View : public QGraphicsView
 {
     Q_OBJECT
@@ -59,10 +60,14 @@ public:
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
+//! [0]
 
+//! [1]
 private slots:
     void updateImage(int id, const QString &fileName);
+//! [1]
 
+//! [2]
 private:
     void addItems();
     InformationWindow* findWindow(int id);
@@ -70,7 +75,9 @@ private:
 
     QGraphicsScene *scene;
     QList<InformationWindow *> informationWindows;
+//! [2] //! [3]
     QSqlRelationalTableModel *officeTable;
 };
+//! [3]
 
 #endif

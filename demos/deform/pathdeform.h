@@ -60,7 +60,7 @@ class PathDeformRenderer : public ArthurFrame
     Q_PROPERTY(QString text READ text WRITE setText)
 
 public:
-    PathDeformRenderer(QWidget *widget);
+    PathDeformRenderer(QWidget *widget, bool smallScreen = false);
 
     void paint(QPainter *painter);
 
@@ -85,7 +85,8 @@ public slots:
 
     void setAnimated(bool animated);
 
-// signals:
+signals:
+    void clicked();
 //     void frameRate(double fps);
 
 private:
@@ -108,20 +109,47 @@ private:
     int m_fontSize;
     bool m_animated;
 
-    double m_intensity;
-    double m_radius;
+    qreal m_intensity;
+    qreal m_radius;
     QPointF m_pos;
     QPointF m_offset;
     QPointF m_direction;
+    QPointF m_mousePress;
+    bool    m_mouseDrag;
+    bool    m_smallScreen;
+};
+
+class PathDeformControls : public QWidget
+{
+    Q_OBJECT
+public:
+    PathDeformControls(QWidget *parent, PathDeformRenderer* renderer, bool smallScreen);
+signals:
+    void okPressed();
+    void quitPressed();
+private:
+    PathDeformRenderer* m_renderer;
+    void layoutForDesktop();
+    void layoutForSmallScreen();
+private slots:
+    void emitQuitSignal();
+    void emitOkSignal();
 };
 
 class PathDeformWidget : public QWidget
 {
+    Q_OBJECT
 public:
-    PathDeformWidget(QWidget *parent);
+    PathDeformWidget(QWidget *parent, bool smallScreen);
+    void setStyle ( QStyle * style );
 
 private:
     PathDeformRenderer *m_renderer;
+    PathDeformControls *m_controls;
+
+private slots:
+    void showControls();
+    void hideControls();
 };
 
 #endif // PATHDEFORM_H

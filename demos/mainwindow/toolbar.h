@@ -46,11 +46,11 @@
 
 #include <QToolBar>
 
-class QAction;
-class QActionGroup;
-class QMenu;
-class QSpinBox;
-class QLabel;
+QT_FORWARD_DECLARE_CLASS(QAction)
+QT_FORWARD_DECLARE_CLASS(QActionGroup)
+QT_FORWARD_DECLARE_CLASS(QMenu)
+QT_FORWARD_DECLARE_CLASS(QSpinBox)
+QT_FORWARD_DECLARE_CLASS(QLabel)
 
 class ToolBar : public QToolBar
 {

@@ -61,6 +61,8 @@
 
 #include "qscriptecmacore_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace Ecma {
 
 class RegExp: public Core
@@ -68,9 +70,6 @@ class RegExp: public Core
 public:
     RegExp(QScriptEnginePrivate *engine);
     virtual ~RegExp();
-
-    inline QScriptClassInfo *classInfo() const
-        { return m_classInfo; }
 
     virtual void execute(QScriptContextPrivate *context);
 
@@ -92,7 +91,7 @@ public:
     };
 
     inline Instance *get(const QScriptValueImpl &object) const
-        { return Instance::get(object, m_classInfo); }
+        { return Instance::get(object, classInfo()); }
 
     void newRegExp(QScriptValueImpl *result, const QString &pattern,
                    const QString &flags);
@@ -118,11 +117,11 @@ private:
     void newRegExp_helper(QScriptValueImpl *result, const QRegExp &rx,
                           const QString &flags);
 #endif
-
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ecma
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT
 #endif // QSCRIPTECMAREGEXP_P_H

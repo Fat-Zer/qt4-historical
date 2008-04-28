@@ -50,14 +50,8 @@
 
 QT_BEGIN_HEADER
 
-QT_MODULE(OpenGL)
-
-#ifdef QT3_SUPPORT
-#define QGL_VERSION        460
-#define QGL_VERSION_STR        "4.6"
-Q_OPENGL_EXPORT inline QT3_SUPPORT const char *qGLVersion() {
-    return QGL_VERSION_STR;
-}
+#if defined(Q_WS_QWS) || defined(Q_OS_WINCE)
+#define QT_OPENGL_ES 1
 #endif
 
 #if defined(Q_WS_WIN)
@@ -67,7 +61,7 @@ Q_OPENGL_EXPORT inline QT3_SUPPORT const char *qGLVersion() {
 #if defined(Q_WS_MAC)
 # include <OpenGL/gl.h>
 # include <OpenGL/glu.h>
-#elif defined(Q_WS_QWS)
+#elif defined(QT_OPENGL_ES)
 # include <GLES/gl.h>
 #ifndef GL_DOUBLE
 # define GL_DOUBLE GL_FLOAT
@@ -81,6 +75,10 @@ typedef GLfloat GLdouble;
 #   include <GL/glu.h>
 # endif
 #endif
+
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(OpenGL)
 
 #if defined(Q_WS_MAC) && defined (QT_BUILD_OPENGL_LIB) && !defined(Q_WS_MAC64) && !defined(QDOC)
 #define Q_MAC_COMPAT_GL_FUNCTIONS
@@ -105,6 +103,14 @@ typedef QMacGLCompatTypes<GLint>::CompatGLint QMacCompatGLint;
 typedef QMacGLCompatTypes<GLint>::CompatGLuint QMacCompatGLuint;
 typedef QMacGLCompatTypes<GLint>::CompatGLenum QMacCompatGLenum;
 
+#endif
+
+#ifdef QT3_SUPPORT
+#define QGL_VERSION        460
+#define QGL_VERSION_STR        "4.6"
+Q_OPENGL_EXPORT inline QT3_SUPPORT const char *qGLVersion() {
+    return QGL_VERSION_STR;
+}
 #endif
 
 #if defined(Q_WS_WIN) || defined(Q_WS_MAC)
@@ -287,6 +293,9 @@ public:
 
     void deleteTexture(GLuint tx_id);
 
+    void drawTexture(const QRectF &target, GLuint textureId, GLenum textureTarget = GL_TEXTURE_2D);
+    void drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget = GL_TEXTURE_2D);
+
 #ifdef Q_MAC_COMPAT_GL_FUNCTIONS
     GLuint bindTexture(const QImage &image, QMacCompatGLenum = GL_TEXTURE_2D,
                        QMacCompatGLint format = GL_RGBA);
@@ -294,6 +303,9 @@ public:
                        QMacCompatGLint format = GL_RGBA);
 
     void deleteTexture(QMacCompatGLuint tx_id);
+    
+    void drawTexture(const QRectF &target, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget = GL_TEXTURE_2D);
+    void drawTexture(const QPointF &point, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget = GL_TEXTURE_2D);
 #endif
 
     static void setTextureCacheLimit(int size);
@@ -347,11 +359,11 @@ private:
 #ifdef Q_WS_MAC
     friend class QMacGLWindowChangeEvent;
     void updatePaintDevice();
+    friend QGLContextPrivate *qt_phonon_get_dptr(const QGLContext *);
 #endif
 #ifdef Q_WS_WIN
     friend class QGLFramebufferObject;
     friend class QGLFramebufferObjectPrivate;
-    friend QGLContextPrivate *qt_glctx_get_dptr(QGLContext *);
     friend bool qt_resolve_GLSL_functions(QGLContext *ctx);
     friend bool qt_createGLSLProgram(QGLContext *ctx, GLuint &program, const char *shader_src, GLuint &shader);
 #endif
@@ -429,6 +441,9 @@ public:
 
     void deleteTexture(GLuint tx_id);
 
+    void drawTexture(const QRectF &target, GLuint textureId, GLenum textureTarget = GL_TEXTURE_2D);
+    void drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget = GL_TEXTURE_2D);
+
 #ifdef Q_MAC_COMPAT_GL_FUNCTIONS
     GLuint bindTexture(const QImage &image, QMacCompatGLenum = GL_TEXTURE_2D,
                        QMacCompatGLint format = GL_RGBA);
@@ -436,6 +451,9 @@ public:
                        QMacCompatGLint format = GL_RGBA);
 
     void deleteTexture(QMacCompatGLuint tx_id);
+
+    void drawTexture(const QRectF &target, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget = GL_TEXTURE_2D);
+    void drawTexture(const QPointF &point, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget = GL_TEXTURE_2D);
 #endif
 
 public Q_SLOTS:
@@ -530,6 +548,8 @@ inline bool QGLFormat::sampleBuffers() const
 {
     return testOption(QGL::SampleBuffers);
 }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

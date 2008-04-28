@@ -58,8 +58,13 @@
 #include "QtCore/qabstracteventdispatcher.h"
 #include "QtCore/qt_windows.h"
 
+QT_BEGIN_NAMESPACE
+
 class QWinEventNotifier;
 class QEventDispatcherWin32Private;
+
+// forward declaration
+LRESULT CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
 
 class Q_CORE_EXPORT QEventDispatcherWin32 : public QAbstractEventDispatcher
 {
@@ -100,5 +105,7 @@ public:
 private:
     friend LRESULT CALLBACK qt_internal_proc(HWND hwnd, UINT message, WPARAM wp, LPARAM lp);
 };
+
+QT_END_NAMESPACE
 
 #endif // QEVENTDISPATCHER_WIN_P_H

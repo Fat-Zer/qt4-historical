@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_FILEDIALOG
@@ -73,6 +75,7 @@ class Q_GUI_EXPORT QFileDialog : public QDialog
     Q_PROPERTY(bool resolveSymlinks READ resolveSymlinks WRITE setResolveSymlinks)
     Q_PROPERTY(bool confirmOverwrite READ confirmOverwrite WRITE setConfirmOverwrite)
     Q_PROPERTY(QString defaultSuffix READ defaultSuffix WRITE setDefaultSuffix)
+    Q_PROPERTY(bool nameFilterDetailsVisible READ isNameFilterDetailsVisible WRITE setNameFilterDetailsVisible)
     Q_ENUMS(ViewMode FileMode AcceptMode)
 
 public:
@@ -104,12 +107,24 @@ public:
     void selectFile(const QString &filename);
     QStringList selectedFiles() const;
 
-    void setFilter(const QString &filter);
-    void setFilters(const QStringList &filters);
-    QStringList filters() const;
+#ifdef QT_DEPRECATED
+    QT_DEPRECATED void setFilter(const QString &filter);
+    QT_DEPRECATED void setFilters(const QStringList &filters);
+    QT_DEPRECATED QStringList filters() const;
+    QT_DEPRECATED void selectFilter(const QString &filter);
+    QT_DEPRECATED QString selectedFilter() const;
+#endif
+    void setNameFilterDetailsVisible(bool enabled);
+    bool isNameFilterDetailsVisible() const;
 
-    void selectFilter(const QString &filter);
-    QString selectedFilter() const;
+    void setNameFilter(const QString &filter);
+    void setNameFilters(const QStringList &filters);
+    QStringList nameFilters() const;
+    void selectNameFilter(const QString &filter);
+    QString selectedNameFilter() const;
+
+    QDir::Filters filter() const;
+    void setFilter(QDir::Filters filters);
 
     void setViewMode(ViewMode mode);
     ViewMode viewMode() const;
@@ -267,13 +282,15 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_currentChanged(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_enterDirectory(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_goToDirectory(const QString &path))
-    Q_PRIVATE_SLOT(d_func(), void _q_useNameFilter(const QString &nameFilter))
+    Q_PRIVATE_SLOT(d_func(), void _q_useNameFilter(int index))
     Q_PRIVATE_SLOT(d_func(), void _q_selectionChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_goToUrl(const QUrl &url))
     Q_PRIVATE_SLOT(d_func(), void _q_goHome())
     Q_PRIVATE_SLOT(d_func(), void _q_showHeader(QAction *))
     Q_PRIVATE_SLOT(d_func(), void _q_autoCompleteFileName(const QString &text))
     Q_PRIVATE_SLOT(d_func(), void _q_rowsInserted(const QModelIndex & parent))
+    Q_PRIVATE_SLOT(d_func(), void _q_fileRenamed(const QString &path,
+                const QString oldName, const QString newName))
 };
 
 inline void QFileDialog::setDirectory(const QDir &adirectory)
@@ -282,6 +299,8 @@ inline void QFileDialog::setDirectory(const QDir &adirectory)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFileDialog::Options)
 
 #endif // QT_NO_FILEDIALOG
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

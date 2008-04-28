@@ -48,103 +48,15 @@
 
 #include <QtDesigner/QDesignerIconCacheInterface>
 
-#include <resourcefile_p.h>
-
-#include <QtCore/QMap>
-#include <QtCore/QVariant>
-#include <QtCore/QString>
-#include <QtCore/QPair>
-#include <QtCore/qdebug.h>
-
-#include <QtGui/QPixmap>
-#include <QtGui/QIcon>
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
-
-/*
-    We need two caches - one for icons and one for pixmaps - which are in all
-    other respects identical.
-*/
-template <typename Item>
-class ResourceCache
-{
-public:
-    Item keyToItem(const QString &path, const QString &resourcePath = QString());
-    QString itemToFilePath(const Item &item) const;
-    QString itemToQrcPath(const Item &item) const;
-
-    QList<Item> itemList() const;
-
-private:
-    typedef QPair<QString, QString> Key;
-    typedef QMap<Key, Item> KeyToItemMap;
-    typedef QMap<int, Key> SerialToKeyMap;
-
-    KeyToItemMap m_key_to_item;
-    SerialToKeyMap m_serial_to_key;
-};
-
-template <typename Item>
-Item ResourceCache<Item>::keyToItem(const QString &filePath, const QString &qrcPath)
-{
-    Key key = qMakePair(filePath, qrcPath);
-    typename KeyToItemMap::const_iterator it = m_key_to_item.constFind(key);
-    if (it != m_key_to_item.constEnd())
-        return *it;
-
-    QString real_path;
-    if (!qrcPath.isEmpty()) {
-        ResourceFile rf(qrcPath);
-        if (rf.load()) {
-            real_path = rf.resolvePath(filePath);
-        } else {
-            qWarning() <<  QObject::tr("The icon specified by %1 could not be opened: %2").arg(qrcPath).arg(rf.errorMessage());
-        }
-    } else {
-       real_path = filePath;
-    }
-
-    if (real_path.isEmpty())
-        return Item();
-
-    Item item(real_path);
-    if (item.isNull())
-        return Item();
-    m_key_to_item.insert(key, item);
-    m_serial_to_key.insert(item.serialNumber(), key);
-
-    return item;
-}
-
-template <typename Item>
-QString ResourceCache<Item>::itemToFilePath(const Item &item) const
-{
-    typename SerialToKeyMap::const_iterator it = m_serial_to_key.find(item.serialNumber());
-    if (it != m_serial_to_key.end())
-        return (*it).first;
-    return QString();
-}
-
-template <typename Item>
-QString ResourceCache<Item>::itemToQrcPath(const Item &item) const
-{
-    typename SerialToKeyMap::const_iterator it = m_serial_to_key.find(item.serialNumber());
-    if (it != m_serial_to_key.end())
-        return (*it).second;
-    return QString();
-}
-
-template <typename Item>
-QList<Item> ResourceCache<Item>::itemList() const
-{
-    return m_key_to_item.values();
-}
 
 class QT_FORMEDITOR_EXPORT IconCache : public QDesignerIconCacheInterface
 {
     Q_OBJECT
 public:
-    IconCache(QObject *parent);
+    explicit IconCache(QObject *parent);
 
     virtual QIcon nameToIcon(const QString &path, const QString &resourcePath = QString());
     virtual QString iconToFilePath(const QIcon &pm) const;
@@ -159,10 +71,10 @@ public:
     virtual QString resolveQrcPath(const QString &filePath, const QString &qrcPath, const QString &workingDirectory = QString()) const;
 
 private:
-    ResourceCache<QIcon> m_icon_cache;
-    ResourceCache<QPixmap> m_pixmap_cache;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // ICONCACHE_H

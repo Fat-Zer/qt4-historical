@@ -59,6 +59,8 @@
 #include <QtGui/QFont>
 #include <QtGui/QFontDatabase>
 
+QT_BEGIN_NAMESPACE
+
 class QComboBox;
 class QFontComboBox;
 class QTimer;
@@ -102,5 +104,7 @@ private:
     QComboBox *m_pointSizeComboBox;
     QTimer *m_previewFontUpdateTimer;
 };
+
+QT_END_NAMESPACE
 
 #endif // FONTPANEL_H

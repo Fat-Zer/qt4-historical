@@ -47,10 +47,11 @@
 #include <QtDesigner/QDesignerBrushManagerInterface>
 #include "formeditor_global.h"
 
-#include <QObject>
-#include <QMap>
-#include <QBrush>
+#include <QtCore/QObject>
+#include <QtCore/QMap>
+#include <QtGui/QBrush>
 
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -84,5 +85,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif

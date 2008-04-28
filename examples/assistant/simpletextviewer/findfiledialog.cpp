@@ -45,12 +45,14 @@
 
 #include "findfiledialog.h"
 
+//! [0]
 FindFileDialog::FindFileDialog(QTextEdit *editor, QAssistantClient *assistant,
                                QWidget *parent)
     : QDialog(parent)
 {
     currentAssistantClient = assistant;
     currentEditor = editor;
+//! [0]
 
     createButtons();
     createComboBoxes();
@@ -63,7 +65,9 @@ FindFileDialog::FindFileDialog(QTextEdit *editor, QAssistantClient *assistant,
     findFiles();
 
     setWindowTitle(tr("Find File"));
+//! [1]
 }
+//! [1]
 
 void FindFileDialog::browse()
 {
@@ -77,11 +81,13 @@ void FindFileDialog::browse()
     }
 }
 
+//! [2]
 void FindFileDialog::help()
 {
     currentAssistantClient->showPage(QLibraryInfo::location(QLibraryInfo::ExamplesPath) +
             QDir::separator() +  "assistant/simpletextviewer/documentation/filedialog.html");
 }
+//! [2]
 
 void FindFileDialog::openFile(QTreeWidgetItem *item)
 {

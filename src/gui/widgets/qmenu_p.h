@@ -63,6 +63,8 @@
 #include "QtCore/qbasictimer.h"
 #include "private/qwidget_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_MENU
 
 class QTornOffMenu;
@@ -78,15 +80,31 @@ struct QMacMenuAction {
 };
 #endif
 
+#ifdef Q_OS_WINCE
+struct QWceMenuAction {
+    uint command;    
+    QPointer<QAction> action;
+    HMENU menuHandle;
+    QWceMenuAction() : menuHandle(0), command(0) {}
+};
+#endif
+
 class QMenuPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QMenu)
 public:
-    QMenuPrivate() : itemsDirty(0), maxIconWidth(0), tabWidth(0), ncols(0), collapsibleSeparators(true), hasHadMouse(0), motions(0),
+    QMenuPrivate() : itemsDirty(0), maxIconWidth(0), tabWidth(0), ncols(0),
+                      collapsibleSeparators(true), hasHadMouse(0), aboutToHide(0), motions(0),
                       currentAction(0), scroll(0), eventLoop(0), tearoff(0), tornoff(0), tearoffHighlighted(0),
                       hasCheckableItems(0), sloppyAction(0)
 #ifdef Q_WS_MAC
                       ,mac_menu(0)
+#endif
+#ifdef Q_OS_WINCE
+                      ,wce_menu(0)
+#endif
+#ifdef QT3_SUPPORT
+                      ,emitHighlighted(false)
 #endif
     { }
     ~QMenuPrivate()
@@ -94,6 +112,9 @@ public:
         delete scroll;
 #ifdef Q_WS_MAC
         delete mac_menu;
+#endif
+#ifdef Q_OS_WINCE
+        delete wce_menu;
 #endif
     }
     void init();
@@ -116,6 +137,7 @@ public:
     static QPointer<QMenu> mouseDown;
     QPoint mousePopupPos;
     uint hasHadMouse : 1;
+    uint aboutToHide : 1;
     int motions;
     QAction *currentAction;
     static QBasicTimer menuDelayTimer;
@@ -164,6 +186,7 @@ public:
     virtual QList<QPointer<QWidget> > calcCausedStack() const;
     QMenuCaused causedPopup;
     void hideUpToMenuBar();
+    void hideMenu(QMenu *menu);
 
     //index mappings
     inline QAction *actionAt(int i) const { return q_func()->actions().at(i); }
@@ -228,9 +251,42 @@ public:
     void setMacMenuEnabled(bool enable = true);
 #endif
 
+    QPointer<QAction> actionAboutToTrigger;
+#ifdef QT3_SUPPORT
+    bool emitHighlighted;
+#endif
+
+#ifdef Q_OS_WINCE
+        struct QWceMenuPrivate {
+        QList<QWceMenuAction*> actionItems;
+        HMENU menuHandle;
+        QWceMenuPrivate();
+        ~QWceMenuPrivate();        
+        void addAction(QAction *, QWceMenuAction* =0);
+        void addAction(QWceMenuAction *, QWceMenuAction* =0);
+        void syncAction(QWceMenuAction *);
+        inline void syncAction(QAction *a) { syncAction(findAction(a)); }
+        void removeAction(QWceMenuAction *);
+        void rebuild(bool reCreate = false);
+        inline void removeAction(QAction *a) { removeAction(findAction(a)); }
+        inline QWceMenuAction *findAction(QAction *a) {
+            for(int i = 0; i < actionItems.size(); i++) {
+                QWceMenuAction *act = actionItems[i];
+                if(a == act->action)
+                    return act;
+            }
+            return 0;
+        }
+    } *wce_menu;
+    HMENU wceMenu(bool create = false);
+    QAction* wceCommands(uint command);
+#endif
+
     QPointer<QWidget> noReplayFor;
 };
 
 #endif // QT_NO_MENU
+
+QT_END_NAMESPACE
 
 #endif // QMENU_P_H

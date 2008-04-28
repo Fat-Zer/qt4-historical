@@ -62,6 +62,8 @@ TRANSLATOR qdesigner_internal::WidgetEditorTool
 #include <QtGui/QCursor>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 WidgetEditorTool::WidgetEditorTool(FormWindow *formWindow)
@@ -129,7 +131,6 @@ bool WidgetEditorTool::handleEvent(QWidget *widget, QWidget *managedWidget, QEve
     const bool passive = core()->widgetFactory()->isPassiveInteractor(widget) != 0
                     || mainWindowSeparatorEvent(widget, event); // separators in QMainWindow
                                                                 // are no longer widgets
-
     switch (event->type()) {
     case QEvent::Resize:
     case QEvent::Move:
@@ -139,8 +140,11 @@ bool WidgetEditorTool::handleEvent(QWidget *widget, QWidget *managedWidget, QEve
         break;
 
     case QEvent::FocusOut:
-    case QEvent::FocusIn:
-        return !(passive || widget == m_formWindow);
+    case QEvent::FocusIn: // Popup cancelled over a form widget: Reset its focus frame
+        return !(passive || widget == m_formWindow || widget == m_formWindow->mainContainer());
+
+    case QEvent::Wheel: // Prevent spinboxes and combos from reacting
+        return !passive;
 
     case QEvent::KeyPress:
         return !passive && handleKeyPressEvent(widget, managedWidget, static_cast<QKeyEvent*>(event));
@@ -326,3 +330,4 @@ void WidgetEditorTool::deactivated()
     m_formWindow->clearSelection();
 }
 
+QT_END_NAMESPACE

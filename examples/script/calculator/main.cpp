@@ -50,24 +50,34 @@
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(calculator);
+
     QApplication app(argc, argv);
+//! [0]
     QScriptEngine engine;
 
     QFile scriptFile(":/calculator.js");
     scriptFile.open(QIODevice::ReadOnly);
     engine.evaluate(scriptFile.readAll());
     scriptFile.close();
+//! [0]
 
+//! [1]
     QUiLoader loader;
     QFile uiFile(":/calculator.ui");
     uiFile.open(QIODevice::ReadOnly);
     QWidget *ui = loader.load(&uiFile);
     uiFile.close();
+//! [1]
 
+//! [2]
     QScriptValue ctor = engine.evaluate("Calculator");
-    QScriptValue scriptUi = engine.newQObject(ui);
+    QScriptValue scriptUi = engine.newQObject(ui, QScriptEngine::ScriptOwnership);
     QScriptValue calc = ctor.construct(QScriptValueList() << scriptUi);
+//! [2]
 
+//! [3]
     ui->show();
     return app.exec();
+//! [3]
 }

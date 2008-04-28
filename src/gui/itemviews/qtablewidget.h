@@ -47,8 +47,11 @@
 #include <QtGui/qtableview.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qvector.h>
+//#include <QtGui/qitemselectionmodel.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -255,7 +258,9 @@ public:
     int currentColumn() const;
     QTableWidgetItem *currentItem() const;
     void setCurrentItem(QTableWidgetItem *item);
+    void setCurrentItem(QTableWidgetItem *item, QItemSelectionModel::SelectionFlags command);
     void setCurrentCell(int row, int column);
+    void setCurrentCell(int row, int column, QItemSelectionModel::SelectionFlags command);
 
     void sortItems(int column, Qt::SortOrder order = Qt::AscendingOrder);
     void setSortingEnabled(bool enable);
@@ -366,6 +371,8 @@ inline bool QTableWidgetItem::isSelected() const
 { return (view ? view->isItemSelected(this) : false); }
 
 #endif // QT_NO_TABLEWIDGET
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

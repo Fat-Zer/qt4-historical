@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_SCRIPT
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace Ecma {
 
 class String: public Core
@@ -67,31 +69,7 @@ public:
     String(QScriptEnginePrivate *engine);
     virtual ~String();
 
-    inline QScriptClassInfo *classInfo() const
-        { return m_classInfo; }
-
     virtual void execute(QScriptContextPrivate *context);
-
-    class StringClassData: public QScriptClassData
-    {
-        QScriptClassInfo *m_classInfo;
-
-    public:
-        StringClassData(QScriptClassInfo *classInfo);
-        virtual ~StringClassData();
-
-        inline QScriptClassInfo *classInfo() const
-            { return m_classInfo; }
-
-        virtual bool resolve(const QScriptValueImpl &object,
-                             QScriptNameIdImpl *nameId,
-                             QScript::Member *member, QScriptValueImpl *base);
-        virtual bool get(const QScriptValueImpl &obj, const Member &m,
-                         QScriptValueImpl *out_value);
-        virtual int extraMemberCount(const QScriptValueImpl &object);
-        virtual bool extraMember(const QScriptValueImpl &object,
-                                 int index, Member *member);
-    };
 
     void newString(QScriptValueImpl *result, const QString &value = QString());
 
@@ -134,13 +112,12 @@ protected:
                                                  QScriptClassInfo *classInfo);
     static QScriptValueImpl method_fromCharCode(QScriptContextPrivate *context, QScriptEnginePrivate *eng,
                                             QScriptClassInfo *classInfo);
-
-private:
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ecma
 
-#endif // QT_NO_SCRIPT
-#endif
+QT_END_NAMESPACE
 
+#endif // QT_NO_SCRIPT
+
+#endif

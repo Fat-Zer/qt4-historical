@@ -46,10 +46,13 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QLabel;
 class QPushButton;
 class QTcpServer;
+QT_END_NAMESPACE
 
+//! [0]
 class Server : public QDialog
 {
     Q_OBJECT
@@ -66,5 +69,6 @@ private:
     QTcpServer *tcpServer;
     QStringList fortunes;
 };
+//! [0]
 
 #endif

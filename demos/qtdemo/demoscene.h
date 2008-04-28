@@ -50,7 +50,7 @@ class DemoScene : public QGraphicsScene
 {
 public:
     DemoScene(QObject *parent) : QGraphicsScene(parent){};
-    
+
 protected:
     void drawItems(QPainter *painter, int numItems, QGraphicsItem *items[], const QStyleOptionGraphicsItem options[], QWidget *widget);
 };

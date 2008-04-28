@@ -54,6 +54,8 @@ TRANSLATOR qdesigner_internal::PreviewWorkspace
 #include <QtGui/QPaintEvent>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace {
     class PreviewMdiArea: public QMdiArea {
     public:
@@ -119,3 +121,5 @@ QMdiSubWindow *PreviewFrame::ensureMdiSubWindow()
     return m_mdiSubWindow;
 }
 }
+
+QT_END_NAMESPACE

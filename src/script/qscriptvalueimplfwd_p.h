@@ -44,7 +44,7 @@
 #ifndef QSCRIPTVALUEIMPLFWD_P_H
 #define QSCRIPTVALUEIMPLFWD_P_H
 
-#include "qscriptclassinfo_p.h"
+#include "qscripttypeinfo_p.h"
 
 #ifndef QT_NO_SCRIPT
 
@@ -52,7 +52,8 @@
 
 #include <QtCore/qstring.h>
 #include <QtCore/qlist.h>
-#include <QtCore/qshareddata.h>
+
+QT_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
@@ -68,11 +69,17 @@
 class QScriptValueImpl;
 typedef QList<QScriptValueImpl> QScriptValueImplList;
 
+class QScriptClassInfo;
 class QScriptObject;
 class QScriptObjectData;
 class QScriptNameIdImpl;
-class QScriptClassInfo;
 class QScriptFunction;
+class QScriptEnginePrivate;
+
+namespace QScript
+{
+    class Member;
+};
 
 class QScriptValueImpl
 {
@@ -94,6 +101,8 @@ public:
 
     inline QScript::Type type() const;
     inline QScriptEngine *engine() const;
+    inline QScriptTypeInfo *typeInfo() const;
+    inline void setTypeInfo(QScriptTypeInfo *type);
     inline QScriptClassInfo *classInfo() const;
     inline void setClassInfo(QScriptClassInfo *cls);
     inline QScriptNameIdImpl *stringValue() const;
@@ -127,7 +136,7 @@ public:
     inline qint32 toInt32() const;
     inline quint32 toUInt32() const;
     inline quint16 toUInt16() const;
-    inline QVariant toVariant() const;
+    QVariant toVariant() const;
     inline QObject *toQObject() const;
     inline const QMetaObject *toQMetaObject() const;
     inline QScriptValueImpl toObject() const;
@@ -163,6 +172,8 @@ public:
 
     inline QScriptValue::PropertyFlags propertyFlags(const QString &name,
                                                      const QScriptValue::ResolveFlags &mode = QScriptValue::ResolvePrototype) const;
+    inline QScriptValue::PropertyFlags propertyFlags(QScriptNameIdImpl *nameId,
+                                                     const QScriptValue::ResolveFlags &mode = QScriptValue::ResolvePrototype) const;
 
     inline bool deleteProperty(QScriptNameIdImpl *nameId,
                                const QScriptValue::ResolveFlags &mode = QScriptValue::ResolveLocal);
@@ -175,6 +186,7 @@ public:
     inline QScriptValueImpl construct(const QScriptValueImpl &arguments);
 
     inline void mark(int) const;
+    bool isMarked(int) const;
 
     inline operator QScriptValue() const;
 
@@ -183,8 +195,9 @@ public:
 
     inline void setQObjectValue(QObject *object);
 
-    inline QExplicitlySharedDataPointer<QScriptObjectData> objectData() const;
-    inline void setObjectData(QExplicitlySharedDataPointer<QScriptObjectData> data);
+    inline QScriptObjectData *objectData() const;
+    inline void setObjectData(QScriptObjectData *data);
+    void destroyObjectData();
 
     inline void createMember(QScriptNameIdImpl *nameId,
                       QScript::Member *member, uint flags); // ### remove me
@@ -195,10 +208,10 @@ public:
                  QScriptValueImpl *object, QScriptValue::ResolveFlags mode) const;
     bool resolve_helper(QScriptNameIdImpl *nameId, QScript::Member *member,
                         QScriptValueImpl *object, QScriptValue::ResolveFlags mode) const;
-    inline void get(const QScript::Member &member, QScriptValueImpl *obj) const;
-    inline void get_helper(const QScript::Member &member, QScriptValueImpl *obj) const;
+    inline void get(const QScript::Member &member, QScriptValueImpl *out) const;
+    inline void get_helper(const QScript::Member &member, QScriptValueImpl *out) const;
     inline void get(QScriptNameIdImpl *nameId, QScriptValueImpl *out);
-    inline void put(const QScript::Member &member, const QScriptValueImpl &object);
+    inline void put(const QScript::Member &member, const QScriptValueImpl &value);
     inline void removeMember(const QScript::Member &member);
 
     inline QScriptValueImpl scope() const;
@@ -220,8 +233,11 @@ public:
         QScriptObject *m_object_value;
         QScriptNameIdImpl *m_string_value;
     };
-    QScriptClassInfo *m_class;
+    QScriptTypeInfo *m_type;
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
-#endif
+
+#endif // QSCRIPTVALUEIMPLFWD_P_H

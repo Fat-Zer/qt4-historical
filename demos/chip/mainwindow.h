@@ -46,11 +46,11 @@
 
 #include <QtGui/qwidget.h>
 
-class QGraphicsScene;
-class QGraphicsView;
-class QLabel;
-class QSlider;
-class QSplitter;
+QT_FORWARD_DECLARE_CLASS(QGraphicsScene)
+QT_FORWARD_DECLARE_CLASS(QGraphicsView)
+QT_FORWARD_DECLARE_CLASS(QLabel)
+QT_FORWARD_DECLARE_CLASS(QSlider)
+QT_FORWARD_DECLARE_CLASS(QSplitter)
 
 class MainWindow : public QWidget
 {

@@ -48,9 +48,14 @@
 
 QT_BEGIN_HEADER
 
-QT_MODULE(Core)
+namespace std {
+    struct bidirectional_iterator_tag;
+    struct random_access_iterator_tag;
+}
 
-namespace std { struct bidirectional_iterator_tag; struct random_access_iterator_tag; }
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Core)
 
 #define Q_DECLARE_SEQUENTIAL_ITERATOR(C) \
 \
@@ -191,6 +196,8 @@ public: \
     { while (const_iterator(i) != c->constBegin()) if (*(n = --i) == t) return true; \
       n = c->end(); return false; } \
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

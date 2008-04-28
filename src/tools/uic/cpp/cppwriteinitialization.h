@@ -45,16 +45,19 @@
 #define CPPWRITEINITIALIZATION_H
 
 #include "treewalker.h"
-#include <QPair>
-#include <QHash>
-#include <QMap>
-#include <QStack>
-#include <QTextStream>
+#include <QtCore/QPair>
+#include <QtCore/QHash>
+#include <QtCore/QMap>
+#include <QtCore/QStack>
+#include <QtCore/QTextStream>
+
+QT_BEGIN_NAMESPACE
 
 class Driver;
 class Uic;
 class DomBrush;
 class DomFont;
+class DomResourceIcon;
 class DomSizePolicy;
 struct Option;
 
@@ -72,6 +75,20 @@ namespace CPP {
     };
     inline bool operator ==(const FontHandle &f1, const FontHandle &f2) { return f1.compare(f2) == 0; }
     inline bool operator  <(const FontHandle &f1, const FontHandle &f2) { return f1.compare(f2) < 0; }
+
+    // Handle for a flat DOM icon to get comparison functionality required for maps
+    class IconHandle {
+    public:
+        IconHandle(const DomResourceIcon *domIcon);
+        int compare(const IconHandle &) const;
+    private:
+        const DomResourceIcon *m_domIcon;
+#if defined(Q_OS_MAC) && defined(Q_CC_GNU) && (__GNUC__ == 3 && __GNUC_MINOR__ == 3)
+        friend uint qHash(const IconHandle &);
+#endif
+    };
+    inline bool operator ==(const IconHandle &i1, const IconHandle &i2) { return i1.compare(i2) == 0; }
+    inline bool operator  <(const IconHandle &i1, const IconHandle &i2) { return i1.compare(i2) < 0; }
 
     // Handle for a flat DOM size policy to get comparison functionality required for maps
     class SizePolicyHandle {
@@ -153,14 +170,16 @@ struct WriteInitialization : public TreeWalker
 private:
     static QString domColor2QString(const DomColor *c);
 
+    QString iconCall(const DomProperty *prop);
     QString pixCall(const DomProperty *prop) const;
+    QString pixCall(const QString &type, const QString &text) const;
     QString trCall(const QString &str, const QString &comment = QString()) const;
     QString trCall(DomString *str) const;
 
     enum { WritePropertyIgnoreMargin = 1, WritePropertyIgnoreSpacing = 2 };
     void writeProperties(const QString &varName, const QString &className, const DomPropertyList &lst, unsigned flags = 0);
     void writeColorGroup(DomColorGroup *colorGroup, const QString &group, const QString &paletteName);
-    void writeBrush(DomBrush *brush, const QString &brushName);
+    void writeBrush(const DomBrush *brush, const QString &brushName);
 
 //
 // special initialization
@@ -169,8 +188,11 @@ private:
     void initializeComboBox(DomWidget *w);
     void initializeListWidget(DomWidget *w);
     void initializeTreeWidget(DomWidget *w);
-    void initializeTreeWidgetItems(const QString &className, const QString &varName, const QList<DomItem *> &items);
+    void initializeTreeWidgetItems(const QString &className, const QString &varName, const QList<DomItem *> &items, const QString &parentPath);
     void initializeTableWidget(DomWidget *w);
+
+    QString disableSorting(DomWidget *w, const QString &varName);
+    void enableSorting(DomWidget *w, const QString &varName, const QString &tempName);
 
 //
 // special initialization for the Q3 support classes
@@ -196,7 +218,9 @@ private:
 
 private:
     QString writeFontProperties(const DomFont *f);
+    QString writeIconProperties(const DomResourceIcon *i);
     QString writeSizePolicy(const DomSizePolicy *sp);
+    QString writeBrushInitialization(const DomBrush *brush);
 
     const Uic *m_uic;
     Driver *m_driver;
@@ -221,18 +245,22 @@ private:
     QHash<QString, DomWidget*> m_registeredWidgets;
     QHash<QString, DomImage*> m_registeredImages;
     QHash<QString, DomAction*> m_registeredActions;
-    QHash<uint, QString> m_colorBrushHash;
+    typedef QHash<uint, QString> ColorBrushHash;
+    ColorBrushHash m_colorBrushHash;
     // Map from font properties to  font variable name for reuse
     // Map from size policy to  variable for reuse
 #if defined(Q_OS_MAC) && defined(Q_CC_GNU) && (__GNUC__ == 3 && __GNUC_MINOR__ == 3)
     typedef QHash<FontHandle, QString> FontPropertiesNameMap;
+    typedef QHash<IconHandle, QString> IconPropertiesNameMap;
     typedef QHash<SizePolicyHandle, QString> SizePolicyNameMap;
 #else
     typedef QMap<FontHandle, QString> FontPropertiesNameMap;
+    typedef QMap<IconHandle, QString> IconPropertiesNameMap;
     typedef QMap<SizePolicyHandle, QString> SizePolicyNameMap;
 #endif
-    FontPropertiesNameMap m_FontPropertiesNameMap;
-    SizePolicyNameMap m_SizePolicyNameMap;
+    FontPropertiesNameMap m_fontPropertiesNameMap;
+    IconPropertiesNameMap m_iconPropertiesNameMap;
+    SizePolicyNameMap     m_sizePolicyNameMap;
 
     class LayoutDefaultHandler {
     public:
@@ -276,5 +304,7 @@ private:
 };
 
 } // namespace CPP
+
+QT_END_NAMESPACE
 
 #endif // CPPWRITEINITIALIZATION_H

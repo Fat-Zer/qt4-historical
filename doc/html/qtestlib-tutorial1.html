@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qtestlib.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtestlib.qdoc -->
 <head>
-  <title>Qt 4.3: Chapter 1: Writing a Unit Test</title>
+  <title>Qt 4.4: Chapter 1: Writing a Unit Test</title>
   <link rel="contents" href="qtestlib-tutorial.html" />
   <link rel="next" href="qtestlib-tutorial2.html" />
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -18,10 +18,12 @@
 [<a href="qtestlib-tutorial.html">Contents</a>]
 [Next: <a href="qtestlib-tutorial2.html">Chapter 2</a>]
 </p>
-<h1 align="center">Chapter 1: Writing a Unit Test<br /><small></small></h1>
+<h1 class="title">Chapter 1: Writing a Unit Test<br /><span class="subtitle"></span>
+</h1>
 <p>Files:</p>
 <ul>
 <li><a href="qtestlib-tutorial1-testqstring-cpp.html">qtestlib/tutorial1/testqstring.cpp</a></li>
+<li><a href="qtestlib-tutorial1-tutorial1-pro.html">qtestlib/tutorial1/tutorial1.pro</a></li>
 </ul>
 <p>In this first chapter we will see how to write a simple unit test for a class, and how to execute it.</p>
 <a name="writing-a-test"></a>
@@ -37,11 +39,11 @@
  };</pre>
 <p>Note that you need to include the <a href="qtest.html">QTest</a> header, and that the test functions have to be declared as private slots so the test framework finds and executes it.</p>
 <p>Then you need to implement the test function itself. The implementation could look like this:</p>
-<pre> void TestQString::toUpper()
- {
-     QString str = &quot;Hello&quot;;
-     QVERIFY(str.toUpper() == &quot;HELLO&quot;);
- }</pre>
+<pre>         void TestQString::toUpper()
+         {
+             QString str = &quot;Hello&quot;;
+             QVERIFY(str.toUpper() == &quot;HELLO&quot;);
+         }</pre>
 <p>The <a href="qtest.html#QVERIFY">QVERIFY</a>() macro evaluates the expression passed as its argument. If the expression evaluates to true, the execution of the test function continues. Otherwise, a message describing the failure is appended to the test log, and the test function stops executing.</p>
 <p>But if you want a more verbose output to the test log, you should use the <a href="qtest.html#QCOMPARE">QCOMPARE</a>() macro instead:</p>
 <pre> void TestQString::toUpper()
@@ -57,18 +59,18 @@
 <a name="executing-a-test"></a>
 <h2>Executing a Test</h2>
 <p>Now that we finished writing our test, we want to execute it. Assuming that our test was saved as <tt>testqstring.cpp</tt> in an empty directory: we build the test using qmake to create a project and generate a makefile.</p>
-<pre> /myTestDirectory$ qmake -project &quot;CONFIG += qtestlib&quot;
- /myTestDirectory$ qmake
- /myTestDirectory$ make</pre>
+<pre>         /myTestDirectory$ qmake -project &quot;QT += testlib&quot;
+         /myTestDirectory$ qmake
+         /myTestDirectory$ make</pre>
 <p><b>Note:</b>If you're using windows, replace <tt>make</tt> with <tt>nmake</tt> or whatever build tool you use.</p>
 <p>Running the resulting executable should give you the following output:</p>
-<pre> ********* Start testing of TestQString *********
- Config: Using QTest library 4.1.0, Qt 4.1.0
- PASS   : TestQString::initTestCase()
- PASS   : TestQString::toUpper()
- PASS   : TestQString::cleanupTestCase()
- Totals: 3 passed, 0 failed, 0 skipped
- ********* Finished testing of TestQString *********</pre>
+<pre>         ********* Start testing of TestQString *********
+         Config: Using QTest library 4.1.0, Qt 4.1.0
+         PASS   : TestQString::initTestCase()
+         PASS   : TestQString::toUpper()
+         PASS   : TestQString::cleanupTestCase()
+         Totals: 3 passed, 0 failed, 0 skipped
+         ********* Finished testing of TestQString *********</pre>
 <p>Congratulations! You just wrote and executed your first unit test using the <a href="qtestlib-manual.html#qtestlib">QTestLib</a> framework.</p>
 <p>
 [<a href="qtestlib-tutorial.html">Contents</a>]
@@ -78,6 +80,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -11,6 +11,6 @@ CONFIG  += qt
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/itemviews/editabletreemodel
-sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro *.txt
+sources.files = $$FORMS $$HEADERS $$RESOURCES $$SOURCES *.pro *.txt
 sources.path = $$[QT_INSTALL_EXAMPLES]/itemviews/editabletreemodel
 INSTALLS += target sources

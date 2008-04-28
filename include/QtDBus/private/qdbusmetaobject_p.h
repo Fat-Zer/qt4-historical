@@ -1,1 +1,1 @@
-#include "../../../tools/qdbus/src/qdbusmetaobject_p.h"
+#include "../../../src/dbus/qdbusmetaobject_p.h"

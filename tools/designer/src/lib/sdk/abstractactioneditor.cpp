@@ -43,6 +43,8 @@
 
 #include "abstractactioneditor.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerActionEditorInterface
 
@@ -118,5 +120,6 @@ QDesignerFormEditorInterface *QDesignerActionEditorInterface::core() const
     action is not available in the action editor.
 
     \sa manageAction()
-
 */
+
+QT_END_NAMESPACE

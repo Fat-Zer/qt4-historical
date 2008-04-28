@@ -61,6 +61,8 @@
 #include <QtGui/QMenu>
 #include <QtCore/QHash>
 
+QT_BEGIN_NAMESPACE
+
 class QTimer;
 class QLineEdit;
 
@@ -140,7 +142,6 @@ protected:
 
     void adjustIndicator(const QPoint &pos);
     int findAction(const QPoint &pos) const;
-    int actionAtPosition(const QPoint &pos) const;
 
     QAction *currentAction() const;
     int realActionCount() const;
@@ -195,5 +196,7 @@ private:
     friend class qdesigner_internal::CreateSubmenuCommand;
     friend class qdesigner_internal::ActionInsertionCommand;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_MENU_H

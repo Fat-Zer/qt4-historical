@@ -55,6 +55,8 @@
 #include "tokenizer.h"
 #include "tree.h"
 
+QT_BEGIN_NAMESPACE
+
 /* qmake ignore Q_OBJECT */
 
 #define COMMAND_CLASS                   Doc::alias("class")
@@ -220,7 +222,7 @@ void CppCodeParser::parseHeaderFile( const Location& location,
 
     reset( tree );
     Location fileLocation( filePath );
-    FileTokenizer fileTokenizer( fileLocation, in );
+    Tokenizer fileTokenizer( fileLocation, in );
     tokenizer = &fileTokenizer;
     readToken();
     matchDeclList( tree->root() );
@@ -243,9 +245,10 @@ void CppCodeParser::parseSourceFile( const Location& location,
 
     reset( tree );
     Location fileLocation( filePath );
-    FileTokenizer fileTokenizer( fileLocation, in );
+    Tokenizer fileTokenizer( fileLocation, in );
     tokenizer = &fileTokenizer;
     readToken();
+    usedNamespaces.clear();
     matchDocsAndStuff();
     fclose( in );
 }
@@ -418,8 +421,19 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
 	    doc.location().warning( tr("Invalid syntax in '\\%1'")
 				    .arg(COMMAND_FN) );
 	} else {
-	    func = tre->findFunctionNode( parentPath, clone );
-	    if ( func == 0 ) {
+            if (!usedNamespaces.isEmpty()) {
+                foreach (QString usedNamespace, usedNamespaces) {
+                    QStringList newPath = usedNamespace.split("::") + parentPath;
+	            func = tre->findFunctionNode( newPath, clone );
+                    if (func)
+                        break;
+                }
+            }
+            // Search the root namespace if no match was found.
+            if (func == 0)
+	        func = tre->findFunctionNode( parentPath, clone );
+
+	    if (func == 0) {
 		if ( parentPath.isEmpty() && !lastPath.isEmpty() )
 		    func = tre->findFunctionNode( lastPath, clone );
 		if ( func == 0 ) {
@@ -479,10 +493,26 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
         }
         return func;
     } else if ( nodeTypeMap.contains(command) ) {
+
 	// ### split(" ") hack is there to support header file syntax
 	QStringList path = arg.split(" ")[0].split("::");
-	Node *node = tre->findNode(path, nodeTypeMap[command]);
-	if ( node == 0 ) {
+
+        Node *node = 0;
+        if (!usedNamespaces.isEmpty()) {
+            foreach (QString usedNamespace, usedNamespaces) {
+                QStringList newPath = usedNamespace.split("::") + path;
+	        node = tre->findNode(newPath, nodeTypeMap[command]);
+                if (node) {
+                    path = newPath;
+                    break;
+                }
+            }
+        }
+        // Search the root namespace if no match was found.
+        if (node == 0)
+            node = tre->findNode(path, nodeTypeMap[command]);
+
+	if (node == 0) {
 	    doc.location().warning(tr("Cannot find '%1' specified with '\\%2' in any header file")
 				   .arg(arg).arg(command));
 	    lastPath = path;
@@ -496,7 +526,13 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
 		cnode->setServiceName( args[1] );
 		cnode->setHideFromMainList( true );
 	    }
-	}
+	} else if (node->isInnerNode()) {
+            if (path.size() > 1) {
+                path.pop_back();
+                usedNamespaces.insert(path.join("::"));
+            }
+        }
+
 	return node;
     } else if ( command == COMMAND_EXAMPLE ) {
 	FakeNode *fake = new FakeNode( tre->root(), arg, FakeNode::Example );
@@ -563,9 +599,13 @@ void CppCodeParser::processOtherMetaCommand( const Doc& doc,
                 doc.location().warning(
                     tr("Base function for '\\%1' in %2() is private or internal")
 		    .arg(COMMAND_REIMP).arg(node->name()));
-            } else
+            }
 #endif
-                func->setAccess(Node::Private);
+            // Note: Setting the access to Private hides the documentation,
+            // but setting the status to Internal makes the node available
+            // in the XML output when the WebXMLGenerator is used.
+            func->setAccess(Node::Private);
+            func->setStatus(Node::Internal);
 	} else {
 	    doc.location().warning(tr("Ignored '\\%1' in %2").arg(COMMAND_REIMP)
                                    .arg(node->name()));
@@ -575,9 +615,10 @@ void CppCodeParser::processOtherMetaCommand( const Doc& doc,
 	if (arg.startsWith("<") || arg.startsWith("\"")) {
 	    pseudoParent = static_cast<InnerNode *>(tre->findNode(QStringList(arg), Node::Fake));
 	} else {
-	    pseudoParent = static_cast<InnerNode *>(tre->findNode(QStringList(arg), Node::Class));
+            QStringList newPath = arg.split("::");
+	    pseudoParent = static_cast<InnerNode *>(tre->findNode(QStringList(newPath), Node::Class));
             if (!pseudoParent)
-                pseudoParent = static_cast<InnerNode *>(tre->findNode(QStringList(arg),
+                pseudoParent = static_cast<InnerNode *>(tre->findNode(QStringList(newPath),
                                                         Node::Namespace));
         }
 	if (!pseudoParent) {
@@ -744,7 +785,7 @@ bool CppCodeParser::matchDataType( CodeChunk *dataType, QString *var )
 
 	if ( virgin ) {
 	    if ( match(Tok_Ident) )
-		dataType->appendBase( previousLexeme() );
+		dataType->append( previousLexeme() );
 	    else if ( match(Tok_void) || match(Tok_int) || match(Tok_char) ||
 		      match(Tok_double) || match(Tok_Ellipsis) )
 		dataType->append( previousLexeme() );
@@ -760,7 +801,7 @@ bool CppCodeParser::matchDataType( CodeChunk *dataType, QString *var )
 	    dataType->append( previousLexeme() );
 
 	if ( match(Tok_Gulbrandsen) )
-	    dataType->appendBase( previousLexeme() );
+	    dataType->append( previousLexeme() );
 	else
 	    break;
     }
@@ -1043,9 +1084,6 @@ bool CppCodeParser::matchBaseSpecifier( ClassNode *classe, bool isClass )
 {
     Node::Access access;
 
-    if ( tok == Tok_virtual )
-	readToken();
-
     switch ( tok ) {
     case Tok_public:
 	access = Node::Public;
@@ -1062,6 +1100,9 @@ bool CppCodeParser::matchBaseSpecifier( ClassNode *classe, bool isClass )
     default:
 	access = isClass ? Node::Private : Node::Public;
     }
+
+    if ( tok == Tok_virtual )
+	readToken();
 
     CodeChunk baseClass;
     if (!matchDataType(&baseClass))
@@ -1151,8 +1192,41 @@ bool CppCodeParser::matchNamespaceDecl(InnerNode *parent)
     }
 
     readToken(); // skip '{'
+    bool matched = matchDeclList(namespasse);
 
-    return matchDeclList(namespasse) && match(Tok_RightBrace);
+    return matched && match(Tok_RightBrace);
+}
+
+bool CppCodeParser::matchUsingDecl()
+{
+    readToken(); // skip 'using'
+
+    // 'namespace'
+    if (tok != Tok_namespace)
+        return false;
+
+    readToken();
+    // identifier
+    if (tok != Tok_Ident)
+        return false;
+
+    QString name;
+    while (tok == Tok_Ident) {
+        name += lexeme();
+        readToken();
+        if (tok == Tok_Semicolon)
+            break;
+        else if (tok != Tok_Gulbrandsen)
+            return false;
+        name += "::";
+        readToken();
+    }
+
+    /*
+        So far, so good. We have 'using namespace Foo;'.
+    */
+    usedNamespaces.insert(name);
+    return true;
 }
 
 bool CppCodeParser::matchEnumItem( InnerNode *parent, EnumNode *enume )
@@ -1332,6 +1406,9 @@ bool CppCodeParser::matchDeclList( InnerNode *parent )
         case Tok_namespace:
             matchNamespaceDecl(parent);
             break;
+        case Tok_using:
+            matchUsingDecl();
+            break;
 	case Tok_template:
 	    templateStuff = matchTemplateHeader();
 	    continue;
@@ -1472,7 +1549,15 @@ bool CppCodeParser::matchDocsAndStuff()
 		FunctionNode *func = 0;
 
 		if ( matchFunctionDecl(0, &parentPath, &clone) ) {
-		    func = tre->findFunctionNode( parentPath, clone );
+                    foreach (QString usedNamespace, usedNamespaces) {
+                        QStringList newPath = usedNamespace.split("::") + parentPath;
+		        func = tre->findFunctionNode(newPath, clone);
+                        if (func)
+                            break;
+                    }
+                    if (func == 0)
+		        func = tre->findFunctionNode( parentPath, clone );
+
 		    if (func) {
 			func->borrowParameterNames( clone );
 			nodes.append( func );
@@ -1517,6 +1602,8 @@ bool CppCodeParser::matchDocsAndStuff()
 		++d;
 		++n;
 	    }
+        } else if (tok == Tok_using) {
+            matchUsingDecl();
 	} else {
 	    QStringList parentPath;
 	    FunctionNode *clone;
@@ -1553,7 +1640,7 @@ bool CppCodeParser::makeFunctionNode(const QString& synopsis, QStringList *paren
 
     Location loc;
     QByteArray latin1 = synopsis.toLatin1();
-    StringTokenizer stringTokenizer(loc, latin1.data(), latin1.size());
+    Tokenizer stringTokenizer(loc, latin1);
     stringTokenizer.setParsingFnOrMacro(true);
     tokenizer = &stringTokenizer;
     readToken();
@@ -1599,7 +1686,7 @@ void CppCodeParser::instantiateIteratorMacro(const QString &container, const QSt
 
     Location loc(includeFile);   // hack to get the include file for free
     QByteArray latin1 = resultingCode.toLatin1();
-    StringTokenizer stringTokenizer(loc, latin1.data(), latin1.size());
+    Tokenizer stringTokenizer(loc, latin1);
     tokenizer = &stringTokenizer;
     readToken();
     matchDeclList(tre->root());
@@ -1626,7 +1713,7 @@ void CppCodeParser::createExampleFileNodes(FakeNode *fake)
     // should not hardcode the file extensions.
     // To do: create a new configuration setting and make sure its value
     // finds its way here.
-    QStringList exampleFiles = Config::getFilesHere(fullPath, "*.cpp *.h *.js");
+    QStringList exampleFiles = Config::getFilesHere(fullPath, "*.cpp *.h *.js *.xq *.svg *.xml *.ui");
     if (!exampleFiles.isEmpty()) {
         // move main.cpp and to the end, if it exists
         QString mainCpp;
@@ -1644,10 +1731,12 @@ void CppCodeParser::createExampleFileNodes(FakeNode *fake)
         if (!mainCpp.isEmpty())
             exampleFiles.append(mainCpp);
 
-        // add any qmake Qt resource files
-        exampleFiles += Config::getFilesHere(fullPath, "*.qrc");
+        // add any qmake Qt resource files and qmake project files
+        exampleFiles += Config::getFilesHere(fullPath, "*.qrc *.pro");
     }
 
     foreach (QString exampleFile, exampleFiles)
         (void) new FakeNode(fake, exampleFile.mid(sizeOfBoringPartOfName), FakeNode::File);
 }
+
+QT_END_NAMESPACE

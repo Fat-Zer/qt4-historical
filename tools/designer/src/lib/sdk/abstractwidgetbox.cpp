@@ -43,6 +43,8 @@
 
 #include "abstractwidgetbox.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerWidgetBoxInterface
 
@@ -66,12 +68,7 @@
     without calling the save() function, the original content can be
     restored by a simple invocation of the load() function:
 
-    \code
-        QDesignerWidgetBoxInterface *widgetBox = 0:
-        widgetBox = formEditor->widgetBox();
-
-        widgetBox->load();
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractwidgetbox.cpp 0
 
     The QDesignerWidgetBoxInterface class is not intended to be
     instantiated directly. You can retrieve an interface to Qt
@@ -89,29 +86,16 @@
     with the setFileName() function to save your changes into another
     file. Remember to store the name of the original file first:
 
-    \code
-        QString originalFile = widgetBox->fileName();
-
-        widgetBox->setFileName("myWidgetBox.xml");
-        widgetBox->save();
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractwidgetbox.cpp 1
 
     Then you can restore the original contents of the widget box by
     resetting the file name to the original file and calling load():
 
-    \code
-        widgetBox->setFileName(originalFile);
-        widgetBox->load();
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractwidgetbox.cpp 2
 
     In a similar way, you can later use your customized XML file:
 
-    \code
-        if (widgetBox->filename() != "myWidgetBox.xml") {
-            widgetBox->setFileName("myWidgetBox.xml");
-            widgetBox->load();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractwidgetbox.cpp 3
 
 
     \sa QDesignerFormEditorInterface
@@ -354,3 +338,5 @@ int QDesignerWidgetBoxInterface::findOrInsertCategory(const QString &categoryNam
     \typedef QDesignerWidgetBoxInterface::WidgetList
     \internal
 */
+
+QT_END_NAMESPACE

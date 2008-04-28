@@ -56,6 +56,8 @@
 #include <private/qstandarditemmodel_p.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 class QStandardItemModelLessThan
 {
 public:
@@ -358,8 +360,11 @@ bool QStandardItemPrivate::insertRows(int row, const QList<QStandardItem*> &item
             children.insert(index, columnCount() * count, 0);
     }
     for (int i = 0; i < items.count(); ++i) {
+        QStandardItem *item = items.at(i);
+        item->d_func()->model = model;
+        item->d_func()->parent = q;
         int index = childIndex(i + row, 0);
-        children.replace(index, items.at(i));
+        children.replace(index, item);
     }
     if (model)
         model->d_func()->rowsInserted(q, row, count);
@@ -768,6 +773,14 @@ QStandardItem *QStandardItem::parent() const
 /*!
     Sets the item's data for the given \a role to the specified \a value.
 
+    If you subclass QStandardItem and reimplement this function, your
+    reimplementation should call emitDataChanged() if you do not call
+    the base implementation of setData(). This will ensure that e.g.
+    views using the model are notified of the changes.
+    
+    \note The default implementation treats Qt::EditRole and Qt::DisplayRole
+    as referring to the same data.
+
     \sa Qt::ItemDataRole, data(), setFlags()
 */
 void QStandardItem::setData(const QVariant &value, int role)
@@ -797,6 +810,9 @@ void QStandardItem::setData(const QVariant &value, int role)
 /*!
     Returns the item's data for the given \a role, or an invalid
     QVariant if there is no data for the role.
+    
+    \note The default implementation treats Qt::EditRole and Qt::DisplayRole
+    as referring to the same data.  
 */
 QVariant QStandardItem::data(int role) const
 {
@@ -808,6 +824,25 @@ QVariant QStandardItem::data(int role) const
             return (*it).value;
     }
     return QVariant();
+}
+
+/*!
+  \since 4.4
+
+  Causes the model associated with this item to emit a
+  \l{QAbstractItemModel::dataChanged()}{dataChanged}() signal for this
+  item.
+
+  You normally only need to call this function if you have subclassed
+  QStandardItem and reimplemented data() and/or setData().
+
+  \sa setData()
+*/
+void QStandardItem::emitDataChanged()
+{
+    Q_D(QStandardItem);
+    if (d->model)
+        d->model->d_func()->itemChanged(this);
 }
 
 /*!
@@ -1202,7 +1237,7 @@ void QStandardItem::setTristate(bool tristate)
 /*!
   \fn bool QStandardItem::isTristate() const
 
-  Returns whether the item is tristate; that is, if it's checkable with tree
+  Returns whether the item is tristate; that is, if it's checkable with three
   separate states.
 
   The default value is false.
@@ -1769,8 +1804,11 @@ bool QStandardItem::operator<(const QStandardItem &other) const
 }
 
 /*!
-    Sorts the children of the item using the given \a order,
-    by the values in the given \a column.
+    Sorts the children of the item using the given \a order, by the values in
+    the given \a column.
+    
+    \note This function is recursive, therefore it sorts the children of the
+    item, its grandchildren, etc.
 
     \sa {operator<()}
 */
@@ -1918,27 +1956,11 @@ QDataStream &operator<<(QDataStream &out, const QStandardItem &item)
 
     An example usage of QStandardItemModel to create a table:
 
-    \code
-            QStandardItemModel model(4, 4);
-            for (int row = 0; row < 4; ++row) {
-                for (int column = 0; column < 4; ++column) {
-                    QStandardItem *item = new QStandardItem(QString("row %0, column %1").arg(row).arg(column));
-                    model.setItem(row, column, item);
-                }
-            }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qstandarditemmodel.cpp 0
 
     An example usage of QStandardItemModel to create a tree:
 
-    \code
-            QStandardItemModel model;
-            QStandardItem *parentItem = model.invisibleRootItem();
-            for (int i = 0; i < 4; ++i) {
-                QStandardItem *item = new QStandardItem(QString("item %0").arg(i));
-                parentItem->appendRow(item);
-                parentItem = item;
-            }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qstandarditemmodel.cpp 1
 
     After setting the model on a view, you typically want to react to user
     actions, such as an item being clicked. Since a QAbstractItemView provides
@@ -1950,32 +1972,19 @@ QDataStream &operator<<(QDataStream &out, const QStandardItem &item)
     a QAbstractItemView signal, such as QAbstractItemView::clicked(). First
     you connect the view's signal to a slot in your class:
 
-    \code
-        QTreeView *treeView = new QTreeView(this);
-        treeView->setModel(myStandardItemModel);
-        connect(treeView, SIGNAL(clicked(QModelIndex)),
-                this, SLOT(clicked(QModelIndex)));
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qstandarditemmodel.cpp 2
 
     When you receive the signal, you call itemFromIndex() on the given model
     index to get a pointer to the item:
 
-    \code
-        void MyWidget::clicked(const QModelIndex &index)
-        {
-            QStandardItem *item = myStandardItemModel->itemFromIndex(index);
-            // Do stuff with the item ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qstandarditemmodel.cpp 3
 
     Conversely, you must obtain the QModelIndex of an item when you want to
     invoke a model/view function that takes an index as argument. You can
     obtain the index either by using the model's indexFromItem() function, or,
     equivalently, by calling QStandardItem::index():
 
-    \code
-        treeView->scrollTo(item->index());
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.itemviews.qstandarditemmodel.cpp 4
 
     You are, of course, not required to use the item-based approach; you could
     instead rely entirely on the QAbstractItemModel interface when working with
@@ -2187,6 +2196,9 @@ QStandardItem *QStandardItemModel::item(int row, int column) const
     through the QStandardItem API, making it possible to write functions that
     can treat top-level items and their children in a uniform way; for
     example, recursive functions involving a tree model.
+
+    \note Calling \l{QAbstractItemModel::index()}{index()} on the QStandardItem object
+    retrieved from this function is not valid.
 */
 QStandardItem *QStandardItemModel::invisibleRootItem() const
 {
@@ -2842,6 +2854,8 @@ void QStandardItemModel::sort(int column, Qt::SortOrder order)
   \fn QObject *QStandardItemModel::parent() const
   \internal
 */
+
+QT_END_NAMESPACE
 
 #include "moc_qstandarditemmodel.cpp"
 

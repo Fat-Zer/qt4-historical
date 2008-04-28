@@ -45,6 +45,7 @@
 
 #include "draglabel.h"
 
+//! [0]
 DragLabel::DragLabel(const QString &text, QWidget *parent)
     : QLabel(parent)
 {
@@ -57,42 +58,57 @@ DragLabel::DragLabel(const QString &text, QWidget *parent)
 
     QFont font;
     font.setStyleStrategy(QFont::ForceOutline);
+//! [0]
 
+//! [1]
     QPainter painter;
     painter.begin(&image);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(Qt::white);
-    painter.drawRoundRect(QRectF(0.5, 0.5, image.width()-1, image.height()-1),
-                          25, 25);
+    painter.drawRoundedRect(QRectF(0.5, 0.5, image.width()-1, image.height()-1),
+                            25, 25, Qt::RelativeSize);
 
     painter.setFont(font);
     painter.setBrush(Qt::black);
     painter.drawText(QRect(QPoint(6, 6), size), Qt::AlignCenter, text);
     painter.end();
+//! [1]
 
+//! [2]
     setPixmap(QPixmap::fromImage(image));
     labelText = text;
 }
+//! [2]
 
+//! [3]
 void DragLabel::mousePressEvent(QMouseEvent *event)
+//! [3]
 {
+//! [4]
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream << labelText << QPoint(event->pos() - rect().topLeft());
+//! [4]
 
+//! [5]
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/x-fridgemagnet", itemData);
     mimeData->setText(labelText);
+//! [5]
 
+//! [6]
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setHotSpot(event->pos() - rect().topLeft());
     drag->setPixmap(*pixmap());
 
     hide();
+//! [6]
 
+//! [7]
     if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction)
         close();
     else
         show();
 }
+//! [7]

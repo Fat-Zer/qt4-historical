@@ -1,1 +1,1 @@
-#include "../../src/network/qudpsocket.h"
+#include "../../src/network/socket/qudpsocket.h"

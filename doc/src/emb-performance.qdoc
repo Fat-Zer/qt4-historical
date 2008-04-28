@@ -44,19 +44,19 @@
 /*!
     \if defined(qtce)
       \page qtce-performance.html
-      \title Qt/CE Performance Tuning
+      \title Qt/WinCE Performance Tuning
       \ingroup qtce
     \else
-      \page qtopiacore-performance.html
-      \title Qtopia Core Performance Tuning
-      \ingroup qtopiacore
+      \page qt-embedded-performance.html
+      \title Qt for Embedded Linux Performance Tuning
+      \ingroup qt-embedded
     \endif
 
     When building embedded applications on low-powered devices,
     \if defined(qtce)
-      \l{Qt/CE}
+      \l{Qt/WinCE}
     \else
-      \l{Qtopia Core}
+      \l{Qt for Embedded Linux}
     \endif
     provides a number of options that reduce the memory
     and/or CPU requirements by making various trade-offs. These
@@ -66,9 +66,9 @@
     But note that the most direct way of saving resources, is to avoid
     compiling in features that are not required. See the
     \if defined(qtce)
-      \l{Fine-Tuning Features in Qt/CE}{fine tuning features}
+      \l{Fine-Tuning Features in Qt/WinCE}{fine tuning features}
     \else
-      \l{Fine-Tuning Features in Qtopia Core}{fine tuning features}
+      \l{Fine-Tuning Features in Qt for Embedded Linux}{fine tuning features}
     \endif
     documentation for details.
 
@@ -105,9 +105,7 @@
     To compile Qt as a static library, use the \c -static option when
     running configure:
 
-    \code
-        ./configure -static
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-performance.qdoc 0
 
     To build the application suite as an all-in-one application,
     design each application as a stand-alone widget (or set of
@@ -135,37 +133,7 @@
     operators. Improved memory allocation and performance may be
     gained by re-implementing these functions:
 
-    \code
-        void *operator new[](size_t size)
-        {
-            return malloc(size);
-        }
-
-        void *operator new(size_t size)
-        {
-            return malloc(size);
-        }
-
-        void operator delete[](void *ptr)
-        {
-            free(ptr);
-        }
-
-        void operator delete[](void *ptr, size_t)
-        {
-            free(ptr);
-        }
-
-        void operator delete(void *ptr)
-        {
-            free(ptr);
-        }
-
-        void operator delete(void *ptr, size_t)
-        {
-            free(ptr);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-performance.qdoc 1
 
     The example above shows the necessary code to switch to the plain
     C memory allocators.
@@ -176,12 +144,7 @@
     paint buffer, to reduce flicker and to support graphics operations
     such as blending.
 
-    \if defined(qtce)
-      \l {Qt/CE}'s
-    \else
-      \l {Qtopia Core}'s
-    \endif
-    default behavior is for each client to render
+    The default behavior is for each client to render
     its widgets into memory while the server is responsible for
     putting the contents of the memory onto the screen. But when the
     hardware is known and well defined, as is often the case with
@@ -198,8 +161,8 @@
     the other is to use the QDirectPainter class to reserve a region
     of the framebuffer.
       For more information, see the
-      \l{Qtopia Core Architecture#Direct Painting}{direct painting}
-      section of the \l{Qtopia Core Architecture}{architecture}
+      \l{Qt for Embedded Linux Architecture#Direct Painting}{direct painting}
+      section of the \l{Qt for Embedded Linux Architecture}{architecture}
       documentation.
     \endif
 */

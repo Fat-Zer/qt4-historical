@@ -180,7 +180,7 @@
 #  define QT_NO_CUPS
 #endif
 
-/* Qtopia Core */
+/* Qt for Embedded Linux */
 #ifndef QT_NO_QWSEMBEDWIDGET
 #  define QT_NO_QWSEMBEDWIDGET
 #endif
@@ -288,4 +288,9 @@
 #endif
 #ifndef QT_NO_TREEWIDGET
 #  define QT_NO_TREEWIDGET
+#endif
+
+/* Windows */
+#ifndef QT_NO_WIN_ACTIVEQT
+#  define QT_NO_WIN_ACTIVEQT
 #endif

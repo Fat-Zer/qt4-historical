@@ -51,6 +51,8 @@
 #include "qlayoutengine_p.h"
 #include "qlayout_p.h"
 
+QT_BEGIN_NAMESPACE
+
 struct QGridLayoutSizeTriple
 {
     QSize minS;
@@ -69,7 +71,7 @@ class QGridBox
 public:
     QGridBox(QLayoutItem *lit) { item_ = lit; }
 
-    QGridBox(QWidget *wid) { item_ = new QWidgetItem(wid); }
+    QGridBox(const QLayout *l, QWidget *wid) { item_ = QLayoutPrivate::createWidgetItem(l, wid); }
     ~QGridBox() { delete item_; }
 
     QSize sizeHint() const { return item_->sizeHint(); }
@@ -94,6 +96,7 @@ public:
 
 private:
     friend class QGridLayoutPrivate;
+    friend class QGridLayout;
 
     inline int toRow(int rr) const { return torow >= 0 ? torow : rr - 1; }
     inline int toCol(int cc) const { return tocol >= 0 ? tocol : cc - 1; }
@@ -1396,6 +1399,25 @@ QLayoutItem *QGridLayout::itemAt(int index) const
     return d->itemAt(index);
 }
 
+/*!
+    Returns the layout item that occupies cell (\a row, \a column), or 0 if
+    the cell is empty.
+
+    \sa getItemPosition(), indexOf()
+*/
+QLayoutItem *QGridLayout::itemAtPosition(int row, int column) const
+{
+    Q_D(const QGridLayout);
+    int n = d->things.count();
+    for (int i = 0; i < n; ++i) {
+        QGridBox *box = d->things.at(i);
+        if (row >= box->row && row <= box->toRow(d->rr)
+                && column >= box->col && column <= box->toCol(d->cc)) {
+            return box->item();
+        }
+    }
+    return 0;
+}
 
 /*!
     \reimp
@@ -1412,6 +1434,8 @@ QLayoutItem *QGridLayout::takeAt(int index)
   The variables passed as \a row and \a column are updated with the position of the
   item in the layout, and the \a rowSpan and \a columnSpan variables are updated
   with the vertical and horizontal spans of the item.
+
+  \sa itemAtPosition(), itemAt()
 */
 void QGridLayout::getItemPosition(int index, int *row, int *column, int *rowSpan, int *columnSpan)
 {
@@ -1525,7 +1549,7 @@ void QGridLayout::addWidget(QWidget *widget, int row, int column, Qt::Alignment 
         return;
     }
     addChildWidget(widget);
-    QWidgetItem *b = new QWidgetItem(widget);
+    QWidgetItem *b = QLayoutPrivate::createWidgetItem(this, widget);
     addItem(b, row, column, 1, 1, alignment);
 }
 
@@ -1550,7 +1574,7 @@ void QGridLayout::addWidget(QWidget *widget, int fromRow, int fromColumn,
     int toRow = (rowSpan < 0) ? -1 : fromRow + rowSpan - 1;
     int toColumn = (columnSpan < 0) ? -1 : fromColumn + columnSpan - 1;
     addChildWidget(widget);
-    QGridBox *b = new QGridBox(widget);
+    QGridBox *b = new QGridBox(this, widget);
     b->setAlignment(alignment);
     d->add(b, fromRow, toRow, fromColumn, toColumn);
     invalidate();
@@ -1861,3 +1885,5 @@ void QGridLayout::invalidate()
     Use originCorner() instead.
 */
 
+
+QT_END_NAMESPACE

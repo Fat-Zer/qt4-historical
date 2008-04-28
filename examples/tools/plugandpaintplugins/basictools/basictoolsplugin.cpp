@@ -50,18 +50,23 @@
 
 const float Pi = 3.14159f;
 
+//! [0]
 QStringList BasicToolsPlugin::brushes() const
 {
     return QStringList() << tr("Pencil") << tr("Air Brush")
                          << tr("Random Letters");
 }
+//! [0]
 
+//! [1]
 QRect BasicToolsPlugin::mousePress(const QString &brush, QPainter &painter,
                                    const QPoint &pos)
 {
     return mouseMove(brush, painter, pos, pos);
 }
+//! [1]
 
+//! [2]
 QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
                                   const QPoint &oldPos, const QPoint &newPos)
 {
@@ -73,6 +78,7 @@ QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
     QColor color = painter.pen().color();
     int thickness = painter.pen().width();
     QColor transparentColor(color.red(), color.green(), color.blue(), 0);
+//! [2] //! [3]
 
     if (brush == tr("Pencil")) {
         painter.drawLine(oldPos, newPos);
@@ -107,19 +113,25 @@ QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
     painter.restore();
     return boundingRect;
 }
+//! [3]
 
+//! [4]
 QRect BasicToolsPlugin::mouseRelease(const QString & /* brush */,
                                      QPainter & /* painter */,
                                      const QPoint & /* pos */)
 {
     return QRect(0, 0, 0, 0);
 }
+//! [4]
 
+//! [5]
 QStringList BasicToolsPlugin::shapes() const
 {
     return QStringList() << tr("Circle") << tr("Star") << tr("Text...");
 }
+//! [5]
 
+//! [6]
 QPainterPath BasicToolsPlugin::generateShape(const QString &shape,
                                              QWidget *parent)
 {
@@ -147,13 +159,17 @@ QPainterPath BasicToolsPlugin::generateShape(const QString &shape,
 
     return path;
 }
+//! [6]
 
+//! [7]
 QStringList BasicToolsPlugin::filters() const
 {
     return QStringList() << tr("Invert Pixels") << tr("Swap RGB")
                          << tr("Grayscale");
 }
+//! [7]
 
+//! [8]
 QImage BasicToolsPlugin::filterImage(const QString &filter, const QImage &image,
                                      QWidget * /* parent */)
 {
@@ -175,5 +191,10 @@ QImage BasicToolsPlugin::filterImage(const QString &filter, const QImage &image,
     }
     return result;
 }
+//! [8]
 
+QT_BEGIN_NAMESPACE
+//! [9]
 Q_EXPORT_PLUGIN2(pnp_basictools, BasicToolsPlugin)
+//! [9]
+QT_END_NAMESPACE

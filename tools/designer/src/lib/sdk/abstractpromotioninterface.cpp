@@ -43,6 +43,8 @@
 
 #include "abstractpromotioninterface.h"
 
+QT_BEGIN_NAMESPACE
+
 QDesignerPromotionInterface::~QDesignerPromotionInterface()
 {
 }
@@ -109,3 +111,5 @@ QDesignerPromotionInterface::~QDesignerPromotionInterface()
 
      Return a list of base classes that are suitable for promotion.
 */
+
+QT_END_NAMESPACE

@@ -45,6 +45,7 @@
 
 #include "scribblearea.h"
 
+//! [0]
 ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
 {
@@ -54,8 +55,11 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     myPenWidth = 1;
     myPenColor = Qt::blue;
 }
+//! [0]
 
+//! [1]
 bool ScribbleArea::openImage(const QString &fileName)
+//! [1] //! [2]
 {
     QImage loadedImage;
     if (!loadedImage.load(fileName))
@@ -68,8 +72,11 @@ bool ScribbleArea::openImage(const QString &fileName)
     update();
     return true;
 }
+//! [2]
 
+//! [3]
 bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
+//! [3] //! [4]
 {
     QImage visibleImage = image;
     resizeImage(&visibleImage, size());
@@ -81,25 +88,37 @@ bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
         return false;
     }
 }
+//! [4]
 
+//! [5]
 void ScribbleArea::setPenColor(const QColor &newColor)
+//! [5] //! [6]
 {
     myPenColor = newColor;
 }
+//! [6]
 
+//! [7]
 void ScribbleArea::setPenWidth(int newWidth)
+//! [7] //! [8]
 {
     myPenWidth = newWidth;
 }
+//! [8]
 
+//! [9]
 void ScribbleArea::clearImage()
+//! [9] //! [10]
 {
     image.fill(qRgb(255, 255, 255));
     modified = true;
     update();
 }
+//! [10]
 
+//! [11]
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
+//! [11] //! [12]
 {
     if (event->button() == Qt::LeftButton) {
         lastPoint = event->pos();
@@ -121,13 +140,18 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+//! [12] //! [13]
 void ScribbleArea::paintEvent(QPaintEvent * /* event */)
+//! [13] //! [14]
 {
     QPainter painter(this);
     painter.drawImage(QPoint(0, 0), image);
 }
+//! [14]
 
+//! [15]
 void ScribbleArea::resizeEvent(QResizeEvent *event)
+//! [15] //! [16]
 {
     if (width() > image.width() || height() > image.height()) {
         int newWidth = qMax(width() + 128, image.width());
@@ -137,8 +161,11 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
     }
     QWidget::resizeEvent(event);
 }
+//! [16]
 
+//! [17]
 void ScribbleArea::drawLineTo(const QPoint &endPoint)
+//! [17] //! [18]
 {
     QPainter painter(&image);
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
@@ -151,8 +178,11 @@ void ScribbleArea::drawLineTo(const QPoint &endPoint)
                                      .adjusted(-rad, -rad, +rad, +rad));
     lastPoint = endPoint;
 }
+//! [18]
 
+//! [19]
 void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
+//! [19] //! [20]
 {
     if (image->size() == newSize)
         return;
@@ -163,12 +193,16 @@ void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
     painter.drawImage(QPoint(0, 0), *image);
     *image = newImage;
 }
+//! [20]
 
+//! [21]
 void ScribbleArea::print()
 {
+#ifndef QT_NO_PRINTER
     QPrinter printer(QPrinter::HighResolution);
  
     QPrintDialog *printDialog = new QPrintDialog(&printer, this);
+//! [21] //! [22]
     if (printDialog->exec() == QDialog::Accepted) {
         QPainter painter(&printer);
         QRect rect = painter.viewport();
@@ -178,4 +212,6 @@ void ScribbleArea::print()
         painter.setWindow(image.rect());
         painter.drawImage(0, 0, image);
     }
+#endif // QT_NO_PRINTER
 }
+//! [22]

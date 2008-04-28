@@ -46,6 +46,8 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTemporaryFile>
+
+QT_BEGIN_NAMESPACE
 using namespace TokenEngine;
 using namespace Rpp;
 
@@ -276,10 +278,10 @@ PreprocessorController::PreprocessorController(IncludeFiles includeFiles,
     
     //connect include callback
     connect(&m_rppTreeEvaluator,
-        SIGNAL(includeCallback(::Rpp::Source *&, const ::Rpp::Source *,
-        const QString &, ::Rpp::RppTreeEvaluator::IncludeType)),
-        SLOT(includeSlot(::Rpp::Source *&, const ::Rpp::Source *,
-        const QString &, ::Rpp::RppTreeEvaluator::IncludeType)));
+        SIGNAL(includeCallback(Rpp::Source *&, const Rpp::Source *,
+        const QString &, Rpp::RppTreeEvaluator::IncludeType)),
+        SLOT(includeSlot(Rpp::Source *&, const Rpp::Source *,
+        const QString &, Rpp::RppTreeEvaluator::IncludeType)));
 
     // connect readFile callback
     connect(&m_preprocessorCache, SIGNAL(readFile(QByteArray&,QString)),
@@ -423,3 +425,5 @@ TokenEngine::TokenSectionSequence RppPreprocessor::evaluate(const QString &filen
     DefineMap defMap = *m_activeDefinitions;
     return m_controller.evaluate(filename, &defMap);
 }
+
+QT_END_NAMESPACE

@@ -47,6 +47,8 @@
 #include "q3picture.h"
 #include "q3paintengine_svg_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3SvgDevice : public QPaintDevice
 {
 public:
@@ -151,10 +153,7 @@ bool Q3Picture::load(const QString &fileName, const char *format)
     Note that when using the load() function to read SVG files, the
     format must be specified. For example:
 
-    \code
-        Q3Picture picture;
-        picture.load("drawing.svg", SVG);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.painting.q3picture.cpp 0
 
     \sa save()
 */
@@ -213,14 +212,7 @@ bool Q3Picture::save(const QString &fileName, const char *format)
     Note that when using the save() function to save SVG files, the
     format must be specified. For example:
 
-    \code
-         Q3Picture picture;
-         QPainter painter;
-         painter.begin(&picture);           // paint in picture
-         ...
-         painter.end();                     // painting done
-         picture.save("drawing.svg", SVG);  // save picture
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.painting.q3picture.cpp 1
 
     \sa load()
 */
@@ -240,6 +232,7 @@ bool Q3Picture::save(QIODevice *dev, const char *format)
 	svg.setBoundingRect(boundingRect());
 	return svg.save(dev);
     }
-
     return QPicture::save(dev, format);
 }
+
+QT_END_NAMESPACE

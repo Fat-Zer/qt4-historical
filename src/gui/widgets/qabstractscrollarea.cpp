@@ -62,6 +62,8 @@
 #include <private/qt_mac_p.h>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QAbstractScrollArea
     \brief The QAbstractScrollArea widget provides a scrolling area with
@@ -98,6 +100,9 @@
            to the values of the scroll bars.
         \o Handle events received by the viewport in
            viewportEvent() - notably resize events.
+        \o Use \c{viewport->update()} to update the contents of the
+          viewport instead of \l{QWidget::update()}{update()}
+          as all painting operations take place on the viewport.
     \endlist
 
     With a scroll bar policy of Qt::ScrollBarAsNeeded (the default),
@@ -117,17 +122,13 @@
     QWidget::move(). When the area contents or the viewport size
     changes, we do the following: 
 
-    \quotefromfile snippets/myscrollarea.cpp
-    \skipto areaSize
-    \printto /^\}/
+    \snippet doc/src/snippets/myscrollarea.cpp 1
 
     When the scroll bars change value, we need to update the widget
     position, i.e., find the part of the widget that is to be drawn in
     the viewport:
 
-    \quotefromfile snippets/myscrollarea.cpp
-    \skipto hvalue
-    \printto /^\}/
+    \snippet doc/src/snippets/myscrollarea.cpp 0
 
     In order to track scroll bar movements, reimplement the virtual
     function scrollContentsBy(). In order to fine-tune scrolling
@@ -242,7 +243,7 @@ void QAbstractScrollAreaPrivate::replaceScrollBar(QScrollBar *scrollBar,
     container->scrollBar = scrollBar;
     container->layout->removeWidget(oldBar);
     container->layout->insertWidget(0, scrollBar);
-    scrollBar->setVisible(oldBar->isVisibleTo(oldBar->window()));
+    scrollBar->setVisible(oldBar->isVisibleTo(container));
     scrollBar->setInvertedAppearance(oldBar->invertedAppearance());
     scrollBar->setInvertedControls(oldBar->invertedControls());
     scrollBar->setRange(oldBar->minimum(), oldBar->maximum());
@@ -300,38 +301,8 @@ void QAbstractScrollAreaPrivate::layoutChildren()
     bool needv = (vbarpolicy == Qt::ScrollBarAlwaysOn
                   || (vbarpolicy == Qt::ScrollBarAsNeeded && vbar->minimum() < vbar->maximum()));
 
-    const int hsbExt = hbar->sizeHint().height();
-    const int vsbExt = vbar->sizeHint().width();
-    const QPoint extPoint(vsbExt, hsbExt);
-    const QSize extSize(vsbExt, hsbExt);
-
-    const QRect widgetRect = q->rect();
-    QStyleOption opt(0);
-    opt.init(q);
-
-    const bool hasCornerWidget = (cornerWidget != 0);
-
-// If the scroll bars are at the very right and bottom of the window we
-// move their positions to be aligned with the size grip.
 #ifdef Q_WS_MAC
     QWidget * const window = q->window();
-    // Check if a native sizegrip is present.
-    bool hasMacReverseSizeGrip = false;
-    bool hasMacSizeGrip = false;
-    HIViewRef nativeSizeGrip;
-    HIViewFindByID(HIViewGetRoot(HIViewGetWindow(HIViewRef(q->winId()))), kHIViewWindowGrowBoxID, &nativeSizeGrip);
-    if (nativeSizeGrip) {
-        // Look for a native size grip at the visual window bottom right and at the
-        // absolute window bottom right. In reverse mode, the native size grip does not
-        // swich side, so we need to check if it is on the "wrong side".
-        const QPoint scrollAreaBottomRight = q->mapTo(window, widgetRect.bottomRight() - QPoint(frameWidth, frameWidth));
-        const QPoint windowBottomRight = window->rect().bottomRight();
-        const QPoint visualWindowBottomRight = QStyle::visualPos(opt.direction, opt.rect, windowBottomRight);
-        const QPoint offset = windowBottomRight - scrollAreaBottomRight;
-        const QPoint visualOffset = visualWindowBottomRight - scrollAreaBottomRight;
-        hasMacSizeGrip = (visualOffset.manhattanLength() < vsbExt);
-        hasMacReverseSizeGrip = (hasMacSizeGrip == false && (offset.manhattanLength() < hsbExt));
-    }
 
     // Use small scroll bars for tool windows, to match the native size grip.
     const QMacStyle::WidgetSizePolicy hpolicy = QMacStyle::widgetSizePolicy(hbar);
@@ -349,6 +320,42 @@ void QAbstractScrollAreaPrivate::layoutChildren()
             QMacStyle::setWidgetSizePolicy(vbar, QMacStyle::SizeDefault);
     }
 #endif
+
+    const int hsbExt = hbar->sizeHint().height();
+    const int vsbExt = vbar->sizeHint().width();
+    const QPoint extPoint(vsbExt, hsbExt);
+    const QSize extSize(vsbExt, hsbExt);
+
+    const QRect widgetRect = q->rect();
+    QStyleOption opt(0);
+    opt.init(q);
+
+    const bool hasCornerWidget = (cornerWidget != 0);
+
+// If the scroll bars are at the very right and bottom of the window we
+// move their positions to be aligned with the size grip.
+#ifdef Q_WS_MAC
+    // Check if a native sizegrip is present.
+    bool hasMacReverseSizeGrip = false;
+    bool hasMacSizeGrip = false;
+    HIViewRef nativeSizeGrip = 0;
+    if (q->testAttribute(Qt::WA_WState_Created)) {
+        HIViewFindByID(HIViewGetRoot(HIViewGetWindow(HIViewRef(q->winId()))), kHIViewWindowGrowBoxID, &nativeSizeGrip);
+    }
+    if (nativeSizeGrip) {
+        // Look for a native size grip at the visual window bottom right and at the
+        // absolute window bottom right. In reverse mode, the native size grip does not
+        // swich side, so we need to check if it is on the "wrong side".
+        const QPoint scrollAreaBottomRight = q->mapTo(window, widgetRect.bottomRight() - QPoint(frameWidth, frameWidth));
+        const QPoint windowBottomRight = window->rect().bottomRight();
+        const QPoint visualWindowBottomRight = QStyle::visualPos(opt.direction, opt.rect, windowBottomRight);
+        const QPoint offset = windowBottomRight - scrollAreaBottomRight;
+        const QPoint visualOffset = visualWindowBottomRight - scrollAreaBottomRight;
+        hasMacSizeGrip = (visualOffset.manhattanLength() < vsbExt);
+        hasMacReverseSizeGrip = (hasMacSizeGrip == false && (offset.manhattanLength() < hsbExt));
+    }
+#endif
+
     QPoint cornerOffset(needv ? vsbExt : 0, needh ? hsbExt : 0);
     QRect controlsRect;
     QRect viewportRect;
@@ -361,8 +368,11 @@ void QAbstractScrollAreaPrivate::layoutChildren()
         const QPoint cornerExtra(needv ? extra : 0, needh ? extra : 0);
         QRect frameRect = widgetRect;
         frameRect.adjust(0, 0, -cornerOffset.x() - cornerExtra.x(), -cornerOffset.y() - cornerExtra.y());
-        q->setFrameRect(frameRect);
-        viewportRect = q->contentsRect();
+        q->setFrameRect(QStyle::visualRect(opt.direction, opt.rect, frameRect));
+        // The frame rect needs to be in logical coords, however we need to flip 
+        // the contentsRect back before passing it on to the viewportRect
+        // since the viewportRect has it's logical coords calculated later.
+        viewportRect = QStyle::visualRect(opt.direction, opt.rect, q->contentsRect());
     } else {
         q->setFrameRect(QStyle::visualRect(opt.direction, opt.rect, widgetRect));
         controlsRect = q->contentsRect();
@@ -1258,6 +1268,9 @@ void QAbstractScrollArea::setupViewport(QWidget *viewport)
     Q_UNUSED(viewport);
 }
 
+QT_END_NAMESPACE
+
 #include "moc_qabstractscrollarea.cpp"
 #include "moc_qabstractscrollarea_p.cpp"
+
 #endif // QT_NO_SCROLLAREA

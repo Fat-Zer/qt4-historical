@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/richtext.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/richtext.qdoc -->
 <head>
-  <title>Qt 4.3: Rich Text Document Structure</title>
+  <title>Qt 4.4: Rich Text Document Structure</title>
   <link rel="prev" href="richtext.html" />
   <link rel="contents" href="richtext.html" />
   <link rel="next" href="richtext-cursor.html" />
@@ -20,7 +20,8 @@
 [<a href="richtext.html">Contents</a>]
 [Next: <a href="richtext-cursor.html">The QTextCursor Interface</a>]
 </p>
-<h1 align="center">Rich Text Document Structure<br /><small></small></h1>
+<h1 class="title">Rich Text Document Structure<br /><span class="subtitle"></span>
+</h1>
 <ul><li><a href="#rich-text-documents">Rich Text Documents</a></li>
 <li><a href="#document-elements">Document Elements</a></li>
 <ul><li><a href="#text-blocks">Text Blocks</a></li>
@@ -67,7 +68,6 @@
          QTextFragment currentFragment = it.fragment();
          if (currentFragment.isValid())
              processFragment(currentFragment);
-
          }
      }</pre>
 <p>Blocks are also used to represent list items. As a result, blocks can define their own character formats which contain information about block-level decoration, such as the type of bullet points used for list items. The formatting for the block itself is described by the <a href="qtextblockformat.html">QTextBlockFormat</a> class, and describes properties such as text alignment, indentation, and background color.</p>
@@ -76,7 +76,6 @@
 
      while (currentBlock.isValid()) {
          processBlock(currentBlock);
-
          currentBlock = currentBlock.next();
      }</pre>
 <p>This method is useful for when you want to extract just the rich text from a document because it ignores frames, tables, and other types of structure.</p>
@@ -178,6 +177,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

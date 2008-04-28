@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Sql)
 
 class Q_SQL_EXPORT QSqlIndex : public QSqlRecord
@@ -84,6 +86,8 @@ private:
     QString nm;
     QList<bool> sorts;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

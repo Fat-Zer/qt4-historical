@@ -53,6 +53,8 @@
 #include <qdatastream.h>
 #include <qdatetime.h>
 
+QT_BEGIN_NAMESPACE
+
 QTextCopyHelper::QTextCopyHelper(const QTextCursor &_source, const QTextCursor &_destination, bool forceCharFormat, const QTextCharFormat &fmt)
     : formatCollection(*_destination.d->priv->formatCollection()), originalText(_source.d->priv->buffer())
 {
@@ -224,6 +226,9 @@ QTextDocumentFragmentPrivate::QTextDocumentFragmentPrivate(const QTextCursor &_c
     QTextCursor destCursor(doc);
     QTextCopyHelper(_cursor, destCursor).copy();
     doc->docHandle()->endEditBlock();
+
+    if (_cursor.d)
+        doc->docHandle()->mergeCachedResources(_cursor.d->priv);
 }
 
 void QTextDocumentFragmentPrivate::insert(QTextCursor &_cursor) const
@@ -243,6 +248,8 @@ void QTextDocumentFragmentPrivate::insert(QTextCursor &_cursor) const
 
 /*!
     \class QTextDocumentFragment
+    \reentrant
+
     \brief The QTextDocumentFragment class represents a piece of formatted text
     from a QTextDocument.
 
@@ -321,12 +328,11 @@ QTextDocumentFragment::QTextDocumentFragment(const QTextDocumentFragment &rhs)
 */
 QTextDocumentFragment &QTextDocumentFragment::operator=(const QTextDocumentFragment &rhs)
 {
-    QTextDocumentFragmentPrivate *x = rhs.d;
-    if (x)
-        x->ref.ref();
-    x = qAtomicSetPtr(&d, x);
-    if (x && !x->ref.deref())
-        delete x;
+    if (rhs.d)
+        rhs.d->ref.ref();
+    if (d && !d->ref.deref())
+        delete d;
+    d = rhs.d;
     return *this;
 }
 
@@ -365,6 +371,9 @@ QString QTextDocumentFragment::toPlainText() const
 /*!
     \overload
 */
+
+#ifndef QT_NO_TEXTHTMLPARSER
+
 QString QTextDocumentFragment::toHtml() const
 {
     return toHtml(QByteArray());
@@ -386,6 +395,8 @@ QString QTextDocumentFragment::toHtml(const QByteArray &encoding) const
     return QTextHtmlExporter(d->doc).toHtml(encoding, QTextHtmlExporter::ExportFragment);
 }
 
+#endif // QT_NO_TEXTHTMLPARSER
+
 /*!
     Returns a document fragment that contains the given \a plainText.
 
@@ -403,11 +414,21 @@ QTextDocumentFragment QTextDocumentFragment::fromPlainText(const QString &plainT
     return res;
 }
 
+static QTextListFormat::Style nextListStyle(QTextListFormat::Style style)
+{
+    if (style == QTextListFormat::ListDisc)
+        return QTextListFormat::ListCircle;
+    else if (style == QTextListFormat::ListCircle)
+        return QTextListFormat::ListSquare;
+    return style;
+}
+
+#ifndef QT_NO_TEXTHTMLPARSER
+
 QTextHtmlImporter::QTextHtmlImporter(QTextDocument *_doc, const QString &_html, ImportMode mode, const QTextDocument *resourceProvider)
-    : indent(0), doc(_doc), importMode(mode)
+    : indent(0), compressNextWhitespace(PreserveWhiteSpace), doc(_doc), importMode(mode)
 {
     cursor = QTextCursor(doc);
-    compressNextWhitespace = false;
     wsm = QTextHtmlParserNode::WhiteSpaceNormal;
 
     QString html = _html;
@@ -426,21 +447,12 @@ QTextHtmlImporter::QTextHtmlImporter(QTextDocument *_doc, const QString &_html, 
 //    dumpHtml();
 }
 
-static QTextListFormat::Style nextListStyle(QTextListFormat::Style style)
-{
-    if (style == QTextListFormat::ListDisc)
-        return QTextListFormat::ListCircle;
-    else if (style == QTextListFormat::ListCircle)
-        return QTextListFormat::ListSquare;
-    return style;
-}
-
 void QTextHtmlImporter::import()
 {
     cursor.beginEditBlock();
     hasBlock = true;
     forceBlockMerging = false;
-    compressNextWhitespace = !textEditMode;
+    compressNextWhitespace = RemoveWhiteSpace;
     blockTagClosed = false;
     for (currentNodeIdx = 0; currentNodeIdx < count(); ++currentNodeIdx) {
         currentNode = &at(currentNodeIdx);
@@ -473,7 +485,15 @@ void QTextHtmlImporter::import()
             if (blockTagClosed
                 && !currentNode->isBlock()
                 && currentNode->id != Html_unknown)
+            {
                 hasBlock = false;
+            } else if (hasBlock) {
+                // when collapsing subsequent block tags we need to clear the block format
+                QTextBlockFormat block = currentNode->blockFormat;
+                block.setIndent(indent);
+
+                cursor.setBlockFormat(block);
+            }
         }
 
         if (currentNode->displayMode == QTextHtmlElement::DisplayNone) {
@@ -518,20 +538,13 @@ void QTextHtmlImporter::import()
     cursor.endEditBlock();
 }
 
-static bool isPreservingWhitespaceMode(QTextHtmlParserNode::WhiteSpaceMode mode)
-{
-    return mode == QTextHtmlParserNode::WhiteSpacePre
-           || mode == QTextHtmlParserNode::WhiteSpacePreWrap
-           ;
-}
-
 bool QTextHtmlImporter::appendNodeText()
 {
     const int initialCursorPosition = cursor.position();
     QTextCharFormat format = currentNode->charFormat;
 
-    if (isPreservingWhitespaceMode(wsm))
-        compressNextWhitespace = false;
+    if(wsm == QTextHtmlParserNode::WhiteSpacePre || wsm == QTextHtmlParserNode::WhiteSpacePreWrap)
+        compressNextWhitespace = PreserveWhiteSpace;
 
     QString text = currentNode->text;
 
@@ -545,7 +558,9 @@ bool QTextHtmlImporter::appendNodeText()
             && ch != QChar::Nbsp
             && ch != QChar::ParagraphSeparator) {
 
-            if (compressNextWhitespace)
+            if (compressNextWhitespace == CollapseWhiteSpace)
+                compressNextWhitespace = RemoveWhiteSpace; // allow this one, and remove the ones coming next.
+            else if(compressNextWhitespace == RemoveWhiteSpace)
                 continue;
 
             if (wsm == QTextHtmlParserNode::WhiteSpacePre
@@ -558,14 +573,14 @@ bool QTextHtmlImporter::appendNodeText()
                     continue;
                 }
             } else if (wsm != QTextHtmlParserNode::WhiteSpacePreWrap) {
-                compressNextWhitespace = true;
+                compressNextWhitespace = RemoveWhiteSpace;
                 if (wsm == QTextHtmlParserNode::WhiteSpaceNoWrap)
                     ch = QChar::Nbsp;
                 else
                     ch = QLatin1Char(' ');
             }
         } else {
-            compressNextWhitespace = false;
+            compressNextWhitespace = PreserveWhiteSpace;
         }
 
         if (ch == QLatin1Char('\n')
@@ -622,6 +637,7 @@ QTextHtmlImporter::ProcessNodeResult QTextHtmlImporter::processSpecialNodes()
                 doc->rootFrame()->setFrameFormat(fmt);
                 const_cast<QTextHtmlParserNode *>(currentNode)->charFormat.clearProperty(QTextFormat::BackgroundBrush);
             }
+            compressNextWhitespace = RemoveWhiteSpace;
             break;
 
         case Html_ol:
@@ -654,7 +670,7 @@ QTextHtmlImporter::ProcessNodeResult QTextHtmlImporter::processSpecialNodes()
             l.format = listFmt;
             l.listNode = currentNodeIdx;
             lists.append(l);
-            compressNextWhitespace = true;
+            compressNextWhitespace = RemoveWhiteSpace;
 
             // broken html: <ul>Text here<li>Foo
             const QString simpl = currentNode->text.simplified();
@@ -667,6 +683,7 @@ QTextHtmlImporter::ProcessNodeResult QTextHtmlImporter::processSpecialNodes()
             Table t = scanTable(currentNodeIdx);
             tables.append(t);
             hasBlock = false;
+            compressNextWhitespace = RemoveWhiteSpace;
             return ContinueWithNextNode;
         }
 
@@ -689,6 +706,7 @@ QTextHtmlImporter::ProcessNodeResult QTextHtmlImporter::processSpecialNodes()
             cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
             cursor.mergeCharFormat(currentNode->charFormat);
             cursor.movePosition(QTextCursor::Right);
+            compressNextWhitespace = CollapseWhiteSpace;
 
             hasBlock = false;
             return ContinueWithNextNode;
@@ -704,6 +722,7 @@ QTextHtmlImporter::ProcessNodeResult QTextHtmlImporter::processSpecialNodes()
             else
                 appendBlock(blockFormat);
             hasBlock = false;
+            compressNextWhitespace = RemoveWhiteSpace;
             return ContinueWithNextNode;
         }
 
@@ -760,7 +779,7 @@ bool QTextHtmlImporter::closeTag()
                 // claim to have closed one for the creation of a new one
                 // in import()
                 blockTagClosed = false;
-                compressNextWhitespace = true;
+                compressNextWhitespace = RemoveWhiteSpace;
                 break;
 
             case Html_th:
@@ -768,7 +787,7 @@ bool QTextHtmlImporter::closeTag()
                 if (t && !t->isTextFrame)
                     ++t->currentCell;
                 blockTagClosed = true;
-                compressNextWhitespace = true;
+                compressNextWhitespace = RemoveWhiteSpace;
                 break;
 
             case Html_ol:
@@ -781,7 +800,7 @@ bool QTextHtmlImporter::closeTag()
                 break;
 
             case Html_br:
-                compressNextWhitespace = true;
+                compressNextWhitespace = RemoveWhiteSpace;
                 break;
 
             case Html_div:
@@ -864,8 +883,12 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
                 columnWidths.resize(qMax(columnWidths.count(), colsInRow));
                 rowColSpanForColumn.resize(columnWidths.size());
                 for (int i = currentColumn; i < currentColumn + c.tableCellColSpan; ++i) {
-                    if (columnWidths.at(i).type() == QTextLength::VariableLength)
-                        columnWidths[i] = c.width;
+                    if (columnWidths.at(i).type() == QTextLength::VariableLength) {
+                        QTextLength w = c.width;
+                        if (c.tableCellColSpan > 1 && w.type() != QTextLength::VariableLength)
+                            w = QTextLength(w.type(), w.value(100.) / c.tableCellColSpan);
+                        columnWidths[i] = w;
+                    }
                     rowColSpanForColumn[i] = spanInfo;
                 }
             }
@@ -958,12 +981,24 @@ QTextHtmlImporter::ProcessNodeResult QTextHtmlImporter::processBlockNode()
     if (currentNode->isTableCell() && !tables.isEmpty()) {
         Table &t = tables.last();
         if (!t.isTextFrame && !t.currentCell.atEnd()) {
-            const QTextTableCell cell = t.currentCell.cell();
-            if (cell.isValid())
+            QTextTableCell cell = t.currentCell.cell();
+            if (cell.isValid()) {
+                QTextTableCellFormat fmt = cell.format().toTableCellFormat();
+                if (topPadding(currentNodeIdx) >= 0)
+                    fmt.setTopPadding(topPadding(currentNodeIdx));
+                if (bottomPadding(currentNodeIdx) >= 0)
+                    fmt.setBottomPadding(bottomPadding(currentNodeIdx));
+                if (leftPadding(currentNodeIdx) >= 0)
+                    fmt.setLeftPadding(leftPadding(currentNodeIdx));
+                if (rightPadding(currentNodeIdx) >= 0)
+                    fmt.setRightPadding(rightPadding(currentNodeIdx));
+                cell.setFormat(fmt);
+
                 cursor.setPosition(cell.firstPosition());
+            }
         }
         hasBlock = true;
-        compressNextWhitespace = true;
+        compressNextWhitespace = RemoveWhiteSpace;
 
         if (currentNode->charFormat.background().style() != Qt::NoBrush) {
             charFmt.setBackground(currentNode->charFormat.background());
@@ -1113,9 +1148,11 @@ void QTextHtmlImporter::appendBlock(const QTextBlockFormat &format, QTextCharFor
 
     cursor.insertBlock(format, charFmt);
 
-    if (!isPreservingWhitespaceMode(wsm))
-        compressNextWhitespace = true;
+    if (wsm != QTextHtmlParserNode::WhiteSpacePre && wsm != QTextHtmlParserNode::WhiteSpacePreWrap)
+        compressNextWhitespace = RemoveWhiteSpace;
 }
+
+#endif // QT_NO_TEXTHTMLPARSER
 
 /*!
     \fn QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &text)
@@ -1125,6 +1162,9 @@ void QTextHtmlImporter::appendBlock(const QTextBlockFormat &format, QTextCharFor
     possible; for example, "<b>bold</b>" will become a document
     fragment with the text "bold" with a bold character format.
 */
+
+#ifndef QT_NO_TEXTHTMLPARSER
+
 QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &html)
 {
     return fromHtml(html, 0);
@@ -1142,6 +1182,7 @@ QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &html)
     If the provided HTML contains references to external resources such as imported style sheets, then
     they will be loaded through the \a resourceProvider.
 */
+
 QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &html, const QTextDocument *resourceProvider)
 {
     QTextDocumentFragment res;
@@ -1151,3 +1192,6 @@ QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &html, const
     importer.import();
     return res;
 }
+
+QT_END_NAMESPACE
+#endif // QT_NO_TEXTHTMLPARSER

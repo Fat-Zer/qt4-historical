@@ -46,6 +46,8 @@
 #include "ui4.h"
 #include "utils.h"
 
+QT_BEGIN_NAMESPACE
+
 CustomWidgetsInfo::CustomWidgetsInfo()
 {
 }
@@ -101,3 +103,13 @@ DomScript *CustomWidgetsInfo::customWidgetScript(const QString &name) const
 
     return it.value()->elementScript();
 }
+
+QString CustomWidgetsInfo::customWidgetAddPageMethod(const QString &name) const
+{
+    if (DomCustomWidget *dcw = m_customWidgets.value(name, 0))
+        return dcw->elementAddPageMethod();
+    return QString();
+}
+
+
+QT_END_NAMESPACE

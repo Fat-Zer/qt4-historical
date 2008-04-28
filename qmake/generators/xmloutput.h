@@ -47,6 +47,8 @@
 #include <qtextstream.h>
 #include <qstack.h>
 
+QT_BEGIN_NAMESPACE
+
 class XmlOutput
 {
 public:
@@ -204,5 +206,7 @@ inline XmlOutput::xml_output cdata(const QString &text)
 {
     return XmlOutput::xml_output(XmlOutput::tCDATA, text, QString());
 }
+
+QT_END_NAMESPACE
 
 #endif // XMLOUTPUT_H

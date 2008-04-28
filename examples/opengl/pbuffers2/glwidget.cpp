@@ -116,7 +116,7 @@ GLWidget::GLWidget(QWidget *parent)
     dynamicTexture = pbuffer->generateDynamicTexture();
 
     // bind the dynamic texture to the pbuffer - this is a no-op under X11
-    pbuffer->bindToDynamicTexture(dynamicTexture);
+    hasDynamicTextureUpdate = pbuffer->bindToDynamicTexture(dynamicTexture);
 }
 
 GLWidget::~GLWidget()
@@ -146,10 +146,10 @@ void GLWidget::draw()
     pbuffer_painter.end();
     glFlush();
 
-#if  defined(Q_WS_X11)
-    // rendering directly to a texture is not supported on X11, unfortunately
-    pbuffer->updateDynamicTexture(dynamicTexture);
-#endif
+    // rendering directly to a texture is not supported on X11 and
+    // some Windows implementations, unfortunately
+    if (!hasDynamicTextureUpdate)
+        pbuffer->updateDynamicTexture(dynamicTexture);
 
     makeCurrent();
     // draw into the GL widget
@@ -315,14 +315,14 @@ void GLWidget::timerEvent(QTimerEvent *)
     v = -4; // wave speed
 
     for (i = 0; i < width; ++i) {
-	for ( j = 0; j < width; ++j) {
-	    s = sqrt((double) ((j - dx) * (j - dx) + (i - dy) * (i - dy)));
-	    wt[i][j] += 0.1f;
-	    t = s / v;
+        for ( j = 0; j < width; ++j) {
+            s = sqrt((double) ((j - dx) * (j - dx) + (i - dy) * (i - dy)));
+            wt[i][j] += 0.1f;
+            t = s / v;
             if (s != 0)
                 wave[i*width + j] = AMP * sin(2 * PI * W * (wt[i][j] + t)) / (0.2*(s + 2));
             else
                 wave[i*width + j] = AMP * sin(2 * PI * W * (wt[i][j] + t));
-	}
+        }
     }
 }

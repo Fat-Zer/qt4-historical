@@ -58,6 +58,8 @@
 #include "location.h"
 #include "text.h"
 
+QT_BEGIN_NAMESPACE
+
 class InnerNode;
 
 class Node
@@ -66,7 +68,7 @@ public:
     enum Type { Namespace, Class, Fake, Enum, Typedef, Function, Property,
                 Variable, Target };
     enum Access { Public, Protected, Private };
-    enum Status { Compat, Obsolete, Deprecated, Preliminary, Commendable, Main }; // don't reorder
+    enum Status { Compat, Obsolete, Deprecated, Preliminary, Commendable, Main, Internal }; // don't reorder
     enum ThreadSafeness { UnspecifiedSafeness, NonReentrant, Reentrant, ThreadSafe };
     enum LinkType { StartLink, NextLink, PreviousLink,
                     ContentsLink, IndexLink /*, GlossaryLink, CopyrightLink,
@@ -106,6 +108,8 @@ public:
     QString templateStuff() const { return tpl; }
 
     void clearRelated() { rel = 0; }
+
+    QString fileBase() const;
 
 protected:
     Node( Type type, InnerNode *parent, const QString& name );
@@ -508,5 +512,7 @@ public:
 
     virtual bool isInnerNode() const;
 };
+
+QT_END_NAMESPACE
 
 #endif

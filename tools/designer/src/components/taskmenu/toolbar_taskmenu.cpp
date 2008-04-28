@@ -57,6 +57,8 @@ TRANSLATOR qdesigner_internal::ToolBarTaskMenu
 #include <QtCore/QVariant>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 ToolBarTaskMenu::ToolBarTaskMenu(QToolBar *toolbar, QObject *parent)
@@ -94,18 +96,4 @@ void ToolBarTaskMenu::editToolBar()
     Q_ASSERT(0);
 }
 
-ToolBarTaskMenuFactory::ToolBarTaskMenuFactory(QExtensionManager *extensionManager)
-    : QExtensionFactory(extensionManager)
-{
-}
-
-QObject *ToolBarTaskMenuFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (QToolBar *toolbar = qobject_cast<QToolBar*>(object)) {
-        if (iid == Q_TYPEID(QDesignerTaskMenuExtension)) {
-            return new ToolBarTaskMenu(toolbar, parent);
-        }
-    }
-
-    return 0;
-}
+QT_END_NAMESPACE

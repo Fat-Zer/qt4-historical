@@ -50,6 +50,8 @@
 #define MNG_USE_SO
 #include <libmng.h>
 
+QT_BEGIN_NAMESPACE
+
 class QMngHandlerPrivate
 {
     Q_DECLARE_PUBLIC(QMngHandler)
@@ -103,7 +105,13 @@ static mng_bool myerror(mng_handle /*hMNG*/,
 
 static mng_ptr myalloc(mng_size_t iSize)
 {
+#if defined(Q_OS_WINCE)
+    mng_ptr ptr = malloc(iSize);
+    memset(ptr, 0, iSize);
+    return ptr;
+#else
     return (mng_ptr)calloc(1, iSize);
+#endif
 }
 
 static void myfree(mng_ptr pPtr, mng_size_t /*iSize*/)
@@ -235,7 +243,7 @@ mng_bool QMngHandlerPrivate::readData(mng_ptr pBuf, mng_uint32 iSize, mng_uint32
 {
     Q_Q(QMngHandler);
     *pRead = q->device()->read((char *)pBuf, iSize);
-    return (*pRead != 0) ? MNG_TRUE : MNG_FALSE;
+    return (*pRead > 0) ? MNG_TRUE : MNG_FALSE;
 }
 
 mng_bool QMngHandlerPrivate::writeData(mng_ptr pBuf, mng_uint32 iSize, mng_uint32p pWritten)
@@ -250,6 +258,7 @@ mng_bool QMngHandlerPrivate::processHeader(mng_uint32 iWidth, mng_uint32 iHeight
     if (mng_set_canvasstyle(hMNG, iStyle) != MNG_NOERROR)
         return MNG_FALSE;
     image = QImage(iWidth, iHeight, QImage::Format_ARGB32);
+    image.fill(0);
     return MNG_TRUE;
 }
 
@@ -264,6 +273,7 @@ bool QMngHandlerPrivate::getNextImage(QImage *result)
     }
     if ((MNG_NOERROR == ret) || (MNG_NEEDTIMERWAIT == ret)) {
         *result = image;
+        image.fill(0);
         frameIndex = nextIndex++;
         if (haveReadAll && (frameCount == 0))
             frameCount = nextIndex;
@@ -488,3 +498,5 @@ bool QMngHandler::supportsOption(ImageOption option) const
         return true;
     return false;
 }
+
+QT_END_NAMESPACE

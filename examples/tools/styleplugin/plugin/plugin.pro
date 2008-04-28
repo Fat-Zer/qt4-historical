@@ -1,3 +1,4 @@
+#! [0]
 TEMPLATE    = lib
 CONFIG     += plugin
 HEADERS     = simplestyle.h \
@@ -5,6 +6,7 @@ HEADERS     = simplestyle.h \
 SOURCES     = simplestyle.cpp \
               simplestyleplugin.cpp
 TARGET      = simplestyleplugin
+#! [0]
 win32 {
     debug:DESTDIR = ../debug/styles/
     release:DESTDIR = ../release/styles/

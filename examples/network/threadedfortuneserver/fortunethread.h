@@ -47,6 +47,7 @@
 #include <QThread>
 #include <QTcpSocket>
 
+//! [0]
 class FortuneThread : public QThread
 {
     Q_OBJECT
@@ -63,5 +64,6 @@ private:
     int socketDescriptor;
     QString text;
 };
+//! [0]
 
 #endif

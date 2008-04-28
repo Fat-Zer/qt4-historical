@@ -52,6 +52,8 @@
 #include <QtCore/QEvent>
 #include <QtGui/QToolButton>
 
+QT_BEGIN_NAMESPACE
+
 namespace {
     QToolButton *createToolButton(QWidget *parent, Qt::ArrowType at, const QString &name) {
          QToolButton *rc =  new QToolButton();
@@ -60,7 +62,6 @@ namespace {
          rc->setObjectName(name);
          rc->setArrowType(at);
          rc->setAutoRaise(true);
-         rc->setContextMenuPolicy(Qt::PreventContextMenu);
          rc->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
          rc->setFixedSize(QSize(15, 15));
          return rc;
@@ -214,3 +215,5 @@ void QDesignerQ3WidgetStack::slotCurrentChanged(int index)
         }
     }
 }
+
+QT_END_NAMESPACE

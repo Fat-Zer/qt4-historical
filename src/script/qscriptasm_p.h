@@ -63,6 +63,8 @@
 
 #include "qscriptvalueimplfwd_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTextStream;
 
 class QScriptInstruction
@@ -117,15 +119,22 @@ private:
 class CompilationUnit
 {
 public:
-    CompilationUnit(): m_valid(true) {}
+    CompilationUnit(): m_valid(true),
+        m_errorLineNumber(-1) {}
 
     bool isValid() const { return m_valid; }
-    void setValid(bool v) { m_valid = v; }
+
+    void setError(const QString &message, int lineNumber)
+    {
+        m_errorMessage = message;
+        m_errorLineNumber = lineNumber;
+        m_valid = false;
+    }
 
     QString errorMessage() const
         { return m_errorMessage; }
-    void setErrorMessage(const QString &errorMessage)
-        { m_errorMessage = errorMessage; }
+    int errorLineNumber() const
+        { return m_errorLineNumber; }
 
     QVector<QScriptInstruction> instructions() const
         { return m_instructions; }
@@ -140,6 +149,7 @@ public:
 private:
     bool m_valid;
     QString m_errorMessage;
+    int m_errorLineNumber;
     QVector<QScriptInstruction> m_instructions;
     QVector<ExceptionHandlerDescriptor> m_exceptionHandlers;
 };
@@ -166,5 +176,7 @@ private:
 
 } // namespace QScript
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
-#endif
+#endif // QSCRIPTASM_P_H

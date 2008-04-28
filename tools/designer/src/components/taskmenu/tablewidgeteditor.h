@@ -46,10 +46,15 @@
 
 #include "ui_tablewidgeteditor.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTableWidget;
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
+
+class FormWindowBase;
+class PropertySheetIconValue;
 
 class TableWidgetEditor: public QDialog
 {
@@ -67,33 +72,29 @@ private slots:
     void on_tableWidget_currentCellChanged(int currentRow, int currnetCol, int, int);
     void on_tableWidget_itemChanged(QTableWidgetItem *item);
 
-    void on_itemTextLineEdit_textEdited(const QString &text);
-    void on_previewPixmapItemButton_clicked();
-    void on_deletePixmapItemButton_clicked();
+    void on_itemIconSelector_iconChanged(const PropertySheetIconValue &icon);
 
     void on_columnsListWidget_currentRowChanged(int col);
     void on_columnsListWidget_itemChanged(QListWidgetItem *item);
 
     void on_newColumnButton_clicked();
-    void on_renameColumnButton_clicked();
     void on_deleteColumnButton_clicked();
     void on_moveColumnUpButton_clicked();
     void on_moveColumnDownButton_clicked();
 
-    void on_previewPixmapColumnButton_clicked();
-    void on_deletePixmapColumnButton_clicked();
+    void on_columnIconSelector_iconChanged(const PropertySheetIconValue &icon);
 
     void on_rowsListWidget_currentRowChanged(int row);
     void on_rowsListWidget_itemChanged(QListWidgetItem *item);
 
     void on_newRowButton_clicked();
-    void on_renameRowButton_clicked();
     void on_deleteRowButton_clicked();
     void on_moveRowUpButton_clicked();
     void on_moveRowDownButton_clicked();
 
-    void on_previewPixmapRowButton_clicked();
-    void on_deletePixmapRowButton_clicked();
+    void on_rowIconSelector_iconChanged(const PropertySheetIconValue &icon);
+
+    void cacheReloaded();
 private:
     void copyContents(QTableWidget *sourceWidget, QTableWidget *destWidget);
     void updateEditor();
@@ -103,10 +104,12 @@ private:
     void moveRowsDown(int fromRow, int toRow);
 
     Ui::TableWidgetEditor ui;
-    QDesignerFormWindowInterface *m_form;
+    FormWindowBase *m_form;
     bool m_updating;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TABLEWIDGETEDITOR_H

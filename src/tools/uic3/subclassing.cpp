@@ -52,6 +52,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
   Creates a declaration ( headerfile ) for a subclass \a subClass
   of the form given in \a e
@@ -358,3 +360,5 @@ void Ui3Reader::writeFunctionsSubImpl( const QStringList &fuLst, const QStringLi
     }
     out << endl;
 }
+
+QT_END_NAMESPACE

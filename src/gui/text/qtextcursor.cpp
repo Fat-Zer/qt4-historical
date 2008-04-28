@@ -50,9 +50,12 @@
 #include "qtexttable.h"
 #include "qtexttable_p.h"
 #include "qtextengine_p.h"
+#include "qabstracttextdocumentlayout.h"
 
 #include <qtextlayout.h>
 #include <qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 enum {
     AdjustPrev = 0x1,
@@ -63,7 +66,7 @@ enum {
 
 QTextCursorPrivate::QTextCursorPrivate(QTextDocumentPrivate *p)
     : priv(p), x(0), position(0), anchor(0), adjusted_anchor(0),
-      currentCharFormat(-1)
+      currentCharFormat(-1), visualNavigation(false)
 {
     priv->addCursor(this);
 }
@@ -77,6 +80,7 @@ QTextCursorPrivate::QTextCursorPrivate(const QTextCursorPrivate &rhs)
     priv = rhs.priv;
     x = rhs.x;
     currentCharFormat = rhs.currentCharFormat;
+    visualNavigation = rhs.visualNavigation;
     priv->addCursor(this);
 }
 
@@ -123,13 +127,15 @@ QTextCursorPrivate::AdjustResult QTextCursorPrivate::adjustPosition(int position
 
 void QTextCursorPrivate::setX()
 {
-    QTextBlock block = priv->blocksFind(position);
-    const QTextLayout *layout = block.layout();
+    QTextBlock block = this->block();
+    const QTextLayout *layout = blockLayout(block);
     int pos = position - block.position();
 
     QTextLine line = layout->lineForTextPosition(pos);
     if (line.isValid())
         x = line.cursorToX(pos);
+    else
+        x = -1; // delayed init.  Makes movePosition() call setX later on again.
 }
 
 void QTextCursorPrivate::remove()
@@ -296,13 +302,18 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
             op = QTextCursor::PreviousWord;
     }
 
-    const QTextLayout *layout = blockIt.layout();
+    const QTextLayout *layout = blockLayout(blockIt);
     int relativePos = position - blockIt.position();
-    QTextLine line = layout->lineForTextPosition(relativePos);
+    QTextLine line;
+    if (!priv->isInEditBlock())
+        line = layout->lineForTextPosition(relativePos);
 
     Q_ASSERT(priv->frameAt(position) == priv->frameAt(adjusted_anchor));
 
     int newPosition = position;
+
+    if (x == -1 && !priv->isInEditBlock() && (op == QTextCursor::Up || op == QTextCursor::Down))
+        setX();
 
     switch(op) {
     case QTextCursor::NoMove:
@@ -337,7 +348,7 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
         break;
     case QTextCursor::StartOfWord: {
         QTextEngine *engine = layout->engine();
-        const QCharAttributes *attributes = engine->attributes();
+        const HB_CharAttributes *attributes = engine->attributes();
 
         if (relativePos == 0)
             return false;
@@ -377,7 +388,7 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
             } else {
                 blockIt = blockIt.previous();
             }
-            layout = blockIt.layout();
+            layout = blockLayout(blockIt);
             i = layout->lineCount()-1;
         }
         if (layout->lineCount()) {
@@ -408,7 +419,7 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
     }
     case QTextCursor::EndOfWord: {
         QTextEngine *engine = layout->engine();
-        const QCharAttributes *attributes = engine->attributes();
+        const HB_CharAttributes *attributes = engine->attributes();
         const QString string = engine->layoutData->string;
 
         const int len = layout->engine()->layoutData->string.length();
@@ -471,7 +482,7 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
 
             if (blockIt == priv->blocksEnd())
                 return false;
-            layout = blockIt.layout();
+            layout = blockLayout(blockIt);
             i = 0;
         }
         if (layout->lineCount()) {
@@ -563,7 +574,7 @@ void QTextCursorPrivate::selectedTableCells(int *firstRow, int *numRows, int *fi
     *numColumns = qMax(cell_pos.column() + cell_pos.columnSpan(), cell_anchor.column() + cell_anchor.columnSpan()) - *firstColumn;
 }
 
-static void setBlockCharFormat(QTextDocumentPrivate *priv, int pos1, int pos2,
+static void setBlockCharFormatHelper(QTextDocumentPrivate *priv, int pos1, int pos2,
                                const QTextCharFormat &format, QTextDocumentPrivate::FormatChangeMode changeMode)
 {
     QTextBlock it = priv->blocksFind(pos1);
@@ -576,7 +587,8 @@ static void setBlockCharFormat(QTextDocumentPrivate *priv, int pos1, int pos2,
     }
 }
 
-void QTextCursorPrivate::setBlockCharFormat(const QTextCharFormat &_format, QTextDocumentPrivate::FormatChangeMode changeMode)
+void QTextCursorPrivate::setBlockCharFormat(const QTextCharFormat &_format,
+    QTextDocumentPrivate::FormatChangeMode changeMode)
 {
     priv->beginEditBlock();
 
@@ -607,7 +619,7 @@ void QTextCursorPrivate::setBlockCharFormat(const QTextCharFormat &_format, QTex
 
                 int pos1 = cell.firstPosition();
                 int pos2 = cell.lastPosition();
-                ::setBlockCharFormat(priv, pos1, pos2, format, changeMode);
+                setBlockCharFormatHelper(priv, pos1, pos2, format, changeMode);
             }
         }
     } else {
@@ -618,7 +630,7 @@ void QTextCursorPrivate::setBlockCharFormat(const QTextCharFormat &_format, QTex
             pos2 = position;
         }
 
-        ::setBlockCharFormat(priv, pos1, pos2, format, changeMode);
+        setBlockCharFormatHelper(priv, pos1, pos2, format, changeMode);
     }
     priv->endEditBlock();
 }
@@ -715,8 +727,18 @@ void QTextCursorPrivate::setCharFormat(const QTextCharFormat &_format, QTextDocu
     }
 }
 
+
+QTextLayout *QTextCursorPrivate::blockLayout(QTextBlock &block) const{
+    QTextLayout *tl = block.layout();
+    if (!tl->lineCount() && priv->layout())
+        priv->layout()->blockBoundingRect(block);
+    return tl;
+}
+
 /*!
     \class QTextCursor
+    \reentrant
+
     \brief The QTextCursor class offers an API to access and modify QTextDocuments.
 
     \ingroup text
@@ -1028,25 +1050,78 @@ int QTextCursor::anchor() const
     If \a mode is \c KeepAnchor, the cursor selects the text it moves
     over. This is the same effect that the user achieves when they
     hold down the Shift key and move the cursor with the cursor keys.
+
+    \sa setVisualNavigation()
 */
 bool QTextCursor::movePosition(MoveOperation op, MoveMode mode, int n)
 {
     if (!d || !d->priv)
         return false;
     switch (op) {
-        case Start:
-        case StartOfLine:
-        case End:
-        case EndOfLine:
-            n = 1;
-            break;
-        default: break;
+    case Start:
+    case StartOfLine:
+    case End:
+    case EndOfLine:
+        n = 1;
+        break;
+    default: break;
     }
+
+    int previousPosition = d->position;
     for (; n > 0; --n) {
         if (!d->movePosition(op, mode))
             return false;
     }
+
+    if (d->visualNavigation && !d->block().isVisible()) {
+        QTextBlock b = d->block();
+        if (previousPosition < d->position) {
+            while (!b.next().isVisible())
+                b = b.next();
+            d->setPosition(b.position() + b.length() - 1);
+        } else {
+            while (!b.previous().isVisible())
+                b = b.previous();
+            d->setPosition(b.position());
+        }
+        while (d->movePosition(op, mode)
+               && !d->block().isVisible())
+            ;
+
+    }
     return true;
+}
+
+/*!
+  \since 4.4
+
+  Returns true if the cursor does visual navigation; otherwise
+  returns false.
+
+  Visual navigation means skipping over hidden text pragraphs. The
+  default is false.
+
+  /sa setVisualNavigation(), movePosition()
+ */
+bool QTextCursor::visualNavigation() const
+{
+    return d ? d->visualNavigation : false;
+}
+
+/*!
+  \since 4.4
+
+  Sets visual navigation to \a b.
+
+  Visual navigation means skipping over hidden text pragraphs. The
+  default is false.
+
+  \sa visualNavigation(), movePosition()
+ */
+void QTextCursor::setVisualNavigation(bool b)
+{
+    if (d)
+        d->visualNavigation = b;
 }
 
 /*!
@@ -1055,11 +1130,7 @@ bool QTextCursor::movePosition(MoveOperation op, MoveMode mode, int n)
 
     If there is a selection, the selection is deleted and replaced by
     \a text, for example:
-    \code
-    cursor.clearSelection();
-    cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
-    cursor.insertText("Hello World");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 0
     This clears any existing selection, selects the word at the cursor
     (i.e. from position() forward), and replaces the selection with
     the phrase "Hello World".
@@ -1212,6 +1283,8 @@ void QTextCursor::select(SelectionType selection)
             movePosition(EndOfWord, KeepAnchor);
             break;
         case BlockUnderCursor:
+            if (block.length() == 1) // no content
+                break;
             movePosition(StartOfBlock);
             // also select the paragraph separator
             if (movePosition(PreviousBlock)) {
@@ -1691,6 +1764,8 @@ void QTextCursor::insertBlock(const QTextBlockFormat &format, const QTextCharFor
     d->remove();
     d->insertBlock(format, charFormat);
     d->priv->endEditBlock();
+    if (!d->priv->isInEditBlock())
+        d->setX();
 }
 
 /*!
@@ -1880,18 +1955,24 @@ void QTextCursor::insertFragment(const QTextDocumentFragment &fragment)
     d->remove();
     fragment.d->insert(*this);
     d->priv->endEditBlock();
+
+    if (fragment.d && fragment.d->doc)
+        d->priv->mergeCachedResources(fragment.d->doc->docHandle());
 }
 
 /*!
     \since 4.2
     Inserts the text \a html at the current position(). The text is interpreted as
     HTML.
-    
+
     \note When using this function with a style sheet, the style sheet will
     only apply to the current block in the document. In order to apply a style
     sheet throughout a document, use QTextDocument::setDefaultStyleSheet()
     instead.
 */
+
+#ifndef QT_NO_TEXTHTMLPARSER
+
 void QTextCursor::insertHtml(const QString &html)
 {
     if (!d || !d->priv)
@@ -1899,6 +1980,8 @@ void QTextCursor::insertHtml(const QString &html)
     QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(html, d->priv->document());
     insertFragment(fragment);
 }
+
+#endif // QT_NO_TEXTHTMLPARSER
 
 /*!
     \overload
@@ -1942,11 +2025,7 @@ void QTextCursor::insertImage(const QTextImageFormat &format)
     Convenience method for inserting the image with the given \a name at the
     current position().
 
-    \code
-    QImage img = ...
-    textDocument->addResource(QTextDocument::ImageResource, QUrl("myimage"), img);
-    cursor.insertImage("myimage");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 1
 */
 void QTextCursor::insertImage(const QString &name)
 {
@@ -2068,18 +2147,13 @@ bool QTextCursor::operator>(const QTextCursor &rhs) const
 
     For example:
 
-    \code
-    QTextCursor cursor(textDocument);
-    cursor.beginEditBlock();
-    cursor.insertText("Hello");
-    cursor.insertText("World");
-    cursor.endEditBlock();
-
-    textDocument->undo();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 2
 
     The call to undo() will cause both insertions to be undone,
     causing both "World" and "Hello" to be removed.
+
+    It is possible to nest calls to beginEditBlock and endEditBlock. The
+    top-most pair will determine the scope of the undo/redo operation.
 
     \sa endEditBlock()
  */
@@ -2099,21 +2173,7 @@ void QTextCursor::beginEditBlock()
 
     For example:
 
-    \code
-    QTextCursor cursor(textDocument);
-    cursor.beginEditBlock();
-    cursor.insertText("Hello");
-    cursor.insertText("World");
-    cursor.endEditBlock();
-
-    ...
-
-    cursor.joinPreviousEditBlock();
-    cursor.insertText("Hey");
-    cursor.endEditBlock();
-
-    textDocument->undo();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 3
 
     The call to undo() will cause all three insertions to be undone.
 
@@ -2157,7 +2217,7 @@ bool QTextCursor::isCopyOf(const QTextCursor &other) const
 
 /*!
     \since 4.2
-    Returns the number of the block the cursor is in.
+    Returns the number of the block the cursor is in, or 0 if the cursor is invalid.
 
     Note that this function only makes sense in documents without complex objects such
     as tables or frames.
@@ -2167,17 +2227,7 @@ int QTextCursor::blockNumber() const
     if (!d || !d->priv)
         return 0;
 
-    // ### naive implementation for now
-    QTextBlock currentBlock = d->block();
-    if (!currentBlock.isValid())
-        return 0;
-
-    int count = 0;
-    for (QTextBlock block = d->priv->blocksBegin();
-         block.isValid() && block != currentBlock;
-         block = block.next(), ++count) {
-    }
-    return count;
+    return d->block().blockNumber();
 }
 
 /*!
@@ -2193,8 +2243,7 @@ int QTextCursor::columnNumber() const
     if (!block.isValid())
         return 0;
 
-    const QTextLayout *layout = block.layout();
-    Q_ASSERT(layout); // can't happen
+    const QTextLayout *layout = d->blockLayout(block);
 
     const int relativePos = d->position - block.position();
 
@@ -2206,3 +2255,5 @@ int QTextCursor::columnNumber() const
         return 0;
     return relativePos - line.textStart();
 }
+
+QT_END_NAMESPACE

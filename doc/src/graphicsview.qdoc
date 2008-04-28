@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page graphicsview.html
     \title The Graphics View Framework
@@ -62,13 +105,7 @@
         descending stacking order (i.e., the first returned item is topmost,
         and the last item is bottom-most).
 
-        \code
-            QGraphicsScene scene;
-            QGraphicsRectItem *rect = scene.addRect(QRectF(0, 0, 100, 100));
-
-            QGraphicsItem *item = scene.itemAt(50, 50);
-            // item == rect
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.graphicsview.qdoc 0
 
         QGraphicsScene's event propagation architecture schedules scene events
         for delivery to items, and also manages propagation between items. If
@@ -99,13 +136,7 @@
         enable OpenGL support, you can set a QGLWidget as the viewport by
         calling QGraphicsView::setViewport().
 
-        \code
-            QGraphicsScene scene;
-            myPopulateScene(&scene);
-
-            QGraphicsView view(&scene);
-            view.show();
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.graphicsview.qdoc 1
 
         The view receives input events from the keyboard and mouse, and
         translates these to scene events (converting the coordinates used
@@ -302,19 +333,7 @@
         Here is an example of how to implement zoom and rotate slots in a
         subclass of QGraphicsView:
 
-        \code
-            class View : public QGraphicsView
-            {
-            Q_OBJECT
-                ...
-            public slots:
-                void zoomIn() { scale(1.2, 1.2); }
-                void zoomOut() { scale(1 / 1.2, 1 / 1.2); }
-                void rotateLeft() { rotate(-10); }
-                void rotateRight() { rotate(10); }
-                ...
-            };
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.graphicsview.qdoc 2
 
         The slots could be connected to \l{QToolButton}{QToolButtons} with
         \l{QAbstractButton::autoRepeat}{autoRepeat} enabled.
@@ -334,17 +353,7 @@
         a QPainter to either of the rendering functions. This example shows
         how to print the whole scene into a full page, using QPrinter.
 
-        \code
-            QGraphicsScene scene;
-            scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
-
-            QPrinter printer;
-            if (QPrintDialog(&printer).exec() == QDialog::Accepted) {
-                QPainter painter(&printer);
-                painter.setRenderHint(QPainter::Antialiasing);
-                scene->render(&painter);
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.graphicsview.qdoc 3
 
         The difference between the scene and view rendering functions is that
         one operates in scene coordinates, and the other in view coordinates.
@@ -355,18 +364,7 @@
         is to render the exact contents of the viewport using the provided
         painter.
 
-        \code
-            QGraphicsScene scene;
-            scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
-
-            QPixmap pixmap;
-            QPainter painter(&pixmap);
-            painter.setRenderHint(QPainter::Antialiasing);
-            scene->render(&painter);
-            painter.end();
-
-            pixmap.save("scene.png");
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.graphicsview.qdoc 4
 
         When the source and target areas' sizes do not match, the source
         contents are stretched to fit into the target area. By passing a
@@ -392,17 +390,7 @@
         so in mousePressEvent() or mouseMoveEvent(), you can get the
         originating widget pointer from the event. For example:
 
-        \code
-            void CustomItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-            {
-                QMimeData *data = new QMimeData;
-                data->setColor(Qt::green);
-
-                QDrag *drag = new QDrag(event->widget());
-                drag->setMimeData(data);
-                drag->start();
-            }
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.graphicsview.qdoc 5
 
         To intercept drag and drop events for the scene, you reimplement
         QGraphicsScene::dragEnterEvent() and whichever event handlers your
@@ -466,10 +454,7 @@
 
         Example:
 
-        \code
-            QGraphicsView view(&scene);
-            view.setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
-        \endcode
+        \snippet doc/src/snippets/code/doc.src.graphicsview.qdoc 6
 
       \section2 Item Groups
 
@@ -489,4 +474,73 @@
         its new parent. For convenience, you can create
         \l{QGraphicsItemGroup}s through the scene by calling
         QGraphicsScene::createItemGroup().
+
+      \section2 Widgets and Layouts
+
+        Qt 4.4 introduced support for geometry and layout-aware items through
+        QGraphicsWidget. This special base item is similar to QWidget, but
+        unlike QWidget, it doesn't inherit from QPaintDevice; rather from
+        QGraphicsItem instead. This allows you to write complete widgets with
+        events, signals & slots, size hints and policies, and you can also
+        manage your widgets geometries in layouts through
+        QGraphicsLinearLayout and QGraphicsGridLayout.
+
+        \section3 QGraphicsWidget
+
+          Building on top of QGraphicsItem's capabilities and lean footprint,
+          QGraphicsWidget provides the best of both worlds: extra
+          functionality from QWidget, such as the style, font, palette, layout
+          direction, and its geometry, and resolution independence and
+          transformation support from QGraphicsItem.  Because Graphics View
+          uses real coordinates instead of integers, QGraphicsWidget's
+          geometry functions also operate on QRectF and QPointF. This also
+          applies to frame rects, margins and spacing. With QGraphicsWidget
+          it's not uncommon to specify contents margins of (0.5, 0.5, 0.5,
+          0.5), for example. You can create both subwidgets and "top-level"
+          windows; in some cases you can now use Graphics View for advanced
+          MDI applications.
+
+          Some of QWidget's properties are supported, including window flags
+          and attributes, but not all. You should refer to QGraphicsWidget's
+          class documentation for a complete overview of what is and what is
+          not supported. For example, you can create decorated windows by
+          passing the Qt::Window window flag to QGraphicsWidget's constructor,
+          but Graphics View currently doesn't support the Qt::Sheet and
+          Qt::Drawer flags that are common on Mac OS X.
+
+          The capabilities of QGraphicsWidget are expected to grow depending
+          on community feedback.
+
+        \section3 QGraphicsLayout
+
+          QGraphicsLayout is part of a second-generation layout framework
+          designed specifically for QGraphicsWidget. Its API is very similar
+          to that of QLayout. You can manage widgets and sublayouts inside
+          either QGraphicsLinearLayout and QGraphicsGridLayout. You can also
+          easily write your own layout by subclassing QGraphicsLayout
+          yourself, or add your own QGraphicsItem items to the layout by
+          writing an adaptor subclass of QGraphicsLayoutItem.
+
+      \section2 Embedded Widget Support
+
+          Graphics View provides seamless support for embedding any widget
+          into the scene. You can embed simple widgets, such as QLineEdit or
+          QPushButton, complex widgets such as QTabWidget, and even complete
+          main windows. To embed your widget to the scene, simply call
+          QGraphicsScene::addWidget(), or create an instance of
+          QGraphicsProxyWidget to embed your widget manually.
+
+          Through QGraphicsProxyWidget, Graphics View is able to deeply
+          integrate the client widget features including its cursors,
+          tooltips, mouse, tablet and keyboard events, child widgets,
+          animations, pop-ups (e.g., QComboBox or QCompleter), and the widget's
+          input focus and activation. QGraphicsProxyWidget even integrates the
+          embedded widget's tab order so that you can tab in and out of
+          embedded widgets. You can even embed a new QGraphicsView into your
+          scene to provide complex nested scenes.
+
+          When transforming an embedded widget, Graphics View makes sure that
+          the widget is transformed resolution independently, allowing the
+          fonts and style to stay crisp when zoomed in. (Note that the effect
+          of resolution independence depends on the style.) 
 */

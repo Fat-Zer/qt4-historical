@@ -72,6 +72,8 @@
 #include <QtCore/qtextcodec.h>
 #include <QtCore/qlist.h>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TEXTCODEC
 
 class QEucKrCodec : public QTextCodec {
@@ -123,5 +125,7 @@ public:
 #endif
 
 #endif // QT_NO_TEXTCODEC
+
+QT_END_NAMESPACE
 
 #endif // QEUCKRCODEC_H

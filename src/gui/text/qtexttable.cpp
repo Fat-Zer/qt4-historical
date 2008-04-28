@@ -50,8 +50,12 @@
 
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QTextTableCell qtexttable.h
+    \reentrant
+
     \brief The QTextTableCell class represents the properties of a
     cell in a QTextTable.
 
@@ -135,7 +139,10 @@ QTextCharFormat QTextTableCell::format() const
 {
     QTextDocumentPrivate *p = table->docHandle();
     QTextFormatCollection *c = p->formatCollection();
-    return c->charFormat(QTextDocumentPrivate::FragmentIterator(&p->fragmentMap(), fragment)->format);
+
+    QTextCharFormat fmt = c->charFormat(QTextDocumentPrivate::FragmentIterator(&p->fragmentMap(), fragment)->format);
+    fmt.setObjectType(QTextFormat::TableCellObject);
+    return fmt;
 }
 
 /*!
@@ -465,6 +472,8 @@ void QTextTablePrivate::update() const
 
 /*!
     \class QTextTable qtexttable.h
+    \reentrant
+
     \brief The QTextTable class represents a table in a QTextDocument.
 
     \ingroup text
@@ -478,11 +487,9 @@ void QTextTablePrivate::update() const
     For example, we can insert a table with three rows and two columns at the
     current cursor position in an editor using the following lines of code:
 
-    \quotefromfile snippets/textdocument-tables/mainwindow.cpp
-    \skipto QTextCursor cursor(editor
-    \printuntil cursor.movePosition(QTextCursor::Start);
-    \skipto QTextTable *table = cursor
-    \printuntil QTextTable *table = cursor
+    \snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 1
+    \codeline
+    \snippet doc/src/snippets/textdocument-tables/mainwindow.cpp 3
 
     The table format is either defined when the table is created or changed
     later with setFormat().
@@ -503,30 +510,27 @@ void QTextTablePrivate::update() const
     the mergeCells() and splitCell() functions. However, only cells that span multiple
     rows or columns can be split. (Merging or splitting does not increase or decrease
     the number of rows and columns.)
-    
+
     \table 80%
     \row
         \o \inlineimage texttable-split.png Original Table
-        \o Suppose we have a 2x6 table of names and addresses. To merge both
+        \o Suppose we have a 2x3 table of names and addresses. To merge both
         columns in the first row we invoke mergeCells() with \a row = 0,
         \a column = 0, \a numRows = 1 and \a numColumns = 2.
-        \quotefromfile snippets/textdocument-texttable/main.cpp
-        \skipto table->mergeCells
-        \printuntil );
- 
+        \snippet doc/src/snippets/textdocument-texttable/main.cpp 0
+
     \row
         \o \inlineimage texttable-merge.png
         \o  This gives us the following table. To split the first row of the table
         back into two cells, we invoke the splitCell() function with \a numRows
         and \a numCols = 1.
-        \skipto table->splitCell
-        \printuntil );
+        \snippet doc/src/snippets/textdocument-texttable/main.cpp 1
 
     \row
         \o \inlineimage texttable-split.png Split Table
         \o This results in the original table.
     \endtable
-    
+
     \sa QTextTableFormat
 */
 
@@ -799,8 +803,10 @@ void QTextTable::removeRows(int pos, int num)
             } else {
                 // remove cell
                 int index = d->cells.indexOf(cell) + 1;
-                int f_end = index < d->cells.size() ? d->cells.at(index) : d->fragment_end;
-                p->remove(it.position(), p->fragmentMap().position(f_end) - it.position());
+                if (index > 0) {
+                    int f_end = index < d->cells.size() ? d->cells.at(index) : d->fragment_end;
+                    p->remove(it.position(), p->fragmentMap().position(f_end) - it.position());
+                }
             }
         }
     }
@@ -876,7 +882,7 @@ void QTextTable::removeColumns(int pos, int num)
     into one cell. The new cell will span \a numRows rows and \a numCols columns.
     If \a numRows or \a numCols is less than the current number of rows or columns
     the cell spans then this method does nothing.
-    
+
     \sa splitCell()
 */
 void QTextTable::mergeCells(int row, int column, int numRows, int numCols)
@@ -1032,7 +1038,7 @@ void QTextTable::mergeCells(int row, int column, int numRows, int numCols)
     \since 4.1
 
     Merges the cells selected by the provided \a cursor.
-    
+
     \sa splitCell()
 */
 void QTextTable::mergeCells(const QTextCursor &cursor)
@@ -1050,10 +1056,10 @@ void QTextTable::mergeCells(const QTextCursor &cursor)
 
     Splits the specified cell at \a row and \a column into an array of multiple
     cells with dimensions specified by \a numRows and \a numCols.
-    
+
     \note It is only possible to split cells that span multiple rows or columns, such as rows
     that have been merged using mergeCells().
-    
+
     \sa mergeCells()
 */
 void QTextTable::splitCell(int row, int column, int numRows, int numCols)
@@ -1222,3 +1228,4 @@ void QTextTable::setFormat(const QTextTableFormat &format)
     \sa setFormat()
 */
 
+QT_END_NAMESPACE

@@ -46,10 +46,12 @@
 
 #include <QGraphicsPolygonItem>
 
+QT_BEGIN_NAMESPACE
 class QGraphicsItem;
 class QGraphicsScene;
 class QGraphicsSceneMouseEvent;
 class QPointF;
+QT_END_NAMESPACE
 
 class DiagramItem : public QGraphicsPolygonItem
 {

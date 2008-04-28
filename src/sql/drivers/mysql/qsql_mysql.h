@@ -61,6 +61,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QMYSQLDriverPrivate;
 class QMYSQLResultPrivate;
 class QMYSQLDriver;
@@ -87,6 +89,8 @@ protected:
     int numRowsAffected();
     QVariant lastInsertId() const;
     QSqlRecord record() const;
+    void virtual_hook(int id, void *data);
+    bool nextResult();
 
 #if MYSQL_VERSION_ID >= 40108
     bool prepare(const QString& stmt);
@@ -119,6 +123,7 @@ public:
     QString formatValue(const QSqlField &field,
                                      bool trimStrings) const;
     QVariant handle() const;
+    QString escapeIdentifier(const QString &identifier, IdentifierType type) const;
 
 protected:
     bool beginTransaction();
@@ -128,6 +133,8 @@ private:
     void init();
     QMYSQLDriverPrivate* d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

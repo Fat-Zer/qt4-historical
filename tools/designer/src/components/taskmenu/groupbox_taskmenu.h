@@ -44,11 +44,13 @@
 #ifndef GROUPBOX_TASKMENU_H
 #define GROUPBOX_TASKMENU_H
 
-#include <QGroupBox>
-#include <QPointer>
+#include <QtGui/QGroupBox>
+#include <QtCore/QPointer>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormWindowInterface;
 
@@ -59,36 +61,19 @@ class GroupBoxTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    GroupBoxTaskMenu(QGroupBox *groupbox, QObject *parent = 0);
-    virtual ~GroupBoxTaskMenu();
+    explicit GroupBoxTaskMenu(QGroupBox *groupbox, QObject *parent = 0);
 
     virtual QAction *preferredEditAction() const;
     virtual QList<QAction*> taskActions() const;
 
-private slots:
-    void editTitle();
-    void editIcon();
-    void updateText(const QString &text);
-    void updateSelection();
-
 private:
-    QGroupBox *m_groupbox;
-    QPointer<InPlaceEditor> m_editor;
-
     QAction *m_editTitleAction;
     QList<QAction*> m_taskActions;
 };
 
-class GroupBoxTaskMenuFactory: public QExtensionFactory
-{
-    Q_OBJECT
-public:
-    GroupBoxTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
-};
-
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QGroupBox, GroupBoxTaskMenu>  GroupBoxTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // GROUPBOX_TASKMENU_H

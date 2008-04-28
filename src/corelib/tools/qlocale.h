@@ -49,14 +49,62 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QDataStream;
 class QDate;
+class QDateTime;
 class QTime;
 class QVariant;
-struct QLocalePrivate;
 
+class QLocale;
+
+#ifndef QT_NO_SYSTEMLOCALE
+class Q_CORE_EXPORT QSystemLocale
+{
+public:
+    QSystemLocale();
+    virtual ~QSystemLocale();
+
+    enum QueryType {
+        LanguageId, // uint
+        CountryId, // uint
+        DecimalPoint, // QString
+        GroupSeparator, // QString
+        ZeroDigit, // QString
+        NegativeSign, // QString
+        DateFormatLong, // QString
+        DateFormatShort, // QString
+        TimeFormatLong, // QString
+        TimeFormatShort, // QString
+        DayNameLong, // QString, in: int
+        DayNameShort, // QString, in: int
+        MonthNameLong, // QString, in: int
+        MonthNameShort, // QString, in: int
+        DateToStringLong, // QString, in: QDate
+        DateToStringShort, // QString in: QDate
+        TimeToStringLong, // QString in: QTime
+        TimeToStringShort, // QString in: QTime
+        DateTimeFormatLong, // QString
+        DateTimeFormatShort, // QString
+        DateTimeToStringLong, // QString in: QDateTime
+        DateTimeToStringShort, // QString in: QDateTime
+        MeasurementSystem // uint
+    };
+    virtual QVariant query(QueryType type, QVariant in) const;
+    virtual QLocale fallbackLocale() const;
+
+#ifdef QLOCALE_CPP
+private:
+    QSystemLocale(bool);
+    friend QSystemLocale *QSystemLocale_globalSystemLocale();
+#endif
+};
+#endif
+
+struct QLocalePrivate;
 class Q_CORE_EXPORT QLocale
 {
     Q_GADGET
@@ -485,6 +533,8 @@ public:
         LastCountry = SerbiaAndMontenegro
     };
 
+    enum MeasurementSystem { MetricSystem, ImperialSystem };
+
     enum FormatType { LongFormat, ShortFormat };
     enum NumberOption { OmitGroupSeparator = 0x01, RejectGroupSeparator = 0x02 };
     Q_DECLARE_FLAGS(NumberOptions, NumberOption)
@@ -521,9 +571,20 @@ public:
     QString toString(const QDate &date, FormatType format = LongFormat) const;
     QString toString(const QTime &time, const QString &formatStr) const;
     QString toString(const QTime &time, FormatType format = LongFormat) const;
+    QString toString(const QDateTime &dateTime, FormatType format = LongFormat) const;
+    QString toString(const QDateTime &dateTime, const QString &format) const;
 
     QString dateFormat(FormatType format = LongFormat) const;
     QString timeFormat(FormatType format = LongFormat) const;
+    QString dateTimeFormat(FormatType format = LongFormat) const;
+#ifndef QT_NO_DATESTRING
+    QDate toDate(const QString &string, FormatType = LongFormat) const;
+    QTime toTime(const QString &string, FormatType = LongFormat) const;
+    QDateTime toDateTime(const QString &string, FormatType format = LongFormat) const;
+    QDate toDate(const QString &string, const QString &format) const;
+    QTime toTime(const QString &string, const QString &format) const;
+    QDateTime toDateTime(const QString &string, const QString &format) const;
+#endif
 
     QChar decimalPoint() const;
     QChar groupSeparator() const;
@@ -534,6 +595,8 @@ public:
 
     QString monthName(int, FormatType format = LongFormat) const;
     QString dayName(int, FormatType format = LongFormat) const;
+
+    MeasurementSystem measurementSystem() const;
 
     inline bool operator==(const QLocale &other) const;
     inline bool operator!=(const QLocale &other) const;
@@ -550,11 +613,23 @@ public:
     void setNumberOptions(NumberOptions options);
     NumberOptions numberOptions() const;
 
+//private:                        // this should be private, but can't be
+    struct Data {
+        quint16 index;
+        quint16 numberOptions;
+    }
+#if (defined(__arm__) || defined(__ARMEL__))
+        Q_PACKED
+#endif
+        ;
 private:
     friend struct QLocalePrivate;
     // ### We now use this field to pack an index into locale_data and NumberOptions.
     // ### Qt 5: change to a QLocaleData *d; uint numberOptions.
-    void *v;
+    union {
+        void *v;
+        Data p;
+    };
     const QLocalePrivate *d() const;
 };
 Q_DECLARE_TYPEINFO(QLocale, Q_MOVABLE_TYPE);
@@ -580,38 +655,7 @@ Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QLocale &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QLocale &);
 #endif
 
-#ifndef QT_NO_SYSTEMLOCALE
-class Q_CORE_EXPORT QSystemLocale
-{
-public:
-    QSystemLocale();
-    virtual ~QSystemLocale();
-
-    enum QueryType {
-        LanguageId, // uint
-        CountryId, // uint
-        DecimalPoint, // QString
-        GroupSeparator, // QString
-        ZeroDigit, // QString
-        NegativeSign, // QString
-        DateFormatLong, // QString
-        DateFormatShort, // QString
-        TimeFormatLong, // QString
-        TimeFormatShort, // QString
-        DayNameLong, // QString, in: int
-        DayNameShort, // QString, in: int
-        MonthNameLong, // QString, in: int
-        MonthNameShort, // QString, in: int
-        DateToStringLong, // QString, in: QDate
-        DateToStringShort, // QString in: QDate
-        TimeToStringLong, // QString in: QTime
-        TimeToStringShort // QString in: QTime
-    };
-    virtual QVariant query(QueryType type, QVariant in) const;
-    virtual QLocale fallbackLocale() const;
-};
-#endif
-
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

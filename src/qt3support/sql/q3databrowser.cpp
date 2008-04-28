@@ -49,6 +49,8 @@
 #include "private/q3sqlmanager_p.h"
 #include "qsqlresult.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3DataBrowserPrivate
 {
 public:
@@ -250,14 +252,7 @@ bool Q3DataBrowser::boundaryChecking() const
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \code
-    QStringList list = myDataBrowser.sort();
-    QStringList::Iterator it = list.begin();
-    while(it != list.end()) {
-        myProcessing(*it);
-        ++it;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.sql.q3databrowser.cpp 0
 */
 
 void Q3DataBrowser::setSort(const QStringList& sort)
@@ -1282,5 +1277,7 @@ QSql::Confirm  Q3DataBrowser::confirmCancel(QSql::Op m)
     buffer being deleted. You might connect to this signal to capture
     some auditing information about the deletion.
 */
+
+QT_END_NAMESPACE
 
 #endif

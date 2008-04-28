@@ -48,6 +48,7 @@
 #include "diagramitem.h"
 #include "commands.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     undoStack = new QUndoStack();
@@ -74,7 +75,9 @@ MainWindow::MainWindow()
     setCentralWidget(view);
     resize(700, 500);
 }
+//! [0]
 
+//! [1]
 void MainWindow::createUndoView()
 {
     undoView = new QUndoView(undoStack);
@@ -82,14 +85,19 @@ void MainWindow::createUndoView()
     undoView->show();
     undoView->setAttribute(Qt::WA_QuitOnClose, false);
 }
+//! [1]
 
+//! [2]
 void MainWindow::createActions()
 {
     deleteAction = new QAction(tr("&Delete Item"), this);
     deleteAction->setShortcut(tr("Del"));
     connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteItem()));
+//! [2] //! [3]
 
+//! [3] //! [4]
     addBoxAction = new QAction(tr("Add &Box"), this);
+//! [4]
     addBoxAction->setShortcut(tr("Ctrl+O"));
     connect(addBoxAction, SIGNAL(triggered()), this, SLOT(addBox()));
 
@@ -97,6 +105,7 @@ void MainWindow::createActions()
     addTriangleAction->setShortcut(tr("Ctrl+T"));
     connect(addTriangleAction, SIGNAL(triggered()), this, SLOT(addTriangle()));
 
+//! [5]
     undoAction = new QAction(tr("&Undo"), this);
     undoAction->setShortcut(tr("Ctrl+Z"));
     undoAction->setEnabled(false);
@@ -108,6 +117,7 @@ void MainWindow::createActions()
     redoAction->setShortcuts(redoShortcuts);
     redoAction->setEnabled(false);
     connect(redoAction, SIGNAL(triggered()), undoStack, SLOT(redo()));
+//! [5]
 
     exitAction = new QAction(tr("E&xit"), this);
     exitAction->setShortcut(tr("Ctrl+Q"));
@@ -120,11 +130,14 @@ void MainWindow::createActions()
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 }
 
+//! [6]
 void MainWindow::createMenus()
 {
+//! [6]
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(exitAction);
 
+//! [7]
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAction);
     editMenu->addAction(redoAction);
@@ -135,20 +148,26 @@ void MainWindow::createMenus()
     connect(editMenu, SIGNAL(aboutToHide()),
             this, SLOT(itemMenuAboutToHide()));
 
+//! [7]
     itemMenu = menuBar()->addMenu(tr("&Item"));
     itemMenu->addAction(addBoxAction);
     itemMenu->addAction(addTriangleAction);
 
     helpMenu = menuBar()->addMenu(tr("&About"));
     helpMenu->addAction(aboutAction);
+//! [8]
 }
+//! [8]
 
+//! [9]
 void MainWindow::itemMoved(DiagramItem *movedItem,
                            const QPointF &oldPosition)
 {
     undoStack->push(new MoveCommand(movedItem, oldPosition));
 }
+//! [9]
 
+//! [10]
 void MainWindow::deleteItem()
 {
     if (diagramScene->selectedItems().isEmpty())
@@ -157,35 +176,46 @@ void MainWindow::deleteItem()
     QUndoCommand *deleteCommand = new DeleteCommand(diagramScene);
     undoStack->push(deleteCommand);
 }
+//! [10]
 
+//! [11]
 void MainWindow::itemMenuAboutToHide()
 {
     deleteAction->setEnabled(true);
 }
+//! [11]
 
+//! [12]
 void MainWindow::itemMenuAboutToShow()
 {
     undoAction->setText(tr("Undo ") + undoStack->undoText());
     redoAction->setText(tr("Redo ") + undoStack->redoText());
     deleteAction->setEnabled(!diagramScene->selectedItems().isEmpty());
 }
+//! [12]
 
+//! [13]
 void MainWindow::addBox()
 {
     QUndoCommand *addCommand = new AddCommand(DiagramItem::Box, diagramScene);
     undoStack->push(addCommand);
 }
+//! [13]
 
+//! [14]
 void MainWindow::addTriangle()
 {
     QUndoCommand *addCommand = new AddCommand(DiagramItem::Triangle,
                                               diagramScene);
     undoStack->push(addCommand);
 }
+//! [14]
 
+//! [15]
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Undo"),
                        tr("The <b>Undo</b> example demonstrates how to "
                           "use Qt's undo framework."));
 }
+//! [15]

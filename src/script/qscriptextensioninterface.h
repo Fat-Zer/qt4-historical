@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Script)
 
 class QScriptEngine;
@@ -62,7 +64,10 @@ struct Q_SCRIPT_EXPORT QScriptExtensionInterface
     virtual void initialize(const QString &key, QScriptEngine *engine) = 0;
 };
 
-Q_DECLARE_INTERFACE(QScriptExtensionInterface, "com.trolltech.Qt.QScriptExtensionInterface/1.0")
+Q_DECLARE_INTERFACE(QScriptExtensionInterface,
+    "com.trolltech.Qt.QScriptExtensionInterface/1.0")
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

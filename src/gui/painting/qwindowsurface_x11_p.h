@@ -58,6 +58,8 @@
 #include <qglobal.h>
 #include "private/qwindowsurface_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QPaintDevice;
 class QPoint;
 class QRegion;
@@ -82,5 +84,7 @@ public:
 private:
     QX11WindowSurfacePrivate *d_ptr;
 };
+
+QT_END_NAMESPACE
 
 #endif // QWINDOWSURFACE_X11_P_H

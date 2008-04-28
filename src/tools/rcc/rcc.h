@@ -44,37 +44,51 @@
 #ifndef RCC_H
 #define RCC_H
 
-#include <QStringList>
-#include <QFileInfo>
-#include <QLocale>
-#include <QHash>
-#include <QString>
+#include <QtCore/QStringList>
+#include <QtCore/QFileInfo>
+#include <QtCore/QLocale>
+#include <QtCore/QHash>
+#include <QtCore/QString>
 
-#define TAG_RCC "RCC"
-#define TAG_RESOURCE "qresource"
-#define TAG_FILE "file"
-
-#define ATTRIBUTE_LANG       QLatin1String("lang")
-#define ATTRIBUTE_PREFIX     QLatin1String("prefix")
-#define ATTRIBUTE_ALIAS      QLatin1String("alias")
-#define ATTRIBUTE_THRESHOLD  QLatin1String("threshold")
-#define ATTRIBUTE_COMPRESS   QLatin1String("compress")
-
-#define CONSTANT_HEADER_SIZE 8
-#define CONSTANT_COMPRESSLEVEL_DEFAULT -1
-#define CONSTANT_COMPRESSTHRESHOLD_DEFAULT 70
+QT_BEGIN_NAMESPACE
 
 struct RCCFileInfo;
+class QIODevice;
+class RCCResourceLibrary;
+class QTextStream;
+
+class RCCBuilder
+{
+public:
+    RCCBuilder();
+
+    void initializeLibrary(RCCResourceLibrary &lib) const;
+    bool processResourceFile(const QStringList &filenamesIn, const QString &filenameOut, bool list) const;
+    bool processResourceFile(const QStringList &filenamesIn, const QString &filenameOut, bool list, QIODevice &errorDevice) const;
+
+
+public:
+    bool writeBinary;
+    QString initName;
+    bool verbose;
+    int compressLevel;
+    int compressThreshold;
+    bool useNameSpace;
+    QString resourceRoot;
+};
 
 class RCCResourceLibrary
 {
+    RCCResourceLibrary(const RCCResourceLibrary &);
+    RCCResourceLibrary &operator=(const RCCResourceLibrary &);
+
 public:
-    inline RCCResourceLibrary();
+    RCCResourceLibrary();
     ~RCCResourceLibrary();
 
-    bool output(FILE *out);
+    bool output(QIODevice &out, QIODevice &errorDevice);
 
-    bool readFiles(bool ignoreErrors=false);
+    bool readFiles(bool ignoreErrors, QIODevice &errorDevice);
 
     enum Format { Binary, C_Code };
     inline void setFormat(Format f) { mFormat = f; }
@@ -84,6 +98,10 @@ public:
     inline QStringList inputFiles() const { return mFileNames; }
 
     QStringList dataFiles() const;
+
+    // Return a map of resource identifier (':/newPrefix/images/p1.png') to file.
+    typedef QHash<QString, QString> ResourceDataFileMap;
+    ResourceDataFileMap resourceDataFileMap() const;
 
     inline void setVerbose(bool b) { mVerbose = b; }
     inline bool verbose() const { return mVerbose; }
@@ -97,19 +115,37 @@ public:
     inline void setCompressThreshold(int t) { mCompressThreshold = t; }
     inline int compressThreshold() const { return mCompressThreshold; }
 
-    inline void setResourceRoot(QString str) { mResourceRoot = str; }
+    inline void setResourceRoot(const QString &str) { mResourceRoot = str; }
     inline QString resourceRoot() const { return mResourceRoot; }
+    
+    inline void setUseNameSpace(bool v) { mUseNameSpace = v; }
+    inline bool useNameSpace() const { return mUseNameSpace; }
+    
+    QStringList failedResources() const { return mFailedResources; }
 
 private:
+    struct Strings {
+        Strings();
+        const QString TAG_RCC;
+        const QString TAG_RESOURCE;
+        const QString TAG_FILE;
+        const QString ATTRIBUTE_LANG;
+        const QString ATTRIBUTE_PREFIX;
+        const QString ATTRIBUTE_ALIAS;
+        const QString ATTRIBUTE_THRESHOLD;
+        const QString ATTRIBUTE_COMPRESS;
+    };
+    const Strings m_strings;
     RCCFileInfo *root;
+    void reset();
     bool addFile(const QString &alias, const RCCFileInfo &file);
-    bool interpretResourceFile(QIODevice *inputDevice, QString file, QString currentPath = QString(), bool ignoreErrors = false);
-
-    bool writeHeader(FILE *out);
-    bool writeDataBlobs(FILE *out);
-    bool writeDataNames(FILE *out);
-    bool writeDataStructure(FILE *out);
-    bool writeInitializer(FILE *out);
+    bool interpretResourceFile(QIODevice *inputDevice, const QString &file,
+        QString currentPath = QString(), bool ignoreErrors = false);
+    bool writeHeader(QIODevice &out);
+    bool writeDataBlobs(QIODevice &out);
+    bool writeDataNames(QIODevice &out);
+    bool writeDataStructure(QIODevice &out);
+    bool writeInitializer(QIODevice &out);
 
     QStringList mFileNames;
     QString mResourceRoot, mInitName;
@@ -118,68 +154,11 @@ private:
     int mCompressLevel;
     int mCompressThreshold;
     int mTreeOffset, mNamesOffset, mDataOffset;
+    bool mUseNameSpace;
+    QStringList mFailedResources;
+    QIODevice *m_errorDevice;
 };
 
-inline RCCResourceLibrary::RCCResourceLibrary()
-{
-    root = 0;
-    mVerbose = false;
-    mFormat = C_Code;
-    mCompressLevel = -1;
-    mCompressThreshold = 70;
-    mTreeOffset = mNamesOffset = mDataOffset = 0;
-}
-
-struct RCCFileInfo
-{
-    enum Flags
-    {
-        NoFlags = 0x00,
-        Compressed = 0x01,
-        Directory = 0x02
-    };
-
-    inline RCCFileInfo(QString name = QString(), QFileInfo fileInfo = QFileInfo(),
-                       QLocale::Language language = QLocale::C, 
-                       QLocale::Country country = QLocale::AnyCountry,
-                       uint flags = NoFlags,
-                       int compressLevel = CONSTANT_COMPRESSLEVEL_DEFAULT, int compressThreshold = CONSTANT_COMPRESSTHRESHOLD_DEFAULT);
-    ~RCCFileInfo() { qDeleteAll(children); }
-    inline QString resourceName() {
-        QString resource = name;
-        for(RCCFileInfo *p = parent; p; p = p->parent)
-            resource = resource.prepend(p->name + QLatin1Char('/'));
-        return QLatin1Char(':') + resource;
-    }
-
-    int flags;
-    QString name;
-    QLocale::Language language;
-    QLocale::Country country;
-    QFileInfo fileInfo;
-    RCCFileInfo *parent;
-    QHash<QString, RCCFileInfo*> children;
-    int mCompressLevel;
-    int mCompressThreshold;
-
-    qint64 nameOffset, dataOffset, childOffset;
-    qint64 writeDataBlob(FILE *out, qint64 offset, RCCResourceLibrary::Format format);
-    qint64 writeDataName(FILE *out, qint64 offset, RCCResourceLibrary::Format format);
-    bool   writeDataInfo(FILE *out, RCCResourceLibrary::Format format);
-};
-
-inline RCCFileInfo::RCCFileInfo(QString name, QFileInfo fileInfo, QLocale::Language language, QLocale::Country country, uint flags,
-                                int compressLevel, int compressThreshold)
-{
-    this->name = name;
-    this->fileInfo = fileInfo;
-    this->language = language;
-    this->country = country;
-    this->flags = flags;
-    this->parent = 0;
-    this->nameOffset = this->dataOffset = this->childOffset = 0;
-    this->mCompressLevel = compressLevel;
-    this->mCompressThreshold = compressThreshold;
-}
+QT_END_NAMESPACE
 
 #endif // RCC_H

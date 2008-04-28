@@ -46,10 +46,13 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QPushButton;
 class QTextEdit;
 class QLineEdit;
+QT_END_NAMESPACE
 
+//! [0]
 class TextFinder : public QWidget
 {
     Q_OBJECT
@@ -69,5 +72,6 @@ private:
     QLineEdit *ui_lineEdit;
     bool isFirstTime;
 };
+//! [0]
 
 #endif

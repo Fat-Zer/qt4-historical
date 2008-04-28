@@ -49,6 +49,8 @@
 
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 DspMakefileGenerator::DspMakefileGenerator() : Win32MakefileGenerator(), init_flag(false)
 {
 }
@@ -187,7 +189,7 @@ bool DspMakefileGenerator::writeDspParts(QTextStream &t)
     writeFileGroup(t, listNames, "Resources", "rc;qrc");
     listNames = QStringList("TRANSLATIONS");
     allListNames += listNames;
-    writeFileGroup(t, listNames, "Translations", "ts");
+    writeFileGroup(t, listNames, "Translations", "ts;xlf");
     listNames = QStringList("LEXSOURCES");
     allListNames += listNames;
     writeFileGroup(t, listNames, "Lexables", "l");
@@ -586,7 +588,7 @@ bool DspMakefileGenerator::writeProjectMakefile()
         writeFileGroup(t, listNames, "Resources", "rc;qrc");
         listNames = QStringList("TRANSLATIONS");
         allListNames += listNames;
-        writeFileGroup(t, listNames, "Translations", "ts");
+        writeFileGroup(t, listNames, "Translations", "ts;xlf");
         listNames = QStringList("LEXSOURCES");
         allListNames += listNames;
         writeFileGroup(t, listNames, "Lexables", "l");
@@ -1138,6 +1140,7 @@ QString DspMakefileGenerator::writeBuildstepForFileForConfig(const QString &file
                 }
             }
 
+
             QString mappedFile;
             if (hasBuiltin) {
                 mappedFile = fileOut;
@@ -1202,3 +1205,5 @@ QString DspMakefileGenerator::writeBuildstepForFileForConfig(const QString &file
 
     return ret;
 }
+
+QT_END_NAMESPACE

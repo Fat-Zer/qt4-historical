@@ -44,11 +44,16 @@
 #include "qfilesystemwatcher.h"
 #include "qfilesystemwatcher_win_p.h"
 
+#ifndef QT_NO_FILESYSTEMWATCHER
+
 #include <qdebug.h>
 #include <qfileinfo.h>
 #include <qstringlist.h>
 #include <qset.h>
 #include <qdatetime.h>
+#include <qdir.h>
+
+QT_BEGIN_NAMESPACE
 
 QWindowsFileSystemWatcherEngine::QWindowsFileSystemWatcherEngine()
     : msg(0)
@@ -140,12 +145,13 @@ void QWindowsFileSystemWatcherEngine::run()
                                 handleForDir.remove(absolutePath);
                                 // h is now invalid
                             }
+                        } else if (x.value().isDir) {
+                            // qDebug() << x.key() << "directory changed!";
+                            emit directoryChanged(x.value().path, false);
+                            x.value() = fileInfo;
                         } else if (x.value() != fileInfo) {
-                            // qDebug() << x.key() << "changed!";
-                            if (x.value().isDir)
-                                emit directoryChanged(x.value().path, false);
-                            else
-                                emit fileChanged(x.value().path, false);
+                            // qDebug() << x.key() << "file changed!";
+                            emit fileChanged(x.value().path, false);
                             x.value() = fileInfo;
                         }
                     }
@@ -174,7 +180,12 @@ QStringList QWindowsFileSystemWatcherEngine::addPaths(const QStringList &paths,
     while (it.hasNext()) {
         QString path = it.next();
         QString normalPath = path;
-        if (normalPath.endsWith(QLatin1Char('/')) || normalPath.endsWith(QLatin1Char('\\')))
+        if ((normalPath.endsWith(QLatin1Char('/')) || normalPath.endsWith(QLatin1Char('\\')))
+#ifdef Q_OS_WINCE
+            && normalPath.size() > 1)
+#else
+            )
+#endif
             normalPath.chop(1);
         QFileInfo fileInfo(normalPath.toLower());
         if (!fileInfo.exists())
@@ -190,31 +201,30 @@ QStringList QWindowsFileSystemWatcherEngine::addPaths(const QStringList &paths,
         }
 
         const QString absolutePath = isDir ? fileInfo.absoluteFilePath() : fileInfo.absolutePath();
-        HANDLE handle = handleForDir.value(absolutePath, INVALID_HANDLE_VALUE);
-        if (handle == INVALID_HANDLE_VALUE) {
+        const uint flags = isDir
+            ? (FILE_NOTIFY_CHANGE_DIR_NAME
+               | FILE_NOTIFY_CHANGE_FILE_NAME)
+            : (FILE_NOTIFY_CHANGE_DIR_NAME
+               | FILE_NOTIFY_CHANGE_FILE_NAME
+               | FILE_NOTIFY_CHANGE_ATTRIBUTES
+               | FILE_NOTIFY_CHANGE_SIZE
+               | FILE_NOTIFY_CHANGE_LAST_WRITE
+               | FILE_NOTIFY_CHANGE_SECURITY);
+
+        Handle handle = handleForDir.value(absolutePath);
+        if (handle.handle == INVALID_HANDLE_VALUE || handle.flags != flags) {
             QT_WA({
-                handle = FindFirstChangeNotificationW((TCHAR *) absolutePath.utf16(),
-                                                      false,
-                                                      (FILE_NOTIFY_CHANGE_DIR_NAME
-                                                       | FILE_NOTIFY_CHANGE_FILE_NAME
-                                                       | FILE_NOTIFY_CHANGE_ATTRIBUTES
-                                                       | FILE_NOTIFY_CHANGE_SIZE
-                                                       | FILE_NOTIFY_CHANGE_LAST_WRITE
-                                                       | FILE_NOTIFY_CHANGE_SECURITY));
+                    handle.handle = FindFirstChangeNotificationW((TCHAR *) QDir::toNativeSeparators(absolutePath).utf16(),
+                                                      false, flags);
             },{
-                handle = FindFirstChangeNotificationA(absolutePath.toLocal8Bit(),
-                                                      false,
-                                                      (FILE_NOTIFY_CHANGE_DIR_NAME
-                                                       | FILE_NOTIFY_CHANGE_FILE_NAME
-                                                       | FILE_NOTIFY_CHANGE_ATTRIBUTES
-                                                       | FILE_NOTIFY_CHANGE_SIZE
-                                                       | FILE_NOTIFY_CHANGE_LAST_WRITE
-                                                       | FILE_NOTIFY_CHANGE_SECURITY));
+                    handle.handle = FindFirstChangeNotificationA(QDir::toNativeSeparators(absolutePath).toLocal8Bit(),
+                                                      false, flags);
             })
-            if (handle == INVALID_HANDLE_VALUE)
+            handle.flags = flags;
+            if (handle.handle == INVALID_HANDLE_VALUE)
                 continue;
             // qDebug() << "Added handle" << handle << "for" << absolutePath << "to watch" << fileInfo.absoluteFilePath();
-            handles.append(handle);
+            handles.append(handle.handle);
             handleForDir.insert(absolutePath, handle);
         }
 
@@ -223,9 +233,9 @@ QStringList QWindowsFileSystemWatcherEngine::addPaths(const QStringList &paths,
         pathInfo.isDir = isDir;
         pathInfo.path = path;
         pathInfo = fileInfo;
-        QHash<QString, PathInfo> &h = pathInfoForHandle[handle];
+        QHash<QString, PathInfo> &h = pathInfoForHandle[handle.handle];
         if (!h.contains(fileInfo.absoluteFilePath())) {
-            pathInfoForHandle[handle].insert(fileInfo.absoluteFilePath(), pathInfo);
+            pathInfoForHandle[handle.handle].insert(fileInfo.absoluteFilePath(), pathInfo);
             if (isDir)
                 directories->append(path);
             else
@@ -235,10 +245,12 @@ QStringList QWindowsFileSystemWatcherEngine::addPaths(const QStringList &paths,
         it.remove();
     }
 
-    if (!isRunning())
+    if (!isRunning()) {
+        msg = '@';
         start();
-    else
+    } else {
         wakeup();
+    }
 
     return p;
 }
@@ -259,16 +271,16 @@ QStringList QWindowsFileSystemWatcherEngine::removePaths(const QStringList &path
         QFileInfo fileInfo(normalPath.toLower());
 
         QString absolutePath = fileInfo.absoluteFilePath();
-        HANDLE handle = handleForDir.value(absolutePath, INVALID_HANDLE_VALUE);
-        if (handle == INVALID_HANDLE_VALUE) {
+        Handle handle = handleForDir.value(absolutePath);
+        if (handle.handle == INVALID_HANDLE_VALUE) {
             // perhaps path is a file?
             absolutePath = fileInfo.absolutePath();
-            handle = handleForDir.value(absolutePath, INVALID_HANDLE_VALUE);
-            if (handle == INVALID_HANDLE_VALUE)
+            handle = handleForDir.value(absolutePath);
+            if (handle.handle == INVALID_HANDLE_VALUE)
                 continue;
         }
 
-        QHash<QString, PathInfo> &h = pathInfoForHandle[handle];
+        QHash<QString, PathInfo> &h = pathInfoForHandle[handle.handle];
         if (h.remove(fileInfo.absoluteFilePath())) {
             // ###
             files->removeAll(path);
@@ -276,9 +288,9 @@ QStringList QWindowsFileSystemWatcherEngine::removePaths(const QStringList &path
 
             if (h.isEmpty()) {
                 // qDebug() << "Closing handle" << handle;
-                FindCloseChangeNotification(handle);    // This one might generate a notification
+                FindCloseChangeNotification(handle.handle);    // This one might generate a notification
 
-                int indexOfHandle = handles.indexOf(handle);
+                int indexOfHandle = handles.indexOf(handle.handle);
                 Q_ASSERT(indexOfHandle != -1);
                 handles.remove(indexOfHandle);
 
@@ -313,3 +325,6 @@ void QWindowsFileSystemWatcherEngine::wakeup()
     msg = '@';
     SetEvent(handles.at(0));
 }
+
+QT_END_NAMESPACE
+#endif // QT_NO_FILESYSTEMWATCHER

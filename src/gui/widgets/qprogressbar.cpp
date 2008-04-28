@@ -53,6 +53,8 @@
 #endif
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 class QProgressBarPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QProgressBar)
@@ -170,7 +172,7 @@ bool QProgressBarPrivate::repaintRequired() const
     \class QProgressBar qprogressbar.h
     \brief The QProgressBar widget provides a horizontal or vertical progress bar.
 
-    \ingroup advanced
+    \ingroup basicwidgets
     \mainclass
 
     A progress bar is used to give the user an indication of the
@@ -403,7 +405,7 @@ QSize QProgressBar::sizeHint() const
     QStyleOptionProgressBarV2 opt;
     initStyleOption(&opt);
     int cw = style()->pixelMetric(QStyle::PM_ProgressBarChunkWidth, &opt, this);
-    QSize size = QSize(cw * 7 + fm.width(QLatin1Char('0')) * 4, fm.height() + 8);
+    QSize size = QSize(qMax(9, cw) * 7 + fm.width(QLatin1Char('0')) * 4, fm.height() + 8);
     if (opt.orientation == Qt::Vertical)
         size.transpose();
     return style()->sizeFromContents(QStyle::CT_ProgressBar, &opt, size, this);
@@ -585,5 +587,7 @@ QString QProgressBar::format() const
     Q_D(const QProgressBar);
     return d->format;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PROGRESSBAR

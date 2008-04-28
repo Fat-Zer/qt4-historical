@@ -72,12 +72,12 @@ ArthurFrame::ArthurFrame(QWidget *parent)
     m_document = 0;
     m_show_doc = false;
 
-    m_tile = QPixmap(100, 100);
+    m_tile = QPixmap(128, 128);
     m_tile.fill(Qt::white);
     QPainter pt(&m_tile);
-    QColor color(240, 240, 240);
-    pt.fillRect(0, 0, 50, 50, color);
-    pt.fillRect(50, 50, 50, 50, color);
+    QColor color(230, 230, 230);
+    pt.fillRect(0, 0, 64, 64, color);
+    pt.fillRect(64, 64, 64, 64, color);
     pt.end();
 
 //     QPalette pal = palette();
@@ -108,23 +108,31 @@ void ArthurFrame::enableOpenGL(bool use_opengl)
     } else {
         glw->hide();
     }
+
+    update();
 }
 #endif
 
 void ArthurFrame::paintEvent(QPaintEvent *e)
 {
+#ifdef Q_WS_QWS
+    static QPixmap *static_image = 0;
+#else
     static QImage *static_image = 0;
+#endif
     QPainter painter;
     if (preferImage()
 #ifdef QT_OPENGL_SUPPORT
         && !m_use_opengl
 #endif
         ) {
-        if (!static_image) {
-            static_image = new QImage(size(), QImage::Format_RGB32);
-        } else if (static_image->size() != size()) {
+        if (!static_image || static_image->size() != size()) {
             delete static_image;
+#ifdef Q_WS_QWS
+            static_image = new QPixmap(size());
+#else
             static_image = new QImage(size(), QImage::Format_RGB32);
+#endif
         }
         painter.begin(static_image);
 
@@ -155,11 +163,11 @@ void ArthurFrame::paintEvent(QPaintEvent *e)
     QPainterPath clipPath;
 
     QRect r = rect();
-    double left = r.x() + 1;
-    double top = r.y() + 1;
-    double right = r.right();
-    double bottom = r.bottom();
-    double radius2 = 8 * 2;
+    qreal left = r.x() + 1;
+    qreal top = r.y() + 1;
+    qreal right = r.right();
+    qreal bottom = r.bottom();
+    qreal radius2 = 8 * 2;
 
     clipPath.moveTo(right - radius2, top);
     clipPath.arcTo(right - radius2, top, radius2, radius2, 90, -90);
@@ -196,7 +204,11 @@ void ArthurFrame::paintEvent(QPaintEvent *e)
         ) {
         painter.end();
         painter.begin(this);
+#ifdef Q_WS_QWS
+        painter.drawPixmap(e->rect(), *static_image, e->rect());
+#else
         painter.drawImage(e->rect(), *static_image, e->rect());
+#endif
     }
 
 #ifdef QT_OPENGL_SUPPORT

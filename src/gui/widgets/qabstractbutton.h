@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QButtonGroup;
@@ -66,7 +68,7 @@ class Q_GUI_EXPORT QAbstractButton : public QWidget
     Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
 #endif
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
-    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled USER true)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked DESIGNABLE isCheckable NOTIFY toggled USER true)
     Q_PROPERTY(bool autoRepeat READ autoRepeat WRITE setAutoRepeat)
     Q_PROPERTY(bool autoExclusive READ autoExclusive WRITE setAutoExclusive)
     Q_PROPERTY(int autoRepeatDelay READ autoRepeatDelay WRITE setAutoRepeatDelay)
@@ -172,6 +174,8 @@ private:
     Q_DISABLE_COPY(QAbstractButton)
     friend class QButtonGroup;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

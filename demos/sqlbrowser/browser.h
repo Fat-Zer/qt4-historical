@@ -48,10 +48,10 @@
 #include "ui_browserwidget.h"
 
 class ConnectionWidget;
-class QTableView;
-class QPushButton;
-class QTextEdit;
-class QSqlError;
+QT_FORWARD_DECLARE_CLASS(QTableView)
+QT_FORWARD_DECLARE_CLASS(QPushButton)
+QT_FORWARD_DECLARE_CLASS(QTextEdit)
+QT_FORWARD_DECLARE_CLASS(QSqlError)
 
 class Browser: public QWidget, private Ui::Browser
 {

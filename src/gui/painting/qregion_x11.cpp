@@ -45,7 +45,9 @@
 
 #include <limits.h>
 
-QRegion::QRegionData QRegion::shared_empty = {Q_ATOMIC_INIT(1), 0, 0, 0};
+QT_BEGIN_NAMESPACE
+
+QRegion::QRegionData QRegion::shared_empty = {Q_BASIC_ATOMIC_INITIALIZER(1), 0, 0, 0};
 
 void QRegion::updateX11Region() const
 {
@@ -53,14 +55,16 @@ void QRegion::updateX11Region() const
     if (!d->qt_rgn)
         return;
 
-    for(int i = 0; i < d->qt_rgn->numRects; ++i) {
+    int n = d->qt_rgn->numRects;
+    const QRect *rect = (n == 1 ? &d->qt_rgn->extents : d->qt_rgn->rects.constData());
+    while (n--) {
         XRectangle r;
-        const QRect &rect = d->qt_rgn->rects.at(i);
-        r.x = qMax(SHRT_MIN, rect.x());
-        r.y = qMax(SHRT_MIN, rect.y());
-        r.width = qMin((int)USHRT_MAX, rect.width());
-        r.height = qMin((int)USHRT_MAX, rect.height());
+        r.x = qMax(SHRT_MIN, rect->x());
+        r.y = qMax(SHRT_MIN, rect->y());
+        r.width = qMin((int)USHRT_MAX, rect->width());
+        r.height = qMin((int)USHRT_MAX, rect->height());
         XUnionRectWithRegion(&r, d->rgn, d->rgn);
+        ++rect;
     }
 }
 
@@ -69,13 +73,15 @@ void *QRegion::clipRectangles(int &num) const
     if (!d->xrectangles && !(d == &shared_empty || d->qt_rgn->numRects == 0)) {
         XRectangle *r = static_cast<XRectangle*>(malloc(d->qt_rgn->numRects * sizeof(XRectangle)));
         d->xrectangles = r;
-        for(int i = 0; i < d->qt_rgn->numRects; ++i) {
-            const QRect &rect = d->qt_rgn->rects.at(i);
-            r->x = qMax(SHRT_MIN, rect.x());
-            r->y = qMax(SHRT_MIN, rect.y());
-            r->width = qMin((int)USHRT_MAX, rect.width());
-            r->height = qMin((int)USHRT_MAX, rect.height());
+        int n = d->qt_rgn->numRects;
+        const QRect *rect = (n == 1 ? &d->qt_rgn->extents : d->qt_rgn->rects.constData());
+        while (n--) {
+            r->x = qMax(SHRT_MIN, rect->x());
+            r->y = qMax(SHRT_MIN, rect->y());
+            r->width = qMin((int)USHRT_MAX, rect->width());
+            r->height = qMin((int)USHRT_MAX, rect->height());
             ++r;
+            ++rect;
         }
     }
     if (d == &shared_empty || d->qt_rgn->numRects == 0)
@@ -84,3 +90,5 @@ void *QRegion::clipRectangles(int &num) const
         num = d->qt_rgn->numRects;
     return d->xrectangles;
 }
+
+QT_END_NAMESPACE

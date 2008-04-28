@@ -54,6 +54,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextEngine;
@@ -137,6 +139,7 @@ public:
 
     void beginLayout();
     void endLayout();
+    void clearLayout();
 
     QTextLine createLine();
 
@@ -166,6 +169,7 @@ public:
     qreal maximumWidth() const;
 
     QTextEngine *engine() const { return d; }
+    void setFlags(int flags);
 private:
     QTextLayout(QTextEngine *e) : d(e) {}
     Q_DISABLE_COPY(QTextLayout)
@@ -233,6 +237,8 @@ private:
     int i;
     QTextEngine *eng;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -41,10 +41,14 @@
 **
 ****************************************************************************/
 
-#include "qfsfileengine_iterator_p.h"
 #include "qplatformdefs.h"
+#include "qfsfileengine_iterator_p.h"
 
 #include <QtCore/qvariant.h>
+
+#ifndef QT_NO_FSFILEENGINE
+
+QT_BEGIN_NAMESPACE
 
 class QFSFileEngineIteratorPlatformSpecificData
 {
@@ -132,3 +136,7 @@ bool QFSFileEngineIterator::hasNext() const
     }
     return !platform->done;
 }
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_FSFILEENGINE

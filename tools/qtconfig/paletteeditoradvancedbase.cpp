@@ -46,6 +46,8 @@
 
 #include <QVariant>
 
+QT_BEGIN_NAMESPACE
+
 /*
  *  Constructs a PaletteEditorAdvancedBase as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -140,3 +142,5 @@ void PaletteEditorAdvancedBase::paletteSelected(int)
 {
     qWarning("PaletteEditorAdvancedBase::paletteSelected(int): Not implemented yet");
 }
+
+QT_END_NAMESPACE

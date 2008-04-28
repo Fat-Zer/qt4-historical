@@ -46,6 +46,7 @@
 #include <QLocale>
 #include <QLibraryInfo>
 
+//! [0] //! [1]
 QWizardPage *createIntroPage()
 {
     QWizardPage *page = new QWizardPage;
@@ -61,9 +62,13 @@ QWizardPage *createIntroPage()
 
     return page;
 }
+//! [0]
 
+//! [2]
 QWizardPage *createRegistrationPage()
+//! [1] //! [3]
 {
+//! [3]
     QWizardPage *page = new QWizardPage;
     page->setTitle("Registration");
     page->setSubTitle("Please fill both fields.");
@@ -82,10 +87,15 @@ QWizardPage *createRegistrationPage()
     page->setLayout(layout);
 
     return page;
+//! [4]
 }
+//! [2] //! [4]
 
+//! [5] //! [6]
 QWizardPage *createConclusionPage()
+//! [5] //! [7]
 {
+//! [7]
     QWizardPage *page = new QWizardPage;
     page->setTitle("Conclusion");
 
@@ -98,9 +108,13 @@ QWizardPage *createConclusionPage()
     page->setLayout(layout);
 
     return page;
+//! [8]
 }
+//! [6] //! [8]
 
+//! [9] //! [10]
 int main(int argc, char *argv[])
+//! [9] //! [11]
 {
     QApplication app(argc, argv);
 
@@ -121,3 +135,4 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+//! [10] //! [11]

@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLBOX
@@ -140,6 +142,8 @@ inline int QToolBox::insertItem(int index, QWidget *item, const QString &text)
 { return insertItem(index, item, QIcon(), text); }
 
 #endif // QT_NO_TOOLBOX
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

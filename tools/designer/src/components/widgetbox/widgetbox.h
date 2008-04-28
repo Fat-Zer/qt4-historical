@@ -47,6 +47,8 @@
 #include "widgetbox_global.h"
 #include <qdesigner_widgetbox_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 
@@ -60,7 +62,7 @@ class QT_WIDGETBOX_EXPORT WidgetBox : public QDesignerWidgetBox
 {
     Q_OBJECT
 public:
-    WidgetBox(QDesignerFormEditorInterface *core, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    explicit WidgetBox(QDesignerFormEditorInterface *core, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     virtual ~WidgetBox();
 
     QDesignerFormEditorInterface *core() const;
@@ -98,5 +100,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // WIDGETBOX_H

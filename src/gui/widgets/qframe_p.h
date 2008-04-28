@@ -58,6 +58,8 @@
 #include "private/qwidget_p.h"
 #include "qframe.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q_GUI_EXPORT QFramePrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QFrame)
@@ -79,5 +81,7 @@ public:
     inline void init();
 
 };
+
+QT_END_NAMESPACE
 
 #endif // QFRAME_P_H

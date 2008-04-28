@@ -49,6 +49,7 @@
 
 class ScribbleArea;
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -89,5 +90,6 @@ private:
     QAction *aboutAct;
     QAction *aboutQtAct;
 };
+//! [0]
 
 #endif

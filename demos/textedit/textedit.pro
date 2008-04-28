@@ -3,9 +3,8 @@ TARGET          = textedit
 
 CONFIG          += qt warn_on
 
-HEADERS         = textedit.h printpreview.h
+HEADERS         = textedit.h
 SOURCES         = textedit.cpp \
-                  printpreview.cpp \
                   main.cpp
 
 RESOURCES += textedit.qrc
@@ -19,3 +18,4 @@ target.path = $$[QT_INSTALL_DEMOS]/textedit
 sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro *.html *.doc images
 sources.path = $$[QT_INSTALL_DEMOS]/textedit
 INSTALLS += target sources
+

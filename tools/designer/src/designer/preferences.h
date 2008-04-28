@@ -46,11 +46,15 @@
 
 #include "designer_enums.h"
 #include <grid_p.h>
+#include <previewconfigurationwidget_p.h>
+#include <previewmanager_p.h>
 
 #include <QtCore/QStringList>
 #include <QtCore/QPoint>
 #include <QtGui/QFont>
 #include <QtGui/QFontDatabase>
+
+QT_BEGIN_NAMESPACE
 
 struct Preferences
 {
@@ -62,6 +66,10 @@ struct Preferences
     bool m_useFont;
     QStringList m_additionalTemplatePaths;
     qdesigner_internal::Grid m_defaultGrid;
+    qdesigner_internal::PreviewConfigurationWidgetState m_previewConfigurationWidgetState;
+    qdesigner_internal::PreviewConfiguration m_previewConfiguration;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_PREFERENCES_H

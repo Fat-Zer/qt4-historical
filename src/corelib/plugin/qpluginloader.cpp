@@ -51,6 +51,8 @@
 
 #ifndef QT_NO_LIBRARY
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QPluginLoader
     \reentrant
@@ -170,7 +172,7 @@ QPluginLoader::~QPluginLoader()
 */
 QObject *QPluginLoader::instance()
 {
-    if (!d)
+    if (!d || d->fileName.isEmpty())
         return 0;
     if (!d->pHnd)
         load();
@@ -191,7 +193,7 @@ QObject *QPluginLoader::instance()
 */
 bool QPluginLoader::load()
 {
-    if (!d)
+    if (!d || d->fileName.isEmpty())
         return false;
     if (did_load)
         return d->pHnd && d->instance;
@@ -251,17 +253,26 @@ bool QPluginLoader::isLoaded() const
     Unix, \c .dylib on Mac OS X, and \c .dll on Windows. The suffix
     can be verified with QLibrary::isLibrary().
 
+    If the file name does not exist, it will not be set. This function
+    will then return an empty string.
+
     \sa load()
 */
 void QPluginLoader::setFileName(const QString &fileName)
 {
 #if defined(QT_SHARED)
+    QLibrary::LoadHints lh;
     if (d) {
+        lh = d->loadHints;
         d->release();
         d = 0;
         did_load = false;
     }
-    d = QLibraryPrivate::findOrCreate(QFileInfo(fileName).canonicalFilePath());
+    QString fn = QFileInfo(fileName).canonicalFilePath();
+    d = QLibraryPrivate::findOrCreate(fn);
+    d->loadHints = lh;
+    if (fn.isEmpty())
+        d->errorString = QLibrary::tr("The shared library was not found.");
 #else
     if (qt_debug_component()) {
         qWarning("Cannot load %s into a statically linked Qt library.",
@@ -291,6 +302,39 @@ QString QPluginLoader::errorString() const
 typedef QList<QtPluginInstanceFunction> StaticInstanceFunctionList;
 Q_GLOBAL_STATIC(StaticInstanceFunctionList, staticInstanceFunctionList)
 
+/*! \since 4.4
+
+    \property QPluginLoader::loadHints
+    \brief Give the load() function some hints on how it should behave.
+
+    You can give hints on how the symbols in the plugin are
+    resolved. By default, none of the hints are set.
+
+    See the documentation of QLibrary::loadHints for a complete
+    description of how this property works.
+
+    \sa QLibrary::loadHints
+*/
+
+void QPluginLoader::setLoadHints(QLibrary::LoadHints loadHints)
+{
+    if (!d) {
+        d = QLibraryPrivate::findOrCreate(QString());   // ugly, but we need a d-ptr
+        d->errorString.clear();
+    }
+    d->loadHints = loadHints;
+}
+
+QLibrary::LoadHints QPluginLoader::loadHints() const
+{
+    if (!d) {
+        QPluginLoader *that = const_cast<QPluginLoader *>(this);
+        that->d = QLibraryPrivate::findOrCreate(QString());   // ugly, but we need a d-ptr
+        that->d->errorString.clear();
+    }
+    return d->loadHints;
+}
+
 /*!
     \relates QPluginLoader
 
@@ -315,4 +359,7 @@ QObjectList QPluginLoader::staticInstances()
     }
     return instances;
 }
+
+QT_END_NAMESPACE
+
 #endif // QT_NO_LIBRARY

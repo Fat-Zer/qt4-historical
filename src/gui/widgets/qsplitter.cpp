@@ -63,6 +63,8 @@
 
 #include <ctype.h>
 
+QT_BEGIN_NAMESPACE
+
 //#define QSPLITTER_DEBUG
 
 /*!
@@ -82,16 +84,12 @@
     reimplement QSplitter::createHandle() to instantiate the custom splitter
     handle. For example, a minimum QSplitter subclass might look like this:
 
-    \quotefromfile snippets/splitterhandle/splitter.h
-    \skipto class Splitter : public QSplitter
-    \printuntil /^\};/
+    \snippet doc/src/snippets/splitterhandle/splitter.h 0
 
     The \l{QSplitter::}{createHandle()} implementation simply constructs a
     custom splitter handle, called \c Splitter in this example:
 
-    \quotefromfile snippets/splitterhandle/splitter.cpp
-    \skipto createHandle()
-    \printuntil /^\}/
+    \snippet doc/src/snippets/splitterhandle/splitter.cpp 1
 
     Information about a given handle can be obtained using functions like
     orientation() and opaqueResize(), and is retrieved from its parent splitter.
@@ -102,9 +100,7 @@
     needs to perform. A simple subclass might only provide a paintEvent()
     implementation:
 
-    \quotefromfile snippets/splitterhandle/splitter.cpp
-    \skipto paintEvent
-    \printuntil /^\}/
+    \snippet doc/src/snippets/splitterhandle/splitter.cpp 0
 
     In this example, a predefined gradient is set up differently depending on
     the orientation of the handle. QSplitterHandle provides a reasonable
@@ -478,7 +474,7 @@ void QSplitterPrivate::doResize()
                 a[j].sizeHint = a[j].minimumSize;
                 a[j].expansive = true;
             } else {
-                a[j].sizeHint = s->getWidgetSize(orient);
+                a[j].sizeHint = qMax(s->getWidgetSize(orient), a[j].minimumSize);
             }
         }
         ++j;
@@ -823,6 +819,23 @@ QSplitter::QSplitter(Qt::Orientation orientation, QWidget *parent, const char *n
 }
 #endif
 
+/*!
+    \internal
+*/
+void QSplitterPrivate::insertWidget_helper(int index, QWidget *widget, bool show)
+{
+    Q_Q(QSplitter);
+    QBoolBlocker b(blockChildAdd);
+    bool needShow = show && q->isVisible() &&
+                    !(widget->isHidden() && widget->testAttribute(Qt::WA_WState_ExplicitShowHide));
+    if (widget->parentWidget() != q)
+        widget->setParent(q);
+    if (needShow)
+        widget->show();
+    insertWidget(index, widget);
+    recalc(q->isVisible());
+}
+
 /*
     Inserts the widget \a w at position \a index in the splitter's list of widgets.
 
@@ -890,9 +903,7 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     The following example will show a QListView, QTreeView, and
     QTextEdit side by side, with two splitter handles:
 
-    \quotefromfile snippets/splitter/splitter.cpp
-    \skipto  QSplitter
-    \printuntil splitter->addWidget(textedit);
+    \snippet doc/src/snippets/splitter/splitter.cpp 0
 
     If a widget is already inside a QSplitter when insertWidget() or
     addWidget() is called, it will move to the new position. This can be used
@@ -1109,15 +1120,7 @@ void QSplitter::addWidget(QWidget *widget)
 void QSplitter::insertWidget(int index, QWidget *widget)
 {
     Q_D(QSplitter);
-    QBoolBlocker b(d->blockChildAdd);
-    bool needShow = isVisible() &&
-                    !(widget->isHidden() && widget->testAttribute(Qt::WA_WState_ExplicitShowHide));
-    if (widget->parentWidget() != this)
-        widget->setParent(this);
-    if (needShow)
-        widget->show();
-    d->insertWidget(index, widget);
-    d->recalc(isVisible());
+    d->insertWidget_helper(index, widget, true);
 }
 
 /*!
@@ -1222,8 +1225,11 @@ void QSplitter::childEvent(QChildEvent *c)
     QWidget *w = static_cast<QWidget*>(c->child());
 
     if (c->added() && !d->blockChildAdd && !w->isWindow() && !d->findWidget(w)) {
-        addWidget(w);
-    } else  if (c->type() == QEvent::ChildRemoved) {
+        d->insertWidget_helper(d->list.count(), w, false);
+    } else if (c->polished() && !d->blockChildAdd) {
+        if (isVisible() && !(w->isHidden() && w->testAttribute(Qt::WA_WState_ExplicitShowHide)))
+            w->show();
+    } else if (c->type() == QEvent::ChildRemoved) {
         for (int i = 0; i < d->list.size(); ++i) {
             QSplitterLayoutStruct *s = d->list.at(i);
             if (s->widget == w) {
@@ -1560,9 +1566,7 @@ QSize QSplitter::minimumSizeHint() const
 
     The easiest way to iterate over the list is to use the Java-style iterators.
 
-    \quotefromfile snippets/splitter/splitter.cpp
-    \skipto   QListIterator<int>
-    \printuntil processSize(it.next());
+    \snippet doc/src/snippets/splitter/splitter.cpp 3
 
     \sa setSizes()
 */
@@ -1666,10 +1670,7 @@ static const qint32 SplitterMagic = 0xff;
     for a future session. A version number is stored as part of the data.
     Here is an example:
 
-    \quotefromfile snippets/splitter/splitter.cpp
-    \skipto SAVE
-    \skipto QSettings
-    \printuntil saveState()
+    \snippet doc/src/snippets/splitter/splitter.cpp 1
 
     \sa restoreState()
 */
@@ -1698,10 +1699,7 @@ QByteArray QSplitter::saveState() const
 
     Restore the splitters's state:
 
-    \quotefromfile snippets/splitter/splitter.cpp
-    \skipto RESTORE
-    \skipto QSettings
-    \printuntil restoreState(
+    \snippet doc/src/snippets/splitter/splitter.cpp 2
 
     A failure to restore the splitter's layout may result from either
     invalid or out-of-date data in the supplied byte array.
@@ -1750,13 +1748,7 @@ bool QSplitter::restoreState(const QByteArray &state)
 
     This function is provided for convenience. It is equivalent to
 
-    \code
-        QWidget *widget = splitter->widget(index);
-        QSizePolicy policy = widget->sizePolicy();
-        policy.setHorizontalStretch(stretch);
-        policy.setVerticalStretch(stretch);
-        widget->setSizePolicy(policy);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qsplitter.cpp 0
 
     \sa setSizes(), widget()
 */
@@ -1808,5 +1800,7 @@ QTextStream& operator>>(QTextStream& ts, QSplitter& splitter)
 }
 #endif // QT_NO_TEXTSTREAM
 //#endif // QT3_SUPPORT
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SPLITTER

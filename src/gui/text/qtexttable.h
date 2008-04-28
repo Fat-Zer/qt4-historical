@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextCursor;
@@ -133,6 +135,8 @@ private:
     Q_DECLARE_PRIVATE(QTextTable)
     friend class QTextTableCell;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

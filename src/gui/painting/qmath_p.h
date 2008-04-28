@@ -57,68 +57,12 @@
 
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
+
 static const double Q_PI   = 3.14159265358979323846;   // pi
 static const double Q_2PI  = 6.28318530717958647693;   // 2*pi
 static const double Q_PI2  = 1.57079632679489661923;   // pi/2
 
-inline int qCeil(qreal v)
-{
-#ifdef QT_USE_MATH_H_FLOATS
-    if (sizeof(qreal) == sizeof(float))
-        return int(ceilf(v));
-    else
-#endif
-        return int(ceil(v));
-}
-
-inline int qFloor(qreal v)
-{
-#ifdef QT_USE_MATH_H_FLOATS
-    if (sizeof(qreal) == sizeof(float))
-        return int(floorf(v));
-    else
-#endif
-        return int(floor(v));
-}
-
-inline qreal qSin(qreal v)
-{
-#ifdef QT_USE_MATH_H_FLOATS
-    if (sizeof(qreal) == sizeof(float))
-        return sinf(v);
-    else
-#endif
-        return sin(v);
-}
-
-inline qreal qCos(qreal v)
-{
-#ifdef QT_USE_MATH_H_FLOATS
-    if (sizeof(qreal) == sizeof(float))
-        return cosf(v);
-    else
-#endif
-        return cos(v);
-}
-
-inline qreal qSqrt(qreal v)
-{
-#ifdef QT_USE_MATH_H_FLOATS
-    if (sizeof(qreal) == sizeof(float))
-        return sqrtf(v);
-    else
-#endif
-        return sqrt(v);
-}
-
-inline qreal qLog(qreal v)
-{
-#ifdef QT_USE_MATH_H_FLOATS
-    if (sizeof(qreal) == sizeof(float))
-        return logf(v);
-    else
-#endif
-        return log(v);
-}
+QT_END_NAMESPACE
 
 #endif // QMATH_P_H

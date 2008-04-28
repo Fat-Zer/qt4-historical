@@ -47,7 +47,9 @@
 #include <QtGui/QDialog>
 #include <QtNetwork/QSslCertificate>
 
+QT_BEGIN_NAMESPACE
 class Ui_CertificateInfo;
+QT_END_NAMESPACE
 
 class CertificateInfo : public QDialog
 {

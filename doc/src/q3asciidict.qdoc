@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \class Q3AsciiDict
     \brief The Q3AsciiDict class is a template class that provides a dictionary based on char* keys.
@@ -16,27 +59,7 @@
     performace as a Q3AsciiDict.
 
     Example:
-    \code
-    Q3AsciiDict<QLineEdit> fields; // char* keys, QLineEdit* values
-    fields.insert( "forename", new QLineEdit( this ) );
-    fields.insert( "surname", new QLineEdit( this ) );
-
-    fields["forename"]->setText( "Homer" );
-    fields["surname"]->setText( "Simpson" );
-
-    Q3AsciiDictIterator<QLineEdit> it( fields ); // See Q3AsciiDictIterator
-    for( ; it.current(); ++it )
-	cout << it.currentKey() << ": " << it.current()->text() << endl;
-    cout << endl;
-
-    if ( fields["forename"] && fields["surname"] )
-	cout << fields["forename"]->text() << " " 
-	    << fields["surname"]->text() << endl;  // Prints "Homer Simpson"
-
-    fields.remove( "forename" ); // Does not delete the line edit
-    if ( ! fields["forename"] )
-	cout << "forename is not in the dictionary" << endl;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3asciidict.qdoc 0
     In this example we use a dictionary to keep track of the line
     edits we're using. We insert each line edit into the dictionary
     with a unique name and then access the line edits via the
@@ -157,13 +180,7 @@
     \a item may not be 0.
 
     Equivalent to:
-    \code
-	Q3AsciiDict<char> dict;
-	    ...
-	if ( dict.find(key) )
-	    dict.remove( key );
-	dict.insert( key, item );
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3asciidict.qdoc 1
 
     If there are two or more items with equal keys, then the most
     recently inserted item will be replaced.
@@ -294,26 +311,7 @@
     iterator that operates on Q3AsciiDict\<X\> (dictionary of X*).
 
     Example:
-    \code
-    Q3AsciiDict<QLineEdit> fields;
-    fields.insert( "forename", new QLineEdit( this ) );
-    fields.insert( "surname", new QLineEdit( this ) );
-    fields.insert( "age", new QLineEdit( this ) );
-
-    fields["forename"]->setText( "Homer" );
-    fields["surname"]->setText( "Simpson" );
-    fields["age"]->setText( "45" );
-
-    Q3AsciiDictIterator<QLineEdit> it( fields );
-    for( ; it.current(); ++it )
-	cout << it.currentKey() << ": " << it.current()->text() << endl;
-    cout << endl;
-
-    // Output (random order):
-    //	age: 45
-    //	surname: Simpson
-    //	forename: Homer
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3asciidict.qdoc 2
     In the example we insert some line edits into a dictionary, then
     iterate over the dictionary printing the strings associated with
     those line edits.

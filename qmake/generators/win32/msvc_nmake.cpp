@@ -48,6 +48,8 @@
 #include <qdir.h>
 #include <time.h>
 
+QT_BEGIN_NAMESPACE
+
 NmakeMakefileGenerator::NmakeMakefileGenerator() : Win32MakefileGenerator(), init_flag(false)
 {
 
@@ -293,6 +295,7 @@ void NmakeMakefileGenerator::writeBuildRulesPart(QTextStream &t)
     t << "first: all" << endl;
     t << "all: " << fileFixify(Option::output.fileName()) << " " << varGlue("ALL_DEPS"," "," "," ") << "$(DESTDIR_TARGET)" << endl << endl;
     t << "$(DESTDIR_TARGET): " << var("PRE_TARGETDEPS") << " $(OBJECTS) " << var("POST_TARGETDEPS");
+
     if(!project->isEmpty("QMAKE_PRE_LINK"))
         t << "\n\t" <<var("QMAKE_PRE_LINK");
     if(project->isActiveConfig("staticlib")) {
@@ -303,8 +306,19 @@ void NmakeMakefileGenerator::writeBuildRulesPart(QTextStream &t)
           << "$(OBJECTS) $(LIBS)";
     }
     t << endl << "<<";
-    if(!project->isEmpty("QMAKE_POST_LINK"))
-        t << "\n\t" <<var("QMAKE_POST_LINK");
+    QString signature = !project->isEmpty("SIGNATURE_FILE") ? var("SIGNATURE_FILE") : var("DEFAULT_SIGNATURE");
+    bool useSignature = !signature.isEmpty() && !project->isActiveConfig("staticlib") && 
+                        !project->isEmpty("CE_SDK") && !project->isEmpty("CE_ARCH");
+    if(useSignature) {
+        t << "\n\tsigntool sign /F " << signature << " $(DESTDIR_TARGET)";
+    }
+    if(!project->isEmpty("QMAKE_POST_LINK")) {
+        if (useSignature)
+            t << " && " << var("QMAKE_POST_LINK");
+        else
+            t << "\n\t" << var("QMAKE_POST_LINK");
+    }
     t << endl;
 }
 
+QT_END_NAMESPACE

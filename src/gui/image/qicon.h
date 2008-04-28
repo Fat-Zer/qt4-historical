@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QIconPrivate;
@@ -133,6 +135,8 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QIcon &);
 #ifdef QT3_SUPPORT
 typedef QIcon QIconSet;
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

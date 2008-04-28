@@ -44,12 +44,12 @@
 /*!
     \if defined(qtce)
       \page qtce-features.html
-      \title Fine-Tuning Features in Qt/CE
+      \title Fine-Tuning Features in Qt/WinCE
       \ingroup qtce
     \else
-      \page qtopiacore-features.html
-      \title Fine-Tuning Features in Qtopia Core
-      \ingroup qtopiacore
+      \page qt-embedded-features.html
+      \title Fine-Tuning Features in Qt for Embedded Linux
+      \ingroup qt-embedded
     \endif
 
     In many cases, only a fixed set of applications are deployed on an
@@ -63,9 +63,7 @@
       with the set of required \c -D<feature> options. For example,
       you can use the \c -D option to define \c{QT_NO_THREAD}:
 
-      \code
-          configure.exe -D QT_NO_THREAD
-      \endcode
+      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 0
 
       The \c -D option only creates a Qt internal define. If you get linker
       errors you have to define \c QT_NO_THREAD also for your project.
@@ -75,11 +73,10 @@
     \else
 
       To disable a particular feature, just run the \c configure script 
-      for Qtopia Core with the \c -no-feature-<feature> option. For example:
+      for Qt for Embedded Linux with the \c -no-feature-<feature> option.
+      For example:
 
-      \code
-          ./configure -no-feature-thread
-      \endcode
+      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 1
 
       The feature can easily be enabled again by running \c configure
       with the \c -feature-<feature> option.
@@ -99,11 +96,11 @@
     \note The \c qconfig tool is intended to be built against Qt on
     desktop platforms.
     \if defined(qtce)
-    The Qt/CE package contains a \c qconfig executable that you can run
+    The Qt/WinCE package contains a \c qconfig executable that you can run
     on a Windows desktop to configure the build.
     \endif
 
-    \image qtopiacore-qconfigtool.png
+    \image qt-embedded-qconfigtool.png
 
     The \c qconfig tool's interface displays all of Qt's
     functionality, and allows the user to both disable and enable
@@ -127,13 +124,9 @@
     For example:
 
     \if defined(qtce)
-      \code
-          configure.exe -qconfig myfile
-      \endcode
+      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 2
     \else
-      \code
-          ./configure -qconfig myfile
-      \endcode
+      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 3
     \endif
 
     Qt provides several ready-made custom configuration files,
@@ -142,8 +135,8 @@
     /src/corelib/global directory.
 
     \if defined(qtce)
-      \sa {Qt/CE Performance Tuning}{Performance Tuning}
+      \sa {Qt/WinCE Performance Tuning}{Performance Tuning}
     \else
-      \sa {Qtopia Core Performance Tuning}{Performance Tuning}
+      \sa {Qt for Embedded Linux Performance Tuning}{Performance Tuning}
     \endif
 */

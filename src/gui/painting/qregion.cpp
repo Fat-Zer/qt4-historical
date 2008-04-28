@@ -49,6 +49,8 @@
 
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QRegion
     \brief The QRegion class specifies a clip region for a painter.
@@ -74,19 +76,7 @@
     rectangles.
 
     Example of using complex regions:
-    \code
-        void MyWidget::paintEvent(QPaintEvent *)
-        {
-            QRegion r1(QRect(100, 100, 200, 80),    // r1: elliptic region
-                       QRegion::Ellipse);
-            QRegion r2(QRect(100, 120, 90, 30));    // r2: rectangular region
-            QRegion r3 = r1.intersected(r2);        // r3: intersection
-
-            QPainter painter(this);
-	    painter.setClipRegion(r3);
-            ...                                     // paint clipped graphics
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qregion.cpp 0
 
     QRegion is an \l{implicitly shared class}.
 
@@ -96,8 +86,8 @@
 
     \section1 Additional License Information
 
-    For Qt/X11 and Qtopia Core, parts of this class rely on code obtained
-    under the following license:
+    For Qt/X11, Qt for Embedded Linux and Windows CE, parts of this class rely on
+    code obtained under the following license:
 
     \legalese
     Copyright (c) 1987  X Consortium
@@ -180,7 +170,7 @@
 
     Returns a platform-specific region handle. The \c Handle type is
     \c HRGN on Windows, \c Region on X11, and \c RgnHandle on Mac OS
-    X. On \l {Qtopia Core} it is \c {void *}.
+    X. On \l{Qt for Embedded Linux} it is \c {void *}.
 
     \warning This function is not portable.
 */
@@ -413,6 +403,13 @@ const QRegion QRegion::operator+(const QRegion &r) const
     { return united(r); }
 
 /*!
+   \overload
+   \since 4.4
+ */
+const QRegion QRegion::operator+(const QRect &r) const
+    { return united(r); }
+
+/*!
     Applies the intersected() function to this region and \a r. \c r1&r2
     is equivalent to \c r1.intersected(r2).
 
@@ -420,6 +417,15 @@ const QRegion QRegion::operator+(const QRegion &r) const
 */
 const QRegion QRegion::operator&(const QRegion &r) const
     { return intersected(r); }
+
+/*!
+   \overload
+   \since 4.4
+ */
+const QRegion QRegion::operator&(const QRect &r) const
+{
+    return intersected(r);
+}
 
 /*!
     Applies the subtracted() function to this region and \a r. \c r1-r2
@@ -458,6 +464,12 @@ QRegion& QRegion::operator|=(const QRegion &r)
 
     \sa intersected()
 */
+#ifndef Q_OS_UNIX
+QRegion& QRegion::operator+=(const QRect &r)
+{
+    return operator+=(QRegion(r));
+}
+#endif
 
 /*!
   \fn QRegion& QRegion::operator&=(const QRegion &r)
@@ -465,7 +477,7 @@ QRegion& QRegion::operator|=(const QRegion &r)
   Applies the intersected() function to this region and \a r and
   assigns the result to this region. \c r1&=r2 is equivalent to \c
   r1 = r1.intersected(r2).
-  
+
   \sa intersected()
 */
 #ifndef Q_WS_WIN
@@ -474,12 +486,28 @@ QRegion& QRegion::operator&=(const QRegion &r)
 #endif
 
 /*!
+   \overload
+   \since 4.4
+ */
+#ifdef Q_OS_UNIX
+QRegion& QRegion::operator&=(const QRect &r)
+{
+    return *this = *this & r;
+}
+#else
+QRegion& QRegion::operator&=(const QRect &r)
+{
+    return *this &= (QRegion(r));
+}
+#endif
+
+/*!
   \fn QRegion& QRegion::operator-=(const QRegion &r)
-  
+
   Applies the subtracted() function to this region and \a r and
   assigns the result to this region. \c r1-=r2 is equivalent to \c
   {r1 = r1.subtracted(r2)}.
-  
+
   \sa subtracted()
 */
 #ifndef Q_WS_WIN
@@ -566,6 +594,9 @@ inline bool rect_intersects(const QRect &r1, const QRect &r2)
 */
 bool QRegion::intersects(const QRegion &region) const
 {
+    if (isEmpty() || region.isEmpty())
+        return false;
+
     const QVector<QRect> myRects = rects();
     const QVector<QRect> otherRects = region.rects();
 
@@ -591,3 +622,23 @@ bool QRegion::intersects(const QRect &rect) const
             return true;
     return false;
 }
+
+/*!
+    \overload
+    \since 4.4
+*/
+#ifndef Q_OS_UNIX
+QRegion QRegion::intersect(const QRect &r) const
+{
+    return intersect(QRegion(r));
+}
+#endif
+
+/*!
+    \fn int QRegion::numRects() const
+    \since 4.4
+
+    Returns the number of rectangles that will be returned in rects().
+ */
+
+QT_END_NAMESPACE

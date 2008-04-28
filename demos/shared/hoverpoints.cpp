@@ -162,8 +162,8 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             QResizeEvent *e = (QResizeEvent *) event;
             if (e->oldSize().width() == 0 || e->oldSize().height() == 0)
                 break;
-            double stretch_x = e->size().width() / double(e->oldSize().width());
-            double stretch_y = e->size().height() / double(e->oldSize().height());
+            qreal stretch_x = e->size().width() / qreal(e->oldSize().width());
+            qreal stretch_y = e->size().height() / qreal(e->oldSize().height());
             for (int i=0; i<m_points.size(); ++i) {
                 QPointF p = m_points[i];
                 movePoint(i, QPointF(p.x() * stretch_x, p.y() * stretch_y), false);
@@ -220,7 +220,7 @@ void HoverPoints::paintPoints()
             for (int i=1; i<m_points.size(); ++i) {
                 QPointF p1 = m_points.at(i-1);
                 QPointF p2 = m_points.at(i);
-                double distance = p2.x() - p1.x();
+                qreal distance = p2.x() - p1.x();
 
                 path.cubicTo(p1.x() + distance / 2, p1.y(),
                              p1.x() + distance / 2, p2.y(),
@@ -248,10 +248,10 @@ static QPointF bound_point(const QPointF &point, const QRectF &bounds, int lock)
 {
     QPointF p = point;
 
-    double left = bounds.left();
-    double right = bounds.right();
-    double top = bounds.top();
-    double bottom = bounds.bottom();
+    qreal left = bounds.left();
+    qreal right = bounds.right();
+    qreal top = bounds.top();
+    qreal bottom = bounds.bottom();
 
     if (p.x() < left || (lock & HoverPoints::LockToLeft)) p.setX(left);
     else if (p.x() > right || (lock & HoverPoints::LockToRight)) p.setX(right);

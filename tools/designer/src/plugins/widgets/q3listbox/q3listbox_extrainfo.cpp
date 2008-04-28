@@ -49,6 +49,8 @@
 
 #include <Qt3Support/Q3ListBox>
 
+QT_BEGIN_NAMESPACE
+
 inline QHash<QString, DomProperty *> propertyMap(const QList<DomProperty *> &properties) // ### remove me
 {
     QHash<QString, DomProperty *> map;
@@ -80,21 +82,56 @@ bool Q3ListBoxExtraInfo::loadUiExtraInfo(DomUI *ui)
 
 bool Q3ListBoxExtraInfo::saveWidgetExtraInfo(DomWidget *ui_widget)
 {
-    Q_UNUSED(ui_widget);
-
     Q3ListBox *listBox = qobject_cast<Q3ListBox*>(widget());
     Q_ASSERT(listBox != 0);
-    Q_UNUSED(listBox);
+
+    QList<DomItem *> items;
+    const int childCount = listBox->count();
+    for (int i = 0; i < childCount; ++i) {
+        DomItem *item = new DomItem();
+
+        QList<DomProperty*> properties;
+
+        DomString *str = new DomString();
+        str->setText(listBox->text(i));
+
+        DomProperty *ptext = new DomProperty();
+        ptext->setAttributeName(QLatin1String("text"));
+        ptext->setElementString(str);
+
+        properties.append(ptext);
+        item->setElementProperty(properties);
+        items.append(item);
+    }
+    ui_widget->setElementItem(items);
+
     return true;
 }
 
 bool Q3ListBoxExtraInfo::loadWidgetExtraInfo(DomWidget *ui_widget)
 {
-    Q_UNUSED(ui_widget);
-
     Q3ListBox *listBox = qobject_cast<Q3ListBox*>(widget());
     Q_ASSERT(listBox != 0);
-    Q_UNUSED(listBox);
+
+    QList<DomItem *> items = ui_widget->elementItem();
+    for (int i = 0; i < items.size(); ++i) {
+        DomItem *item = items.at(i);
+
+        QHash<QString, DomProperty*> properties = propertyMap(item->elementProperty());
+        DomProperty *text = properties.value(QLatin1String("text"));
+        DomProperty *pixmap = properties.value(QLatin1String("pixmap"));
+
+        QString txt = text->elementString()->text();
+
+        if (pixmap != 0) {
+            DomResourcePixmap *pix = pixmap->elementPixmap();
+            QPixmap pixmap(core()->iconCache()->resolveQrcPath(pix->text(), pix->attributeResource(), workingDirectory()));
+            listBox->insertItem(pixmap, txt);
+        } else {
+            listBox->insertItem(txt);
+        }
+    }
+
     return true;
 }
 
@@ -112,3 +149,5 @@ QObject *Q3ListBoxExtraInfoFactory::createExtension(QObject *object, const QStri
 
     return 0;
 }
+
+QT_END_NAMESPACE

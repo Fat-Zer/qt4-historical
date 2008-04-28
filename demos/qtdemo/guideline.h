@@ -52,15 +52,15 @@ class GuideLine : public Guide
 public:
     GuideLine(const QLineF &line, Guide *follows = 0);
     GuideLine(const QPointF &end, Guide *follows = 0);
-    
+
     void guide(DemoItem *item, float moveSpeed); // overridden
     QPointF startPos();
     QPointF endPos();
     float length();
-    
+
 private:
     QLineF line;
-    
+
 };
 
 #endif // GUIDELINE_H

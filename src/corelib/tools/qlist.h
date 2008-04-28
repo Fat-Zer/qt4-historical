@@ -57,6 +57,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 template <typename T> class QVector;
@@ -64,7 +66,7 @@ template <typename T> class QSet;
 
 struct Q_CORE_EXPORT QListData {
     struct Data {
-        QBasicAtomic ref;
+        QBasicAtomicInt ref;
         int alloc, begin, end;
         uint sharable : 1;
         void *array[1];
@@ -134,6 +136,7 @@ public:
     void replace(int i, const T &t);
     void removeAt(int i);
     int removeAll(const T &t);
+    bool removeOne(const T &t);
     T takeAt(int i);
     T takeFirst();
     T takeLast();
@@ -368,11 +371,10 @@ template <typename T>
 Q_INLINE_TEMPLATE QList<T> &QList<T>::operator=(const QList<T> &l)
 {
     if (d != l.d) {
-        QListData::Data *x = l.d;
-        x->ref.ref();
-        x = qAtomicSetPtr(&d, x);
-        if (!x->ref.deref())
-            free(x);
+        l.d->ref.ref();
+        if (!d->ref.deref())
+            free(d);
+        d = l.d;
         if (!d->sharable)
             detach_helper();
     }
@@ -526,12 +528,8 @@ Q_OUTOFLINE_TEMPLATE void QList<T>::detach_helper()
 template <typename T>
 Q_OUTOFLINE_TEMPLATE QList<T>::~QList()
 {
-    if (!d)
-        return;
-    QListData::Data *x = &QListData::shared_null;
-    x = qAtomicSetPtr(&d, x);
-    if (!x->ref.deref())
-        free(x);
+    if (d && !d->ref.deref())
+        free(d);
 }
 
 template <typename T>
@@ -552,7 +550,7 @@ Q_OUTOFLINE_TEMPLATE bool QList<T>::operator==(const QList<T> &l) const
     return true;
 }
 
-
+// ### Qt 5: rename freeData() to avoid confusion with std::free()
 template <typename T>
 Q_OUTOFLINE_TEMPLATE void QList<T>::free(QListData::Data *data)
 {
@@ -585,6 +583,18 @@ Q_OUTOFLINE_TEMPLATE int QList<T>::removeAll(const T &_t)
             ++i;
         }
     return removedCount;
+}
+
+template <typename T>
+Q_OUTOFLINE_TEMPLATE bool QList<T>::removeOne(const T &_t)
+{
+    detach();
+    int index = indexOf(_t);
+    if (index != -1) {
+        removeAt(index);
+        return true;
+    }
+    return false;
 }
 
 template <typename T>
@@ -665,6 +675,8 @@ Q_OUTOFLINE_TEMPLATE int QList<T>::count(const T &t) const
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(List)
 Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(List)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -60,6 +60,7 @@
 
 #include <QtGui/QWidget>
 
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -73,6 +74,7 @@ namespace qdesigner_internal {
         TextPropertyEditor(const TextPropertyEditor &);
         TextPropertyEditor& operator=(const TextPropertyEditor &);
         Q_OBJECT
+        Q_PROPERTY(QString text READ text WRITE setText USER true)
     public:
         enum EmbeddingMode {
             // Stand-alone widget
@@ -83,13 +85,29 @@ namespace qdesigner_internal {
                 EmbeddingInPlace
         };
 
-        TextPropertyEditor(EmbeddingMode embeddingMode = EmbeddingNone, TextPropertyValidationMode validationMode = ValidationMultiLine, QWidget *parent = 0);
+        enum UpdateMode {
+            // Emit textChanged() as the user types
+            UpdateAsYouType,
+            // Emit textChanged() only when the user finishes
+            UpdateOnFinished
+        };
+
+        TextPropertyEditor(QWidget *parent = 0, EmbeddingMode embeddingMode = EmbeddingNone, TextPropertyValidationMode validationMode = ValidationMultiLine);
+
+        TextPropertyValidationMode textPropertyValidationMode() const { return m_validationMode; }
+        void setTextPropertyValidationMode(TextPropertyValidationMode vm);
+
+        UpdateMode updateMode() const                { return m_updateMode; }
+        void setUpdateMode(UpdateMode um) { m_updateMode = um; }
 
         QString text() const;
 
         virtual QSize sizeHint () const;
+        virtual QSize minimumSizeHint () const;
 
         void setAlignment(Qt::Alignment alignment);
+
+        bool hasAcceptableInput() const;
 
         // installs an event filter object on the private QLineEdit
         void installEventFilter(QObject *filterObject);
@@ -106,26 +124,33 @@ namespace qdesigner_internal {
 
     signals:
         void textChanged(const QString &text);
-        void editingFinished ();
+        void editingFinished();
 
     public slots:
         void setText(const QString &text);
         void selectAll();
+        void clear();
 
     protected:
-        void resizeEvent (QResizeEvent * event );
+        void resizeEvent(QResizeEvent * event );
 
     private slots:
         void slotTextChanged(const QString &text);
+        void slotEditingFinished();
+
     private:
         void setRegExpValidator(const QString &pattern);
+        void markIntermediateState();
 
-        const TextPropertyValidationMode m_ValidationMode;
+        TextPropertyValidationMode m_validationMode;
+        UpdateMode m_updateMode;
         PropertyLineEdit* m_lineEdit;
 
         // Cached text containing real newline characters.
         QString m_cachedText;
     };
 }
+
+QT_END_NAMESPACE
 
 #endif // TEXTPROPERTYEDITOR_H

@@ -48,6 +48,7 @@
 #include "qtextdocument_p.h"
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
 
 class QTextListPrivate : public QTextBlockGroupPrivate
 {
@@ -55,6 +56,8 @@ class QTextListPrivate : public QTextBlockGroupPrivate
 
 /*!
     \class QTextList qtextlist.h
+    \reentrant
+
     \brief The QTextList class provides a decorated list of items in a QTextDocument.
 
     \ingroup text
@@ -69,9 +72,7 @@ class QTextListPrivate : public QTextBlockGroupPrivate
     The \l{QTextCursor::insertList()} function inserts an empty block into the
     document at the cursor position, and makes it the first item in a list.
 
-    \quotefromfile snippets/textdocument-lists/mainwindow.cpp
-    \skipto QTextListFormat listFormat
-    \printuntil insertList
+    \snippet doc/src/snippets/textdocument-lists/mainwindow.cpp 0
 
     The \l{QTextCursor::createList()} function takes the contents of the
     cursor's current block and turns it into the first item of a new list.
@@ -163,6 +164,7 @@ QTextBlock QTextList::item(int i) const
     \fn int QTextList::itemNumber(const QTextBlock &block) const
 
     Returns the index of the list item that corresponds to the given \a block.
+    Returns -1 if the block was not present in the list.
 */
 int QTextList::itemNumber(const QTextBlock &blockIt) const
 {
@@ -258,3 +260,4 @@ void QTextList::add(const QTextBlock &block)
     block.docHandle()->setBlockFormat(block, block, fmt, QTextDocumentPrivate::SetFormat);
 }
 
+QT_END_NAMESPACE

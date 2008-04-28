@@ -48,6 +48,8 @@
 #include "q3cstring.h"
 #include "qdir.h"
 
+QT_BEGIN_NAMESPACE
+
 // used by q3filedialog.cpp
 bool qt_resolve_symlinks = true;
 
@@ -145,11 +147,7 @@ static void slashify( QString& s, bool allowMultiple = true )
 
     Q3Url is normally used like this:
 
-    \code
-    Q3Url url( "http://www.trolltech.com" );
-    // or
-    Q3Url url( "file:///home/myself/Mail", "Inbox" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 0
 
     You can then access and manipulate the various parts of the URL.
 
@@ -157,13 +155,7 @@ static void slashify( QString& s, bool allowMultiple = true )
     the necessary cast and assignment operators so you can do
     following:
 
-    \code
-    Q3Url url( "http://www.trolltech.com" );
-    QString s = url;
-    // or
-    QString s( "http://www.trolltech.com" );
-    Q3Url url( s );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 1
 
     Use the static functions, encode() and decode() to encode or
     decode a URL in a string. (They operate on the string in-place.)
@@ -233,22 +225,16 @@ bool Q3Url::isRelativeUrl( const QString &url )
     \a relUrl is taken as the new URL.
 
     For example, the path of
-    \code
-    Q3Url url( "ftp://ftp.trolltech.com/qt/source", "qt-2.1.0.tar.gz" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 2
     will be "/qt/srource/qt-2.1.0.tar.gz".
 
     On the other hand,
-    \code
-    Q3Url url( "ftp://ftp.trolltech.com/qt/source", "/usr/local" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 3
     will result in a new URL, "ftp://ftp.trolltech.com/usr/local",
     because "/usr/local" isn't relative.
 
     Similarly,
-    \code
-    Q3Url url( "ftp://ftp.trolltech.com/qt/source", "file:///usr/local" );
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 4
     will result in a new URL, with "/usr/local" as the path
     and "file" as the protocol.
 
@@ -1166,11 +1152,7 @@ QString Q3Url::dirPath() const
 /*!
     Encodes the \a url in-place into UTF-8.  For example
 
-    \code
-	QString url = http://www.trolltech.com
-	Q3Url::encode( url );
-	// url is now "http%3A//www%20trolltech%20com"
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 5
 
   \sa decode()
 */
@@ -1222,11 +1204,7 @@ static uchar hex_to_int( uchar c )
 /*!
     Decodes the \a url in-place into UTF-8.  For example
 
-    \code
-	QString url = "http%3A//www%20trolltech%20com"
-	Q3Url::decode( url );
-	// url is now "http://www.trolltech.com"
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 6
 
     \sa encode()
 */
@@ -1337,5 +1315,7 @@ bool Q3Url::cdUp()
     d->cleanPathDirty = true;
     return true;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_URL

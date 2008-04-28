@@ -55,6 +55,8 @@
 #include <qtextedit.h>
 #include <qtimer.h>
 
+QT_BEGIN_NAMESPACE
+
 class QSyntaxHighlighterPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QSyntaxHighlighter)
@@ -156,7 +158,7 @@ void QSyntaxHighlighterPrivate::_q_reformatBlocks(int from, int charsRemoved, in
     QTextBlock block = doc->findBlock(from);
     if (!block.isValid())
         return;
-    
+
     int endPosition;
     QTextBlock lastBlock = doc->findBlock(from + charsAdded);
     if (lastBlock.isValid())
@@ -199,6 +201,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(QTextBlock block)
 
 /*!
     \class QSyntaxHighlighter
+    \reentrant
 
     \brief The QSyntaxHighlighter class allows you to define syntax
     highlighting rules, and in addition you can use the class to query
@@ -222,10 +225,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(QTextBlock block)
     pass it the QTextEdit or QTextDocument that you want the syntax
     highlighting to be applied to. For example:
 
-    \code
-           QTextEdit *editor = new QTextEdit;
-           MyHighlighter *highlighter = new MyHighlighter(editor->document());
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qsyntaxhighlighter.cpp 0
 
     After this your highlightBlock() function will be called
     automatically whenever necessary. Use your highlightBlock()
@@ -234,23 +234,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(QTextBlock block)
     setFormat() function which applies a given QTextCharFormat on
     the current text block. For example:
 
-    \code
-        void MyHighlighter::highlightBlock(const QString &text)
-        {
-            QTextCharFormat myClassFormat;
-            myClassFormat.setFontWeight(QFont::Bold);
-            myClassFormat.setForeground(Qt::darkMagenta);
-            QString pattern = "\\bMy[A-Za-z]+\\b";
-
-            QRegExp expression(pattern);
-            int index = text.indexOf(expression);
-            while (index >= 0) {
-                int length = expression.matchedLength();
-                setFormat(index, length, myClassFormat);
-                index = text.indexOf(expression, index + length);
-             }
-         }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qsyntaxhighlighter.cpp 1
 
     Some syntaxes can have constructs that span several text
     blocks. For example, a C++ syntax highlighter should be able to
@@ -273,34 +257,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(QTextBlock block)
     For example, if you're writing a simple C++ syntax highlighter,
     you might designate 1 to signify "in comment":
 
-    \code
-        QTextCharFormat multiLineCommentFormat;
-        multiLineCommentFormat.setForeground(Qt::red);
-
-        QRegExp startExpression("/\\*");
-        QRegExp endExpression("\\* /");
-
-        setCurrentBlockState(0);
-
-        int startIndex = 0;
-        if (previousBlockState() != 1)
-            startIndex = text.indexOf(startExpression);
-
-        while (startIndex >= 0) {
-           int endIndex = text.indexOf(endExpression, startIndex);
-           int commentLength;
-           if (endIndex == -1) {
-               setCurrentBlockState(1);
-               commentLength = text.length() - startIndex;
-           } else {
-               commentLength = endIndex - startIndex
-                               + endExpression.matchedLength();
-           }
-           setFormat(startIndex, commentLength, multiLineCommentFormat);
-           startIndex = text.indexOf(startExpression,
-                                     startIndex + commentLength);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qsyntaxhighlighter.cpp 2
 
     In the example above, we first set the current block state to
     0. Then, if the previous block ended within a comment, we higlight
@@ -432,23 +389,7 @@ void QSyntaxHighlighter::rehighlight()
     setFormat() as often as necessary to apply any font and color
     changes that you require. For example:
 
-    \code
-        void MyHighlighter::highlightBlock(const QString &text)
-        {
-            QTextCharFormat myClassFormat;
-            myClassFormat.setFontWeight(QFont::Bold);
-            myClassFormat.setForeground(Qt::darkMagenta);
-            QString pattern = "\\bMy[A-Za-z]+\\b";
-
-            QRegExp expression(pattern);
-            int index = text.indexOf(expression);
-            while (index >= 0) {
-                int length = expression.matchedLength();
-                setFormat(index, length, myClassFormat);
-                index = text.indexOf(expression, index + length);
-             }
-         }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qsyntaxhighlighter.cpp 3
 
     Some syntaxes can have constructs that span several text
     blocks. For example, a C++ syntax highlighter should be able to
@@ -619,18 +560,7 @@ void QSyntaxHighlighter::setCurrentBlockState(int newState)
     and store their relative position and the actual QChar in a simple
     class derived from QTextBlockUserData:
 
-    \code
-        struct ParenthesisInfo
-        {
-            QChar char;
-            int position;
-        };
-
-        struct BlockData : public QTextBlockUserData
-        {
-            QVector<ParenthesisInfo> parentheses;
-        };
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qsyntaxhighlighter.cpp 4
 
     During cursor navigation in the associated editor, you can ask the
     current QTextBlock (retrieved using the QTextCursor::block()
@@ -671,6 +601,17 @@ QTextBlockUserData *QSyntaxHighlighter::currentBlockUserData() const
 
     return d->currentBlock.userData();
 }
+
+/*!
+    Returns the current text block.
+ */
+QTextBlock QSyntaxHighlighter::currentBlock() const
+{
+    Q_D(const QSyntaxHighlighter);
+    return d->currentBlock;
+}
+
+QT_END_NAMESPACE
 
 #include "moc_qsyntaxhighlighter.cpp"
 

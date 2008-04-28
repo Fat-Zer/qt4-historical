@@ -58,6 +58,8 @@
 #include "QtCore/qbasictimer.h"
 #include "private/qwidget_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QAbstractButtonPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QAbstractButton)
@@ -103,5 +105,7 @@ public:
     void emitReleased();
     void emitClicked();
 };
+
+QT_END_NAMESPACE
 
 #endif // QABSTRACTBUTTON_P_H

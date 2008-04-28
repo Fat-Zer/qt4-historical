@@ -54,6 +54,8 @@
 #include "qstyleoption.h"
 #include "qvector.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q3HeaderData
 {
 public:
@@ -1412,12 +1414,7 @@ void Q3Header::setCellSize(int section, int s)
     is set for all existing sections and will be applied to any new
     sections that are added.
     Example:
-    \code
-    // Allow resizing of all current and future sections
-    header->setResizeEnabled(true);
-    // Disable resizing of section 3, (the fourth section added)
-    header->setResizeEnabled(false, 3);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3header.cpp 0
 
     If the user resizes a section, a sizeChange() signal is emitted.
 
@@ -2041,5 +2038,7 @@ void Q3Header::changeEvent(QEvent *ev)
     }
     QWidget::changeEvent(ev);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_HEADER

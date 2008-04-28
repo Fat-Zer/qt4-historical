@@ -8,6 +8,8 @@
 	<string>APPL</string>
         <key>CFBundleGetInfoString</key>
 	<string>Created by Qt/QMake</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.trolltech.Designer</string>
 	<key>CFBundleSignature</key>
 	<string>ttxt</string>
 	<key>CFBundleExecutable</key>

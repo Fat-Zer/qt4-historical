@@ -45,6 +45,7 @@
 
 #include "controllerwindow.h"
 
+//! [0]
 ControllerWindow::ControllerWindow()
 {
     previewWindow = new PreviewWindow(this);
@@ -68,7 +69,9 @@ ControllerWindow::ControllerWindow()
     setWindowTitle(tr("Window Flags"));
     updatePreview();
 }
+//! [0]
 
+//! [1]
 void ControllerWindow::updatePreview()
 {
     Qt::WindowFlags flags = 0;
@@ -89,7 +92,9 @@ void ControllerWindow::updatePreview()
         flags = Qt::ToolTip;
     } else if (splashScreenRadioButton->isChecked()) {
         flags = Qt::SplashScreen;
+//! [1] //! [2]
     }
+//! [2] //! [3]
 
     if (msWindowsFixedSizeDialogCheckBox->isChecked())
         flags |= Qt::MSWindowsFixedSizeDialogHint;
@@ -115,6 +120,7 @@ void ControllerWindow::updatePreview()
         flags |= Qt::CustomizeWindowHint;
 
     previewWindow->setWindowFlags(flags);
+//! [3] //! [4]
 
     QPoint pos = previewWindow->pos();
     if (pos.x() < 0)
@@ -124,7 +130,9 @@ void ControllerWindow::updatePreview()
     previewWindow->move(pos);
     previewWindow->show();
 }
+//! [4]
 
+//! [5]
 void ControllerWindow::createTypeGroupBox()
 {
     typeGroupBox = new QGroupBox(tr("Type"));
@@ -150,7 +158,9 @@ void ControllerWindow::createTypeGroupBox()
     layout->addWidget(splashScreenRadioButton, 3, 1);
     typeGroupBox->setLayout(layout);
 }
+//! [5]
 
+//! [6]
 void ControllerWindow::createHintsGroupBox()
 {
     hintsGroupBox = new QGroupBox(tr("Hints"));
@@ -184,17 +194,22 @@ void ControllerWindow::createHintsGroupBox()
     layout->addWidget(customizeWindowHintCheckBox, 5, 0);
     hintsGroupBox->setLayout(layout);
 }
+//! [6]
 
+//! [7]
 QCheckBox *ControllerWindow::createCheckBox(const QString &text)
 {
     QCheckBox *checkBox = new QCheckBox(text);
     connect(checkBox, SIGNAL(clicked()), this, SLOT(updatePreview()));
     return checkBox;
 }
+//! [7]
 
+//! [8]
 QRadioButton *ControllerWindow::createRadioButton(const QString &text)
 {
     QRadioButton *button = new QRadioButton(text);
     connect(button, SIGNAL(clicked()), this, SLOT(updatePreview()));
     return button;
 }
+//! [8]

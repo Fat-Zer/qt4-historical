@@ -66,6 +66,13 @@
 
 #include <stdlib.h>
 
+#ifndef QT_NO_GSTREAMER
+#include <gst/gst.h>
+#include <phonon/phononnamespace.h>
+#endif
+
+QT_BEGIN_NAMESPACE
+
 // from qapplication.cpp and qapplication_x11.cpp - These are NOT for
 // external use ignore them
 // extern bool Q_CORE_EXPORT qt_resolve_symlinks;
@@ -136,6 +143,12 @@ static const char *printer_text =
 "Qt should search for embeddable font files.  By default, the X "
 "server font path is used.";
 
+static const char *phonon_text =
+"<p><b><font size+=2>Phonon</font></b></p>"
+"<hr>"
+"<p>Use this tab to configure the Phonon GStreamer multimedia backend. "
+"<p>It is reccommended to leave all settings on \"Auto\" to let "
+"Phonon determine your settings automatically.";
 
 static QColorGroup::ColorRole centralFromItem( int item )
 {
@@ -361,6 +374,60 @@ MainWindow::MainWindow()
     fontpaths = settings.value(QLatin1String("fontPath")).toStringList();
     fontpathlistbox->insertStringList(fontpaths);
 
+    audiosinkCombo->addItem(tr("Auto (default)"), QLatin1String("Auto"));
+    audiosinkCombo->setItemData(audiosinkCombo->findText(tr("Auto (default)")), 
+                                tr("Choose audio output automatically."), Qt::ToolTipRole);
+#ifndef QT_NO_GSTREAMER
+    phononVersionLabel->setText(Phonon::phononVersion());
+    if (gst_init_check(0, 0, 0)) {
+        gchar *versionString = gst_version_string();
+        gstversionLabel->setText(versionString);
+        g_free(versionString);
+        GList* factoryList = gst_registry_get_feature_list(gst_registry_get_default (), GST_TYPE_ELEMENT_FACTORY);
+        QString name, klass, description;
+        for (GList* iter = g_list_first(factoryList) ; iter != NULL ; iter = g_list_next(iter)) {
+            GstPluginFeature *feature = GST_PLUGIN_FEATURE(iter->data);
+            klass = gst_element_factory_get_klass(GST_ELEMENT_FACTORY(feature));
+            if ( klass == "Sink/Audio" ) {
+                name = GST_PLUGIN_FEATURE_NAME(feature);
+                if (name == "sfsink")
+                    continue; //useless to output audio to file when you cannot set the file path
+                else if (name == "autoaudiosink")
+                    continue; //This is used implicitly from the auto setting
+                GstElement *sink = gst_element_factory_make (name, NULL);
+                if (sink) {
+                    description = gst_element_factory_get_description (GST_ELEMENT_FACTORY(feature));
+                    audiosinkCombo->addItem(name, name);
+                    audiosinkCombo->setItemData(audiosinkCombo->findText(name), description, Qt::ToolTipRole);
+                    gst_object_unref (sink);             
+                }
+            }
+        }
+        g_list_free(factoryList);
+    }
+#else
+    tab4->setEnabled(false);
+    phononLabel->setText(tr("Phonon GStreamer backend not available."));
+#endif
+
+    videomodeCombo->addItem(tr("Auto (default)"), QLatin1String("Auto"));
+    videomodeCombo->setItemData(videomodeCombo->findText(tr("Auto (default)")), tr("Choose render method automatically"), Qt::ToolTipRole);
+#ifdef Q_WS_X11
+    videomodeCombo->addItem(tr("X11"), QLatin1String("X11"));
+    videomodeCombo->setItemData(videomodeCombo->findText(tr("X11")), tr("Use X11 Overlays"), Qt::ToolTipRole);
+#endif
+#ifndef QT_NO_OPENGL
+    videomodeCombo->addItem(tr("OpenGL"), QLatin1String("OpenGL"));
+    videomodeCombo->setItemData(videomodeCombo->findText(tr("OpenGL")), tr("Use OpenGL if avaiable"), Qt::ToolTipRole);
+#endif
+    videomodeCombo->addItem(tr("Software"), QLatin1String("Software"));
+    videomodeCombo->setItemData(videomodeCombo->findText(tr("Software")), tr("Use simple software rendering"), Qt::ToolTipRole);
+
+    QString audioSink = settings.value(QLatin1String("audiosink"), QLatin1String("Auto")).toString();
+    QString videoMode = settings.value(QLatin1String("videomode"), QLatin1String("Auto")).toString();
+    audiosinkCombo->setCurrentItem(audiosinkCombo->findData(audioSink));
+    videomodeCombo->setCurrentItem(videomodeCombo->findData(videoMode));
+
     settings.endGroup(); // Qt
 
     helpview->setText(tr(appearance_text));
@@ -436,6 +503,11 @@ void MainWindow::fileSave()
             str = QLatin1String("Root");
         settings.setValue( QLatin1String("XIMInputStyle"), str );
 #endif
+
+        QString audioSink = settings.value(QLatin1String("audiosink"), QLatin1String("Auto")).toString();
+        QString videoMode = settings.value(QLatin1String("videomode"), QLatin1String("Auto")).toString();
+        settings.setValue(QLatin1String("audiosink"), audiosinkCombo->itemData(audiosinkCombo->currentIndex()));
+        settings.setValue(QLatin1String("videomode"), videomodeCombo->itemData(videomodeCombo->currentIndex()));
 
         QStringList effects;
         if (effectcheckbox->isChecked()) {
@@ -939,6 +1011,8 @@ void MainWindow::pageChanged(QWidget *page)
         helpview->setText(tr(font_text));
     else if (page == tab3)
         helpview->setText(tr(printer_text));
+    else if (page == tab4)
+        helpview->setText(tr(phonon_text));
 }
 
 
@@ -966,3 +1040,5 @@ void MainWindow::closeEvent(QCloseEvent *e)
     } else
         e->accept();
 }
+
+QT_END_NAMESPACE

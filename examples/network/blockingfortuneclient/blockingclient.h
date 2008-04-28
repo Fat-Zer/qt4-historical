@@ -48,11 +48,14 @@
 
 #include "fortunethread.h"
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+QT_END_NAMESPACE
 
+//! [0]
 class BlockingClient : public QDialog
 {
     Q_OBJECT
@@ -79,5 +82,6 @@ private:
     FortuneThread thread;
     QString currentFortune;
 };
+//! [0]
 
 #endif

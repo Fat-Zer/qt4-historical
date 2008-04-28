@@ -82,6 +82,8 @@
 
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 // Older Platform SDKs do not have the extended DrawThemeBackgroundEx
 // function. We add the needed parts here, and use the extended
 // function dynamically, if available in uxtheme.dll. Else, we revert
@@ -319,7 +321,7 @@ public:
     bool hasAnyData(const QRect &rect);
     bool hasAlphaChannel(const QRect &rect);
     bool fixAlphaChannel(const QRect &rect);
-    bool swapAlphaChannel(const QRect &rect);
+    bool swapAlphaChannel(const QRect &rect, bool allPixels = false);
 
     QRgb groupBoxTextColor;
     QRgb groupBoxTextColorDisabled;
@@ -336,7 +338,7 @@ private:
     void showProperties(XPThemeData &themeData);
 #endif
 
-    static QAtomic ref;
+    static QBasicAtomicInt ref;
     static bool use_xp;
     static QWidget *limboWidget;
     static QPixmap *tabbody;
@@ -350,4 +352,7 @@ private:
 };
 
 #endif // QT_NO_STYLE_WINDOWS
+
+QT_END_NAMESPACE
+
 #endif //QWINDOWSXPSTYLE_P_H

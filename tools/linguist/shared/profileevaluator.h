@@ -50,6 +50,8 @@
 #include <QtCore/QStringList>
 #include <QtCore/QStack>
 
+QT_BEGIN_NAMESPACE
+
 class ProFile;
 
 class ProFileEvaluator : public AbstractProItemVisitor {
@@ -80,12 +82,12 @@ public:
     ProFileEvaluator();
     ~ProFileEvaluator();
 
-    /* 
+    /*
      * INHERITED from AbstractProItemVisitor
      */
     bool visitBeginProBlock(ProBlock * block);
     bool visitEndProBlock(ProBlock * block);
-    bool visitBeginProVariable(ProVariable *variable);    
+    bool visitBeginProVariable(ProVariable *variable);
     bool visitEndProVariable(ProVariable * /*variable*/);
     bool visitBeginProFile(ProFile * value);
     bool visitEndProFile(ProFile * value);
@@ -98,6 +100,7 @@ public:
     bool contains(const QString &variableName) const;
     QStringList values(const QString &variableName) const;
     QStringList absFileNames(const QString &variableName);
+    QStringList absFileName(const QString &name);
 
 protected:
     virtual ProFile *queryProFile(const QString &filename);
@@ -107,10 +110,11 @@ protected:
     virtual void logMessage(const LogMessage &msg);
 
 private:
+    QStringList expandPattern(const QString &pattern);
     void logMessage(const QString &msg, MessageType mt = MT_DebugLevel2);
     void logMessage(MessageType mt, const char *msg, ...);
-    QString expandVariableReferences(const QString &value);
-    QString evaluateExpandFunction(const QByteArray &func, const QString &arguments);
+    QStringList expandVariableReferences(const QString &value);
+    QStringList evaluateExpandFunction(const QByteArray &func, const QString &arguments);
 
     bool evaluateConditionalFunction(const QByteArray &function, const QString &arguments, bool *result);
     bool evaluateFile(const QString &fileName, bool *result);
@@ -137,5 +141,7 @@ private:
 
 }; //class ProFileEvaluator
 
+
+QT_END_NAMESPACE
 #endif // PROFILEEVALUATOR_H
 

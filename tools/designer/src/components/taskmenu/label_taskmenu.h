@@ -48,49 +48,36 @@
 #include <QtCore/QPointer>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
 
-class InPlaceEditor;
-
 class LabelTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    LabelTaskMenu(QLabel *button, QObject *parent = 0);
-    virtual ~LabelTaskMenu();
+    explicit LabelTaskMenu(QLabel *button, QObject *parent = 0);
 
     virtual QAction *preferredEditAction() const;
     virtual QList<QAction*> taskActions() const;
 
 private slots:
     void editRichText();
-    void editPlainText();
-    void editIcon();
-    void updateText(const QString &text);
-    void updateSelection();
+
 private:
     QLabel *m_label;
-    QPointer<QDesignerFormWindowInterface> m_formWindow;
-    QPointer<InPlaceEditor> m_editor;
-    mutable QList<QAction*> m_taskActions;
+    QList<QAction*> m_taskActions;
     QAction *m_editRichTextAction;
     QAction *m_editPlainTextAction;
 };
 
-class LabelTaskMenuFactory: public QExtensionFactory
-{
-    Q_OBJECT
-public:
-    LabelTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
-};
-
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QLabel, LabelTaskMenu>  LabelTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // LABEL_TASKMENU_H

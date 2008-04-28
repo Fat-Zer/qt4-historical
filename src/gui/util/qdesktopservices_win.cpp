@@ -47,12 +47,22 @@
 #include <qstringlist.h>
 #include <qprocess.h>
 #include <qtemporaryfile.h>
+#include <qcoreapplication.h>
 
 #include <windows.h>
 #include <shlobj.h>
-#include <intshcut.h>
+#if !defined(Q_OS_WINCE)
+#  include <intshcut.h>
+#else
+#  include <qguifunctions_wince.h>
+#  if !defined(STANDARDSHELL_UI_MODEL)
+#    include <winx.h>
+#  endif
+#endif
 
 #ifndef QT_NO_DESKTOPSERVICES
+
+QT_BEGIN_NAMESPACE
 
 //#undef UNICODE
 
@@ -61,36 +71,47 @@ static bool openDocument(const QUrl &file)
     if (!file.isValid())
         return false;
 
+    quintptr returnValue;
     QT_WA({
-                ShellExecute(0, 0, (TCHAR *)file.toString().utf16(), 0, 0, SW_SHOWNORMAL);
+                returnValue = (quintptr)ShellExecute(0, 0, (TCHAR *)file.toString().utf16(), 0, 0, SW_SHOWNORMAL);
             } , {
-                ShellExecuteA(0, 0, file.toString().toLocal8Bit().constData(), 0, 0, SW_SHOWNORMAL);
+                returnValue = (quintptr)ShellExecuteA(0, 0, file.toString().toLocal8Bit().constData(), 0, 0, SW_SHOWNORMAL);
             });
-
-    return true;
+    return (returnValue > 32); //ShellExecute returns a value greater than 32 if successful
 }
 
 static bool launchWebBrowser(const QUrl &url)
 {
     if (url.scheme() == QLatin1String("mailto")) {
-        //Retrieve the commandline for the default mail cleint
+        //Retrieve the commandline for the default mail client
         //the key used below is the command line for the mailto: shell command
-        long  bufferSize = 2*MAX_PATH;    
+        DWORD  bufferSize = 2 * MAX_PATH;
         long  returnValue =  -1;
         QString command;
+
+        HKEY handle;
+        LONG res;
         QT_WA ({
-            wchar_t subKey[] = L"mailto\\shell\\open\\command";    
-            wchar_t keyValue[2*MAX_PATH];    
-            returnValue = RegQueryValue(HKEY_CLASSES_ROOT, subKey, keyValue, &bufferSize);
+            res = RegOpenKeyExW(HKEY_CLASSES_ROOT, L"mailto\\Shell\\Open\\Command", 0, KEY_READ, &handle);
+            if (res != ERROR_SUCCESS)
+                return false;
+
+            wchar_t keyValue[2 * MAX_PATH];
+            returnValue = RegQueryValueExW(handle, L"", 0, 0, reinterpret_cast<unsigned char*>(keyValue), &bufferSize);
             if (!returnValue)
                 command = QString::fromRawData((QChar*)keyValue, bufferSize);
         }, {
-            char subKey[] = "mailto\\shell\\open\\command";    
-            char keyValue[2*MAX_PATH];    
-            returnValue = RegQueryValueA(HKEY_CLASSES_ROOT, subKey, keyValue, &bufferSize);
+            res = RegOpenKeyExA(HKEY_CLASSES_ROOT, "mailto\\Shell\\Open\\Command", 0, KEY_READ, &handle);
+            if (res != ERROR_SUCCESS)
+                return false;
+
+            char keyValue[2 * MAX_PATH];
+            returnValue = RegQueryValueExA(handle, "", 0, 0, reinterpret_cast<unsigned char*>(keyValue), &bufferSize);
             if (!returnValue)
                 command = QString::fromLocal8Bit(keyValue);
         });
+        RegCloseKey(handle);
+
         if(returnValue)
             return false;
         command = command.trimmed();
@@ -131,47 +152,62 @@ static bool launchWebBrowser(const QUrl &url)
         return true;
     }
 
-    return openDocument(url);
+    if (!url.isValid())
+        return false;
+
+    quintptr returnValue;
+     QT_WA ({
+         returnValue = (quintptr)ShellExecute(0, 0, (TCHAR *) QString::fromUtf8(url.toEncoded().constData()).utf16(), 0, 0, SW_SHOWNORMAL);
+            } , {
+                returnValue = (quintptr)ShellExecuteA(0, 0, url.toEncoded().constData(), 0, 0, SW_SHOWNORMAL);
+            });
+    return (returnValue > 32);
 }
 
-/*
-QString QDesktopServices::storageLocation(const Location type)
+QString QDesktopServices::storageLocation(StandardLocation type)
 {
-    QSettings settings(QSettings::UserScope, "Microsoft", "Windows");
-    settings.beginGroup("CurrentVersion/Explorer/Shell Folders");
+    QSettings settings(QSettings::UserScope, QLatin1String("Microsoft"), QLatin1String("Windows"));
+    settings.beginGroup(QLatin1String("CurrentVersion/Explorer/Shell Folders"));
     switch (type) {
-    case Desktop:
-        return settings.value("Desktop").toString();
+    case DataLocation:
+        if (!settings.contains(QLatin1String("Local AppData")))
+            break;
+        return settings.value(QLatin1String("Local AppData")).toString()
+            + QLatin1String("\\") + QCoreApplication::organizationName()
+            + QLatin1String("\\") + QCoreApplication::applicationName();
+        break;
+    case DesktopLocation:
+        return settings.value(QLatin1String("Desktop")).toString();
         break;
 
-    case Documents:
-        return settings.value("Personal").toString();
+    case DocumentsLocation:
+        return settings.value(QLatin1String("Personal")).toString();
         break;
 
-    case Fonts:
-        return settings.value("Fonts").toString();
+    case FontsLocation:
+        return settings.value(QLatin1String("Fonts")).toString();
         break;
 
-    case Applications:
-        return settings.value("Programs").toString();
+    case ApplicationsLocation:
+        return settings.value(QLatin1String("Programs")).toString();
         break;
 
-    case Music:
-        return settings.value("My Music").toString();
+    case MusicLocation:
+        return settings.value(QLatin1String("My Music")).toString();
         break;
 
-    case Movies:
-        return settings.value("My Video").toString();
+    case MoviesLocation:
+        return settings.value(QLatin1String("My Video")).toString();
         break;
 
-    case Pictures:
-        return settings.value("My Pictures").toString();
+    case PicturesLocation:
+        return settings.value(QLatin1String("My Pictures")).toString();
         break;
 
-    case QDesktopServices::Home:
+    case QDesktopServices::HomeLocation:
         return QDir::homePath(); break;
 
-    case QDesktopServices::Temp:
+    case QDesktopServices::TempLocation:
         return QDir::tempPath(); break;
 
     default:
@@ -181,11 +217,12 @@ QString QDesktopServices::storageLocation(const Location type)
     return QString();
 }
 
-QString QDesktopServices::displayName(const Location type)
+QString QDesktopServices::displayName(StandardLocation type)
 {
     Q_UNUSED(type);
     return QString();
 }
-*/
-#endif // QT_NO_DESKTOPSERVICES
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_DESKTOPSERVICES

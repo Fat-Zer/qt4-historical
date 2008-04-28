@@ -41,9 +41,12 @@
 **
 ****************************************************************************/
 
+//! [0]
 #include <QtUiTools>
+//! [0]
 #include <QtGui>
 
+//! [1]
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(worldtimeclockbuilder);
@@ -51,7 +54,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QUiLoader loader;
+//! [1]
 
+//! [2]
     QFile file(":/forms/form.ui");
     file.open(QFile::ReadOnly);
 
@@ -59,6 +64,9 @@ int main(int argc, char *argv[])
 
     file.close();
     widget->show();
+//! [2]
 
+//! [3]
     return app.exec();
 }
+//! [3]

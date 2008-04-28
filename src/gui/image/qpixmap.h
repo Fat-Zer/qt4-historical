@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QImageWriter;
@@ -60,12 +62,13 @@ class QColor;
 class QVariant;
 class QX11Info;
 
-struct QPixmapData;
+class QPixmapData;
 
 class Q_GUI_EXPORT QPixmap : public QPaintDevice
 {
 public:
     QPixmap();
+    explicit QPixmap(QPixmapData *data);
     QPixmap(int w, int h);
     QPixmap(const QSize &);
     QPixmap(const QString& fileName, const char *format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor);
@@ -214,23 +217,30 @@ private:
     QPixmapData *data;
 
     bool doImageIO(QImageWriter *io, int quality) const;
-    enum Type { PixmapType, BitmapType };
+
+    // ### Qt5: remove the following three lines
+    enum Type { PixmapType, BitmapType }; // must match QPixmapData::PixelType
     QPixmap(const QSize &s, Type);
     void init(int, int, Type = PixmapType);
+
+    QPixmap(const QSize &s, int type);
+    void init(int, int, int);
     void deref();
 #if defined(Q_WS_WIN)
     void initAlphaPixmap(uchar *bytes, int length, struct tagBITMAPINFO *bmi);
 #endif
     Q_DUMMY_COMPARISON_OPERATOR(QPixmap)
 #ifdef Q_WS_MAC
-    friend CGContextRef qt_mac_cg_context(const QPaintDevice *);
-    friend CGImageRef qt_mac_create_imagemask(const QPixmap &, const QRectF &rect);
-    friend IconRef qt_mac_create_iconref(const QPixmap &);
-    friend QPixmap qt_mac_unmultiplyPixmapAlpha(const QPixmap &);
-    friend quint32 *qt_mac_pixmap_get_base(const QPixmap *);
-    friend int qt_mac_pixmap_get_bytes_per_line(const QPixmap *);
+    friend CGContextRef qt_mac_cg_context(const QPaintDevice*);
+    friend CGImageRef qt_mac_create_imagemask(const QPixmap&, const QRectF&);
+    friend IconRef qt_mac_create_iconref(const QPixmap&);
+    friend QPixmap qt_mac_unmultiplyPixmapAlpha(const QPixmap&);
+    friend quint32 *qt_mac_pixmap_get_base(const QPixmap*);
+    friend int qt_mac_pixmap_get_bytes_per_line(const QPixmap*);
 #endif
-    friend struct QPixmapData;
+    friend class QPixmapData;
+    friend class QX11PixmapData;
+    friend class QMacPixmapData;
     friend class QBitmap;
     friend class QPaintDevice;
     friend class QPainter;
@@ -247,6 +257,9 @@ private:
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPixmap &);
 #endif
     friend Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap);
+
+public:
+    QPixmapData* pixmapData() const;
 
 public:
     typedef QPixmapData * DataPtr;
@@ -282,6 +295,8 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPixmap &);
 QT3_SUPPORT Q_GUI_EXPORT void copyBlt(QPixmap *dst, int dx, int dy, const QPixmap *src,
                                     int sx=0, int sy=0, int sw=-1, int sh=-1);
 #endif // QT3_SUPPORT
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

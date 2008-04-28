@@ -45,6 +45,8 @@
 #include <QFile>
 #include <QDateTime>
 
+QT_BEGIN_NAMESPACE
+
 LogEntry::LogEntry(QString type, QString location)
 :type(type), location(location)
 {}
@@ -144,3 +146,5 @@ void Logger::updateLineNumbers(int insertLine, int numLines)
         logEntry->updateLinePos(insertLine, numLines);
     }
 }
+
+QT_END_NAMESPACE

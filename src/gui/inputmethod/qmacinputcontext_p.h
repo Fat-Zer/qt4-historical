@@ -58,6 +58,8 @@
 #include "QtGui/qinputcontext.h"
 #include "private/qt_mac_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class Q_GUI_EXPORT QMacInputContext : public QInputContext
 {
     Q_OBJECT
@@ -86,5 +88,7 @@ private:
     TSMDocumentID textDocument;
     QString currentText;
 };
+
+QT_END_NAMESPACE
 
 #endif // QMACINPUTCONTEXT_P_H

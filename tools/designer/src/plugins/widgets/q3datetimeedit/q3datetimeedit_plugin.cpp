@@ -47,8 +47,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3DateTimeEdit>
 
-Q3DateTimeEditPlugin::Q3DateTimeEditPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3DateTimeEditPlugin::Q3DateTimeEditPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3DateTimeEditPlugin::name() const
@@ -67,7 +69,7 @@ QString Q3DateTimeEditPlugin::includeFile() const
 { return QLatin1String("Qt3Support/Q3DateTimeEdit"); }
 
 QIcon Q3DateTimeEditPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3DateTimeEditPlugin::isContainer() const
 { return false; }
@@ -83,3 +85,5 @@ void Q3DateTimeEditPlugin::initialize(QDesignerFormEditorInterface *core)
     Q_UNUSED(core);
     m_initialized = true;
 }
+
+QT_END_NAMESPACE

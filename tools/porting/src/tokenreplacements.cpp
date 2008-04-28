@@ -44,6 +44,8 @@
 #include "tokenreplacements.h"
 #include "logger.h"
 #include "portingrules.h"
+
+QT_BEGIN_NAMESPACE
 using namespace TokenEngine;
 
 void addLogSourceEntry(const QString &text, const TokenContainer &tokenContainer, const int index)
@@ -367,3 +369,5 @@ QByteArray ScopedTokenReplacement::getReplaceKey()
    return oldName;
 }
 
+
+QT_END_NAMESPACE

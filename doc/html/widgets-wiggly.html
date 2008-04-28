@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/examples/wiggly.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/wiggly.qdoc -->
 <head>
-  <title>Qt 4.3: Wiggly Example</title>
+  <title>Qt 4.4: Wiggly Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -12,7 +12,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Wiggly Example<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Wiggly Example<br /><span class="subtitle"></span>
+</h1>
 <p>Files:</p>
 <ul>
 <li><a href="widgets-wiggly-dialog-cpp.html">widgets/wiggly/dialog.cpp</a></li>
@@ -20,9 +21,10 @@
 <li><a href="widgets-wiggly-wigglywidget-cpp.html">widgets/wiggly/wigglywidget.cpp</a></li>
 <li><a href="widgets-wiggly-wigglywidget-h.html">widgets/wiggly/wigglywidget.h</a></li>
 <li><a href="widgets-wiggly-main-cpp.html">widgets/wiggly/main.cpp</a></li>
+<li><a href="widgets-wiggly-wiggly-pro.html">widgets/wiggly/wiggly.pro</a></li>
 </ul>
 <p>The Wiggly example shows how to animate a widget using <a href="qbasictimer.html">QBasicTimer</a> and <a href="qobject.html#timerEvent">timerEvent()</a>. In addition, the example demonstrates how to use <a href="qfontmetrics.html">QFontMetrics</a> to determine the size of text on screen.</p>
-<p align="center"><img src="images/wiggly-example.png" alt="Screenshot of the Wiggly example" /></p><p><a href="qbasictimer.html">QBasicTimer</a> is a low-level class for timers. Unlike <a href="qtimer.html">QTimer</a>, <a href="qbasictimer.html">QBasicTimer</a> doesn't inherit from <a href="qobject.html">QObject</a>; instead of emitting a <a href="qtimer.html#timeout">timeout()</a> signal when a certain amount of time has passed, it sends a <a href="qtimerevent.html">QTimerEvent</a> to a <a href="qobject.html">QObject</a> of our choice. This makes <a href="qbasictimer.html">QBasicTimer</a> a more lightweight alternative to <a href="qtimer.html">QTimer</a>. Qt's built-in widgets use it internally, and it is provided in Qt's API for highly-optimized applications (e.g&#x2e;, <a href="qtopiacore.html">Qtopia Core</a> applications).</p>
+<p align="center"><img src="images/wiggly-example.png" alt="Screenshot of the Wiggly example" /></p><p><a href="qbasictimer.html">QBasicTimer</a> is a low-level class for timers. Unlike <a href="qtimer.html">QTimer</a>, <a href="qbasictimer.html">QBasicTimer</a> doesn't inherit from <a href="qobject.html">QObject</a>; instead of emitting a <a href="qtimer.html#timeout">timeout()</a> signal when a certain amount of time has passed, it sends a <a href="qtimerevent.html">QTimerEvent</a> to a <a href="qobject.html">QObject</a> of our choice. This makes <a href="qbasictimer.html">QBasicTimer</a> a more lightweight alternative to <a href="qtimer.html">QTimer</a>. Qt's built-in widgets use it internally, and it is provided in Qt's API for highly-optimized applications (e.g&#x2e;, <a href="qt-embedded.html">Qt for Embedded Linux</a> applications).</p>
 <p>The example consists of two classes:</p>
 <ul>
 <li><tt>WigglyWidget</tt> is the custom widget displaying the text in a wiggly line.</li>
@@ -140,6 +142,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

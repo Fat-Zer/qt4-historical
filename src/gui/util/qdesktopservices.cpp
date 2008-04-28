@@ -63,6 +63,8 @@
 #include <qurl.h>
 #include <qmutex.h>
 
+QT_BEGIN_NAMESPACE
+
 class QOpenUrlHandlerRegistry : public QObject
 {
     Q_OBJECT
@@ -140,18 +142,7 @@ void QOpenUrlHandlerRegistry::handlerDestroyed(QObject *handler)
     URLs, and by registering a handler it becomes possible to display the help text
     inside the application:
 
-    \code
-    class MyHelpHandler : public QObject
-    {
-        Q_OBJECT
-    public:
-        ...
-    public slots:
-        void showHelp(const QUrl &url);
-    };
-
-    QDesktopServices::setUrlHandler("help", helpInstance, "showHelp");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qdesktopservices.cpp 0
 
     If inside the handler you decide that you can't open the requested
     URL, you can just call QDesktopServices::openUrl() again with the
@@ -175,9 +166,7 @@ void QOpenUrlHandlerRegistry::handlerDestroyed(QObject *handler)
     For example, the following URL contains a recipient (\c{user@foo.com}), a
     subject (\c{Test}), and a message body (\c{Just a test}):
 
-    \code
-    mailto:user@foo.com?subject=Test&body=Just a test
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.util.qdesktopservices.cpp 1
 
     \warning Although many e-mail clients can send attachments and are
     Unicode-aware, the user may have configured their client without these features.
@@ -255,6 +244,8 @@ void QDesktopServices::unsetUrlHandler(const QString &scheme)
 {
     setUrlHandler(scheme, 0, 0);
 }
+
+QT_END_NAMESPACE
 
 #include "qdesktopservices.moc"
 

@@ -74,6 +74,8 @@
 #include "qx11info_x11.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 static Q3TextCursor* richTextExportStart = 0;
 static Q3TextCursor* richTextExportEnd = 0;
 
@@ -82,7 +84,9 @@ class Q3TextFormatCollection;
 const int border_tolerance = 2;
 
 #ifdef Q_WS_WIN
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qt_windows.h"
+QT_END_INCLUDE_NAMESPACE
 #endif
 
 static inline bool is_printer(QPainter *p)
@@ -3914,7 +3918,7 @@ void Q3TextString::checkBidi() const
     textEngine.text = toString();
     textEngine.option.setTextDirection(rightToLeft ? Qt::RightToLeft : Qt::LeftToRight);
     textEngine.itemize();
-    const QCharAttributes *ca = textEngine.attributes() + length-1;
+    const HB_CharAttributes *ca = textEngine.attributes() + length-1;
     Q3TextStringChar *ch = (Q3TextStringChar *)end - 1;
     QScriptItem *item = &textEngine.layoutData->items[textEngine.layoutData->items.size()-1];
     unsigned char bidiLevel = item->analysis.bidiLevel;
@@ -3928,7 +3932,7 @@ void Q3TextString::checkBidi() const
             if (bidiLevel)
                 that->bidi = true;
         }
-        ch->softBreak = ca->lineBreakType >= QCharAttributes::Break;
+        ch->softBreak = ca->lineBreakType >= HB_Break;
         ch->whiteSpace = ca->whiteSpace;
         ch->charStop = ca->charStop;
         ch->bidiLevel = bidiLevel;
@@ -5416,7 +5420,9 @@ QTextLineStart *Q3TextFormatter::formatLine(Q3TextParagraph *parag, Q3TextString
 #ifndef QT_NO_COMPLEXTEXT
 
 #ifdef BIDI_DEBUG
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <iostream>
+QT_END_INCLUDE_NAMESPACE
 #endif
 
 // collects one line of the paragraph and transforms it to visual order
@@ -8311,5 +8317,7 @@ void Q3TextTableCell::draw(QPainter* p, int x, int y, int cx, int cy, int cw, in
     p->restore();
 }
 #endif
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_RICHTEXT

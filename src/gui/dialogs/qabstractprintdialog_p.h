@@ -61,6 +61,10 @@
 
 #include "QtGui/qabstractprintdialog.h"
 
+QT_BEGIN_NAMESPACE
+
+#ifndef QT_NO_PRINTER
+
 class QPrinter;
 class QPrinterPrivate;
 
@@ -69,13 +73,18 @@ class QAbstractPrintDialogPrivate : public QDialogPrivate
     Q_DECLARE_PUBLIC(QAbstractPrintDialog)
 public:
     QAbstractPrintDialogPrivate()
-        : printer(0)
+        : printer(0), pd(0)
     {
     }
 
     QPrinter *printer;
     QPrinterPrivate *pd;
+    virtual void setTabs(const QList<QWidget *> &) { }
 };
+
+#endif //QT_NO_PRINTER
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PRINTDIALOG
 

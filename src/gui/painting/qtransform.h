@@ -54,6 +54,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QVariant;
@@ -171,37 +173,37 @@ Q_DECLARE_TYPEINFO(QTransform, Q_MOVABLE_TYPE);
 /******* inlines *****/
 inline bool QTransform::isAffine() const
 {
-    return qFuzzyCompare(m_13, 0) && qFuzzyCompare(m_23, 0);
+    return qFuzzyCompare(m_13 + 1, 1) && qFuzzyCompare(m_23 + 1, 1);
 }
 inline bool QTransform::isIdentity() const
 {
 #define qFZ qFuzzyCompare
-    return qFZ(affine._m11, 1) && qFZ(affine._m12, 0) && qFZ(m_13, 0)
-        && qFZ(affine._m21, 0) && qFZ(affine._m22, 1) && qFZ(m_23, 0)
-        && qFZ(affine._dx, 0) && qFZ(affine._dy, 0) && qFZ(m_33, 1);
+    return qFZ(affine._m11, 1) && qFZ(affine._m12 + 1, 1) && qFZ(m_13 + 1, 1)
+        && qFZ(affine._m21 + 1, 1) && qFZ(affine._m22, 1) && qFZ(m_23 + 1, 1)
+        && qFZ(affine._dx + 1, 1) && qFZ(affine._dy + 1, 1) && qFZ(m_33, 1);
 #undef qFZ
 }
 
 inline bool QTransform::isInvertible() const
 {
-    return !qFuzzyCompare(determinant(), 0);
+    return !qFuzzyCompare(determinant() + 1, 1);
 }
-#if 1
+
 inline bool QTransform::isScaling() const
 {
-    return !qFuzzyCompare(affine._m11, qreal(1.0)) ||
-        !qFuzzyCompare(affine._m22, qreal(1.0));
+    return !qFuzzyCompare(affine._m11, 1) ||
+        !qFuzzyCompare(affine._m22, 1);
 }
 inline bool QTransform::isRotating() const
 {
-    return !qFuzzyCompare(affine._m12, qreal(0.0)) ||
-        !qFuzzyCompare(affine._m21, qreal(0.0));
+    return !qFuzzyCompare(affine._m12 + 1, 1) ||
+        !qFuzzyCompare(affine._m21 + 1, 1);
 }
-#endif
+
 inline bool QTransform::isTranslating() const
 {
-    return !qFuzzyCompare(affine._dx, qreal(0.0)) ||
-        !qFuzzyCompare(affine._dy, qreal(0.0));
+    return !qFuzzyCompare(affine._dx + 1, 1) ||
+        !qFuzzyCompare(affine._dy + 1, 1);
 }
 
 inline qreal QTransform::determinant() const
@@ -341,6 +343,8 @@ Q_GUI_EXPORT_INLINE QTransform operator +(const QTransform &a, qreal n)
 { QTransform t(a); t += n; return t; }
 Q_GUI_EXPORT_INLINE QTransform operator -(const QTransform &a, qreal n)
 { QTransform t(a); t -= n; return t; }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

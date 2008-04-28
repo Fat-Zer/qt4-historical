@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PRINTER
@@ -60,6 +62,7 @@ QT_MODULE(Gui)
 class QPrinterPrivate;
 class QPaintEngine;
 class QPrintEngine;
+class QPrinterInfo;
 
 class Q_GUI_EXPORT QPrinter : public QPaintDevice
 {
@@ -68,36 +71,49 @@ public:
     enum PrinterMode { ScreenResolution, PrinterResolution, HighResolution };
 
     explicit QPrinter(PrinterMode mode = ScreenResolution);
+    explicit QPrinter(const QPrinterInfo& printer, PrinterMode mode = ScreenResolution);
     ~QPrinter();
 
     int devType() const;
 
     enum Orientation { Portrait, Landscape };
 
-    enum PageSize    { A4, B5, Letter, Legal, Executive,
-		       A0, A1, A2, A3, A5, A6, A7, A8, A9, B0, B1,
-		       B10, B2, B3, B4, B6, B7, B8, B9, C5E, Comm10E,
-		       DLE, Folio, Ledger, Tabloid, Custom, NPageSize = Custom };
+#ifndef Q_QDOC
+    enum PageSize { A4, B5, Letter, Legal, Executive,
+                    A0, A1, A2, A3, A5, A6, A7, A8, A9, B0, B1,
+                    B10, B2, B3, B4, B6, B7, B8, B9, C5E, Comm10E,
+                    DLE, Folio, Ledger, Tabloid, Custom, NPageSize = Custom, NPaperSize = Custom };
+    typedef PageSize PaperSize;
+#else
+    enum PageSize { A4, B5, Letter, Legal, Executive,
+                    A0, A1, A2, A3, A5, A6, A7, A8, A9, B0, B1,
+                    B10, B2, B3, B4, B6, B7, B8, B9, C5E, Comm10E,
+                    DLE, Folio, Ledger, Tabloid, Custom, NPageSize = Custom };
+    enum PaperSize { A4, B5, Letter, Legal, Executive,
+                     A0, A1, A2, A3, A5, A6, A7, A8, A9, B0, B1,
+                     B10, B2, B3, B4, B6, B7, B8, B9, C5E, Comm10E,
+                     DLE, Folio, Ledger, Tabloid, Custom, NPageSize = Custom, NPaperSize = Custom };
+#endif
 
     enum PageOrder   { FirstPageFirst,
-		       LastPageFirst };
+                       LastPageFirst };
 
     enum ColorMode   { GrayScale,
-		       Color };
+                       Color };
 
     enum PaperSource { OnlyOne,
-		       Lower,
-		       Middle,
-		       Manual,
-		       Envelope,
+                       Lower,
+                       Middle,
+                       Manual,
+                       Envelope,
                        EnvelopeManual,
-		       Auto,
-		       Tractor,
-		       SmallFormat,
+                       Auto,
+                       Tractor,
+                       SmallFormat,
                        LargeFormat,
-		       LargeCapacity,
-		       Cassette,
-		       FormSource,
+                       LargeCapacity,
+                       Cassette,
+                       FormSource,
                        MaxPageSource
     };
 
@@ -111,6 +127,23 @@ public:
     // ### Qt 5: Merge with QAbstractPrintDialog::PrintRange
     enum PrintRange { AllPages, Selection, PageRange };
 
+    enum Unit {
+        Millimeter,
+        Point,
+        Inch,
+        Pica,
+        Didot,
+        Cicero,
+        DevicePixel
+    };
+
+    enum DuplexMode {
+        DuplexNone = 0,
+        DuplexAuto,
+        DuplexLongSide,
+        DuplexShortSide
+    };
+
 #ifdef QT3_SUPPORT
     enum PrinterOption { PrintToFile, PrintSelection, PrintPageRange };
 #endif // QT3_SUPPORT
@@ -120,6 +153,8 @@ public:
 
     void setPrinterName(const QString &);
     QString printerName() const;
+
+    bool isValid() const;
 
     void setOutputFileName(const QString &);
     QString outputFileName()const;
@@ -138,6 +173,12 @@ public:
 
     void setPageSize(PageSize);
     PageSize pageSize() const;
+
+    void setPaperSize(PaperSize);
+    PaperSize paperSize() const;
+
+    void setPaperSize(const QSizeF &paperSize, Unit unit);
+    QSizeF paperSize(Unit unit) const;
 
     void setPageOrder(PageOrder);
     PageOrder pageOrder() const;
@@ -160,6 +201,9 @@ public:
     void setPaperSource(PaperSource);
     PaperSource paperSource() const;
 
+    void setDuplex(DuplexMode duplex);
+    DuplexMode duplex() const;
+
     QList<int> supportedResolutions() const;
 
 #ifdef Q_WS_WIN
@@ -179,6 +223,8 @@ public:
 
     QRect paperRect() const;
     QRect pageRect() const;
+    QRectF paperRect(Unit) const;
+    QRectF pageRect(Unit) const;
 
 #if !defined(Q_WS_WIN) || defined(qdoc)
     QString printerSelectionOption() const;
@@ -204,6 +250,9 @@ public:
 
     void setPrintRange(PrintRange range);
     PrintRange printRange() const;
+
+    void setPageMargins(qreal left, qreal top, qreal right, qreal bottom, Unit unit);
+    void getPageMargins(qreal *left, qreal *top, qreal *right, qreal *bottom, Unit unit) const;
 
 #ifdef QT3_SUPPORT
 #ifdef Q_WS_MAC
@@ -237,12 +286,16 @@ protected:
     void setEngines(QPrintEngine *printEngine, QPaintEngine *paintEngine);
 
 private:
+    void init(PrinterMode mode);
+
     Q_DISABLE_COPY(QPrinter)
 
     QPrinterPrivate *d_ptr;
 
     friend class QPrintDialogWin;
     friend class QAbstractPrintDialog;
+    friend class QPrintPreviewWidgetPrivate;
+    friend class QTextDocument;
 };
 
 #ifdef QT3_SUPPORT
@@ -269,6 +322,8 @@ inline void QPrinter::margins(uint *top, uint *left, uint *bottom, uint *right) 
 #endif
 
 #endif // QT_NO_PRINTER
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

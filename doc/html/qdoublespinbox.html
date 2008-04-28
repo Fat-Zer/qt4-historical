@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/gui/widgets/qspinbox.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qspinbox.cpp -->
 <head>
-  <title>Qt 4.3: QDoubleSpinBox Class Reference</title>
+  <title>Qt 4.4: QDoubleSpinBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QDoubleSpinBox Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDoubleSpinBox Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+</h1>
 <p>The QDoubleSpinBox class provides a spin box widget that takes doubles. <a href="#details">More...</a></p>
 <pre> #include &lt;QDoubleSpinBox&gt;</pre><p>Inherits <a href="qabstractspinbox.html">QAbstractSpinBox</a>.</p>
 <ul>
@@ -37,7 +38,7 @@
 </table></p>
 <ul>
 <li><div class="fn"/>11 properties inherited from <a href="qabstractspinbox.html#properties">QAbstractSpinBox</a></li>
-<li><div class="fn"/>56 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>57 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -64,7 +65,7 @@
 </ul>
 <ul>
 <li><div class="fn"/>24 public functions inherited from <a href="qabstractspinbox.html#public-functions">QAbstractSpinBox</a></li>
-<li><div class="fn"/>201 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -93,6 +94,7 @@
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 <li><div class="fn"/>4 protected functions inherited from <a href="qabstractspinbox.html#protected-functions">QAbstractSpinBox</a></li>
 <li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
@@ -164,7 +166,7 @@
 <h3 class="fn"><a name="prefix-prop"></a>prefix : <a href="qstring.html">QString</a></h3>
 <p>This property holds the spin box's prefix.</p>
 <p>The prefix is prepended to the start of the displayed value. Typical use is to display a unit of measurement or a currency symbol. For example:</p>
-<pre> spinbox-&gt;setPrefix(&quot;$&quot;);</pre>
+<pre>         spinbox-&gt;setPrefix(&quot;$&quot;);</pre>
 <p>To turn off the prefix display, set this property to an empty string. The default is no prefix. The prefix is not displayed when <a href="qdoublespinbox.html#value-prop">value</a>() == <a href="qdoublespinbox.html#minimum-prop">minimum</a>() and <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>() is set.</p>
 <p>If no prefix is set, prefix() returns an empty string.</p>
 <p>Access functions:</p>
@@ -188,7 +190,7 @@
 <h3 class="fn"><a name="suffix-prop"></a>suffix : <a href="qstring.html">QString</a></h3>
 <p>This property holds the suffix of the spin box.</p>
 <p>The suffix is appended to the end of the displayed value. Typical use is to display a unit of measurement or a currency symbol. For example:</p>
-<pre> spinbox-&gt;setSuffix(&quot; km&quot;);</pre>
+<pre>         spinbox-&gt;setSuffix(&quot; km&quot;);</pre>
 <p>To turn off the suffix display, set this property to an empty string. The default is no suffix. The suffix is not displayed for the <a href="qdoublespinbox.html#minimum-prop">minimum</a>() if <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>() is set.</p>
 <p>If no suffix is set, suffix() returns an empty string.</p>
 <p>Access functions:</p>
@@ -219,14 +221,14 @@
 <h3 class="fn"><a name="setRange"></a>void QDoubleSpinBox::setRange ( double <i>minimum</i>, double <i>maximum</i> )</h3>
 <p>Convenience function to set the <i>minimum</i> and <i>maximum</i> values with a single function call.</p>
 <p>Note: The maximum and minimum values will be rounded to match the decimals property.</p>
-<pre> setRange(minimum, maximum);</pre>
+<pre>     setRange(minimum, maximum);</pre>
 <p>is equivalent to:</p>
-<pre> setMinimum(minimum);
- setMaximum(maximum);</pre>
+<pre>     setMinimum(minimum);
+     setMaximum(maximum);</pre>
 <p>See also <a href="qdoublespinbox.html#minimum-prop">minimum</a> and <a href="qdoublespinbox.html#maximum-prop">maximum</a>.</p>
 <a name="//apple_ref/cpp/instm/QDoubleSpinBox/textFromValue" />
 <h3 class="fn"><a name="textFromValue"></a><a href="qstring.html">QString</a> QDoubleSpinBox::textFromValue ( double <i>value</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This virtual function is used by the spin box whenever it needs to display the given <i>value</i>. The default implementation returns a string containing <i>value</i> printed using QLocale().toString(<i>value</i>, <a href="qlatin1char.html">QLatin1Char</a>('f'), <a href="qdoublespinbox.html#decimals-prop">decimals</a>()) and will remove the thousand separator. Reimplementations may return anything.</p>
+<p>This virtual function is used by the spin box whenever it needs to display the given <i>value</i>. The default implementation returns a string containing <i>value</i> printed using <a href="qwidget.html#locale-prop">QWidget::locale</a>().toString(<i>value</i>, <a href="qlatin1char.html">QLatin1Char</a>('f'), <a href="qdoublespinbox.html#decimals-prop">decimals</a>()) and will remove the thousand separator. Reimplementations may return anything.</p>
 <p>Note: <a href="qdoublespinbox.html">QDoubleSpinBox</a> does not call this function for <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>() and that neither <a href="qdoublespinbox.html#prefix-prop">prefix</a>() nor <a href="qdoublespinbox.html#suffix-prop">suffix</a>() should be included in the return value.</p>
 <p>If you reimplement this, you may also need to reimplement <a href="qdoublespinbox.html#valueFromText">valueFromText</a>().</p>
 <p>See also <a href="qdoublespinbox.html#valueFromText">valueFromText</a>().</p>
@@ -246,6 +248,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

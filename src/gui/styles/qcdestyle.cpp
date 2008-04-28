@@ -68,6 +68,7 @@
 #include "qdebug.h"
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QCDEStyle
@@ -300,5 +301,7 @@ QIcon QCDEStyle::standardIconImplementation(StandardPixmap standardIcon, const Q
 {
     return QMotifStyle::standardIconImplementation(standardIcon, opt, widget);
 }
+
+QT_END_NAMESPACE
 
 #endif

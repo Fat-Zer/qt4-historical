@@ -45,9 +45,12 @@
 #define QDATETIMEEDIT_H
 
 #include <QtCore/qdatetime.h>
+#include <QtCore/qvariant.h>
 #include <QtGui/qabstractspinbox.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -55,6 +58,7 @@ QT_MODULE(Gui)
 
 class QDateTimeEditPrivate;
 class QStyleOptionSpinBox;
+class QCalendarWidget;
 
 class Q_GUI_EXPORT QDateTimeEdit : public QAbstractSpinBox
 {
@@ -65,6 +69,8 @@ class Q_GUI_EXPORT QDateTimeEdit : public QAbstractSpinBox
     Q_PROPERTY(QDateTime dateTime READ dateTime WRITE setDateTime NOTIFY dateTimeChanged USER true)
     Q_PROPERTY(QDate date READ date WRITE setDate NOTIFY dateChanged)
     Q_PROPERTY(QTime time READ time WRITE setTime NOTIFY timeChanged)
+    Q_PROPERTY(QDateTime maximumDateTime READ maximumDateTime WRITE setMaximumDateTime RESET clearMaximumDateTime)
+    Q_PROPERTY(QDateTime minimumDateTime READ minimumDateTime WRITE setMinimumDateTime RESET clearMinimumDateTime)
     Q_PROPERTY(QDate maximumDate READ maximumDate WRITE setMaximumDate RESET clearMaximumDate)
     Q_PROPERTY(QDate minimumDate READ minimumDate WRITE setMinimumDate RESET clearMinimumDate)
     Q_PROPERTY(QTime maximumTime READ maximumTime WRITE setMaximumTime RESET clearMaximumTime)
@@ -75,7 +81,7 @@ class Q_GUI_EXPORT QDateTimeEdit : public QAbstractSpinBox
     Q_PROPERTY(bool calendarPopup READ calendarPopup WRITE setCalendarPopup)
     Q_PROPERTY(int currentSectionIndex READ currentSectionIndex WRITE setCurrentSectionIndex)
     Q_PROPERTY(int sectionCount READ sectionCount)
-
+    Q_PROPERTY(Qt::TimeSpec timeSpec READ timeSpec WRITE setTimeSpec)
 public:
     enum Section {
         NoSection = 0x0000,
@@ -101,6 +107,16 @@ public:
     QDateTime dateTime() const;
     QDate date() const;
     QTime time() const;
+
+    QDateTime minimumDateTime() const;
+    void clearMinimumDateTime();
+    void setMinimumDateTime(const QDateTime &dt);
+
+    QDateTime maximumDateTime() const;
+    void clearMaximumDateTime();
+    void setMaximumDateTime(const QDateTime &dt);
+
+    void setDateTimeRange(const QDateTime &min, const QDateTime &max);
 
     QDate minimumDate() const;
     void setMinimumDate(const QDate &min);
@@ -130,6 +146,9 @@ public:
     int currentSectionIndex() const;
     void setCurrentSectionIndex(int index);
 
+    QCalendarWidget *calendarWidget() const;
+    void setCalendarWidget(QCalendarWidget *calendarWidget);
+
     int sectionCount() const;
 
     void setSelectedSection(Section section);
@@ -141,6 +160,9 @@ public:
 
     bool calendarPopup() const;
     void setCalendarPopup(bool enable);
+
+    Qt::TimeSpec timeSpec() const;
+    void setTimeSpec(Qt::TimeSpec spec);
 
     QSize sizeHint() const;
 
@@ -175,6 +197,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
     void initStyleOption(QStyleOptionSpinBox *option) const;
 
+    QDateTimeEdit(const QVariant &val, QVariant::Type parserType, QWidget *parent = 0);
 private:
     Q_DECLARE_PRIVATE(QDateTimeEdit)
     Q_DISABLE_COPY(QDateTimeEdit)
@@ -203,6 +226,8 @@ public:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimeEdit::Sections)
 
 #endif // QT_NO_DATETIMEEDIT
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

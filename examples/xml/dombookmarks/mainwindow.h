@@ -55,7 +55,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
 
-private slots:
+public slots:
     void open();
     void saveAs();
     void about();

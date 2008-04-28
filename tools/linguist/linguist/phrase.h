@@ -44,29 +44,39 @@
 #ifndef PHRASE_H
 #define PHRASE_H
 
+#include <QObject>
 #include <QString>
 #include <QList>
+
+QT_BEGIN_NAMESPACE
+
+class PhraseBook;
 
 class Phrase
 {
 public:
-    Phrase() { }
+    Phrase();
     Phrase(const QString &source, const QString &target,
-	    const QString &definition, int sc = -1);
+            const QString &definition, int sc = -1);
+    Phrase(const QString &source, const QString &target,
+            const QString &definition, PhraseBook *phraseBook);
 
-    QString source() const {return s;}
-    void setSource(const QString &ns) {s = ns;}
+    QString source() const { return s; }
+    void setSource(const QString &ns);
     QString target() const {return t;}
-    void setTarget(const QString &nt) {t = nt;}
+    void setTarget(const QString &nt);
     QString definition() const {return d;}
-    void setDefinition (const QString &nd) {d = nd;}
-    int shortcut() const {return shrtc;}
+    void setDefinition (const QString &nd);
+    int shortcut() const { return shrtc; }
+    PhraseBook *phraseBook() const { return m_phraseBook; }
+    void setPhraseBook(PhraseBook *book) { m_phraseBook = book; }
 
 private:
     int shrtc;
     QString s;
     QString t;
     QString d;
+    PhraseBook *m_phraseBook;
 };
 
 bool operator==(const Phrase &p, const Phrase &q);
@@ -74,19 +84,44 @@ inline bool operator!=(const Phrase &p, const Phrase &q) {
     return !(p == q);
 }
 
-class PhraseBook : public QList<Phrase>
+class QphHandler;
+
+class PhraseBook : public QObject
 {
+    Q_OBJECT
+
 public:
-    PhraseBook() { }
+    PhraseBook();
+    ~PhraseBook();
+    bool load(const QString &fileName);
+    bool save(const QString &fileName);
+    const QList<Phrase *> phrases() { return m_phrases; }
+    void append(Phrase *phrase);
+    void remove(Phrase *phrase);
+    const QString fileName() const { return m_fileName; }
+    const QString friendlyPhraseBookName() const;
+    bool isModified() { return m_changed; }
 
-    bool load(const QString &filename);
-    bool save(const QString &filename) const;
-    QString fileName() const {return fn;}
-
-    QString friendlyPhraseBookName() const;
+signals:
+    void modifiedChanged(bool changed);
+    void listChanged();
 
 private:
-    QString fn;
+    // Prevent copying
+    PhraseBook(const PhraseBook &);
+    PhraseBook& operator=(const PhraseBook &);
+
+    void setModified(bool modified);
+    void phraseChanged(Phrase *phrase);
+
+    QList<Phrase *> m_phrases;
+    QString m_fileName;
+    bool m_changed;
+
+    friend class QphHandler;
+    friend class Phrase;
 };
+
+QT_END_NAMESPACE
 
 #endif

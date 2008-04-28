@@ -55,6 +55,8 @@
 
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 /*
   Here come the C++ tokens we support.  The first part contains
   all-purpose tokens; then come keywords.
@@ -71,7 +73,7 @@ enum { Tok_Eoi, Tok_Ampersand, Tok_Aster, Tok_Caret, Tok_LeftParen, Tok_RightPar
        Tok_char, Tok_class, Tok_const, Tok_double, Tok_enum, Tok_explicit, Tok_friend, Tok_inline,
        Tok_int, Tok_long, Tok_namespace, Tok_operator, Tok_private, Tok_protected, Tok_public,
        Tok_short, Tok_signals, Tok_signed, Tok_slots, Tok_static, Tok_struct, Tok_template,
-       Tok_typedef, Tok_typename, Tok_union, Tok_unsigned, Tok_virtual, Tok_void, Tok_volatile,
+       Tok_typedef, Tok_typename, Tok_union, Tok_unsigned, Tok_using, Tok_virtual, Tok_void, Tok_volatile,
        Tok_int64, Tok_Q_OBJECT, Tok_Q_OVERRIDE, Tok_Q_PROPERTY, Tok_Q_DECLARE_SEQUENTIAL_ITERATOR,
        Tok_Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR, Tok_Q_DECLARE_ASSOCIATIVE_ITERATOR,
        Tok_Q_DECLARE_MUTABLE_ASSOCIATIVE_ITERATOR, Tok_Q_DECLARE_FLAGS, Tok_Q_SIGNALS, Tok_Q_SLOTS,
@@ -88,14 +90,15 @@ enum { Tok_Eoi, Tok_Ampersand, Tok_Aster, Tok_Caret, Tok_LeftParen, Tok_RightPar
   Not every operator or keyword of C++ is recognized; only those that
   are interesting to us. Some Qt keywords or macros are also
   recognized.
-
-  The class is an abstract base class inherited by FileTokenizer and
-  StringTokenizer.
 */
+
 class Tokenizer
 {
 public:
-    virtual ~Tokenizer();
+    Tokenizer( const Location& loc, const QByteArray &in );
+    Tokenizer( const Location& loc, FILE *in );
+
+    ~Tokenizer();
 
     int getToken();
     void setParsingFnOrMacro(bool macro) { parsingMacro = macro; }
@@ -113,14 +116,9 @@ public:
     static void terminate();
     static bool isTrue(const QString &condition);
 
-protected:
-    Tokenizer();
-
-    virtual int getch();
-
-    void start( const Location& loc );
-
 private:
+    void init();
+    void start( const Location& loc );
     /*
       This limit on the length of a lexeme seems fairly high, but a
       doc comment can be arbitrarily long. The previous 65,536 limit
@@ -128,7 +126,29 @@ private:
     */
     enum { yyLexBufSize = 524288 };
 
-    int getChar();
+    int getch()
+    {
+        return yyPos == yyIn.size() ? EOF : yyIn[yyPos++];
+    }
+
+    inline int getChar()
+    {
+        if ( yyCh == EOF )
+            return EOF;
+        if ( yyLexLen < yyLexBufSize - 1 ) {
+            yyLex[yyLexLen++] = (char) yyCh;
+            yyLex[yyLexLen] = '\0';
+        }
+        yyCurLoc.advance( yyCh );
+        int ch = getch();
+        if (ch == EOF)
+            return EOF;
+        // cast explicitely to make sure the value of ch 
+        // is in range [0..255] to avoid assert messages 
+        // when using debug CRT that checks its input.
+        return int(uint(uchar(ch))); 
+    }
+
     int getTokenAfterPreprocessor();
     void pushSkipping( bool skip );
     bool popSkipping();
@@ -149,49 +169,12 @@ private:
 
     QString yyVersion;
     bool parsingMacro;
-};
 
-inline int Tokenizer::getChar() {
-    if ( yyCh == EOF )
-	return EOF;
-    if ( yyLexLen < yyLexBufSize - 1 ) {
-	yyLex[yyLexLen++] = (char) yyCh;
-	yyLex[yyLexLen] = '\0';
-    }
-    yyCurLoc.advance( yyCh );
-    return getch();
-}
-
-/*
-  The FileTokenizer class is a Tokenizer that gets its input from a
-  FILE *.
-*/
-class FileTokenizer : public Tokenizer
-{
-public:
-    FileTokenizer( const Location& loc, FILE *in );
-
-    virtual int getch();
-
-private:
-    FILE *yyIn;
-};
-
-/*
-  The StringTokenizer class is a Tokenizer that gets its input from a
-  char string.
-*/
-class StringTokenizer : public Tokenizer
-{
-public:
-    StringTokenizer( const Location& loc, const char *in, int len );
-
-    virtual int getch();
-
-private:
-    const char *yyIn;
+protected:
+    QByteArray yyIn;
     int yyPos;
-    int yyLen;
 };
+
+QT_END_NAMESPACE
 
 #endif

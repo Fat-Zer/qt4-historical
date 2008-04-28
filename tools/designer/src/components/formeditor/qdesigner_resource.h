@@ -51,17 +51,20 @@
 #include <QtCore/QStack>
 #include <QtCore/QList>
 
+QT_BEGIN_NAMESPACE
+
 class DomCustomWidget;
 class DomCustomWidgets;
+class DomResource;
 
 class QDesignerContainerExtension;
 class QDesignerFormEditorInterface;
 class QDesignerCustomWidgetInterface;
 class QDesignerWidgetDataBaseItemInterface;
 
-class QDesignerTabWidget;
-class QDesignerStackedWidget;
-class QDesignerToolBox;
+class QTabWidget;
+class QStackedWidget;
+class QToolBox;
 class QToolBar;
 class QDesignerDockWidget;
 class QLayoutWidget;
@@ -70,23 +73,26 @@ namespace qdesigner_internal {
 
 class FormWindow;
 
-class QT_FORMEDITOR_EXPORT QDesignerResource : public QSimpleResource
+class QT_FORMEDITOR_EXPORT QDesignerResource : public QEditorFormBuilder
 {
 public:
-    QDesignerResource(FormWindow *fw);
+    explicit QDesignerResource(FormWindow *fw);
     virtual ~QDesignerResource();
 
     virtual void save(QIODevice *dev, QWidget *widget);
 
-    void copy(QIODevice *dev, const QList<QWidget*> &selection);
-    DomUI *copy(const QList<QWidget*> &selection);
-    QList<QWidget*> paste(DomUI *ui, QWidget *parentWidget);
-    QList<QWidget*> paste(QIODevice *dev, QWidget *parentWidget);
-    static QString qtify(const QString &name);
+    virtual bool copy(QIODevice *dev, const FormBuilderClipboard &selection);
+    virtual DomUI *copy(const FormBuilderClipboard &selection);
+
+    virtual FormBuilderClipboard paste(DomUI *ui, QWidget *widgetParent, QObject *actionParent = 0);
+    virtual FormBuilderClipboard paste(QIODevice *dev,  QWidget *widgetParent, QObject *actionParent = 0);
+
+    bool saveRelative() const;
+    void setSaveRelative(bool relative);
 
 protected:
-    using QSimpleResource::create;
-    using QSimpleResource::createDom;
+    using QEditorFormBuilder::create;
+    using QEditorFormBuilder::createDom;
 
     virtual void saveDom(DomUI *ui, QWidget *widget);
     virtual QWidget *create(DomUI *ui, QWidget *parentWidget);
@@ -123,9 +129,9 @@ protected:
 
     virtual bool checkProperty(QObject *obj, const QString &prop) const;
 
-    DomWidget *saveWidget(QDesignerTabWidget *widget, DomWidget *ui_parentWidget);
-    DomWidget *saveWidget(QDesignerStackedWidget *widget, DomWidget *ui_parentWidget);
-    DomWidget *saveWidget(QDesignerToolBox *widget, DomWidget *ui_parentWidget);
+    DomWidget *saveWidget(QTabWidget *widget, DomWidget *ui_parentWidget);
+    DomWidget *saveWidget(QStackedWidget *widget, DomWidget *ui_parentWidget);
+    DomWidget *saveWidget(QToolBox *widget, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QWidget *widget, QDesignerContainerExtension *container, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QToolBar *toolBar, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QDesignerDockWidget *dockWidget, DomWidget *ui_parentWidget);
@@ -138,18 +144,17 @@ protected:
 
     virtual void loadExtraInfo(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget);
 
-    DomProperty *createIconProperty(const QVariant &v) const;
-
     void changeObjectName(QObject *o, QString name);
-
     DomProperty *applyProperStdSetAttribute(QObject *object, const QString &propertyName, DomProperty *property);
 
 private:
     void addUserDefinedScripts(QWidget *w, DomWidget *ui_widget);
+    DomResources *saveResources(const QStringList &qrcPaths);
+    bool canCompressMargins(QObject *object) const;
+    bool canCompressSpacings(QObject *object) const;
 
     typedef QList<DomCustomWidget*> DomCustomWidgetList;
     void addCustomWidgetsToWidgetDatabase(DomCustomWidgetList& list);
-    void fixIconPath(IconPaths &) const;
     FormWindow *m_formWindow;
     bool m_isMainWidget;
     QHash<QString, QString> m_internal_to_qt;
@@ -159,8 +164,11 @@ private:
     int m_topLevelSpacerCount;
     bool m_copyWidget;
     QWidget *m_selected;
+    class QDesignerResourceBuilder *m_resourceBuilder;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_RESOURCE_H

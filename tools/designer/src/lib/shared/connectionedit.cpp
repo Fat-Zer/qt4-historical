@@ -52,8 +52,13 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QMatrix>
 #include <QtGui/QApplication>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QMenu>
+#include <QtGui/QAction>
 
 #include <QtCore/QMultiMap>
+
+QT_BEGIN_NAMESPACE
 
 static const int BG_ALPHA =              32;
 static const int LINE_PROXIMITY_RADIUS =  3;
@@ -77,7 +82,7 @@ static QRect expand(const QRect &r, int i)
     return QRect(r.x() - i, r.y() - i, r.width() + 2*i, r.height() + 2*i);
 }
 
-static QRect endPointRect(const QPoint &pos)
+static QRect endPointRectHelper(const QPoint &pos)
 {
     const QRect r(pos + QPoint(-LINE_PROXIMITY_RADIUS, -LINE_PROXIMITY_RADIUS),
                   QSize(2*LINE_PROXIMITY_RADIUS, 2*LINE_PROXIMITY_RADIUS));
@@ -789,10 +794,10 @@ QRect Connection::endPointRect(EndPoint::Type type) const
 {
     if (type == EndPoint::Source) {
         if (m_source_pos != QPoint(-1, -1))
-            return ::endPointRect(m_source_pos);
+            return endPointRectHelper(m_source_pos);
     } else {
         if (m_target_pos != QPoint(-1, -1))
-            return ::endPointRect(m_target_pos);
+            return endPointRectHelper(m_target_pos);
     }
     return QRect();
 }
@@ -1136,15 +1141,24 @@ void ConnectionEdit::abortConnection()
     m_tmp_con->update();
     delete m_tmp_con;
     m_tmp_con = 0;
+#ifndef QT_NO_CURSOR
     setCursor(QCursor());
+#endif
     if (m_widget_under_mouse == m_bg_widget)
         m_widget_under_mouse = 0;
 }
 
 void ConnectionEdit::mousePressEvent(QMouseEvent *e)
 {
-    e->accept();
+    // Right click only to cancel
+    const Qt::MouseButton button = e->button();
+    const State cstate = state();
+    if (button != Qt::LeftButton && !(button == Qt::RightButton && cstate == Connecting)) {
+        QWidget::mousePressEvent(e);
+        return;
+    }
 
+    e->accept();
     // Prefer a non-background widget over the connection,
     // otherwise, widgets covered by the connection labels cannot be accessed
     Connection *con_under_mouse = 0;
@@ -1152,9 +1166,9 @@ void ConnectionEdit::mousePressEvent(QMouseEvent *e)
         con_under_mouse = connectionAt(e->pos());
 
     m_start_connection_on_drag = false;
-    switch (state()) {
+    switch (cstate) {
         case Connecting:
-            if (e->button() == Qt::RightButton)
+            if (button == Qt::RightButton)
                 abortConnection();
             break;
         case Dragging:
@@ -1184,6 +1198,11 @@ void ConnectionEdit::mousePressEvent(QMouseEvent *e)
 
 void ConnectionEdit::mouseDoubleClickEvent(QMouseEvent *e)
 {
+    if (e->button() != Qt::LeftButton) {
+        QWidget::mouseDoubleClickEvent(e);
+        return;
+    }
+
     e->accept();
     switch (state()) {
         case Connecting:
@@ -1205,6 +1224,10 @@ void ConnectionEdit::mouseDoubleClickEvent(QMouseEvent *e)
 
 void ConnectionEdit::mouseReleaseEvent(QMouseEvent *e)
 {
+    if (e->button() != Qt::LeftButton) {
+        QWidget::mouseReleaseEvent(e);
+        return;
+    }
     e->accept();
 
     switch (state()) {
@@ -1213,7 +1236,9 @@ void ConnectionEdit::mouseReleaseEvent(QMouseEvent *e)
                 abortConnection();
             else
                 endConnection(m_widget_under_mouse, e->pos());
+#ifndef QT_NO_CURSOR
             setCursor(QCursor());
+#endif
             break;
         case Editing:
             break;
@@ -1246,10 +1271,12 @@ void ConnectionEdit::findObjectsUnderMouse(const QPoint &pos)
 
     const EndPoint hs = endPointAt(pos);
     if (hs != m_end_point_under_mouse) {
+#ifndef QT_NO_CURSOR
         if (m_end_point_under_mouse.isNull())
             setCursor(Qt::PointingHandCursor);
         else
             setCursor(QCursor());
+#endif
         m_end_point_under_mouse = hs;
     }
 }
@@ -1267,7 +1294,9 @@ void ConnectionEdit::mouseMoveEvent(QMouseEvent *e)
                     && !m_widget_under_mouse.isNull()) {
                 m_start_connection_on_drag = false;
                 startConnection(m_widget_under_mouse, e->pos());
+#ifndef QT_NO_CURSOR
                 setCursor(Qt::CrossCursor);
+#endif
             }
             break;
         case Dragging:
@@ -1391,6 +1420,14 @@ void ConnectionEdit::selectNone()
     m_sel_con_set.clear();
 }
 
+void ConnectionEdit::selectAll()
+{
+    if (m_sel_con_set.size() == m_con_list.size())
+        return;
+    foreach (Connection *con, m_con_list)
+        setSelected(con, true);
+}
+
 Connection *ConnectionEdit::connectionAt(const QPoint &pos) const
 {
     foreach (Connection *con, m_con_list) {
@@ -1503,4 +1540,44 @@ void ConnectionEdit::setTarget(Connection *con, const QString &obj_name)
     m_undo_stack->push(new SetEndPointCommand(this, con, EndPoint::Target, object));
 }
 
+Connection *ConnectionEdit::takeConnection(Connection *con)
+{
+    if (!m_con_list.contains(con))
+        return 0;
+    m_con_list.removeAll(con);
+    return con;
+}
+
+void ConnectionEdit::clearNewlyAddedConnection()
+{
+    delete m_tmp_con;
+    m_tmp_con = 0;
+}
+
+void ConnectionEdit::createContextMenu(QMenu &menu)
+{
+    // Select
+    QAction *selectAllAction = menu.addAction(tr("Select All"));
+    selectAllAction->setEnabled(connectionList().size());
+    connect(selectAllAction, SIGNAL(triggered()), this, SLOT(selectAll()));
+    QAction *deselectAllAction = menu.addAction(tr("Deselect All"));
+    deselectAllAction->setEnabled(selection().size());
+    connect(deselectAllAction, SIGNAL(triggered()), this, SLOT(selectNone()));
+    menu.addSeparator();
+    // Delete
+    QAction *deleteAction = menu.addAction(tr("Delete"));
+    deleteAction->setShortcut(QKeySequence::Delete);
+    deleteAction->setEnabled(!selection().isEmpty());
+    connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteSelected()));
+}
+
+void ConnectionEdit::contextMenuEvent(QContextMenuEvent * event)
+{
+    QMenu menu;
+    createContextMenu(menu);
+    menu.exec(event->globalPos());
+}
+
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

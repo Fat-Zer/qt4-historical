@@ -44,6 +44,8 @@
 #include "cursor.h"
 #include "item.h"
 
+QT_BEGIN_NAMESPACE
+
 Cursor::Cursor()
     : m_totalSteps(0)
 {
@@ -66,3 +68,5 @@ void Cursor::addItem(const Item *item)
 {
     m_items << item;
 }
+
+QT_END_NAMESPACE

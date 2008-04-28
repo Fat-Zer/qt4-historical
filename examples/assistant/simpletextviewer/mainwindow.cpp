@@ -46,6 +46,7 @@
 #include "mainwindow.h"
 #include "findfiledialog.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     textViewer = new QTextEdit;
@@ -64,12 +65,15 @@ MainWindow::MainWindow()
     setWindowTitle(tr("Simple Text Viewer"));
     resize(750, 400);
 }
+//! [0]
 
+//! [1]
 void MainWindow::closeEvent(QCloseEvent *)
 {
     if (assistantClient)
         assistantClient->closeAssistant();
 }
+//! [1]
 
 void MainWindow::about()
 {
@@ -79,18 +83,22 @@ void MainWindow::about()
                             "own application."));
 }
 
+//! [2]
 void MainWindow::assistant()
 {
     assistantClient->showPage(QLibraryInfo::location(QLibraryInfo::ExamplesPath) +
                                               QDir::separator() +
                                               "assistant/simpletextviewer/documentation/index.html");
 }
+//! [2]
 
+//! [3]
 void MainWindow::open()
 {
     FindFileDialog dialog(textViewer, assistantClient);
     dialog.exec();
 }
+//! [3]
 
 void MainWindow::createActions()
 {
@@ -136,6 +144,7 @@ void MainWindow::createMenus()
     menuBar()->addMenu(helpMenu);
 }
 
+//! [4]
 void MainWindow::initializeAssistant()
 {
     assistantClient = new QAssistantClient(QLibraryInfo::location(QLibraryInfo::BinariesPath), this);
@@ -144,3 +153,4 @@ void MainWindow::initializeAssistant()
     arguments << "-profile" << QString("documentation") + QDir::separator() + QString("simpletextviewer.adp");
     assistantClient->setArguments(arguments);
 }
+//! [4]

@@ -65,6 +65,18 @@
 #include <QtGui/qfontmetrics.h>
 #include <QtGui/qclipboard.h>
 
+#ifdef Q_OS_WINCE
+extern bool qt_wince_is_mobile();    //defined in qguifunctions_wince.cpp
+extern bool qt_wince_is_smartphone();//defined in qguifunctions_wince.cpp
+extern bool qt_wince_is_pocket_pc(); //defined in qguifunctions_wince.cpp
+
+#include "qguifunctions_wince.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
+extern QHash<QByteArray, QFont> *qt_app_fonts_hash();
+
 enum Button { Old_Ok = 1, Old_Cancel = 2, Old_Yes = 3, Old_No = 4, Old_Abort = 5, Old_Retry = 6,
               Old_Ignore = 7, Old_YesAll = 8, Old_NoAll = 9, Old_ButtonMask = 0xFF,
               NewButtonFlag = 0xFFFFFC00 };
@@ -80,12 +92,12 @@ public:
         TextEdit(QWidget *parent=0) : QTextEdit(parent) { }
         void contextMenuEvent(QContextMenuEvent * e)
         {
-#ifdef QT_NO_CONTEXTMENU
-            Q_UNUSED(e);
-#else
+#ifndef QT_NO_CONTEXTMENU
             QMenu *menu = createStandardContextMenu();
             menu->exec(e->globalPos());
             delete menu;
+#else 
+            Q_UNUSED(e);
 #endif
         }
     };
@@ -219,6 +231,10 @@ public:
     int layoutMinimumWidth();
     void retranslateStrings();
 
+#ifdef Q_OS_WINCE
+    void hideSpecial();
+#endif
+
     static int showOldMessageBox(QWidget *parent, QMessageBox::Icon icon,
                                  const QString &title, const QString &text,
                                  int button0, int button1, int button2);
@@ -233,6 +249,8 @@ public:
     static QMessageBox::StandardButton showNewMessageBox(QWidget *parent,
                 QMessageBox::Icon icon, const QString& title, const QString& text,
                 QMessageBox::StandardButtons buttons, QMessageBox::StandardButton defaultButton);
+
+    static QPixmap standardIcon(QMessageBox::Icon icon, QMessageBox *mb);
 
     QLabel *label;
     QMessageBox::Icon icon;
@@ -338,6 +356,9 @@ void QMessageBoxPrivate::updateSize()
 #ifdef Q_WS_QWS
     // the width of the screen, less the window border.
     int hardLimit = screenSize.width() - (q->frameGeometry().width() - q->geometry().width());
+#elif defined(Q_OS_WINCE)
+    // the width of the screen, less the window border.
+    int hardLimit = screenSize.width() - (q->frameGeometry().width() - q->geometry().width());
 #else
     int hardLimit = qMin(screenSize.width() - 480, 1000); // can never get bigger than this
 #endif
@@ -347,7 +368,11 @@ void QMessageBoxPrivate::updateSize()
     int softLimit = qMin(hardLimit, 500);
 #else
     // note: ideally on windows, hard and soft limits but it breaks compat
+#ifndef Q_OS_WINCE
     int softLimit = qMin(screenSize.width()/2, 500);
+#else
+    int softLimit = qMin(screenSize.width() * 4 / 3, 500);
+#endif //Q_OS_WINCE
 #endif
 
     if (informativeLabel)
@@ -373,19 +398,21 @@ void QMessageBoxPrivate::updateSize()
 
     if (informativeLabel) {
         label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-        if (layoutMinimumWidth() > hardLimit) { // longest word is really big, so wrap anywhere
+        QSizePolicy policy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        policy.setHeightForWidth(true);
+        informativeLabel->setSizePolicy(policy);
+        width = qMax(width, layoutMinimumWidth());
+        if (width > hardLimit) { // longest word is really big, so wrap anywhere
             informativeLabel->d_func()->ensureTextControl();
             if (QTextControl *control = informativeLabel->d_func()->control) {
                 QTextOption opt = control->document()->defaultTextOption();
                 opt.setWrapMode(QTextOption::WrapAnywhere);
                 control->document()->setDefaultTextOption(opt);
             }
+            width = hardLimit;
         }
-        QSizePolicy policy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         policy.setHeightForWidth(label->wordWrap());
         label->setSizePolicy(policy);
-        policy.setHeightForWidth(true);
-        informativeLabel->setSizePolicy(policy);
     }
 
     QFontMetrics fm(qApp->font("QWorkspaceTitleBar"));
@@ -400,6 +427,28 @@ void QMessageBoxPrivate::updateSize()
     q->setFixedSize(width, height);
     QCoreApplication::removePostedEvents(q, QEvent::LayoutRequest);
 }
+
+
+#ifdef Q_OS_WINCE
+/*!
+  \internal
+  Hides special buttons which are rather shown in the title bar
+  on WinCE, to conserve screen space.
+*/
+
+void QMessageBoxPrivate::hideSpecial()
+{
+    Q_Q(QMessageBox);
+    QList<QPushButton*> list = qFindChildren<QPushButton*>(q);
+        for (int i=0; i<list.size(); ++i) {
+            QPushButton *pb = list.at(i);
+            QString text = pb->text();
+            text.remove(QChar::fromLatin1('&'));          
+            if (text == qApp->translate("QMessageBox", "OK" ))
+                pb->setFixedSize(0,0);
+        }
+}
+#endif
 
 static int oldButton(int button)
 {
@@ -470,14 +519,7 @@ void QMessageBoxPrivate::_q_buttonClicked(QAbstractButton *button)
     QMessageBox::question(), QMessageBox::critical(),
     and QMessageBox::warning(). For example:
 
-    \code
-        int ret = QMessageBox::warning(this, tr("My Application"),
-                          tr("The document has been modified.\n"
-                             "Do you want to save your changes?"),
-                          QMessageBox::Save | QMessageBox::Discard
-                          | QMessageBox::Cancel,
-                          QMessageBox::Save);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.dialogs.qmessagebox.cpp 0
 
     Buttons are specified by combining StandardButtons using the
     bitwise OR operator. The order of the buttons on screen is
@@ -533,38 +575,12 @@ void QMessageBoxPrivate::_q_buttonClicked(QAbstractButton *button)
     When using an instance of QMessageBox with standard buttons, you can test the
     return value of exec() to determine which button was clicked. For example,
 
-    \code
-        QMessageBox msgBox;
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        switch (msgBox.exec()) {
-        case QMessageBox::Yes:
-            // yes was clicked
-            break;
-        case QMessageBox::No:
-            // no was clicked
-            break;
-        default:
-            // should never be reached
-            break;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.dialogs.qmessagebox.cpp 1
 
     When using an instance of QMessageBox with custom buttons, you can test the
     value of clickedButton() after calling exec(). For example,
 
-    \code
-        QMessageBox msgBox;
-        QPushButton *connectButton = msgBox.addButton(tr("Connect"), QMessageBox::ActionRole);
-        QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
-
-        msgBox.exec();
-
-        if (msgBox.clickedButton() == connectButton) {
-            // connect
-        } else if (msgBox.clickedButton() == abortButton) {
-            // abort
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.dialogs.qmessagebox.cpp 2
 
     In the example above, the \gui Connect button is created using the
     addButton() overload that takes a text and a ButtonRole. The ButtonRole
@@ -595,8 +611,8 @@ void QMessageBoxPrivate::_q_buttonClicked(QAbstractButton *button)
     \list 1
     \o If there is only one button, it is made the escape button.
     \o If there is a \l Cancel button, it is made the escape button.
-    \o On Mac OS X only, if there is exactly one button with the role
-       QMessageBox::RejectRole, it is made the escape button.
+    \o If there is exactly one button with the role
+       QMessageBox::RejectRole or QMessageBox::NoRole, it is made the escape button.
     \endlist
 
     When an escape button could not be automatically detected, pressing
@@ -901,18 +917,29 @@ void QMessageBoxPrivate::detectEscapeButton()
         return;
     }
 
-#ifdef Q_WS_MAC
-    // On the Mac, if the message box has one RejectRole button, make it the escape button
+    // if the message box has one RejectRole button, make it the escape button
     for (int i = 0; i < buttons.count(); i++) {
         if (buttonBox->buttonRole(buttons.at(i)) == QDialogButtonBox::RejectRole) {
             if (detectedEscapeButton) { // already detected!
                 detectedEscapeButton = 0;
-                return;
+                break;
             }
             detectedEscapeButton = buttons.at(i);
         }
     }
-#endif
+    if (detectedEscapeButton)
+        return;
+
+    // if the message box has one NoRole button, make it the escape button
+    for (int i = 0; i < buttons.count(); i++) {
+        if (buttonBox->buttonRole(buttons.at(i)) == QDialogButtonBox::NoRole) {
+            if (detectedEscapeButton) { // already detected!
+                detectedEscapeButton = 0;
+                break;
+            }
+            detectedEscapeButton = buttons.at(i);
+        }
+    }
 }
 
 /*!
@@ -926,16 +953,7 @@ void QMessageBoxPrivate::detectEscapeButton()
 
     Example:
 
-    \code
-        QMessageBox messageBox(this);
-        QAbstractButton *disconnectButton =
-              messageBox.addButton(tr("Disconnect"), QMessageBox::ActionRole);
-        ...
-        messageBox.exec();
-        if (messageBox.clickedButton() == disconnectButton) {
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.dialogs.qmessagebox.cpp 3
 
     \sa standardButton(), button()
 */
@@ -1071,7 +1089,7 @@ QMessageBox::Icon QMessageBox::icon() const
 void QMessageBox::setIcon(Icon icon)
 {
     Q_D(QMessageBox);
-    setIconPixmap(QMessageBox::standardIcon((QMessageBox::Icon)icon));
+    setIconPixmap(QMessageBoxPrivate::standardIcon((QMessageBox::Icon)icon, this));
     d->icon = icon;
 }
 
@@ -1138,6 +1156,24 @@ bool QMessageBox::event(QEvent *e)
         case QEvent::LanguageChange:
             d_func()->retranslateStrings();
             break;
+#ifdef Q_OS_WINCE
+        case QEvent::OkRequest:
+        case QEvent::HelpRequest: {
+          QString bName =
+              (e->type() == QEvent::OkRequest)
+              ? qApp->translate("QMessageBox", "OK")
+              : qApp->translate("QMessageBox", "Help");
+          QList<QPushButton*> list = qFindChildren<QPushButton*>(this);
+          for (int i=0; i<list.size(); ++i) {
+              QPushButton *pb = list.at(i);
+              if (pb->text() == bName) {
+                  if (pb->isEnabled())
+                      pb->click();
+                  return pb->isEnabled();
+              }
+          } 
+        }
+#endif
         default:
             break;
     }
@@ -1221,7 +1257,7 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
             return;
         }
 
-#ifdef Q_OS_WIN
+#if defined (Q_OS_WIN) && !defined(QT_NO_CLIPBOARD) && !defined(QT_NO_SHORTCUT)
         if (e == QKeySequence::Copy) {
             QString separator = QString::fromLatin1("---------------------------\n");
             QString textToCopy = separator;
@@ -1242,7 +1278,7 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
             qApp->clipboard()->setText(textToCopy);
             return;
         }
-#endif
+#endif //QT_NO_SHORTCUT QT_NO_CLIPBOARD Q_OS_WIN
 
 #ifndef QT_NO_SHORTCUT
     if (!(e->modifiers() & Qt::AltModifier)) {
@@ -1263,14 +1299,31 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
     QDialog::keyPressEvent(e);
 }
 
+#ifdef Q_OS_WINCE
+/*!
+    \reimp
+*/
+void QMessageBox::setVisible(bool visible)
+{
+    Q_D(QMessageBox);
+    if (visible)
+        d->hideSpecial();
+    QDialog::setVisible(visible);
+}
+#endif
+
 /*!
     \reimp
 */
 void QMessageBox::showEvent(QShowEvent *e)
 {
     Q_D(QMessageBox);
-    if (d->autoAddOkButton)
+    if (d->autoAddOkButton) {
         addButton(Ok);
+#if defined(Q_OS_WINCE)
+        d->hideSpecial();
+#endif
+    }
     if (d->detailsButton)
         addButton(d->detailsButton, QMessageBox::ActionRole);
     d->detectEscapeButton();
@@ -1290,6 +1343,7 @@ void QMessageBox::showEvent(QShowEvent *e)
 #endif
     QDialog::showEvent(e);
 }
+
 
 static QMessageBox::StandardButton showNewMessageBox(QWidget *parent,
     QMessageBox::Icon icon,
@@ -1503,7 +1557,11 @@ void QMessageBox::aboutQt(QWidget *parent, const QString &title)
     QPixmap pm = QPixmap::fromImage(logo);
     if (!pm.isNull())
         mb.setIconPixmap(pm);
+#if defined(Q_OS_WINCE)
+    mb.setDefaultButton(mb.addButton(QMessageBox::Ok));
+#else
     mb.addButton(QMessageBox::Ok);
+#endif
     mb.exec();
 }
 
@@ -1652,7 +1710,7 @@ void QMessageBoxPrivate::retranslateStrings()
         "<p>Qt provides single-source "
         "portability across MS&nbsp;Windows, Mac&nbsp;OS&nbsp;X, "
         "Linux, and all major commercial Unix variants. Qt is also"
-        " available for embedded devices as Qtopia Core.</p>"
+        " available for embedded devices as Qt Embedded.</p>"
         "<p>Qt is a Trolltech product. See "
         "<a href=\"http://www.trolltech.com/qt/\">www.trolltech.com/qt/</a> for more information.</p>"
        )
@@ -1714,10 +1772,7 @@ void QMessageBoxPrivate::retranslateStrings()
     to make it the cancel or close button (clicked when \key Esc is
     pressed).
 
-    \quotefromfile snippets/dialogs/dialogs.cpp
-    \skipto // hardware failure
-    \skipto QMessageBox mb("Application Name",
-    \printuntil // try again
+    \snippet doc/src/snippets/dialogs/dialogs.cpp 2
 
     If \a parent is 0, the message box becomes an application-global
     modal dialog box. If \a parent is a widget, the message box
@@ -2168,6 +2223,7 @@ void QMessageBox::setInformativeText(const QString &text)
 #ifndef Q_WS_MAC
         d->label->setContentsMargins(2, 0, 0, 0);
 #endif
+        d->updateSize();
         return;
     }
 
@@ -2185,7 +2241,6 @@ void QMessageBox::setInformativeText(const QString &text)
 #else
         label->setContentsMargins(16, 0, 0, 0);
         // apply a smaller font the information label on the mac
-        extern QHash<QByteArray, QFont> *qt_app_fonts_hash();
         label->setFont(qt_app_fonts_hash()->value("QTipLabel"));
 #endif
         label->setWordWrap(true);
@@ -2194,6 +2249,7 @@ void QMessageBox::setInformativeText(const QString &text)
         d->informativeLabel = label;
     }
     d->informativeLabel->setText(text);
+    d->updateSize();
 }
 
 /*!
@@ -2337,6 +2393,31 @@ QPixmap QMessageBox::standardIcon(Icon icon, Qt::GUIStyle style)
 
 #endif
 
+QPixmap QMessageBoxPrivate::standardIcon(QMessageBox::Icon icon, QMessageBox *mb)
+{
+    QStyle *style = mb ? mb->style() : QApplication::style();
+    int iconSize = style->pixelMetric(QStyle::PM_MessageBoxIconSize, 0, mb);
+    QIcon tmpIcon;
+    switch (icon) {
+    case QMessageBox::Information:
+        tmpIcon = style->standardIcon(QStyle::SP_MessageBoxInformation, 0, mb);
+        break;
+    case QMessageBox::Warning:
+        tmpIcon = style->standardIcon(QStyle::SP_MessageBoxWarning, 0, mb);
+        break;
+    case QMessageBox::Critical:
+        tmpIcon = style->standardIcon(QStyle::SP_MessageBoxCritical, 0, mb);
+        break;
+    case QMessageBox::Question:
+        tmpIcon = style->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mb);
+    default:
+        break;
+    }
+    if (!tmpIcon.isNull())
+        return tmpIcon.pixmap(iconSize, iconSize);
+    return QPixmap();
+}
+
 /*!
     \obsolete
 
@@ -2352,26 +2433,7 @@ QPixmap QMessageBox::standardIcon(Icon icon, Qt::GUIStyle style)
 
 QPixmap QMessageBox::standardIcon(Icon icon)
 {
-    int iconSize = QApplication::style()->pixelMetric(QStyle::PM_MessageBoxIconSize);
-    QIcon tmpIcon;
-    switch (icon) {
-    case Information:
-        tmpIcon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
-        break;
-    case Warning:
-        tmpIcon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
-        break;
-    case Critical:
-        tmpIcon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
-        break;
-    case Question:
-        tmpIcon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxQuestion);
-    default:
-        break;
-    }
-    if (!tmpIcon.isNull())
-        return tmpIcon.pixmap(iconSize, iconSize);
-    return QPixmap();
+    return QMessageBoxPrivate::standardIcon(icon, 0);
 }
 
 /*!
@@ -2415,19 +2477,7 @@ QPixmap QMessageBox::standardIcon(Icon icon)
 
     Example:
 
-    \code
-        #include <QApplication>
-        #include <QMessageBox>
-
-        int main(int argc, char *argv[])
-        {
-            QT_REQUIRE_VERSION(argc, argv, "4.0.2")
-
-            QApplication app(argc, argv);
-            ...
-            return app.exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.dialogs.qmessagebox.cpp 4
 */
 
 /*!
@@ -2448,5 +2498,8 @@ QPixmap QMessageBox::standardIcon(Icon icon)
   \sa show(), result()
 */
 
+QT_END_NAMESPACE
+
 #include "moc_qmessagebox.cpp"
+
 #endif // QT_NO_MESSAGEBOX

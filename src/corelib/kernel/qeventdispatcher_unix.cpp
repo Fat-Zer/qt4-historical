@@ -56,9 +56,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if (_POSIX_MONOTONIC_CLOCK-0 <= 0)
+#if (_POSIX_MONOTONIC_CLOCK-0 <= 0) || defined(QT_BOOTSTRAPPED)
 #  include <sys/times.h>
 #endif
+
+QT_BEGIN_NAMESPACE
 
 Q_CORE_EXPORT bool qt_disable_lowpriority_timers=false;
 
@@ -298,21 +300,7 @@ timeval QTimerInfoList::updateCurrentTime()
     return currentTime;
 }
 
-#if (_POSIX_MONOTONIC_CLOCK-0 > 0)
-
-void QTimerInfoList::getTime(timeval &t)
-{
-    timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    t.tv_sec = ts.tv_sec;
-    t.tv_usec = ts.tv_nsec / 1000;
-}
-
-void QTimerInfoList::repairTimersIfNeeded()
-{
-}
-
-#else
+#if (_POSIX_MONOTONIC_CLOCK-0 <= 0) || defined(QT_BOOTSTRAPPED)
 
 /*
   Returns true if the real time clock has changed by more than 10%
@@ -347,7 +335,7 @@ bool QTimerInfoList::timeChanged(timeval *delta)
 
 void QTimerInfoList::getTime(timeval &t)
 {
-#if !defined(QT_NO_CLOCK_MONOTONIC)
+#if !defined(QT_NO_CLOCK_MONOTONIC) && !defined(QT_BOOTSTRAPPED)
     if (useMonotonicTimers) {
         timespec ts;
         clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -381,6 +369,20 @@ void QTimerInfoList::repairTimersIfNeeded()
     timeval delta;
     if (timeChanged(&delta))
         timerRepair(delta);
+}
+
+#else // !(_POSIX_MONOTONIC_CLOCK-0 <= 0) && !defined(QT_BOOTSTRAPPED)
+
+void QTimerInfoList::getTime(timeval &t)
+{
+    timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    t.tv_sec = ts.tv_sec;
+    t.tv_usec = ts.tv_nsec / 1000;
+}
+
+void QTimerInfoList::repairTimersIfNeeded()
+{
 }
 
 #endif
@@ -862,7 +864,7 @@ bool QEventDispatcherUNIX::processEvents(QEventLoop::ProcessEventsFlags flags)
 
     // we are awake, broadcast it
     emit awake();
-    QCoreApplicationPrivate::sendPostedEvents(0, (flags & QEventLoop::DeferredDeletion) ? -1 : 0, d->threadData);
+    QCoreApplicationPrivate::sendPostedEvents(0, 0, d->threadData);
 
     int nevents = 0;
     const bool canWait = (d->threadData->canWait
@@ -879,15 +881,15 @@ bool QEventDispatcherUNIX::processEvents(QEventLoop::ProcessEventsFlags flags)
         if (!(flags & QEventLoop::X11ExcludeTimers)) {
             if (d->timerList.timerWait(wait_tm))
                 tm = &wait_tm;
+        }
 
-            if (!canWait) {
-                if (!tm)
-                    tm = &wait_tm;
+        if (!canWait) {
+            if (!tm)
+                tm = &wait_tm;
 
-                // no time to wait
-                tm->tv_sec  = 0l;
-                tm->tv_usec = 0l;
-            }
+            // no time to wait
+            tm->tv_sec  = 0l;
+            tm->tv_usec = 0l;
         }
 
         nevents = d->doSelect(flags, tm);
@@ -942,3 +944,5 @@ void QCoreApplication::watchUnixSignal(int sig, bool watch)
         sigaction(sig, &sa, 0);
     }
 }
+
+QT_END_NAMESPACE

@@ -49,7 +49,9 @@
 
 class Edge;
 class GraphWidget;
+QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
+QT_END_NAMESPACE
 
 class Node : public QGraphicsItem
 {

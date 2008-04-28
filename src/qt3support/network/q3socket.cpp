@@ -51,8 +51,14 @@
 
 #include <string.h>
 #ifndef NO_ERRNO_H
+#if defined(Q_OS_WINCE)
+#include "qfunctions_wince.h"
+#else
 #include <errno.h>
 #endif
+#endif
+
+QT_BEGIN_NAMESPACE
 
 //#define Q3SOCKET_DEBUG
 
@@ -168,15 +174,20 @@ Q3SocketPrivate::~Q3SocketPrivate()
 #endif
 }
 
+extern void qDeleteInEventHandler(QObject *o);
 void Q3SocketPrivate::closeSocket()
 {
     // Order is important here - the socket notifiers must go away
     // before the socket does, otherwise libc or the kernel will
     // become unhappy.
-    delete rsn;
-    rsn = 0;
-    delete wsn;
-    wsn = 0;
+    if (rsn) {
+        qDeleteInEventHandler(rsn);
+        rsn = 0;
+    }
+    if (wsn) {
+        qDeleteInEventHandler(wsn);
+        wsn = 0;
+    }
     if ( socket )
 	socket->close();
 }
@@ -1126,10 +1137,7 @@ int Q3Socket::ungetch( int ch )
     function returns false. This means that loops such as this won't
     work:
 
-    \code
-	while( !socket->canReadLine() ) // WRONG
-	    ;
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.network.q3socket.cpp 0
 
     \sa readLine()
 */
@@ -1506,5 +1514,7 @@ Q_ULONG Q3Socket::readBufferSize() const
     \fn bool Q3Socket::isSequential() const
     \internal
 */
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_NETWORK

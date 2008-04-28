@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PRINTER
@@ -84,6 +86,9 @@ public:
         PPK_Duplex,
 
         PPK_PaperSources,
+        PPK_CustomPaperSize,
+        PPK_PageMargins,
+        PPK_PaperSize = PPK_PageSize,
 
         PPK_CustomBase = 0xff00
     };
@@ -106,6 +111,8 @@ public:
 };
 
 #endif // QT_NO_PRINTER
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

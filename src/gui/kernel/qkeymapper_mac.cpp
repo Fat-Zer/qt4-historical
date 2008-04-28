@@ -51,6 +51,10 @@
 #include <private/qkeymapper_p.h>
 #include <private/qapplication_p.h>
 
+QT_BEGIN_NAMESPACE
+
+QT_USE_NAMESPACE
+
 /*****************************************************************************
   QKeyMapper debug facilities
  *****************************************************************************/
@@ -66,10 +70,10 @@ extern bool qt_sendSpontaneousEvent(QObject *obj, QEvent *event); //qapplication
 
 Q_GUI_EXPORT void qt_mac_secure_keyboard(bool b)
 {
-    static bool secure = false;
-    if (b != secure){
-        b ? EnableSecureEventInput() : DisableSecureEventInput();
-        secure = b;
+    if(b) {
+        EnableSecureEventInput();
+    } else {
+        DisableSecureEventInput();
     }
 }
 
@@ -296,6 +300,10 @@ static qt_mac_enum_mapper qt_mac_keyvkey_symbols[] = { //real scan codes
     { 109, QT_MAC_MAP_ENUM(Qt::Key_F10) },
     { 103, QT_MAC_MAP_ENUM(Qt::Key_F11) },
     { 111, QT_MAC_MAP_ENUM(Qt::Key_F12) },
+    { 105, QT_MAC_MAP_ENUM(Qt::Key_F13) },
+    { 107, QT_MAC_MAP_ENUM(Qt::Key_F14) },
+    { 113, QT_MAC_MAP_ENUM(Qt::Key_F15) },
+    { 106, QT_MAC_MAP_ENUM(Qt::Key_F16) },
     {   0, QT_MAC_MAP_ENUM(0) }
 };
 
@@ -708,8 +716,19 @@ QKeyMapperPrivate::translateKeyEvent(QWidget *widget, EventHandlerCallRef er, Ev
                                       &handled_event) == false)
             break;
         QString text(ourChar);
+        /* This is actually wrong - but unfortunatly it is the best that can be
+           done for now because of the Control/Meta mapping problems */
+        if(modifiers & (Qt::ControlModifier | Qt::MetaModifier))
+            text = QString();
+
+
         if(widget) {
-            if (!qApp->activePopupWidget()){
+            // Try not to call "other" event handlers if we have a popup,
+            // However, if the key has text
+            // then we should pass it along because otherwise then people
+            // can use input method stuff.
+            if (!qApp->activePopupWidget()
+                    || (qApp->activePopupWidget() && !text.isEmpty())) {
                 //Find out if someone else wants the event, namely
                 //is it of use to text services? If so we won't bother
                 //with a QKeyEvent.
@@ -868,7 +887,7 @@ QKeyMapper::sendKeyEvent(QWidget *widget, bool grab,
                          quint32 nativeModifiers)
 {
     Q_UNUSED(count);
-    if(widget) {
+    if(widget && widget->isEnabled()) {
         bool key_event = true;
 #if defined(QT3_SUPPORT) && !defined(QT_NO_SHORTCUT)
         if(type == QEvent::KeyPress && !grab
@@ -878,19 +897,19 @@ QKeyMapper::sendKeyEvent(QWidget *widget, bool grab,
                                     nativeScanCode, nativeVirtualKey, nativeModifiers);
             if(QApplicationPrivate::instance()->qt_tryAccelEvent(widget, &accel_ev)) {
 #if defined(DEBUG_KEY_BINDINGS) || defined(DEBUG_KEY_BINDINGS_MODIFIERS)
-                qDebug("KeyEvent: %s::%s consumed Accel: %s %d",
+                qDebug("KeyEvent: %s::%s consumed Accel: %s",
                        widget ? widget->metaObject()->className() : "none",
                        widget ? widget->objectName().toLatin1().constData() : "",
-                       text.toLatin1().constData(), ekind == kEventRawKeyRepeat);
+                       text.toLatin1().constData());
 #endif
                 key_event = false;
             } else {
                 if(accel_ev.isAccepted()) {
 #if defined(DEBUG_KEY_BINDINGS) || defined(DEBUG_KEY_BINDINGS_MODIFIERS)
-                    qDebug("KeyEvent: %s::%s overrode Accel: %s %d",
+                    qDebug("KeyEvent: %s::%s overrode Accel: %s",
                            widget ? widget->metaObject()->className() : "none",
                            widget ? widget->objectName().toLatin1().constData() : "",
-                           text.toLatin1().constData(), ekind == kEventRawKeyRepeat);
+                           text.toLatin1().constData());
 #endif
                 }
             }
@@ -914,3 +933,5 @@ Q_UNUSED(grab);
     }
     return false;
 }
+
+QT_END_NAMESPACE

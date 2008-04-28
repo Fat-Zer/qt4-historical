@@ -44,6 +44,9 @@
 
 #include "q3gridview.h"
 #include "qpainter.h"
+
+QT_BEGIN_NAMESPACE
+
 using namespace Qt;
 
 /*!
@@ -341,12 +344,7 @@ void Q3GridView::dimensionChange(int, int) {}
   The painter is not clipped by default in order to get maximum
   efficiency. If you want clipping, use
 
-  \code
-  p->setClipRect(cellRect(), QPainter::CoordPainter);
-  //... your drawing code
-  p->setClipping(false);
-
-  \endcode
+  \snippet doc/src/snippets/code/src.qt3support.widgets.q3gridview.cpp 0
 */
 
 /*!
@@ -364,5 +362,6 @@ void Q3GridView::dimensionChange(int, int) {}
   \fn  QSize Q3GridView::gridSize() const
 
   Returns the size of the grid in pixels.
-
 */
+
+QT_END_NAMESPACE

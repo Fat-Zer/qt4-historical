@@ -46,6 +46,7 @@
 
 #include <QCompleter>
 
+//! [0]
 class TreeModelCompleter : public QCompleter
 {
     Q_OBJECT
@@ -66,6 +67,7 @@ protected:
 private:
     QString sep;
 };
+//! [0]
 
 #endif // TREEMODELCOMPLETER_H
 

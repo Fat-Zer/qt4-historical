@@ -11,6 +11,6 @@ QT += xml
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/sql/masterdetail
-sources.files = $$SOURCES *.h $$RESOURCES $$FORMS masterdetail.pro
+sources.files = $$SOURCES *.h $$RESOURCES $$FORMS masterdetail.pro *.xml images
 sources.path = $$[QT_INSTALL_EXAMPLES]/sql/masterdetail
 INSTALLS += target sources

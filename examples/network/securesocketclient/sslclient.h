@@ -48,9 +48,11 @@
 #include <QtNetwork/QAbstractSocket>
 #include <QtNetwork/QSslSocket>
 
+QT_BEGIN_NAMESPACE
 class QSslSocket;
 class QToolButton;
 class Ui_Form;
+QT_END_NAMESPACE
 
 class SslClient : public QWidget
 {

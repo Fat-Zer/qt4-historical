@@ -65,6 +65,7 @@ private:
     GLuint dynamicTexture;
     GLuint cubeTexture;
     int timerId;
+    bool hasDynamicTextureUpdate;
 
     QGLPixelBuffer *pbuffer;
 };

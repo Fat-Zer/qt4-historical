@@ -59,6 +59,8 @@
 #include "QtCore/qstringlist.h"
 #include "QtCore/qreadwritelock.h"
 
+QT_BEGIN_NAMESPACE
+
 struct QCoreGlobalData {
     QMap<QString, QStringList> dirSearchPaths;
     QReadWriteLock dirSearchPathsLock;
@@ -66,5 +68,7 @@ struct QCoreGlobalData {
     static QCoreGlobalData *instance();
 };
 
+
+QT_END_NAMESPACE
 #endif // QCOREGLOBALDATA_P_H
 

@@ -1,8 +1,51 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \module QtDesigner
     \title QtDesigner Module
     \contentspage Qt's Modules
-    \previouspage QtXml
+    \previouspage Qt3Support
     \nextpage QtUiTools
     \ingroup modules
 
@@ -16,16 +59,12 @@
     To include the definitions of the module's classes, use the
     following directive:
 
-    \code
-        #include <QtDesigner>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 0
 
     To link against the module, add this line to your \c qmake .pro
     file:
 
-    \code
-        CONFIG += designer
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 1
 
     \tableofcontents
 
@@ -33,7 +72,7 @@
 
     When implementing a custom widget plugin for \QD, you must
     subclass QDesignerCustomWidgetInterface to expose your custom
-    widget to \QD. A single custom widget plugin is build as a
+    widget to \QD. A single custom widget plugin is built as a
     separate library. If you want to include several custom widget
     plugins in the same library, you must in addition subclass
     QDesignerCustomWidgetCollectionInterface.
@@ -141,16 +180,7 @@
     manipulate the member functions' appearance in \QD's signals and
     slots editing mode. For example:
 
-    \code
-        QDesignerMemberSheetExtension *memberSheet  = 0;
-        QExtensionManager manager = formEditor->extensionManager();
-
-        memberSheet = qt_extension<QDesignerMemberSheetExtension*>(manager, widget);
-        int index = memberSheet->indexOf(setEchoMode);
-        memberSheet->setVisible(index, false);
-
-        delete memberSheet;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 2
 
     When implementing a custom widget plugin, a pointer to \QD's
     current QDesignerFormEditorInterface object (\c formEditor in the
@@ -179,17 +209,7 @@
     made known to the meta object system using the Q_INTERFACES()
     macro:
 
-    \code
-       class MyMemberSheetExtension : public QObject,
-               public QDesignerMemberSheetExtension
-       {
-           Q_OBJECT
-           Q_INTERFACES(QDesignerMemberSheetExtension)
-
-       public:
-           ...
-       }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 3
 
     This enables \QD to use qobject_cast() to query for
     supported interfaces using nothing but a QObject pointer.
@@ -221,42 +241,13 @@
     QExtensionFactory and reimplement the
     QExtensionFactory::createExtension() function. For example:
 
-    \code
-        QObject *ANewExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            if (iid != Q_TYPEID(QDesignerMemberSheetExtension))
-                return 0;
-
-            if (MyCustomWidget *widget = qobject_cast<MyCustomWidget*>
-                   (object))
-                return new MyMemberSheetExtension(widget, parent);
-
-            return 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 4
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a member sheet extension as well. For example:
 
-    \code
-        QObject *AGeneralExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object);
-
-            if (widget && (iid == Q_TYPEID(QDesignerTaskMenuExtension))) {
-                return new MyTaskMenuExtension(widget, parent);
-
-            } else if (widget && (iid == Q_TYPEID(QDesignerMemberSheetExtension))) {
-                return new MyMemberSheetExtension(widget, parent);
-
-            } else {
-                return 0;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 5
 
     For a complete example using an extension class, see \l
     {designer/taskmenuextension}{Task Menu Extension example}. The
@@ -545,28 +536,7 @@
     To create a container extension, your extension class must inherit
     from both QObject and QDesignerContainerExtension. For example:
 
-    \code
-        class MyContainerExtension : public QObject,
-               public QDesignerContainerExtension
-        {
-            Q_OBJECT
-            Q_INTERFACES(QDesignerContainerExtension)
-
-        public:
-            MyContainerExtension(MyCustomWidget *widget,
-                                 QObject *parent = 0);
-            int count() const;
-            QWidget *widget(int index) const;
-            int currentIndex() const;
-            void setCurrentIndex(int index);
-            void addWidget(QWidget *widget);
-            void insertWidget(int index, QWidget *widget);
-            void remove(int index);
-
-        private:
-            MyCustomWidget *myWidget;
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 6
 
     Since we are implementing an interface, we must ensure that it's
     made known to the meta object system using the Q_INTERFACES()
@@ -599,8 +569,8 @@
 
     There are four available types of extensions in \QD:
     QDesignerContainerExtension , QDesignerMemberSheetExtension,
-    QDesignerPropertySheetExtension and QDesignerTaskMenuExtension. Qt
-    Designer's behavior is the same whether the requested extension is
+    QDesignerPropertySheetExtension and QDesignerTaskMenuExtension.
+    \QD's behavior is the same whether the requested extension is
     associated with a multi page container, a member sheet, a property
     sheet or a task menu.
 
@@ -610,47 +580,18 @@
     reimplement the QExtensionFactory::createExtension() function. For
     example:
 
-    \code
-        QObject *ANewExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            if (iid != Q_TYPEID(QDesignerContainerExtension))
-                return 0;
-
-            if (MyCustomWidget *widget = qobject_cast<MyCustomWidget*>
-                   (object))
-                return new MyContainerExtension(widget, parent);
-
-            return 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 7
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a container extension as well. For example:
 
-    \code
-        QObject *AGeneralExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object);
-
-            if (widget && (iid == Q_TYPEID(QDesignerTaskMenuExtension))) {
-                return new MyTaskMenuExtension(widget, parent);
-
-            } else if (widget && (iid == Q_TYPEID(QDesignerContainerExtension))) {
-                return new MyContainerExtension(widget, parent);
-
-            } else {
-                return 0;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 8
 
     For a complete example using the QDesignerContainerExtension
     class, see the \l {designer/containerextension}{Container
     Extension example}. The example shows how to create a custom
-    multi-page plugin for Qt Designer.
+    multi-page plugin for \QD.
 
     \sa QExtensionFactory, QExtensionManager, {Creating Custom Widget
     Extensions}
@@ -751,27 +692,7 @@
     inherit from both QObject and QDesignerTaskMenuExtension. For
     example:
 
-    \code
-        class MyTaskMenuExtension : public QObject,
-                public QDesignerTaskMenuExtension
-        {
-            Q_OBJECT
-            Q_INTERFACES(QDesignerTaskMenuExtension)
-
-        public:
-            MyTaskMenuExtension(MyCustomWidget *widget, QObject *parent);
-
-            QAction *preferredEditAction() const;
-            QList<QAction *> taskActions() const;
-
-        private slots:
-            void mySlot();
-
-        private:
-            MyCustomWidget *widget;
-            QAction *myAction;
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 9
 
     Since we are implementing an interface, we must ensure that it
     is made known to the meta-object system using the Q_INTERFACES()
@@ -814,41 +735,13 @@
     reimplement the QExtensionFactory::createExtension() function. For
     example:
 
-    \code
-        QObject *ANewExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            if (iid != Q_TYPEID(QDesignerTaskMenuExtension))
-                return 0;
-
-            if (MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object))
-                return new MyTaskMenuExtension(widget, parent);
-
-            return 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 10
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a task menu extension as well. For example:
 
-    \code
-        QObject *AGeneralExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object);
-
-            if (widget && (iid == Q_TYPEID(QDesignerContainerExtension))) {
-                return new MyContainerExtension(widget, parent);
-
-            } else if (widget && (iid == Q_TYPEID(QDesignerTaskMenuExtension))) {
-                return new MyTaskMenuExtension(widget, parent);
-
-            } else {
-                return 0;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 11
 
     For a complete example using the QDesignerTaskMenuExtension class,
     see the \l {designer/taskmenuextension}{Task Menu Extension
@@ -907,49 +800,13 @@
     several custom widgets \c CustomWidgetOne, \c CustomWidgetTwo and
     \c CustomWidgetThree, the class definition may look like this:
 
-    \code
-    #include customwidgetoneinterface.h
-    #include customwidgettwointerface.h
-    #include customwidgetthreeinterface.h
-
-    #include <QtDesigner/QtDesigner>
-    #include <QtCore/qplugin.h>
-
-    class MyCustomWidgets: public QObject, public QDesignerCustomWidgetCollectionInterface
-    {
-        Q_OBJECT
-        Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
-
-    public:
-        MyCustomWidgets(QObject *parent = 0);
-
-        virtual QList<QDesignerCustomWidgetInterface*> customWidgets() const;
-
-    private:
-        QList<QDesignerCustomWidgetInterface*> widgets;
-    };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 12
 
     In the class constructor you add the interfaces to your custom
     widgets to the list which you return in the customWidgets()
     function:
 
-    \code
-    MyCustomWidgets::MyCustomWidgets(QObject *parent)
-            : QObject(parent)
-    {
-        widgets.append(new CustomWidgetOneInterface(this));
-        widgets.append(new CustomWidgetTwoInterface(this));
-        widgets.append(new CustomWidgetThreeInterface(this));
-    }
-
-    QList<QDesignerCustomWidgetInterface*> MyCustomWidgets::customWidgets() const
-    {
-        return widgets;
-    }
-
-    Q_EXPORT_PLUGIN2(MyCustomWidgets)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 13
 
     Note that instead of exporting each custom widget plugin using the
     Q_EXPORT_PLUGIN2() macro, you export the entire collection. The
@@ -997,9 +854,7 @@
     \l{Custom Widget Plugin Example}{Custom Widget Plugin example} that
     enables an analog clock custom widget to be used by \QD:
 
-    \quotefromfile designer/customwidgetplugin/customwidgetplugin.h
-    \skipto class AnalogClockPlugin
-    \printuntil /^\};/
+    \snippet examples/designer/customwidgetplugin/customwidgetplugin.h 0
 
     Note that the only part of the class definition that is specific
     to this particular custom widget is the class name. In addition,
@@ -1026,9 +881,7 @@
     class called \c MyCustomWidget, we can export it by adding the
     following line to the file containing the plugin implementation:
 
-    \code
-        Q_EXPORT_PLUGIN2(customwidgetplugin, MyCustomWidget)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 14
 
     This macro ensures that \QD can access and construct the custom widget.
     Without this macro, there is no way for \QD to use it.
@@ -1189,12 +1042,9 @@
     For example, the \l{designer/worldtimeclockplugin}{World Time Clock Plugin}
     example exports a custom widget class with the following declaration:
 
-    \quotefromfile designer/worldtimeclockplugin/worldtimeclock.h
-    \skipto class QDESIGNER_WIDGET_EXPORT WorldTimeClock
-    \printuntil Q_OBJECT
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclock.h 0
     \dots
-    \skipto /^\};/
-    \printuntil /^\};/
+    \snippet examples/designer/worldtimeclockplugin/worldtimeclock.h 2
 
     \sa {Creating Custom Widgets for Qt Designer}
 */
@@ -1386,18 +1236,7 @@
     manipulate the properties' appearance in the property editor. For
     example:
 
-    \code
-        QDesignerPropertySheetExtension *propertySheet  = 0;
-        QExtensionManager manager = formEditor->extensionManager();
-
-        propertySheet = qt_extension<QDesignerPropertySheetExtension*>(manager, widget);
-        int index = propertySheet->indexOf(QLatin1String("margin"));
-
-        propertySheet->setProperty(index, 10);
-        propertySheet->setChanged(index, true);
-
-        delete propertySheet;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 15
 
     Note that if you change the value of a property using the
     QDesignerPropertySheetExtension::setProperty() function, the undo
@@ -1436,17 +1275,7 @@
     an interface, we must ensure that it's made known to the meta
     object system using the Q_INTERFACES() macro:
 
-    \code
-       class MyPropertySheetExtension : public QObject,
-               public QDesignerPropertySheetExtension
-       {
-           Q_OBJECT
-           Q_INTERFACES(QDesignerPropertySheetExtension)
-
-       public:
-           ...
-       }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 16
 
     This enables \QD to use qobject_cast() to query for supported
     interfaces using nothing but a QObject pointer.
@@ -1478,43 +1307,14 @@
     reimplement the QExtensionFactory::createExtension() function. For
     example:
 
-    \code
-        QObject *ANewExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            if (iid != Q_TYPEID(QDesignerPropertySheetExtension))
-                return 0;
-
-            if (MyCustomWidget *widget = qobject_cast<MyCustomWidget*>
-                   (object))
-                return new MyPropertySheetExtension(widget, parent);
-
-            return 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 17
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a property sheet extension extension as well. For
     example:
 
-    \code
-        QObject *AGeneralExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object);
-
-            if (widget && (iid == Q_TYPEID(QDesignerTaskMenuExtension))) {
-                return new MyTaskMenuExtension(widget, parent);
-
-            } else if (widget && (iid == Q_TYPEID(QDesignerPropertySheetExtension))) {
-                return new MyPropertySheetExtension(widget, parent);
-
-            } else {
-                return 0;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 18
 
     For a complete example using an extension class, see the \l
     {designer/taskmenuextension}{Task Menu Extension example}. The

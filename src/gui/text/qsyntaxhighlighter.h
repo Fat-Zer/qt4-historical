@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextDocument;
@@ -94,11 +96,15 @@ protected:
     void setCurrentBlockUserData(QTextBlockUserData *data);
     QTextBlockUserData *currentBlockUserData() const;
 
+    QTextBlock currentBlock() const;
+
 private:
     Q_DISABLE_COPY(QSyntaxHighlighter)
     Q_PRIVATE_SLOT(d_func(), void _q_reformatBlocks(int from, int charsRemoved, int charsAdded))
     Q_PRIVATE_SLOT(d_func(), void _q_delayedRehighlight())
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

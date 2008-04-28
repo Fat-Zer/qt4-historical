@@ -46,6 +46,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//! [0]
 const int DataSize = 100000;
 const int BufferSize = 8192;
 char buffer[BufferSize];
@@ -54,8 +55,11 @@ QWaitCondition bufferNotEmpty;
 QWaitCondition bufferNotFull;
 QMutex mutex;
 int numUsedBytes = 0;
+//! [0]
 
+//! [1]
 class Producer : public QThread
+//! [1] //! [2]
 {
 public:
     void run();
@@ -79,8 +83,11 @@ void Producer::run()
         mutex.unlock();
     }
 }
+//! [2]
 
+//! [3]
 class Consumer : public QThread
+//! [3] //! [4]
 {
 public:
     void run();
@@ -103,8 +110,11 @@ void Consumer::run()
     }
     fprintf(stderr, "\n");
 }
+//! [4]
 
+//! [5]
 int main(int argc, char *argv[])
+//! [5] //! [6]
 {
     QCoreApplication app(argc, argv);
     Producer producer;
@@ -115,3 +125,4 @@ int main(int argc, char *argv[])
     consumer.wait();
     return 0;
 }
+//! [6]

@@ -49,6 +49,8 @@
 #include <QStringList>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 /*! Extracts a named object property from \a e.
  */
 QDomElement Ui3Reader::getObjectProperty( const QDomElement& e, const QString& name )
@@ -62,3 +64,5 @@ QDomElement Ui3Reader::getObjectProperty( const QDomElement& e, const QString& n
     }
     return n;
 }
+
+QT_END_NAMESPACE

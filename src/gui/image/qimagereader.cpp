@@ -139,9 +139,11 @@
 #include <private/qpnghandler_p.h>
 #endif
 
-#ifndef QT_NO_LIBRARY
+QT_BEGIN_NAMESPACE
+
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-                          (QImageIOHandlerFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/imageformats")))
+                          (QImageIOHandlerFactoryInterface_iid, QLatin1String("/imageformats")))
 #endif
 
 enum _qt_BuiltInFormatType {
@@ -189,12 +191,13 @@ static const _qt_BuiltInFormatStruct _qt_BuiltInFormats[] = {
     {_qt_NoFormat, ""}
 };
 
-static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &format)
+static QImageIOHandler *createReadHandlerHelper(QIODevice *device,
+    const QByteArray &format)
 {
     QByteArray form = format.toLower();
     QImageIOHandler *handler = 0;
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     // check if we have plugins that support the image format
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
@@ -206,7 +209,7 @@ static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &f
              << keys.size() << "plugins available: " << keys;
 #endif
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     int suffixPluginIndex = -1;
     if (device && format.isEmpty()) {
         // if there's no format, see if \a device is a file, and if so, find
@@ -232,7 +235,7 @@ static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &f
 
     QByteArray testFormat = !form.isEmpty() ? form : suffix;
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     if (suffixPluginIndex != -1) {
         // check if the plugin that claims support for this format can load
         // from this device with this format.
@@ -305,7 +308,7 @@ static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &f
 #endif
     }
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     if (!handler) {
         // check if any of our plugins recognize the file from its contents.
         const qint64 pos = device ? device->pos() : 0;
@@ -510,7 +513,7 @@ bool QImageReaderPrivate::initHandler()
     }
 
     // assign a handler
-    if (!handler && (handler = ::createReadHandler(device, format)) == 0) {
+    if (!handler && (handler = createReadHandlerHelper(device, format)) == 0) {
         imageReaderError = QImageReader::UnsupportedFormatError;
         errorString = QLatin1String(QT_TRANSLATE_NOOP(QImageReader, "Unsupported image format"));
         return false;
@@ -584,10 +587,7 @@ QImageReader::~QImageReader()
     Sets the format QImageReader will use when reading images, to \a
     format. \a format is a case insensitive text string. Example:
 
-    \code
-        QImageReader reader;
-        reader.setFormat("png"); // same as reader.setFormat("PNG");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qimagereader.cpp 0
 
     You can call supportedImageFormats() for the full list of formats
     QImageReader supports.
@@ -605,10 +605,7 @@ void QImageReader::setFormat(const QByteArray &format)
     You can call this function after assigning a device to the
     reader to determine the format of the device. For example:
 
-    \code
-        QImageReader reader("image.png");
-        // reader.format() == "png"
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qimagereader.cpp 1
 
     If the reader cannot read any image from the device (e.g., there is no
     image there, or the image has already been read), or if the format is
@@ -955,13 +952,7 @@ QImage QImageReader::read()
     which always constructs a new image; especially when reading several
     images with the same format and size.
 
-    \code
-        QImage icon(64, 64, QImage::Format_RGB32);
-        QImageReader reader("icon_64x64.bmp");
-        if (reader.read(&icon)) {
-            // Display icon
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qimagereader.cpp 2
 
     For image formats that support animation, calling read() repeatedly will
     return the next frame. When all frames have been read, a null image will
@@ -1198,11 +1189,7 @@ QString QImageReader::errorString() const
     (see text()), and the BMP format allows you to determine the image's size
     without loading the whole image into memory (see size()).
 
-    \code
-        QImageReader reader(":/image.png");
-        if (reader.supportsOption(QImageIOHandler::Size))
-            qDebug() << "Size:" << reader.size();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.image.qimagereader.cpp 3
 
     \sa QImageWriter::supportsOption()
 */
@@ -1233,7 +1220,7 @@ QByteArray QImageReader::imageFormat(const QString &fileName)
 QByteArray QImageReader::imageFormat(QIODevice *device)
 {
     QByteArray format;
-    QImageIOHandler *handler = ::createReadHandler(device, format);
+    QImageIOHandler *handler = createReadHandlerHelper(device, format);
     if (handler) {
         if (handler->canRead())
             format = handler->format();
@@ -1263,6 +1250,9 @@ QByteArray QImageReader::imageFormat(QIODevice *device)
     \row    \o XPM    \o X11 Pixmap
     \endtable
 
+    Reading and writing SVG files is supported through Qt's
+    \l{QtSvg Module}{SVG Module}.
+
     To configure Qt with GIF support, pass \c -qt-gif to the \c
     configure script or check the appropriate option in the graphical
     installer.
@@ -1275,7 +1265,7 @@ QList<QByteArray> QImageReader::supportedImageFormats()
     for (int i = 0; i < _qt_NumFormats; ++i)
         formats << _qt_BuiltInFormats[i].extension;
 
-#ifndef QT_NO_LIBRARY
+#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
 
@@ -1294,3 +1284,4 @@ QList<QByteArray> QImageReader::supportedImageFormats()
     return sortedFormats;
 }
 
+QT_END_NAMESPACE

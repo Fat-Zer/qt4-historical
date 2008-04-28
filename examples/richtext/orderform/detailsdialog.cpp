@@ -45,6 +45,7 @@
 
 #include "detailsdialog.h"
 
+//! [0]
 DetailsDialog::DetailsDialog(const QString &title, QWidget *parent)
     : QDialog(parent)
 {
@@ -65,7 +66,9 @@ DetailsDialog::DetailsDialog(const QString &title, QWidget *parent)
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(verify()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+//! [0]
 
+//! [1]
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(nameLabel, 0, 0);
     mainLayout->addWidget(nameEdit, 0, 1);
@@ -78,7 +81,9 @@ DetailsDialog::DetailsDialog(const QString &title, QWidget *parent)
 
     setWindowTitle(title);
 }
+//! [1]
 
+//! [2]
 void DetailsDialog::setupItemsTable()
 {
     items << tr("T-shirt") << tr("Badge") << tr("Reference book")
@@ -94,7 +99,9 @@ void DetailsDialog::setupItemsTable()
         itemsTable->setItem(row, 1, quantity);
     }
 }
+//! [2]
 
+//! [3]
 QList<QPair<QString, int> > DetailsDialog::orderItems()
 {
     QList<QPair<QString, int> > orderList;
@@ -109,22 +116,30 @@ QList<QPair<QString, int> > DetailsDialog::orderItems()
 
     return orderList;
 }
+//! [3]
 
+//! [4]
 QString DetailsDialog::senderName() const
 {
     return nameEdit->text();
 }
+//! [4]
 
+//! [5]
 QString DetailsDialog::senderAddress() const
 {
     return addressEdit->toPlainText();
 }
+//! [5]
 
+//! [6]
 bool DetailsDialog::sendOffers()
 {
     return offersCheckBox->isChecked();
 }
+//! [6]
 
+//! [7]
 void DetailsDialog::verify()
 {
     if (!nameEdit->text().isEmpty() && !addressEdit->toPlainText().isEmpty()) {
@@ -141,3 +156,4 @@ void DetailsDialog::verify()
     if (answer == QMessageBox::Yes)
         reject();
 }
+//! [7]

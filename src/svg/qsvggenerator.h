@@ -45,14 +45,19 @@
 #define QSVGGENERATOR_H
 
 #include <QtGui/qpaintdevice.h>
+
+#ifndef QT_NO_SVGGENERATOR
+
 #include <QtCore/qnamespace.h>
 #include <QtCore/qiodevice.h>
 #include <QtCore/qobjectdefs.h>
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Svg)
-    
+
 class QSvgGeneratorPrivate;
 
 class Q_SVG_EXPORT QSvgGenerator : public QPaintDevice
@@ -81,6 +86,9 @@ private:
     QSvgGeneratorPrivate *d_ptr;
 };
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
+#endif // QT_NO_SVGGENERATOR
 #endif // QSVGGENERATOR_H

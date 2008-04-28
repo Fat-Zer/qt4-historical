@@ -56,11 +56,17 @@
 //
 
 #include "QtGui/qpaintengine.h"
-#ifdef Q_WS_MAC //just for now (to get the coregraphics switch) ###
-#  include "private/qt_mac_p.h"
-#endif
+#include "private/qt_mac_p.h"
 #include "private/qpaintengine_p.h"
 #include "private/qpolygonclipper_p.h"
+#include "QtCore/qhash.h"
+
+typedef struct CGColorSpace *CGColorSpaceRef;
+QT_BEGIN_NAMESPACE
+
+extern int qt_defaultDpi();
+extern int qt_defaultDpiX();
+extern int qt_defaultDpiY();
 
 
 class QCoreGraphicsPaintEnginePrivate;
@@ -74,6 +80,8 @@ public:
 
     bool begin(QPaintDevice *pdev);
     bool end();
+    static CGColorSpaceRef macGenericColorSpace();
+    static CGColorSpaceRef macDisplayColorSpace(const QWidget *widget = 0);
 
     void updateState(const QPaintEngineState &state);
 
@@ -122,9 +130,14 @@ public:
 protected:
     friend class QMacPrintEngine;
     friend class QMacPrintEnginePrivate;
+    friend void qt_mac_display_change_callbk(CGDirectDisplayID, CGDisplayChangeSummaryFlags, void *);
     QCoreGraphicsPaintEngine(QPaintEnginePrivate &dptr);
 
 private:
+    static bool m_postRoutineRegistered;
+    static CGColorSpaceRef m_genericColorSpace;
+    static QHash<CGDirectDisplayID, CGColorSpaceRef> m_displayColorSpaceHash;
+    static void cleanUpMacColorSpaces();
     Q_DISABLE_COPY(QCoreGraphicsPaintEngine)
 };
 
@@ -184,5 +197,46 @@ public:
         CGContextSetTextMatrix(hd, xform);
     }
 };
+
+class QMacQuartzPaintDevice : public QPaintDevice
+{
+public:
+    QMacQuartzPaintDevice(CGContextRef cg, int width, int height, int bytesPerLine)
+        : mCG(cg), mWidth(width), mHeight(height), mBytesPerLine(bytesPerLine)
+    { }
+    int devType() const { return QInternal::MacQuartz; }
+    CGContextRef cgContext() const { return mCG; }
+    int metric(PaintDeviceMetric metric) const {
+        switch (metric) {
+        case PdmWidth:
+            return mWidth;
+        case PdmHeight:
+            return mHeight;
+        case PdmWidthMM:
+            return (qt_defaultDpiX() * mWidth) / 2.54;
+        case PdmHeightMM:
+            return (qt_defaultDpiY() * mHeight) / 2.54;
+        case PdmNumColors:
+            return 0;
+        case PdmDepth:
+            return 32;
+        case PdmDpiX:
+        case PdmPhysicalDpiX:
+            return qt_defaultDpiX();
+        case PdmDpiY:
+        case PdmPhysicalDpiY:
+            return qt_defaultDpiY();
+        }
+        return 0;
+    }
+    QPaintEngine *paintEngine() const { qWarning("This function should never be called."); return 0; }
+private:
+    CGContextRef mCG;
+    int mWidth;
+    int mHeight;
+    int mBytesPerLine;
+};
+
+QT_END_NAMESPACE
 
 #endif // QPAINTENGINE_MAC_P_H

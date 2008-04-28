@@ -70,9 +70,7 @@
 
     An example animation with a timeline follows:
 
-    \quotefromfile snippets/timeline/main.cpp
-    \skipto QGraphicsItem *ball
-    \printuntil timer->start();
+    \snippet doc/src/snippets/timeline/main.cpp 0
     
     Note that steps lie between 0.0 and 1.0. It may be necessary to use
     \l{QTimeLine::}{setUpdateInterval()}. The default update interval
@@ -94,6 +92,8 @@
 #include <QtCore/qpointer.h>
 #include <QtCore/qpair.h>
 #include <QtGui/qmatrix.h>
+
+QT_BEGIN_NAMESPACE
 
 class QGraphicsItemAnimationPrivate
 {
@@ -555,7 +555,11 @@ void QGraphicsItemAnimation::setStep(qreal x)
 }
 
 /*!
-Resets the item to its starting position and transformation.
+    Resets the item to its starting position and transformation.
+
+    \obsolete
+
+    You can call setStep(0) instead.
 */
 void QGraphicsItemAnimation::reset()
 {
@@ -590,5 +594,7 @@ void QGraphicsItemAnimation::afterAnimationStep(qreal step)
 {
     Q_UNUSED(step);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_GRAPHICSVIEW

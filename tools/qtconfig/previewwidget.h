@@ -46,6 +46,8 @@
 
 #include "previewwidgetbase.h"
 
+QT_BEGIN_NAMESPACE
+
 class PreviewWidget : public PreviewWidgetBase
 {
     Q_OBJECT
@@ -56,5 +58,7 @@ public:
     void closeEvent(QCloseEvent *);
     bool eventFilter(QObject *, QEvent *);
 };
+
+QT_END_NAMESPACE
 
 #endif

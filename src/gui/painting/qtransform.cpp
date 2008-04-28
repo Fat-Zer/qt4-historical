@@ -44,13 +44,13 @@
 
 #include "qdatastream.h"
 #include "qdebug.h"
-#include "qmath_p.h"
 #include "qmatrix.h"
 #include "qregion.h"
 #include "qpainterpath.h"
 #include "qvariant.h"
+#include <qmath.h>
 
-#include <math.h>
+QT_BEGIN_NAMESPACE
 
 #define MAPDOUBLE(x, y, nx, ny) \
 { \
@@ -147,9 +147,7 @@
     \row
     \o \inlineimage qtransform-simpletransformation.png
     \o
-    \quotefromfile snippets/transform/main.cpp
-    \skipto SimpleTransformation::paintEvent
-    \printuntil }
+    \snippet doc/src/snippets/transform/main.cpp 0
     \endtable
 
     Although these functions are very convenient, it can be more
@@ -161,9 +159,7 @@
     \row
     \o \inlineimage qtransform-combinedtransformation.png
     \o
-    \quotefromfile snippets/transform/main.cpp
-    \skipto CombinedTransformation::paintEvent
-    \printuntil }
+    \snippet doc/src/snippets/transform/main.cpp 1
     \endtable
 
     \section1 Basic Matrix Operations
@@ -179,10 +175,7 @@
     QTransform transforms a point in the plane to another point using the
     following formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 0
 
     The point \e (x, y) is the original point, and \e (x', y') is the
     transformed point. \e (x', y') can be transformed back to \e (x,
@@ -214,9 +207,7 @@
     \row
     \o \inlineimage qtransform-combinedtransformation2.png
     \o
-    \quotefromfile snippets/transform/main.cpp
-    \skipto BasicOperations::paintEvent
-    \printuntil }
+    \snippet doc/src/snippets/transform/main.cpp 2
     \endtable
 
     \sa QPainter, {The Coordinate System}, {demos/affine}{Affine
@@ -349,19 +340,17 @@ QTransform QTransform::transposed() const
 */
 QTransform QTransform::inverted(bool *invertible) const
 {
-    qreal det = determinant();
-    if (qFuzzyCompare(det, qreal(0.0))) {
-        if (invertible)
-            *invertible = false;
-        return QTransform();
-    }
+    const qreal det = determinant();
+    const bool zeroDeterminant = (det == qreal(0));
+
     if (invertible)
-        *invertible = true;
-    QTransform adjA = adjoint();
-    QTransform invert = adjA / det;
-    invert = QTransform(invert.m11()/invert.m33(), invert.m12()/invert.m33(), invert.m13()/invert.m33(),
-                        invert.m21()/invert.m33(), invert.m22()/invert.m33(), invert.m23()/invert.m33(),
-                        invert.m31()/invert.m33(), invert.m32()/invert.m33(), 1);
+        *invertible = !zeroDeterminant;
+
+    if (zeroDeterminant)
+        return QTransform();
+
+    QTransform invert = adjoint();
+
     // inverting doesn't change the type
     invert.m_type = m_type;
     invert.m_dirty = m_dirty;
@@ -444,7 +433,7 @@ const qreal inv_dist_to_plane = 1. / 1024.;
 
 /*!
     \fn QTransform &QTransform::rotate(qreal angle, Qt::Axis axis)
-    
+
     Rotates the coordinate system counterclockwise by the given \a angle
     about the specified \a axis and returns a reference to the matrix.
 
@@ -507,10 +496,10 @@ QTransform & QTransform::rotate(qreal a, Qt::Axis axis)
 
 /*!
     \fn QTransform & QTransform::rotateRadians(qreal angle, Qt::Axis axis)
-    
+
     Rotates the coordinate system counterclockwise by the given \a angle
     about the specified \a axis and returns a reference to the matrix.
-    
+
     Note that if you apply a QTransform to a point defined in widget
     coordinates, the direction of the rotation will be clockwise
     because the y-axis points downwards.
@@ -868,7 +857,7 @@ QLine QTransform::map(const QLine &l) const
     \overload
 
     \fn QLineF QTransform::map(const QLineF &line) const
-    
+
     Creates and returns a QLine object that is a copy of the given \a
     line, mapped into the coordinate system defined by this matrix.
     Note that the transformed coordinates are rounded to the nearest
@@ -1001,7 +990,7 @@ QRegion QTransform::map(const QRegion &r) const
 QPainterPath QTransform::map(const QPainterPath &path) const
 {
 
-    if (path.isEmpty())
+    if (path == QPainterPath())
         return QPainterPath();
 
     QPainterPath copy = path;
@@ -1042,15 +1031,7 @@ QPainterPath QTransform::map(const QPainterPath &path) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-        if (is not affine) {
-            w' = m13*x + m23*y + m33
-            x' /= w'
-            y' /= w'
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 1
 
     Polygons and rectangles behave slightly differently when
     transformed (due to integer rounding), so
@@ -1168,10 +1149,10 @@ bool QTransform::squareToQuad(const QPolygonF &quad, QTransform &trans)
 
 /*!
     \fn bool QTransform::quadToSquare(const QPolygonF &quad, QTransform &trans)
-    
+
     Creates a transformation matrix, \a trans, that maps a four-sided polygon,
     \a quad, to a unit square. Returns true if the transformation is constructed
-    or false if such a transformation does not exist. 
+    or false if such a transformation does not exist.
 
     \sa squareToQuad(), quadToQuad()
 */
@@ -1212,14 +1193,14 @@ bool QTransform::quadToQuad(const QPolygonF &one,
     return true;
 }
 
-/*! 
+/*!
     Sets the matrix elements to the specified values, \a m11,
     \a m12, \a m13 \a m21, \a m22, \a m23 \a m31, \a m32 and
-    \a m33. Note that this function replaces the previous values. 
+    \a m33. Note that this function replaces the previous values.
     QMatrix provides the translate(), rotate(), scale() and shear()
     convenience functions to manipulate the various matrix elements
-    based on the currently defined coordinate system. 
-    
+    based on the currently defined coordinate system.
+
     \sa QTransform()
 */
 
@@ -1275,14 +1256,7 @@ QRect QTransform::mapRect(const QRect &rect) const
         ymin = qMin(ymin, y);
         xmax = qMax(xmax, x);
         ymax = qMax(ymax, y);
-        qreal w = xmax - xmin;
-        qreal h = ymax - ymin;
-        xmin -= (xmin - x0) / w;
-        ymin -= (ymin - y0) / h;
-        xmax -= (xmax - x0) / w;
-        ymax -= (ymax - y0) / h;
-        result = QRect(qRound(xmin), qRound(ymin),
-                       qRound(xmax)-qRound(xmin)+1, qRound(ymax)-qRound(ymin)+1);
+        result = QRect(qRound(xmin), qRound(ymin), qRound(xmax)-qRound(xmin), qRound(ymax)-qRound(ymin));
     }
     return result;
 }
@@ -1297,15 +1271,7 @@ QRect QTransform::mapRect(const QRect &rect) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-        if (is not affine) {
-            w' = m13*x + m23*y + m33
-            x' /= w'
-            y' /= w'
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 2
 
     If rotation or shearing has been specified, this function returns
     the \e bounding rectangle. To retrieve the exact region the given
@@ -1376,10 +1342,7 @@ QRectF QTransform::mapRect(const QRectF &rect) const
 
     The coordinates are transformed using the following formulas:
 
-    \code
-        x' = m11*x + m21*y + dx
-        y' = m22*y + m12*x + dy
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 3
 
     The point (x, y) is the original point, and (x', y') is the
     transformed point.
@@ -1420,17 +1383,17 @@ const QMatrix &QTransform::toAffine() const
 QTransform::TransformationType QTransform::type() const
 {
     if (m_dirty != TxNone && m_dirty >= m_type) {
-        if (m_dirty > TxShear && (!qFuzzyCompare(m_13, 0) || !qFuzzyCompare(m_23, 0)))
+        if (m_dirty > TxShear && (!qFuzzyCompare(m_13 + 1, 1) || !qFuzzyCompare(m_23 + 1, 1)))
              m_type = TxProject;
-        else if (m_dirty > TxScale && (!qFuzzyCompare(affine._m12, 0) || !qFuzzyCompare(affine._m21, 0))) {
+        else if (m_dirty > TxScale && (!qFuzzyCompare(affine._m12 + 1, 1) || !qFuzzyCompare(affine._m21 + 1, 1))) {
             const qreal dot = affine._m11 * affine._m12 + affine._m21 * affine._m22;
-            if (qFuzzyCompare(dot, 0))
+            if (qFuzzyCompare(dot + 1, 1))
                 m_type = TxRotate;
             else
                 m_type = TxShear;
         } else if (m_dirty > TxTranslate && (!qFuzzyCompare(affine._m11, 1) || !qFuzzyCompare(affine._m22, 1) || !qFuzzyCompare(m_33, 1)))
             m_type = TxScale;
-        else if (m_dirty > TxNone && (!qFuzzyCompare(affine._dx, 0) || !qFuzzyCompare(affine._dy, 0)))
+        else if (m_dirty > TxNone && (!qFuzzyCompare(affine._dx + 1, 1) || !qFuzzyCompare(affine._dy + 1, 1)))
             m_type = TxTranslate;
         else
             m_type = TxNone;
@@ -1615,3 +1578,5 @@ QTransform::operator QVariant() const
 
     \sa reset()
 */
+
+QT_END_NAMESPACE

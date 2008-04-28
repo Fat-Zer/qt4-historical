@@ -42,36 +42,29 @@
 ****************************************************************************/
 
 /*!
-    \page qtopiacore-vnc.html
+    \page qt-embedded-vnc.html
 
-    \title The VNC Protocol and Qtopia Core
-    \ingroup qtopiacore
+    \title The VNC Protocol and Qt for Embedded Linux
+    \ingroup qt-embedded
 
     VNC (Virtual Network Computing) software makes it possible to view
     and interact with one computer (the "server") from any other
     computer or mobile device (the "viewer") anywhere on a network.
 
-    To run a \l {Qtopia Core} application using the VNC protocol, the
-    \l {Qtopia Core} library must be configured and compiled with the
+    To run a \l{Qt for Embedded Linux} application using the VNC protocol, the
+    \l{Qt for Embedded Linux} library must be configured and compiled with the
     \c -qt-gfx-vnc option:
 
-    \code
-        cd path/to/Qtopia/Core
-        ./configure -qt-gfx-vnc
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-vnc.qdoc 0
 
     Then start a server application (i.e. construct a QApplication
     object with the QApplication::GuiServer flag or use the -qws
-    command line parameter. See the \l {Running Qtopia Core
+    command line parameter. See the \l {Running Qt for Embedded Linux
     Applications}{running applications} documentation for
     details). When runnng the application, use the \c -display option
     to specify the VNC server's driver. For example:
 
-    \code
-        cd path/to/Qtopia/Core/examples/widgets/analogclock
-        ./analogclock -qws -display VNC:0
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-vnc.qdoc 1
 
     To interact with the application over the network, run a VNC
     client pointing to the machine that is running the server
@@ -80,11 +73,9 @@
     example, using the X11 VNC client to view the application from the
     same machine:
 
-    \code
-        vncviewer localhost:0
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-vnc.qdoc 2
 
-    \l {Qtopia Core} will create a 640 by 480 pixel display by
+    \l{Qt for Embedded Linux} will create a 640 by 480 pixel display by
     default. Alternatively, the QWS_SIZE environment variable can be
     used to set another size, e.g. \c QWS_SIZE=240x320.
 
@@ -92,7 +83,7 @@
     \row
     \o \bold {The Virtual Framebuffer}
 
-    The \l {Qtopia Core's Virtual Framebuffer}{virtual framebuffer} is
+    The \l{The Virtual Framebuffer}{virtual framebuffer} is
     an alternative technique recommended for development and debugging
     purposes.
 
@@ -104,6 +95,6 @@
     and smoother than using the VNC protocol, but it does not operate
     over a network.
 
-    \o \inlineimage qtopiacore-virtualframebuffer.png
-\endtable
+    \o \inlineimage qt-embedded-virtualframebuffer.png
+    \endtable
 */

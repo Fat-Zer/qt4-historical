@@ -62,10 +62,21 @@
 #ifndef QT_NO_STYLE_WINDOWSVISTA
 #include "qwindowsvistastyle.h"
 #endif
+#ifndef QT_NO_STYLE_WINDOWSCE
+#include "qwindowscestyle.h"
+#endif
+#ifndef QT_NO_STYLE_WINDOWSMOBILE
+#include "qwindowsmobilestyle.h"
+#endif
+
+QT_BEGIN_NAMESPACE
 
 #if !defined(QT_NO_STYLE_MAC) && defined(Q_WS_MAC)
+QT_BEGIN_INCLUDE_NAMESPACE
 #  include <private/qt_mac_p.h>
 #  include "qmacstyle_mac.h"
+QT_END_INCLUDE_NAMESPACE
+
 QString qt_mac_get_style_name()
 {
     QString ret;
@@ -84,9 +95,9 @@ QString qt_mac_get_style_name()
 }
 #endif
 
-#ifndef QT_NO_LIBRARY
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QStyleFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/styles"), Qt::CaseInsensitive))
+    (QStyleFactoryInterface_iid, QLatin1String("/styles"), Qt::CaseInsensitive))
 #endif
 
 /*!
@@ -125,6 +136,16 @@ QStyle *QStyleFactory::create(const QString& key)
 #ifndef QT_NO_STYLE_WINDOWS
     if (style == QLatin1String("windows"))
         ret = new QWindowsStyle;
+    else
+#endif
+#ifndef QT_NO_STYLE_WINDOWSCE
+    if (style == QLatin1String("windowsce"))
+        ret = new QWindowsCEStyle;
+    else
+#endif
+#ifndef QT_NO_STYLE_WINDOWSMOBILE
+    if (style == QLatin1String("windowsmobile"))
+        ret = new QWindowsMobileStyle;
     else
 #endif
 #ifndef QT_NO_STYLE_WINDOWSXP
@@ -167,7 +188,7 @@ QStyle *QStyleFactory::create(const QString& key)
     } else
 #endif
     { } // Keep these here - they make the #ifdefery above work
-#ifndef QT_NO_LIBRARY
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     if(!ret) {
         if (QStyleFactoryInterface *factory = qobject_cast<QStyleFactoryInterface*>(loader()->instance(style)))
             ret = factory->create(style);
@@ -186,7 +207,7 @@ QStyle *QStyleFactory::create(const QString& key)
 */
 QStringList QStyleFactory::keys()
 {
-#ifndef QT_NO_LIBRARY
+#if !defined(QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
     QStringList list = loader()->keys();
 #else
     QStringList list;
@@ -194,6 +215,14 @@ QStringList QStyleFactory::keys()
 #ifndef QT_NO_STYLE_WINDOWS
     if (!list.contains(QLatin1String("Windows")))
         list << QLatin1String("Windows");
+#endif
+#ifndef QT_NO_STYLE_WINDOWSCE
+    if (!list.contains(QLatin1String("WindowsCE")))
+        list << QLatin1String("WindowsCE");
+#endif
+#ifndef QT_NO_STYLE_WINDOWSMOBILE
+    if (!list.contains(QLatin1String("WindowsMobile")))
+        list << QLatin1String("WindowsMobile");
 #endif
 #ifndef QT_NO_STYLE_WINDOWSXP
     if (!list.contains(QLatin1String("WindowsXP")) &&
@@ -231,3 +260,5 @@ QStringList QStyleFactory::keys()
 #endif
     return list;
 }
+
+QT_END_NAMESPACE

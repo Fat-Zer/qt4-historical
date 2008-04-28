@@ -59,8 +59,9 @@
 
 #ifndef QT_NO_SCRIPT
 
-#include "qscriptastfwd_p.h"
 #include "qscriptastvisitor_p.h"
+
+QT_BEGIN_NAMESPACE
 
 class QScriptNameIdImpl;
 
@@ -1485,5 +1486,7 @@ public:
 } } // namespace AST
 
 #endif // QT_NO_SCRIPT
-#endif
 
+QT_END_NAMESPACE
+
+#endif

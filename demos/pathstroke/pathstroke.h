@@ -51,11 +51,11 @@ class PathStrokeRenderer : public ArthurFrame
 {
     Q_OBJECT
     Q_PROPERTY(bool animation READ animation WRITE setAnimation)
-    Q_PROPERTY(double penWidth READ realPenWidth WRITE setRealPenWidth)
+    Q_PROPERTY(qreal penWidth READ realPenWidth WRITE setRealPenWidth)
 public:
     enum PathMode { CurveMode, LineMode };
 
-    PathStrokeRenderer(QWidget *parent);
+    PathStrokeRenderer(QWidget *parent, bool smallScreen = false);
 
     void paint(QPainter *);
     void mousePressEvent(QMouseEvent *e);
@@ -67,8 +67,11 @@ public:
 
     bool animation() const { return m_timer.isActive(); }
 
-    double realPenWidth() const { return m_penWidth; }
-    void setRealPenWidth(double penWidth) { m_penWidth = penWidth; update(); }
+    qreal realPenWidth() const { return m_penWidth; }
+    void setRealPenWidth(qreal penWidth) { m_penWidth = penWidth; update(); }
+
+signals:
+    void clicked();
 
 public slots:
     void setPenWidth(int penWidth) { m_penWidth = penWidth / 10.0; update(); }
@@ -102,7 +105,7 @@ private:
 
     bool m_wasAnimated;
 
-    double m_penWidth;
+    qreal m_penWidth;
     int m_pointCount;
     int m_pointSize;
     int m_activePoint;
@@ -113,16 +116,55 @@ private:
     Qt::PenCapStyle m_capStyle;
 
     Qt::PenStyle m_penStyle;
+
+    bool m_smallScreen;
+    QPoint m_mousePress;
+    bool m_mouseDrag;
+};
+
+class PathStrokeControls : public QWidget
+{
+    Q_OBJECT
+public:
+    PathStrokeControls(QWidget* parent, PathStrokeRenderer* renderer, bool smallScreen);
+
+signals:
+    void okPressed();
+    void quitPressed();
+
+private:
+    PathStrokeRenderer* m_renderer;
+
+    QGroupBox *m_capGroup;
+    QGroupBox *m_joinGroup;
+    QGroupBox *m_styleGroup;
+    QGroupBox *m_pathModeGroup;
+
+    void createCommonControls(QWidget* parent);
+    void layoutForDesktop();
+    void layoutForSmallScreens();
+
+private slots:
+    void emitQuitSignal();
+    void emitOkSignal();
+
 };
 
 class PathStrokeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    PathStrokeWidget();
+    PathStrokeWidget(bool smallScreen);
+    void setStyle ( QStyle * style );
 
 private:
     PathStrokeRenderer *m_renderer;
+    PathStrokeControls *m_controls;
+
+private slots:
+    void showControls();
+    void hideControls();
+
 };
 
 #endif // PATHSTROKE_H

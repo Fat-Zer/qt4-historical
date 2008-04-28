@@ -47,6 +47,8 @@
 #include <QtCore/qmetatype.h>
 #include <stdio.h>
 
+QT_BEGIN_NAMESPACE
+
 // if the flags change, you MUST to change it in qmetaobject.cpp too
 enum PropertyFlags  {
     Invalid = 0x00000000,
@@ -1210,3 +1212,5 @@ void Generator::_generateProperties()
         meta_data << strreg(p.name) << strreg(p.type) << flags;
     }
 }
+
+QT_END_NAMESPACE

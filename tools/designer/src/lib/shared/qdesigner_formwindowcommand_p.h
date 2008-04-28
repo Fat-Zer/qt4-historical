@@ -60,6 +60,8 @@
 #include <QtCore/QPointer>
 #include <QtGui/QUndoCommand>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 class QDesignerPropertySheetExtension;
@@ -92,5 +94,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_COMMAND_H

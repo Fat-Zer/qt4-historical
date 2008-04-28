@@ -66,6 +66,8 @@
 
 #ifndef QT_NO_PRINTER
 
+QT_BEGIN_NAMESPACE
+
 #define PPK_CupsOptions QPrintEngine::PrintEnginePropertyKey(0xfe00)
 #define PPK_CupsPageRect QPrintEngine::PrintEnginePropertyKey(0xfe01)
 #define PPK_CupsPaperRect QPrintEngine::PrintEnginePropertyKey(0xfe02)
@@ -126,10 +128,10 @@ namespace QPdf {
 
 
     struct PaperSize {
-        int width, height;
+        int width, height; // in postscript points
     };
-    PaperSize paperSize(QPrinter::PageSize pageSize);
-    const char *paperSizeToString(QPrinter::PageSize pageSize);
+    PaperSize paperSize(QPrinter::PaperSize paperSize);
+    const char *paperSizeToString(QPrinter::PaperSize paperSize);
 
 
     QByteArray stripSpecialCharacters(const QByteArray &string);
@@ -146,8 +148,11 @@ public:
     QVector<uint> graphicStates;
     QVector<uint> patterns;
     QVector<uint> fonts;
+    QVector<uint> annotations;
 
     void streamImage(int w, int h, int object);
+
+    QSize pageSize;
 private:
     QByteArray data;
 };
@@ -203,7 +208,7 @@ public:
     void closePrintDevice();
 
 
-    void drawTextItem(const QPointF &p, const QTextItemInt &ti);
+    virtual void drawTextItem(const QPointF &p, const QTextItemInt &ti);
     inline uint requestObject() { return currentObject++; }
 
     QRect paperRect() const;
@@ -224,6 +229,7 @@ public:
     bool hasPen;
     bool hasBrush;
     bool simplePen;
+    qreal opacity;
 
     QHash<QFontEngine::FaceId, QFontSubset *> fonts;
 
@@ -240,7 +246,7 @@ public:
     QString selectionOption;
     QString title;
     QString creator;
-    bool duplex;
+    QPrinter::DuplexMode duplex;
     bool collate;
     bool fullPage;
     bool embedFonts;
@@ -248,7 +254,7 @@ public:
     int resolution;
     QPrinter::PageOrder pageOrder;
     QPrinter::Orientation orientation;
-    QPrinter::PageSize pageSize;
+    QPrinter::PaperSize paperSize;
     QPrinter::ColorMode colorMode;
     QPrinter::PaperSource paperSource;
 
@@ -256,8 +262,18 @@ public:
     QRect cupsPaperRect;
     QRect cupsPageRect;
     QString cupsStringPageSize;
+    QSizeF customPaperSize; // in postscript points
+    bool hasCustomPageMargins;
+    qreal leftMargin, topMargin, rightMargin, bottomMargin;
+
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+    QString cupsTempFile;
+#endif
 };
 
-#endif
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_PRINTER
+
+#endif // QPDF_P_H
 

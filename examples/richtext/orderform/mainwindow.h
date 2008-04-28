@@ -48,9 +48,12 @@
 #include <QMainWindow>
 #include <QPair>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QTabWidget;
+QT_END_NAMESPACE
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -71,5 +74,6 @@ private:
     QAction *printAction;
     QTabWidget *letters;
 };
+//! [0]
 
 #endif

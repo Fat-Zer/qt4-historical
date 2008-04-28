@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_NETWORK
@@ -55,6 +57,8 @@ QT_MODULE(Qt3Support)
 Q_COMPAT_EXPORT void q3InitNetworkProtocols();
 
 #endif // QT_NO_NETWORK
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

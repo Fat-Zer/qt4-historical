@@ -63,6 +63,8 @@
 #include <QtCore/QPointer>
 #include <QtCore/QMimeData>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 class QDesignerActionProviderExtension;
 
@@ -133,7 +135,6 @@ protected:
 
     void adjustIndicator(const QPoint &pos);
     int findAction(const QPoint &pos) const;
-    int actionAtPosition(const QPoint &pos) const;
 
     QAction *currentAction() const;
     int realActionCount() const;
@@ -168,5 +169,7 @@ private:
     QPointer<QWidget> m_lastFocusWidget;
     qdesigner_internal::PromotionTaskMenu* m_promotionTaskMenu;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_MENUBAR_H

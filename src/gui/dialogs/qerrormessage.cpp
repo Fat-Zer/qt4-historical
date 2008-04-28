@@ -62,6 +62,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef Q_OS_WINCE
+extern bool qt_wince_is_mobile();    //defined in qguifunctions_wince.cpp
+extern bool qt_wince_is_high_dpi();  //defined in qguifunctions_wince.cpp
+
+#include "qguifunctions_wince.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
 class QErrorMessagePrivate : public QDialogPrivate
 {
     Q_DECLARE_PUBLIC(QErrorMessage)
@@ -72,6 +81,7 @@ public:
     QLabel * icon;
     QStringList pending;
     QHash<QString, int> doNotShow;
+    QString currentMessage;
 
     bool nextPending();
     void retranslateStrings();
@@ -89,12 +99,32 @@ public:
 
 QSize QErrorMessageTextView::minimumSizeHint() const
 {
+#ifdef Q_OS_WINCE
+    if (qt_wince_is_mobile())
+         if (qt_wince_is_high_dpi())
+            return QSize(200, 200);
+         else
+             return QSize(100, 100);
+    else
+      return QSize(70, 70);
+#else
     return QSize(50, 50);
+#endif
 }
 
 QSize QErrorMessageTextView::sizeHint() const
 {
+#ifdef Q_OS_WINCE
+    if (qt_wince_is_mobile())
+         if (qt_wince_is_high_dpi())
+            return QSize(400, 200);
+         else
+             return QSize(320, 120);
+    else
+      return QSize(300, 100);
+#else
     return QSize(250, 75);
+#endif
 }
 
 /*!
@@ -209,6 +239,9 @@ QErrorMessage::QErrorMessage(QWidget * parent)
     d->again->setChecked(true);
     grid->addWidget(d->again, 1, 1, Qt::AlignTop);
     d->ok = new QPushButton(this);
+#ifdef Q_OS_WINCE
+    d->ok->setFixedSize(0,0);
+#endif
     connect(d->ok, SIGNAL(clicked()), this, SLOT(accept()));
     d->ok->setFocus();
     grid->addWidget(d->ok, 2, 0, 1, 2, Qt::AlignCenter);
@@ -239,8 +272,9 @@ QErrorMessage::~QErrorMessage()
 void QErrorMessage::done(int a)
 {
     Q_D(QErrorMessage);
-    if (!d->again->isChecked())
-        d->doNotShow.insert(d->errors->toPlainText(), 0);
+    if (!d->again->isChecked() && !d->currentMessage.isEmpty())
+        d->doNotShow.insert(d->currentMessage, 0);
+    d->currentMessage.clear();
     if (!d->nextPending()) {
         QDialog::done(a);
         if (this == qtMessageHandler && metFatal)
@@ -274,7 +308,12 @@ bool QErrorMessagePrivate::nextPending()
     while (!pending.isEmpty()) {
         QString p = pending.takeFirst();
         if (!p.isEmpty() && !doNotShow.contains(p)) {
+#ifndef QT_NO_TEXTHTMLPARSER
             errors->setHtml(p);
+#else
+            errors->setPlainText(p);
+#endif
+            currentMessage = p;
             return true;
         }
     }
@@ -323,5 +362,7 @@ void QErrorMessagePrivate::retranslateStrings()
 
     Use showMessage(\a message) instead.
 */
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_ERRORMESSAGE

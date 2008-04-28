@@ -51,7 +51,11 @@
 #include <QtGui/qpainterpath.h>
 #include <QtGui/qpixmap.h>
 
+class tst_QGraphicsItem;
+
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -68,6 +72,7 @@ class QGraphicsSceneHoverEvent;
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
 class QGraphicsScene;
+class QGraphicsWidget;
 class QInputMethodEvent;
 class QKeyEvent;
 class QMatrix;
@@ -104,7 +109,26 @@ public:
         ItemTransformChange,
         ItemPositionHasChanged,
         ItemTransformHasChanged,
-        ItemSceneChange
+        ItemSceneChange,
+        ItemVisibleHasChanged,
+        ItemEnabledHasChanged,
+        ItemSelectedHasChanged,
+        ItemParentHasChanged,
+        ItemSceneHasChanged,
+        ItemCursorChange,
+        ItemCursorHasChanged,
+        ItemToolTipChange,
+        ItemToolTipHasChanged,
+        ItemFlagsChange,
+        ItemFlagsHaveChanged,
+        ItemZValueChange,
+        ItemZValueHasChanged
+    };
+
+    enum CacheMode {
+        NoCache,
+        ItemCoordinateCache,
+        DeviceCoordinateCache
     };
 
     QGraphicsItem(QGraphicsItem *parent = 0
@@ -119,8 +143,14 @@ public:
 
     QGraphicsItem *parentItem() const;
     QGraphicsItem *topLevelItem() const;
+    QGraphicsWidget *parentWidget() const;
+    QGraphicsWidget *topLevelWidget() const;
+    QGraphicsWidget *window() const;
     void setParentItem(QGraphicsItem *parent);
-    QList<QGraphicsItem *> children() const;
+    QList<QGraphicsItem *> children() const; // ### obsolete
+    QList<QGraphicsItem *> childItems() const;
+    bool isWidget() const;
+    bool isWindow() const;
 
     QGraphicsItemGroup *group() const;
     void setGroup(QGraphicsItemGroup *group);
@@ -128,6 +158,9 @@ public:
     GraphicsItemFlags flags() const;
     void setFlag(GraphicsItemFlag flag, bool enabled = true);
     void setFlags(GraphicsItemFlags flags);
+
+    CacheMode cacheMode() const;
+    void setCacheMode(CacheMode mode, const QSize &cacheSize = QSize());
 
 #ifndef QT_NO_TOOLTIP
     QString toolTip() const;
@@ -142,6 +175,7 @@ public:
 #endif
 
     bool isVisible() const;
+    bool isVisibleTo(const QGraphicsItem *parent) const;
     void setVisible(bool visible);
     inline void hide() { setVisible(false); }
     inline void show() { setVisible(true); }
@@ -158,8 +192,10 @@ public:
     Qt::MouseButtons acceptedMouseButtons() const;
     void setAcceptedMouseButtons(Qt::MouseButtons buttons);
 
-    bool acceptsHoverEvents() const;
-    void setAcceptsHoverEvents(bool enabled);
+    bool acceptsHoverEvents() const; // obsolete
+    void setAcceptsHoverEvents(bool enabled); // obsolete
+    bool acceptHoverEvents() const;
+    void setAcceptHoverEvents(bool enabled);
 
     bool handlesChildEvents() const;
     void setHandlesChildEvents(bool enabled);
@@ -167,6 +203,11 @@ public:
     bool hasFocus() const;
     void setFocus(Qt::FocusReason focusReason = Qt::OtherFocusReason);
     void clearFocus();
+
+    void grabMouse();
+    void ungrabMouse();
+    void grabKeyboard();
+    void ungrabKeyboard();
 
     // Positioning in scene coordinates
     QPointF pos() const;
@@ -216,10 +257,15 @@ public:
     virtual bool isObscuredBy(const QGraphicsItem *item) const;
     virtual QPainterPath opaqueArea() const;
 
+    QRegion boundingRegion(const QTransform &itemToDeviceTransform) const;
+    qreal boundingRegionGranularity() const;
+    void setBoundingRegionGranularity(qreal granularity);
+
     // Drawing
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) = 0;
     void update(const QRectF &rect = QRectF());
     inline void update(qreal x, qreal y, qreal width, qreal height);
+    void scroll(qreal dx, qreal dy, const QRectF &rect = QRectF());
 
     // Coordinate mapping
     QPointF mapToItem(const QGraphicsItem *item, const QPointF &point) const;
@@ -261,6 +307,8 @@ public:
     inline QPolygonF mapFromScene(qreal x, qreal y, qreal w, qreal h) const;
 
     bool isAncestorOf(const QGraphicsItem *child) const;
+    QGraphicsItem *commonAncestorItem(const QGraphicsItem *other) const;
+    bool isUnderMouse() const;
 
     // Custom data
     QVariant data(int key) const;
@@ -325,15 +373,13 @@ private:
     friend class QGraphicsSceneFindItemBspTreeVisitor;
     friend class QGraphicsView;
     friend class QGraphicsViewPrivate;
-    friend class tst_QGraphicsItem;
+    friend class QGraphicsWidget;
+    friend class ::tst_QGraphicsItem;
     friend bool qt_closestLeaf(const QGraphicsItem *, const QGraphicsItem *);
     friend bool qt_closestItemFirst(const QGraphicsItem *, const QGraphicsItem *);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGraphicsItem::GraphicsItemFlags)
-Q_DECLARE_METATYPE(QGraphicsItem *)
-Q_DECLARE_METATYPE(QGraphicsScene *)
-
 inline void QGraphicsItem::setPos(qreal ax, qreal ay)
 { setPos(QPointF(ax, ay)); }
 inline void QGraphicsItem::ensureVisible(qreal ax, qreal ay, qreal w, qreal h, int xmargin, int ymargin)
@@ -908,7 +954,13 @@ template <class T> inline T qgraphicsitem_cast(const QGraphicsItem *item)
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, QGraphicsItem *item);
+Q_GUI_EXPORT QDebug operator<<(QDebug debug, QGraphicsItem::GraphicsItemChange change);
 #endif
+
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(QGraphicsItem *)
+Q_DECLARE_METATYPE(QGraphicsScene *)
 
 QT_END_HEADER
 

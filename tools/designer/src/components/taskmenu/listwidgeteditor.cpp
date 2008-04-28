@@ -46,8 +46,10 @@ TRANSLATOR qdesigner_internal::ListWidgetEditor
 */
 
 #include "listwidgeteditor.h"
-#include <findicondialog_p.h>
+#include <abstractformbuilder.h>
 #include <iconloader_p.h>
+#include <formwindowbase_p.h>
+#include <qdesigner_utils_p.h>
 
 #include <QtDesigner/QDesignerFormWindowInterface>
 #include <QtDesigner/QDesignerFormEditorInterface>
@@ -57,15 +59,19 @@ TRANSLATOR qdesigner_internal::ListWidgetEditor
 #include <QtCore/QDir>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 ListWidgetEditor::ListWidgetEditor(QDesignerFormWindowInterface *form, QWidget *parent)
     : QDialog(parent)
 {
     ui.setupUi(this);
-    m_form = form;
-    ui.deletePixmapItemButton->setIcon(createIconSet(QString::fromUtf8("editdelete.png")));
-    ui.deletePixmapItemButton->setEnabled(false);
+    m_form = qobject_cast<FormWindowBase *>(form);
+    ui.itemIconSelector->setFormEditor(form->core());
+    ui.itemIconSelector->setEnabled(false);
+    ui.itemIconSelector->setPixmapCache(m_form->pixmapCache());
+    ui.itemIconSelector->setIconCache(m_form->iconCache());
 
     QIcon upIcon = createIconSet(QString::fromUtf8("up.png"));
     QIcon downIcon = createIconSet(QString::fromUtf8("down.png"));
@@ -75,6 +81,8 @@ ListWidgetEditor::ListWidgetEditor(QDesignerFormWindowInterface *form, QWidget *
     ui.moveItemDownButton->setIcon(downIcon);
     ui.newItemButton->setIcon(plusIcon);
     ui.deleteItemButton->setIcon(minusIcon);
+
+    connect(m_form->iconCache(), SIGNAL(reloaded()), this, SLOT(cacheReloaded()));
 }
 
 ListWidgetEditor::~ListWidgetEditor()
@@ -104,6 +112,7 @@ void ListWidgetEditor::fillContentsFromComboBox(QComboBox *comboBox)
         QListWidgetItem *item = new QListWidgetItem();
         item->setText(comboBox->itemText(i));
         item->setIcon(qVariantValue<QIcon>(comboBox->itemData(i)));
+        item->setData(QAbstractFormBuilder::resourceRole(), comboBox->itemData(i, QAbstractFormBuilder::resourceRole()));
         item->setFlags(item->flags() | Qt::ItemIsEditable);
         ui.listWidget->addItem(item);
     }
@@ -175,55 +184,15 @@ void ListWidgetEditor::on_listWidget_itemChanged(QListWidgetItem *)
     updateEditor();
 }
 
-void ListWidgetEditor::on_itemTextLineEdit_textEdited(const QString &text)
-{
-    int currentRow = ui.listWidget->currentRow();
-    if (currentRow != -1) {
-        QListWidgetItem *item = ui.listWidget->item(currentRow);
-        item->setText(text);
-    }
-}
-
-void ListWidgetEditor::on_deletePixmapItemButton_clicked()
+void ListWidgetEditor::on_itemIconSelector_iconChanged(const PropertySheetIconValue &icon)
 {
     int currentRow = ui.listWidget->currentRow();
     if (currentRow == -1)
         return;
     QListWidgetItem *item = ui.listWidget->item(currentRow);
 
-    item->setIcon(QIcon());
-    ui.previewPixmapItemButton->setIcon(QIcon());
-    ui.deletePixmapItemButton->setEnabled(false);
-}
-
-void ListWidgetEditor::on_previewPixmapItemButton_clicked()
-{
-    int currentRow = ui.listWidget->currentRow();
-    if (currentRow == -1)
-        return;
-    QListWidgetItem *item = ui.listWidget->item(currentRow);
-
-    FindIconDialog dialog(m_form, this);
-    QString file_path;
-    QString qrc_path;
-
-    QIcon icon = item->icon();
-    if (!icon.isNull()) {
-        file_path = m_form->core()->iconCache()->iconToFilePath(icon);
-        qrc_path = m_form->core()->iconCache()->iconToQrcPath(icon);
-    }
-
-    dialog.setPaths(qrc_path, file_path);
-    if (dialog.exec()) {
-        file_path = dialog.filePath();
-        qrc_path = dialog.qrcPath();
-        if (!file_path.isEmpty()) {
-            icon = m_form->core()->iconCache()->nameToIcon(file_path, qrc_path);
-            item->setIcon(icon);
-            ui.previewPixmapItemButton->setIcon(icon);
-            ui.deletePixmapItemButton->setEnabled(!icon.isNull());
-        }
-    }
+    item->setData(QAbstractFormBuilder::resourceRole(), qVariantFromValue(icon));
+    item->setIcon(m_form->iconCache()->icon(icon));
 }
 
 int ListWidgetEditor::count() const
@@ -231,14 +200,19 @@ int ListWidgetEditor::count() const
     return ui.listWidget->count();
 }
 
-QIcon ListWidgetEditor::icon(int row) const
+PropertySheetIconValue ListWidgetEditor::icon(int row) const
 {
-    return ui.listWidget->item(row)->icon();
+    return qVariantValue<PropertySheetIconValue>(ui.listWidget->item(row)->data(QAbstractFormBuilder::resourceRole()));
 }
 
 QString ListWidgetEditor::text(int row) const
 {
     return ui.listWidget->item(row)->text();
+}
+
+void ListWidgetEditor::cacheReloaded()
+{
+    reloadIconResources(m_form->iconCache(), ui.listWidget);
 }
 
 void ListWidgetEditor::updateEditor()
@@ -261,22 +235,16 @@ void ListWidgetEditor::updateEditor()
     ui.moveItemUpButton->setEnabled(moveRowUpEnabled);
     ui.moveItemDownButton->setEnabled(moveRowDownEnabled);
     ui.deleteItemButton->setEnabled(currentItemEnabled);
-    ui.textLabel->setEnabled(currentItemEnabled);
-    ui.pixmapLabel->setEnabled(currentItemEnabled);
-    ui.deletePixmapItemButton->setEnabled(currentItemEnabled);
-    ui.previewPixmapItemButton->setEnabled(currentItemEnabled);
-    ui.itemTextLineEdit->setEnabled(currentItemEnabled);
+    ui.itemIconSelector->setEnabled(currentItemEnabled);
 
     QString itemText;
-    QIcon itemIcon;
+    PropertySheetIconValue itemIcon;
 
     if (item) {
         itemText = item->text();
-        itemIcon = item->icon();
+        itemIcon = qVariantValue<PropertySheetIconValue>(item->data(QAbstractFormBuilder::resourceRole()));
     }
-    int cursorPos = ui.itemTextLineEdit->cursorPosition();
-    ui.itemTextLineEdit->setText(itemText);
-    ui.itemTextLineEdit->setCursorPosition(cursorPos);
-    ui.previewPixmapItemButton->setIcon(itemIcon);
-    ui.deletePixmapItemButton->setEnabled(!itemIcon.isNull());
+    ui.itemIconSelector->setIcon(itemIcon);
 }
+
+QT_END_NAMESPACE

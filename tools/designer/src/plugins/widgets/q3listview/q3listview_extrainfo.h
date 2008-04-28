@@ -50,6 +50,8 @@
 
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class Q3ListView;
 class Q3ListViewItem;
 class DomItem;
@@ -70,6 +72,7 @@ public:
     virtual bool saveWidgetExtraInfo(DomWidget *ui_widget);
     virtual bool loadWidgetExtraInfo(DomWidget *ui_widget);
 
+    DomItem *saveQ3ListViewItem(Q3ListViewItem *item) const;
     void initializeQ3ListViewItems(const QList<DomItem *> &items, Q3ListViewItem *parentItem = 0);
 
 private:
@@ -89,5 +92,7 @@ protected:
 private:
     QDesignerFormEditorInterface *m_core;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3LISTVIEW_EXTRAINFO_H

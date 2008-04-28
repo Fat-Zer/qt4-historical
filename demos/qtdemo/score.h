@@ -64,22 +64,24 @@ class Score
 {
 public:
     enum LOCK_MODE {LOCK_ITEMS, UNLOCK_ITEMS, SKIP_LOCK};
-    enum RUN_MODE {FROM_CURRENT, FROM_START, NEW_ANIMATION_ONLY};
-    
+    enum RUN_MODE {FROM_CURRENT, FROM_START, NEW_ANIMATION_ONLY, ONLY_IF_VISIBLE};
+
     Score();
     virtual ~Score();
-    
+
     void playMovie(const QString &indexName, RUN_MODE runMode = FROM_START, LOCK_MODE lockMode = SKIP_LOCK);
     void insertMovie(const QString &indexName, Movie *movie);
+    Movie *insertMovie(const QString &indexName);
     void queueMovie(const QString &indexName, RUN_MODE runMode = FROM_START, LOCK_MODE lockMode = SKIP_LOCK);
     void playQue();
+    bool hasQueuedMovies(){ return this->playList.size() > 0; };
 
     MovieIndex index;
     PlayList playList;
-    
+
 private:
-    void prepare(Movie *movie, LOCK_MODE lockMode);
-    void play(Movie *movie, RUN_MODE runMode);  
+    void prepare(Movie *movie, RUN_MODE runMode, LOCK_MODE lockMode);
+    void play(Movie *movie, RUN_MODE runMode);
 };
 
 #endif // SCORE_H

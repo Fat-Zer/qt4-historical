@@ -43,6 +43,18 @@
 
 #include "qscriptclassdata_p.h"
 
+#ifndef QT_NO_SCRIPT
+
+QT_BEGIN_NAMESPACE
+
+QScriptClassData::QScriptClassData()
+{
+}
+
+QScriptClassData::~QScriptClassData()
+{
+}
+
 void QScriptClassData::mark(const QScriptValueImpl &, int)
 {
 }
@@ -75,13 +87,19 @@ bool QScriptClassData::removeMember(const QScriptValueImpl &,
     return true;
 }
 
-int QScriptClassData::extraMemberCount(const QScriptValueImpl &)
+QScriptClassDataIterator *QScriptClassData::newIterator(const QScriptValueImpl &)
 {
     return 0;
 }
 
-bool QScriptClassData::extraMember(const QScriptValueImpl &,
-                                   int, QScript::Member *)
+QScriptClassDataIterator::QScriptClassDataIterator()
 {
-    return false;
 }
+
+QScriptClassDataIterator::~QScriptClassDataIterator()
+{
+}
+
+QT_END_NAMESPACE
+
+#endif

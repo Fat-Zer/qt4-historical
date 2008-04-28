@@ -53,25 +53,25 @@ class DemoTextItem;
 
 class MenuContentItem : public DemoItem
 {
-    
+
 public:
     MenuContentItem(const QDomElement &el, QGraphicsScene *scene = 0, QGraphicsItem *parent = 0);
-    
+
     virtual QRectF boundingRect() const; // overridden
     virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget * = 0){}; // overridden
     void animationStopped(int id);
     void prepare();
-    
+
 private:
     QString name;
     QString readmePath;
     HeadingItem *heading;
     DemoTextItem *description1;
     DemoTextItem *description2;
-    
+
     QString loadDescription(int startPara, int nrPara);
     QString extractTextFromParagraph(const QDomNode &parentNode);
-    
+
     void createContent();
 };
 

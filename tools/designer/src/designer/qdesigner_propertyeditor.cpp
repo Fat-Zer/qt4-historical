@@ -51,6 +51,8 @@
 
 #include <QtGui/QAction>
 
+QT_BEGIN_NAMESPACE
+
 QDesignerPropertyEditor::QDesignerPropertyEditor(QDesignerWorkbench *workbench)
     : QDesignerToolWindow(workbench)
 {
@@ -62,6 +64,7 @@ QDesignerPropertyEditor::QDesignerPropertyEditor(QDesignerWorkbench *workbench)
 
     setWindowTitle(tr("Property Editor"));
     action()->setShortcut(tr("Ctrl+I"));
+    action()->setObjectName(QLatin1String("__qt_property_editor_action"));
 }
 
 QDesignerPropertyEditor::~QDesignerPropertyEditor()
@@ -90,3 +93,4 @@ void QDesignerPropertyEditor::showEvent(QShowEvent *event)
     QDesignerToolWindow::showEvent(event);
 }
 
+QT_END_NAMESPACE

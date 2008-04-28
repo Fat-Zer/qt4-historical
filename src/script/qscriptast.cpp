@@ -47,6 +47,8 @@
 
 #include "qscriptastvisitor_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace AST {
 
 ExpressionNode *Node::expressionCast()
@@ -775,5 +777,7 @@ void StatementSourceElement::accept0(Visitor *visitor)
 }
 
 } } // namespace QScript::AST
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

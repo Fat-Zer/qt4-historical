@@ -53,6 +53,8 @@
 
 #include <qt_windows.h>
 
+QT_BEGIN_NAMESPACE
+
 class QAuServerWindows : public QAuServer {
     Q_OBJECT
 
@@ -77,8 +79,13 @@ public:
 QAuServerWindows::QAuServerWindows(QObject* parent) :
     QAuServer(parent), current(0)
 {
-    mutex = CreateMutexA(0, 0, 0);
-    event = CreateEventA(0, FALSE, FALSE, 0);
+    QT_WA({
+        mutex = CreateMutexW(0, 0, 0);
+        event = CreateEventW(0, FALSE, FALSE, 0);
+    } , {
+        mutex = CreateMutexA(0, 0, 0);
+        event = CreateEventA(0, FALSE, FALSE, 0);
+    });
 }
 
 QAuServerWindows::~QAuServerWindows()
@@ -206,6 +213,8 @@ QAuServer* qt_new_audio_server()
 {
     return new QAuServerWindows(qApp);
 }
+
+QT_END_NAMESPACE
 
 #include "qsound_win.moc"
 

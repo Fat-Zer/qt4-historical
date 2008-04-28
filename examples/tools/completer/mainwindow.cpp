@@ -45,6 +45,7 @@
 #include "dirmodel.h"
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), completer(0), lineEdit(0)
 {
@@ -76,18 +77,24 @@ MainWindow::MainWindow(QWidget *parent)
     caseCombo->addItem(tr("Case Insensitive"));
     caseCombo->addItem(tr("Case Sensitive"));
     caseCombo->setCurrentIndex(0);
+//! [0]
 
+//! [1]
     wrapCheckBox = new QCheckBox;
     wrapCheckBox->setText(tr("Wrap around completions"));
     wrapCheckBox->setChecked(true);
+//! [1]
 
+//! [2]
     contentsLabel = new QLabel;
     contentsLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     connect(modelCombo, SIGNAL(activated(int)), this, SLOT(changeModel()));
     connect(modeCombo, SIGNAL(activated(int)), this, SLOT(changeMode(int)));
     connect(caseCombo, SIGNAL(activated(int)), this, SLOT(changeCase(int)));
+//! [2]
 
+//! [3]
     lineEdit = new QLineEdit;
     
     QGridLayout *layout = new QGridLayout;
@@ -105,7 +112,9 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("Completer"));
     lineEdit->setFocus();
 }
+//! [3]
 
+//! [4]
 void MainWindow::createMenu()
 {
     QAction *exitAction = new QAction(tr("Exit"), this);
@@ -123,14 +132,20 @@ void MainWindow::createMenu()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 }
+//! [4]
 
+//! [5]
 QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
 {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
         return new QStringListModel(completer);
+//! [5]
 
+//! [6]
+#ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+#endif
     QStringList words;
 
     while (!file.atEnd()) {
@@ -139,14 +154,21 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
             words << line.trimmed();
     }
 
+#ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
+#endif
+//! [6]
 
+//! [7]
     if (!fileName.contains(QLatin1String("countries.txt")))
         return new QStringListModel(words, completer);
+//! [7]
 
     // The last two chars of the countries.txt file indicate the country
     // symbol. We put that in column 2 of a standard item model
+//! [8]
     QStandardItemModel *m = new QStandardItemModel(words.count(), 2, completer);
+//! [8] //! [9]
     for (int i = 0; i < words.count(); ++i) {
         QModelIndex countryIdx = m->index(i, 0);
         QModelIndex symbolIdx = m->index(i, 1);
@@ -158,7 +180,9 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
 
     return m;
 }
+//! [9]
 
+//! [10]
 void MainWindow::changeMode(int index)
 {
     QCompleter::CompletionMode mode;
@@ -171,12 +195,14 @@ void MainWindow::changeMode(int index)
 
     completer->setCompletionMode(mode);
 }
+//! [10]
 
 void MainWindow::changeCase(int cs)
 {
     completer->setCaseSensitivity(cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
+//! [11]
 void MainWindow::changeModel()
 {
     delete completer;
@@ -191,6 +217,7 @@ void MainWindow::changeModel()
             contentsLabel->setText(tr("Enter file path"));
         }
         break;
+//! [11] //! [12]
     case 1:
         { // DirModel that shows full paths
             DirModel *dirModel = new DirModel(completer);
@@ -198,6 +225,7 @@ void MainWindow::changeModel()
             contentsLabel->setText(tr("Enter file path"));
         }
         break;
+//! [12] //! [13]
     case 2:
         { // Country List
             completer->setModel(modelFromFile(":/resources/countries.txt"));
@@ -211,6 +239,7 @@ void MainWindow::changeModel()
             contentsLabel->setText(tr("Enter name of your country"));
         }
         break;
+//! [13] //! [14]
     case 3:
         { // Word list
             completer->setModel(modelFromFile(":/resources/wordlist.txt"));
@@ -226,9 +255,12 @@ void MainWindow::changeModel()
     lineEdit->setCompleter(completer);
     connect(wrapCheckBox, SIGNAL(clicked(bool)), completer, SLOT(setWrapAround(bool)));
 }
+//! [14]
 
+//! [15]
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About"), tr("This example demonstrates the "
         "different features of the QCompleter class."));
 }
+//! [15]

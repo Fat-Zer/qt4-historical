@@ -45,6 +45,8 @@
 #include "tokens.h"
 #include "rpp.h"
 
+QT_BEGIN_NAMESPACE
+
 using namespace TokenEngine;
 namespace Rpp {
 
@@ -326,3 +328,5 @@ IntLiteral *ExpressionBuilder::createIntLiteral(const int arg)
 }
 
 }
+
+QT_END_NAMESPACE

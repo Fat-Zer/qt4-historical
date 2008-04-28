@@ -47,6 +47,7 @@
 #include <qdesigner_command_p.h>
 #include <qdesigner_utils_p.h>
 #include <qlayout_widget_p.h>
+#include <orderdialog_p.h>
 
 #include <QtDesigner/QExtensionManager>
 #include <QtDesigner/QDesignerFormWindowInterface>
@@ -61,6 +62,10 @@
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
 
+Q_DECLARE_METATYPE(QWidgetList)
+
+QT_BEGIN_NAMESPACE
+
 namespace {
     enum { VBOX_MARGIN = 1, HBOX_MARGIN = 4, BG_ALPHA = 32 };
 }
@@ -73,7 +78,7 @@ static QRect fixRect(const QRect &r)
 namespace qdesigner_internal {
 
 TabOrderEditor::TabOrderEditor(QDesignerFormWindowInterface *form, QWidget *parent) :
-    QWidget(parent), 
+    QWidget(parent),
     m_form_window(form),
     m_bg_widget(0),
     m_undo_stack(form->commandHistory()),
@@ -232,6 +237,20 @@ void TabOrderEditor::initTabOrder()
     }
 
     // Append any widgets that are in the form but are not in the tab order
+    QList<QWidget *> childQueue;
+    childQueue.append(formWindow()->mainContainer());
+    while (!childQueue.isEmpty()) {
+        QWidget *child = childQueue.takeFirst();
+        childQueue += qVariantValue<QWidgetList>(child->property("_q_widgetOrder"));
+
+        if (skipWidget(child))
+            continue;
+
+        if (!m_tab_order_list.contains(child))
+            m_tab_order_list.append(child);
+    }
+
+    // Just in case we missed some widgets
     QDesignerFormWindowCursorInterface *cursor = formWindow()->cursor();
     for (int i = 0; i < cursor->widgetCount(); ++i) {
 
@@ -342,8 +361,13 @@ void TabOrderEditor::contextMenuEvent(QContextMenuEvent *e)
     QMenu menu(this);
     const int target_index = widgetIndexAt(e->pos());
     QAction *setIndex = menu.addAction(tr("Start from Here"));
-    QAction *resetIndex = menu.addAction(tr("Restart"));
     setIndex->setEnabled(target_index >= 0);
+
+    QAction *resetIndex = menu.addAction(tr("Restart"));
+    menu.addSeparator();
+    QAction *showDialog = menu.addAction(tr("Tab Order List..."));
+    showDialog->setEnabled(m_tab_order_list.size() > 1);
+
     QAction *result = menu.exec(e->globalPos());
     if (result == resetIndex) {
         m_current_index = 0;
@@ -355,6 +379,8 @@ void TabOrderEditor::contextMenuEvent(QContextMenuEvent *e)
         if (m_current_index >= m_tab_order_list.size())
             m_current_index = 0;
         update();
+    } else if (result == showDialog) {
+        showTabOrderDialog();
     }
 }
 
@@ -378,4 +404,30 @@ void TabOrderEditor::resizeEvent(QResizeEvent *e)
     QWidget::resizeEvent(e);
 }
 
+void TabOrderEditor::showTabOrderDialog()
+{
+    if (m_tab_order_list.size() < 2)
+        return;
+    OrderDialog dlg(this);
+    dlg.setWindowTitle(tr("Tab Order List"));
+    dlg.setDescription(tr("Tab Order"));
+    dlg.setFormat(OrderDialog::TabOrderFormat);
+    dlg.setPageList(m_tab_order_list);
+
+    if (dlg.exec() == QDialog::Rejected)
+        return;
+
+    const QWidgetList newOrder = dlg.pageList();
+    if (newOrder == m_tab_order_list)
+        return;
+
+    m_tab_order_list = newOrder;
+    TabOrderCommand *cmd = new TabOrderCommand(formWindow());
+    cmd->init(m_tab_order_list);
+    formWindow()->commandHistory()->push(cmd);
+    update();
 }
+
+}
+
+QT_END_NAMESPACE

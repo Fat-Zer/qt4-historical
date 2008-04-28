@@ -52,6 +52,8 @@
 
 #include "tr.h"
 
+QT_BEGIN_NAMESPACE
+
 class Config;
 class QRegExp;
 
@@ -67,6 +69,8 @@ public:
 
     void start();
     void advance( QChar ch );
+    void advanceLines(int n) { stkTop->lineNo += n; stkTop->columnNo = 1; }
+
     void push( const QString& filePath );
     void pop();
     void setEtc( bool etc ) { etcetera = etc; }
@@ -80,9 +84,9 @@ public:
     int lineNo() const { return stkTop->lineNo; }
     int columnNo() const { return stkTop->columnNo; }
     bool etc() const { return etcetera; }
-    void warning( const QString& message, const QString& details = "" ) const;
-    void error( const QString& message, const QString& details = "" ) const;
-    void fatal( const QString& message, const QString& details = "" ) const;
+    void warning( const QString& message, const QString& details = QString() ) const;
+    void error( const QString& message, const QString& details = QString() ) const;
+    void fatal( const QString& message, const QString& details = QString() ) const;
 
     QT_STATIC_CONST Location null;
 
@@ -116,5 +120,7 @@ private:
     static QString programName;
     static QRegExp *spuriousRegExp;
 };
+
+QT_END_NAMESPACE
 
 #endif

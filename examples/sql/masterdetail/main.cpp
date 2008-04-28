@@ -48,6 +48,8 @@
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(masterdetail);
+
     QApplication app(argc, argv);
 
     if (!createConnection())

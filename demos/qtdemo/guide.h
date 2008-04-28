@@ -51,17 +51,17 @@ class Guide
 public:
     Guide(Guide *follows = 0);
     virtual ~Guide();
-    
+
     virtual void guide(DemoItem *item, float moveSpeed) = 0;
     void move(DemoItem *item, QPointF &dest, float moveSpeed);
     virtual QPointF startPos(){ return QPointF(0, 0); };
     virtual QPointF endPos(){ return QPointF(0, 0); };
     virtual float length(){ return 1; };
     float lengthAll();
-    
+
     void setScale(float scaleX, float scaleY, bool all = true);
     void setFence(const QRectF &fence, bool all = true);
-    
+
     int startLength;
     Guide *nextGuide;
     Guide *firstGuide;

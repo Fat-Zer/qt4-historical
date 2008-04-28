@@ -56,6 +56,8 @@
 #include "qmessagebox.h"
 #include "qbitarray.h"
 
+QT_BEGIN_NAMESPACE
+
 //#define QT_DEBUG_DATAMANAGER
 
 class Q3SqlCursorManagerPrivate
@@ -358,17 +360,7 @@ values for the record being sought.  This function is typically used
 to relocate a cursor to the correct position after an insert or
 update.  For example:
 
-\code
-    Q3SqlCursor* myCursor = myManager.cursor();
-    ...
-    QSqlRecord* buf = myCursor->primeUpdate();
-    buf->setValue("name", "Ola");
-    buf->setValue("city", "Oslo");
-    ...
-    myCursor->update();  // update current record
-    myCursor->select();  // refresh the cursor
-    myManager.findBuffer(myCursor->primaryIndex()); // go to the updated record
-\endcode
+\snippet doc/src/snippets/code/src.qt3support.sql.q3sqlmanager_p.cpp 0
 
 */
 
@@ -965,5 +957,7 @@ QSql::Confirm Q3DataManager::confirmCancel(QWidget* parent, QSql::Op)
     return QSql::Yes;
 #endif // QT_NO_MESSAGEBOX
 }
+
+QT_END_NAMESPACE
 
 #endif

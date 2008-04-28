@@ -46,6 +46,7 @@
 #include "mainwindow.h"
 #include "tabletcanvas.h"
 
+//! [0]
 MainWindow::MainWindow(TabletCanvas *canvas)
 {
     myCanvas = canvas;
@@ -60,7 +61,9 @@ MainWindow::MainWindow(TabletCanvas *canvas)
     setWindowTitle(tr("Tablet Example"));
     setCentralWidget(myCanvas);
 }
+//! [0]
 
+//! [1]
 void MainWindow::brushColorAct()
 {
     QColor color = QColorDialog::getColor(myCanvas->color());
@@ -68,7 +71,9 @@ void MainWindow::brushColorAct()
     if (color.isValid())
         myCanvas->setColor(color);
 }
+//! [1]
 
+//! [2]
 void MainWindow::alphaActionTriggered(QAction *action)
 {
     if (action == alphaChannelPressureAction) {
@@ -79,7 +84,9 @@ void MainWindow::alphaActionTriggered(QAction *action)
         myCanvas->setAlphaChannelType(TabletCanvas::NoAlpha);
     }
 }
+//! [2]
 
+//! [3]
 void MainWindow::lineWidthActionTriggered(QAction *action)
 {
     if (action == lineWidthPressureAction) {
@@ -90,7 +97,9 @@ void MainWindow::lineWidthActionTriggered(QAction *action)
         myCanvas->setLineWidthType(TabletCanvas::NoLineWidth);
     }
 }
+//! [3]
 
+//! [4]
 void MainWindow::saturationActionTriggered(QAction *action)
 {
     if (action == colorSaturationVTiltAction) {
@@ -103,7 +112,9 @@ void MainWindow::saturationActionTriggered(QAction *action)
         myCanvas->setColorSaturationType(TabletCanvas::NoSaturation);
     }
 }
+//! [4]
 
+//! [5]
 void MainWindow::saveAct()
 {
     QString path = QDir::currentPath() + "/untitled.png";
@@ -114,7 +125,9 @@ void MainWindow::saveAct()
         QMessageBox::information(this, "Error Saving Picture",
                                  "Could not save the image");
 }
+//! [5]
 
+//! [6]
 void MainWindow::loadAct()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Picture"),
@@ -124,20 +137,26 @@ void MainWindow::loadAct()
         QMessageBox::information(this, "Error Opening Picture",
                                  "Could not open picture");
 }
+//! [6]
 
+//! [7]
 void MainWindow::aboutAct()
 {
     QMessageBox::about(this, tr("About Tablet Example"),
                        tr("This example shows use of a Wacom tablet in Qt"));
 }
+//! [7]
 
+//! [8]
 void MainWindow::createActions()
 {
+//! [8]
     brushColorAction = new QAction(tr("&Brush Color..."), this);
     brushColorAction->setShortcut(tr("Ctrl+C"));
     connect(brushColorAction, SIGNAL(triggered()),
             this, SLOT(brushColorAct()));
 
+//! [9]
     alphaChannelPressureAction = new QAction(tr("&Pressure"), this);
     alphaChannelPressureAction->setCheckable(true);
 
@@ -155,6 +174,7 @@ void MainWindow::createActions()
     connect(alphaChannelGroup, SIGNAL(triggered(QAction *)),
             this, SLOT(alphaActionTriggered(QAction *)));
 
+//! [9]
     colorSaturationVTiltAction = new QAction(tr("&Vertical Tilt"), this);
     colorSaturationVTiltAction->setCheckable(true);
 
@@ -217,8 +237,11 @@ void MainWindow::createActions()
     aboutQtAction->setShortcut(tr("Ctrl+Q"));
     connect(aboutQtAction, SIGNAL(triggered()),
             qApp, SLOT(aboutQt()));
+//! [10]
 }
+//! [10]
 
+//! [11]
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -251,3 +274,4 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAction);
     helpMenu->addAction(aboutQtAction);
 }
+//! [11]

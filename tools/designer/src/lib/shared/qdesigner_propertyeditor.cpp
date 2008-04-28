@@ -43,11 +43,22 @@
 
 #include "qdesigner_propertyeditor_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 QDesignerPropertyEditor::QDesignerPropertyEditor(QWidget *parent, Qt::WindowFlags flags) :
     QDesignerPropertyEditorInterface(parent, flags)
 {
+    // Make old signal work for  compatibility
+    connect(this, SIGNAL(propertyChanged(QString,QVariant)), this, SLOT(slotPropertyChanged(QString,QVariant)));
+}
+
+void QDesignerPropertyEditor::slotPropertyChanged(const QString &name, const QVariant &value)
+{
+    emit propertyValueChanged(name, value, true);
 }
 
 }
+
+QT_END_NAMESPACE

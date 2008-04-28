@@ -49,7 +49,13 @@
 #include <QtGui/qicon.h>
 #include <QtGui/qaction.h>
 
+#ifdef QT3_SUPPORT
+#include <QtGui/qpixmap.h>
+#endif
+
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -59,7 +65,6 @@ class QMenuPrivate;
 class QStyleOptionMenuItem;
 #ifdef QT3_SUPPORT
 class QMenuItem;
-#include <QtGui/qpixmap.h>
 #endif
 
 class Q_GUI_EXPORT QMenu : public QWidget
@@ -135,6 +140,11 @@ public:
     MenuRef macMenu(MenuRef merge=0);
 #endif
 
+#ifdef Q_OS_WINCE
+    HMENU wceMenu(bool create = false);
+#endif
+
+
     bool separatorsCollapsible() const;
     void setSeparatorsCollapsible(bool collapse);
 
@@ -162,6 +172,10 @@ protected:
     bool event(QEvent *);
     bool focusNextPrevChild(bool next);
     void initStyleOption(QStyleOptionMenuItem *option, const QAction *action) const;
+
+#ifdef Q_OS_WINCE
+    QAction* wceCommands(uint command);
+#endif
 
 private Q_SLOTS:
     void internalSetSloppyAction();
@@ -404,6 +418,8 @@ private:
 };
 
 #endif // QT_NO_MENU
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

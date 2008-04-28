@@ -43,15 +43,23 @@
 
 #include "newdynamicpropertydialog.h"
 #include "ui_newdynamicpropertydialog.h"
-#include <QMessageBox>
+#include <abstractdialoggui_p.h>
+
+#include <QtGui/QPushButton>
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
-NewDynamicPropertyDialog::NewDynamicPropertyDialog(QWidget *parent)
-    : QDialog(parent),
-      m_ui(new Ui::NewDynamicPropertyDialog)
+NewDynamicPropertyDialog::NewDynamicPropertyDialog(QDesignerDialogGuiInterface *dialogGui,
+                                                       QWidget *parent)   :
+    QDialog(parent),
+    m_dialogGui(dialogGui),
+    m_ui(new Ui::NewDynamicPropertyDialog)
 {
     m_ui->setupUi(this);
+    connect(m_ui->m_lineEdit, SIGNAL(textChanged(QString)), this, SLOT(nameChanged(QString)));
+
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     m_ui->m_comboBox->addItem(QLatin1String("String"),      QVariant(QVariant::String));
@@ -84,6 +92,12 @@ NewDynamicPropertyDialog::NewDynamicPropertyDialog(QWidget *parent)
     m_ui->m_comboBox->addItem(QLatin1String("KeySequence"), QVariant(QVariant::KeySequence));
 
     m_ui->m_comboBox->setCurrentIndex(0); // String
+    setOkButtonEnabled(false);
+}
+
+void NewDynamicPropertyDialog::setOkButtonEnabled(bool e)
+{
+    m_ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(e);
 }
 
 NewDynamicPropertyDialog::~NewDynamicPropertyDialog()
@@ -94,6 +108,13 @@ NewDynamicPropertyDialog::~NewDynamicPropertyDialog()
 void NewDynamicPropertyDialog::setReservedNames(const QStringList &names)
 {
     m_reservedNames = names;
+}
+
+void NewDynamicPropertyDialog::setPropertyType(QVariant::Type t)
+{
+    const int index = m_ui->m_comboBox->findData(QVariant(t));
+    if (index != -1)
+        m_ui->m_comboBox->setCurrentIndex(index);
 }
 
 QString NewDynamicPropertyDialog::propertyName() const
@@ -109,6 +130,16 @@ QVariant NewDynamicPropertyDialog::propertyValue() const
     return m_ui->m_comboBox->itemData(index);
 }
 
+void NewDynamicPropertyDialog::information(const QString &message)
+{
+    m_dialogGui->message(this, QDesignerDialogGuiInterface::PropertyEditorMessage, QMessageBox::Information, tr("Set Property Name"), message);
+}
+
+void NewDynamicPropertyDialog::nameChanged(const QString &s)
+{
+    setOkButtonEnabled(!s.isEmpty());
+}
+
 void NewDynamicPropertyDialog::on_m_buttonBox_clicked(QAbstractButton *btn)
 {
     const int role = m_ui->m_buttonBox->buttonRole(btn);
@@ -117,13 +148,13 @@ void NewDynamicPropertyDialog::on_m_buttonBox_clicked(QAbstractButton *btn)
             reject();
             break;
         case QDialogButtonBox::AcceptRole:
-            QString name = m_ui->m_lineEdit->text();
+            const QString name = propertyName();
             if (m_reservedNames.contains(name)) {
-                QMessageBox::information(this, tr("Set Property Name"), tr("The current object already has a property named '%1'.\nPlease select another, unique one.").arg(name));
-                    break;
+                information(tr("The current object already has a property named '%1'.\nPlease select another, unique one.").arg(name));
+                break;
             } else if (name.startsWith(QLatin1String("_q_"))) {
-                QMessageBox::information(this, tr("Set Property Name"), tr("The '_q_' prefix is reserved for Qt library.\nPlease select another name."));
-                    break;
+                information(tr("The '_q_' prefix is reserved for the Qt library.\nPlease select another name."));
+                break;
             }
             accept();
             break;
@@ -131,3 +162,5 @@ void NewDynamicPropertyDialog::on_m_buttonBox_clicked(QAbstractButton *btn)
 }
 
 }
+
+QT_END_NAMESPACE

@@ -50,12 +50,14 @@
 #include <QtGui/QLayout>
 #include <QtCore/qplugin.h>
 
+QT_BEGIN_NAMESPACE
+
 class Q3GroupBoxPlugin: public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
-    Q3GroupBoxPlugin(QObject *parent = 0);
+    Q3GroupBoxPlugin(const QIcon &icon, QObject *parent = 0);
     virtual ~Q3GroupBoxPlugin();
 
     virtual QString name() const;
@@ -88,6 +90,9 @@ public:
 
 private:
     bool m_initialized;
+    QIcon m_icon;
 };
+
+QT_END_NAMESPACE
 
 #endif

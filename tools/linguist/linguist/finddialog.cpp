@@ -49,16 +49,18 @@
 
 #include "finddialog.h"
 
+QT_BEGIN_NAMESPACE
+
 FindDialog::FindDialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUi(this);
-    
+
     findNxt->setEnabled(false);
 
     connect(findNxt, SIGNAL(clicked()), this, SLOT(emitFindNext()));
     connect(led, SIGNAL(textChanged(const QString &)), this, SLOT(verifyText(const QString &)));
-    
+
     led->setFocus();
 }
 
@@ -76,5 +78,16 @@ void FindDialog::emitFindNext()
                 (comments->isChecked() ? Comments : 0);
     else
         where = Translations;
-    emit findNext(led->text(), where, matchCase->isChecked());
+    emit findNext(led->text(), where, matchCase->isChecked(), ignoreAccelerators->isChecked());
 }
+
+void FindDialog::find()
+{
+    led->setFocus();
+
+    show();
+    activateWindow();
+    raise();
+}
+
+QT_END_NAMESPACE

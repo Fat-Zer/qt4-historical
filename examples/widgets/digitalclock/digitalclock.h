@@ -46,6 +46,7 @@
 
 #include <QLCDNumber>
 
+//! [0]
 class DigitalClock : public QLCDNumber
 {
     Q_OBJECT
@@ -56,5 +57,6 @@ public:
 private slots:
     void showTime();
 };
+//! [0]
 
 #endif

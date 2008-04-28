@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 #ifndef Q_MOC_RUN
@@ -56,9 +58,13 @@ namespace
 class Q_CORE_EXPORT
 #endif
 Qt {
-#ifdef Q_MOC_RUN
+
+#if defined(Q_MOC_RUN)
     Q_OBJECT
-    Q_ENUMS(Orientation TextFormat BackgroundMode DateFormat ScrollBarPolicy FocusPolicy ContextMenuPolicy CaseSensitivity LayoutDirection ArrowType ShortcutContext)
+#endif
+
+#if (defined(Q_MOC_RUN) || defined(QT_JAMBI_RUN))
+    Q_ENUMS(Orientation TextFormat BackgroundMode DateFormat ScrollBarPolicy FocusPolicy ContextMenuPolicy CaseSensitivity LayoutDirection ArrowType ShortcutContext TimeSpec)
     Q_ENUMS(ToolButtonStyle)
     Q_ENUMS(PenStyle PenCapStyle PenJoinStyle BrushStyle FillRule BGMode ClipOperation GlobalColor)
     Q_FLAGS(Alignment)
@@ -75,8 +81,12 @@ Qt {
     Q_ENUMS(Key)
     Q_ENUMS(ItemSelectionMode)
     Q_FLAGS(KeyboardModifiers MouseButtons)
+#endif // (defined(Q_MOC_RUN) || defined(QT_JAMBI_RUN))
+
+#if defined(Q_MOC_RUN)
 public:
 #endif
+
     enum GlobalColor {
         color0,
         color1,
@@ -207,7 +217,9 @@ public:
         TextDontPrint = 0x4000,
         TextIncludeTrailingSpaces = 0x08000000,
         TextHideMnemonic = 0x8000,
-        TextJustificationForced = 0x10000
+        TextJustificationForced = 0x10000,
+        TextForceLeftToRight = 0x20000,
+        TextForceRightToLeft = 0x40000
 
 #if defined(QT3_SUPPORT) && !defined(Q_MOC_RUN)
         ,SingleLine = TextSingleLine,
@@ -258,6 +270,8 @@ public:
         WindowContextHelpButtonHint = 0x00010000,
         WindowShadeButtonHint = 0x00020000,
         WindowStaysOnTopHint = 0x00040000,
+        WindowOkButtonHint = 0x00080000,
+        WindowCancelButtonHint = 0x000100000,
         CustomizeWindowHint = 0x02000000
 
 #ifdef QT3_SUPPORT
@@ -420,6 +434,32 @@ public:
 
         WA_StyleSheet = 97, // internal
 
+        WA_ShowWithoutActivating = 98,
+
+        WA_X11BypassTransientForHint = 99,
+
+        WA_NativeWindow = 100,
+        WA_DontCreateNativeAncestors = 101,
+
+        WA_MacVariableSize = 102,    // Mac only
+
+        WA_DontShowOnScreen = 103,
+
+        // window types from http://standards.freedesktop.org/wm-spec/
+        WA_X11NetWmWindowTypeDesktop = 104,
+        WA_X11NetWmWindowTypeDock = 105,
+        WA_X11NetWmWindowTypeToolBar = 106,
+        WA_X11NetWmWindowTypeMenu = 107,
+        WA_X11NetWmWindowTypeUtility = 108,
+        WA_X11NetWmWindowTypeSplash = 109,
+        WA_X11NetWmWindowTypeDialog = 110,
+        WA_X11NetWmWindowTypeDropDownMenu = 111,
+        WA_X11NetWmWindowTypePopupMenu = 112,
+        WA_X11NetWmWindowTypeToolTip = 113,
+        WA_X11NetWmWindowTypeNotification = 114,
+        WA_X11NetWmWindowTypeCombo = 115,
+        WA_X11NetWmWindowTypeDND = 116,
+
         // Add new attributes before this line
         WA_AttributeCount
     };
@@ -428,6 +468,8 @@ public:
     {
         AA_ImmediateWidgetCreation = 0,
         AA_MSWindowsUseDirect3DByDefault = 1, // Win only
+        AA_DontShowIconsInMenus = 2,
+        AA_NativeWindows = 3,
 
         // Add new attributes before this line
         AA_AttributeCount
@@ -964,6 +1006,11 @@ public:
 #endif
     };
 
+    enum SizeMode {
+        AbsoluteSize,
+        RelativeSize
+    };
+
 #if defined(QT3_SUPPORT)
 #if defined(Q_OS_MAC)
 #ifndef qdoc
@@ -994,7 +1041,7 @@ public:
     };
 #endif // Q_OS_MAC
 
-#if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) || defined(Q_OS_CYGWIN)
 #ifndef qdoc
     typedef int WindowsVersion;
 
@@ -1017,6 +1064,8 @@ public:
 
         WV_CE = QSysInfo::WV_CE,
         WV_CENET = QSysInfo::WV_CENET,
+        WV_CE_5 = QSysInfo::WV_CE_5,
+        WV_CE_6 = QSysInfo::WV_CE_6,
         WV_CE_based = QSysInfo::WV_CE_based
     };
 #endif // Q_OS_WIN
@@ -1161,14 +1210,19 @@ public:
     enum DateFormat {
         TextDate,      // default Qt
         ISODate,       // ISO 8601
-        SystemLocaleDate, // system format
-        LocalDate = SystemLocaleDate, // ## deprecated!
-        LocaleDate     // default QLocale format
+        SystemLocaleDate, // deprecated
+        LocalDate = SystemLocaleDate, // deprecated
+        LocaleDate,     // deprecated
+        SystemLocaleShortDate,
+        SystemLocaleLongDate,
+        DefaultLocaleShortDate,
+        DefaultLocaleLongDate
     };
 
     enum TimeSpec {
         LocalTime,
-        UTC
+        UTC,
+        OffsetFromUTC
     };
 
     enum DayOfWeek {
@@ -1241,7 +1295,8 @@ public:
     enum ShortcutContext {
         WidgetShortcut,
         WindowShortcut,
-        ApplicationShortcut
+        ApplicationShortcut,
+        WidgetWithChildrenShortcut
     };
 
     enum FillRule {
@@ -1361,6 +1416,7 @@ public:
     };
 
     enum ItemFlag {
+        NoItemFlags = 0,
         ItemIsSelectable = 1,
         ItemIsEditable = 2,
         ItemIsDragEnabled = 4,
@@ -1420,6 +1476,27 @@ public:
         NormalEventPriority = 0,
         LowEventPriority = -1
     };
+
+    enum SizeHint {
+        MinimumSize,
+        PreferredSize,
+        MaximumSize,
+        MinimumDescent,
+        NSizeHints
+    };
+
+    enum WindowFrameSection {
+        NoSection,
+        LeftSection,           // For resize
+        TopLeftSection,
+        TopSection,
+        TopRightSection,
+        RightSection,
+        BottomRightSection,
+        BottomSection,
+        BottomLeftSection,
+        TitleBarArea    // For move
+    };
 }
 #ifdef Q_MOC_RUN
  ;
@@ -1453,7 +1530,8 @@ public:
         Picture       = 0x05,
         Pbuffer       = 0x06,    // GL pbuffer
         FramebufferObject = 0x07, // GL framebuffer object
-        CustomRaster  = 0x08
+        CustomRaster  = 0x08,
+        MacQuartz     = 0x09
     };
     enum RelayoutType {
         RelayoutNormal,
@@ -1475,6 +1553,9 @@ public:
         RefAdoptedThread,
         DerefAdoptedThread,
         SetCurrentThreadToMainThread,
+        SetQObjectSender,
+        GetQObjectSender,
+        ResetQObjectSender,
         LastInternalFunction
     };
 
@@ -1500,6 +1581,8 @@ enum {
     QCOORD_MIN = -QCOORD_MAX - 1
 };
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

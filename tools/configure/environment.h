@@ -44,6 +44,8 @@
 #include <qstring.h>
 #include <qt_windows.h>
 
+QT_BEGIN_NAMESPACE
+
 
 enum Compiler {
     CC_UNKNOWN = 0,
@@ -55,7 +57,8 @@ enum Compiler {
     CC_MSVC6   = 0x60,
     CC_NET2002 = 0x70,
     CC_NET2003 = 0x71,
-    CC_NET2005 = 0x80
+    CC_NET2005 = 0x80,
+    CC_NET2008 = 0x90
 };
 
 struct CompilerInfo;
@@ -79,3 +82,5 @@ private:
     static QString readRegistryKey(HKEY parentHandle, const QString &rSubkey);
 };
 
+
+QT_END_NAMESPACE

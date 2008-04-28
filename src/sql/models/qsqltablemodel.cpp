@@ -55,6 +55,8 @@
 
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*! \internal
     Populates our record with values.
 */
@@ -251,10 +253,7 @@ QSqlRecord QSqlTableModelPrivate::primaryValues(int row)
     lower-level QSqlQuery and can be used to provide data to view
     classes such as QTableView. For example:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto QSqlTableModel_snippets
-    \skipto QSqlTableModel *model
-    \printuntil show()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 24
 
     We set the SQL table's name and the edit strategy, then we set up
     the labels displayed in the view header. The edit strategy
@@ -265,8 +264,7 @@ QSqlRecord QSqlTableModelPrivate::primaryValues(int row)
     QSqlTableModel can also be used to access a database
     programmatically, without binding it to a view:
 
-    \skipto QSqlTableModel model
-    \printuntil QString name =
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 25
 
     The code snippet above extracts the \c salary field from record 4 in
     the result set of the query \c{SELECT * from employee}.
@@ -281,10 +279,6 @@ QSqlRecord QSqlTableModelPrivate::primaryValues(int row)
     QSqlTableModel provides no direct support for foreign keys. Use
     the QSqlRelationalTableModel and QSqlRelationalDelegate if you
     want to resolve foreign keys.
-
-    The \l{QSQLITE} driver locks for updates until a select is finished.
-    QSqlTableModel fetches data (QSqlQuery::fetchMore()) as needed;
-    this may cause the updates to time out.
 
     \sa QSqlRelationalTableModel, QSqlQuery, {Model/View Programming},
         {Table Model Example}, {Cached Table Example}
@@ -1053,7 +1047,9 @@ bool QSqlTableModel::removeColumns(int column, int count, const QModelIndex &par
     does not support hierarchical structures, \a parent must be
     an invalid model index.
 
-    Emits the beforeDelete() signal before a row is deleted.
+    Emits the beforeDelete() signal before a row is deleted. When
+    the edit strategy is OnManualSubmit signal emission is delayed
+    until submitAll() is called.
 
     Returns true if all rows could be removed; otherwise returns
     false. Detailed error information can be retrieved using
@@ -1086,8 +1082,10 @@ bool QSqlTableModel::removeRows(int row, int count, const QModelIndex &parent)
                 return false;
             if (d->cache.value(idx).op == QSqlTableModelPrivate::Insert)
                 revertRow(idx);
-            else
+            else {
                 d->cache[idx].op = QSqlTableModelPrivate::Delete;
+                emit headerDataChanged(Qt::Vertical, idx, idx);
+            }
         }
         break;
     }
@@ -1316,3 +1314,5 @@ bool QSqlTableModel::setRecord(int row, const QSqlRecord &record)
     }
     return false;
 }
+
+QT_END_NAMESPACE

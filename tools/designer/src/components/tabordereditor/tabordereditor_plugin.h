@@ -51,6 +51,8 @@
 #include <QtCore/QPointer>
 #include <QtCore/QHash>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 class QAction;
 
@@ -87,5 +89,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TABORDEREDITOR_PLUGIN_H

@@ -46,8 +46,11 @@
 
 #include <QWidget>
 
+//! [0]
 class Helper;
+QT_BEGIN_NAMESPACE
 class QPaintEvent;
+QT_END_NAMESPACE
 
 class Widget : public QWidget
 {
@@ -66,5 +69,6 @@ private:
     Helper *helper;
     int elapsed;
 };
+//! [0]
 
 #endif

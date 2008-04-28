@@ -47,6 +47,7 @@
 #include <QtCore>
 #include <QtGui/QGraphicsPixmapItem>
 
+//! [0]
 class ImageItem : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
@@ -71,5 +72,6 @@ private:
     int recordId;
     double z;
 };
+//! [0]
 
 #endif

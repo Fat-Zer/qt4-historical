@@ -70,6 +70,8 @@
 #include "private/qpdf_p.h"
 #include "private/qpaintengine_p.h"
 
+QT_BEGIN_NAMESPACE
+
 // #define USE_NATIVE_GRADIENTS
 
 class QImage;
@@ -145,6 +147,8 @@ public:
     int addConstantAlphaObject(int alpha);
     int addBrushPattern(const QTransform &matrix, bool *specifyColor, int *gStateObject);
 
+    void drawTextItem(const QPointF &p, const QTextItemInt &ti);
+
     QTransform pageMatrix() const;
 
 private:
@@ -184,6 +188,8 @@ private:
     QHash<uint, uint> alphaCache;
 };
 
+QT_END_NAMESPACE
 
 #endif // QT_NO_PRINTER
+
 #endif // QPRINTENGINE_PDF_P_H

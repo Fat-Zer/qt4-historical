@@ -51,6 +51,8 @@
 
 #include <stdio.h>
 
+QT_BEGIN_NAMESPACE
+
 QT_STATIC_CONST_IMPL Location Location::null;
 
 int Location::tabSize;
@@ -113,14 +115,14 @@ void Location::start()
 */
 void Location::advance( QChar ch )
 {
-    if ( ch == '\n' ) {
-	stkTop->lineNo++;
-	stkTop->columnNo = 1;
-    } else if ( ch == '\t' ) {
-	stkTop->columnNo = 1 + tabSize * ( stkTop->columnNo + tabSize - 1 )
-			       / tabSize;
+    if ( ch == QLatin1Char('\n') ) {
+        stkTop->lineNo++;
+        stkTop->columnNo = 1;
+    } else if ( ch == QLatin1Char('\t') ) {
+        stkTop->columnNo = 1 + tabSize * ( stkTop->columnNo + tabSize - 1 )
+                       / tabSize;
     } else {
-	stkTop->columnNo++;
+        stkTop->columnNo++;
     }
 }
 
@@ -270,8 +272,8 @@ void Location::emitMessage( MessageType type, const QString& message,
     if ( type == Error )
 	result.prepend( tr("error: ") );
     result.prepend( toString() );
-    printf( "%s\n", result.toLatin1().data() );
-    fflush( stdout );
+    fprintf( stderr, "%s\n", result.toLatin1().data() );
+    fflush( stderr );
 }
 
 QString Location::toString() const
@@ -279,39 +281,46 @@ QString Location::toString() const
     QString str;
 
     if ( isEmpty() ) {
-	str = programName;
+        str = programName;
     } else {
-	Location loc2 = *this;
-	loc2.setEtc( false );
-	loc2.pop();
-	if ( !loc2.isEmpty() ) {
-	    QString blah = tr( "In file included from " );
-	    for ( ;; ) {
-		str += blah + loc2.top();
-		loc2.pop();
-		if ( loc2.isEmpty() )
-		    break;
-		str += tr( "," ) + "\n";
-		blah.fill( ' ' );
-	    }
-	    str += tr( ":" ) + "\n";
-	}
-	str += top();
+        Location loc2 = *this;
+        loc2.setEtc( false );
+        loc2.pop();
+        if ( !loc2.isEmpty() ) {
+            QString blah = tr( "In file included from " );
+            for ( ;; ) {
+                str += blah;
+                str += loc2.top();
+                loc2.pop();
+                if ( loc2.isEmpty() )
+                    break;
+                str += tr( "," );
+                str += QLatin1Char('\n');
+                blah.fill( ' ' );
+            }
+            str += tr( ":" );
+            str += QLatin1Char('\n');
+        }
+        str += top();
     }
-    return str + ": ";
+    str += QLatin1String(": ");
+    return str;
 }
 
 QString Location::top() const
 {
     QString str = filePath();
     if ( lineNo() >= 1 ) {
-	str += ":" + QString::number( lineNo() );
+        str += QLatin1Char(':'); 
+        str += QString::number( lineNo() );
 #if 0
-	if ( columnNo() >= 1 )
-	    str += ":" + QString::number( columnNo() );
+        if ( columnNo() >= 1 )
+            str += ":" + QString::number( columnNo() );
 #endif
     }
     if ( etc() )
-	str += " (etc.)";
+        str += QLatin1String(" (etc.)");
     return str;
 }
+
+QT_END_NAMESPACE

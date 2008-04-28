@@ -76,6 +76,8 @@ Q_DECLARE_METATYPE(MYSQL_STMT*)
 #  define Q_CLIENT_MULTI_STATEMENTS 0
 #endif
 
+QT_BEGIN_NAMESPACE
+
 class QMYSQLDriverPrivate
 {
 public:
@@ -284,6 +286,7 @@ static QSqlField qToField(MYSQL_FIELD *field, QTextCodec *tc)
     f.setLength(field->length);
     f.setPrecision(field->decimals);
     f.setSqlType(field->type);
+    f.setAutoValue(field->flags & AUTO_INCREMENT_FLAG);
     return f;
 }
 
@@ -310,8 +313,7 @@ void QMYSQLResultPrivate::bindBlobs()
 {
     int i;
     MYSQL_FIELD *fieldInfo;
-    MYSQL_BIND  *bind;
-//    Q_ASSERT(meta);
+    MYSQL_BIND *bind;
 
     for(i = 0; i < fields.count(); ++i) {
         fieldInfo = fields.at(i).myField;
@@ -321,7 +323,6 @@ void QMYSQLResultPrivate::bindBlobs()
             delete[] static_cast<char*>(bind->buffer);
             bind->buffer = new char[fieldInfo->max_length];
             fields[i].outField = static_cast<char*>(bind->buffer);
-            bind->buffer_type = MYSQL_TYPE_STRING;
         }
     }
 }
@@ -438,10 +439,8 @@ void QMYSQLResult::cleanup()
         delete[] d->inBinds;
         d->inBinds = 0;
     }
-
-//    for(i = 0; i < d->outFields.size(); ++i)
-//        delete[] d->outFields.at(i);
 #endif
+
     d->hasBlobs = false;
     d->fields.clear();
     d->result = NULL;
@@ -707,6 +706,65 @@ QSqlRecord QMYSQLResult::record() const
     }
     mysql_field_seek(res, 0);
     return info;
+}
+
+bool QMYSQLResult::nextResult()
+{
+#if MYSQL_VERSION_ID >= 40100 
+    setAt(-1);
+    setActive(false);
+
+    if (d->result && isSelect())
+        mysql_free_result(d->result);
+    d->result = 0;
+    setSelect(false);
+   
+    for (int i = 0; i < d->fields.count(); ++i)
+        delete[] d->fields[i].outField;
+    d->fields.clear();
+
+    int status = mysql_next_result(d->mysql);
+    if (status > 0) {
+        setLastError(qMakeError(QCoreApplication::translate("QMYSQLResult", "Unable to execute next query"),
+                     QSqlError::StatementError, d));
+        return false;
+    } else if (status == -1) {
+        return false;   // No more result sets
+    }
+
+    d->result = mysql_store_result(d->mysql);
+    int numFields = mysql_field_count(d->mysql);
+    if (!d->result && numFields > 0) {
+        setLastError(qMakeError(QCoreApplication::translate("QMYSQLResult", "Unable to store next result"),
+                     QSqlError::StatementError, d));
+        return false;
+    }
+
+    setSelect(numFields > 0);
+    d->fields.resize(numFields);
+    d->rowsAffected = mysql_affected_rows(d->mysql);
+
+    if (isSelect()) {
+        for (int i = 0; i < numFields; i++) {
+            MYSQL_FIELD* field = mysql_fetch_field_direct(d->result, i);
+            d->fields[i].type = qDecodeMYSQLType(field->type, field->flags);
+        }
+    }
+
+    setActive(true);
+    return true;
+#else
+    return false;
+#endif
+}
+
+void QMYSQLResult::virtual_hook(int id, void *data)
+{
+    if (id == NextResult) {
+        *static_cast<bool*>(data) = nextResult();
+        return;
+    }
+    QSqlResult::virtual_hook(id, data);
 }
 
 
@@ -1029,6 +1087,8 @@ bool QMYSQLDriver::hasFeature(DriverFeature f) const
     case BatchOperations:
     case SimpleLocking:
     case LowPrecisionNumbers:
+    case EventNotifications:
+    case FinishQuery:
         return false;
     case QuerySize:
     case BLOB:
@@ -1039,6 +1099,12 @@ bool QMYSQLDriver::hasFeature(DriverFeature f) const
     case PositionalPlaceholders:
 #if MYSQL_VERSION_ID >= 40108
         return d->preparedQuerysEnabled;
+#else
+        return false;
+#endif
+    case MultipleResultSets:
+#if MYSQL_VERSION_ID >= 40100
+        return true;
 #else
         return false;
 #endif
@@ -1133,7 +1199,8 @@ bool QMYSQLDriver::open(const QString& db,
         setOpenError(true);
         return false;
     }
-#if MYSQL_VERSION_ID >= 50007
+
+#if (MYSQL_VERSION_ID >= 40113 && MYSQL_VERSION_ID < 50000) || MYSQL_VERSION_ID >= 50007
     // force the communication to be utf8
     mysql_set_character_set(d->mysql, "utf8");
 #endif
@@ -1203,7 +1270,7 @@ QSqlIndex QMYSQLDriver::primaryIndex(const QString& tablename) const
     QSqlQuery i(createResult());
     QString stmt(QLatin1String("show index from %1;"));
     QSqlRecord fil = record(tablename);
-    i.exec(stmt.arg(tablename));
+    i.exec(stmt.arg(escapeIdentifier(tablename, QSqlDriver::TableName)));
     while (i.isActive() && i.next()) {
         if (i.value(2).toString() == QLatin1String("PRIMARY")) {
             idx.append(fil.field(i.value(4).toString()));
@@ -1321,3 +1388,13 @@ QString QMYSQLDriver::formatValue(const QSqlField &field, bool trimStrings) cons
     }
     return r;
 }
+
+QString QMYSQLDriver::escapeIdentifier(const QString &identifier, IdentifierType) const
+{
+    QString res = identifier;
+    res.prepend(QLatin1Char('`')).append(QLatin1Char('`'));
+    res.replace(QLatin1Char('.'), QLatin1String("`.`"));
+    return res;
+}
+
+QT_END_NAMESPACE

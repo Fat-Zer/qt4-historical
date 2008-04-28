@@ -55,13 +55,17 @@
 // We mean it.
 //
 
+#include <QtCore/qglobal.h>
+
+QT_BEGIN_NAMESPACE
+
 struct QImageData {        // internal image data
     QImageData();
     ~QImageData();
     static QImageData *create(const QSize &size, QImage::Format format, int numColors = 0);
     static QImageData *create(uchar *data, int w, int h,  int bpl, QImage::Format format, bool readOnly);
 
-    QAtomic ref;
+    QAtomicInt ref;
 
     int width;
     int height;
@@ -91,5 +95,7 @@ struct QImageData {        // internal image data
 
     QPaintEngine *paintEngine;
 };
+
+QT_END_NAMESPACE
 
 #endif

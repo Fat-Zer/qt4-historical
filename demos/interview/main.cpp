@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
     table->setSelectionModel(selections);
     table->horizontalHeader()->setMovable(true);
     table->verticalHeader()->setMovable(true);
+    // Set StaticContents to enable minimal repaints on resizes.
+    table->viewport()->setAttribute(Qt::WA_StaticContents);
     page.addWidget(table);
 
     QTreeView *tree = new QTreeView;
@@ -72,6 +74,9 @@ int main(int argc, char *argv[])
     tree->setSelectionModel(selections);
     tree->setUniformRowHeights(true);
     tree->header()->setStretchLastSection(false);
+    tree->viewport()->setAttribute(Qt::WA_StaticContents);
+    // Disable the focus rect to get minimal repaints when scrolling on Mac.
+    tree->setAttribute(Qt::WA_MacShowFocusRect, false);
     page.addWidget(tree);
 
     QListView *list = new QListView;
@@ -80,6 +85,8 @@ int main(int argc, char *argv[])
     list->setViewMode(QListView::IconMode);
     list->setSelectionMode(QAbstractItemView::ExtendedSelection);
     list->setAlternatingRowColors(false);
+    list->viewport()->setAttribute(Qt::WA_StaticContents);
+    list->setAttribute(Qt::WA_MacShowFocusRect, false);
     page.addWidget(list);
 
     page.setWindowIcon(QPixmap(":/images/interview.png"));

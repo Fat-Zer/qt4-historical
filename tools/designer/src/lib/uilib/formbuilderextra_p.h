@@ -65,6 +65,8 @@
 #include <QtCore/QPointer>
 #include <QtCore/QString>
 
+QT_BEGIN_NAMESPACE
+
 class QObject;
 class QVariant;
 class QWidget;
@@ -77,10 +79,12 @@ namespace QFormInternal
 #endif
 
 class QAbstractFormBuilder;
+class QResourceBuilder;
 
 class QDESIGNER_UILIB_EXPORT QFormBuilderExtra
 {
     QFormBuilderExtra();
+    ~QFormBuilderExtra();
 public:
     void clear();
 
@@ -103,11 +107,20 @@ public:
     void setProcessingLayoutWidget(bool processing);
     bool processingLayoutWidget() const;
 
+    void setResourceBuilder(QResourceBuilder *builder);
+    QResourceBuilder *resourceBuilder() const;
+
     static QFormBuilderExtra *instance(const QAbstractFormBuilder *afb);
     static void removeInstance(const QAbstractFormBuilder *afb);
 
+    void storeCustomWidgetAddPageMethod(const QString &className, const QString &ct);
+    QString customWidgetAddPageMethod(const QString &className) const;
+
+    void storeCustomWidgetBaseClass(const QString &className, const QString &baseClassName);
+    QString customWidgetBaseClass(const QString &className) const;
+
 private:
-    const QString m_buddyPropertyName;
+    void clearResourceBuilder();
 
     typedef QHash<QLabel*, QString> BuddyHash;
     BuddyHash m_buddies;
@@ -119,15 +132,67 @@ private:
     CustomWidgetScriptHash m_customWidgetScriptHash;
 #endif
 
+    QHash<QString, QString> m_customWidgetAddPageMethodHash;
+    QHash<QString, QString> m_customWidgetBaseClassHash;
+
     bool m_layoutWidget;
+    QResourceBuilder *m_resourceBuilder;
 
     QPointer<QWidget> m_rootWidget;
 };
 
 void uiLibWarning(const QString &message);
 
+// Struct with static accessor that provides most strings used in the form builder.
+struct QDESIGNER_UILIB_EXPORT QFormBuilderStrings {
+    QFormBuilderStrings();
+
+    static const QFormBuilderStrings &instance();
+
+    const QString buddyProperty;
+    const QString cursorProperty;
+    const QString objectNameProperty;
+    const QString trueValue;
+    const QString falseValue;
+    const QString horizontalPostFix;
+    const QString separator;
+    const QString defaultTitle;
+    const QString titleAttribute;
+    const QString labelAttribute;
+    const QString toolTipAttribute;
+    const QString iconAttribute;
+    const QString pixmapAttribute;
+    const QString textAttribute;
+    const QString currentIndexProperty;
+    const QString toolBarAreaAttribute;
+    const QString toolBarBreakAttribute;
+    const QString dockWidgetAreaAttribute;
+    const QString marginProperty;
+    const QString spacingProperty;
+    const QString leftMarginProperty;
+    const QString topMarginProperty;
+    const QString rightMarginProperty;
+    const QString bottomMarginProperty;
+    const QString horizontalSpacingProperty;
+    const QString verticalSpacingProperty;
+    const QString sizeHintProperty;
+    const QString sizeTypeProperty;
+    const QString orientationProperty;
+    const QString styleSheetProperty;
+    const QString qtHorizontal;
+    const QString qtVertical;
+    const QString currentRowProperty;
+    const QString tabSpacingProperty;
+    const QString qWidgetClass;
+    const QString lineClass;
+    const QString geometryProperty;
+    const QString scriptWidgetVariable;
+    const QString scriptChildWidgetsVariable;
+};
 #ifdef QFORMINTERNAL_NAMESPACE
 }
 #endif
+
+QT_END_NAMESPACE
 
 #endif // ABSTRACTFORMBUILDERPRIVATE_H

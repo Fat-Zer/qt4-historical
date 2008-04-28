@@ -74,5 +74,4 @@
 
 #endif /* __FTGRAYS_H__ */
 
-
 /* END */

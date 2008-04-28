@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_TEXTCODEC
@@ -80,6 +82,7 @@ public:
     static void setCodecForCStrings(QTextCodec *c);
 
     static QTextCodec *codecForHtml(const QByteArray &ba);
+    static QTextCodec *codecForHtml(const QByteArray &ba, QTextCodec *defaultCodec);
 
     QTextDecoder* makeDecoder() const;
     QTextEncoder* makeEncoder() const;
@@ -178,6 +181,8 @@ private:
 };
 
 #endif // QT_NO_TEXTCODEC
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

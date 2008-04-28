@@ -44,6 +44,8 @@
 #include "qstringmatcher.h"
 #include "qunicodetables_p.h"
 
+QT_BEGIN_NAMESPACE
+
 static void bm_init_skiptable(const ushort *uc, int l, uint *skiptable, Qt::CaseSensitivity cs)
 {
     int i = 0;
@@ -257,3 +259,25 @@ int QStringMatcher::indexIn(const QString &str, int from) const
 
     \sa setCaseSensitivity()
 */
+
+/*!
+    \fn int qFindStringInStringBoyerMoore(
+        const QChar *haystack, int haystackLen, int haystackOffset,
+        const QChar *needle, int needleLen, Qt::CaseSensitivity cs)
+
+    \internal
+*/
+
+int qFindStringBoyerMoore(
+    const QChar *haystack, int haystackLen, int haystackOffset,
+    const QChar *needle, int needleLen, Qt::CaseSensitivity cs)
+{
+    uint skiptable[256];
+    bm_init_skiptable((const ushort *)needle, needleLen, skiptable, cs);
+    if (haystackOffset < 0)
+        haystackOffset = 0;
+    return bm_find((const ushort *)haystack, haystackLen, haystackOffset,
+                   (const ushort *)needle, needleLen, skiptable, cs);
+}
+
+QT_END_NAMESPACE

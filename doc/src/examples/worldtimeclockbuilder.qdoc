@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
   \example designer/worldtimeclockbuilder
   \title World Time Clock Builder Example
@@ -19,9 +62,7 @@
   project file for this example needs to include the appropriate definitions
   to ensure that it is built against the required Qt modules.
 
-  \quotefromfile designer/worldtimeclockbuilder/worldtimeclockbuilder.pro
-  \skipto CONFIG
-  \printuntil RESOURCES
+  \snippet examples/designer/worldtimeclockbuilder/worldtimeclockbuilder.pro 0
 
   By appending \c form to the \c CONFIG declaration, we instruct \c qmake to
   generate a dependency on the \c libQtUiTools library containing the QtUiTools
@@ -31,9 +72,7 @@
   be processed and built into the application. The resource file contains
   an entry for the particular form that we wish to use:
 
-  \quotefromfile designer/worldtimeclockbuilder/worldtimeclockbuilder.qrc
-  \skipto <!DOCTYPE
-  \printuntil </RCC>
+  \quotefile examples/designer/worldtimeclockbuilder/worldtimeclockbuilder.qrc
 
   Forms do not need to be included with the application in this way. We only
   include a form in the application's resources for convenience, and to keep
@@ -47,15 +86,12 @@
   required to write an application, we must include the appropriate header
   file:
 
-  \quotefromfile designer/worldtimeclockbuilder/main.cpp
-  \skipto <QtUiTools>
-  \printuntil >
+  \snippet examples/designer/worldtimeclockbuilder/main.cpp 0
 
   The main function initializes the resource system with the Q_INIT_RESOURCE()
   macro and constructs an QApplication instance in the usual way:
 
-  \skipto int main
-  \printuntil QUiLoader
+  \snippet examples/designer/worldtimeclockbuilder/main.cpp 1
 
   We construct a QUiLoader object to handle the form we want to use.
 
@@ -63,14 +99,12 @@
   defined in the resource file. We use the form loader to load and construct
   the form:
 
-  \skipto QFile
-  \printuntil show
+  \snippet examples/designer/worldtimeclockbuilder/main.cpp 2
 
   Once the form has been loaded, the resource file can be closed and the
   widget is shown.
 
-  \skipto exec
-  \printuntil /^\}/
+  \snippet examples/designer/worldtimeclockbuilder/main.cpp 3
 
   The form loader ensures that all the signal and slot connections between
   objects in the form are set up correctly when the form is loaded. As a

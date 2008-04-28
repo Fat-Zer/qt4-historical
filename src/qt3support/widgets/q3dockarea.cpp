@@ -53,6 +53,8 @@
 #include "q3mainwindow.h"
 #include "q3toolbar.h"
 
+QT_BEGIN_NAMESPACE
+
 //#define QDOCKAREA_DEBUG
 
 struct Q3DockData
@@ -174,7 +176,7 @@ void Q3DockAreaLayout::invalidate()
     dirty = true;
     cached_width = 0;
     cached_height = 0;
-    layoutItems(geometry());
+    QLayout::invalidate();
 }
 
 static int start_pos(const QRect &r, Qt::Orientation o)
@@ -299,7 +301,6 @@ static void place_line(QList<Q3DockData> &lastLine, Qt::Orientation o, int lines
                       last->isResizeEnabled() ? linestrut : lastRect.height(), o);
     }
 }
-
 
 QSize Q3DockAreaLayout::minimumSize() const
 {
@@ -515,14 +516,10 @@ int Q3DockAreaLayout::widthForHeight(int h) const
     read back later to restore the saved positions.
 
     Save the positions to a QTextStream:
-    \code
-    ts << *myDockArea;
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3dockarea.cpp 0
 
     Restore the positions from a QTextStream:
-    \code
-    ts >> *myDockArea;
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3dockarea.cpp 1
 */
 
 /*!
@@ -1348,5 +1345,7 @@ QTextStream &operator>>(QTextStream &ts, Q3DockArea &dockArea)
     return ts;
 }
 #endif
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_MAINWINDOW

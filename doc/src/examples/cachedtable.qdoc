@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example sql/cachedtable
     \title Cached Table Example
@@ -18,9 +61,7 @@
     The \c TableEditor class inherits QDialog making the table editor
     widget a top-level dialog window.
 
-    \quotefromfile sql/cachedtable/tableeditor.h
-    \skipto TableEditor
-    \printuntil /^\}/
+    \snippet examples/sql/cachedtable/tableeditor.h 0
 
     The \c TableEditor constructor takes two arguments: The first is a
     pointer to the parent widget and is passed on to the base class
@@ -48,18 +89,14 @@
     Before we can use the \c TableEditor class, we must create a
     connection to the database containing the table we want to edit:
 
-    \quotefromfile sql/cachedtable/main.cpp
-    \skipto main
-    \printuntil /^\}/
+    \snippet examples/sql/cachedtable/main.cpp 0
 
     The \c createConnection() function is a helper function provided
     for convenience. It is defined in the \c connection.h file which
     is located in the \c sql example directory (all the examples in
     the \c sql directory use this function to connect to a database).
 
-    \quotefromfile sql/connection.h
-    \skipto createConnection
-    \printuntil /^\}/
+    \snippet examples/sql/connection.h 0
 
     The \c createConnection function opens a connection to an
     in-memory SQLITE database and creates a test table.  If you want
@@ -72,9 +109,7 @@
     constructor and the \c submit() slot. In the constructor we create
     and customize the data model and the various window elements:
 
-    \quotefromfile sql/cachedtable/tableeditor.cpp
-    \skipto TableEditor
-    \printto QTableView
+    \snippet examples/sql/cachedtable/tableeditor.cpp 0
 
     First we create the data model and set the SQL database table we
     want the model to operate on. Note that the
@@ -97,8 +132,7 @@
     the \l {QSqlQueryModel::setHeaderData()}{setHeaderData()} function
     that the model inherits from the QSqlQueryModel class.
 
-    \skipto QTableView
-    \printuntil setModel
+    \snippet examples/sql/cachedtable/tableeditor.cpp 1
 
     Then we create a table view. The QTableView class provides a
     default model/view implementation of a table view, i.e. it
@@ -111,8 +145,7 @@
     To make the view present our data, we pass our model to the view
     using the \l {QAbstractItemView::setModel()}{setModel()} function.
 
-    \skipto submitButton
-    \printuntil RejectRole
+    \snippet examples/sql/cachedtable/tableeditor.cpp 2
 
     The \c {TableEditor}'s buttons are regular QPushButton objects. We
     add them to a button box to ensure that the buttons are presented
@@ -133,8 +166,7 @@
     use. They exist as flags so you can OR them together in the
     constructor.
 
-    \skipto connect
-    \printuntil close()
+    \snippet examples/sql/cachedtable/tableeditor.cpp 3
 
     We connect the \gui Quit button to the table editor's \l
     {QWidget::close()}{close()} slot, and the \gui Submit button to
@@ -143,15 +175,13 @@
     to our model's \l {QSqlTableModel::revertAll()}{revertAll()} slot,
     reverting all pending changes (i.e., restoring the original data).
 
-    \skipto QHBoxLayout
-    \printuntil /^\}/
+    \snippet examples/sql/cachedtable/tableeditor.cpp 4
 
     In the end we add the button box and the table view to a layout,
     install the layout on the table editor widget, and set the
     editor's window title.
 
-    \skipto submit()
-    \printuntil /^\}/
+    \snippet examples/sql/cachedtable/tableeditor.cpp 5
 
     The \c submit() slot is called whenever the users hit the \gui
     Submit button to save their changes.

@@ -348,8 +348,8 @@ bool MainWindow::addTorrent(const QString &fileName, const QString &destinationF
     foreach (Job job, jobs) {
         if (job.torrentFileName == fileName && job.destinationDirectory == destinationFolder) {
             QMessageBox::warning(this, tr("Already downloading"),
-                                 tr("The torrent file you have selected is "
-                                    "already being downloaded."));
+                                 tr("The torrent file %1 is "
+                                    "already being downloaded.").arg(fileName));
             return false;
         }
     }
@@ -358,7 +358,7 @@ bool MainWindow::addTorrent(const QString &fileName, const QString &destinationF
     TorrentClient *client = new TorrentClient(this);
     if (!client->setTorrent(fileName)) {
         QMessageBox::warning(this, tr("Error"),
-                             tr("The torrent file you have selected can not be opened."));
+                             tr("The torrent file %1 cannot not be opened/resumed.").arg(fileName));
         delete client;
         return false;
     }

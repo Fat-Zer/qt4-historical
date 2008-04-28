@@ -46,6 +46,8 @@
 
 #include "makefile.h"
 
+QT_BEGIN_NAMESPACE
+
 class ProjectGenerator : public MakefileGenerator
 {
     bool init_flag;
@@ -65,5 +67,7 @@ public:
 
 inline ProjectGenerator::~ProjectGenerator()
 { }
+
+QT_END_NAMESPACE
 
 #endif // PROJECTGENERATOR_H

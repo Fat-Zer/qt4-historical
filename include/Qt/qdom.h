@@ -1,1 +1,1 @@
-#include "../../src/xml/qdom.h"
+#include "../../src/xml/dom/qdom.h"

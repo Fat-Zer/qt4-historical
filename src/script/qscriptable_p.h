@@ -57,7 +57,9 @@
 // We mean it.
 //
 
-#ifndef QT_NO_QOBJECT
+#if !defined(QT_NO_QOBJECT) && !defined(QT_NO_SCRIPT)
+
+QT_BEGIN_NAMESPACE
 
 class QScriptEngine;
 
@@ -77,6 +79,8 @@ public:
     QScriptable *q_ptr;
 };
 
-#endif // QT_NO_QOBJECT
+QT_END_NAMESPACE
+
+#endif // QT_NO_QOBJECT && QT_NO_SCRIPT
 
 #endif

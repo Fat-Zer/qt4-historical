@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_IMAGEFORMAT_BMP
 
+QT_BEGIN_NAMESPACE
+
 struct BMP_FILEHDR {                     // BMP file header
     char   bfType[2];                    // "BM"
     qint32  bfSize;                      // size of file
@@ -110,6 +112,8 @@ private:
     int startpos;
 };
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_IMAGEFORMAT_BMP
 
 #endif // QBMPHANDLER_P_H

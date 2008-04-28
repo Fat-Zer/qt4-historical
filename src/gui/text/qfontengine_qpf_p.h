@@ -60,12 +60,15 @@
 #include <qbuffer.h>
 
 #ifndef QT_NO_QWS_QPF
-
 #if !defined(QT_NO_FREETYPE)
-#include "qfontengine_ft_p.h"
+#   include "qfontengine_ft_p.h"
+#endif
 #endif
 
-class QOpenType;
+QT_BEGIN_NAMESPACE
+
+#ifndef QT_NO_QWS_QPF
+
 class QFontEngine;
 class QFreetypeFace;
 
@@ -163,7 +166,7 @@ public:
     ~QFontEngineQPF();
 
     FaceId faceId() const { return face_id; }
-    QByteArray getSfntTable(uint tag) const;
+    bool getSfntTableData(uint tag, uchar *buffer, uint *length) const;
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
     void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
@@ -201,8 +204,9 @@ public:
 #if !defined(QT_NO_FREETYPE)
     FT_Face lockFace() const;
     void unlockFace() const;
-    QOpenType *openType() const;
     void doKerning(int num_glyphs, QGlyphLayout *g, QTextEngine::ShaperFlags flags) const;
+    virtual HB_Error getPointInOutline(HB_Glyph glyph, int flags, hb_uint32 point, HB_Fixed *xpos, HB_Fixed *ypos, hb_uint32 *nPoints);
+    virtual QFixed emSquareSize() const;
 #endif
 
     inline QString fontFile() const { return fileName; }
@@ -241,7 +245,6 @@ private:
     QFreetypeFace *freetype;
     FaceId face_id;
     QByteArray freetypeCMapTable;
-    mutable QOpenType *_openType;
     mutable bool kerning_pairs_loaded;
     QFontEngine *renderingFontEngine;
 };
@@ -286,5 +289,7 @@ private:
     QStringList fallbackFamilies;
     int script;
 };
+
+QT_END_NAMESPACE
 
 #endif // QFONTENGINE_QPF_P_H

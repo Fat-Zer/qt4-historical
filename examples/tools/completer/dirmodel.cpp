@@ -43,11 +43,14 @@
 
 #include "dirmodel.h"
 
+//! [0]
 DirModel::DirModel(QObject *parent)
     : QDirModel(parent)
 {
 }
+//! [0]
 
+//! [1]
 QVariant DirModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole && index.column() == 0) {
@@ -59,3 +62,4 @@ QVariant DirModel::data(const QModelIndex &index, int role) const
 
     return QDirModel::data(index, role);
 }
+//! [1]

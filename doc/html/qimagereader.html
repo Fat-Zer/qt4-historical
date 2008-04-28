@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/gui/image/qimagereader.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/image/qimagereader.cpp -->
 <head>
-  <title>Qt 4.3: QImageReader Class Reference</title>
+  <title>Qt 4.4: QImageReader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QImageReader Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QImageReader Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+</h1>
 <p>The QImageReader class provides a format independent interface for reading images from files or other devices. <a href="#details">More...</a></p>
 <pre> #include &lt;QImageReader&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
@@ -155,8 +156,8 @@
 <h3 class="fn"><a name="format"></a><a href="qbytearray.html">QByteArray</a> QImageReader::format () const</h3>
 <p>Returns the format <a href="qimagereader.html">QImageReader</a> uses for reading images.</p>
 <p>You can call this function after assigning a device to the reader to determine the format of the device. For example:</p>
-<pre> QImageReader reader(&quot;image.png&quot;);
-<span class="comment"> //</span> reader.format() == &quot;png&quot;</pre>
+<pre>         QImageReader reader(&quot;image.png&quot;);
+         // reader.format() == &quot;png&quot;</pre>
 <p>If the reader cannot read any image from the device (e.g&#x2e;, there is no image there, or the image has already been read), or if the format is unsupported, this function returns an empty QByteArray().</p>
 <p>See also <a href="qimagereader.html#setFormat">setFormat</a>() and <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>().</p>
 <a name="//apple_ref/cpp/instm/QImageReader/imageCount" />
@@ -202,11 +203,11 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an image from the device into <i>image</i>, which must point to a <a href="qimage.html">QImage</a>. Returns true on success; otherwise, returns false.</p>
 <p>If <i>image</i> has same format and size as the image data that is about to be read, this function may not need to allocate a new image before reading. Because of this, it can be faster than the other <a href="qimagereader.html#read">read</a>() overload, which always constructs a new image; especially when reading several images with the same format and size.</p>
-<pre> QImage icon(64, 64, QImage::Format_RGB32);
- QImageReader reader(&quot;icon_64x64.bmp&quot;);
- if (reader.read(&amp;icon)) {
-     <span class="comment">//</span> Display icon
- }</pre>
+<pre>         QImage icon(64, 64, QImage::Format_RGB32);
+         QImageReader reader(&quot;icon_64x64.bmp&quot;);
+         if (reader.read(&amp;icon)) {
+             // Display icon
+         }</pre>
 <p>For image formats that support animation, calling <a href="qimagereader.html#read">read</a>() repeatedly will return the next frame. When all frames have been read, a null image will be returned.</p>
 <p>See also <a href="qimagereader.html#canRead">canRead</a>(), <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>(), <a href="qimagereader.html#supportsAnimation">supportsAnimation</a>(), and <a href="qmovie.html">QMovie</a>.</p>
 <a name="//apple_ref/cpp/instm/QImageReader/scaledClipRect" />
@@ -239,8 +240,8 @@
 <a name="//apple_ref/cpp/instm/QImageReader/setFormat" />
 <h3 class="fn"><a name="setFormat"></a>void QImageReader::setFormat ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>format</i> )</h3>
 <p>Sets the format <a href="qimagereader.html">QImageReader</a> will use when reading images, to <i>format</i>. <i>format</i> is a case insensitive text string. Example:</p>
-<pre> QImageReader reader;
- reader.setFormat(&quot;png&quot;); <span class="comment">//</span> same as reader.setFormat(&quot;PNG&quot;);</pre>
+<pre>         QImageReader reader;
+         reader.setFormat(&quot;png&quot;); // same as reader.setFormat(&quot;PNG&quot;);</pre>
 <p>You can call <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>() for the full list of formats <a href="qimagereader.html">QImageReader</a> supports.</p>
 <p>See also <a href="qimagereader.html#format">format</a>().</p>
 <a name="//apple_ref/cpp/instm/QImageReader/setQuality" />
@@ -281,6 +282,7 @@
 <tr valign="top" class="odd"><td>XBM</td><td>X11 Bitmap</td></tr>
 <tr valign="top" class="even"><td>XPM</td><td>X11 Pixmap</td></tr>
 </table></p>
+<p>Reading and writing SVG files is supported through Qt's <a href="qtsvg.html">SVG Module</a>.</p>
 <p>To configure Qt with GIF support, pass <tt>-qt-gif</tt> to the <tt>configure</tt> script or check the appropriate option in the graphical installer.</p>
 <p>See also <a href="qimagereader.html#setFormat">setFormat</a>(), <a href="qimagewriter.html#supportedImageFormats">QImageWriter::supportedImageFormats</a>(), and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
 <a name="//apple_ref/cpp/instm/QImageReader/supportsAnimation" />
@@ -292,9 +294,9 @@
 <h3 class="fn"><a name="supportsOption"></a>bool QImageReader::supportsOption ( <a href="qimageiohandler.html#ImageOption-enum">QImageIOHandler::ImageOption</a> <i>option</i> ) const</h3>
 <p>Returns true if the reader supports <i>option</i>; otherwise returns false.</p>
 <p>Different image formats support different options. Call this function to determine whether a certain option is supported by the current format. For example, the PNG format allows you to embed text into the image's metadata (see <a href="qimagereader.html#text">text</a>()), and the BMP format allows you to determine the image's size without loading the whole image into memory (see <a href="qimagereader.html#size">size</a>()).</p>
-<pre> QImageReader reader(&quot;:/image.png&quot;);
- if (reader.supportsOption(QImageIOHandler::Size))
-     qDebug() &lt;&lt; &quot;Size:&quot; &lt;&lt; reader.size();</pre>
+<pre>         QImageReader reader(&quot;:/image.png&quot;);
+         if (reader.supportsOption(QImageIOHandler::Size))
+             qDebug() &lt;&lt; &quot;Size:&quot; &lt;&lt; reader.size();</pre>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qimagewriter.html#supportsOption">QImageWriter::supportsOption</a>().</p>
 <a name="//apple_ref/cpp/instm/QImageReader/text" />
@@ -313,6 +315,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

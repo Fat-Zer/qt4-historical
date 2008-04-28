@@ -46,7 +46,11 @@
 
 #include <QtGui/qwidget.h>
 
+#ifndef QT_NO_SVGWIDGET
+
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Svg)
 
@@ -75,6 +79,9 @@ private:
     Q_DECLARE_PRIVATE(QSvgWidget)
 };
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
+#endif // QT_NO_SVGWIDGET
 #endif // QSVGWIDGET_H

@@ -61,6 +61,8 @@ int main(int argc, char *argv[])
     Colors::parseArgs(argc, argv);
     MainWindow mainWindow;
     MenuManager::instance()->init(&mainWindow);
+    mainWindow.setFocus();
+
     if (Colors::fullscreen)
         mainWindow.showFullScreen();
     else {

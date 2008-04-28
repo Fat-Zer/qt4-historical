@@ -46,18 +46,20 @@ TRANSLATOR qdesigner_internal::TreeWidgetTaskMenu
 */
 
 #include "treewidget_taskmenu.h"
-#include "inplace_editor.h"
 #include "treewidgeteditor.h"
 
 #include <QtDesigner/QDesignerFormWindowInterface>
 
 #include <QtGui/QAction>
 #include <QtGui/QStyle>
+#include <QtGui/QLineEdit>
 #include <QtGui/QStyleOption>
 
 #include <QtCore/QEvent>
 #include <QtCore/QVariant>
 #include <QtCore/qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
@@ -103,25 +105,10 @@ void TreeWidgetTaskMenu::editItems()
         dlg.fillTreeWidgetFromContents(m_treeWidget);
 }
 
-TreeWidgetTaskMenuFactory::TreeWidgetTaskMenuFactory(QExtensionManager *extensionManager)
-    : QExtensionFactory(extensionManager)
-{
-}
-
-QObject *TreeWidgetTaskMenuFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
-{
-    if (QTreeWidget *button = qobject_cast<QTreeWidget*>(object)) {
-        if (iid == Q_TYPEID(QDesignerTaskMenuExtension)) {
-            return new TreeWidgetTaskMenu(button, parent);
-        }
-    }
-
-    return 0;
-}
-
 void TreeWidgetTaskMenu::updateSelection()
 {
     if (m_editor)
         m_editor->deleteLater();
 }
 
+QT_END_NAMESPACE

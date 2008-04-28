@@ -84,7 +84,11 @@
 #include <qdialogbuttonbox.h>
 #include <qinputdialog.h>
 #include <qtreeview.h>
+#include <qlistview.h>
 #include <qbasictimer.h>
+#include <qcommandlinkbutton.h>
+
+QT_BEGIN_NAMESPACE
 
 #if !defined(SCHEMA_VERIFY_VSSYM32)
 #define TMT_ANIMATIONDURATION       5006
@@ -192,6 +196,7 @@ class QWindowsVistaStylePrivate :  public QWindowsXPStylePrivate
 
 public:
     QWindowsVistaStylePrivate();
+    ~QWindowsVistaStylePrivate();
     static bool resolveSymbols();
     static inline bool useVista();
     void startAnimation(Animation *);
@@ -199,12 +204,16 @@ public:
     Animation* widgetAnimation(const QWidget *) const;
     void timerEvent();
     bool transitionsEnabled() const;
+    QWidget *treeViewHelper();
 
 private:
     QList <Animation*> animations;
     QBasicTimer animationTimer;
-    QWidget *treeViewHelper;
+    QWidget *m_treeViewHelper;
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_STYLE_WINDOWSVISTA
+
 #endif // QWINDOWSVISTASTYLE_P_H

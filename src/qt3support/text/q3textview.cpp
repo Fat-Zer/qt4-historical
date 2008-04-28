@@ -45,6 +45,8 @@
 
 #ifndef QT_NO_TEXTVIEW
 
+QT_BEGIN_NAMESPACE
+
 /*! 
   \class Q3TextView
   \brief The Q3TextView class provides a rich text viewer.
@@ -78,5 +80,7 @@ Q3TextView::Q3TextView(QWidget *parent, const char *name)
 Q3TextView::~Q3TextView()
 {
 }
+
+QT_END_NAMESPACE
 
 #endif

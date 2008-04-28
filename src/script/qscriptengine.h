@@ -58,26 +58,26 @@
 
 #include <QtScript/qscriptvalue.h>
 #include <QtScript/qscriptcontext.h>
+#include <QtScript/qscriptstring.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Script)
 
 class QDateTime;
+class QScriptClass;
+class QScriptEngineAgent;
 class QScriptEnginePrivate;
 
 #ifndef QT_NO_QOBJECT
 
 template <class T>
-inline QScriptValue qscriptQMetaObjectConstructor(QScriptContext *, QScriptEngine *)
+inline QScriptValue qscriptQMetaObjectConstructor(QScriptContext *, QScriptEngine *, T *)
 {
     return 0;
 }
-
-template <class T>
-inline QScriptValue qScriptValueFromQMetaObject(
-    QScriptEngine *engine
-    );
 
 #endif // QT_NO_QOBJECT
 
@@ -112,8 +112,10 @@ public:
         ExcludeChildObjects = 0x0001,
         ExcludeSuperClassMethods = 0x0002,
         ExcludeSuperClassProperties = 0x0004,
+        SkipMethodsInEnumeration = 0x0008,
 
-        AutoCreateDynamicProperties = 0x0100
+        AutoCreateDynamicProperties = 0x0100,
+        PreferExistingWrapperObject = 0x0200
     };
     Q_DECLARE_FLAGS(QObjectWrapOptions, QObjectWrapOption)
 
@@ -124,6 +126,7 @@ public:
     virtual ~QScriptEngine();
 
     QScriptValue globalObject() const;
+
     QScriptContext *currentContext() const;
     QScriptContext *pushContext();
     void popContext();
@@ -132,25 +135,35 @@ public:
 
     QScriptValue evaluate(const QString &program, const QString &fileName = QString(), int lineNumber = 1);
 
+    bool isEvaluating() const;
+    void abortEvaluation(const QScriptValue &result = QScriptValue());
+
     bool hasUncaughtException() const;
     QScriptValue uncaughtException() const;
     int uncaughtExceptionLineNumber() const;
     QStringList uncaughtExceptionBacktrace() const;
+    void clearExceptions();
 
     QScriptValue nullValue();
     QScriptValue undefinedValue();
 
     typedef QScriptValue (*FunctionSignature)(QScriptContext *, QScriptEngine *);
+    typedef QScriptValue (*FunctionWithArgSignature)(QScriptContext *, QScriptEngine *, void *);
 
     QScriptValue newFunction(FunctionSignature signature, int length = 0);
     QScriptValue newFunction(FunctionSignature signature, const QScriptValue &prototype, int length = 0);
+
+    QScriptValue newFunction(FunctionWithArgSignature signature, void *arg);
+
     QScriptValue newVariant(const QVariant &value);
+    QScriptValue newVariant(const QScriptValue &object, const QVariant &value);
 
 #ifndef QT_NO_REGEXP
     QScriptValue newRegExp(const QRegExp &regexp);
 #endif
 
     QScriptValue newObject();
+    QScriptValue newObject(QScriptClass *scriptClass, const QScriptValue &data = QScriptValue());
     QScriptValue newArray(uint length = 0);
     QScriptValue newRegExp(const QString &pattern, const QString &flags);
     QScriptValue newDate(qsreal value);
@@ -160,15 +173,16 @@ public:
 #ifndef QT_NO_QOBJECT
     QScriptValue newQObject(QObject *object, ValueOwnership ownership = QtOwnership,
                             const QObjectWrapOptions &options = 0);
+    QScriptValue newQObject(const QScriptValue &scriptObject, QObject *qtObject,
+                            ValueOwnership ownership = QtOwnership,
+                            const QObjectWrapOptions &options = 0);
 
     QScriptValue newQMetaObject(const QMetaObject *metaObject, const QScriptValue &ctor = QScriptValue());
 
 #  ifndef QT_NO_MEMBER_TEMPLATES
-    template <class T> QScriptValue scriptValueFromQMetaObject()
-    {
-        return qScriptValueFromQMetaObject<T>(this);
-    }
+    template <class T> QScriptValue scriptValueFromQMetaObject();
 #  endif // QT_NO_MEMBER_TEMPLATES
+
 #endif // QT_NO_QOBJECT
 
 
@@ -196,11 +210,25 @@ public:
 #endif // QT_NO_MEMBER_TEMPLATES
 
     QScriptValue importExtension(const QString &extension);
+    QStringList availableExtensions() const;
+    QStringList importedExtensions() const;
 
     void collectGarbage();
 
     void setProcessEventsInterval(int interval);
     int processEventsInterval() const;
+
+    void setAgent(QScriptEngineAgent *agent);
+    QScriptEngineAgent *agent() const;
+
+    QScriptString toStringHandle(const QString &str);
+
+    QScriptValue objectById(qint64 id) const;
+
+#ifndef QT_NO_QOBJECT
+Q_SIGNALS:
+    void signalHandlerException(const QScriptValue &exception);
+#endif
 
 private:
     QScriptValue create(int type, const void *ptr);
@@ -229,25 +257,39 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QScriptEngine)
     Q_DISABLE_COPY(QScriptEngine)
+#ifndef QT_NO_QOBJECT
+    Q_PRIVATE_SLOT(d_func(), void _q_objectDestroyed(QObject *))
+#endif
 };
 
 #ifndef QT_NO_QOBJECT
 template <class T>
 inline QScriptValue qScriptValueFromQMetaObject(
     QScriptEngine *engine
+#ifndef qdoc
+    , T * /* dummy */ = 0
+#endif
     )
 {
-    QScriptEngine::FunctionSignature fun = qscriptQMetaObjectConstructor<T>;
+    typedef QScriptValue(*ConstructPtr)(QScriptContext *, QScriptEngine *, T *);
+    ConstructPtr cptr = qscriptQMetaObjectConstructor<T>;
     return engine->newQMetaObject(&T::staticMetaObject,
-                                  engine->newFunction(fun));
+                                  engine->newFunction(reinterpret_cast<QScriptEngine::FunctionWithArgSignature>(cptr), 0));
 }
 
 #define Q_SCRIPT_DECLARE_QMETAOBJECT(T, _Arg1) \
-template<> inline QScriptValue qscriptQMetaObjectConstructor<T>(QScriptContext *ctx, QScriptEngine *eng) \
+template<> inline QScriptValue qscriptQMetaObjectConstructor<T>(QScriptContext *ctx, QScriptEngine *eng, T *) \
 { \
     _Arg1 arg1 = qscriptvalue_cast<_Arg1> (ctx->argument(0)); \
     return eng->newQObject(new T(arg1), QScriptEngine::AutoOwnership); \
 }
+
+#  ifndef QT_NO_MEMBER_TEMPLATES
+    template <class T> QScriptValue QScriptEngine::scriptValueFromQMetaObject()
+    {
+        return qScriptValueFromQMetaObject<T>(this);
+    }
+#  endif // QT_NO_MEMBER_TEMPLATES
 
 #endif // QT_NO_QOBJECT
 
@@ -263,6 +305,15 @@ template <typename T>
 inline QScriptValue qScriptValueFromValue(QScriptEngine *engine, const T &t)
 {
     return qScriptValueFromValue_helper(engine, qMetaTypeId<T>(), &t);
+}
+
+template <>
+inline QScriptValue qScriptValueFromValue<QVariant>(QScriptEngine *engine, const QVariant &v)
+{
+    QScriptValue result = qScriptValueFromValue_helper(engine, v.userType(), v.data());
+    if (!result.isValid())
+        result = engine->newVariant(v);
+    return result;
 }
 
 inline bool qscriptvalue_cast_helper(const QScriptValue &value, int type, void *ptr)
@@ -366,7 +417,18 @@ int qScriptRegisterSequenceMetaType(
                                       qScriptValueToSequence, prototype);
 }
 
+#ifndef QT_NO_QOBJECT
+Q_SCRIPT_EXPORT bool qScriptConnect(QObject *sender, const char *signal,
+                                    const QScriptValue &receiver,
+                                    const QScriptValue &function);
+Q_SCRIPT_EXPORT bool qScriptDisconnect(QObject *sender, const char *signal,
+                                       const QScriptValue &receiver,
+                                       const QScriptValue &function);
+#endif // QT_NO_QOBJECT
+
 Q_DECLARE_OPERATORS_FOR_FLAGS(QScriptEngine::QObjectWrapOptions)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

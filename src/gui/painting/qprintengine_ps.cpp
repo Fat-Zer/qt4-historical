@@ -70,12 +70,15 @@
 #include <private/qpainterpath_p.h>
 #include <qdebug.h>
 #include <private/qdrawhelper_p.h>
+#include <private/qmutexpool_p.h>
 
 #ifndef Q_OS_WIN
 #include <unistd.h>
 #endif
 #include <stdlib.h>
 #include <limits.h>
+
+QT_BEGIN_NAMESPACE
 
 static bool qt_gen_epsf = false;
 
@@ -192,7 +195,9 @@ QPSPrintEnginePrivate::~QPSPrintEnginePrivate()
 {
 }
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <qdebug.h>
+QT_END_INCLUDE_NAMESPACE
 
 static void ps_r7(QPdf::ByteStream& stream, const char * s, int l)
 {
@@ -291,7 +296,7 @@ static const char *const filters[3] = {
     "/DCTDecode filter "
 };
 
-static QByteArray compress(const QImage &img, bool gray, int *format)
+static QByteArray compressHelper(const QImage &img, bool gray, int *format)
 {
     // we can't use premultiplied here
     QImage image = img;
@@ -417,7 +422,7 @@ void QPSPrintEnginePrivate::drawImage(qreal x, qreal y, qreal w, qreal h,
 
         if (!mask.isNull()) {
             int format;
-            out = ::compress(mask, true, &format);
+            out = compressHelper(mask, true, &format);
             size = (width+7)/8*height;
             *currentPage << "/mask currentfile/ASCII85Decode filter"
                          << filters[format]
@@ -437,7 +442,7 @@ void QPSPrintEnginePrivate::drawImage(qreal x, qreal y, qreal w, qreal h,
         }
 
         int format;
-        out = ::compress(img, gray, &format);
+        out = compressHelper(img, gray, &format);
         *currentPage << "/sl currentfile/ASCII85Decode filter"
                      << filters[format]
                      << size << " string readstring\n";
@@ -624,8 +629,16 @@ static void ignoreSigPipe(bool b)
 {
 #ifndef QT_NO_LPR
     static struct sigaction *users_sigpipe_handler = 0;
+    static int lockCount = 0;
+
+#ifndef QT_NO_THREAD
+    QMutexLocker locker(QMutexPool::globalInstanceGet(&users_sigpipe_handler));
+#endif
 
     if (b) {
+        if (lockCount++ > 0)
+            return;
+
         if (users_sigpipe_handler != 0)
             return; // already ignoring sigpipe
 
@@ -641,6 +654,9 @@ static void ignoreSigPipe(bool b)
         }
     }
     else {
+        if (--lockCount > 0)
+            return;
+
         if (users_sigpipe_handler == 0)
             return; // not ignoring sigpipe
 
@@ -744,11 +760,16 @@ void QPSPrintEngine::setBrush()
     *d->currentPage << "scn\n";
 #endif
     QColor rgba = d->brush.color();
-    *d->currentPage << rgba.redF()
-                    << rgba.greenF()
-                    << rgba.blueF()
-                    << "scn\n";
-    *d->currentPage << "/BSt " << d->brush.style() << "def\n";
+    if (d->colorMode == QPrinter::GrayScale) {
+        qreal gray = qGray(rgba.rgba())/255.;
+        *d->currentPage << gray << gray << gray;
+    } else {
+        *d->currentPage << rgba.redF()
+                        << rgba.greenF()
+                        << rgba.blueF();
+    }
+    *d->currentPage << "scn\n"
+                    << "/BSt " << d->brush.style() << "def\n";
 }
 
 void QPSPrintEngine::drawImageInternal(const QRectF &r, QImage image, bool bitmap)
@@ -860,6 +881,6 @@ QPrinter::PrinterState QPSPrintEngine::printerState() const
     return d->printerState;
 }
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_PRINTER
-
-

@@ -50,6 +50,8 @@
 #include <qvector.h>
 #include <ctype.h>
 
+QT_BEGIN_NAMESPACE
+
 /*****************************************************************************
   PBM/PGM/PPM (ASCII and RAW) image read/write functions
  *****************************************************************************/
@@ -267,8 +269,24 @@ static bool write_pbm_image(QIODevice *out, const QImage &sourceImage, const QBy
         image = image.convertToFormat(QImage::Format_MonoLSB);
     } else if (image.depth() == 1) {
         image = image.convertToFormat(QImage::Format_Indexed8);
-    } else if (image.depth() == 16) {
-        image = image.convertToFormat(QImage::Format_RGB32);
+    } else {
+        switch (image.format()) {
+        case QImage::Format_RGB16:
+        case QImage::Format_RGB666:
+        case QImage::Format_RGB555:
+        case QImage::Format_RGB888:
+        case QImage::Format_RGB444:
+            image = image.convertToFormat(QImage::Format_RGB32);
+            break;
+        case QImage::Format_ARGB8565_Premultiplied:
+        case QImage::Format_ARGB6666_Premultiplied:
+        case QImage::Format_ARGB8555_Premultiplied:
+        case QImage::Format_ARGB4444_Premultiplied:
+            image = image.convertToFormat(QImage::Format_ARGB32);
+            break;
+        default:
+            break;
+        }
     }
 
     if (image.depth() == 1 && image.numColors() == 2) {
@@ -485,5 +503,7 @@ QByteArray QPpmHandler::name() const
 {
     return subType.isEmpty() ? QByteArray("ppm") : subType;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_IMAGEFORMAT_PPM

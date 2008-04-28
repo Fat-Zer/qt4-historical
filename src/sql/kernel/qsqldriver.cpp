@@ -47,8 +47,9 @@
 #include "qsqlerror.h"
 #include "qsqlfield.h"
 #include "qsqlindex.h"
-#include "qstringlist.h"
 #include "private/qobject_p.h"
+
+QT_BEGIN_NAMESPACE
 
 class QSqlDriverPrivate : public QObjectPrivate
 {
@@ -107,6 +108,15 @@ QSqlDriver::QSqlDriver(QObject *parent)
 QSqlDriver::~QSqlDriver()
 {
 }
+
+/*!
+    \fn QSqlDriver::notification(const QString &name)
+
+    This signal is emitted when the database posts an event notification
+    that the driver subscribes to. \a name identifies the event notification.
+
+    \sa subscribeToNotification()
+*/
 
 /*!
     \fn bool QSqlDriver::open(const QString &db, const QString &user, const QString& password,
@@ -181,6 +191,9 @@ bool QSqlDriver::isOpenError() const
     \value BatchOperations  Whether the driver supports batched operations, see QSqlResult::execBatch()
     \value SimpleLocking  Whether the driver disallows a write lock on a table while other queries have a read lock on it.
     \value LowPrecisionNumbers  Whether the driver allows fetching numerical values with low precision.
+    \value EventNotifications Whether the driver supports database event notifications.
+    \value FinishQuery Whether the driver can do any low-level resource cleanup when QSqlQuery::finish() is called.
+    \value MultipleResultSets Whether the driver can access multiple result sets returned from batched statements or stored procedures.
 
     More information about supported features can be found in the
     \l{sql-driver.html}{Qt SQL driver} documentation.
@@ -591,31 +604,11 @@ QString QSqlDriver::formatValue(const QSqlField &field, bool trimStrings) const
 
     This example retrieves the handle for a connection to sqlite:
 
-    \code
-    QSqlDatabase db = ...;
-    QVariant v = db.driver()->handle();
-    if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*")) {
-        // v.data() returns a pointer to the handle
-        sqlite3 *handle = *static_cast<sqlite3 **>(v.data());
-        if (handle != 0) { // check that it is not NULL
-            ...
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldriver.cpp 0
 
     This snippet returns the handle for PostgreSQL or MySQL:
 
-    \code
-    if (v.typeName() == "PGconn*") {
-        PGconn *handle = *static_cast<PGconn **>(v.data());
-        if (handle != 0) ...
-    }
-
-    if (v.typeName() == "MYSQL*") {
-        MYSQL *handle = *static_cast<MYSQL **>(v.data());
-        if (handle != 0) ...
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqldriver.cpp 1
 
     \sa QSqlResult::handle()
 */
@@ -654,3 +647,159 @@ QVariant QSqlDriver::handle() const
     Use the other formatValue() overload instead.
 */
 
+/*!
+    This function is called to subscribe to event notifications from the database.
+    \a name identifies the event notification.
+
+    If successful, return true, otherwise return false.
+
+    The database must be open when this function is called. When the database is closed
+    by calling close() all subscribed event notifications are automatically unsubscribed.
+    Note that calling open() on an already open database may implicitly cause close() to
+    be called, which will cause the driver to unsubscribe from all event notifications.
+
+    When an event notification identified by \a name is posted by the database the
+    notification() signal is emitted.
+
+    \warning Because of binary compatibility constraints, this function is not virtual.
+    If you want to provide event notification support in your own QSqlDriver subclass,
+    reimplement the subscribeToNotificationImplementation() slot in your subclass instead.
+    The subscribeToNotification() function will dynamically detect the slot and call it.
+
+    \since 4.4
+    \sa unsubscribeFromNotification() subscribedToNotifications() QSqlDriver::hasFeature()
+*/
+bool QSqlDriver::subscribeToNotification(const QString &name)
+{
+    bool result;
+    QMetaObject::invokeMethod(const_cast<QSqlDriver *>(this),
+			      "subscribeToNotificationImplementation", Qt::DirectConnection,
+			      Q_RETURN_ARG(bool, result),
+			      Q_ARG(QString, name));
+    return result;
+}
+
+/*!
+    This function is called to unsubscribe from event notifications from the database.
+    \a name identifies the event notification.
+
+    If successful, return true, otherwise return false.
+
+    The database must be open when this function is called. All subscribed event
+    notifications are automatically unsubscribed from when the close() function is called.
+
+    After calling \e this function the notification() signal will no longer be emitted
+    when an event notification identified by \a name is posted by the database.
+
+    \warning Because of binary compatibility constraints, this function is not virtual.
+    If you want to provide event notification support in your own QSqlDriver subclass,
+    reimplement the unsubscribeFromNotificationImplementation() slot in your subclass instead.
+    The unsubscribeFromNotification() function will dynamically detect the slot and call it.
+
+    \since 4.4
+    \sa subscribeToNotification() subscribedToNotifications()
+*/
+bool QSqlDriver::unsubscribeFromNotification(const QString &name)
+{
+    bool result;
+    QMetaObject::invokeMethod(const_cast<QSqlDriver *>(this),
+			      "unsubscribeFromNotificationImplementation", Qt::DirectConnection,
+			      Q_RETURN_ARG(bool, result),
+			      Q_ARG(QString, name));
+    return result;
+}
+
+/*!
+    Returns a list of the names of the event notifications that are currently subscribed to.
+
+    \warning Because of binary compatibility constraints, this function is not virtual.
+    If you want to provide event notification support in your own QSqlDriver subclass,
+    reimplement the subscribedToNotificationsImplementation() slot in your subclass instead.
+    The subscribedToNotifications() function will dynamically detect the slot and call it.
+
+    \since 4.4
+    \sa subscribeToNotification() unsubscribeFromNotification()
+*/
+QStringList QSqlDriver::subscribedToNotifications() const
+{
+    QStringList result;
+    QMetaObject::invokeMethod(const_cast<QSqlDriver *>(this),
+			      "subscribedToNotificationsImplementation", Qt::DirectConnection,
+			      Q_RETURN_ARG(QStringList, result));
+    return result;
+}
+
+/*!
+    This slot is called to subscribe to event notifications from the database.
+    \a name identifies the event notification.
+
+    If successful, return true, otherwise return false.
+
+    The database must be open when this \e slot is called. When the database is closed
+    by calling close() all subscribed event notifications are automatically unsubscribed.
+    Note that calling open() on an already open database may implicitly cause close() to
+    be called, which will cause the driver to unsubscribe from all event notifications.
+
+    When an event notification identified by \a name is posted by the database the
+    notification() signal is emitted.
+
+    Reimplement this slot to provide your own QSqlDriver subclass with event notification
+    support; because of binary compatibility constraints, the subscribeToNotification()
+    function (introduced in Qt 4.4) is not virtual. Instead, subscribeToNotification()
+    will dynamically detect and call \e this slot. The default implementation does nothing
+    and returns false.
+
+    \since 4.4
+    \sa subscribeToNotification()
+*/
+bool QSqlDriver::subscribeToNotificationImplementation(const QString &name)
+{
+    Q_UNUSED(name);
+    return false;
+}
+
+/*!
+    This slot is called to unsubscribe from event notifications from the database.
+    \a name identifies the event notification.
+
+    If successful, return true, otherwise return false.
+
+    The database must be open when \e this slot is called. All subscribed event
+    notifications are automatically unsubscribed from when the close() function is called.
+
+    After calling \e this slot the notification() signal will no longer be emitted
+    when an event notification identified by \a name is posted by the database.
+
+    Reimplement this slot to provide your own QSqlDriver subclass with event notification
+    support; because of binary compatibility constraints, the unsubscribeFromNotification()
+    function (introduced in Qt 4.4) is not virtual. Instead, unsubscribeFromNotification()
+    will dynamically detect and call \e this slot. The default implementation does nothing
+    and returns false.
+
+    \since 4.4
+    \sa unsubscribeFromNotification()
+*/
+bool QSqlDriver::unsubscribeFromNotificationImplementation(const QString &name)
+{
+    Q_UNUSED(name);
+    return false;
+}
+
+/*!
+    Returns a list of the names of the event notifications that are currently subscribed to.
+
+    Reimplement this slot to provide your own QSqlDriver subclass with event notification
+    support; because of binary compatibility constraints, the subscribedToNotifications()
+    function (introduced in Qt 4.4) is not virtual. Instead, subscribedToNotifications()
+    will dynamically detect and call \e this slot. The default implementation simply
+    returns an empty QStringList.
+
+    \since 4.4
+    \sa subscribedToNotifications()
+*/
+QStringList QSqlDriver::subscribedToNotificationsImplementation() const
+{
+    return QStringList();
+}
+
+QT_END_NAMESPACE

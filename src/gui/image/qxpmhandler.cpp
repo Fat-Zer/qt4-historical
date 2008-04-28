@@ -51,12 +51,18 @@
 #include <qtextstream.h>
 #include <qvariant.h>
 
+#if defined(Q_OS_WINCE)
+#include "qguifunctions_wince.h"
+#endif
+
 #if defined(Q_CC_BOR)
 // needed for qsort() because of a std namespace problem on Borland
 #include "qplatformdefs.h"
 #endif
 
 #include <stdlib.h>
+
+QT_BEGIN_NAMESPACE
 
 static quint64 xpmHash(const QString &str)
 {
@@ -859,7 +865,7 @@ static bool read_xpm_header(
     if (!read_xpm_string(buf, device, source, index, state))
         return false;
 
-#if defined(_MSC_VER) && _MSC_VER >= 1400
+#if defined(_MSC_VER) && _MSC_VER >= 1400 && !defined(Q_OS_WINCE)
 	if (sscanf_s(buf, "%d %d %d %d", w, h, ncols, cpp) < 4)
 #else
     if (sscanf(buf, "%d %d %d %d", w, h, ncols, cpp) < 4)
@@ -1274,5 +1280,7 @@ QByteArray QXpmHandler::name() const
 {
     return "xpm";
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_IMAGEFORMAT_XPM

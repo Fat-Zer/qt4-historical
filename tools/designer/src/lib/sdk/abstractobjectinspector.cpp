@@ -43,6 +43,8 @@
 
 #include "abstractobjectinspector.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerObjectInspectorInterface
 
@@ -55,15 +57,7 @@
     current form window selection. For example, when implementing a
     custom widget plugin:
 
-    \code
-        QDesignerObjectInspectorInterface *objectInspector = 0;
-        objectInspector = formEditor->objectInspector();
-
-        QDesignerFormWindowManagerInterface *manager = 0;
-        manager = formEditor->formWindowManager();
-
-        objectInspector->setFormWindow(manager->formWindow(0));
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractobjectinspector.cpp 0
 
     The QDesignerObjectInspectorInterface class is not intended to be
     instantiated directly. You can retrieve an interface to \QD's
@@ -114,3 +108,5 @@ QDesignerFormEditorInterface *QDesignerObjectInspectorInterface::core() const
 
     Sets the currently selected form window to \a formWindow.
 */
+
+QT_END_NAMESPACE

@@ -43,6 +43,8 @@
 
 #include "qmime.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QMimeSource
     \brief The QMimeSource class is an abstraction of objects that
@@ -93,3 +95,5 @@ bool QMimeSource::provides(const char* mimeType) const
     }
     return false;
 }
+
+QT_END_NAMESPACE

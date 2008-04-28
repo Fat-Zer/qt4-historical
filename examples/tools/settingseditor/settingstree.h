@@ -48,7 +48,9 @@
 #include <QTimer>
 #include <QTreeWidget>
 
+QT_BEGIN_NAMESPACE
 class QSettings;
+QT_END_NAMESPACE
 
 class SettingsTree : public QTreeWidget
 {

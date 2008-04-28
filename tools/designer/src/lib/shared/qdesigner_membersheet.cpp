@@ -43,114 +43,178 @@
 
 #include "qdesigner_membersheet_p.h"
 
-#include <QtGui/QWidget>
-#include <QtCore/QMetaObject>
-#include <QtCore/QMetaProperty>
+#include <QtDesigner/QDesignerFormEditorInterface>
+#include <abstractintrospection_p.h>
 
-QDesignerMemberSheet::QDesignerMemberSheet(QObject *object, QObject *parent)
-    : QObject(parent),
-      m_meta(object->metaObject())
+#include <QtGui/QWidget>
+
+QT_BEGIN_NAMESPACE
+
+static QList<QByteArray> stringListToByteArray(const QStringList &l)
+{
+    if (l.empty())
+        return QList<QByteArray>();
+    QList<QByteArray> rc;
+    const QStringList::const_iterator cend = l.constEnd();
+    for (QStringList::const_iterator it = l.constBegin(); it != cend; ++it)
+        rc += it->toUtf8();
+    return rc;
+}
+
+// Find the form editor in the hierarchy.
+// We know that the parent of the sheet is the extension manager
+// whose parent is the core.
+
+static QDesignerFormEditorInterface *formEditorForObject(QObject *o) {
+    do {
+        if (QDesignerFormEditorInterface* core = qobject_cast<QDesignerFormEditorInterface*>(o))
+            return core;
+        o = o->parent();
+    } while(o);
+    Q_ASSERT(o);
+    return 0;
+}
+
+// ------------ QDesignerMemberSheetPrivate
+class QDesignerMemberSheetPrivate {
+public:
+    explicit QDesignerMemberSheetPrivate(QObject *object, QObject *sheetParent);
+
+    QDesignerFormEditorInterface *m_core;
+    const QDesignerMetaObjectInterface *m_meta;
+
+    class Info {
+    public:
+        inline Info() : visible(true) {}
+
+        QString group;
+        bool visible;
+    };
+
+    typedef QHash<int, Info> InfoHash;
+
+    Info &ensureInfo(int index);
+
+    InfoHash m_info;
+};
+
+QDesignerMemberSheetPrivate::QDesignerMemberSheetPrivate(QObject *object, QObject *sheetParent) :
+    m_core(formEditorForObject(sheetParent)),
+    m_meta(m_core->introspection()->metaObject(object))
+{
+}
+
+QDesignerMemberSheetPrivate::Info &QDesignerMemberSheetPrivate::ensureInfo(int index)
+{
+    InfoHash::iterator it = m_info.find(index);
+    if (it == m_info.end()) {
+        it = m_info.insert(index, Info());
+    }
+    return it.value();
+}
+
+// --------- QDesignerMemberSheet
+
+QDesignerMemberSheet::QDesignerMemberSheet(QObject *object, QObject *parent) :
+    QObject(parent),
+    d(new QDesignerMemberSheetPrivate(object, parent))
 {
 }
 
 QDesignerMemberSheet::~QDesignerMemberSheet()
 {
+    delete d;
 }
 
 int QDesignerMemberSheet::count() const
 {
-    return m_meta->methodCount();
+    return d->m_meta->methodCount();
 }
 
 int QDesignerMemberSheet::indexOf(const QString &name) const
 {
-    return m_meta->indexOfMethod(name.toUtf8());
+    return d->m_meta->indexOfMethod(name.toUtf8());
 }
 
 QString QDesignerMemberSheet::memberName(int index) const
 {
-    return QString::fromUtf8(m_meta->method(index).tag());
+    return d->m_meta->method(index)->tag();
 }
 
 QString QDesignerMemberSheet::declaredInClass(int index) const
 {
-    const char *member = m_meta->method(index).signature();
+    const QString member = d->m_meta->method(index)->signature();
 
     // Find class whose superclass does not contain the method.
-    const QMetaObject *meta_obj = m_meta;
+    const QDesignerMetaObjectInterface *meta_obj = d->m_meta;
 
     for (;;) {
-        const QMetaObject *tmp = meta_obj->superClass();
+        const QDesignerMetaObjectInterface *tmp = meta_obj->superClass();
         if (tmp == 0)
             break;
         if (tmp->indexOfMethod(member) == -1)
             break;
         meta_obj = tmp;
     }
-
-    return QLatin1String(meta_obj->className());
+    return meta_obj->className();
 }
 
 QString QDesignerMemberSheet::memberGroup(int index) const
 {
-    return m_info.value(index).group;
+    return d->m_info.value(index).group;
 }
 
 void QDesignerMemberSheet::setMemberGroup(int index, const QString &group)
 {
-    if (!m_info.contains(index))
-        m_info.insert(index, Info());
-
-    m_info[index].group = group;
+    d->ensureInfo(index).group = group;
 }
 
 QString QDesignerMemberSheet::signature(int index) const
 {
-    return QString::fromUtf8(QMetaObject::normalizedSignature(m_meta->method(index).signature()));
+    return d->m_meta->method(index)->normalizedSignature();
 }
 
 bool QDesignerMemberSheet::isVisible(int index) const
 {
-    if (m_info.contains(index))
-        return m_info.value(index).visible;
+    typedef QDesignerMemberSheetPrivate::InfoHash InfoHash;
+    const InfoHash::const_iterator it = d->m_info.constFind(index);
+    if (it != d->m_info.constEnd())
+        return it.value().visible;
 
-   return m_meta->method(index).methodType() == QMetaMethod::Signal
-           || m_meta->method(index).access() == QMetaMethod::Public;
+   return d->m_meta->method(index)->methodType() == QDesignerMetaMethodInterface::Signal
+           || d->m_meta->method(index)->access() == QDesignerMetaMethodInterface::Public;
 }
 
 void QDesignerMemberSheet::setVisible(int index, bool visible)
 {
-    if (!m_info.contains(index))
-        m_info.insert(index, Info());
-
-    m_info[index].visible = visible;
+    d->ensureInfo(index).visible = visible;
 }
 
 bool QDesignerMemberSheet::isSignal(int index) const
 {
-    return m_meta->method(index).methodType() == QMetaMethod::Signal;
+    return d->m_meta->method(index)->methodType() == QDesignerMetaMethodInterface::Signal;
 }
 
 bool QDesignerMemberSheet::isSlot(int index) const
 {
-    return m_meta->method(index).methodType() == QMetaMethod::Slot;
+    return d->m_meta->method(index)->methodType() == QDesignerMetaMethodInterface::Slot;
 }
 
 bool QDesignerMemberSheet::inheritedFromWidget(int index) const
 {
-    const char *name = m_meta->method(index).signature();
-    return QWidget::staticMetaObject.indexOfMethod(name) != -1;
+    const QString name = d->m_meta->method(index)->signature();
+    return declaredInClass(index) == QLatin1String("QWidget") || declaredInClass(index) == QLatin1String("QObject");
 }
 
 
 QList<QByteArray> QDesignerMemberSheet::parameterTypes(int index) const
 {
-    return m_meta->method(index).parameterTypes();
+    return stringListToByteArray(d->m_meta->method(index)->parameterTypes());
 }
 
 QList<QByteArray> QDesignerMemberSheet::parameterNames(int index) const
 {
-    return m_meta->method(index).parameterNames();
+    return stringListToByteArray(d->m_meta->method(index)->parameterNames());
 }
 
 bool QDesignerMemberSheet::signalMatchesSlot(const QString &signal, const QString &slot)
@@ -190,6 +254,8 @@ bool QDesignerMemberSheet::signalMatchesSlot(const QString &signal, const QStrin
     return result;
 }
 
+// ------------ QDesignerMemberSheetFactory
+
 QDesignerMemberSheetFactory::QDesignerMemberSheetFactory(QExtensionManager *parent)
     : QExtensionFactory(parent)
 {
@@ -203,3 +269,5 @@ QObject *QDesignerMemberSheetFactory::createExtension(QObject *object, const QSt
 
     return 0;
 }
+
+QT_END_NAMESPACE

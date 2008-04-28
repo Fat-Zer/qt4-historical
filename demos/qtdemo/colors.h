@@ -54,7 +54,9 @@ private:
 
 public:
     static void parseArgs(int argc, char *argv[]);
-    static void adaptAccordingToEnvironment();
+    static void detectSystemResources();
+    static void postConfigure();
+    static void setLowSettings();
 
     // Colors:
     static QColor sceneBg1;
@@ -81,7 +83,12 @@ public:
     static int contentHeight;
 
     // properties:
-    static bool noOpenGl;
+    static bool openGlRendering;
+    static bool direct3dRendering;
+    static bool softwareRendering;
+    static bool openGlAwailable;
+    static bool direct3dAwailable;
+    static bool xRenderPresent;
     static bool noAdapt;
     static bool noTicker;
     static bool noRescale;
@@ -95,21 +102,23 @@ public:
     static bool fullscreen;
     static bool showBoundingRect;
     static bool showFps;
-    static bool low;
     static bool noTimerUpdate;
     static bool noTickerMorph;
     static bool useButtonBalls;
     static bool adapted;
     static bool verbose;
+    static bool pause;
 
     static float animSpeed;
     static float animSpeedButtons;
     static float benchmarkFps;
     static int tickerLetterCount;
     static int fps;
+    static int menuCount;
     static float tickerMoveSpeed;
     static float tickerMorphSpeed;
     static QString tickerText;
+    static QString rootMenuName;
 
     // fonts
     static QFont contentFont();

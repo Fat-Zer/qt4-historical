@@ -47,14 +47,17 @@
 #include <QMainWindow>
 #include <QString>
 
+QT_BEGIN_NAMESPACE
 class QClipboard;
 class QComboBox;
 class QFontComboBox;
 class QLineEdit;
 class QScrollArea;
 class QCheckBox;
+QT_END_NAMESPACE
 class CharacterWidget;
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -78,5 +81,6 @@ private:
     QScrollArea *scrollArea;
     QCheckBox *fontMerging;
 };
+//! [0]
 
 #endif

@@ -45,6 +45,8 @@
 
 #include "buddyeditor_plugin.h"
 
+QT_USE_NAMESPACE
+
 using namespace qdesigner_internal;
 
 Q_EXPORT_PLUGIN(BuddyEditorPlugin)

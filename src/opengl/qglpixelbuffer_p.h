@@ -55,6 +55,8 @@
 // We mean it.
 //
 
+QT_BEGIN_NAMESPACE
+
 // The below is a hack to make this compile with the
 // broken HPUX GL headers. They define GLX_VERSION_1_3
 // without defining the GLXFBConfig structure, which
@@ -116,8 +118,9 @@ struct GLXFBConfig {
     GLdouble minAlpha, maxAlpha;
 };
 
-#endif
+#endif // Q_OS_HPUX
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "QtOpenGL/qglpixelbuffer.h"
 #include <private/qgl_p.h>
 
@@ -130,6 +133,7 @@ DECLARE_HANDLE(HPBUFFERARB);
 #elif defined(Q_WS_QWS)
 #include <GLES/egl.h>
 #endif
+QT_END_INCLUDE_NAMESPACE
 
 class QGLPixelBufferPrivate {
     Q_DECLARE_PUBLIC(QGLPixelBuffer)
@@ -177,5 +181,7 @@ public:
     EGLContext ctx;
 #endif
 };
+
+QT_END_NAMESPACE
 
 #endif // QGLPIXELBUFFER_P_H

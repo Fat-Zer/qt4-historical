@@ -43,6 +43,8 @@
 
 #include "abstractpropertyeditor.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDesignerPropertyEditorInterface
 
@@ -63,30 +65,13 @@
     For example, when implementing a custom widget plugin, you can
     connect the signal to a custom slot:
 
-    \code
-        QDesignerPropertyEditorInterface *propertyEditor = 0;
-        propertyEditor = formEditor->propertyEditor();
-
-        connect(propertyEditor, SIGNAL(propertyChanged(QString, QVariant)),
-                this, SLOT(checkProperty(QString, QVariant)));
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractpropertyeditor.cpp 0
 
     Then the custom slot can check if the new value is within the
     range we want when a specified property, belonging to a particular
     widget, changes:
 
-    \code
-        void checkProperty(QString property, QVariant value) {
-            QDesignerPropertyEditorInterface *propertyEditor = 0;
-            propertyEditor = formEditor->propertyEditor();
-
-            QObject *object = propertyeditor->object();
-            MyCustomWidget *widget = qobject_cast<MyCustomWidget>(object);
-
-            if (widget && property == aProperty && value != expectedValue)
-                {...}
-        }
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractpropertyeditor.cpp 1
 
     The QDesignerPropertyEditorInterface class is not intended to be
     instantiated directly. You can retrieve an interface to \QD's
@@ -206,3 +191,5 @@ QDesignerFormEditorInterface *QDesignerPropertyEditorInterface::core() const
 
     \sa isReadOnly()
 */
+
+QT_END_NAMESPACE

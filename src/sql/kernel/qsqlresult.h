@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Sql)
 
 class QString;
@@ -130,12 +132,12 @@ protected:
     virtual QSqlRecord record() const;
     virtual QVariant lastInsertId() const;
 
-    enum VirtualHookOperation { BatchOperation, DetachFromResultSet, SetNumericalPrecision };
+    enum VirtualHookOperation { BatchOperation, DetachFromResultSet, SetNumericalPrecision, NextResult };
     virtual void virtual_hook(int id, void *data);
-
     bool execBatch(bool arrayBind = false);
     void detachFromResultSet();
     void setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy policy);
+    bool nextResult();
 
 private:
     QSqlResultPrivate* d;
@@ -144,6 +146,8 @@ private:
 private:
     Q_DISABLE_COPY(QSqlResult)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

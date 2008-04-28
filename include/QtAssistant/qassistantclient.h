@@ -1,1 +1,1 @@
-#include "../../tools/assistant/lib/qassistantclient.h"
+#include "../../tools/assistant/compat/lib/qassistantclient.h"

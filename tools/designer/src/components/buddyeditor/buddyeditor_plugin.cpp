@@ -54,6 +54,8 @@ TRANSLATOR qdesigner_internal::BuddyEditorPlugin
 #include <QtDesigner/QDesignerFormWindowManagerInterface>
 #include <QtDesigner/QDesignerFormEditorInterface>
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 BuddyEditorPlugin::BuddyEditorPlugin()
@@ -75,6 +77,7 @@ void BuddyEditorPlugin::initialize(QDesignerFormEditorInterface *core)
     Q_ASSERT(!isInitialized());
 
     m_action = new QAction(tr("Edit Buddies"), this);
+    m_action->setObjectName(QLatin1String("__qt_edit_buddies_action"));
     m_action->setIcon(QIcon(core->resourceLocation() + QLatin1String("/buddytool.png")));
     m_action->setIcon(QIcon(core->resourceLocation() + QLatin1String("/buddytool.png")));
     m_action->setEnabled(false);
@@ -131,3 +134,5 @@ void BuddyEditorPlugin::activeFormWindowChanged(QDesignerFormWindowInterface *fo
 {
     m_action->setEnabled(formWindow != 0);
 }
+
+QT_END_NAMESPACE

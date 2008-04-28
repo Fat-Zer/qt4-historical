@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowCursorInterface;
 class QDesignerFormWindowToolInterface;
@@ -125,6 +127,7 @@ public:
     virtual bool isDirty() const = 0;
 
     static QDesignerFormWindowInterface *findFormWindow(QWidget *w);
+    static QDesignerFormWindowInterface *findFormWindow(QObject *obj);
 
     virtual QUndoStack *commandHistory() const = 0;
     virtual void beginCommand(const QString &description) = 0;
@@ -173,6 +176,8 @@ Q_SIGNALS:
     void changed();
     void widgetRemoved(QWidget *w);
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

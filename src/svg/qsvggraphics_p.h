@@ -57,11 +57,15 @@
 
 #include "qsvgnode_p.h"
 
+#ifndef QT_NO_SVG
+
 #include "QtGui/qpainterpath.h"
 #include "QtGui/qimage.h"
 #include "QtGui/qtextlayout.h"
 #include "QtGui/qtextoption.h"
 #include "QtCore/qstack.h"
+
+QT_BEGIN_NAMESPACE
 
 class QTextCharFormat;
 
@@ -218,7 +222,7 @@ public:
     virtual Type type() const;
     virtual QRectF bounds() const;
     virtual QRectF transformedBounds(const QMatrix &mat) const;
-    
+
 private:
     QSvgNode *m_link;
     QPointF   m_start;
@@ -232,4 +236,7 @@ public:
     virtual Type type() const;
 };
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG
 #endif // QSVGGRAPHICS_P_H

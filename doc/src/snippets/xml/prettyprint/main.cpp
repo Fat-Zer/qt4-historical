@@ -54,8 +54,7 @@
  */
 class PrettyPrint
 {
-public:
-    Q_DECLARE_TR_FUNCTIONS(PrettyPrint);
+    Q_DECLARE_TR_FUNCTIONS(PrettyPrint)
 };
 
 int main(int argc, char *argv[])

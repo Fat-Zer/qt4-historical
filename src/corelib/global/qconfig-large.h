@@ -138,7 +138,7 @@
 #  define QT_NO_CUPS
 #endif
 
-/* Qtopia Core */
+/* Qt for Embedded Linux */
 #ifndef QT_NO_QWS_SOUNDSERVER
 #  define QT_NO_QWS_SOUNDSERVER
 #endif

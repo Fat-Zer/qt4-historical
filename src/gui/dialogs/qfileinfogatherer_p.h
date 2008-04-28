@@ -65,6 +65,8 @@
 #include <qstack.h>
 #include <qdir.h>
 
+QT_BEGIN_NAMESPACE
+
 class QExtendedInformation {
 public:
     enum Type { Dir, File, System };
@@ -111,7 +113,7 @@ public:
 
 class QFileIconProvider;
 
-#ifndef QT_NO_FILESYSTEMWATCHER
+#ifndef QT_NO_FILESYSTEMMODEL
 
 class Q_AUTOTEST_EXPORT QFileInfoGatherer : public QThread
 {
@@ -154,7 +156,9 @@ private:
     QStack<QString> path;
     QStack<QStringList> files;
 
+#ifndef QT_NO_FILESYSTEMWATCHER
     QFileSystemWatcher *watcher;
+#endif
     bool m_resolveSymlinks;
     QFileIconProvider *m_iconProvider;
     QFileIconProvider defaultProvider;
@@ -163,7 +167,9 @@ private:
     uint groupId;
 #endif
 };
-#endif // QT_NO_FILESYSTEMWATCHER
+#endif // QT_NO_FILESYSTEMMODEL
 
+
+QT_END_NAMESPACE
 #endif // QFILEINFOGATHERER_H
 

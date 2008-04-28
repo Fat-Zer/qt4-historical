@@ -53,7 +53,10 @@
 #include <QtCore/QMap>
 #include <QtCore/QSet>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerDnDItemInterface;
+class QDesignerTaskMenuExtension;
 class DomConnections;
 
 class QWidget;
@@ -81,7 +84,7 @@ class QT_FORMEDITOR_EXPORT FormWindow: public FormWindowBase
     Q_OBJECT
 
 public:
-    FormWindow(FormEditor *core, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    explicit FormWindow(FormEditor *core, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     virtual ~FormWindow();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -134,8 +137,6 @@ public:
 
     QWidget *currentWidget() const;
 
-    virtual QSize sizeHint() const;
-
     bool hasInsertedChildren(QWidget *w) const;
 
     QList<QWidget *> selectedWidgets() const;
@@ -149,7 +150,6 @@ public:
     void updateChildSelections(QWidget *w);
     void raiseChildSelections(QWidget *w);
     void raiseSelection(QWidget *w);
-    void hideSelection(QWidget *w);
 
     inline const QList<QWidget *>& widgets() const { return m_widgets; }
     inline int widgetCount() const { return m_widgets.count(); }
@@ -170,8 +170,8 @@ public:
     void beginCommand(const QString &description);
     void endCommand();
 
-    bool blockSelectionChanged(bool blocked);
-    void emitSelectionChanged();
+    virtual bool blockSelectionChanged(bool blocked);
+    virtual void emitSelectionChanged();
 
     bool unify(QObject *w, QString &s, bool changeIt);
 
@@ -204,7 +204,13 @@ public:
 
     //  Initialize and return a popup menu for a managed widget
     QMenu *initializePopupMenu(QWidget *managedWidget);
+
+    virtual void paste(PasteMode pasteMode);
+    virtual QEditorFormBuilder *createFormBuilder();
+
     bool eventFilter(QObject *watched, QEvent *event);
+
+    QDesignerTaskMenuExtension *widgetTaskMenu(QWidget *w) const;
 
 signals:
     void contextMenuRequested(QMenu *menu, QWidget *widget);
@@ -221,10 +227,12 @@ public slots:
     void layoutHorizontal();
     void layoutVertical();
     void layoutGrid();
+    void layoutFormLayout();
     void layoutHorizontalSplit();
     void layoutVerticalSplit();
     void layoutHorizontalContainer(QWidget *w);
     void layoutVerticalContainer(QWidget *w);
+    void layoutFormLayoutContainer(QWidget *w);
     void layoutGridContainer(QWidget *w);
     void breakLayout(QWidget *w);
 
@@ -273,10 +281,11 @@ private:
     bool handleKeyReleaseEvent(QWidget *widget, QWidget *managedWidget, QKeyEvent *e);
 
     bool isCentralWidget(QWidget *w) const;
-    
+
     bool setCurrentWidget(QWidget *currentWidget);
     bool trySelectWidget(QWidget *w, bool select);
 
+    void dragWidgetWithinForm(QWidget *widget, const QRect &targetGeometry, QWidget *targetContainer);
 
     BreakLayoutCommand *breakLayoutCommand(QWidget *w);
 
@@ -287,7 +296,6 @@ private:
 
     QWidget *findTargetContainer(QWidget *widget) const;
 
-    bool isPageOfContainerWidget(const QWidget *widget) const;
     void clearMainContainer();
 
     static int widgetDepth(const QWidget *w);
@@ -299,7 +307,12 @@ private:
 
     void handleArrowKeyEvent(int key, Qt::KeyboardModifiers modifiers);
 
+    void layoutSelection(int type);
+    void layoutContainer(QWidget *w, int type);
+
 private:
+    QWidget *containerForPaste() const;
+
     FormEditor *m_core;
     FormWindowCursor *m_cursor;
     QWidget *m_mainContainer;
@@ -318,7 +331,7 @@ private:
     Selection *m_selection;
 
     QPoint m_startPos;
-   
+
     QUndoStack *m_commandHistory;
 
     QString m_fileName;
@@ -352,11 +365,14 @@ private:
     QList<SetPropertyCommand*> m_moveSelection;
     int m_lastUndoIndex;
     bool m_dblClicked;
+    QPoint m_contextMenuPosition;
 
 private:
     friend class WidgetEditorTool;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // FORMWINDOW_H

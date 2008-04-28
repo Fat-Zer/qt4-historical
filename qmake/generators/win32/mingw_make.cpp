@@ -48,6 +48,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+QT_BEGIN_NAMESPACE
+
 MingwMakefileGenerator::MingwMakefileGenerator() : Win32MakefileGenerator(), init_flag(false)
 {
     if (Option::shellPath.isEmpty())
@@ -396,10 +398,15 @@ void MingwMakefileGenerator::writeBuildRulesPart(QTextStream &t)
 void MingwMakefileGenerator::writeRcFilePart(QTextStream &t)
 {
     const QString rc_file = fileFixify(project->first("RC_FILE"));
+
+    QString incPathStr = fileInfo(rc_file).path();
+    if (incPathStr != "." && QDir::isRelativePath(incPathStr))
+        incPathStr.prepend("./");
+
     if (!rc_file.isEmpty()) {
         t << escapeDependencyPath(var("RES_FILE")) << ": " << rc_file << "\n\t"
           << var("QMAKE_RC") << " -i " << rc_file << " -o " << var("RES_FILE") 
-	  << " --include-dir=" << fileInfo(rc_file).path() << endl << endl;
+          << " --include-dir=" << incPathStr << endl << endl;
     }
 }
 
@@ -446,3 +453,4 @@ QStringList &MingwMakefileGenerator::findDependencies(const QString &file)
     return aList;
 }
 
+QT_END_NAMESPACE

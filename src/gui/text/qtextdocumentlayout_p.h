@@ -59,6 +59,8 @@
 #include "QtGui/qtextoption.h"
 #include "QtGui/qtextobject.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTextListFormat;
 
 class QTextDocumentLayoutPrivate;
@@ -110,5 +112,7 @@ private:
     QRectF doLayout(int from, int oldLength, int length);
     void layoutFinished();
 };
+
+QT_END_NAMESPACE
 
 #endif // QTEXTDOCUMENTLAYOUT_P_H

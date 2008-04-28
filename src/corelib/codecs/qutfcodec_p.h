@@ -57,6 +57,8 @@
 
 #include "QtCore/qtextcodec.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TEXTCODEC
 
 class QUtf8Codec : public QTextCodec {
@@ -109,6 +111,47 @@ public:
     int mibEnum() const;
 };
 
+class QUtf32Codec : public QTextCodec {
+protected:
+    enum Endianness {
+        Detect,
+        BE,
+        LE
+    };
+public:
+    QUtf32Codec() { e = Detect; }
+    ~QUtf32Codec();
+
+    QByteArray name() const;
+    QList<QByteArray> aliases() const;
+    int mibEnum() const;
+
+    QString convertToUnicode(const char *, int, ConverterState *) const;
+    QByteArray convertFromUnicode(const QChar *, int, ConverterState *) const;
+
+protected:
+    Endianness e;
+};
+
+class QUtf32BECodec : public QUtf32Codec {
+public:
+    QUtf32BECodec() : QUtf32Codec() { e = BE; }
+    QByteArray name() const;
+    QList<QByteArray> aliases() const;
+    int mibEnum() const;
+};
+
+class QUtf32LECodec : public QUtf32Codec {
+public:
+    QUtf32LECodec() : QUtf32Codec() { e = LE; }
+    QByteArray name() const;
+    QList<QByteArray> aliases() const;
+    int mibEnum() const;
+};
+
+
 #endif // QT_NO_TEXTCODEC
+
+QT_END_NAMESPACE
 
 #endif // QUTFCODEC_P_H

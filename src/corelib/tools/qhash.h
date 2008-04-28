@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 #undef QT_QHASH_DEBUG
 QT_MODULE(Core)
 
@@ -122,7 +124,7 @@ struct Q_CORE_EXPORT QHashData
 
     Node *fakeNext;
     Node **buckets;
-    QBasicAtomic ref;
+    QBasicAtomicInt ref;
     int size;
     int nodeSize;
     short userNumBits;
@@ -134,6 +136,7 @@ struct Q_CORE_EXPORT QHashData
     void freeNode(void *node);
     QHashData *detach_helper(void (*node_duplicate)(Node *, void *), int nodeSize);
     void mightGrow();
+    bool willGrow();
     void hasShrunk();
     void rehash(int hint);
     void destroyAndFree();
@@ -148,10 +151,20 @@ struct Q_CORE_EXPORT QHashData
     static QHashData shared_null;
 };
 
-inline void QHashData::mightGrow()
-{
+inline void QHashData::mightGrow() // ### Qt 5: eliminate
+{ 
     if (size >= numBuckets)
         rehash(numBits + 1);
+}  
+
+inline bool QHashData::willGrow()
+{
+    if (size >= numBuckets) {
+        rehash(numBits + 1);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 inline void QHashData::hasShrunk()
@@ -555,20 +568,19 @@ Q_OUTOFLINE_TEMPLATE void QHash<Key, T>::detach_helper()
 {
     QHashData *x = d->detach_helper(duplicateNode,
         QTypeInfo<T>::isDummy ? sizeof(DummyNode) : sizeof(Node));
-    x = qAtomicSetPtr(&d, x);
-    if (!x->ref.deref())
-        freeData(x);
+    if (!d->ref.deref())
+        freeData(d);
+    d = x;
 }
 
 template <class Key, class T>
 Q_INLINE_TEMPLATE QHash<Key, T> &QHash<Key, T>::operator=(const QHash<Key, T> &other)
 {
     if (d != other.d) {
-        QHashData *x = other.d;
-        x->ref.ref();
-        x = qAtomicSetPtr(&d, x);
-        if (!x->ref.deref())
-            freeData(x);
+        other.d->ref.ref();
+        if (!d->ref.deref())
+            freeData(d);
+        d = other.d;
         if (!d->sharable)
             detach_helper();
     }
@@ -708,12 +720,14 @@ template <class Key, class T>
 Q_INLINE_TEMPLATE T &QHash<Key, T>::operator[](const Key &akey)
 {
     detach();
-    d->mightGrow();
 
     uint h;
     Node **node = findNode(akey, &h);
-    if (*node == e)
+    if (*node == e) {
+        if (d->willGrow())
+            node = findNode(akey, &h);
         return createNode(h, akey, T(), node)->value;
+    }
     return (*node)->value;
 }
 
@@ -722,12 +736,14 @@ Q_INLINE_TEMPLATE typename QHash<Key, T>::iterator QHash<Key, T>::insert(const K
                                                                          const T &avalue)
 {
     detach();
-    d->mightGrow();
 
     uint h;
     Node **node = findNode(akey, &h);
-    if (*node == e)
+    if (*node == e) {
+        if (d->willGrow())
+            node = findNode(akey, &h);
         return iterator(createNode(h, akey, avalue, node));
+    }
 
     if (!QTypeInfo<T>::isDummy)
         (*node)->value = avalue;
@@ -739,7 +755,7 @@ Q_INLINE_TEMPLATE typename QHash<Key, T>::iterator QHash<Key, T>::insertMulti(co
                                                                               const T &avalue)
 {
     detach();
-    d->mightGrow();
+    d->willGrow();
 
     uint h;
     Node **nextNode = findNode(akey, &h);
@@ -995,6 +1011,8 @@ Q_INLINE_TEMPLATE int QMultiHash<Key, T>::count(const Key &key, const T &value) 
 
 Q_DECLARE_ASSOCIATIVE_ITERATOR(Hash)
 Q_DECLARE_MUTABLE_ASSOCIATIVE_ITERATOR(Hash)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

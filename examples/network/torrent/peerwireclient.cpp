@@ -325,7 +325,7 @@ qint64 PeerWireClient::writeToSocket(qint64 bytes)
                                       qMin<qint64>(bytes - totalWritten, outgoingBuffer.size()));
         if (written <= 0)
             return totalWritten ? totalWritten : written;
-        
+
         totalWritten += written;
         uploadSpeedData[0] += written;
         outgoingBuffer.remove(0, written);
@@ -419,6 +419,7 @@ void PeerWireClient::timerEvent(QTimerEvent *event)
             invalidateTimeout = false;
         } else {
             abort();
+            emit infoHashReceived(QByteArray());
         }
     } else if (event->timerId() == pendingRequestTimer) {
         abort();
@@ -596,7 +597,7 @@ void PeerWireClient::processIncomingData()
         case PiecePacket: {
             int index = int(fromNetworkData(&packet.data()[1]));
             int begin = int(fromNetworkData(&packet.data()[5]));
-           
+
             incoming.removeAll(TorrentBlock(index, begin, packet.size() - 9));
 
             // The peer sends a block.

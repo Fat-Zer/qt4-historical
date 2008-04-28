@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_CALENDARWIDGET
@@ -155,6 +157,8 @@ protected:
     void keyPressEvent(QKeyEvent * event);
 
     virtual void paintCell(QPainter *painter, const QRect &rect, const QDate &date) const;
+    void updateCell(const QDate &date);
+    void updateCells();
 
 public Q_SLOTS:
     void setSelectedDate(const QDate &date);
@@ -179,6 +183,7 @@ private:
     Q_DECLARE_PRIVATE(QCalendarWidget)
     Q_DISABLE_COPY(QCalendarWidget)
 
+    Q_PRIVATE_SLOT(d_func(), void _q_slotChangeDate(const QDate &date))
     Q_PRIVATE_SLOT(d_func(), void _q_slotChangeDate(const QDate &date, bool changeMonth))
     Q_PRIVATE_SLOT(d_func(), void _q_editingFinished())
     Q_PRIVATE_SLOT(d_func(), void _q_prevMonthClicked())
@@ -190,6 +195,8 @@ private:
 };
 
 #endif // QT_NO_CALENDARWIDGET
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

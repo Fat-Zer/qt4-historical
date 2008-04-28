@@ -46,7 +46,10 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QSlider;
+QT_END_NAMESPACE
+//! [0]
 class GLWidget;
 
 class Window : public QWidget
@@ -64,5 +67,6 @@ private:
     QSlider *ySlider;
     QSlider *zSlider;
 };
+//! [0]
 
 #endif

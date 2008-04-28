@@ -49,7 +49,9 @@
 
 #include "svgwindow.h"
 
+QT_BEGIN_NAMESPACE
 class QAction;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

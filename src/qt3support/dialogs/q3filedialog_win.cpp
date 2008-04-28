@@ -60,10 +60,11 @@
 
 #include <shlobj.h>
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 #include <commdlg.h>
 #endif
 
+QT_BEGIN_NAMESPACE
 
 // Don't remove the lines below!
 //
@@ -77,7 +78,7 @@ static PtrSHGetPathFromIDList ptrSHGetPathFromIDList = 0;
 
 static void resolveLibs()
 {
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     static bool triedResolve = false;
 
     if (!triedResolve) {
@@ -102,7 +103,7 @@ static void resolveLibs()
     }
 #endif
 }
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 #define PtrSHBrowseForFolder SHBrowseForFolder ;
 #define PtrSHGetPathFromIDList SHGetPathFromIDList;
 #endif
@@ -169,7 +170,7 @@ static QString selFilter(const QString& filter, DWORD idx)
     return filterLst[(int)idx - 1];
 }
 
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
 // Static vars for OFNA funcs:
 static QByteArray aInitDir;
 static QByteArray aInitSel;
@@ -604,7 +605,7 @@ static int __stdcall winGetExistDirCallbackProc(HWND hwnd,
                                                 LPARAM lParam,
                                                 LPARAM lpData)
 {
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     if (uMsg == BFFM_INITIALIZED && lpData != 0) {
         QString *initDir = (QString *)(lpData);
         if (!initDir->isEmpty()) {
@@ -651,7 +652,7 @@ QString Q3FileDialog::winGetExistingDirectory(const QString& initialDirectory,
                                              const char* /*name*/,
                                              const QString& caption)
 {
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     QString currentDir = QDir::currentDirPath();
     QString result;
     if (parent)
@@ -745,5 +746,6 @@ QString Q3FileDialog::winGetExistingDirectory(const QString& initialDirectory,
 #endif
 }
 
+QT_END_NAMESPACE
 
 #endif

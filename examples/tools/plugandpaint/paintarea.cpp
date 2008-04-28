@@ -87,7 +87,9 @@ void PaintArea::setImage(const QImage &image)
 void PaintArea::insertShape(const QPainterPath &path)
 {
     pendingPath = path;
+#ifndef QT_NO_CURSOR
     setCursor(Qt::CrossCursor);
+#endif
 }
 
 void PaintArea::setBrushColor(const QColor &color)
@@ -100,11 +102,13 @@ void PaintArea::setBrushWidth(int width)
     thickness = width;
 }
 
+//! [0]
 void PaintArea::setBrush(BrushInterface *brushInterface, const QString &brush)
 {
     this->brushInterface = brushInterface;
     this->brush = brush;
 }
+//! [0]
 
 QSize PaintArea::sizeHint() const
 {
@@ -136,7 +140,9 @@ void PaintArea::mousePressEvent(QMouseEvent *event)
             painter.drawPath(pendingPath);
 
             pendingPath = QPainterPath();
+#ifndef QT_NO_CURSOR
             unsetCursor();
+#endif
             update();
         } else {
             if (brushInterface) {
@@ -152,6 +158,7 @@ void PaintArea::mousePressEvent(QMouseEvent *event)
     }
 }
 
+//! [1]
 void PaintArea::mouseMoveEvent(QMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && lastPos != QPoint(-1, -1)) {
@@ -166,6 +173,7 @@ void PaintArea::mouseMoveEvent(QMouseEvent *event)
         lastPos = event->pos();
     }
 }
+//! [1]
 
 void PaintArea::mouseReleaseEvent(QMouseEvent *event)
 {

@@ -60,6 +60,9 @@
 #include "QtCore/qrect.h"
 #include "QtCore/qvector.h"
 #include "QtCore/qlist.h"
+#include "QtCore/qpair.h"
+
+QT_BEGIN_NAMESPACE
 
 class QPolygonF;
 
@@ -110,11 +113,11 @@ public:
 
     QBezier bezierOnInterval(qreal t0, qreal t1) const;
 
-    static QVector< QList<qreal> > findIntersections(const QBezier &a,
+    static QVector< QPair<qreal, qreal> > findIntersections(const QBezier &a,
                                                      const QBezier &b);
 
     static bool findIntersections(const QBezier &a, const QBezier &b,
-                                  QVector<qreal> &ta, QVector<qreal> &tb);
+                                  QVector<QPair<qreal, qreal> > *t);
 
     qreal x1, y1, x2, y2, x3, y3, x4, y4;
 };
@@ -169,14 +172,7 @@ inline QPointF QBezier::pointAt(qreal t) const
     Q_ASSERT(t <= 1);
 #if 1
     qreal a, b, c, d;
-    qreal m_t = 1. - t;
-    b = m_t * m_t;
-    c = t * t;
-    d = c * t;
-    a = b * m_t;
-    b *= 3. * t;
-    c *= 3. * m_t;
-
+    coefficients(t, a, b, c, d);
     return QPointF(a*x1 + b*x2 + c*x3 + d*x4, a*y1 + b*y2 + c*y3 + d*y4);
 #else
     // numerically more stable:
@@ -280,5 +276,7 @@ inline void QBezier::parameterSplitLeft(qreal t, QBezier *left)
     left->x4 = x1 = left->x3 + t * (x2 - left->x3);
     left->y4 = y1 = left->y3 + t * (y2 - left->y3);
 }
+
+QT_END_NAMESPACE
 
 #endif // QBEZIER_P_H

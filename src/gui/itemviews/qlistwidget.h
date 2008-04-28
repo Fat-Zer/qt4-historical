@@ -47,8 +47,11 @@
 #include <QtGui/qlistview.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qvector.h>
+#include <QtGui/qitemselectionmodel.h>
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -163,7 +166,7 @@ public:
 
 private:
     int rtti;
-    QVector<QWidgetItemData> values;
+    QVector<void *> dummy;
     QListWidget *view;
     QListWidgetItemPrivate *d;
     Qt::ItemFlags itemFlags;
@@ -224,9 +227,11 @@ public:
 
     QListWidgetItem *currentItem() const;
     void setCurrentItem(QListWidgetItem *item);
+    void setCurrentItem(QListWidgetItem *item, QItemSelectionModel::SelectionFlags command);
 
     int currentRow() const;
     void setCurrentRow(int row);
+    void setCurrentRow(int row, QItemSelectionModel::SelectionFlags command);
 
     QListWidgetItem *itemAt(const QPoint &p) const;
     inline QListWidgetItem *itemAt(int x, int y) const;
@@ -324,6 +329,8 @@ inline bool QListWidgetItem::isHidden() const
 { return (view ? view->isItemHidden(this) : false); }
 
 #endif // QT_NO_LISTWIDGET
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

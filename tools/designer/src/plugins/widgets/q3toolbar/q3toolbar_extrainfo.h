@@ -50,6 +50,8 @@
 
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class Q3ToolBar;
 class DomItem;
 
@@ -86,5 +88,7 @@ protected:
 private:
     QDesignerFormEditorInterface *m_core;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3TOOLBAR_EXTRAINFO_H

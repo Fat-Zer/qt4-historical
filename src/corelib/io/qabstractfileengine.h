@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QFileExtension;
@@ -140,6 +142,8 @@ public:
     virtual void setFileName(const QString &file);
     virtual int handle() const;
     bool atEnd() const;
+    uchar *map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags);
+    bool unmap(uchar *ptr);
 
     typedef QAbstractFileEngineIterator Iterator;
     virtual Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
@@ -154,12 +158,31 @@ public:
 
     enum Extension {
         AtEndExtension,
-        FastReadLineExtension
+        FastReadLineExtension,
+        MapExtension,
+        UnMapExtension
     };
     class ExtensionOption
     {};
     class ExtensionReturn
     {};
+
+    class MapExtensionOption : public ExtensionOption {
+    public:
+        qint64 offset;
+        qint64 size;
+        QFile::MemoryMapFlags flags;
+    };
+    class MapExtensionReturn : public ExtensionReturn {
+    public:
+        uchar *address;
+    };
+
+    class UnMapExtensionOption : public ExtensionOption {
+    public:
+        uchar *address;
+    };
+
     virtual bool extension(Extension extension, const ExtensionOption *option = 0, ExtensionReturn *output = 0);
     virtual bool supportsExtension(Extension extension) const;
 
@@ -218,6 +241,8 @@ private:
     void setPath(const QString &path);
     QAbstractFileEngineIteratorPrivate *d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -50,8 +50,11 @@
 
 #include "tetrixpiece.h"
 
+QT_BEGIN_NAMESPACE
 class QLabel;
+QT_END_NAMESPACE
 
+//! [0]
 class TetrixBoard : public QFrame
 {
     Q_OBJECT
@@ -76,7 +79,9 @@ protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void timerEvent(QTimerEvent *event);
+//! [0]
 
+//! [1]
 private:
     enum { BoardWidth = 10, BoardHeight = 22 };
 
@@ -109,5 +114,6 @@ private:
     int level;
     TetrixShape board[BoardWidth * BoardHeight];
 };
+//! [1]
 
 #endif

@@ -45,6 +45,8 @@
 
 #ifndef QT_NO_RICHTEXT
 
+QT_BEGIN_NAMESPACE
+
 Q3TextCommand::~Q3TextCommand() {}
 Q3TextCommand::Commands Q3TextCommand::type() const { return Invalid; }
 
@@ -630,5 +632,7 @@ Q3TextStringChar::~Q3TextStringChar()
 Q3TextParagraphPseudoDocument::Q3TextParagraphPseudoDocument():pFormatter(0),commandHistory(0), minw(0),wused(0),collection(){}
 Q3TextParagraphPseudoDocument::~Q3TextParagraphPseudoDocument(){ delete pFormatter; delete commandHistory; }
 
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_RICHTEXT

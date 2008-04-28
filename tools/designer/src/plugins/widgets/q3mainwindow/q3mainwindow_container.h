@@ -47,6 +47,8 @@
 #include <QtDesigner/QDesignerContainerExtension>
 #include <QtDesigner/QExtensionFactory>
 
+QT_BEGIN_NAMESPACE
+
 class Q3MainWindow;
 
 class Q3MainWindowContainer: public QObject, public QDesignerContainerExtension
@@ -54,7 +56,7 @@ class Q3MainWindowContainer: public QObject, public QDesignerContainerExtension
     Q_OBJECT
     Q_INTERFACES(QDesignerContainerExtension)
 public:
-    Q3MainWindowContainer(Q3MainWindow *widget, QObject *parent = 0);
+    explicit Q3MainWindowContainer(Q3MainWindow *widget, QObject *parent = 0);
 
     virtual int count() const;
     virtual QWidget *widget(int index) const;
@@ -73,10 +75,12 @@ class Q3MainWindowContainerFactory: public QExtensionFactory
 {
     Q_OBJECT
 public:
-    Q3MainWindowContainerFactory(QExtensionManager *parent = 0);
+    explicit Q3MainWindowContainerFactory(QExtensionManager *parent = 0);
 
 protected:
     virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3MAINWINDOW_CONTAINER_H

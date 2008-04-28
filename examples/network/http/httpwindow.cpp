@@ -50,7 +50,11 @@
 HttpWindow::HttpWindow(QWidget *parent)
     : QDialog(parent)
 {
+#ifndef QT_NO_OPENSSL
     urlLineEdit = new QLineEdit("https://");
+#else
+    urlLineEdit = new QLineEdit("http://");
+#endif
 
     urlLabel = new QLabel(tr("&URL:"));
     urlLabel->setBuddy(urlLineEdit);
@@ -80,6 +84,10 @@ HttpWindow::HttpWindow(QWidget *parent)
             this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
     connect(http, SIGNAL(authenticationRequired(const QString &, quint16, QAuthenticator *)),
             this, SLOT(slotAuthenticationRequired(const QString &, quint16, QAuthenticator *)));
+#ifndef QT_NO_OPENSSL
+    connect(http, SIGNAL(sslErrors(const QList<QSslError> &)),
+            this, SLOT(sslErrors(const QList<QSslError> &)));
+#endif
     connect(progressDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
     connect(downloadButton, SIGNAL(clicked()), this, SLOT(downloadFile()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
@@ -133,7 +141,10 @@ void HttpWindow::downloadFile()
         http->setUser(url.userName(), url.password());
 
     httpRequestAborted = false;
-    httpGetId = http->get(url.path(), file);
+    QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
+    if (path.isEmpty())
+        path = "/";
+    httpGetId = http->get(path, file);
 
     progressDialog->setWindowTitle(tr("HTTP"));
     progressDialog->setLabelText(tr("Downloading %1.").arg(fileName));
@@ -187,14 +198,22 @@ void HttpWindow::httpRequestFinished(int requestId, bool error)
 
 void HttpWindow::readResponseHeader(const QHttpResponseHeader &responseHeader)
 {
-    if (responseHeader.statusCode() != 200) {
+    switch (responseHeader.statusCode()) {
+    case 200:                   // Ok
+    case 301:                   // Moved Permanently
+    case 302:                   // Found
+    case 303:                   // See Other
+    case 307:                   // Temporary Redirect
+        // these are not error conditions
+        break;
+
+    default:
         QMessageBox::information(this, tr("HTTP"),
                                  tr("Download failed: %1.")
                                  .arg(responseHeader.reasonPhrase()));
         httpRequestAborted = true;
         progressDialog->hide();
         http->abort();
-        return;
     }
 }
 
@@ -225,3 +244,21 @@ void HttpWindow::slotAuthenticationRequired(const QString &hostName, quint16, QA
         authenticator->setPassword(ui.passwordEdit->text());
     }
 }
+
+#ifndef QT_NO_OPENSSL
+void HttpWindow::sslErrors(const QList<QSslError> &errors)
+{
+    QString errorString;
+    foreach (const QSslError &error, errors) {
+        if (!errorString.isEmpty())
+            errorString += ", ";
+        errorString += error.errorString();
+    }
+    
+    if (QMessageBox::warning(this, tr("HTTP Example"),
+                             tr("One or more SSL errors has occurred: %1").arg(errorString),
+                             QMessageBox::Ignore | QMessageBox::Abort) == QMessageBox::Ignore) {
+        http->ignoreSslErrors();
+    }
+}
+#endif

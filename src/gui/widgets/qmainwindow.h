@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_MAINWINDOW
@@ -149,6 +151,7 @@ public:
                          Qt::Orientation orientation);
     void tabifyDockWidget(QDockWidget *first, QDockWidget *second);
     void removeDockWidget(QDockWidget *dockwidget);
+    bool restoreDockWidget(QDockWidget *dockwidget);
 
     Qt::DockWidgetArea dockWidgetArea(QDockWidget *dockwidget) const;
 #endif // QT_NO_DOCKWIDGET
@@ -186,6 +189,8 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMainWindow::DockOptions)
 
 #endif // QT_NO_MAINWINDOW
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

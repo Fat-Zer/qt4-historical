@@ -53,6 +53,11 @@
 
 #ifdef Q_WS_X11
 #include "qx11info_x11.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
+#ifdef Q_WS_X11
 extern const QX11Info *qt_x11Info(const QPaintDevice *pd);
 #endif
 
@@ -68,6 +73,8 @@ extern int qt_defaultDpi();
 
 /*!
     \class QFontMetrics
+    \reentrant
+
     \brief The QFontMetrics class provides font metrics information.
 
     \ingroup multimedia
@@ -125,12 +132,7 @@ extern int qt_defaultDpi();
     and size(), to return the size of that rectangle.
 
     Example:
-    \code
-    QFont font("times", 24);
-    QFontMetrics fm(font);
-    int pixelsWide = fm.width("What's the width of this text?");
-    int pixelsHigh = fm.height();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qfontmetrics.cpp 0
 
     \sa QFont, QFontInfo, QFontDatabase, QFontComboBox, {Character Map Example}
 */
@@ -415,6 +417,8 @@ int QFontMetrics::xHeight() const
 {
     QFontEngine *engine = d->engineForScript(QUnicodeTables::Common);
     Q_ASSERT(engine != 0);
+    if (d->capital == QFont::SmallCaps)
+        return qRound(d->smallCapsFontPrivate()->engineForScript(QUnicodeTables::Common)->ascent());
     return qRound(engine->xHeight());
 }
 
@@ -459,10 +463,16 @@ bool QFontMetrics::inFont(QChar ch) const
 int QFontMetrics::leftBearing(QChar ch) const
 {
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
     if (engine->type() == QFontEngine::Box)
         return 0;
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[10];
     int nglyphs = 9;
@@ -487,10 +497,16 @@ int QFontMetrics::leftBearing(QChar ch) const
 int QFontMetrics::rightBearing(QChar ch) const
 {
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
     if (engine->type() == QFontEngine::Box)
         return 0;
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[10];
     int nglyphs = 9;
@@ -556,8 +572,14 @@ int QFontMetrics::width(QChar ch) const
         return 0;
 
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[8];
     int nglyphs = 7;
@@ -565,7 +587,8 @@ int QFontMetrics::width(QChar ch) const
     return qRound(glyphs[0].advance.x);
 }
 
-/*!
+/*! \obsolete
+
     Returns the width of the character at position \a pos in the
     string \a text.
 
@@ -581,7 +604,7 @@ int QFontMetrics::charWidth(const QString &text, int pos) const
     if (pos < 0 || pos > (int)text.length())
         return 0;
 
-    const QChar &ch = text.unicode()[pos];
+    QChar ch = text.unicode()[pos];
     const int script = QUnicodeTables::script(ch);
     int width;
 
@@ -597,8 +620,14 @@ int QFontMetrics::charWidth(const QString &text, int pos) const
     } else if (QChar::category(ch.unicode()) == QChar::Mark_NonSpacing) {
         width = 0;
     } else {
-        QFontEngine *engine = d->engineForScript(script);
+        QFontEngine *engine;
+        if (d->capital == QFont::SmallCaps && ch.isLower())
+            engine = d->smallCapsFontPrivate()->engineForScript(script);
+        else
+            engine = d->engineForScript(script);
         Q_ASSERT(engine != 0);
+
+        d->alterCharForCapitalization(ch);
 
         QGlyphLayout glyphs[8];
         int nglyphs = 7;
@@ -660,8 +689,14 @@ QRect QFontMetrics::boundingRect(const QString &text) const
 QRect QFontMetrics::boundingRect(QChar ch) const
 {
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[10];
     int nglyphs = 9;
@@ -885,6 +920,8 @@ int QFontMetrics::lineWidth() const
 
 /*!
     \class QFontMetricsF qfontmetrics.h
+    \reentrant
+
     \brief The QFontMetricsF class provides font metrics information.
 
     \ingroup multimedia
@@ -923,12 +960,7 @@ int QFontMetrics::lineWidth() const
     and size(), to return the size of that rectangle.
 
     Example:
-    \code
-    QFont font("times", 24);
-    QFontMetricsF fm(font);
-    qreal pixelsWide = fm.width("What's the width of this text?");
-    qreal pixelsHigh = fm.height();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.text.qfontmetrics.cpp 1
 
     \sa QFont QFontInfo QFontDatabase
 */
@@ -1214,6 +1246,8 @@ qreal QFontMetricsF::xHeight() const
 {
     QFontEngine *engine = d->engineForScript(QUnicodeTables::Common);
     Q_ASSERT(engine != 0);
+    if (d->capital == QFont::SmallCaps)
+        return d->smallCapsFontPrivate()->engineForScript(QUnicodeTables::Common)->ascent().toReal();
     return engine->xHeight().toReal();
 }
 
@@ -1258,10 +1292,16 @@ bool QFontMetricsF::inFont(QChar ch) const
 qreal QFontMetricsF::leftBearing(QChar ch) const
 {
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
     if (engine->type() == QFontEngine::Box)
         return 0;
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[10];
     int nglyphs = 9;
@@ -1286,10 +1326,16 @@ qreal QFontMetricsF::leftBearing(QChar ch) const
 qreal QFontMetricsF::rightBearing(QChar ch) const
 {
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
     if (engine->type() == QFontEngine::Box)
         return 0;
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[10];
     int nglyphs = 9;
@@ -1348,8 +1394,14 @@ qreal QFontMetricsF::width(QChar ch) const
         return 0.;
 
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[8];
     int nglyphs = 7;
@@ -1407,8 +1459,14 @@ QRectF QFontMetricsF::boundingRect(const QString &text) const
 QRectF QFontMetricsF::boundingRect(QChar ch) const
 {
     const int script = QUnicodeTables::script(ch);
-    QFontEngine *engine = d->engineForScript(script);
+    QFontEngine *engine;
+    if (d->capital == QFont::SmallCaps && ch.isLower())
+        engine = d->smallCapsFontPrivate()->engineForScript(script);
+    else
+        engine = d->engineForScript(script);
     Q_ASSERT(engine != 0);
+
+    d->alterCharForCapitalization(ch);
 
     QGlyphLayout glyphs[10];
     int nglyphs = 9;
@@ -1673,3 +1731,5 @@ qreal QFontMetricsF::lineWidth() const
         QRect rect = boundingRect(text.left(len));
     \endcode
 */
+
+QT_END_NAMESPACE

@@ -43,6 +43,8 @@
 
 #include "plaincodemarker.h"
 
+QT_BEGIN_NAMESPACE
+
 PlainCodeMarker::PlainCodeMarker()
 {
 }
@@ -135,3 +137,5 @@ const Node *PlainCodeMarker::resolveTarget( const QString& /* target */,
 {
     return 0;
 }
+
+QT_END_NAMESPACE

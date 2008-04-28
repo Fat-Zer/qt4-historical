@@ -42,9 +42,14 @@
 ****************************************************************************/
 
 #include "metatranslator.h"
+
 #include <QtCore/QString>
 #include <QtCore/QStack>
-#include <QtXml>
+#include <QtXml/QXmlAttributes>
+#include <QtXml/QXmlDefaultHandler>
+#include <QtXml/QXmlParseException>
+
+QT_BEGIN_NAMESPACE
 
 class XLIFFHandler : public QXmlDefaultHandler
 {
@@ -78,7 +83,7 @@ private:
 
 private:
     MetaTranslator *tor;
-    MetaTranslatorMessage::Type m_type;
+    TranslatorMessage::Type m_type;
     QString m_language;
     QString m_context;
     QString m_source;
@@ -97,4 +102,4 @@ private:
     QStack<int> m_contextStack;
 };
 
-
+QT_END_NAMESPACE

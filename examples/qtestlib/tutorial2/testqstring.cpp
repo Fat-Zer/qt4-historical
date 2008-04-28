@@ -43,6 +43,7 @@
 
 #include <QtTest/QtTest>
 
+//! [0]
 class TestQString: public QObject
 {
     Q_OBJECT
@@ -51,7 +52,9 @@ private slots:
     void toUpper_data();
     void toUpper();
 };
+//! [0]
 
+//! [1]
 void TestQString::toUpper_data()
 {
     QTest::addColumn<QString>("string");
@@ -61,7 +64,9 @@ void TestQString::toUpper_data()
     QTest::newRow("mixed")     << "Hello" << "HELLO";
     QTest::newRow("all upper") << "HELLO" << "HELLO";
 }
+//! [1]
 
+//! [2]
 void TestQString::toUpper()
 {
     QFETCH(QString, string);
@@ -69,7 +74,10 @@ void TestQString::toUpper()
 
     QCOMPARE(string.toUpper(), result);
 }
+//! [2]
 
+//! [3]
 QTEST_MAIN(TestQString)
 #include "testqstring.moc"
+//! [3]
 

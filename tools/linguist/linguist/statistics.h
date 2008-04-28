@@ -47,6 +47,8 @@
 #include "ui_statistics.h"
 #include <QVariant>
 
+QT_BEGIN_NAMESPACE
+
 class Statistics : public QDialog, public Ui::Statistics
 {
     Q_OBJECT
@@ -61,5 +63,7 @@ public slots:
 protected slots:
     virtual void languageChange();
 };
+
+QT_END_NAMESPACE
 
 #endif // STATISTICS_H

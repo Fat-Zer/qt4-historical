@@ -46,6 +46,8 @@
 
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
+
 class QString;
 struct QMetaObject;
 class QMetaEnum;
@@ -71,5 +73,7 @@ private:
     static QString resolveEnumerator(const QMetaObject *meta, const QString &name);
     static QString resolveEnumerator(const QMetaEnum &metaEnum, const QString &name);
 };
+
+QT_END_NAMESPACE
 
 #endif // WIDGETINFO_H

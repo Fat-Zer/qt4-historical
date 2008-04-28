@@ -46,6 +46,8 @@
 
 #include <QtCore/QLibraryInfo>
 
+QT_BEGIN_NAMESPACE
+
 // Pre- and postcondition macros
 #define PRE(cond) do {if(!(cond))qt_assert(#cond,__FILE__,__LINE__);} while (0)
 #define POST(cond) do {if(!(cond))qt_assert(#cond,__FILE__,__LINE__);} while (0)
@@ -73,12 +75,12 @@ struct Option
     static QString dir_sep;
     static QString dirlist_sep;
     static QString qmakespec;
-    
+    static char field_sep;
+
     enum TARG_MODE { TARG_UNIX_MODE, TARG_WIN_MODE, TARG_MACX_MODE, TARG_MAC9_MODE, TARG_QNX6_MODE };
     static TARG_MODE target_mode;
     //static QString pro_ext;
     //static QString res_ext;
-    //static char field_sep;
 
     static void init()
     {
@@ -90,6 +92,7 @@ struct Option
         Option::dir_sep = QLatin1Char(QLatin1Char('/'));
 #endif
         Option::qmakespec = QString::fromLatin1(qgetenv("QMAKESPEC"));
+        Option::field_sep = ' ';
     }
 };
 #if defined(Q_OS_WIN32)
@@ -105,6 +108,7 @@ Option::TARG_MODE Option::target_mode = Option::TARG_UNIX_MODE;
 QString Option::qmakespec;
 QString Option::dirlist_sep;
 QString Option::dir_sep;
+char Option::field_sep;
 
 static void unquote(QString *string)
 {
@@ -117,12 +121,17 @@ static void unquote(QString *string)
     }
 }
 
-
-static void insertUnique(QMap<QByteArray, QStringList> *map, const QByteArray &key, const QString &value, bool unique = true)
+static void insertUnique(QMap<QByteArray, QStringList> *map, const QByteArray &key, const QStringList &value, bool unique = true)
 {
     QStringList &sl = (*map)[key];
-    if (!unique || (unique && !sl.contains(value))) {
-        sl.append(value);
+    if (!unique) {
+        sl+=value;
+    } else {
+        for (int i = 0; i < value.count(); ++i) {
+            if (!sl.contains(value.at(i))) {
+                sl.append(value.at(i));
+            }
+        }
     }
 }
 
@@ -184,6 +193,49 @@ static QStringList split_arg_list(QString params)
     return args;
 }
 
+static QStringList split_value_list(const QString &vals, bool do_semicolon=false)
+{
+    QString build;
+    QStringList ret;
+    QStack<char> quote;
+
+    const ushort LPAREN = '(';
+    const ushort RPAREN = ')';
+    const ushort SINGLEQUOTE = '\'';
+    const ushort DOUBLEQUOTE = '"';
+    const ushort BACKSLASH = '\\';
+    const ushort SEMICOLON = ';';
+
+    ushort unicode;
+    const QChar *vals_data = vals.data();
+    const int vals_len = vals.length();
+    for(int x = 0, parens = 0; x < vals_len; x++) {
+        unicode = (vals_data+x)->unicode();
+        if(x != (int)vals_len-1 && unicode == BACKSLASH &&
+           ((vals_data+(x+1))->unicode() == '\'' || (vals_data+(x+1))->unicode() == DOUBLEQUOTE)) {
+            build += *(vals_data+(x++)); //get that 'escape'
+        } else if(!quote.isEmpty() && unicode == quote.top()) {
+            quote.pop();
+        } else if(unicode == SINGLEQUOTE || unicode == DOUBLEQUOTE) {
+            quote.push(unicode);
+        } else if(unicode == RPAREN) {
+            --parens;
+        } else if(unicode == LPAREN) {
+            ++parens;
+        }
+
+        if(!parens && quote.isEmpty() && ((do_semicolon && unicode == SEMICOLON) ||
+                                          *(vals_data+x) == Option::field_sep)) {
+            ret << build;
+            build = "";
+        } else {
+            build += *(vals_data+x);
+        }
+    }
+    if(!build.isEmpty())
+        ret << build;
+    return ret;
+}
 
 static QStringList qmake_mkspec_paths()
 {
@@ -238,5 +290,7 @@ static QString getPropertyValue(const QString &v)
 }
 
 
+
+QT_END_NAMESPACE
 #endif // PROPARSERUTILS_H
 

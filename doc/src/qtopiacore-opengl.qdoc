@@ -42,10 +42,10 @@
 ****************************************************************************/
 
 /*!
-    \page qtopiacore-opengl.html
+\page qt-embedded-opengl.html
 
-    \title Qtopia Core and OpenGL
-    \ingroup qtopiacore
+\title Qt for Embedded Linux and OpenGL
+\ingroup qt-embedded
 
 \section1 Introduction
 
@@ -60,18 +60,19 @@ Because it is meant for use in embedded systems, it has a smaller,
 more constrained API. 
 
 For reference, Trolltech provides a plugin which integrates \l
-{http://www.khronos.org/opengles}{OpenGL ES} with Qtopia Core, but
-Qtopia Core can be adapted to a wide range of OpenGL versions.
+{http://www.khronos.org/opengles}{OpenGL ES} with Qt for Embedded Linux,
+but Qt for Embedded Linux can be adapted to a wide range of OpenGL
+versions.
 
-There are three ways to use OpenGL with Qtopia Core:
+There are three ways to use OpenGL with Qt for Embedded Linux:
 \list
   \o Perform OpenGL 3D graphics operations in applications;
   \o Accelerate normal 2D painting operations; 
   \o Implement window compositing and special effects.
 \endlist
 
-Qtopia Core's reference integration example demonstrates all three
-uses.
+Qt for Embedded Linux is shipped with a reference integration example
+that demonstrates all three uses.
 
 \section2 Using OpenGL 3D Graphics in Applications
 
@@ -79,8 +80,8 @@ The \l {QtOpenGL module} offers classes that make it easy to draw 3D
 graphics in GUI applications. The module API is cross-platform, so it
 is also available on Windows, X11, and Mac OS X.
 
-To use OpenGL-enabled widgets in a Qtopia Core application, all that
-is required is to subclass the QGLWidget and draw into instances of
+To use OpenGL-enabled widgets in a Qt for Embedded Linux application,
+all that is required is to subclass the QGLWidget and draw into instances of
 the subclass with standard OpenGL functions. 
 
 \section2 Using OpenGL to Accelerate Normal 2D Painting
@@ -93,17 +94,17 @@ onto 3D scenes drawn using OpenGL.
 
 \section2 Using OpenGL to Implement Window Compositing and Effects
 
-Qtopia Core includes a complete windowing system, which implements
+Qt for Embedded Linux includes a complete windowing system, which implements
 real transparency. The windowing system can be accelerated using
 OpenGL to implement top level window compositing. This makes it easy
 to add 3D effects to applications, for instance when windows are
 minimized or maximized.
 
-\section1 The Qtopia Core Acceleration Architecture
+\section1 Acceleration Architecture
 
-The diagram below shows the Qtopia Core painting architecture.
+The diagram below shows the Qt for Embedded Linux painting architecture.
 
-\image qtopiacore-opengl3.png
+\image qt-embedded-opengl3.png
 
 A client process widget uses a paint engine to draw into a window
 surface. The server then combines the window surfaces and displays the
@@ -119,17 +120,17 @@ window surfaces and lets you decide how to implement window
 compositing.  Using subclassing, your implementation work is minimized
 since you can reuse base class functionality you don't need to change.
 
-The elements of an accelerated Qtopia Core system are shown in the
+The elements of an accelerated Qt for Embedded Linux system are shown in the
 diagram below.
 
-\image qtopiacore-opengl1.png
+\image qt-embedded-opengl1.png
 
 The applications, using the Qt API, do not depend on the presence of
 the acceleration plugin. The plugin uses the graphics hardware to
 accelerate painting primitives. Any operations not accelerated by the
-plugin are done in software by Qtopia Core's software paint engine.
+plugin are done in software by the software paint engine.
 
-To integrate an OpenGL implementation into Qtopia Core for a
+To integrate an OpenGL implementation into Qt for Embedded Linux for a
 particular platform, you use the same mechanisms you would use for
 writing any other accelerated driver. Base classes, e.g., QGLScreen
 and QWSGLWindowSurface, are provided to minimize the need for
@@ -137,18 +138,18 @@ reimplementing common functionality.
 
 \section1 The Reference Integration
 
-The Qtopia Core \l {OpenGL for Embedded Systems Example} is the
-reference implementation for integrating OpenGL ES and \l
-{http://www.khronos.org/egl/}{EGL} with Qtopia Core's graphics
-acceleration architecture.  ( \l {http://www.khronos.org/egl/} {EGL}
-is a library that binds OpenGL ES to native windowing systems.)
+The \l{OpenGL for Embedded Systems Example} is the reference implementation
+for integrating OpenGL ES and \l{http://www.khronos.org/egl/}{EGL} with
+the graphics acceleration architecture of Qt for Embedded Linux.
+(\l{http://www.khronos.org/egl/}{EGL} is a library that binds OpenGL ES to
+native windowing systems.)
 
 The diagram below shows how OpenGL ES is used within the acceleration architecture:
 
-\image qtopiacore-opengl2.png
+\image qt-embedded-opengl2.png
 
 The example implements a screen driver plugin that demonstrates all
-three uses of OpenGL in Qtopia Core: 2D graphics acceleration, 3D
+three uses of OpenGL in Qt for Embedded Linux: 2D graphics acceleration, 3D
 graphics operations using the \l {QtOpenGL module}, and top-level
 window compositing and special effects. The applications still do
 not talk directly to the accelerated plugin. 
@@ -185,7 +186,7 @@ screen during window compositing.
 \section2 API Improvements
 
 Trolltech is now working on enhancing the API for integrating OpenGL
-with Qtopia Core. The current design plan includes the following
+with Qt for Embedded Linux. The current design plan includes the following
 features:
 
 \list
@@ -209,7 +210,7 @@ features:
 graphics on mobile devices. It is therefore more likely to be a better
 alternative for 2D acceleration than OpenGL. Until recently, no
 OpenVG-capable hardware has been available, so Trolltech has not yet
-included an OpenVG solution in Qtopia Core.
+included an OpenVG solution in Qt for Embedded Linux.
 
 However, Trolltech has done a feasibility study, implementing an
 OpenVG paint engine on top of a software OpenVG implementation.

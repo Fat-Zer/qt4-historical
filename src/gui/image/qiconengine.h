@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class Q_GUI_EXPORT QIconEngine
@@ -78,6 +80,8 @@ public:
     virtual bool write(QDataStream &out) const;
     virtual void virtual_hook(int id, void *data);
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

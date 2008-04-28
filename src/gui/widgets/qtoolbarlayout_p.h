@@ -59,6 +59,8 @@
 #include <private/qlayoutengine_p.h>
 #include <QVector>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TOOLBAR
 
 class QAction;
@@ -107,9 +109,11 @@ public:
     bool expanded, animating;
 
     void setUsePopupMenu(bool set); // Yeah, there's no getter, but it's internal.
+    void checkUsePopupMenu();
 
     bool movable() const;
     void updateMarginAndSpacing();
+    bool hasExpandFlag() const;
 
 public slots:
     void setExpanded(bool b);
@@ -117,7 +121,7 @@ public slots:
 private:
     QList<QToolBarItem*> items;
     QSize hint, minSize;
-    bool dirty, expanding, empty;
+    bool dirty, expanding, empty, expandFlag;
     QVector<QLayoutStruct> geomArray;
     QRect handRect;
     QToolBarExtension *extension;
@@ -128,5 +132,7 @@ private:
 };
 
 #endif // QT_NO_TOOLBAR
+
+QT_END_NAMESPACE
 
 #endif // QTOOLBARLAYOUT_P_H

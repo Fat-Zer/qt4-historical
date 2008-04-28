@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_SCRIPT
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace Ecma {
 
 class Number: public Core
@@ -66,8 +68,6 @@ class Number: public Core
 public:
     Number(QScriptEnginePrivate *engine);
     virtual ~Number();
-
-    inline QScriptClassInfo *classInfo() const { return m_classInfo; }
 
     virtual void execute(QScriptContextPrivate *context);
 
@@ -80,12 +80,12 @@ protected:
     static QScriptValueImpl method_toFixed(QScriptContextPrivate *context, QScriptEnginePrivate *eng, QScriptClassInfo *classInfo);
     static QScriptValueImpl method_toExponential(QScriptContextPrivate *context, QScriptEnginePrivate *eng, QScriptClassInfo *classInfo);
     static QScriptValueImpl method_toPrecision(QScriptContextPrivate *context, QScriptEnginePrivate *eng, QScriptClassInfo *classInfo);
-
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ecma
 
-#endif // QT_NO_SCRIPT
-#endif
+QT_END_NAMESPACE
 
+#endif // QT_NO_SCRIPT
+
+#endif

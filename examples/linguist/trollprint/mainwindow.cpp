@@ -54,7 +54,9 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
 
+//! [0]
     setWindowTitle(tr("Troll Print 1.0"));
+//! [0]
 }
 
 void MainWindow::about()
@@ -64,10 +66,13 @@ void MainWindow::about()
                       "Copyright 1999 Software, Inc."));
 }
 
+//! [1]
 void MainWindow::createActions()
 {
+//! [2]
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Ctrl+Q", "Quit"));
+//! [2]
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     aboutAct = new QAction(tr("&About"), this);
@@ -79,6 +84,7 @@ void MainWindow::createActions()
 }
 
 void MainWindow::createMenus()
+//! [1] //! [3]
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(exitAct);
@@ -89,3 +95,4 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 }
+//! [3]

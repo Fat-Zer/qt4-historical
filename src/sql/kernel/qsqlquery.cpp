@@ -54,12 +54,14 @@
 #include "qvector.h"
 #include "qmap.h"
 
+QT_BEGIN_NAMESPACE
+
 class QSqlQueryPrivate
 {
 public:
     QSqlQueryPrivate(QSqlResult* result);
     ~QSqlQueryPrivate();
-    QAtomic ref;
+    QAtomicInt ref;
     QSqlResult* sqlResult;
     QSql::NumericalPrecisionPolicy precisionPolicy;
 
@@ -144,10 +146,7 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
 
     For example:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto typical loop
-    \skipto QSqlQuery query
-    \printuntil }
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 7
 
     To access the data returned by a query, use value(int). Each
     field in the data returned by a \c SELECT statement is accessed
@@ -160,9 +159,7 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
     explained below). To convert a field name into an index, use
     record().\l{QSqlRecord::indexOf()}{indexOf()}, for example:
 
-    \skipto field index lookup
-    \skipto QSqlQuery query
-    \printuntil }
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 8
 
     QSqlQuery supports prepared query execution and the binding of
     parameter values to placeholders. Some databases don't support
@@ -191,27 +188,19 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
 
     \bold{Named binding using named placeholders:}
 
-    \skipto named with named
-    \skipto QSqlQuery
-    \printuntil exec()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 9
 
     \bold{Positional binding using named placeholders:}
 
-    \skipto positional with named
-    \skipto QSqlQuery
-    \printuntil exec()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 10
 
     \bold{Binding values using positional placeholders (version 1):}
 
-    \skipto positional 1
-    \skipto QSqlQuery
-    \printuntil exec()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 11
 
     \bold{Binding values using positional placeholders (version 2):}
 
-    \skipto positional 2
-    \skipto QSqlQuery
-    \printuntil exec()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 12
 
     \bold{Binding values to a stored procedure:}
 
@@ -219,9 +208,7 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
     it a character through its in parameter, and taking its result in
     the out parameter.
 
-    \skipto stored
-    \skipto QSqlQuery
-    \printuntil boundValue(
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 13
 
     Note that unbound parameters will retain their values.
 
@@ -349,11 +336,7 @@ bool QSqlQuery::isNull(int field) const
 
     Example:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto QSqlQuery_snippets()
-    \skipto named with named
-    \skipto QSqlQuery query
-    \printuntil exec()
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 34
 
     \sa isActive(), isValid(), next(), previous(), first(), last(),
         seek()
@@ -394,9 +377,7 @@ bool QSqlQuery::exec(const QString& query)
     The fields are numbered from left to right using the text of the
     \c SELECT statement, e.g. in
 
-    \code
-        SELECT forename, surname FROM people;
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 0
 
     field 0 is \c forename and field 1 is \c
     surname. Using \c{SELECT *} is not recommended because the order
@@ -830,16 +811,7 @@ void QSqlQuery::setForwardOnly(bool forward)
     Since the order of the columns is not defined, QSqlRecord::indexOf()
     is used to obtain the index of a column.
 
-    \code
-    QSqlQuery q("select * from employees");
-    QSqlRecord rec = q.record();
-
-    qDebug() << "Number of columns: " << rec.count();
-
-    int nameCol = rec.indexOf("name"); // index of the field "name"
-    while (q.next())
-        qDebug() << q.value(nameCol).toString(); // output all names
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 1
 
     \sa value()
 */
@@ -876,6 +848,10 @@ void QSqlQuery::clear()
     Portability note: Some databases choose to delay preparing a query until
     it is executed the first time. In this case, preparing a syntactically wrong
     query succeeds, but every consecutive exec() will fail.
+
+    Example:
+
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 9
 
     \sa exec(), bindValue(), addBindValue()
 */
@@ -916,11 +892,18 @@ bool QSqlQuery::prepare(const QString& query)
     Executes a previously prepared SQL query. Returns true if the
     query executed successfully; otherwise returns false.
 
+    Note that the last error for this query is reset when exec() is
+    called.
+
     \sa prepare() bindValue() addBindValue() boundValue() boundValues()
 */
 bool QSqlQuery::exec()
 {
     d->sqlResult->resetBindCount();
+
+    if (d->sqlResult->lastError().isValid())
+        d->sqlResult->setLastError(QSqlError());
+
     return d->sqlResult->exec();
 }
 
@@ -941,30 +924,11 @@ bool QSqlQuery::exec()
 
     Example:
 
-    \code
-        QSqlQuery q;
-        q.prepare("insert into myTable values (?, ?)");
-
-        QVariantList ints;
-        ints << 1 << 2 << 3 << 4;
-        q.addBindValue(ints);
-
-        QVariantList names;
-        names << "Harald" << "Boris" << "Trond" << QVariant(QVariant::String);
-        q.addBindValue(names);
-
-        if (!q.execBatch())
-            qDebug() << q.lastError();
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 2
 
     The example above inserts four new rows into \c myTable:
 
-    \code
-        1  Harald
-        2  Boris
-        3  Trond
-        4  NULL
-    \endcode
+    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 3
 
     To bind NULL values, a null QVariant of the relevant type has to be added to
     the bound QVariantList; for example, \c {QVariant(QVariant::String)} should be
@@ -1065,16 +1029,11 @@ QVariant QSqlQuery::boundValue(int pos) const
     With named binding, the bound values can be examined in the
     following ways:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto examine with named binding
-    \skipto QMapIterator
-    \printuntil }
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 14
 
     With positional binding, the code becomes:
 
-    \skipto examine with positional binding
-    \skipto QList
-    \printuntil endl;
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 15
 
     \sa boundValue() bindValue() addBindValue()
 */
@@ -1119,9 +1078,12 @@ QString QSqlQuery::executedQuery() const
     If more than one row was touched by the insert, the behavior is
     undefined.
 
-    Note that for Oracle databases the row's ROWID will be returned,
-    while for MySQL databases the row's auto-increment field will
+    For MySQL databases the row's auto-increment field will
     be returned.
+    
+    \note For this function to work in PSQL, the table table must
+    contain OIDs, which may not have been created by default.
+    Check the \c default_with_oids configuration variable to be sure.
 
     \sa QSqlDriver::hasFeature()
 */
@@ -1164,7 +1126,6 @@ QSql::NumericalPrecisionPolicy QSqlQuery::numericalPrecisionPolicy() const
 
 /*!
     \since 4.3.2
-    \preliminary
 
     Instruct the database driver that no more data will be fetched from this
     query until it is re-executed. There is normally no need to call this
@@ -1172,10 +1133,6 @@ QSql::NumericalPrecisionPolicy QSqlQuery::numericalPrecisionPolicy() const
     or cursors if you intend to re-use the query at a later time.
     
     Sets the query to inactive. Bound values retain their values.
-
-    This function is new in Qt 4.3.2 and requires that QT_44_API_QSQLQUERY_FINISH
-    is defined when compiling your application. It is expected to become part
-    of the public API in Qt 4.4.
 
     \sa prepare() exec() isActive()
 */
@@ -1188,3 +1145,41 @@ void QSqlQuery::finish()
         d->sqlResult->setActive(false);
     }
 }
+
+/*!
+    \since 4.4
+ 
+    Discards the current result set and navigates to the next if available.
+
+    Some databases are capable of returning multiple result sets for stored
+    procedures or SQL batches (a query strings that contains multiple
+    statements). If multiple result sets are available after executing a
+    query this function can be used to navigate to the next result set(s).
+    
+    If a new result set is available this function will return true.
+    The query will be repositioned on an \e invalid record in the new
+    result set and must be navigated to a valid record before data
+    values can be retrieved. If a new result set isn't available the
+    function returns false and the the query is set to inactive. In any
+    case the old result set will be discarded.
+
+    When one of the statements is a non-select statement a count of affected 
+    rows may be available instead of a result set.
+
+    Note that some databases, i.e. Microsoft SQL Server, requires
+    non-scrollable cursors when working with multiple result sets. 
+    Some databases may execute all statements at once while others may
+    delay the execution until the result set is actually accessed,
+    and some databases may have restrictions on which statements are
+    allowed to be used in a SQL batch. 
+
+    \sa QSqlDriver::hasFeature() setForwardOnly() next() isSelect() numRowsAffected() isActive() lastError()
+*/
+bool QSqlQuery::nextResult()
+{
+    if (isActive())
+        return d->sqlResult->nextResult();
+    return false;
+}
+
+QT_END_NAMESPACE

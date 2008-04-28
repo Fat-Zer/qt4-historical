@@ -47,6 +47,6 @@
 
  Note that disabling some features will produce a libqt that is not
  compatible with other libqt builds. Such modifications are only
- supported on Qtopia Core where reducing the library size is important
- and where the application-suite is often a fixed set.
+ supported on Qt for Embedded Linux where reducing the library size is
+ important and where the application suite is often a fixed set.
 */

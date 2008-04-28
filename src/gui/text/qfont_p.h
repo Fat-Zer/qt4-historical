@@ -60,8 +60,12 @@
 #include "QtCore/qobject.h"
 #include <private/qunicodetables_p.h>
 #include <QtGui/qfontdatabase.h>
+#include "private/qfixed_p.h"
+
+QT_BEGIN_NAMESPACE
 
 // forwards
+class QFontCache;
 class QFontEngine;
 
 struct QFontDef
@@ -96,7 +100,7 @@ struct QFontDef
 
     uint ignorePitch : 1;
     uint fixedPitchComputed : 1; // for Mac OS X only
-    uint reserved   : 16; // for future extensions
+    int reserved   : 16; // for future extensions
 
     bool exactMatch(const QFontDef &other) const;
     bool operator==(const QFontDef &other) const
@@ -107,6 +111,7 @@ struct QFontDef
                     && stretch == other.stretch
                     && styleHint == other.styleHint
                     && styleStrategy == other.styleStrategy
+                    && ignorePitch == other.ignorePitch && fixedPitch == other.fixedPitch
                     && family == other.family
 #ifdef Q_WS_X11
                     && addStyle == other.addStyle
@@ -127,6 +132,8 @@ struct QFontDef
         if (addStyle != other.addStyle) return addStyle < other.addStyle;
 #endif // Q_WS_X11
 
+        if (ignorePitch != other.ignorePitch) return ignorePitch < other.ignorePitch;
+        if (fixedPitch != other.fixedPitch) return fixedPitch < other.fixedPitch;
         return false;
     }
 };
@@ -137,7 +144,8 @@ public:
     QFontEngineData();
     ~QFontEngineData();
 
-    QAtomic ref;
+    QAtomicInt ref;
+    QFontCache *fontCache;
 
 #if !defined(Q_WS_MAC)
     QFontEngine *engines[QUnicodeTables::ScriptCount];
@@ -158,27 +166,10 @@ public:
     QFontPrivate(const QFontPrivate &other);
     ~QFontPrivate();
 
-#if !defined(Q_WS_MAC)
-    inline QFontEngine *engineForScript(int script) const
-    {
-        if (script >= QUnicodeTables::Inherited)
-            script = QUnicodeTables::Common;
-        if (!engineData || !engineData->engines[script])
-            QFontDatabase::load(this, script);
-        return engineData->engines[script];
-    }
-#else
-    inline QFontEngine *engineForScript(int script) const
-    {
-        if (script >= QUnicodeTables::Inherited)
-            script = QUnicodeTables::Common;
-        if (!engineData || !engineData->engine)
-            QFontDatabase::load(this, script);
-        return engineData->engine;
-    }
-#endif
+    QFontEngine *engineForScript(int script) const;
+    void alterCharForCapitalization(QChar &c) const;
 
-    QAtomic ref;
+    QAtomicInt ref;
     QFontDef request;
     mutable QFontEngineData *engineData;
     int dpi;
@@ -193,24 +184,19 @@ public:
     uint overline   :  1;
     uint strikeOut  :  1;
     uint kerning    :  1;
+    uint capital    :  3;
+    bool letterSpacingIsAbsolute : 1;
 
-    enum {
-        Family        = 0x0001,
-        Size          = 0x0002,
-        StyleHint     = 0x0004,
-        StyleStrategy = 0x0008,
-        Weight        = 0x0010,
-        Style         = 0x0020,
-        Underline     = 0x0040,
-        Overline      = 0x0080,
-        StrikeOut     = 0x0100,
-        FixedPitch    = 0x0200,
-        Stretch       = 0x0400,
-        Kerning       = 0x0800,
-        Complete      = 0x0fff
-    };
+    QFixed letterSpacing;
+    QFixed wordSpacing;
+
+    mutable QFontPrivate *scFont;
+    QFont smallCapsFont() const { return QFont(smallCapsFontPrivate()); }
+    QFontPrivate *smallCapsFontPrivate() const;
 
     void resolve(uint mask, const QFontPrivate *other);
+private:
+    QFontPrivate &operator=(const QFontPrivate &) { return *this; }
 };
 
 
@@ -218,7 +204,9 @@ class QFontCache : public QObject
 {
     Q_OBJECT
 public:
-    static QFontCache *instance;
+    // note: these static functions work on a per-thread basis
+    static QFontCache *instance();
+    static void cleanup();
 
     QFontCache();
     ~QFontCache();
@@ -286,5 +274,7 @@ public:
     bool fast;
     int timer_id;
 };
+
+QT_END_NAMESPACE
 
 #endif // QFONT_P_H

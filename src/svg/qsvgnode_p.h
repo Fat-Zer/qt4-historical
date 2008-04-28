@@ -57,8 +57,12 @@
 
 #include "qsvgstyle_p.h"
 
+#ifndef QT_NO_SVG
+
 #include "QtCore/qstring.h"
 #include "QtCore/qhash.h"
+
+QT_BEGIN_NAMESPACE
 
 class QPainter;
 class QSvgTinyDocument;
@@ -195,4 +199,7 @@ inline QString QSvgNode::xmlClass() const
     return m_class;
 }
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG
 #endif // QSVGNODE_P_H

@@ -44,15 +44,17 @@
 #ifndef QURL_H
 #define QURL_H
 
+#include <QtCore/qbytearray.h>
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qpair.h>
 #include <QtCore/qstring.h>
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
-class QByteArray;
 class QUrlPrivate;
 class QDataStream;
 
@@ -113,12 +115,18 @@ public:
 
     void setUserName(const QString &userName);
     QString userName() const;
+    void setEncodedUserName(const QByteArray &userName);
+    QByteArray encodedUserName() const;
 
     void setPassword(const QString &password);
     QString password() const;
+    void setEncodedPassword(const QByteArray &password);
+    QByteArray encodedPassword() const;
 
     void setHost(const QString &host);
     QString host() const;
+    void setEncodedHost(const QByteArray &host);
+    QByteArray encodedHost() const;
 
     void setPort(int port);
     int port() const;
@@ -127,6 +135,8 @@ public:
 
     void setPath(const QString &path);
     QString path() const;
+    void setEncodedPath(const QByteArray &path);
+    QByteArray encodedPath() const;
 
     bool hasQuery() const;
 
@@ -146,8 +156,19 @@ public:
     void removeQueryItem(const QString &key);
     void removeAllQueryItems(const QString &key);
 
+    void setEncodedQueryItems(const QList<QPair<QByteArray, QByteArray> > &query);
+    void addEncodedQueryItem(const QByteArray &key, const QByteArray &value);
+    QList<QPair<QByteArray, QByteArray> > encodedQueryItems() const;
+    bool hasEncodedQueryItem(const QByteArray &key) const;
+    QByteArray encodedQueryItemValue(const QByteArray &key) const;
+    QList<QByteArray> allEncodedQueryItemValues(const QByteArray &key) const;
+    void removeEncodedQueryItem(const QByteArray &key);
+    void removeAllEncodedQueryItems(const QByteArray &key);
+
     void setFragment(const QString &fragment);
     QString fragment() const;
+    void setEncodedFragment(const QByteArray &fragment);
+    QByteArray encodedFragment() const;
     bool hasFragment() const;
 
     QUrl resolved(const QUrl &relative) const;
@@ -254,6 +275,8 @@ Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QUrl &);
 #ifndef QT_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QUrl &);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

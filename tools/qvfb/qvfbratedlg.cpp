@@ -47,6 +47,8 @@
 #include <qslider.h>
 #include <QPushButton>
 
+QT_BEGIN_NAMESPACE
+
 QVFbRateDialog::QVFbRateDialog(int rate, QWidget *parent)
     : QDialog(parent)
 {
@@ -99,3 +101,5 @@ void QVFbRateDialog::ok()
     oldRate = rateSlider->value();
     accept();
 }
+
+QT_END_NAMESPACE

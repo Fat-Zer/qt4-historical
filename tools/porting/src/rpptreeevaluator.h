@@ -52,6 +52,8 @@
 #include <QHash>
 #include <QSet>
 
+QT_BEGIN_NAMESPACE
+
 namespace Rpp {
 
 class DefineMap : public QHash<QByteArray, const DefineDirective *>
@@ -69,8 +71,10 @@ public:
                                               DefineMap *activedefinitions);
     enum IncludeType {QuoteInclude, AngleBracketInclude};
 signals:
-    void includeCallback(::Rpp::Source *&includee, const ::Rpp::Source *includer,
-                         const QString &filename, ::Rpp::RppTreeEvaluator::IncludeType includeType);
+    void includeCallback(Rpp::Source *&includee,
+                         const Rpp::Source *includer,
+                         const QString &filename,
+                         Rpp::RppTreeEvaluator::IncludeType includeType);
 protected:
     void evaluateIncludeDirective(const IncludeDirective *directive);
     void evaluateDefineDirective(const DefineDirective *directive);
@@ -109,5 +113,7 @@ private:
 };
 
 }//namespace Rpp
+
+QT_END_NAMESPACE
 
 #endif

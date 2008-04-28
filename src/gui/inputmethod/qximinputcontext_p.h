@@ -82,6 +82,8 @@
 #include "private/qt_x11_p.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 class QKeyEvent;
 class QWidget;
 class QFont;
@@ -133,6 +135,8 @@ private:
 
     ICData *createICData(QWidget *w);
 };
+
+QT_END_NAMESPACE
 
 #endif // Q_NO_IM
 

@@ -42,25 +42,29 @@
 ****************************************************************************/
 
 #include "qdir.h"
-#include "qfile.h"
+#include "qfile.h"    
 #include "qconfig.h"
 #include "qsettings.h"
 #include "qlibraryinfo.h"
 #include "qpointer.h"
+
 #ifdef QT_BUILD_QMAKE
+QT_BEGIN_NAMESPACE
 extern QString qmake_libraryInfoFile();
+QT_END_NAMESPACE
 #else
 # include "qcoreapplication.h"
 #endif
+
 #ifdef Q_OS_MAC
 #  include "private/qcore_mac_p.h"
 #endif
 
 #include "qconfig.cpp"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_SETTINGS
-
-
 
 struct QLibrarySettings
 {
@@ -478,3 +482,5 @@ QLibraryInfo::location(LibraryLocation loc)
 */
 
 #endif // QT_NO_SETTINGS
+
+QT_END_NAMESPACE

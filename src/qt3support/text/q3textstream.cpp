@@ -53,13 +53,15 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
 #include <locale.h>
 #endif
 
 #if defined(Q_OS_WIN32)
 #include "qt_windows.h"
 #endif
+
+QT_BEGIN_NAMESPACE
 
 #ifndef QT_NO_TEXTCODEC
 static void resetCodecConverterState(QTextCodec::ConverterState *state) {
@@ -217,8 +219,8 @@ void Q3TextStream::init()
     owndev = FALSE;
     mapper = 0;
 #ifndef QT_NO_TEXTCODEC
-    ::resetCodecConverterState(&mapperReadState);
-    ::resetCodecConverterState(&mapperWriteState);
+    resetCodecConverterState(&mapperReadState);
+    resetCodecConverterState(&mapperWriteState);
 #endif
     d = new Q3TextStreamPrivate;
     doUnicodeHeader = TRUE; // autodetect
@@ -385,20 +387,12 @@ qint64 QStringBuffer::writeData( const char *p, qint64 len )
     this setting is ignored for text streams that operate on QString.
 
     Example:
-    \code
-    QString str;
-    Q3TextStream ts( &str, IO_WriteOnly );
-    ts << "pi = " << 3.14; // str == "pi = 3.14"
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 0
 
     Writing data to the text stream will modify the contents of the
     string. The string will be expanded when data is written beyond
     the end of the string. Note that the string will not be truncated:
-    \code
-    QString str = "pi = 3.14";
-    Q3TextStream ts( &str, IO_WriteOnly );
-    ts <<  "2+2 = " << 2+2; // str == "2+2 = 414"
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 1
 
     Note that because QString is Unicode, you should not use
     readRawBytes() or writeRawBytes() on such a stream.
@@ -440,25 +434,14 @@ Q3TextStream::Q3TextStream( QString& str, int filemode )
     to the device's open() function; see \l{QIODevice::mode()}.
 
     Example:
-    \code
-    QByteArray array;
-    Q3TextStream ts( array, IO_WriteOnly );
-    ts << "pi = " << 3.14 << '\0'; // array == "pi = 3.14"
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 2
 
     Writing data to the text stream will modify the contents of the
     array. The array will be expanded when data is written beyond the
     end of the string.
 
     Same example, using a QBuffer:
-    \code
-    QByteArray array;
-    QBuffer buf( array );
-    buf.open( IO_WriteOnly );
-    Q3TextStream ts( &buf );
-    ts << "pi = " << 3.14 << '\0'; // array == "pi = 3.14"
-    buf.close();
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 3
 */
 
 Q3TextStream::Q3TextStream( QByteArray &a, int mode )
@@ -2329,8 +2312,8 @@ Q3TextStream &reset( Q3TextStream &s )
 
 void Q3TextStream::setEncoding( Encoding e )
 {
-    ::resetCodecConverterState(&mapperReadState);
-    ::resetCodecConverterState(&mapperWriteState);
+    resetCodecConverterState(&mapperReadState);
+    resetCodecConverterState(&mapperWriteState);
 
     if ( d->sourceType == Q3TextStreamPrivate::String )
 	return;
@@ -2449,5 +2432,7 @@ QTextCodec *Q3TextStream::codec()
 }
 
 #endif
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TEXTSTREAM

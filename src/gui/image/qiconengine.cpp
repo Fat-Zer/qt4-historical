@@ -44,6 +44,8 @@
 #include "qiconengine.h"
 #include "qpainter.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
   \class QIconEngine
 
@@ -213,3 +215,5 @@ bool QIconEngineV2::write(QDataStream &) const
 void QIconEngineV2::virtual_hook(int, void *)
 {
 }
+
+QT_END_NAMESPACE

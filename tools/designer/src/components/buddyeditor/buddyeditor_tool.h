@@ -50,6 +50,8 @@
 
 #include <QtDesigner/QDesignerFormWindowToolInterface>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 class QAction;
@@ -62,7 +64,7 @@ class QT_BUDDYEDITOR_EXPORT BuddyEditorTool: public QDesignerFormWindowToolInter
 {
     Q_OBJECT
 public:
-    BuddyEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent = 0);
+    explicit BuddyEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent = 0);
     virtual ~BuddyEditorTool();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -83,5 +85,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // BUDDYEDITOR_TOOL_H

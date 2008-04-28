@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page timers.html
     \title Timers
@@ -38,11 +81,9 @@
     inherits QObject so that it fits well into the ownership structure
     of most GUI programs. The normal way of using it is like this:
 
-    \quotefromfile snippets/timers/timers.cpp
-    \skipto = new QTimer
-    \printline = new
-    \printline connect(
-    \printline start(1000
+    \snippet doc/src/snippets/timers/timers.cpp 0
+    \snippet doc/src/snippets/timers/timers.cpp 1
+    \snippet doc/src/snippets/timers/timers.cpp 2
 
     The QTimer object is made into a child of this widget so that,
     when this widget is deleted, the timer is deleted too.
@@ -53,8 +94,7 @@
     QTimer also provides a static function for single-shot timers.
     For example:
 
-    \skipto singleShot
-    \printline singleShot
+    \snippet doc/src/snippets/timers/timers.cpp 3
 
     200 milliseconds (0.2 seconds) after this line of code is
     executed, the \c updateCaption() slot will be called.
@@ -76,17 +116,14 @@
     QTimer to redraw a widget at regular intervals. From \c{AnalogClock}'s
     implementation:
 
-    \quotefromfile widgets/analogclock/analogclock.cpp
-    \skipto ::AnalogClock
-    \printline ::
-    \printline : QWidget
-    \printline {
-    \printline QTimer
-    \printline connect(
-    \printline start(1000)
+    \snippet examples/widgets/analogclock/analogclock.cpp 0
+    \snippet examples/widgets/analogclock/analogclock.cpp 2
+    \snippet examples/widgets/analogclock/analogclock.cpp 3
+    \snippet examples/widgets/analogclock/analogclock.cpp 4
+    \snippet examples/widgets/analogclock/analogclock.cpp 5
+    \snippet examples/widgets/analogclock/analogclock.cpp 6
     \dots
-    \skipto /^\}$/
-    \printline }
+    \snippet examples/widgets/analogclock/analogclock.cpp 7
 
     Every second, QTimer will call the QWidget::update() slot to
     refresh the clock's display.

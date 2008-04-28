@@ -48,7 +48,7 @@
 #include <QDateTime>
 #include <QSlider>
 #include <QMouseEvent>
-#include <math.h>
+#include <qmath.h>
 
 CompositionWidget::CompositionWidget(QWidget *parent)
     : QWidget(parent)
@@ -87,6 +87,31 @@ CompositionWidget::CompositionWidget(QWidget *parent)
     connect(rbDestAtop, SIGNAL(clicked()), view, SLOT(setDestAtopMode()));
     rbXor = new QRadioButton("Xor", modesGroup);
     connect(rbXor, SIGNAL(clicked()), view, SLOT(setXorMode()));
+
+    rbPlus = new QRadioButton("Plus", modesGroup);
+    connect(rbPlus, SIGNAL(clicked()), view, SLOT(setPlusMode()));
+    rbMultiply = new QRadioButton("Multiply", modesGroup);
+    connect(rbMultiply, SIGNAL(clicked()), view, SLOT(setMultiplyMode()));
+    rbScreen = new QRadioButton("Screen", modesGroup);
+    connect(rbScreen, SIGNAL(clicked()), view, SLOT(setScreenMode()));
+    rbOverlay = new QRadioButton("Overlay", modesGroup);
+    connect(rbOverlay, SIGNAL(clicked()), view, SLOT(setOverlayMode()));
+    rbDarken = new QRadioButton("Darken", modesGroup);
+    connect(rbDarken, SIGNAL(clicked()), view, SLOT(setDarkenMode()));
+    rbLighten = new QRadioButton("Lighten", modesGroup);
+    connect(rbLighten, SIGNAL(clicked()), view, SLOT(setLightenMode()));
+    rbColorDodge = new QRadioButton("Color Dodge", modesGroup);
+    connect(rbColorDodge, SIGNAL(clicked()), view, SLOT(setColorDodgeMode()));
+    rbColorBurn = new QRadioButton("Color Burn", modesGroup);
+    connect(rbColorBurn, SIGNAL(clicked()), view, SLOT(setColorBurnMode()));
+    rbHardLight = new QRadioButton("Hard Light", modesGroup);
+    connect(rbHardLight, SIGNAL(clicked()), view, SLOT(setHardLightMode()));
+    rbSoftLight = new QRadioButton("Soft Light", modesGroup);
+    connect(rbSoftLight, SIGNAL(clicked()), view, SLOT(setSoftLightMode()));
+    rbDifference = new QRadioButton("Difference", modesGroup);
+    connect(rbDifference, SIGNAL(clicked()), view, SLOT(setDifferenceMode()));
+    rbExclusion = new QRadioButton("Exclusion", modesGroup);
+    connect(rbExclusion, SIGNAL(clicked()), view, SLOT(setExclusionMode()));
 
     QGroupBox *circleColorGroup = new QGroupBox(mainGroup);
     circleColorGroup->setAttribute(Qt::WA_ContentsPropagated);
@@ -140,19 +165,33 @@ CompositionWidget::CompositionWidget(QWidget *parent)
     mainGroupLayout->addWidget(enableOpenGLButton);
 #endif
 
-    QVBoxLayout *modesLayout = new QVBoxLayout(modesGroup);
-    modesLayout->addWidget(rbClear);
-    modesLayout->addWidget(rbSource);
-    modesLayout->addWidget(rbDest);
-    modesLayout->addWidget(rbSourceOver);
-    modesLayout->addWidget(rbDestOver);
-    modesLayout->addWidget(rbSourceIn);
-    modesLayout->addWidget(rbDestIn);
-    modesLayout->addWidget(rbSourceOut);
-    modesLayout->addWidget(rbDestOut);
-    modesLayout->addWidget(rbSourceAtop);
-    modesLayout->addWidget(rbDestAtop);
-    modesLayout->addWidget(rbXor);
+    QGridLayout *modesLayout = new QGridLayout(modesGroup);
+    modesLayout->addWidget(rbClear,             0,      0);
+    modesLayout->addWidget(rbSource,            1,      0);
+    modesLayout->addWidget(rbDest,              2,      0);
+    modesLayout->addWidget(rbSourceOver,        3,      0);
+    modesLayout->addWidget(rbDestOver,          4,      0);
+    modesLayout->addWidget(rbSourceIn,          5,      0);
+    modesLayout->addWidget(rbDestIn,            6,      0);
+    modesLayout->addWidget(rbSourceOut,         7,      0);
+    modesLayout->addWidget(rbDestOut,           8,      0);
+    modesLayout->addWidget(rbSourceAtop,        9,      0);
+    modesLayout->addWidget(rbDestAtop,         10,      0);
+    modesLayout->addWidget(rbXor,              11,      0);
+
+    modesLayout->addWidget(rbPlus,              0,      1);
+    modesLayout->addWidget(rbMultiply,          1,      1);
+    modesLayout->addWidget(rbScreen,            2,      1);
+    modesLayout->addWidget(rbOverlay,           3,      1);
+    modesLayout->addWidget(rbDarken,            4,      1);
+    modesLayout->addWidget(rbLighten,           5,      1);
+    modesLayout->addWidget(rbColorDodge,        6,      1);
+    modesLayout->addWidget(rbColorBurn,         7,      1);
+    modesLayout->addWidget(rbHardLight,         8,      1);
+    modesLayout->addWidget(rbSoftLight,         9,      1);
+    modesLayout->addWidget(rbDifference,       10,      1);
+    modesLayout->addWidget(rbExclusion,        11,      1);
+
 
     QVBoxLayout *circleColorLayout = new QVBoxLayout(circleColorGroup);
     circleColorLayout->addWidget(circleColorSlider);
@@ -160,8 +199,8 @@ CompositionWidget::CompositionWidget(QWidget *parent)
     QVBoxLayout *circleAlphaLayout = new QVBoxLayout(circleAlphaGroup);
     circleAlphaLayout->addWidget(circleAlphaSlider);
 
-    view->loadDescription(":res/composition.html");
-    view->loadSourceFile(":res/composition.cpp");
+    view->loadDescription(":/trolltech/arthurplugin/composition.html");
+    view->loadSourceFile(":/trolltech/arthurplugin/composition.cpp");
 
     connect(whatsThisButton, SIGNAL(clicked(bool)), view, SLOT(setDescriptionEnabled(bool)));
     connect(view, SIGNAL(descriptionEnabledChanged(bool)), whatsThisButton, SLOT(setChecked(bool)));
@@ -203,7 +242,13 @@ CompositionRenderer::CompositionRenderer(QWidget *parent)
     : ArthurFrame(parent)
 {
     m_animation_enabled = true;
-    m_image = QImage(":res/flower_2.png");
+#ifdef Q_WS_QWS
+    m_image = QPixmap(":/trolltech/arthurplugin/flower.jpg");
+    m_image.setAlphaChannel(QPixmap(":/trolltech/arthurplugin/flower_alpha.jpg"));
+#else
+    m_image = QImage(":/trolltech/arthurplugin/flower.jpg");
+    m_image.setAlphaChannel(QImage(":/trolltech/arthurplugin/flower_alpha.jpg"));
+#endif
     m_circle_alpha = 127;
     m_circle_hue = 255;
     m_current_object = NoObject;
@@ -232,10 +277,10 @@ void CompositionRenderer::updateCirclePos()
     QDateTime dt = QDateTime::currentDateTime();
     qreal t = (dt.toTime_t() * 1000 + dt.time().msec()) / 1000.0;
 
-    qreal x = width() / 2.0 + (cos(t) + sin(-t*2)) * width() / 2.0;
-    qreal y = height() / 2.0 + (sin(t) + cos(t * 3)) * height() / 2.0;
+    qreal x = width() / qreal(2) + (qCos(t*8/11) + qSin(-t)) * width() / qreal(4);
+    qreal y = height() / qreal(2) + (qSin(t*6/7) + qCos(t * qreal(1.5))) * height() / qreal(4);
 
-    m_circle_pos = QLineF(m_circle_pos, QPointF(x, y)).pointAt(0.01);
+    setCirclePos(QLineF(m_circle_pos, QPointF(x, y)).pointAt(0.02));
 }
 
 void CompositionRenderer::drawBase(QPainter &p)
@@ -268,7 +313,11 @@ void CompositionRenderer::drawBase(QPainter &p)
 
     p.setPen(Qt::NoPen);
     p.setRenderHint(QPainter::SmoothPixmapTransform);
+#ifdef Q_WS_QWS
+    p.drawPixmap(rect(), m_image);
+#else
     p.drawImage(rect(), m_image);
+#endif
 }
 
 void CompositionRenderer::drawSource(QPainter &p)
@@ -290,9 +339,6 @@ void CompositionRenderer::drawSource(QPainter &p)
 
 void CompositionRenderer::paint(QPainter *painter)
 {
-    if (m_animation_enabled)
-        updateCirclePos();
-
 #ifdef QT_OPENGL_SUPPORT
     if (usesOpenGL()) {
 
@@ -325,6 +371,7 @@ void CompositionRenderer::paint(QPainter *painter)
             p.setCompositionMode(QPainter::CompositionMode_Source);
             p.fillRect(QRect(0, 0, m_pbuffer->width(), m_pbuffer->height()), Qt::transparent);
             drawBase(p);
+            p.end();
             m_pbuffer->updateDynamicTexture(m_base_tex);
         }
 
@@ -342,25 +389,26 @@ void CompositionRenderer::paint(QPainter *painter)
             glColor4f(1.,1.,1.,1.);
 
             glBegin(GL_QUADS);
-            {                
+            {
                 glTexCoord2f(0, 1.0);
                 glVertex2f(0, 0);
-                
+
                 glTexCoord2f(x_fraction, 1.0);
                 glVertex2f(width(), 0);
-                
+
                 glTexCoord2f(x_fraction, 1.0-y_fraction);
                 glVertex2f(width(), height());
-                
+
                 glTexCoord2f(0, 1.0-y_fraction);
                 glVertex2f(0, height());
             }
             glEnd();
-            
+
             glDisable(GL_TEXTURE_2D);
             p.restore();
 
             drawSource(p);
+            p.end();
             m_pbuffer->updateDynamicTexture(m_compositing_tex);
         }
 
@@ -372,13 +420,13 @@ void CompositionRenderer::paint(QPainter *painter)
         {
             glTexCoord2f(0, 1.0);
             glVertex2f(0, 0);
-                
+
             glTexCoord2f(x_fraction, 1.0);
             glVertex2f(width(), 0);
-                
+
             glTexCoord2f(x_fraction, 1.0-y_fraction);
             glVertex2f(width(), height());
-                
+
             glTexCoord2f(0, 1.0-y_fraction);
             glVertex2f(0, height());
         }
@@ -389,28 +437,42 @@ void CompositionRenderer::paint(QPainter *painter)
     {
         // using a QImage
         if (m_buffer.size() != size()) {
+#ifdef Q_WS_QWS
+            m_base_buffer = QPixmap(size());
+            m_base_buffer.fill(Qt::transparent);
+#else
             m_buffer = QImage(size(), QImage::Format_ARGB32_Premultiplied);
             m_base_buffer = QImage(size(), QImage::Format_ARGB32_Premultiplied);
 
             m_base_buffer.fill(0);
+#endif
 
             QPainter p(&m_base_buffer);
 
             drawBase(p);
         }
 
+#ifdef Q_WS_QWS
+        m_buffer = m_base_buffer;
+#else
         memcpy(m_buffer.bits(), m_base_buffer.bits(), m_buffer.numBytes());
+#endif
 
         {
             QPainter p(&m_buffer);
             drawSource(p);
         }
 
+#ifdef Q_WS_QWS
+        painter->drawPixmap(0, 0, m_buffer);
+#else
         painter->drawImage(0, 0, m_buffer);
+#endif
     }
-    
-    if (m_animation_enabled)
-        update();
+
+    if (m_animation_enabled && m_current_object == NoObject) {
+        updateCirclePos();
+    }
 }
 
 void CompositionRenderer::mousePressEvent(QMouseEvent *e)
@@ -435,4 +497,21 @@ void CompositionRenderer::mouseMoveEvent(QMouseEvent *e)
 void CompositionRenderer::mouseReleaseEvent(QMouseEvent *)
 {
     m_current_object = NoObject;
+
+    if (m_animation_enabled)
+        updateCirclePos();
 }
+
+void CompositionRenderer::setCirclePos(const QPointF &pos)
+{
+    const QRect oldRect = rectangle_around(m_circle_pos).toAlignedRect();
+    m_circle_pos = pos;
+    const QRect newRect = rectangle_around(m_circle_pos).toAlignedRect();
+#ifdef QT_OPENGL_SUPPORT
+    if (usesOpenGL())
+        update();
+    else
+#endif
+        update(oldRect | newRect);
+}
+

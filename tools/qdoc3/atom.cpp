@@ -44,6 +44,8 @@
 #include "atom.h"
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 /*! \class Atom
     \brief The Atom class is the fundamental unit for representing
     documents internally.
@@ -83,6 +85,8 @@
   \value CodeBad
   \value CodeNew
   \value CodeOld
+  \value CodeQuoteArgument
+  \value CodeQuoteCommand
   \value FormatElse
   \value FormatEndif
   \value FormatIf
@@ -94,6 +98,7 @@
   \value Image
   \value ImageText
   \value InlineImage
+  \value LineBreak
   \value Link
   \value LinkNode
   \value ListLeft
@@ -147,6 +152,8 @@ static const struct {
     { "CodeBad", Atom::CodeBad },
     { "CodeNew", Atom::CodeNew },
     { "CodeOld", Atom::CodeOld },
+    { "CodeQuoteArgument", Atom::CodeQuoteArgument },
+    { "CodeQuoteCommand", Atom::CodeQuoteCommand },
     { "FootnoteLeft", Atom::FootnoteLeft },
     { "FootnoteRight", Atom::FootnoteRight },
     { "FormatElse", Atom::FormatElse },
@@ -160,6 +167,7 @@ static const struct {
     { "InlineImage", Atom::InlineImage },
     { "LegaleseLeft", Atom::LegaleseLeft },
     { "LegaleseRight", Atom::LegaleseRight },
+    { "LineBreak", Atom::LineBreak },
     { "Link", Atom::Link },
     { "LinkNode", Atom::LinkNode },
     { "ListLeft", Atom::ListLeft },
@@ -181,6 +189,9 @@ static const struct {
     { "SectionHeadingRight", Atom::SectionHeadingRight },
     { "SidebarLeft", Atom::SidebarLeft },
     { "SidebarRight", Atom::SidebarRight },
+    { "SnippetCommand", Atom::SnippetCommand },
+    { "SnippetIdentifier", Atom::SnippetIdentifier },
+    { "SnippetLocation", Atom::SnippetLocation },
     { "String", Atom::String },
     { "TableLeft", Atom::TableLeft },
     { "TableRight", Atom::TableRight },
@@ -268,11 +279,9 @@ QString Atom::typeString() const
     }
 
     int i = (int) type();
-    if ( i < 0 || i > (int) Last ) {
-	return "Invalid";
-    } else {
-	return atms[i].english;
-    }
+    if ( i < 0 || i > (int) Last )
+        return QLatin1String("Invalid");
+    return QLatin1String(atms[i].english);
 }
 
 /*! \fn const QString& Atom::string() const
@@ -282,3 +291,5 @@ QString Atom::typeString() const
 
   \also type(), next()
 */
+
+QT_END_NAMESPACE

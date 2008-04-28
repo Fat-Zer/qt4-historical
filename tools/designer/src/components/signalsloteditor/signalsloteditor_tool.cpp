@@ -54,6 +54,8 @@ TRANSLATOR qdesigner_internal::SignalSlotEditorTool
 #include <QtGui/QAction>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 SignalSlotEditorTool::SignalSlotEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent)
@@ -123,3 +125,5 @@ void SignalSlotEditorTool::loadFromDom(DomUI *ui, QWidget *mainContainer)
 {
     m_editor->fromUi(ui->elementConnections(), mainContainer);
 }
+
+QT_END_NAMESPACE

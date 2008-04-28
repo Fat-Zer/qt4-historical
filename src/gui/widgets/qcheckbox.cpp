@@ -52,6 +52,8 @@
 
 #include "private/qabstractbutton_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QCheckBoxPrivate : public QAbstractButtonPrivate
 {
     Q_DECLARE_PUBLIC(QCheckBox)
@@ -101,9 +103,7 @@ public:
     by preceding the preferred character with an ampersand. For
     example:
 
-    \code
-        QCheckBox *checkbox = new QCheckBox("C&ase sensitive", this);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qcheckbox.cpp 0
 
     In this example the shortcut is \e{Alt+A}. See the \l
     {QShortcut#mnemonic}{QShortcut} documentation for details (to
@@ -143,7 +143,7 @@ public:
     This signal is emitted whenever the check box's state changes,
     i.e. whenever the user checks or unchecks it.
 
-    \a state contains the check box's new ToggleState.
+    \a state contains the check box's new Qt::CheckState.
 */
 
 /*!
@@ -234,6 +234,9 @@ bool QCheckBox::isTristate() const
 
 /*!
     Returns the check box's check state.
+    If you do not need tristate support, you can also
+    use \l QAbstractButton::isChecked() which returns
+    a boolean.
 
     \sa setCheckState() Qt::CheckState
 */
@@ -247,6 +250,9 @@ Qt::CheckState QCheckBox::checkState() const
 
 /*!
     Sets the check box's check state to \a state.
+    If you do not need tristate support, you can also
+    use \l QAbstractButton::setChecked() which takes
+    a boolean.
 
     \sa checkState() Qt::CheckState
 */
@@ -417,3 +423,5 @@ QCheckBox::QCheckBox(const QString &text, QWidget *parent, const char* name)
 
     Use checkState() instead.
 */
+
+QT_END_NAMESPACE

@@ -46,6 +46,8 @@
 
 #include <QtGui/QDialog>
 
+QT_BEGIN_NAMESPACE
+
 template <typename T> class QList;
 class Item;
 
@@ -61,5 +63,7 @@ protected:
 private:
     static QList<ItemDialog *> openDialogs;
 };
+
+QT_END_NAMESPACE
 
 #endif

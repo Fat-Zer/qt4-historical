@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_ITEMVIEWS
@@ -66,6 +68,7 @@ class Q_GUI_EXPORT QAbstractItemView : public QAbstractScrollArea
     Q_ENUMS(SelectionMode SelectionBehavior ScrollHint ScrollMode DragDropMode)
     Q_FLAGS(EditTriggers)
     Q_PROPERTY(bool autoScroll READ hasAutoScroll WRITE setAutoScroll)
+    Q_PROPERTY(int autoScrollMargin READ autoScrollMargin WRITE setAutoScrollMargin)
     Q_PROPERTY(EditTriggers editTriggers READ editTriggers WRITE setEditTriggers)
     Q_PROPERTY(bool tabKeyNavigation READ tabKeyNavigation WRITE setTabKeyNavigation)
 #ifndef QT_NO_DRAGANDDROP
@@ -153,6 +156,9 @@ public:
 
     void setAutoScroll(bool enable);
     bool hasAutoScroll() const;
+
+    void setAutoScrollMargin(int margin);
+    int autoScrollMargin() const;
 
     void setTabKeyNavigation(bool enable);
     bool tabKeyNavigation() const;
@@ -348,6 +354,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rowsRemoved(const QModelIndex&, int, int))
     Q_PRIVATE_SLOT(d_func(), void _q_modelDestroyed())
     Q_PRIVATE_SLOT(d_func(), void _q_layoutChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_fetchMore())
 
     friend class QTreeViewPrivate; // needed to compile with MSVC
     friend class QAccessibleItemRow;
@@ -356,6 +363,9 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractItemView::EditTriggers)
 
 #endif // QT_NO_ITEMVIEWS
+
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
 #endif // QABSTRACTITEMVIEW_H

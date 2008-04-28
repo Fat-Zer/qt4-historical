@@ -56,6 +56,8 @@
 #include "private/qcssparser_p.h"
 #include "QtGui/qbrush.h"
 
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -70,6 +72,7 @@
 class QRenderRule;
 class QAbstractScrollArea;
 class QStyleSheetStylePrivate;
+class QStyleOptionTitleBar;
 
 class Q_AUTOTEST_EXPORT QStyleSheetStyle : public QWindowsStyle
 {
@@ -102,7 +105,6 @@ public:
     void polish(QPalette &pal);
     QSize sizeFromContents(ContentsType ct, const QStyleOption *opt,
                            const QSize &contentsSize, const QWidget *widget = 0) const;
-    QIcon standardIcon(StandardPixmap standardIcon, const QStyleOption *option, const QWidget *w = 0) const;
     QPalette standardPalette() const;
     QPixmap standardPixmap(StandardPixmap standardPixmap, const QStyleOption *option = 0,
                            const QWidget *w = 0 ) const;
@@ -128,6 +130,12 @@ public:
     void ref() { ++refcount; }
     void deref() { Q_ASSERT(refcount > 0); if (!--refcount) delete this; }
 
+    void updateStyleSheetFont(QWidget* w) const;
+    void saveWidgetFont(QWidget* w, const QFont& font) const;
+    void clearWidgetFont(QWidget* w) const;
+
+    bool focusPalette(const QWidget* w, const QStyleOption* opt, QPalette* pal);
+
 protected Q_SLOTS:
     QIcon standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt = 0,
                                      const QWidget *widget = 0) const;
@@ -144,13 +152,15 @@ private:
 
     friend class QRenderRule;
     int nativeFrameWidth(const QWidget *);
-    QRenderRule renderRule(const QWidget *, int, int = 0) const;
+    QRenderRule renderRule(const QWidget *, int, quint64 = 0) const;
     QRenderRule renderRule(const QWidget *, const QStyleOption *, int = 0) const;
     QSize defaultSize(const QWidget *, QSize, const QRect&, int) const;
     QRect positionRect(const QWidget *, const QRenderRule&, const QRenderRule&, int,
                        const QRect&, Qt::LayoutDirection) const;
     QRect positionRect(const QWidget *w, const QRenderRule &rule2, int pe,
                        const QRect &originRect, Qt::LayoutDirection dir) const;
+
+    mutable QCss::Parser parser;
 
     void setPalette(QWidget *);
     void unsetPalette(QWidget *);
@@ -159,6 +169,10 @@ private:
     QVector<QCss::StyleRule> styleRules(const QWidget *w) const;
     bool hasStyleRule(const QWidget *w, int part) const;
 
+    QHash<QStyle::SubControl, QRect> titleBarLayout(const QWidget *w, const QStyleOptionTitleBar *tb) const;
+
+    static Qt::Alignment resolveAlignment(Qt::LayoutDirection, Qt::Alignment);
+    static bool isNaturalChild(const QWidget *w);
 public:
     static int numinstances;
 
@@ -167,5 +181,7 @@ private:
     Q_DECLARE_PRIVATE(QStyleSheetStyle)
 };
 
+
+QT_END_NAMESPACE
 #endif // QT_NO_STYLE_STYLESHEET
 #endif // QSTYLESHEETSTYLE_P_H

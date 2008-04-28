@@ -47,6 +47,7 @@
 #include <QGraphicsPixmapItem>
 #include <QList>
 
+QT_BEGIN_NAMESPACE
 class QPixmap;
 class QGraphicsItem;
 class QGraphicsScene;
@@ -58,8 +59,11 @@ class QPainter;
 class QStyleOptionGraphicsItem;
 class QWidget;
 class QPolygonF;
+QT_END_NAMESPACE
+
 class Arrow;
 
+//! [0]
 class DiagramItem : public QGraphicsPolygonItem
 {
 public:
@@ -90,5 +94,6 @@ private:
     QMenu *myContextMenu;
     QList<Arrow *> arrows;
 };
+//! [0]
 
 #endif

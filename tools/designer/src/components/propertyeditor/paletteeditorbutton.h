@@ -51,21 +51,23 @@
 
 #include "abstractformeditor.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 class QT_PROPERTYEDITOR_EXPORT PaletteEditorButton: public QToolButton
 {
     Q_OBJECT
 public:
-    PaletteEditorButton(QDesignerFormEditorInterface *core, const QPalette &palette,
-                QWidget *selectedWidget, QWidget *parent = 0);
+    PaletteEditorButton(QDesignerFormEditorInterface *core, const QPalette &palette, QWidget *parent = 0);
     virtual ~PaletteEditorButton();
 
+    void setSuperPalette(const QPalette &palette);
     inline QPalette palette() const
     { return m_palette; }
 
 signals:
-    void changed();
+    void paletteChanged(const QPalette &palette);
 
 public slots:
     void setPalette(const QPalette &palette);
@@ -75,10 +77,12 @@ private slots:
 
 private:
     QPalette m_palette;
-    QWidget *m_selectedWidget;
+    QPalette m_superPalette;
     QDesignerFormEditorInterface *m_core;
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // PALETTEEDITORBUTTON_H

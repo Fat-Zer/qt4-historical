@@ -62,6 +62,7 @@
 #include "jambiapiparser.h"
 #include "javacodemarker.h"
 #include "javadocgenerator.h"
+#include "linguistgenerator.h"
 #include "loutgenerator.h"
 #include "mangenerator.h"
 #include "plaincodemarker.h"
@@ -74,6 +75,8 @@
 #include "webxmlgenerator.h"
 #include "tokenizer.h"
 #include "tree.h"
+
+QT_BEGIN_NAMESPACE
 
 static const struct {
     const char *key;
@@ -165,10 +168,12 @@ static void processQdocconfFile(const QString &fileName)
 	++fn;
     }
 
+//    QSet<QString> outputLanguages = config.getStringSet(CONFIG_OUTPUTLANGUAGES);
+
     QString lang = config.getString(CONFIG_LANGUAGE);
     Location langLocation = config.lastLocation();
 
-    Tree *tree = treeForLanguage(lang);
+    Tree *tree = new Tree;
     tree->setVersion(config.getString(CONFIG_VERSION));
     CodeParser *codeParser = CodeParser::parserForLanguage( lang );
     if ( codeParser == 0 )
@@ -185,20 +190,24 @@ static void processQdocconfFile(const QString &fileName)
     QStringList indexFiles = config.getStringList(CONFIG_INDEXES);
     tree->readIndexes(indexFiles);
 
-    QStringList headers =
-	    config.getAllFiles( CONFIG_HEADERS, CONFIG_HEADERDIRS,
-				codeParser->headerFileNameFilter() );
-    QStringList::ConstIterator h = headers.begin();
+    QSet<QString> excludedDirs = config.getStringSet(CONFIG_EXCLUDEDIRS);
+
+    QSet<QString> headers = QSet<QString>::fromList(
+        config.getAllFiles(CONFIG_HEADERS, CONFIG_HEADERDIRS,
+                           codeParser->headerFileNameFilter(),
+                           excludedDirs));
+    QSet<QString>::ConstIterator h = headers.begin();
     while ( h != headers.end() ) {
 	codeParser->parseHeaderFile( config.location(), *h, tree );
 	++h;
     }
     codeParser->doneParsingHeaderFiles( tree );
 
-    QStringList sources =
-	    config.getAllFiles( CONFIG_SOURCES, CONFIG_SOURCEDIRS,
-				codeParser->sourceFileNameFilter() );
-    QStringList::ConstIterator s = sources.begin();
+    QSet<QString> sources = QSet<QString>::fromList(
+        config.getAllFiles(CONFIG_SOURCES, CONFIG_SOURCEDIRS,
+                           codeParser->sourceFileNameFilter(),
+                           excludedDirs));
+    QSet<QString>::ConstIterator s = sources.begin();
     while ( s != sources.end() ) {
 	codeParser->parseSourceFile( config.location(), *s, tree );
 	++s;
@@ -215,6 +224,11 @@ static void processQdocconfFile(const QString &fileName)
 	generator->generateTree( tree, marker );
 	++of;
     }
+
+    QString tagFile = config.getString(CONFIG_TAGFILE);
+    if (!tagFile.isEmpty())
+        tree->generateTagFile(tagFile);
+
     tree->setVersion("");
 
     Generator::terminate();
@@ -228,10 +242,16 @@ static void processQdocconfFile(const QString &fileName)
 
     foreach (QTranslator *translator, translators)
 	delete translator;
+
+    delete tree;
 }
+
+QT_END_NAMESPACE
 
 int main( int argc, char **argv )
 {
+    QT_USE_NAMESPACE
+
     QCoreApplication app(argc, argv);
 
     PolyArchiveExtractor qsaExtractor( QStringList() << "qsa",
@@ -271,6 +291,7 @@ int main( int argc, char **argv )
     ApiGenerator apiGenerator;
     HtmlGenerator htmlGenerator;
     JavadocGenerator javadocGenerator;
+    LinguistGenerator linguistGenerator;
     LoutGenerator loutGenerator;
     ManGenerator manGenerator;
     SgmlGenerator smglGenerator;
@@ -313,3 +334,4 @@ int main( int argc, char **argv )
     qDeleteAll(trees);
     return EXIT_SUCCESS;
 }
+

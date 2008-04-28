@@ -46,9 +46,11 @@
 #include <QtGui/qgraphicsitem.h>
 #include <QtCore/qobject.h>
 
-#ifndef QT_NO_GRAPHICSVIEW
+#ifndef QT_NO_GRAPHICSSVGITEM
 
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Svg)
 
@@ -97,7 +99,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_repaintItem())
 };
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
-#endif // QT_NO_GRAPHICSVIEW
+#endif // QT_NO_GRAPHICSSVGITEM
 #endif // QGRAPHICSSVGITEM_H

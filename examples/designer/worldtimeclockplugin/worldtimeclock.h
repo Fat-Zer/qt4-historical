@@ -48,9 +48,11 @@
 #include <QWidget>
 #include <QtDesigner/QDesignerExportWidget>
 
+//! [0] //! [1]
 class QDESIGNER_WIDGET_EXPORT WorldTimeClock : public QWidget
 {
     Q_OBJECT
+//! [0]
 
 public:
     WorldTimeClock(QWidget *parent = 0);
@@ -66,6 +68,8 @@ protected:
 
 private:
     int timeZoneOffset;
+//! [2]
 };
+//! [1] //! [2]
 
 #endif

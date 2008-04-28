@@ -55,19 +55,26 @@
 // We mean it.
 //
 
+#include <QtCore/qconfig.h>
+
+QT_BEGIN_NAMESPACE
+
 class QFontEngineWin : public QFontEngine
 {
 public:
     QFontEngineWin(const QString &name, HFONT, bool, LOGFONT);
     ~QFontEngineWin();
 
+    virtual QFixed lineThickness() const;
     virtual Properties properties() const;
     virtual void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
     virtual FaceId faceId() const;
-    QByteArray getSfntTable(uint tag) const;
+    bool getSfntTableData(uint tag, uchar *buffer, uint *length) const;
     virtual int synthesized() const;
+    virtual QFixed emSquareSize() const;
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+    void recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::ShaperFlags) const;
 
     void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags);
     void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
@@ -95,8 +102,33 @@ public:
 
     virtual QImage alphaMapForGlyph(glyph_t);
 
-    enum { widthCacheSize = 0x800, cmapCacheSize = 0x500 };
-    mutable unsigned char widthCache[widthCacheSize];
+    int getGlyphIndexes(const QChar *ch, int numChars, QGlyphLayout *glyphs, bool mirrored) const;
+    void getCMap();
+
+    QString        _name;
+    HFONT        hfont;
+    LOGFONT     logfont;
+    uint        stockFont   : 1;
+    uint        useTextOutA : 1;
+    uint        ttf         : 1;
+    union {
+        TEXTMETRICW        w;
+        TEXTMETRICA        a;
+    } tm;
+    int                lw;
+    const unsigned char *cmap;
+    QByteArray cmapTable;
+    mutable qreal lbearing;
+    mutable qreal rbearing;
+    QFixed designToDevice;
+    int unitsPerEm;
+    QFixed x_height;
+    FaceId _faceId;
+
+    mutable int synthesized_flags;
+    mutable QFixed lineWidth;
+    mutable unsigned char *widthCache;
+    mutable uint widthCacheSize;
     mutable QFixed *designAdvances;
     mutable int designAdvancesSize;
 };
@@ -109,5 +141,7 @@ public:
 
     QStringList fallbacks;
 };
+
+QT_END_NAMESPACE
 
 #endif // QFONTENGINE_WIN_P_H

@@ -71,6 +71,8 @@ typedef int Q_PIPE;
 
 #ifndef QT_NO_PROCESS
 
+QT_BEGIN_NAMESPACE
+
 class QSocketNotifier;
 class QWindowsPipeWriter;
 class QWinEventNotifier;
@@ -95,26 +97,8 @@ public:
             pipe[0] = INVALID_Q_PIPE;
             pipe[1] = INVALID_Q_PIPE;
         }
-        
-        void clear()
-        {
-            switch (type) {
-            case PipeSource:
-                Q_ASSERT(process);
-                process->stdinChannel.type = Normal;
-                process->stdinChannel.process = 0;
-                break;
-            case PipeSink:
-                Q_ASSERT(process);
-                process->stdoutChannel.type = Normal;
-                process->stdoutChannel.process = 0;
-                break;
-            }
 
-            type = Normal;
-            file.clear();
-            process = 0;
-        }
+        void clear();
 
         Channel &operator=(const QString &fileName)
         {
@@ -240,6 +224,8 @@ public:
     static void initializeProcessManager();
 #endif
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PROCESS
 

@@ -51,8 +51,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3ListBox>
 
-Q3ListBoxPlugin::Q3ListBoxPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3ListBoxPlugin::Q3ListBoxPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3ListBoxPlugin::name() const
@@ -71,7 +73,7 @@ QString Q3ListBoxPlugin::includeFile() const
 { return QLatin1String("q3listbox.h"); }
 
 QIcon Q3ListBoxPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3ListBoxPlugin::isContainer() const
 { return false; }
@@ -116,3 +118,5 @@ QString Q3ListBoxPlugin::domXml() const
 }
 
 
+
+QT_END_NAMESPACE

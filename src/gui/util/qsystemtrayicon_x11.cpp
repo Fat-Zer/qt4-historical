@@ -53,6 +53,9 @@
 #include "qtimer.h"
 #include "qsystemtrayicon_p.h"
 
+#ifndef QT_NO_SYSTEMTRAYICON
+QT_BEGIN_NAMESPACE
+
 Window QSystemTrayIconSys::sysTrayWindow = None;
 QList<QSystemTrayIconSys *> QSystemTrayIconSys::trayIcons;
 QCoreApplication::EventFilter QSystemTrayIconSys::oldEventFilter = 0;
@@ -116,7 +119,6 @@ QSystemTrayIconSys::QSystemTrayIconSys(QSystemTrayIcon *q)
 {
     setAttribute(Qt::WA_AlwaysShowToolTips);
     setAttribute(Qt::WA_QuitOnClose, false);
-    setAttribute(Qt::WA_PaintOnScreen, true);
     setAttribute(Qt::WA_NoSystemBackground, true);
     static bool eventFilterAdded = false;
     Display *display = QX11Info::display();
@@ -182,7 +184,7 @@ void QSystemTrayIconSys::addToTray()
 
 void QSystemTrayIconSys::updateIcon()
 {
-    XClearArea(QX11Info::display(), winId(), 0, 0, width(), height(), True);
+    update();
 }
 
 void QSystemTrayIconSys::resizeEvent(QResizeEvent *re)
@@ -194,6 +196,7 @@ void QSystemTrayIconSys::resizeEvent(QResizeEvent *re)
 void QSystemTrayIconSys::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
+    p.drawPixmap(0, 0, background);
     q->icon().paint(&p, rect());
 }
 
@@ -234,6 +237,12 @@ bool QSystemTrayIconSys::x11Event(XEvent *event)
 {
     if (event->type == ReparentNotify)
         show();
+    else if (event->type == ConfigureNotify || event->type == Expose) {
+        XClearArea(QX11Info::display(), winId(), 0, 0, width(), height(), False);
+        qApp->syncX();
+        background = QPixmap::grabWindow(winId());
+        update();
+    }
     return QWidget::x11Event(event);
 }
 
@@ -298,3 +307,6 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &message, const QStri
                              QPoint(g.x() + sys->width()/2, g.y() + sys->height()/2),
                              msecs);
 }
+
+QT_END_NAMESPACE
+#endif //QT_NO_SYSTEMTRAYICON

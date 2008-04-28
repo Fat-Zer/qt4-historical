@@ -58,6 +58,8 @@
 #include "shared_global_p.h"
 #include "abstractformbuilder.h"
 
+QT_BEGIN_NAMESPACE
+
 class DomScript;
 
 class QDesignerFormEditorInterface;
@@ -67,7 +69,7 @@ namespace qdesigner_internal {
 class QDESIGNER_SHARED_EXPORT QSimpleResource : public QAbstractFormBuilder
 {
 public:
-    QSimpleResource(QDesignerFormEditorInterface *core);
+    explicit QSimpleResource(QDesignerFormEditorInterface *core);
     virtual ~QSimpleResource();
 
     QBrush setupBrush(DomBrush *brush);
@@ -75,7 +77,7 @@ public:
 
     inline QDesignerFormEditorInterface *core() const
     { return m_core; }
-    
+
     // Query extensions for additional data
     static void addExtensionDataToDOM(QAbstractFormBuilder *afb,
                                       QDesignerFormEditorInterface *core,
@@ -110,6 +112,38 @@ private:
     QDesignerFormEditorInterface *m_core;
 };
 
+// Contents of clipboard for formbuilder copy and paste operations
+// (Actions and widgets)
+struct QDESIGNER_SHARED_EXPORT FormBuilderClipboard {
+    typedef QList<QAction*> ActionList;
+
+    FormBuilderClipboard() {}
+    FormBuilderClipboard(QWidget *w);
+
+    bool empty() const;
+
+    QWidgetList m_widgets;
+    ActionList m_actions;
+};
+
+// Base class for a form builder used in the editor that
+// provides copy and paste.(move into base interface)
+class QDESIGNER_SHARED_EXPORT QEditorFormBuilder : public QSimpleResource
+{
+public:
+    explicit QEditorFormBuilder(QDesignerFormEditorInterface *core) : QSimpleResource(core) {}
+
+    virtual bool copy(QIODevice *dev, const FormBuilderClipboard &selection) = 0;
+    virtual DomUI *copy(const FormBuilderClipboard &selection) = 0;
+
+    // A widget parent needs to be specified, otherwise, the widget factory cannot locate the form window via parent
+    // and thus is not able to construct special widgets (QLayoutWidget).
+    virtual FormBuilderClipboard paste(DomUI *ui, QWidget *widgetParent, QObject *actionParent = 0) = 0;
+    virtual FormBuilderClipboard paste(QIODevice *dev, QWidget *widgetParent, QObject *actionParent = 0) = 0;
+};
+
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif

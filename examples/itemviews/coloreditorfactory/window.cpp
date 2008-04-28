@@ -46,6 +46,7 @@
 #include "window.h"
 #include "colorlisteditor.h"
 
+//! [0]
 Window::Window()
 {
     QItemEditorFactory *factory = new QItemEditorFactory;
@@ -59,6 +60,7 @@ Window::Window()
 
     createGUI();
 }
+//! [0]
 
 void Window::createGUI()
 {

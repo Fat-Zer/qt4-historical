@@ -41,7 +41,6 @@
 **
 ****************************************************************************/
 
-#include <QDataStream>
 #include "cppextractimages.h"
 #include "cppwriteicondata.h"
 #include "driver.h"
@@ -49,11 +48,14 @@
 #include "utils.h"
 #include "uic.h"
 
-#include <QTextStream>
-#include <QTextCodec>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
+#include <QtCore/QDataStream>
+#include <QtCore/QTextStream>
+#include <QtCore/QTextCodec>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+
+QT_BEGIN_NAMESPACE
 
 namespace CPP {
 
@@ -82,11 +84,11 @@ void ExtractImages::acceptUI(DomUI *node)
 
         QFileInfo fi(m_option.qrcOutputFile);
         QDir dir = fi.absoluteDir();
-        if (!dir.exists("images") && !dir.mkdir("images")) {
+        if (!dir.exists(QLatin1String("images")) && !dir.mkdir(QLatin1String("images"))) {
             fprintf(stderr, "Could not create image dir\n");
             return;
         }
-        dir.cd("images");
+        dir.cd(QLatin1String("images"));
         m_imagesDir = dir;
 
         m_output = new QTextStream(&f);
@@ -114,7 +116,7 @@ void ExtractImages::acceptImages(DomImages *images)
 void ExtractImages::acceptImage(DomImage *image)
 {
     QString format = image->elementData()->attributeFormat();
-    QString extension = format.left(format.indexOf('.')).toLower();
+    QString extension = format.left(format.indexOf(QLatin1Char('.'))).toLower();
     QString fname = m_imagesDir.absoluteFilePath(image->attributeName() + QLatin1Char('.') + extension);
 
     *m_output << "        <file>images/" << image->attributeName() << QLatin1Char('.') + extension << "</file>\n";
@@ -140,3 +142,5 @@ void ExtractImages::acceptImage(DomImage *image)
 }
 
 } // namespace CPP
+
+QT_END_NAMESPACE

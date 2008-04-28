@@ -46,12 +46,14 @@
 
 #include <QMainWindow>
 
+class MdiChild;
+QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
 class QMdiArea;
 class QMdiSubWindow;
-class MdiChild;
 class QSignalMapper;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

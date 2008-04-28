@@ -46,6 +46,7 @@
 #include "dialog.h"
 #include "wigglywidget.h"
 
+//! [0]
 Dialog::Dialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -65,3 +66,4 @@ Dialog::Dialog(QWidget *parent)
     setWindowTitle(tr("Wiggly"));
     resize(360, 145);
 }
+//! [0]

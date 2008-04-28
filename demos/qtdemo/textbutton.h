@@ -50,16 +50,19 @@
 #include "scanitem.h"
 
 class DemoItemAnimation;
+class ButtonBackground;
 
 class TextButton : public DemoItem
 {
 public:
     enum ALIGNMENT {LEFT, RIGHT};
-    enum BUTTONTYPE {SIDEBAR, PANEL};
-    
-    TextButton(const QString &text, ALIGNMENT align = LEFT, int userCode = 0, QGraphicsScene *scene = 0, QGraphicsItem *parent = 0, BUTTONTYPE color = SIDEBAR);
+    enum BUTTONTYPE {SIDEBAR, PANEL, UP, DOWN};
+    enum STATE {ON, OFF, HIGHLIGHT, DISABLED};
+
+    TextButton(const QString &text, ALIGNMENT align = LEFT, int userCode = 0,
+        QGraphicsScene *scene = 0, QGraphicsItem *parent = 0, BUTTONTYPE color = SIDEBAR);
     virtual ~TextButton();
-    
+
     // overidden methods:
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget * = 0){};
@@ -70,21 +73,29 @@ public:
 
     void animationStarted(int id = 0);
     void prepare();
+    void setState(STATE state);
+    void setMenuString(const QString &menu);
+    void setDisabled(bool disabled);
 
 private:
     void setupButtonBg();
     void setupScanItem();
     void setupHoverText();
-    
+
     DemoItemAnimation *scanAnim;
-    DemoItem *bgOn;
-    DemoItem *bgOff;
-    DemoItem *bgPressed;
-    
+    ButtonBackground *bgOn;
+    ButtonBackground *bgOff;
+    ButtonBackground *bgHighlight;
+    ButtonBackground *bgDisabled;
+
     BUTTONTYPE buttonType;
     ALIGNMENT alignment;
-    QString menuName;
+    QString buttonLabel;
+    QString menuString;
     int userCode;
+    QSize logicalSize;
+
+    STATE state;
 };
 
 #endif // TEXT_BUTTON_H

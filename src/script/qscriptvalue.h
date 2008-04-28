@@ -52,10 +52,14 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Script)
 
+class QScriptClass;
 class QScriptValue;
 class QScriptEngine;
+class QScriptString;
 class QVariant;
 class QObject;
 struct QMetaObject;
@@ -175,8 +179,15 @@ public:
     void setProperty(quint32 arrayIndex, const QScriptValue &value,
                      const PropertyFlags &flags = KeepExistingFlags);
 
+    QScriptValue property(const QScriptString &name,
+                          const ResolveFlags &mode = ResolvePrototype) const;
+    void setProperty(const QScriptString &name, const QScriptValue &value,
+                     const PropertyFlags &flags = KeepExistingFlags);
+
     QScriptValue::PropertyFlags propertyFlags(
         const QString &name, const ResolveFlags &mode = ResolvePrototype) const;
+    QScriptValue::PropertyFlags propertyFlags(
+        const QScriptString &name, const ResolveFlags &mode = ResolvePrototype) const;
 
     QScriptValue call(const QScriptValue &thisObject = QScriptValue(),
                       const QScriptValueList &args = QScriptValueList());
@@ -184,6 +195,14 @@ public:
                       const QScriptValue &arguments);
     QScriptValue construct(const QScriptValueList &args = QScriptValueList());
     QScriptValue construct(const QScriptValue &arguments);
+
+    QScriptValue data() const;
+    void setData(const QScriptValue &data);
+
+    QScriptClass *scriptClass() const;
+    void setScriptClass(QScriptClass *scriptClass);
+
+    qint64 objectId() const;
 
 private:
     QScriptValuePrivate *d_ptr;
@@ -194,7 +213,10 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QScriptValue::ResolveFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QScriptValue::PropertyFlags)
 
+QT_END_NAMESPACE
+
 QT_END_HEADER
 
 #endif // QT_NO_SCRIPT
+
 #endif

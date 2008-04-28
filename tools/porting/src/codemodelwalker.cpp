@@ -42,6 +42,8 @@
 ****************************************************************************/
 
 #include "codemodelwalker.h"
+
+QT_BEGIN_NAMESPACE
 using namespace CodeModel;
 
 void CodeModelWalker::parseScope(CodeModel::Scope *scope)
@@ -121,3 +123,5 @@ void CodeModelWalker::parseFunctionMember(CodeModel::FunctionMember *member)
     if(member->functionBodyScope())
         parseScope(member->functionBodyScope());
 }
+
+QT_END_NAMESPACE

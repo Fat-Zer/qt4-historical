@@ -46,9 +46,12 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
+QT_END_NAMESPACE
 
+//! [0]
 class DragWidget : public QWidget
 {
 public:
@@ -59,5 +62,6 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
 };
+//! [0]
 
 #endif

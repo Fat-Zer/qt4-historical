@@ -46,6 +46,7 @@
 #include "detailsdialog.h"
 #include "mainwindow.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     QMenu *fileMenu = new QMenu(tr("&File"), this);
@@ -66,7 +67,9 @@ MainWindow::MainWindow()
     setCentralWidget(letters);
     setWindowTitle(tr("Order Form"));
 }
+//! [0]
 
+//! [1]
 void MainWindow::createLetter(const QString &name, const QString &address,
                               QList<QPair<QString,int> > orderItems,
                               bool sendOffers)
@@ -74,9 +77,12 @@ void MainWindow::createLetter(const QString &name, const QString &address,
     QTextEdit *editor = new QTextEdit;
     int tabIndex = letters->addTab(editor, name);
     letters->setCurrentIndex(tabIndex);
+//! [1]
 
+//! [2]
     QTextCursor cursor(editor->textCursor());
     cursor.movePosition(QTextCursor::Start);
+//! [2] //! [3]
     QTextFrame *topFrame = cursor.currentFrame();
     QTextFrameFormat topFrameFormat = topFrame->frameFormat();
     topFrameFormat.setPadding(16);
@@ -100,7 +106,9 @@ void MainWindow::createLetter(const QString &name, const QString &address,
     cursor.insertText("Industry Park");
     cursor.insertBlock();
     cursor.insertText("Another country");
+//! [3]
 
+//! [4]
     cursor.setPosition(topFrame->lastPosition());
 
     cursor.insertText(name, textFormat);
@@ -109,6 +117,7 @@ void MainWindow::createLetter(const QString &name, const QString &address,
         cursor.insertBlock();
         cursor.insertText(line);
     }
+//! [4] //! [5]
     cursor.insertBlock();
     cursor.insertBlock();
 
@@ -120,12 +129,17 @@ void MainWindow::createLetter(const QString &name, const QString &address,
     QTextFrameFormat bodyFrameFormat;
     bodyFrameFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
     cursor.insertFrame(bodyFrameFormat);
+//! [5]
 
+//! [6]
     cursor.insertText(tr("I would like to place an order for the following "
                          "items:"), textFormat);
     cursor.insertBlock();
+//! [6] //! [7]
     cursor.insertBlock();
+//! [7]
 
+//! [8]
     QTextTableFormat orderTableFormat;
     orderTableFormat.setAlignment(Qt::AlignHCenter);
     QTextTable *orderTable = cursor.insertTable(1, 2, orderTableFormat);
@@ -133,12 +147,16 @@ void MainWindow::createLetter(const QString &name, const QString &address,
     QTextFrameFormat orderFrameFormat = cursor.currentFrame()->frameFormat();
     orderFrameFormat.setBorder(1);
     cursor.currentFrame()->setFrameFormat(orderFrameFormat);
+//! [8]
 
+//! [9]
     cursor = orderTable->cellAt(0, 0).firstCursorPosition();
     cursor.insertText(tr("Product"), boldFormat);
     cursor = orderTable->cellAt(0, 1).firstCursorPosition();
     cursor.insertText(tr("Quantity"), boldFormat);
+//! [9]
 
+//! [10]
     for (int i = 0; i < orderItems.count(); ++i) {
         QPair<QString,int> item = orderItems[i];
         int row = orderTable->rows();
@@ -149,14 +167,19 @@ void MainWindow::createLetter(const QString &name, const QString &address,
         cursor = orderTable->cellAt(row, 1).firstCursorPosition();
         cursor.insertText(QString("%1").arg(item.second), textFormat);
     }
+//! [10]
 
+//! [11]
     cursor.setPosition(topFrame->lastPosition());
 
     cursor.insertBlock();
+//! [11] //! [12]
     cursor.insertText(tr("Please update my records to take account of the "
                          "following privacy information:"));
     cursor.insertBlock();
+//! [12]
 
+//! [13]
     QTextTable *offersTable = cursor.insertTable(2, 2);
 
     cursor = offersTable->cellAt(0, 1).firstCursorPosition();
@@ -172,7 +195,9 @@ void MainWindow::createLetter(const QString &name, const QString &address,
         cursor = offersTable->cellAt(1, 0).firstCursorPosition();
 
     cursor.insertText("X", boldFormat);
+//! [13]
 
+//! [14]
     cursor.setPosition(topFrame->lastPosition());
     cursor.insertBlock();
     cursor.insertText(tr("Sincerely,"), textFormat);
@@ -183,14 +208,18 @@ void MainWindow::createLetter(const QString &name, const QString &address,
 
     printAction->setEnabled(true);
 }
+//! [14]
 
+//! [15]
 void MainWindow::createSample()
 {
     DetailsDialog dialog("Dialog with default values", this);
     createLetter("Mr. Smith", "12 High Street\nSmall Town\nThis country",
                  dialog.orderItems(), true);
 }
+//! [15]
 
+//! [16]
 void MainWindow::openDialog()
 {
     DetailsDialog dialog(tr("Enter Customer Details"), this);
@@ -199,10 +228,14 @@ void MainWindow::openDialog()
         createLetter(dialog.senderName(), dialog.senderAddress(),
                      dialog.orderItems(), dialog.sendOffers());
 }
+//! [16]
 
+//! [17]
 void MainWindow::printFile()
 {
+#ifndef QT_NO_PRINTER
     QTextEdit *editor = static_cast<QTextEdit*>(letters->currentWidget());
+//! [18]
     QPrinter printer;
 
     QPrintDialog *dialog = new QPrintDialog(&printer, this);
@@ -211,6 +244,9 @@ void MainWindow::printFile()
         dialog->addEnabledOption(QAbstractPrintDialog::PrintSelection);
     if (dialog->exec() != QDialog::Accepted)
         return;
+//! [18]
 
     editor->print(&printer);
+#endif
 }
+//! [17]

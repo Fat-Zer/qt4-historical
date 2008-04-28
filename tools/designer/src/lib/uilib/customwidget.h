@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QWidget;
 class QDesignerFormEditorInterface;
 
@@ -91,7 +93,10 @@ public:
 
     virtual QList<QDesignerCustomWidgetInterface*> customWidgets() const = 0;
 };
-Q_DECLARE_INTERFACE(QDesignerCustomWidgetCollectionInterface, "com.trolltech.Qt.Designer.CustomWidgetCollection")
+Q_DECLARE_INTERFACE(QDesignerCustomWidgetCollectionInterface,
+    "com.trolltech.Qt.Designer.CustomWidgetCollection")
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

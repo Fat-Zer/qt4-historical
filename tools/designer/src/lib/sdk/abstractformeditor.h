@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWidgetBoxInterface;
 class QDesignerPropertyEditorInterface;
 class QDesignerFormWindowManagerInterface;
@@ -64,6 +66,10 @@ class QDesignerIconCacheInterface;
 class QDesignerActionEditorInterface;
 class QDesignerIntegrationInterface;
 class QDesignerPluginManager;
+class QDesignerIntrospectionInterface;
+class QDesignerDialogGuiInterface;
+class QtResourceModel;
+class QtGradientManager;
 
 class QWidget;
 
@@ -71,7 +77,7 @@ class QExtensionManager;
 
 class  QDesignerFormEditorInterfacePrivate;
 
-class QDESIGNER_SDK_EXPORT QDesignerFormEditorInterface: public QObject
+class QDESIGNER_SDK_EXPORT QDesignerFormEditorInterface : public QObject
 {
     Q_OBJECT
 public:
@@ -94,7 +100,11 @@ public:
     QDesignerActionEditorInterface *actionEditor() const;
     QDesignerIntegrationInterface *integration() const;
     QDesignerPluginManager *pluginManager() const;
+    QDesignerIntrospectionInterface *introspection() const;
+    QDesignerDialogGuiInterface *dialogGui() const;
     QString resourceLocation() const;
+    QtResourceModel *resourceModel() const;
+    QtGradientManager *gradientManager() const;
 
     void setTopLevel(QWidget *topLevel);
     void setWidgetBox(QDesignerWidgetBoxInterface *widgetBox);
@@ -103,6 +113,10 @@ public:
     void setPluginManager(QDesignerPluginManager *pluginManager);
     void setActionEditor(QDesignerActionEditorInterface *actionEditor);
     void setIntegration(QDesignerIntegrationInterface *integration);
+    void setIntrospection(QDesignerIntrospectionInterface *introspection);
+    void setDialogGui(QDesignerDialogGuiInterface *dialogGui);
+    void setResourceModel(QtResourceModel *model);
+    void setGradientManager(QtGradientManager *manager);
 
 protected:
     void setFormManager(QDesignerFormWindowManagerInterface *formWindowManager);
@@ -127,14 +141,14 @@ private:
     QPointer<QDesignerBrushManagerInterface> m_pad10;
     QPointer<QDesignerIconCacheInterface> m_pad11;
     QPointer<QDesignerActionEditorInterface> m_pad12;
-    QDesignerPluginManager *m_pad13;
+    QDesignerFormEditorInterfacePrivate *d;
 
 private:
-    Q_DECLARE_PRIVATE(QDesignerFormEditorInterface)
-
     QDesignerFormEditorInterface(const QDesignerFormEditorInterface &other);
     void operator = (const QDesignerFormEditorInterface &other);
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

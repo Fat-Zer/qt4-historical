@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt4-styles.html
     \title The Qt 4 Style API
@@ -63,13 +106,7 @@
     pointer type is correct. If the object isn't of the right type,
     qstyleoption_cast() returns 0. For example:
 
-    \code
-        const QStyleOptionFocusRect *focusRectOption =
-                qstyleoption_cast<const QStyleOptionFocusRect *>(option);
-        if (focusRectOption) {
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-styles.qdoc 0
 
     For performance reasons, there are few member functions and the
     access to the variables is direct. This "low-level" feel makes
@@ -87,33 +124,16 @@
     The following code snippet illustrates how to use QStyle to
     draw the focus rectangle from a custom widget's paintEvent():
 
-    \code
-        void MyWidget::paintEvent(QPaintEvent *event)
-        {
-            QPainter painter(this);
-            ...
-
-            QStyleOptionFocusRect option(1);
-            option.init(this);
-            option.backgroundColor = palette().color(QPalette::Window);
-
-            style().drawPrimitive(QStyle::PE_FrameFocusRect, &option, &painter,
-                                  this);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-styles.qdoc 1
 
     The next example shows how to derive from an existing style to
     customize the look of a graphical element:
 
-    \quotefromfile snippets/customstyle/customstyle.h
-    \skipto class CustomStyle
-    \printuntil };
-
-    \quotefromfile snippets/customstyle/customstyle.cpp
-    \skipto CustomStyle::drawPrimitive
-    \printuntil QWindowsStyle::drawPrimitive
-    \printline }
-    \printline }
+    \snippet doc/src/snippets/customstyle/customstyle.h 0
+    \codeline
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 2
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 3
+    \snippet doc/src/snippets/customstyle/customstyle.cpp 4
 
     See also the \l{Styles Example} for a more detailed description of
     how custom styles can be created.
@@ -126,24 +146,11 @@
     For example, here's the signature of the QStyle::drawControl()
     function in Qt 3:
 
-    \code
-        void drawControl(ControlElement element,
-                         QPainter *painter,
-                         const QWidget *widget,
-                         const QRect &rect,
-                         const QColorGroup &colorGroup,
-                         SFlags how = Style_Default,
-                         const QStyleOption &option = QStyleOption::Default) const;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-styles.qdoc 2
 
     Here's the signature of the same function in Qt 4:
 
-    \code
-        void drawControl(ControlElement element,
-                         const QStyleOption *option,
-                         QPainter *painter,
-                         const QWidget *widget = 0) const;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-styles.qdoc 3
 
     In Qt 3, some of the information required to draw a graphical
     element was stored in a QStyleOption parameter, while the rest

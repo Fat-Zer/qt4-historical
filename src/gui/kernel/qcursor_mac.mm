@@ -42,7 +42,7 @@
 ****************************************************************************/
 
 #include <private/qcursor_p.h>
-#include <private/qpixmap_p.h>
+#include <private/qpixmap_mac_p.h>
 #include <qapplication.h>
 #include <qbitmap.h>
 #include <qcursor.h>
@@ -50,6 +50,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <AppKit/NSCursor.h>
+#include <qpainter.h>
+
+QT_BEGIN_NAMESPACE
 
 /*****************************************************************************
   Externals
@@ -62,7 +65,6 @@ extern bool qt_sendSpontaneousEvent(QObject *, QEvent *); //qapplication_mac.cpp
 /*****************************************************************************
   Internal QCursorData class
  *****************************************************************************/
-#include <qpainter.h>
 
 class QMacAnimateCursor : public QObject
 {
@@ -229,8 +231,8 @@ QPixmap qt_mac_unmultiplyPixmapAlpha(const QPixmap &pixmap)
     QPixmap fake_pm = pixmap;
     fake_pm.detach();
 
-    QPixmapData *pm_data = fake_pm.data;
-    uint numPixels = pm_data->nbytes/4;
+    QMacPixmapData *pm_data = static_cast<QMacPixmapData*>(fake_pm.data);
+    uint numPixels = pm_data->bytesPerRow / 4;
     for (uint i = 0; i < numPixels; ++i ) {
         int pixel = pm_data->pixels[i];
         int alpha = qAlpha(pixel);
@@ -471,3 +473,5 @@ void QCursorData::update()
     }
 #endif
 }
+
+QT_END_NAMESPACE

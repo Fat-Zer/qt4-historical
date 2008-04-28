@@ -1,12 +1,15 @@
 TEMPLATE      = subdirs
 SUBDIRS       = classwizard \
                 configdialog \
-                extension \
-                findfiles \
-                licensewizard \
                 standarddialogs \
                 tabdialog \
                 trivialwizard
+
+!wince*: SUBDIRS += licensewizard \
+                    extension \
+                    findfiles
+
+wince*: SUBDIRS += sipdialog
 
 # install
 sources.files = README *.pro

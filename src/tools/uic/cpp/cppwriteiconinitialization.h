@@ -46,6 +46,10 @@
 
 #include "treewalker.h"
 
+class QString;
+
+QT_BEGIN_NAMESPACE
+
 class QTextStream;
 class Driver;
 class Uic;
@@ -63,6 +67,8 @@ public:
     void acceptImages(DomImages *images);
     void acceptImage(DomImage *image);
 
+    static QString iconFromDataFunction();
+
 private:
     Uic *uic;
     Driver *driver;
@@ -71,5 +77,7 @@ private:
 };
 
 } // namespace CPP
+
+QT_END_NAMESPACE
 
 #endif // CPPWRITEICONINITIALIZATION_H

@@ -2,8 +2,39 @@
 **
 ** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** This file is part of an example program for Qt.
-** EDITIONS: NOLIMITS
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,10 +54,12 @@
     in the model.
 */
 
+//! [0]
 int StringListModel::rowCount(const QModelIndex &parent) const
 {
     return stringList.count();
 }
+//! [0]
 
 /*!
     Returns an appropriate value for the requested data.
@@ -35,6 +68,7 @@ int StringListModel::rowCount(const QModelIndex &parent) const
     string to be returned.
 */
 
+//! [1]
 QVariant StringListModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -48,6 +82,7 @@ QVariant StringListModel::data(const QModelIndex &index, int role) const
     else
         return QVariant();
 }
+//! [1]
 
 /*!
     Returns the appropriate header string depending on the orientation of
@@ -55,6 +90,7 @@ QVariant StringListModel::data(const QModelIndex &index, int role) const
     requested, we return an invalid variant.
 */
 
+//! [2]
 QVariant StringListModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const
 {
@@ -66,12 +102,14 @@ QVariant StringListModel::headerData(int section, Qt::Orientation orientation,
     else
         return QString("Row %1").arg(section);
 }
+//! [2]
 
 /*!
     Returns an appropriate value for the item's flags. Valid items are
     enabled, selectable, and editable.
 */
 
+//! [3]
 Qt::ItemFlags StringListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
@@ -79,6 +117,7 @@ Qt::ItemFlags StringListModel::flags(const QModelIndex &index) const
 
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
+//! [3]
 
 /*!
     Changes an item in the string list, but only if the following conditions
@@ -91,6 +130,7 @@ Qt::ItemFlags StringListModel::flags(const QModelIndex &index) const
     The dataChanged() signal is emitted if the item is changed.
 */
 
+//! [4]
 bool StringListModel::setData(const QModelIndex &index,
                               const QVariant &value, int role)
 {
@@ -100,13 +140,16 @@ bool StringListModel::setData(const QModelIndex &index,
         emit dataChanged(index, index);
         return true;
     }
+//! [4] //! [5]
     return false;
 }
+//! [5]
 
 /*!
     Inserts a number of rows into the model at the specified position.
 */
 
+//! [6]
 bool StringListModel::insertRows(int position, int rows, const QModelIndex &parent)
 {
     beginInsertRows(QModelIndex(), position, position+rows-1);
@@ -117,12 +160,15 @@ bool StringListModel::insertRows(int position, int rows, const QModelIndex &pare
 
     endInsertRows();
     return true;
+//! [6] //! [7]
 }
+//! [7]
 
 /*!
     Removes a number of rows from the model at the specified position.
 */
 
+//! [8]
 bool StringListModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
     beginRemoveRows(QModelIndex(), position, position+rows-1);
@@ -133,4 +179,6 @@ bool StringListModel::removeRows(int position, int rows, const QModelIndex &pare
 
     endRemoveRows();
     return true;
+//! [8] //! [9]
 }
+//! [9]

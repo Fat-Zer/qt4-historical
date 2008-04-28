@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example itemviews/stardelegate
     \title Star Delegate Example
@@ -50,9 +93,7 @@
 
     Here's the definition of the \c StarDelegate class:
 
-    \quotefromfile itemviews/stardelegate/stardelegate.h
-    \skipto /class\s.*StarDelegate/
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stardelegate.h 0
 
     All public functions are reimplemented virtual functions from
     QItemDelegate to provide custom rendering and editing.
@@ -63,9 +104,7 @@
     reimplemented from QItemDelegate and is called whenever the view
     needs to repaint an item:
 
-    \quotefromfile itemviews/stardelegate/stardelegate.cpp
-    \skipto ::paint
-    \printto /^\}/
+    \snippet examples/itemviews/stardelegate/stardelegate.cpp 0
 
     The function is invoked once for each item, represented by a
     QModelIndex object from the model. If the data stored in the item
@@ -84,8 +123,7 @@
     The \l{QAbstractItemDelegate::}{createEditor()} function is
     called when the user starts editing an item:
 
-    \skipto ::createEditor
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stardelegate.cpp 2
 
     If the item is a \c StarRating, we create a \c StarEditor and
     connect its \c editingFinished() signal to our \c
@@ -94,8 +132,7 @@
 
     Here's the implementation of \c commitAndCloseEditor():
 
-    \skipto ::commitAndCloseEditor
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stardelegate.cpp 5
 
     When the user is done editing, we emit
     \l{QAbstractItemDelegate::}{commitData()} and
@@ -107,9 +144,7 @@
     called when an editor is created to initialize it with data
     from the model:
 
-    \quotefromfile itemviews/stardelegate/stardelegate.cpp
-    \skipto ::setEditorData
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stardelegate.cpp 3
 
     We simply call \c setStarRating() on the editor.
 
@@ -117,14 +152,11 @@
     called when editing is finished, to commit data from the editor
     to the model:
 
-    \skipto ::setModelData
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stardelegate.cpp 4
 
     The \c sizeHint() function returns an item's preferred size:
 
-    \quotefromfile itemviews/stardelegate/stardelegate.cpp
-    \skipto ::sizeHint
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stardelegate.cpp 1
 
     We simply forward the call to \c StarRating.
 
@@ -133,9 +165,7 @@
     The \c StarEditor class was used when implementing \c
     StarDelegate. Here's the class definition:
 
-    \quotefromfile itemviews/stardelegate/stareditor.h
-    \skipto class StarEditor
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stareditor.h 0
 
     The class lets the user edit a \c StarRating by moving the mouse
     over the editor. It emits the \c editingFinished() signal when
@@ -150,9 +180,7 @@
 
     Let's start with the constructor:
 
-    \quotefromfile itemviews/stardelegate/stareditor.cpp
-    \skipto ::StarEditor
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stareditor.cpp 0
 
     We enable \l{QWidget::setMouseTracking()}{mouse tracking} on the
     widget so we can follow the cursor even when the user doesn't
@@ -164,37 +192,32 @@
     The \l{QWidget::}{paintEvent()} function is reimplemented from
     QWidget:
 
-    \skipto ::paintEvent
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stareditor.cpp 1
 
     We simply call \c StarRating::paint() to draw the stars, just
     like we did when implementing \c StarDelegate.
 
-    \skipto ::mouseMoveEvent
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stareditor.cpp 2
 
     In the mouse event handler, we call \c setStarCount() on the
     private data member \c myStarRating to reflect the current cursor
     position, and we call QWidget::update() to force a repaint.
 
-    \skipto ::mouseReleaseEvent
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stareditor.cpp 3
 
     When the user releases a mouse button, we simply emit the \c
     editingFinished() signal.
 
-    \skipto ::starAtPosition
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/stareditor.cpp 4
 
     The \c starAtPosition() function uses basic linear algebra to
     find out which star is under the cursor.
 
     \section1 StarRating Class Definition
 
-    \quotefromfile itemviews/stardelegate/starrating.h
-    \skipto class StarRating
-    \printuntil /^\}/
-    \printline Q_DECLARE_METATYPE(
+    \snippet examples/itemviews/stardelegate/starrating.h 0
+    \codeline
+    \snippet examples/itemviews/stardelegate/starrating.h 1
 
     The \c StarRating class represents a rating as a number of stars.
     In addition to holding the data, it is also capable of painting
@@ -212,15 +235,12 @@
     The constructor initializes \c myStarCount and \c myMaxStarCount,
     and sets up the polygons used to draw stars and diamonds:
 
-    \quotefromfile itemviews/stardelegate/starrating.cpp
-    \skipto ::StarRating
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/starrating.cpp 0
 
     The \c paint() function paints the stars in this \c StarRating
     object on a paint device:
 
-    \skipto ::paint
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/starrating.cpp 2
 
     We first set the pen and brush we will use for painting. The \c
     mode parameter can be either \c Editable or \c ReadOnly. If \c
@@ -235,9 +255,7 @@
     The \c sizeHint() function returns the preferred size for an area
     to paint the stars on:
 
-    \quotefromfile itemviews/stardelegate/starrating.cpp
-    \skipto ::sizeHint
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/starrating.cpp 1
 
     The preferred size is just enough to paint the maximum number of
     stars. The function is called by both \c StarDelegate::sizeHint()
@@ -247,9 +265,7 @@
 
     Here's the program's \c main() function:
 
-    \quotefromfile itemviews/stardelegate/main.cpp
-    \skipto main(
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/main.cpp 5
 
     The \c main() function creates a QTableWidget and sets a \c
     StarDelegate on it. \l{QAbstractItemView::}{DoubleClicked} and
@@ -261,15 +277,13 @@
     The \c populateTableWidget() function fills the QTableWidget with
     data:
 
-    \quotefromfile itemviews/stardelegate/main.cpp
-    \skipto populateTableWidget(
-    \printuntil staticData[
-    \printline },
+    \snippet examples/itemviews/stardelegate/main.cpp 0
+    \snippet examples/itemviews/stardelegate/main.cpp 1
     \dots
-    \skipto 0 }
-    \printline 0 }
-    \printline }
-    \printuntil /^\}/
+    \snippet examples/itemviews/stardelegate/main.cpp 2
+    \snippet examples/itemviews/stardelegate/main.cpp 3
+    \codeline
+    \snippet examples/itemviews/stardelegate/main.cpp 4
 
     Notice the call to qVariantFromValue to convert a \c
     StarRating to a QVariant.

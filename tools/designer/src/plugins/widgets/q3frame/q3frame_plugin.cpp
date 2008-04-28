@@ -46,9 +46,12 @@
 #include <Qt3Support/Q3Frame>
 #include <QtCore/qplugin.h>
 
-Q3FramePlugin::Q3FramePlugin(QObject *parent)
+QT_BEGIN_NAMESPACE
+
+Q3FramePlugin::Q3FramePlugin(const QIcon &icon, QObject *parent)
     : QObject(parent),
-      m_initialized(false)
+      m_initialized(false),
+      m_icon(icon)
 {
 }
 
@@ -84,7 +87,7 @@ QString Q3FramePlugin::includeFile() const
 
 QIcon Q3FramePlugin::icon() const
 {
-    return QIcon();
+    return m_icon;
 }
 
 bool Q3FramePlugin::isContainer() const
@@ -108,3 +111,5 @@ void Q3FramePlugin::initialize(QDesignerFormEditorInterface *core)
     m_initialized = true;
 }
 
+
+QT_END_NAMESPACE

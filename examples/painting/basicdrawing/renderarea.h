@@ -49,12 +49,13 @@
 #include <QPixmap>
 #include <QWidget>
 
+//! [0]
 class RenderArea : public QWidget
 {
     Q_OBJECT
 
 public:
-    enum Shape { Line, Points, Polyline, Polygon, Rect, RoundRect, Ellipse, Arc,
+    enum Shape { Line, Points, Polyline, Polygon, Rect, RoundedRect, Ellipse, Arc,
                  Chord, Pie, Path, Text, Pixmap };
 
     RenderArea(QWidget *parent = 0);
@@ -80,5 +81,6 @@ private:
     bool transformed;
     QPixmap pixmap;
 };
+//! [0]
 
 #endif

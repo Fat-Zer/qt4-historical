@@ -48,12 +48,15 @@
 
 #include "echointerface.h"
 
+QT_BEGIN_NAMESPACE
 class QString;
 class QLineEdit;
 class QLabel;
 class QPushButton;
 class QGridLayout;
+QT_END_NAMESPACE
 
+//! [0]
 class EchoWindow : public QWidget
 {
     Q_OBJECT
@@ -74,5 +77,6 @@ private:
     QPushButton *button;
     QGridLayout *layout;
 };
+//! [0]
 
 #endif

@@ -47,6 +47,8 @@
 #include <private/qfontengine_qpf_p.h>
 #include <qmetatype.h>
 
+QT_BEGIN_NAMESPACE
+
 class QFontEngine;
 
 class QPF
@@ -111,6 +113,8 @@ public:
     QByteArray qpf;
     int options;
 };
+
+QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QPF::CharacterRange)
 

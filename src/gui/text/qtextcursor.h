@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QTextDocument;
@@ -123,6 +125,9 @@ public:
 
     bool movePosition(MoveOperation op, MoveMode = MoveAnchor, int n = 1);
 
+    bool visualNavigation() const;
+    void setVisualNavigation(bool b);
+
     void deleteChar();
     void deletePreviousChar();
 
@@ -183,7 +188,10 @@ public:
     QTextFrame *currentFrame() const;
 
     void insertFragment(const QTextDocumentFragment &fragment);
+
+#ifndef QT_NO_TEXTHTMLPARSER
     void insertHtml(const QString &html);
+#endif // QT_NO_TEXTHTMLPARSER
 
     void insertImage(const QTextImageFormat &format, QTextFrameFormat::Position alignment);
     void insertImage(const QTextImageFormat &format);
@@ -210,6 +218,8 @@ private:
     friend class QTextDocumentFragmentPrivate;
     friend class QTextCopyHelper;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

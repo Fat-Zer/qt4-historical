@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/examples/simpletextviewer.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/simpletextviewer.qdoc -->
 <head>
-  <title>Qt 4.3: Simple Text Viewer Example</title>
+  <title>Qt 4.4: Simple Text Viewer Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -12,7 +12,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Simple Text Viewer Example<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Simple Text Viewer Example<br /><span class="subtitle"></span>
+</h1>
 <p>Files:</p>
 <ul>
 <li><a href="assistant-simpletextviewer-findfiledialog-cpp.html">assistant/simpletextviewer/findfiledialog.cpp</a></li>
@@ -20,8 +21,9 @@
 <li><a href="assistant-simpletextviewer-mainwindow-cpp.html">assistant/simpletextviewer/mainwindow.cpp</a></li>
 <li><a href="assistant-simpletextviewer-mainwindow-h.html">assistant/simpletextviewer/mainwindow.h</a></li>
 <li><a href="assistant-simpletextviewer-main-cpp.html">assistant/simpletextviewer/main.cpp</a></li>
+<li><a href="assistant-simpletextviewer-simpletextviewer-pro.html">assistant/simpletextviewer/simpletextviewer.pro</a></li>
 </ul>
-<p>The Simple Text Viewer example shows how you can make Qt Assistant act as a customized help tool for your application using the <a href="qassistantclient.html">QAssistantClient</a> class combined with a <a href="assistant-manual.html#profiles">Qt Assistant Document Profile</a>.</p>
+<p>The Simple Text Viewer example shows how you can make Qt Assistant act as a customized help tool for your application using the <a href="qassistantclient.html">QAssistantClient</a> class combined with a Qt Assistant Document Profile.</p>
 <p align="center"><img src="images/simpletextviewer-example.png" /></p><p>The Simple Text Viewer application allows the user to select and view existing files.</p>
 <p>The application provides its own custom documentation that is available through the <b>Help</b> menu in the main window's menubar and through the <b>Help</b> button in the application's find file dialog. The documentation files are located in a separate <tt>documentation</tt> subdirectory.</p>
 <p>The example consists of two classes:</p>
@@ -83,11 +85,11 @@
      arguments &lt;&lt; &quot;-profile&quot; &lt;&lt; QString(&quot;documentation&quot;) + QDir::separator() + QString(&quot;simpletextviewer.adp&quot;);
      assistantClient-&gt;setArguments(arguments);
  }</pre>
-<p>First we create the <a href="qassistantclient.html">QAssistantClient</a> object, then we set the command line arguments that are applied when Qt Assistant is started, using the <a href="qassistantclient.html#setArguments">QAssistantClient::setArguments</a>() function: The <tt>-profile documentation/simpletextviewer.adp</tt> arguments tell Qt Assistant to use the documentation set specified by the given <tt>.adp</tt> file. The <tt>.adp</tt> file extension is an abbreviation for <a href="assistant-manual.html#profiles">Qt Assistant Document Profile</a>.</p>
+<p>First we create the <a href="qassistantclient.html">QAssistantClient</a> object, then we set the command line arguments that are applied when Qt Assistant is started, using the <a href="qassistantclient.html#setArguments">QAssistantClient::setArguments</a>() function: The <tt>-profile documentation/simpletextviewer.adp</tt> arguments tell Qt Assistant to use the documentation set specified by the given <tt>.adp</tt> file. The <tt>.adp</tt> file extension is an abbreviation for Qt Assistant Document Profile.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Qt Assistant Document Profile</th></tr></thead>
-<tr valign="top" class="odd"><td>The <a href="assistant-manual.html#profiles">Qt Assistant Document Profile</a> is an extension of the <a href="assistant-manual.html#documentation-content-file-format">Documentation Content File</a>.<p>Documentation can be added or removed from Qt Assistant by adding and removing the content files. A documentation content file must contain the documentation's table of contents and all important keywords for the index. See the <a href="assistant-manual.html">Qt Assistant Manual</a> for a more detailed description of how to write and use documentation contents file for Qt Assistant.</p>
-<p>The <a href="assistant-manual.html#profiles">Qt Assistant Document Profile</a> adds a profile tag, containing property tags, to the format. Using a profile, the documentation writer can change several of Qt Assistant's properties, for example its window title and start page.</p>
+<tr valign="top" class="odd"><td>The Qt Assistant Document Profile is an extension of the Documentation Content File.<p>Documentation can be added or removed from Qt Assistant by adding and removing the content files. A documentation content file must contain the documentation's table of contents and all important keywords for the index. See the <a href="assistant-manual.html">Qt Assistant Manual</a> for a more detailed description of how to write and use documentation contents file for Qt Assistant.</p>
+<p>The Qt Assistant Document Profile adds a profile tag, containing property tags, to the format. Using a profile, the documentation writer can change several of Qt Assistant's properties, for example its window title and start page.</p>
     <H4><center>/documentation/simpletextviewer.adp</center></H4>
     <pre> &lt;!DOCTYPE DCF&gt;
 
@@ -205,11 +207,11 @@
 <p>The <tt>help()</tt> slot is called when the user clicks the dialog's <b>Help</b> button. It brings the current Qt Assistant instance to the foreground and shows the application's manual page, using the <a href="qassistantclient.html#showPage">QAssistantClient::showPage</a>() function.</p>
 <a name="summary"></a>
 <h2>Summary</h2>
-<p>In order to make Qt Assistant act as a customized help tool for your application, you must provide your application with a <a href="qassistantclient.html">QAssistantClient</a> object in addition to a <a href="assistant-manual.html#profiles">Qt Assistant Document Profile</a> (<tt>.adp</tt> file) and documentation for the application.</p>
+<p>In order to make Qt Assistant act as a customized help tool for your application, you must provide your application with a <a href="qassistantclient.html">QAssistantClient</a> object in addition to a Qt Assistant Document Profile (<tt>.adp</tt> file) and documentation for the application.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

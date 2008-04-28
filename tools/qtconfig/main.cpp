@@ -45,6 +45,8 @@
 #include "mainwindow.h"
 #include <QApplication>
 
+QT_USE_NAMESPACE
+
 int main(int argc, char **argv)
 {
     Q_INIT_RESOURCE(qtconfig);

@@ -51,6 +51,7 @@
 #include <QAbstractItemModel>
 #include <QScrollBar>
 
+//! [0]
 TextEdit::TextEdit(QWidget *parent)
 : QTextEdit(parent), c(0)
 {
@@ -58,11 +59,15 @@ TextEdit::TextEdit(QWidget *parent)
                     " 3 characters. You can trigger autocompletion using ") + 
                     QKeySequence("Ctrl+E").toString(QKeySequence::NativeText));
 }
+//! [0]
 
+//! [1]
 TextEdit::~TextEdit()
 {
 }
+//! [1]
 
+//! [2]
 void TextEdit::setCompleter(QCompleter *completer)
 {
     if (c)
@@ -79,12 +84,16 @@ void TextEdit::setCompleter(QCompleter *completer)
     QObject::connect(c, SIGNAL(activated(const QString&)),
                      this, SLOT(insertCompletion(const QString&)));
 }
+//! [2]
 
+//! [3]
 QCompleter *TextEdit::completer() const
 {
     return c;
 }
+//! [3]
 
+//! [4]
 void TextEdit::insertCompletion(const QString& completion)
 {
     if (c->widget() != this)
@@ -96,21 +105,27 @@ void TextEdit::insertCompletion(const QString& completion)
     tc.insertText(completion.right(extra));
     setTextCursor(tc);
 }
+//! [4]
 
+//! [5]
 QString TextEdit::textUnderCursor() const
 {
     QTextCursor tc = textCursor();
     tc.select(QTextCursor::WordUnderCursor);
     return tc.selectedText();
 }
+//! [5]
 
+//! [6]
 void TextEdit::focusInEvent(QFocusEvent *e)
 {
     if (c)
         c->setWidget(this);
     QTextEdit::focusInEvent(e);
 }
+//! [6]
 
+//! [7]
 void TextEdit::keyPressEvent(QKeyEvent *e)
 {
     if (c && c->popup()->isVisible()) {
@@ -131,7 +146,9 @@ void TextEdit::keyPressEvent(QKeyEvent *e)
     bool isShortcut = ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E); // CTRL+E
     if (!c || !isShortcut) // dont process the shortcut when we have a completer
         QTextEdit::keyPressEvent(e);
+//! [7]
 
+//! [8]
     const bool ctrlOrShift = e->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
     if (!c || (ctrlOrShift && e->text().isEmpty()))
         return;
@@ -155,4 +172,5 @@ void TextEdit::keyPressEvent(QKeyEvent *e)
                 + c->popup()->verticalScrollBar()->sizeHint().width());
     c->complete(cr); // popup it up!
 }
+//! [8]
 

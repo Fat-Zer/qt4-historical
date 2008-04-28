@@ -68,6 +68,8 @@
 #include "qpicture.h"
 #include "qmenu.h"
 
+QT_BEGIN_NAMESPACE
+
 class QLabelPrivate : public QFramePrivate
 {
     Q_DECLARE_PUBLIC(QLabel)
@@ -146,5 +148,7 @@ public:
 
     friend class QMessageBoxPrivate;
 };
+
+QT_END_NAMESPACE
 
 #endif // QLABEL_P_H

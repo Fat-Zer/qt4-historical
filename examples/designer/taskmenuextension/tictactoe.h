@@ -46,9 +46,12 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QRect;
 class QSize;
+QT_END_NAMESPACE
 
+//! [0]
 class TicTacToe : public QWidget
 {
     Q_OBJECT
@@ -77,5 +80,6 @@ private:
     QString myState;
     int turnNumber;
 };
+//! [0]
 
 #endif

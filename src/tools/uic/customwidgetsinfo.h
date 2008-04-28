@@ -45,8 +45,10 @@
 #define CUSTOMWIDGETSINFO_H
 
 #include "treewalker.h"
-#include <QStringList>
-#include <QMap>
+#include <QtCore/QStringList>
+#include <QtCore/QMap>
+
+QT_BEGIN_NAMESPACE
 
 class Driver;
 class DomScript;
@@ -72,6 +74,8 @@ public:
 
     DomScript *customWidgetScript(const QString &name) const;
 
+    QString customWidgetAddPageMethod(const QString &name) const;
+
     QString realClassName(const QString &className) const;
 
     bool extends(const QString &className, const QString &baseClassName) const;
@@ -81,5 +85,7 @@ private:
     NameCustomWidgetMap m_customWidgets;
     bool m_scriptsActivated;
 };
+
+QT_END_NAMESPACE
 
 #endif // CUSTOMWIDGETSINFO_H

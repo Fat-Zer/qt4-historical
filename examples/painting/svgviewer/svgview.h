@@ -50,9 +50,11 @@
 #include <QGLWidget>
 #endif
 
+QT_BEGIN_NAMESPACE
 class QPaintEvent;
 class QSvgRenderer;
 class QWheelEvent;
+QT_END_NAMESPACE
 
 class SvgRasterView : public QWidget
 {

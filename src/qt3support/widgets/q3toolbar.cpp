@@ -46,7 +46,7 @@
 
 #include "q3mainwindow.h"
 #include "qapplication.h"
-#include "qcombobox.h"
+#include "q3combobox.h"
 #include "qcursor.h"
 #include "qdesktopwidget.h"
 #include "qdrawutil.h"
@@ -61,6 +61,8 @@
 #include "qtimer.h"
 #include "qtoolbutton.h"
 #include "qtooltip.h"
+
+QT_BEGIN_NAMESPACE
 
 static const char * const arrow_v_xpm[] = {
     "7 9 3 1",
@@ -224,7 +226,9 @@ void Q3ToolBarSeparator::paintEvent(QPaintEvent *)
     style()->drawPrimitive(QStyle::PE_Q3DockWindowSeparator, &opt, &p, this);
 }
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "q3toolbar.moc"
+QT_END_INCLUDE_NAMESPACE
 
 
 /*!
@@ -620,7 +624,7 @@ void Q3ToolBar::createPopup()
         }
         int j = 2;
         QWidget *w = (QWidget*)obj;
-        if (qobject_cast<QComboBox*>(w))
+        if (qobject_cast<Q3ComboBox*>(w))
             j = 1;
         hide = false;
 
@@ -664,8 +668,8 @@ void Q3ToolBar::createPopup()
                 if (!b->isEnabled())
                     d->extensionPopup->setItemEnabled(id, false);
 #ifndef QT_NO_COMBOBOX
-            } else if (qobject_cast<QComboBox*>(w)) {
-                QComboBox *c = (QComboBox*)w;
+            } else if (qobject_cast<Q3ComboBox*>(w)) {
+                Q3ComboBox *c = (Q3ComboBox*)w;
                 if (c->count() != 0) {
                     QString s = c->windowTitle();
                     if (s.isEmpty())
@@ -832,4 +836,7 @@ more predictable.
 11.  Keep a single tool bar to fewer than 20 items divided into 4-7 groups of
 items.
 */
+
+QT_END_NAMESPACE
+
 #endif

@@ -10,6 +10,6 @@ RESOURCES = tetrix.qrc
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/script/tetrix
-sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS tetrix.pro
+sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS tetrix.pro *.js
 sources.path = $$[QT_INSTALL_EXAMPLES]/script/tetrix
 INSTALLS += target sources

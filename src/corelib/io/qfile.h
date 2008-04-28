@@ -54,6 +54,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QAbstractFileEngine;
@@ -163,14 +165,21 @@ public:
 
     int handle() const;
 
+    enum MemoryMapFlags {
+        NoOptions = 0
+    };
+
+    uchar *map(qint64 offset, qint64 size, MemoryMapFlags flags = NoOptions);
+    bool unmap(uchar *address);
+
     virtual QAbstractFileEngine *fileEngine() const;
 
 #ifdef QT3_SUPPORT
     typedef Permission PermissionSpec;
     inline QT3_SUPPORT QString name() const { return fileName(); }
-    inline QT3_SUPPORT void setName(const QString &name) { setFileName(name); }
-    inline QT3_SUPPORT bool open(OpenMode flags, FILE *f) { return open(f, flags); }
-    inline QT3_SUPPORT bool open(OpenMode flags, int fd) { return open(fd, flags); }
+    inline QT3_SUPPORT void setName(const QString &aName) { setFileName(aName); }
+    inline QT3_SUPPORT bool open(OpenMode aFlags, FILE *f) { return open(f, aFlags); }
+    inline QT3_SUPPORT bool open(OpenMode aFlags, int fd) { return open(fd, aFlags); }
 #endif
 
 protected:
@@ -189,6 +198,8 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFile::Permissions)
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

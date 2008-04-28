@@ -41,6 +41,7 @@
 **
 ****************************************************************************/
 
+//! [0]
 #include <QApplication>
 #include <QPushButton>
 #include <QLabel>
@@ -59,3 +60,4 @@ int main(int argc, char **argv)
 
     return app.exec();
 }
+//! [0]

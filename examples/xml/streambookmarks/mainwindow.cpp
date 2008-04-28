@@ -47,6 +47,7 @@
 #include "xbelreader.h"
 #include "xbelwriter.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     QStringList labels;
@@ -65,7 +66,9 @@ MainWindow::MainWindow()
     setWindowTitle(tr("QXmlStream Bookmarks"));
     resize(480, 320);
 }
+//! [0]
 
+//! [1]
 void MainWindow::open()
 {
     QString fileName =
@@ -100,7 +103,9 @@ void MainWindow::open()
     }
 
 }
+//! [1]
 
+//! [2]
 void MainWindow::saveAs()
 {
     QString fileName =
@@ -123,14 +128,18 @@ void MainWindow::saveAs()
     if (writer.writeFile(&file))
         statusBar()->showMessage(tr("File saved"), 2000);
 }
+//! [2]
 
+//! [3]
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("About QXmlStream Bookmarks"),
             tr("The <b>QXmlStream Bookmarks</b> example demonstrates how to use Qt's "
                "QXmlStream classes to read and write XML documents."));
 }
+//! [3]
 
+//! [4]
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Open..."), this);
@@ -151,7 +160,9 @@ void MainWindow::createActions()
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
+//! [4]
 
+//! [5]
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -165,3 +176,4 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 }
+//! [5]

@@ -48,6 +48,8 @@
 #include <qpainter.h>
 #include <private/qtablewidget_p.h>
 
+QT_BEGIN_NAMESPACE
+
 QTableModel::QTableModel(int rows, int columns, QTableWidget *parent)
     : QAbstractTableModel(parent),
       prototype(0),
@@ -819,7 +821,7 @@ void QTableModel::setItemPrototype(const QTableWidgetItem *item)
 
 QStringList QTableModel::mimeTypes() const
 {
-    const QTableWidget *view = ::qobject_cast<const QTableWidget*>(QObject::parent());
+    const QTableWidget *view = qobject_cast<const QTableWidget*>(QObject::parent());
     return (view ? view->mimeTypes() : QStringList());
 }
 
@@ -833,7 +835,7 @@ QMimeData *QTableModel::mimeData(const QModelIndexList &indexes) const
     QList<QTableWidgetItem*> items;
     for (int i = 0; i < indexes.count(); ++i)
         items << item(indexes.at(i));
-    const QTableWidget *view = ::qobject_cast<const QTableWidget*>(QObject::parent());
+    const QTableWidget *view = qobject_cast<const QTableWidget*>(QObject::parent());
 
     // cachedIndexes is a little hack to avoid copying from QModelIndexList to
     // QList<QTreeWidgetItem*> and back again in the view
@@ -854,13 +856,13 @@ bool QTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         column = 0;
     }
 
-    QTableWidget *view = ::qobject_cast<QTableWidget*>(QObject::parent());
+    QTableWidget *view = qobject_cast<QTableWidget*>(QObject::parent());
     return (view ? view->dropMimeData(row, column, data, action) : false);
 }
 
 Qt::DropActions QTableModel::supportedDropActions() const
 {
-    const QTableWidget *view = ::qobject_cast<const QTableWidget*>(QObject::parent());
+    const QTableWidget *view = qobject_cast<const QTableWidget*>(QObject::parent());
     return (view ? view->supportedDropActions() : Qt::DropActions(Qt::IgnoreAction));
 }
 
@@ -986,9 +988,7 @@ QTableWidgetSelectionRange::~QTableWidgetSelectionRange()
     Top-level items are constructed without a parent then inserted at the
     position specified by a pair of row and column numbers:
 
-    \quotefile snippets/qtablewidget-using/mainwindow.cpp
-    \skipto QTableWidgetItem *newItem
-    \printuntil tableWidget->setItem(
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.cpp 3
 
     Each item can have its own background brush which is set with
     the setBackground() function. The current background brush can be
@@ -1001,7 +1001,7 @@ QTableWidgetSelectionRange::~QTableWidgetSelectionRange()
     used both as the source of a drag and drop operation and as a drop target.
     Each item's flags can be changed by calling setFlags() with the appropriate
     value (see \l{Qt::ItemFlags}). Checkable items can be checked and unchecked
-    with the setChecked() function. The corresponding checked() function
+    with the setCheckState() function. The corresponding checkState() function
     indicates whether the item is currently checked.
 
     \section1 Subclassing
@@ -1109,7 +1109,7 @@ QTableWidgetSelectionRange::~QTableWidgetSelectionRange()
 void QTableWidgetItem::setFlags(Qt::ItemFlags aflags)
 {
     itemFlags = aflags;
-    if (QTableModel *model = (view ? ::qobject_cast<QTableModel*>(view->model()) : 0))
+    if (QTableModel *model = (view ? qobject_cast<QTableModel*>(view->model()) : 0))
         model->itemChanged(this);
 }
 
@@ -1348,7 +1348,7 @@ QTableWidgetItem::QTableWidgetItem(const QIcon &icon, const QString &text, int t
 */
 QTableWidgetItem::~QTableWidgetItem()
 {
-    if (QTableModel *model = (view ? ::qobject_cast<QTableModel*>(view->model()) : 0))
+    if (QTableModel *model = (view ? qobject_cast<QTableModel*>(view->model()) : 0))
         model->removeItem(this);
     view = 0;
     delete d;
@@ -1383,7 +1383,7 @@ void QTableWidgetItem::setData(int role, const QVariant &value)
     }
     if (!found)
         values.append(QWidgetItemData(role, value));
-    if (QTableModel *model = (view ? ::qobject_cast<QTableModel*>(view->model()) : 0))
+    if (QTableModel *model = (view ? qobject_cast<QTableModel*>(view->model()) : 0))
         model->itemChanged(this);
 }
 
@@ -1513,24 +1513,18 @@ QTableWidgetItem &QTableWidgetItem::operator=(const QTableWidgetItem &other)
     Table widgets can be constructed with the required numbers of rows and
     columns:
 
-    \quotefile snippets/qtablewidget-using/mainwindow.cpp
-    \skipto tableWidget = new
-    \printuntil tableWidget = new
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.cpp 0
 
     Alternatively, tables can be constructed without a given size and resized
     later:
 
-    \quotefile snippets/qtablewidget-resizing/mainwindow.cpp
-    \skipto tableWidget = new
-    \printuntil tableWidget = new
-    \skipto tableWidget->setRowCount(
-    \printuntil tableWidget->setColumnCount(
+    \snippet doc/src/snippets/qtablewidget-resizing/mainwindow.cpp 0
+    \snippet doc/src/snippets/qtablewidget-resizing/mainwindow.cpp 1
 
     Items are created ouside the table (with no parent widget) and inserted
     into the table with setItem():
 
-    \skipto QTableWidgetItem *newItem
-    \printuntil tableWidget->setItem(
+    \snippet doc/src/snippets/qtablewidget-resizing/mainwindow.cpp 2
 
     If you want to enable sorting in your table widget, do so after you
     have populated it with items, otherwise sorting may interfere with
@@ -1545,9 +1539,7 @@ QTableWidgetItem &QTableWidgetItem::operator=(const QTableWidgetItem &other)
     construct a table item with an icon and aligned text, and use it as the
     header for a particular column:
 
-    \quotefile snippets/qtablewidget-using/mainwindow.cpp
-    \skipto QTableWidgetItem *cubesHeaderItem
-    \printuntil cubesHeaderItem->setTextAlignment
+    \snippet doc/src/snippets/qtablewidget-using/mainwindow.cpp 2
 
     The number of rows in the table can be found with rowCount(), and the
     number of columns with columnCount(). The table can be cleared with the
@@ -2140,6 +2132,19 @@ void QTableWidget::setCurrentItem(QTableWidgetItem *item)
 }
 
 /*!
+  \since 4.4
+  
+  Sets the current item to be \a item, using the given \a command.
+
+  \sa currentItem(), setCurrentCell()
+*/
+void QTableWidget::setCurrentItem(QTableWidgetItem *item, QItemSelectionModel::SelectionFlags command)
+{
+    Q_D(QTableWidget);
+    d->selectionModel->setCurrentIndex(d->model()->index(item), command);
+}
+
+/*!
     \since 4.1
 
     Sets the current cell to be the cell at position (\a row, \a
@@ -2152,6 +2157,20 @@ void QTableWidget::setCurrentItem(QTableWidgetItem *item)
 void QTableWidget::setCurrentCell(int row, int column)
 {
     setCurrentIndex(model()->index(row, column, QModelIndex()));
+}
+
+/*!
+  \since 4.4
+  
+  Sets the current cell to be the cell at position (\a row, \a
+  column), using the given \a command.
+
+  \sa setCurrentItem(), currentRow(), currentColumn()
+*/
+void QTableWidget::setCurrentCell(int row, int column, QItemSelectionModel::SelectionFlags command)
+{
+    Q_D(QTableWidget);
+    d->selectionModel->setCurrentIndex(model()->index(row, column, QModelIndex()), command);
 }
 
 /*!
@@ -2483,7 +2502,7 @@ void QTableWidget::removeColumn(int column)
 /*!
    Removes all items in the view.
    This will also remove all selections.
-   The table dimentions stay the same.
+   The table dimensions stay the same.
 */
 
 void QTableWidget::clear()
@@ -2602,7 +2621,7 @@ QTableWidgetItem *QTableWidget::itemFromIndex(const QModelIndex &index) const
 */
 void QTableWidget::setModel(QAbstractItemModel * /*model*/)
 {
-    qFatal("QTableWidget::setModel() - Changing the model of the QTableWidget is not allowed.");
+    Q_ASSERT(!"QTableWidget::setModel() - Changing the model of the QTableWidget is not allowed.");
 }
 
 /*! \reimp */
@@ -2650,5 +2669,8 @@ void QTableWidget::dropEvent(QDropEvent *event) {
 }
 #endif
 
+QT_END_NAMESPACE
+
 #include "moc_qtablewidget.cpp"
+
 #endif // QT_NO_TABLEWIDGET

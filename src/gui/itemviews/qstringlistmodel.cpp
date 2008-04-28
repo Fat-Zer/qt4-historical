@@ -49,6 +49,8 @@
 
 #ifndef QT_NO_STRINGLISTMODEL
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QStringListModel
     \brief The QStringListModel class provides a model that supplies strings to views.
@@ -81,9 +83,7 @@
 
     An example usage of QStringListModel:
 
-    \quotefromfile snippets/qstringlistmodel/main.cpp
-    \skipto QStringListModel
-    \printuntil model->setStringList(list)
+    \snippet doc/src/snippets/qstringlistmodel/main.cpp 0
 
     \sa QAbstractListModel, QAbstractItemModel, {Model Classes}
 */
@@ -195,7 +195,6 @@ bool QStringListModel::setData(const QModelIndex &index, const QVariant &value, 
 
 bool QStringListModel::insertRows(int row, int count, const QModelIndex &parent)
 {
-    Q_UNUSED(parent);
     if (count < 1 || row < 0 || row > rowCount(parent))
         return false;
 
@@ -222,7 +221,6 @@ bool QStringListModel::insertRows(int row, int count, const QModelIndex &parent)
 
 bool QStringListModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    Q_UNUSED(parent);
     if (count <= 0 || row < 0 || (row + count) > rowCount(parent))
         return false;
 
@@ -297,5 +295,15 @@ void QStringListModel::setStringList(const QStringList &strings)
     lst = strings;
     reset();
 }
+
+/*!
+  \reimp
+*/
+Qt::DropActions QStringListModel::supportedDropActions() const
+{
+    return QAbstractItemModel::supportedDropActions() | Qt::MoveAction;
+}
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_STRINGLISTMODEL

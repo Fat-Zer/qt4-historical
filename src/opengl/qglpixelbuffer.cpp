@@ -83,6 +83,9 @@
 #include <private/qpaintengine_opengl_p.h>
 #include <qimage.h>
 
+QT_BEGIN_NAMESPACE
+
+extern void qgl_cleanup_glyph_cache(QGLContext *);
 
 void QGLPixelBufferPrivate::common_init(const QSize &size, const QGLFormat &format, QGLWidget *shareWidget)
 {
@@ -162,8 +165,6 @@ QGLPixelBuffer::~QGLPixelBuffer()
     Q_D(QGLPixelBuffer);
 
     // defined in qpaintengine_opengl.cpp
-    extern void qgl_cleanup_glyph_cache(QGLContext *);
-
     QGLContext *current = const_cast<QGLContext *>(QGLContext::currentContext());
     if (current != d->qctx)
         makeCurrent();
@@ -216,7 +217,7 @@ bool QGLPixelBuffer::doneCurrent()
     \sa size()
 */
 
-#if defined(Q_WS_X11) || defined(Q_WS_WIN)
+#if defined(Q_WS_X11) || defined(Q_WS_WIN) && !defined(Q_OS_WINCE)
 GLuint QGLPixelBuffer::generateDynamicTexture() const
 {
     Q_D(const QGLPixelBuffer);
@@ -244,15 +245,7 @@ GLuint QGLPixelBuffer::generateDynamicTexture() const
 
     Example:
 
-    \code
-        QGLPixelBuffer pbuffer(...);
-        ...
-        pbuffer.makeCurrent();
-        GLuint dynamicTexture = pbuffer.generateDynamicTexture();
-        pbuffer.bindToDynamicTexture(dynamicTexture);
-        ...
-        pbuffer.releaseFromDynamicTexture();
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qglpixelbuffer.cpp 0
 
     \warning This function uses the \c {render_texture} extension,
     which is currently not supported under X11. An alternative that
@@ -288,14 +281,7 @@ GLuint QGLPixelBuffer::generateDynamicTexture() const
 
     Example:
 
-    \code
-        QGLPixelBuffer pbuffer(...);
-        ...
-        pbuffer.makeCurrent();
-        GLuint dynamicTexture = pbuffer.generateDynamicTexture();
-        ...
-        pbuffer.updateDynamicTexture(dynamicTexture);
-    \endcode
+    \snippet doc/src/snippets/code/src.opengl.qglpixelbuffer.cpp 1
 
     An alternative on Windows and Mac OS X systems that support the
     \c render_texture extension is to use bindToDynamicTexture() to
@@ -309,7 +295,7 @@ void QGLPixelBuffer::updateDynamicTexture(GLuint texture_id) const
     if (d->invalid)
         return;
     glBindTexture(GL_TEXTURE_2D, texture_id);
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, d->req_size.width(), d->req_size.height(), 0);
 #else
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, d->req_size.width(), d->req_size.height(), 0);
@@ -463,7 +449,7 @@ int QGLPixelBuffer::metric(PaintDeviceMetric metric) const
 GLuint QGLPixelBuffer::bindTexture(const QImage &image, GLenum target)
 {
     Q_D(QGLPixelBuffer);
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     return d->qctx->bindTexture(image, target, GLint(GL_RGBA8));
 #else
     return d->qctx->bindTexture(image, target, GL_RGBA);
@@ -490,7 +476,7 @@ GLuint QGLPixelBuffer::bindTexture(const QImage &image, QMacCompatGLenum target)
 GLuint QGLPixelBuffer::bindTexture(const QPixmap &pixmap, GLenum target)
 {
     Q_D(QGLPixelBuffer);
-#ifndef Q_WS_QWS
+#ifndef QT_OPENGL_ES
     return d->qctx->bindTexture(pixmap, target, GLint(GL_RGBA8));
 #else
     return d->qctx->bindTexture(pixmap, target, GL_RGBA);
@@ -542,6 +528,53 @@ void QGLPixelBuffer::deleteTexture(QMacCompatGLuint texture_id)
 #endif
 
 /*!
+    \since 4.4
+
+    Draws the given texture, \a textureId, to the given target rectangle,
+    \a target, in OpenGL model space. The \a textureTarget should be a 2D
+    texture target.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLPixelBuffer::drawTexture(const QRectF &target, GLuint textureId, GLenum textureTarget)
+{
+    Q_D(QGLPixelBuffer);
+    d->qctx->drawTexture(target, textureId, textureTarget);
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLPixelBuffer::drawTexture(const QRectF &target, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    Q_D(QGLPixelBuffer);
+    d->qctx->drawTexture(target, textureId, textureTarget);
+}
+#endif
+
+/*!
+    \since 4.4
+
+    Draws the given texture, \a textureId, at the given \a point in OpenGL model
+    space. The textureTarget parameter should be a 2D texture target.
+
+    Equivalent to the corresponding QGLContext::drawTexture().
+*/
+void QGLPixelBuffer::drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget)
+{
+    Q_D(QGLPixelBuffer);
+    d->qctx->drawTexture(point, textureId, textureTarget);
+}
+
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+/*! \internal */
+void QGLPixelBuffer::drawTexture(const QPointF &point, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget)
+{
+    Q_D(QGLPixelBuffer);
+    d->qctx->drawTexture(point, textureId, textureTarget);
+}
+#endif
+
+/*!
     Returns the format of the pbuffer. The format may be different
     from the one that was requested.
 */
@@ -552,6 +585,7 @@ QGLFormat QGLPixelBuffer::format() const
 }
 
 /*! \fn int QGLPixelBuffer::devType() const
-
     \reimp
 */
+
+QT_END_NAMESPACE

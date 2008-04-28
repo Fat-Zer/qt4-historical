@@ -65,6 +65,10 @@
 #include "private/qtextdocument_p.h"
 #include "private/qcssparser_p.h"
 
+#ifndef QT_NO_TEXTHTMLPARSER
+
+QT_BEGIN_NAMESPACE
+
 enum QTextHTMLElements {
     Html_unknown = -1,
     Html_qt = 0,
@@ -137,6 +141,7 @@ enum QTextHTMLElements {
     Html_title,
     Html_meta,
     Html_link,
+    Html_script,
 
     Html_NumElements
 };
@@ -221,6 +226,7 @@ struct QTextHtmlParserNode {
             case Html_tbody:
             case Html_tfoot: return (parentId == Html_table);
             case Html_caption: return (parentId == Html_table);
+            case Html_body: return parentId != Html_head;
             default: break;
         }
         return true;
@@ -236,12 +242,20 @@ struct QTextHtmlParserNode {
     bool isNestedList(const QTextHtmlParser *parser) const;
 
     void parseStyleAttribute(const QString &value, const QTextDocument *resourceProvider);
-    void applyCssDeclarations(const QVector<QCss::Declaration> &declarations, const QTextDocument *resrouceProvider);
+
+#ifndef QT_NO_CSSPARSER
+    void applyCssDeclarations(const QVector<QCss::Declaration> &declarations, const QTextDocument *resourceProvider);
+
     void setListStyle(const QVector<QCss::Value> &cssValues);
+#endif
+
+    void applyBackgroundImage(const QString &url, const QTextDocument *resourceProvider);
 
     bool hasOnlyWhitespace() const;
 
     int margin[4];
+    int padding[4];
+
     friend class QTextHtmlParser;
 };
 Q_DECLARE_TYPEINFO(QTextHtmlParserNode, Q_MOVABLE_TYPE);
@@ -266,6 +280,11 @@ public:
     int bottomMargin(int i) const;
     inline int leftMargin(int i) const { return margin(i, MarginLeft); }
     inline int rightMargin(int i) const { return margin(i, MarginRight); }
+
+    inline int topPadding(int i) const { return at(i).padding[MarginTop]; }
+    inline int bottomPadding(int i) const { return at(i).padding[MarginBottom]; }
+    inline int leftPadding(int i) const { return at(i).padding[MarginLeft]; }
+    inline int rightPadding(int i) const { return at(i).padding[MarginRight]; }
 
     void dumpHtml();
 
@@ -297,6 +316,8 @@ protected:
 
     bool nodeIsChildOf(int i, QTextHTMLElements id) const;
 
+
+#ifndef QT_NO_CSSPARSER
     QVector<QCss::Declaration> declarationsForNode(int node) const;
     void resolveStyleSheetImports(const QCss::StyleSheet &sheet);
     void importStyleSheet(const QString &href);
@@ -311,7 +332,13 @@ protected:
     };
     QVector<ExternalStyleSheet> externalStyleSheets;
     QVector<QCss::StyleSheet> inlineStyleSheets;
+#endif
+
     const QTextDocument *resourceProvider;
 };
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_TEXTHTMLPARSER
 
 #endif // QTEXTHTMLPARSER_P_H

@@ -47,6 +47,8 @@
 #include <QtCore/QtCore>
 #include "tile.h"
 
+QT_BEGIN_NAMESPACE
+
 class OublietteLevel
 {
 public:
@@ -118,5 +120,7 @@ private:
     QVector<OublietteLevel*> m_levels;
     int m_totalLevels;
 };
+
+QT_END_NAMESPACE
 
 #endif // OUBLIETTEPLAN_H

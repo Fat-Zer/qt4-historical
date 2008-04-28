@@ -48,6 +48,7 @@
 #include "echoplugin.h"
 #include "echointerface.h"
 
+//! [0]
 class EchoPlugin : public QObject, EchoInterface
 {
     Q_OBJECT
@@ -56,5 +57,6 @@ class EchoPlugin : public QObject, EchoInterface
 public:
     QString echo(const QString &message);
 };
+//! [0]
 
 #endif

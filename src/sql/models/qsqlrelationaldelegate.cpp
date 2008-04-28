@@ -43,6 +43,8 @@
 
 #include "qglobal.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QSqlRelationalDelegate
     \brief The QSqlRelationalDelegate class provides a delegate that is used to
@@ -53,9 +55,7 @@
     use the class, simply call QAbstractItemView::setItemDelegate()
     on the view with an instance of QSqlRelationalDelegate:
 
-    \quotefromfile sql/relationaltablemodel/relationaltablemodel.cpp
-    \skipto QTableView *view = new
-    \printuntil setItemDelegate
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 4
 
     The \l{sql/relationaltablemodel}{Relational Table Model} example
     (shown below) illustrates how to use QSqlRelationalDelegate in
@@ -99,3 +99,5 @@
                                                   const QModelIndex &index) const
     \reimp
 */
+
+QT_END_NAMESPACE

@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \class QVarLengthArray
     \brief The QVarLengthArray class provides a low-level variable-length array.
@@ -8,28 +51,12 @@
     The C++ language doesn't support variable-length arrays on the stack.
     For example, the following code won't compile:
 
-    \code
-	int myfunc(int n)
-        {
-	    int table[n + 1];  // WRONG
-            ...
-            return table[n];
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 0
 
     The alternative is to allocate the array on the heap (with
     \c{new}):
 
-    \code
-	int myfunc(int n)
-        {
-	    int *table = new int[n + 1];
-            ...
-            int ret = table[n];
-            delete[] table;
-            return ret;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 1
 
     However, if myfunc() is called very frequently from the
     application's inner loop, heap allocation can be a major source
@@ -42,14 +69,7 @@
     it is much faster than heap allocation.
 
     Example:
-    \code
-	int myfunc(int n)
-	{
-	    QVarLengthArray<int, 1024> array(n + 1);
-            ...
-            return array[n];
-	}
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 2
 
     In the example above, QVarLengthArray will preallocate 1024
     elements on the stack and use them unless \c{n + 1} is greater
@@ -207,12 +227,7 @@
     be used to access and modify the items in the array.
 
     Example:
-    \code
-	QVarLengthArray<int> array(10);
-        int *data = array.data();
-        for (int i = 0; i < 10; ++i)
-	    data[i] = 2 * i;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 3
 
     The pointer remains valid as long as the array isn't reallocated.
 

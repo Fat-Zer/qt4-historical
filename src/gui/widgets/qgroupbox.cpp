@@ -59,6 +59,8 @@
 
 #include "qdebug.h"
 
+QT_BEGIN_NAMESPACE
+
 class QGroupBoxPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QGroupBox)
@@ -80,6 +82,7 @@ public:
     bool checkable;
     bool checked;
     bool hover;
+    bool overCheckBox;
     QStyle::SubControl pressedControl;
 };
 
@@ -115,8 +118,8 @@ void QGroupBox::initStyleOption(QStyleOptionGroupBox *option) const
     if (d->checkable) {
         option->subControls |= QStyle::SC_GroupBoxCheckBox;
         option->state |= (d->checked ? QStyle::State_On : QStyle::State_Off);
-        if (d->pressedControl == QStyle::SC_GroupBoxCheckBox
-                || d->pressedControl == QStyle::SC_GroupBoxLabel)
+        if ((d->pressedControl == QStyle::SC_GroupBoxCheckBox
+            || d->pressedControl == QStyle::SC_GroupBoxLabel) && (d->hover || d->overCheckBox))
             option->state |= QStyle::State_Sunken;
     }
 
@@ -168,9 +171,7 @@ void QGroupBoxPrivate::click()
     widgets). The following example shows how we can set up a
     QGroupBox with a layout:
 
-    \quotefromfile widgets/groupbox/window.cpp
-    \skipto = new QGroupBox
-    \printuntil setLayout(
+    \snippet examples/widgets/groupbox/window.cpp 2
 
     \table 100%
     \row \o \inlineimage windowsxp-groupbox.png Screenshot of a Windows XP style group box
@@ -228,6 +229,7 @@ void QGroupBoxPrivate::init()
     checkable = false;
     checked = true;
     hover = false;
+    overCheckBox = false;
     pressedControl = QStyle::SC_None;
     calculateFrame();
     q->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 
@@ -260,9 +262,7 @@ void QGroupBox::setTitle(const QString &title)
     The group box title text will have a keyboard shortcut if the title
     contains an ampersand ('&') followed by a letter.
 
-    \code
-        g->setTitle("&User information");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qgroupbox.cpp 0
 
     In the example above, \key Alt+U moves the keyboard focus to the
     group box. See the \l {QShortcut#mnemonic}{QShortcut}
@@ -317,7 +317,6 @@ void QGroupBox::setAlignment(int alignment)
 void QGroupBox::resizeEvent(QResizeEvent *e)
 {
     QWidget::resizeEvent(e);
-    updateGeometry();
 }
 
 /*! \reimp
@@ -706,13 +705,20 @@ void QGroupBox::changeEvent(QEvent *ev)
 /*! \reimp */
 void QGroupBox::mousePressEvent(QMouseEvent *event)
 {
+    if (event->button() != Qt::LeftButton) {
+        event->ignore();
+        return;
+    }
+
     Q_D(QGroupBox);
     QStyleOptionGroupBox box;
     initStyleOption(&box);
     d->pressedControl = style()->hitTestComplexControl(QStyle::CC_GroupBox, &box,
                                                        event->pos(), this);
-    if (d->checkable && (d->pressedControl & (QStyle::SC_GroupBoxCheckBox | QStyle::SC_GroupBoxLabel)))
+    if (d->checkable && (d->pressedControl & (QStyle::SC_GroupBoxCheckBox | QStyle::SC_GroupBoxLabel))) {
+        d->overCheckBox = true;
         update(style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this));
+    }
 }
 
 /*! \reimp */
@@ -723,21 +729,34 @@ void QGroupBox::mouseMoveEvent(QMouseEvent *event)
     initStyleOption(&box);
     QStyle::SubControl pressed = style()->hitTestComplexControl(QStyle::CC_GroupBox, &box,
                                                                 event->pos(), this);
-    if (d->pressedControl == QStyle::SC_GroupBoxCheckBox && d->pressedControl != pressed)
+    bool oldOverCheckBox = d->overCheckBox;
+    d->overCheckBox = (pressed == QStyle::SC_GroupBoxCheckBox || pressed == QStyle::SC_GroupBoxLabel);
+    if (d->checkable && (d->pressedControl == QStyle::SC_GroupBoxCheckBox || d->pressedControl == QStyle::SC_GroupBoxLabel)
+        && (d->overCheckBox != oldOverCheckBox))
         update(style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this));
 }
 
 /*! \reimp */
-void QGroupBox::mouseReleaseEvent(QMouseEvent *)
+void QGroupBox::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (event->button() != Qt::LeftButton) {
+        event->ignore();
+        return;
+    }
+
     Q_D(QGroupBox);
     QStyleOptionGroupBox box;
     initStyleOption(&box);
-    bool toggle = d->checkable && (d->pressedControl == QStyle::SC_GroupBoxLabel
-                   || d->pressedControl == QStyle::SC_GroupBoxCheckBox);
+    QStyle::SubControl released = style()->hitTestComplexControl(QStyle::CC_GroupBox, &box,
+                                                                 event->pos(), this);
+    bool toggle = d->checkable && (released == QStyle::SC_GroupBoxLabel
+                                   || released == QStyle::SC_GroupBoxCheckBox);
     d->pressedControl = QStyle::SC_None;
+    d->overCheckBox = false;
     if (toggle)
         d->click();
+    else if (d->checkable)
+        update(style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this));
 }
 
 #ifdef QT3_SUPPORT
@@ -766,6 +785,8 @@ QGroupBox::QGroupBox(const QString &title, QWidget *parent, const char *name)
     setTitle(title);
 }
 #endif // QT3_SUPPORT
+
+QT_END_NAMESPACE
 
 #include "moc_qgroupbox.cpp"
 

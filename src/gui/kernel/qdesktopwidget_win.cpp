@@ -44,13 +44,16 @@
 #include "qdesktopwidget.h"
 #include "qt_windows.h"
 #include "qapplication_p.h"
+#include "qlibrary.h"
 #include <qvector.h>
 #include <limits.h>
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 #include <sipapi.h>
 #endif
 #include "qwidget_p.h"
 #include "qdebug.h"
+
+QT_BEGIN_NAMESPACE
 
 class QDesktopWidgetPrivate : public QWidgetPrivate
 {
@@ -80,7 +83,6 @@ public:
 
     static EnumFunc enumDisplayMonitors;
     static InfoFunc getMonitorInfo;
-    static HMODULE user32hnd;
     static int refcount;
 };
 
@@ -88,11 +90,24 @@ int QDesktopWidgetPrivate::screenCount = 1;
 int QDesktopWidgetPrivate::primaryScreen = 0;
 QDesktopWidgetPrivate::EnumFunc QDesktopWidgetPrivate::enumDisplayMonitors = 0;
 QDesktopWidgetPrivate::InfoFunc QDesktopWidgetPrivate::getMonitorInfo = 0;
-HMODULE QDesktopWidgetPrivate::user32hnd = 0;
 QVector<QRect> *QDesktopWidgetPrivate::rects = 0;
 QVector<QRect> *QDesktopWidgetPrivate::workrects = 0;
 static int screen_number = 0;
 int QDesktopWidgetPrivate::refcount = 0;
+#ifdef Q_OS_WINCE_WM
+// Use SIP information, if available
+// SipGetInfo is not supported by SSDK (no definition!). 
+static inline void qt_get_sip_info(QRect &rect)
+{
+    SIPINFO sip;
+    memset(&sip, 0, sizeof(SIPINFO));
+    sip.cbSize = sizeof(SIPINFO);
+    if (SipGetInfo(&sip))
+        rect = QRect(QPoint(sip.rcVisibleDesktop.left, sip.rcVisibleDesktop.top),
+        QPoint(sip.rcVisibleDesktop.right - 1, sip.rcVisibleDesktop.bottom - 1));
+}
+#endif
+
 
 BOOL CALLBACK enumCallback(HMONITOR hMonitor, HDC, LPRECT, LPARAM)
 {
@@ -140,18 +155,18 @@ void QDesktopWidgetPrivate::init(QDesktopWidget *that)
     rects = new QVector<QRect>();
     workrects = new QVector<QRect>();
 
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     if (QSysInfo::WindowsVersion != QSysInfo::WV_95 && QSysInfo::WindowsVersion != QSysInfo::WV_NT) {
         screenCount = 0;
         // Trying to get the function pointers to Win98/2000 only functions
-        user32hnd = LoadLibraryA("user32.dll");
-        if (!user32hnd)
+        QLibrary user32Lib(QLatin1String("user32"));
+        if (!user32Lib.load())
             return;
-        enumDisplayMonitors = (EnumFunc)GetProcAddress(user32hnd, "EnumDisplayMonitors");
+        enumDisplayMonitors = (EnumFunc)user32Lib.resolve("EnumDisplayMonitors");
         QT_WA({
-            getMonitorInfo = (InfoFunc)GetProcAddress(user32hnd, "GetMonitorInfoW");
+            getMonitorInfo = (InfoFunc)user32Lib.resolve("GetMonitorInfoW");
         } , {
-            getMonitorInfo = (InfoFunc)GetProcAddress(user32hnd, "GetMonitorInfoA");
+            getMonitorInfo = (InfoFunc)user32Lib.resolve("GetMonitorInfoA");
         });
 
         if (!enumDisplayMonitors || !getMonitorInfo) {
@@ -159,13 +174,12 @@ void QDesktopWidgetPrivate::init(QDesktopWidget *that)
             rects->resize(screenCount);
             for (int i = 0; i < screenCount; ++i)
                 rects->replace(i, that->rect());
-        return;
+            return;
         }
         // Calls enumCallback
         enumDisplayMonitors(0, 0, enumCallback, 0);
         enumDisplayMonitors = 0;
         getMonitorInfo = 0;
-        FreeLibrary(user32hnd);
     } else {
         rects->resize(1);
         rects->replace(0, that->rect());
@@ -173,37 +187,36 @@ void QDesktopWidgetPrivate::init(QDesktopWidget *that)
         workrects->replace(0, that->rect());
     }
 #else
-    screenCount = 1;
+    screenCount = 0;
 
-    if ((user32hnd = LoadLibrary(L"user32.dll"))) {
+    QLibrary coreLib(QLatin1String("coredll"));
+    if (coreLib.load()) {
         // CE >= 4.0 case
-        enumDisplayMonitors = (EnumFunc)GetProcAddress(user32hnd, L"EnumDisplayMonitors");
-        getMonitorInfo = (InfoFunc)GetProcAddress(user32hnd, L"GetMonitorInfoW");
+        enumDisplayMonitors = (EnumFunc)coreLib.resolve("EnumDisplayMonitors");
+        getMonitorInfo = (InfoFunc)coreLib.resolve("GetMonitorInfo");
     }
 
-    if ((!enumDisplayMonitors || !getMonitorInfo) && qt_cever >= 400)
-        screenCount = GetSystemMetrics(80);  // SM_CMONITORS, only in CE >= 4.0
+    if ((!enumDisplayMonitors || !getMonitorInfo)) {
+        screenCount = GetSystemMetrics(SM_CMONITORS);
+        return;
+    }
 
-    if (!user32hnd || !enumDisplayMonitors || !getMonitorInfo) {
+    if (!coreLib.isLoaded() || !enumDisplayMonitors || !getMonitorInfo) {
         rects->resize(screenCount);
         for (int i = 0; i < screenCount; ++i)
-            rects->at(i) = that->rect();
+            (*rects)[i] = that->rect();
 
         RECT r;
         SystemParametersInfo(SPI_GETWORKAREA, 0, &r, 0);
         QRect qr = QRect(QPoint(r.left, r.top), QPoint(r.right - 1, r.bottom - 1));
 
-        // Use SIP information, if available
-        SIPINFO sip;
-        memset(&sip, 0, sizeof(SIPINFO));
-        sip.cbSize = sizeof(SIPINFO);
-        if (SipGetInfo(&sip))
-            qr = QRect(QPoint(sip.rcVisibleDesktop.left, sip.rcVisibleDesktop.top),
-                        QPoint(sip.rcVisibleDesktop.right - 1, sip.rcVisibleDesktop.bottom - 1));
+#if defined(Q_OS_WINCE_WM)
+        qt_get_sip_info(qr);
+#endif
 
         workrects->resize(screenCount);
         for (int j = 0; j < screenCount; ++j)
-            workrects->at(j) = qr;
+            (*workrects)[j] = qr;
         return;
     }
 
@@ -211,8 +224,7 @@ void QDesktopWidgetPrivate::init(QDesktopWidget *that)
     enumDisplayMonitors(0, 0, enumCallback, 0);
     enumDisplayMonitors = 0;
     getMonitorInfo = 0;
-    FreeLibrary(user32hnd);
-#endif // Q_OS_TEMP
+#endif // Q_OS_WINCE
 }
 
 QDesktopWidgetPrivate::~QDesktopWidgetPrivate()
@@ -228,7 +240,6 @@ void QDesktopWidgetPrivate::cleanup()
     primaryScreen = 0;
     enumDisplayMonitors = 0;
     getMonitorInfo = 0;
-    user32hnd = 0;
     delete rects;
     rects = 0;
     delete workrects;
@@ -383,7 +394,10 @@ QWidget *QDesktopWidget::screen(int /* screen */)
 const QRect QDesktopWidget::availableGeometry(int screen) const
 {
     Q_D(const QDesktopWidget);
-
+#ifdef Q_OS_WINCE_WM
+    for(int i=0; i < d->workrects->size(); ++i)
+        qt_get_sip_info((*d->workrects)[i]);
+#endif
     if (QSysInfo::WindowsVersion != QSysInfo::WV_95 && QSysInfo::WindowsVersion != QSysInfo::WV_NT) {
         if (screen < 0 || screen >= d->screenCount)
             screen = d->primaryScreen;
@@ -518,6 +532,10 @@ void QDesktopWidget::resizeEvent(QResizeEvent *)
 
     QDesktopWidgetPrivate::cleanup();
     QDesktopWidgetPrivate::init(this);
+#ifdef Q_OS_WINCE_WM
+    for(int i=0; i < d->workrects->size(); ++i)
+        qt_get_sip_info((*d->workrects)[i]);
+#endif
 
     for (int i = 0; i < qMin(oldscreencount, d->screenCount); ++i) {
         QRect oldrect = oldrects[i];
@@ -545,3 +563,5 @@ void QDesktopWidget::resizeEvent(QResizeEvent *)
 /*! \fn void QDesktopWidget::workAreaResized(int screen)
     This signal is emitted when the work area available on \a screen changes.
 */
+
+QT_END_NAMESPACE

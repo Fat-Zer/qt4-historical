@@ -51,13 +51,31 @@
 #include "text.h"
 #include "tree.h"
 
+#include "qdebug.h"
+
+QT_BEGIN_NAMESPACE
+
 static int insertTagAround(QString &result, int pos, int len, const QString &tagName,
                            const QString &attributes = QString())
 {
-    int oldLen = result.length();
-    result.insert(pos + len, "</" + tagName + ">");
-    result.insert(pos, "<" + tagName + (attributes.isEmpty() ? QString() : " " + attributes) + ">");
-    return result.length() - oldLen;
+    QString s;
+    //s.reserve(result.size() + tagName.size() * 2 + attributes.size() + 20);
+    s += result.midRef(0, pos);
+    s += QLatin1Char('<');
+    s += tagName;
+    if (!attributes.isEmpty()) {
+        s += QLatin1Char(' ');
+        s += attributes;
+    }
+    s += QLatin1Char('>');
+    s += result.midRef(pos, len);
+    s += QLatin1String("</");
+    s += tagName;
+    s += QLatin1Char('>');
+    s += result.midRef(pos + len);
+    int diff = s.length() - result.length();
+    result = s;
+    return diff;
 }
 
 CppCodeMarker::CppCodeMarker()
@@ -804,9 +822,12 @@ QString CppCodeMarker::addMarkUp( const QString& protectedCode, const Node * /* 
         pos = 0;
         while ((pos = globalX.indexIn(result, pos)) != -1) {
             QString x = globalX.cap(1);
-	    pos += globalX.matchedLength()
-                   + insertTagAround(result, globalX.pos(1), x.length(), "@func",
-                                     "target=\"" + protect(x) + "()\"") - 1;
+	    if (x != "QT_FORWARD_DECLARE_CLASS") {
+                pos += globalX.matchedLength()
+                       + insertTagAround(result, globalX.pos(1), x.length(), "@func",
+                                         "target=\"" + protect(x) + "()\"") - 1;
+            } else
+                pos += globalX.matchedLength();
         }
     }
 
@@ -836,3 +857,5 @@ QString CppCodeMarker::addMarkUp( const QString& protectedCode, const Node * /* 
 
     return result;
 }
+
+QT_END_NAMESPACE

@@ -53,12 +53,11 @@ TrackerClient::TrackerClient(TorrentClient *downloader, QObject *parent)
     : QObject(parent), torrentDownloader(downloader)
 {
     length = 0;
-    uploadedBytes = 0;
-    downloadedBytes = 0;
     requestInterval = 5 * 60;
     requestIntervalTimer = -1;
     firstTrackerRequest = true;
     lastTrackerRequest = false;
+    firstSeeding = true;
 
     connect(&http, SIGNAL(done(bool)), this, SLOT(httpRequestDone(bool)));
 }
@@ -75,6 +74,12 @@ void TrackerClient::start(const MetaInfo &info)
         for (int i = 0; i < files.size(); ++i)
             length += files.at(i).length;
     }
+}
+
+void TrackerClient::startSeeding()
+{
+    firstSeeding = true;
+    fetchPeerList();
 }
 
 void TrackerClient::stop()
@@ -97,7 +102,13 @@ void TrackerClient::timerEvent(QTimerEvent *event)
 void TrackerClient::fetchPeerList()
 {
     // Prepare connection details
-    QUrl url(metaInfo.announceUrl());
+    QString fullUrl = metaInfo.announceUrl();
+    QUrl url(fullUrl);
+    QString passkey = "?";
+    if (fullUrl.contains("?passkey")) {
+        passkey = metaInfo.announceUrl().mid(fullUrl.indexOf("?passkey"), -1);
+        passkey += "&";
+    }
 
     // Percent encode the hash
     QByteArray infoHash = torrentDownloader->infoHash();
@@ -110,29 +121,39 @@ void TrackerClient::fetchPeerList()
     bool seeding = (torrentDownloader->state() == TorrentClient::Seeding);
     QByteArray query;
     query += url.path().toLatin1();
-    query += "?";
+    query += passkey;
     query += "info_hash=" + encodedSum;
     query += "&peer_id=" + ConnectionManager::instance()->clientId();
     query += "&port=" + QByteArray::number(TorrentServer::instance()->serverPort());
-    query += "&uploaded=" + QByteArray::number(uploadedBytes);
-    query += "&downloaded=" + QByteArray::number(downloadedBytes);
-    query += "&left="+ QByteArray::number(seeding ? 0 : qMax<int>(0, length - downloadedBytes));
     query += "&compact=1";
-    if (seeding) {
+    query += "&uploaded=" + QByteArray::number(torrentDownloader->uploadedBytes());
+
+    if (!firstSeeding) {
+        query += "&downloaded=0";
+        query += "&left=0";
+    } else {
+        query += "&downloaded=" + QByteArray::number(
+            torrentDownloader->downloadedBytes());
+        int left = qMax<int>(0, metaInfo.totalSize() - torrentDownloader->downloadedBytes());
+        query += "&left=" + QByteArray::number(seeding ? 0 : left);
+    }
+
+    if (seeding && firstSeeding) {
         query += "&event=completed";
+        firstSeeding = false;
     } else if (firstTrackerRequest) {
         firstTrackerRequest = false;
         query += "&event=started";
-    } else if (lastTrackerRequest) {
+    } else if(lastTrackerRequest) {
         query += "&event=stopped";
     }
+
     if (!trackerId.isEmpty())
         query += "&trackerid=" + trackerId;
 
     http.setHost(url.host(), url.port() == -1 ? 80 : url.port());
     if (!url.userName().isEmpty())
         http.setUser(url.userName(), url.password());
-
     http.get(query);
 }
 

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLBAR
@@ -179,6 +181,8 @@ inline QAction *QToolBar::actionAt(int ax, int ay) const
 { return actionAt(QPoint(ax, ay)); }
 
 #endif // QT_NO_TOOLBAR
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

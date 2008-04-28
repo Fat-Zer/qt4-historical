@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 //
@@ -66,6 +68,8 @@ public:
     Q3ObjectDictionary &operator=(const Q3ObjectDictionary &dict)
 	{ return (Q3ObjectDictionary&)Q3AsciiDict<QMetaObject>::operator=(dict);}
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

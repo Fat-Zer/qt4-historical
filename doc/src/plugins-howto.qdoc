@@ -1,9 +1,40 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -13,6 +44,7 @@
 /*!
     \page plugins-howto.html
     \title How to Create Qt Plugins
+    \brief A guide to creating plugins to extend Qt applications and functionality provided by Qt.
     \ingroup howto
 
     \keyword QT_DEBUG_PLUGINS
@@ -55,14 +87,15 @@
     \header \o Base Class              \o Directory Name                \o Key Case Sensitivity
     \row    \o QAccessibleBridgePlugin \o \c accessiblebridge \o Case Sensitive
     \row    \o QAccessiblePlugin       \o \c accessible       \o Case Sensitive
-    \row    \o QDecorationPlugin       \o \c decorations      \o Case Sensitive
+    \row    \o QDecorationPlugin       \o \c decorations      \o Case Insensitive
+    \row    \o QFontEnginePlugin       \o \c fontengines      \o Case Insensitive
     \row    \o QIconEnginePlugin       \o \c iconengines      \o Case Insensitive
     \row    \o QImageIOPlugin          \o \c imageformats     \o Case Sensitive
     \row    \o QInputContextPlugin     \o \c inputmethods     \o Case Sensitive
-    \row    \o QKbdDriverPlugin        \o \c kbddrivers       \o Case Sensitive
-    \row    \o QMouseDriverPlugin      \o \c mousedrivers     \o Case Sensitive
+    \row    \o QKbdDriverPlugin        \o \c kbddrivers       \o Case Insensitive
+    \row    \o QMouseDriverPlugin      \o \c mousedrivers     \o Case Insensitive
     \row    \o QPictureFormatPlugin    \o \c pictureformats   \o Case Sensitive
-    \row    \o QScreenDriverPlugin     \o \c gfxdrivers       \o Case Sensitive
+    \row    \o QScreenDriverPlugin     \o \c gfxdrivers       \o Case Insensitive
     \row    \o QScriptExtensionPlugin  \o \c script           \o Case Sensitive
     \row    \o QSqlDriverPlugin        \o \c sqldrivers       \o Case Sensitive
     \row    \o QStylePlugin            \o \c styles           \o Case Insensitive
@@ -95,35 +128,12 @@
     straightforward, here is the class definition (\c
     mystyleplugin.h):
 
-    \code
-        class MyStylePlugin : public QStylePlugin
-        {
-        public:
-            QStringList keys() const;
-            QStyle *create(const QString &key);
-        };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.plugins-howto.qdoc 0
 
     Ensure that the class implementation is located in a \c .cpp file
     (including the class definition):
 
-    \code
-        #include "mystyleplugin.h"
-
-        QStringList MyStylePlugin::keys() const
-        {
-            return QStringList() << "MyStyle";
-        }
-
-        QStyle *MyStylePlugin::create(const QString &key)
-        {
-            if (key.toLower() == "mystyle")
-                return new MyStyle;
-            return 0;
-        }
-
-        Q_EXPORT_PLUGIN2(pnp_mystyleplugin, MyStylePlugin)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.plugins-howto.qdoc 1
 
     (Note that QStylePlugin is case insensitive, and the lower-case
     version of the key is used in our
@@ -136,9 +146,7 @@
     you might want to set a style explicitly in code. To apply a
     style, use code like this:
 
-    \code
-        QApplication::setStyle(QStyleFactory::create("MyStyle"));
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.plugins-howto.qdoc 2
 
     Some plugin classes require additional functions to be
     implemented. See the class documentation for details of the
@@ -208,18 +216,14 @@
 
     For example, here's the definition of an interface class:
 
-    \quotefromfile tools/plugandpaint/interfaces.h
-    \skipto class FilterInterface
-    \printuntil };
-    \skipto Q_DECLARE_INTERFACE(FilterInterface
-    \printuntil com.trolltech
+    \snippet examples/tools/plugandpaint/interfaces.h 2
+    \codeline
+    \snippet examples/tools/plugandpaint/interfaces.h 5
 
     Here's the definition of a plugin class that implements that
     interface:
 
-    \quotefromfile tools/plugandpaintplugins/extrafilters/extrafiltersplugin.h
-    \skipto #include
-    \printuntil };
+    \snippet examples/tools/plugandpaintplugins/extrafilters/extrafiltersplugin.h 0
 
     The \l{tools/plugandpaint}{Plug & Paint} example documentation
     explains this process in detail. See also
@@ -272,9 +276,7 @@
     plugins to be built in release mode, add the following line to the plugin's
     project file:
 
-    \code
-        CONFIG += release
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.plugins-howto.qdoc 3
 
     This will ensure that the plugin is compatible with the version of the library
     used in the application.
@@ -326,8 +328,8 @@
     \endlist
 
     For debugging purposes, it is possible to override the run-time build key
-    checks by setting the \c QT_NO_PLUGIN_CHECK environment variable to a non-zero
-    value in the environment from which your application is launched.
+    checks by configuring Qt with the \c QT_NO_PLUGIN_CHECK preprocessor macro
+    defined.
 
     \section1 Static Plugins
 
@@ -371,30 +373,12 @@
     the required plugins to your build using \c QTPLUGIN.
     For example, in your \c main.cpp:
 
-    \code
-        #include <QApplication>
-        #include <QtPlugin>
-
-        Q_IMPORT_PLUGIN(qjpeg)
-        Q_IMPORT_PLUGIN(qgif)
-        Q_IMPORT_PLUGIN(qkrcodecs)
-
-        int main(int argc, char *argv[])
-        {
-            QApplication app(argc, argv);
-            ...
-            return app.exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.plugins-howto.qdoc 4
 
     In the \c .pro file for your application, you need the following
     entry:
 
-    \code
-        QTPLUGIN     += qjpeg \
-                        qgif \
-                        qkrcodecs
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.plugins-howto.qdoc 5
 
     It is also possible to create your own static plugins, by
     following these steps:
@@ -438,10 +422,7 @@
     For example, on Windows the entries are stored in the registry, and the
     paths for each plugin will typically begin with either of these two strings:
 
-    \code
-    HKEY_CURRENT_USER\Software\Trolltech\OrganizationDefaults\Qt Plugin Cache 4.2.debug
-    HKEY_CURRENT_USER\Software\Trolltech\OrganizationDefaults\Qt Plugin Cache 4.2.false
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.plugins-howto.qdoc 6
 
     \section1 Debugging Plugins
 

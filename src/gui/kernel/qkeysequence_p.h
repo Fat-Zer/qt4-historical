@@ -57,6 +57,8 @@
 
 #include "qkeysequence.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_SHORTCUT
 struct Q_AUTOTEST_EXPORT QKeyBinding
 {
@@ -82,15 +84,17 @@ public:
         key[2] = copy.key[2];
         key[3] = copy.key[3];
     }
-    QAtomic ref;
+    QAtomicInt ref;
     int key[4];
     static QString encodeString(int key, QKeySequence::SequenceFormat format);
     static int decodeString(const QString &keyStr, QKeySequence::SequenceFormat format);
 
     static const QKeyBinding keyBindings[];
     static const uint numberOfKeyBindings;
-    
+
 };
 #endif // QT_NO_SHORTCUT
+
+QT_END_NAMESPACE
 
 #endif //QKEYSEQUENCE_P_H

@@ -44,6 +44,9 @@
 #include "qtimer.h"
 #include "qabstracteventdispatcher.h"
 #include "qcoreapplication.h"
+#include "qobject_p.h"
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QTimer
@@ -61,11 +64,9 @@
     Example for a one second (1000 millisecond) timer (from the
     \l{widgets/analogclock}{Analog Clock} example):
 
-    \quotefromfile widgets/analogclock/analogclock.cpp
-    \skipto = new QTimer
-    \printline = new
-    \printline connect
-    \printline start(1000)
+    \snippet examples/widgets/analogclock/analogclock.cpp 4
+    \snippet examples/widgets/analogclock/analogclock.cpp 5
+    \snippet examples/widgets/analogclock/analogclock.cpp 6
 
     From then on, the \c update() slot is called every second.
 
@@ -74,9 +75,7 @@
     QTimer::singleShot() function to call a slot after a specified
     interval:
 
-    \quotefromfile snippets/timers/timers.cpp
-    \skipto singleShot
-    \printline singleShot
+    \snippet doc/src/snippets/timers/timers.cpp 3
 
     In multithreaded applications, you can use QTimer in any thread
     that has an event loop. To start an event loop from a non-GUI
@@ -91,11 +90,9 @@
     been processed. This can be used to do heavy work while providing
     a snappy user interface:
 
-    \skipto ZERO-CASE
-    \skipline ZERO
-    \printline = new QTimer
-    \printline connect
-    \printline start
+    \snippet doc/src/snippets/timers/timers.cpp 4
+    \snippet doc/src/snippets/timers/timers.cpp 5
+    \snippet doc/src/snippets/timers/timers.cpp 6
 
     \c processOneThing() will from then on be called repeatedly. It
     should be written in such a way that it always returns quickly
@@ -301,10 +298,16 @@ void QSingleShotTimer::timerEvent(QTimerEvent *)
         killTimer(timerId);
     timerId = -1;
     emit timeout();
-    delete this;
+
+    // we would like to use delete later here, but it feels like a
+    // waste to post a new event to handle this event, so we just unset the flag
+    // and explicitly delete...
+    qDeleteInEventHandler(this);
 }
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qtimer.moc"
+QT_END_INCLUDE_NAMESPACE
 
 /*!
     \reentrant
@@ -315,18 +318,7 @@ void QSingleShotTimer::timerEvent(QTimerEvent *)
     create a local QTimer object.
 
     Example:
-    \code
-        #include <QApplication>
-        #include <QTimer>
-
-        int main(int argc, char *argv[])
-        {
-            QApplication app(argc, argv);
-            QTimer::singleShot(600000, &app, SLOT(quit()));
-            ...
-            return app.exec();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qtimer.cpp 0
 
     This sample program automatically terminates after 10 minutes
     (600,000 milliseconds).
@@ -378,3 +370,5 @@ void QTimer::setInterval(int msec)
 
    Use setInterval(msec) or start(msec) instead.
 */
+
+QT_END_NAMESPACE

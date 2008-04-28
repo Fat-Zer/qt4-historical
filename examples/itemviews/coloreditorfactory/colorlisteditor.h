@@ -46,9 +46,12 @@
 
 #include <QComboBox>
 
+QT_BEGIN_NAMESPACE
 class QColor;
 class QWidget;
+QT_END_NAMESPACE
 
+//! [0]
 class ColorListEditor : public QComboBox
 {
     Q_OBJECT
@@ -64,5 +67,6 @@ public:
 private:
     void populateList();
 };
+//! [0]
 
 #endif

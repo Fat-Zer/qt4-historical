@@ -48,6 +48,10 @@
 #include <QtDesigner/QDesignerFormEditorInterface>
 #include <QtDesigner/QDesignerComponents>
 
+#include <QtGui/QAction>
+
+QT_BEGIN_NAMESPACE
+
 QDesignerObjectInspector::QDesignerObjectInspector(QDesignerWorkbench *workbench)
     : QDesignerToolWindow(workbench)
 {
@@ -58,6 +62,7 @@ QDesignerObjectInspector::QDesignerObjectInspector(QDesignerWorkbench *workbench
     setCentralWidget(widget);
 
     setWindowTitle(tr("Object Inspector"));
+    action()->setObjectName(QLatin1String("__qt_object_inspector_tool_action"));
 }
 
 QDesignerObjectInspector::~QDesignerObjectInspector()
@@ -74,3 +79,5 @@ QRect QDesignerObjectInspector::geometryHint() const
     return QRect((g.width() - sz.width() - margin), margin,
                   sz.width(), sz.height());
 }
+
+QT_END_NAMESPACE

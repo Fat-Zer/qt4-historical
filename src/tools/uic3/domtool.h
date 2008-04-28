@@ -46,6 +46,8 @@
 
 #include <QVariant>
 
+QT_BEGIN_NAMESPACE
+
 class QDomElement;
 class QDomDocument;
 class QDomNode;
@@ -69,7 +71,6 @@ struct Common
     inline void init()
     { kind = Kind_Unknown; }
 };
-Q_DECLARE_METATYPE(Common)
 
 struct Color
 {
@@ -87,7 +88,6 @@ struct Color
     inline bool operator == (const Color &other) const
     { return red == other.red && green == other.green && blue == other.blue; }
 };
-Q_DECLARE_METATYPE(Color)
 
 struct Point
 {
@@ -101,7 +101,6 @@ struct Point
         this->y = y;
     }
 };
-Q_DECLARE_METATYPE(Point)
 
 struct Size
 {
@@ -118,7 +117,6 @@ struct Size
         this->height = height;
     }
 };
-Q_DECLARE_METATYPE(Size)
 
 struct Rect
 {
@@ -135,7 +133,6 @@ struct Rect
         this->height = height;
     }
 };
-Q_DECLARE_METATYPE(Rect)
 
 struct Font
 {
@@ -158,7 +155,6 @@ struct Font
         strikeout = false;
     }
 };
-Q_DECLARE_METATYPE(Font)
 
 struct SizePolicy
 {
@@ -177,7 +173,6 @@ struct SizePolicy
         verstretch = 0;
     }
 };
-Q_DECLARE_METATYPE(SizePolicy)
 
 struct Cursor
 {
@@ -190,7 +185,6 @@ struct Cursor
         this->shape = shape;
     }
 };
-Q_DECLARE_METATYPE(Cursor)
 
 union Variant
 {
@@ -238,7 +232,6 @@ union Variant
     inline Variant &createCursor(int shape)
     { cursor.init(shape); return *this; }
 };
-Q_DECLARE_METATYPE(Variant)
 
 class DomTool
 {
@@ -258,11 +251,27 @@ public:
     static void fixAttribute(QDomNode&, double);
 };
 
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Size)
+Q_DECLARE_METATYPE(Rect)
+Q_DECLARE_METATYPE(Font)
+Q_DECLARE_METATYPE(SizePolicy)
+Q_DECLARE_METATYPE(Cursor)
+Q_DECLARE_METATYPE(Color)
+Q_DECLARE_METATYPE(Point)
+Q_DECLARE_METATYPE(Common)
+Q_DECLARE_METATYPE(Variant)
+
+QT_BEGIN_NAMESPACE
+
 inline Variant asVariant(const QVariant &v)
 {
     Variant var;
     var = qVariantValue<Variant>(v);
     return var;
 }
+
+QT_END_NAMESPACE
 
 #endif // DOMTOOL_H

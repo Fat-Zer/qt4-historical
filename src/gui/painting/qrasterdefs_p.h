@@ -888,9 +888,9 @@ QT_FT_BEGIN_HEADER
   /*    only for those scanlines that do have `gray' pixels on them.       */
   /*                                                                       */
   typedef void
-  (*QT_FT_SpanFunc)(int       count,
+  (*QT_FT_SpanFunc)(int        count,
                     const QT_FT_Span*  spans,
-                    void*     user );
+                    void*     worker);
 
 #define QT_FT_Raster_Span_Func   QT_FT_SpanFunc
 

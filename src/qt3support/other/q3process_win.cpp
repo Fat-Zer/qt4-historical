@@ -54,6 +54,12 @@
 #include "private/q3membuf_p.h"
 #include "qt_windows.h"
 
+#ifdef Q_OS_WINCE
+#define STARTF_USESTDHANDLES 1
+#endif
+
+QT_BEGIN_NAMESPACE
+
 //#define QT_Q3PROCESS_DEBUG
 
 /***********************************************************************
@@ -209,9 +215,9 @@ bool Q3Process::start( QStringList *env )
     // read handles to avoid non-closable handles (this is done by the
     // DuplicateHandle() call).
     SECURITY_ATTRIBUTES secAtt = { sizeof( SECURITY_ATTRIBUTES ), NULL, TRUE };
-#ifndef Q_OS_TEMP
-    // I guess there is no stdin stdout and stderr on Q_OS_TEMP to dup
-    // CreatePipe and DupilcateHandle aren't available for Q_OS_TEMP
+#ifndef Q_OS_WINCE
+    // I guess there is no stdin stdout and stderr on Q_OS_WINCE to dup
+    // CreatePipe and DupilcateHandle aren't available for Q_OS_WINCE
     HANDLE tmpStdin, tmpStdout, tmpStderr;
     if ( comms & Stdin ) {
 	if ( !CreatePipe( &d->pipeStdin[0], &tmpStdin, &secAtt, 0 ) ) {
@@ -349,7 +355,7 @@ bool Q3Process::start( QStringList *env )
 	}
 	success = CreateProcessW( applicationName, commandLine,
 		0, 0, TRUE, ( comms==0 ? CREATE_NEW_CONSOLE : CREATE_NO_WINDOW )
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
 		| CREATE_UNICODE_ENVIRONMENT
 #endif
 		, env==0 ? 0 : envlist.data(),
@@ -360,7 +366,7 @@ bool Q3Process::start( QStringList *env )
     } else
 #endif // UNICODE
     {
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
 	STARTUPINFOA startupInfo = { sizeof( STARTUPINFOA ), 0, 0, 0,
 	    (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT, (ulong)CW_USEDEFAULT,
 	    0, 0, 0,
@@ -404,14 +410,14 @@ bool Q3Process::start( QStringList *env )
 		env==0 ? 0 : envlist.data(),
                 (const char*)QDir::toNativeSeparators(workingDir.absPath()).local8Bit(),
 		&startupInfo, d->pid );
-#endif // Q_OS_TEMP
+#endif // Q_OS_WINCE
     }
     if  ( !success ) {
 	d->deletePid();
 	return false;
     }
 
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     if ( comms & Stdin )
 	CloseHandle( d->pipeStdin[0] );
     if ( comms & Stdout )
@@ -522,7 +528,7 @@ void Q3Process::socketRead( int fd )
     } else {
 	return;
     }
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     // get the number of bytes that are waiting to be read
     unsigned long i, r;
     char dummy;
@@ -666,5 +672,7 @@ Q3Process::PID Q3Process::processIdentifier()
 {
     return d->pid;
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PROCESS

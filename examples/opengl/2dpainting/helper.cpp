@@ -44,6 +44,7 @@
 #include <QtGui>
 #include "helper.h"
 
+//! [0]
 Helper::Helper()
 {
     QLinearGradient gradient(QPointF(50, -20), QPointF(80, 20));
@@ -57,12 +58,16 @@ Helper::Helper()
     textPen = QPen(Qt::white);
     textFont.setPixelSize(50);
 }
+//! [0]
 
+//! [1]
 void Helper::paint(QPainter *painter, QPaintEvent *event, int elapsed)
 {
     painter->fillRect(event->rect(), background);
     painter->translate(100, 100);
+//! [1]
 
+//! [2]
     painter->save();
     painter->setBrush(circleBrush);
     painter->setPen(circlePen);
@@ -78,8 +83,11 @@ void Helper::paint(QPainter *painter, QPaintEvent *event, int elapsed)
                                     circleRadius*2, circleRadius*2));
     }
     painter->restore();
+//! [2]
 
+//! [3]
     painter->setPen(textPen);
     painter->setFont(textFont);
     painter->drawText(QRect(-50, -50, 100, 100), Qt::AlignCenter, "Qt");
 }
+//! [3]

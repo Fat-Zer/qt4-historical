@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 struct Q_COMPAT_EXPORT Q3Shared
@@ -57,6 +59,8 @@ struct Q_COMPAT_EXPORT Q3Shared
     bool deref()	{ return !--count; }
     uint count;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

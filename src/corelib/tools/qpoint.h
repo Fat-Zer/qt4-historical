@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QPoint
@@ -166,7 +168,7 @@ inline const QPoint operator-(const QPoint &p)
 
 inline QPoint &QPoint::operator/=(qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     xp = qRound(xp/c);
     yp = qRound(yp/c);
     return *this;
@@ -174,7 +176,7 @@ inline QPoint &QPoint::operator/=(qreal c)
 
 inline const QPoint operator/(const QPoint &p, qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     return QPoint(qRound(p.xp/c), qRound(p.yp/c));
 }
 
@@ -336,7 +338,7 @@ inline const QPointF operator-(const QPointF &p)
 
 inline QPointF &QPointF::operator/=(qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     xp/=c;
     yp/=c;
     return *this;
@@ -344,7 +346,7 @@ inline QPointF &QPointF::operator/=(qreal c)
 
 inline const QPointF operator/(const QPointF &p, qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c, 0));
+    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     return QPointF(p.xp/c, p.yp/c);
 }
 
@@ -356,6 +358,8 @@ inline QPoint QPointF::toPoint() const
 #ifndef QT_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug d, const QPointF &p);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

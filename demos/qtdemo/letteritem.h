@@ -55,7 +55,7 @@ public:
 
 protected:
     QImage *createImage(const QMatrix &matrix) const;
-    
+
 private:
     char letter;
 };

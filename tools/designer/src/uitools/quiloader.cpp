@@ -48,25 +48,30 @@
 #include <formbuilder.h>
 #include <ui4_p.h>
 
-#include <qdebug.h>
-#include <QAction>
-#include <QActionGroup>
-#include <QApplication>
-#include <QDir>
-#include <QLibraryInfo>
-#include <QLayout>
-#include <QWidget>
-#include <QMap>
-#include <QTabWidget>
-#include <QTreeWidget>
-#include <QListWidget>
-#include <QTableWidget>
-#include <QToolBox>
-#include <QComboBox>
-#include <QFontComboBox>
+#include <QtCore/qdebug.h>
+#include <QtGui/QAction>
+#include <QtGui/QActionGroup>
+#include <QtGui/QApplication>
+#include <QtCore/QDir>
+#include <QtCore/QLibraryInfo>
+#include <QtGui/QLayout>
+#include <QtGui/QWidget>
+#include <QtCore/QMap>
+#include <QtGui/QTabWidget>
+#include <QtGui/QTreeWidget>
+#include <QtGui/QListWidget>
+#include <QtGui/QTableWidget>
+#include <QtGui/QToolBox>
+#include <QtGui/QComboBox>
+#include <QtGui/QFontComboBox>
+
+QT_BEGIN_NAMESPACE
 
 typedef QMap<QString, bool> widget_map;
 Q_GLOBAL_STATIC(widget_map, g_widgets)
+
+class QUiLoader;
+class QUiLoaderPrivate;
 
 #ifdef QFORMINTERNAL_NAMESPACE
 namespace QFormInternal
@@ -75,8 +80,8 @@ namespace QFormInternal
 
 class FormBuilderPrivate: public QFormBuilder
 {
-    friend class ::QUiLoader;
-    friend class ::QUiLoaderPrivate;
+    friend class QT_PREPEND_NAMESPACE(QUiLoader);
+    friend class QT_PREPEND_NAMESPACE(QUiLoaderPrivate);
     typedef QFormBuilder ParentClass;
 
 public:
@@ -213,7 +218,9 @@ QWidget *FormBuilderPrivate::create(DomWidget *ui_widget, QWidget *parentWidget)
     if (w == 0)
         return 0;
 
-    if (QTabWidget *tabw = qobject_cast<QTabWidget*>(w)) {
+    if (0) {
+#ifndef QT_NO_TABWIDGET
+    } else if (QTabWidget *tabw = qobject_cast<QTabWidget*>(w)) {
         const int cnt = tabw->count();
         for (int i = 0; i < cnt; ++i) {
             const QString text = QApplication::translate(m_class.toUtf8(),
@@ -223,6 +230,8 @@ QWidget *FormBuilderPrivate::create(DomWidget *ui_widget, QWidget *parentWidget)
 
             tabw->setTabText(i, text);
         }
+#endif
+#ifndef QT_NO_LISTWIDGET
     } else if (QListWidget *listw = qobject_cast<QListWidget*>(w)) {
         const int cnt = listw->count();
         for (int i = 0; i < cnt; ++i) {
@@ -233,12 +242,16 @@ QWidget *FormBuilderPrivate::create(DomWidget *ui_widget, QWidget *parentWidget)
                                                     QCoreApplication::UnicodeUTF8);
             item->setText(text);
         }
+#endif
+#ifndef QT_NO_TREEWIDGET
     } else if (QTreeWidget *treew = qobject_cast<QTreeWidget*>(w)) {
         const int cnt = treew->topLevelItemCount();
         for (int i = 0; i < cnt; ++i) {
             QTreeWidgetItem *item = treew->topLevelItem(i);
             recursiveTranslate(item, m_class);
         }
+#endif
+#ifndef QT_NO_TABLEWIDGET
     } else if (QTableWidget *tablew = qobject_cast<QTableWidget*>(w)) {
         const int row_cnt = tablew->rowCount();
         const int col_cnt = tablew->columnCount();
@@ -254,6 +267,8 @@ QWidget *FormBuilderPrivate::create(DomWidget *ui_widget, QWidget *parentWidget)
                 item->setText(text);
             }
         }
+#endif
+#ifndef QT_NO_COMBOBOX
     } else if (QComboBox *combow = qobject_cast<QComboBox*>(w)) {
         if (!qobject_cast<QFontComboBox*>(w)) {
             const int cnt = combow->count();
@@ -265,6 +280,8 @@ QWidget *FormBuilderPrivate::create(DomWidget *ui_widget, QWidget *parentWidget)
                 combow->setItemText(i, text);
             }
         }
+#endif
+#ifndef QT_NO_TOOLBOX
     } else if (QToolBox *toolw = qobject_cast<QToolBox*>(w)) {
         const int cnt = toolw->count();
         for (int i = 0; i < cnt; ++i) {
@@ -274,6 +291,7 @@ QWidget *FormBuilderPrivate::create(DomWidget *ui_widget, QWidget *parentWidget)
                                                     QCoreApplication::UnicodeUTF8);
             toolw->setItemText(i, text);
         }
+#endif
     }
 
     return w;
@@ -332,25 +350,19 @@ void QUiLoaderPrivate::setupWidgetMap() const
     the pluginPaths() function. You can retrieve the contents of an \c
     .ui file using the load() function. For example:
 
-    \quotefromfile snippets/quiloader/mywidget.cpp
-    \skipto MyWidget::MyWidget
-    \printuntil /^\}/
+    \snippet doc/src/snippets/quiloader/mywidget.cpp 0
 
     By including the user interface in the form's resources (\c myform.qrc),
     we ensure that it will be present at run-time:
 
-    \quotefromfile snippets/quiloader/mywidget.qrc
-    \skipto <!DOCTYPE
-    \printuntil </RCC>
+    \snippet doc/src/snippets/quiloader/mywidget.qrc 0
 
     The availableWidgets() function returns a QStringList with the
     class names of the widgets available in the specified plugin
     paths. You can create any of these widgets using the
     createWidget() function. For example:
 
-    \quotefromfile snippets/quiloader/main.cpp
-    \skipto loadCustomWidget
-    \printuntil /^\}/
+    \snippet doc/src/snippets/quiloader/main.cpp 0
 
     You can make a custom widget available to the loader using the
     addPluginPath() function, and you can remove all the available widgets
@@ -588,3 +600,5 @@ bool QUiLoader::isScriptingEnabled() const
     Q_D(const QUiLoader);
     return d->builder.isScriptingEnabled();
 }
+
+QT_END_NAMESPACE

@@ -47,17 +47,21 @@
 #include <QtCore/qiodevice.h>
 #include <QtCore/qstringlist.h>
 
-#if !defined(Q_OS_WIN32) || defined(qdoc)
-typedef qint64 Q_PID;
-#else
-typedef struct _PROCESS_INFORMATION *Q_PID;
-#endif
-
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Core)
 
 #ifndef QT_NO_PROCESS
+
+#if (!defined(Q_OS_WIN32) && !defined(Q_OS_WINCE)) || defined(qdoc)
+typedef qint64 Q_PID;
+#else
+QT_END_NAMESPACE
+typedef struct _PROCESS_INFORMATION *Q_PID;
+QT_BEGIN_NAMESPACE
+#endif
 
 class QProcessPrivate;
 
@@ -192,6 +196,8 @@ private:
 };
 
 #endif // QT_NO_PROCESS
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

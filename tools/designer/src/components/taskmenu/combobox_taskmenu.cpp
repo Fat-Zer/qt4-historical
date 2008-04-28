@@ -46,20 +46,23 @@ TRANSLATOR qdesigner_internal::ComboBoxTaskMenu
 */
 
 #include "combobox_taskmenu.h"
-#include "inplace_editor.h"
 #include "listwidgeteditor.h"
+#include "qdesigner_utils_p.h"
 #include <qdesigner_command_p.h>
 
 #include <QtDesigner/QDesignerFormWindowInterface>
     
 #include <QtGui/QAction>
 #include <QtGui/QStyle>
+#include <QtGui/QLineEdit>
 #include <QtGui/QFontComboBox>
 #include <QtGui/QStyleOption>
 
 #include <QtCore/QEvent>
 #include <QtCore/QVariant>
 #include <QtCore/qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
@@ -102,9 +105,9 @@ void ComboBoxTaskMenu::editItems()
     ListWidgetEditor dlg(m_formWindow, m_comboBox->window());
     dlg.fillContentsFromComboBox(m_comboBox);
     if (dlg.exec() == QDialog::Accepted) {
-        QList<QPair<QString, QIcon> > items;
+        QList<QPair<QString, PropertySheetIconValue> > items;
         for (int i = 0; i < dlg.count(); i++) {
-            items.append(qMakePair<QString, QIcon>(dlg.text(i), dlg.icon(i)));
+            items.append(qMakePair<QString, PropertySheetIconValue>(dlg.text(i), dlg.icon(i)));
         }
         ChangeListContentsCommand *cmd = new ChangeListContentsCommand(m_formWindow);
         cmd->init(m_comboBox, items);
@@ -113,21 +116,19 @@ void ComboBoxTaskMenu::editItems()
     }
 }
 
-ComboBoxTaskMenuFactory::ComboBoxTaskMenuFactory(QExtensionManager *extensionManager)
-    : QExtensionFactory(extensionManager)
+ComboBoxTaskMenuFactory::ComboBoxTaskMenuFactory(const QString &iid, QExtensionManager *extensionManager) :
+    ExtensionFactory<QDesignerTaskMenuExtension, QComboBox, ComboBoxTaskMenu>(iid, extensionManager)
 {
 }
 
-QObject *ComboBoxTaskMenuFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
+QComboBox *ComboBoxTaskMenuFactory::checkObject(QObject *qObject) const
 {
-    QComboBox *button = qobject_cast<QComboBox*>(object);
-    if (button && !qobject_cast<QFontComboBox*>(object)) {
-        if (iid == Q_TYPEID(QDesignerTaskMenuExtension)) {
-            return new ComboBoxTaskMenu(button, parent);
-        }
-    }
-
-    return 0;
+    QComboBox *combo = qobject_cast<QComboBox*>(qObject);
+    if (!combo)
+        return 0;
+    if (qobject_cast<QFontComboBox*>(combo))
+        return 0;
+    return combo;
 }
 
 void ComboBoxTaskMenu::updateSelection()
@@ -136,3 +137,4 @@ void ComboBoxTaskMenu::updateSelection()
         m_editor->deleteLater();
 }
 
+QT_END_NAMESPACE

@@ -49,10 +49,9 @@ TRANSLATOR qdesigner_internal::PaletteModel
 */
 
 #include "paletteeditor.h"
-#include "qtcolorbutton.h"
-#include "findicondialog_p.h"
 
 #include <iconloader_p.h>
+#include <qtcolorbutton.h>
 
 #include <QtDesigner/QDesignerFormEditorInterface>
 #include <QtDesigner/QDesignerFormWindowManagerInterface>
@@ -63,6 +62,8 @@ TRANSLATOR qdesigner_internal::PaletteModel
 #include <QtGui/QToolButton>
 #include <QtGui/QLabel>
 #include <QtGui/QHeaderView>
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -454,28 +455,6 @@ void BrushEditor::brushChanged()
     emit changed(this);
 }
 
-void BrushEditor::textureChooserActivated(QWidget *parent, const QBrush &initialBrush)
-{
-    FindIconDialog dialog(m_core->formWindowManager()->activeFormWindow(), parent);
-    QString file_path;
-    QString qrc_path;
-
-    QPixmap pixmap = initialBrush.texture();
-    if (!pixmap.isNull()) {
-        file_path = m_core->iconCache()->pixmapToFilePath(pixmap);
-        qrc_path = m_core->iconCache()->pixmapToQrcPath(pixmap);
-    }
-
-    dialog.setPaths(qrc_path, file_path);
-    if (dialog.exec()) {
-        file_path = dialog.filePath();
-        qrc_path = dialog.qrcPath();
-        if (!file_path.isEmpty()) {
-            pixmap = m_core->iconCache()->nameToPixmap(file_path, qrc_path);
-        }
-    }
-}
-
 bool BrushEditor::changed() const
 {
     return m_changed;
@@ -642,3 +621,5 @@ QSize ColorDelegate::sizeHint(const QStyleOptionViewItem &opt, const QModelIndex
     return QItemDelegate::sizeHint(opt, index) + QSize(4, 4);
 }
 }
+
+QT_END_NAMESPACE

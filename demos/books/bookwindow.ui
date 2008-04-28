@@ -4,7 +4,7 @@
  <exportmacro></exportmacro>
  <class>BookWindow</class>
  <widget class="QMainWindow" name="BookWindow" >
-  <property name="geometry" >
+ <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
@@ -44,44 +44,11 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_2" >
-         <property name="minimumSize" >
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
          <property name="title" >
           <string>Details</string>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>8</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="2" column="1" >
-           <widget class="QComboBox" name="genreEdit" >
-            <property name="enabled" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="label_4" >
-            <property name="text" >
-             <string>&lt;b>Year:&lt;/b></string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QComboBox" name="authorEdit" >
-            <property name="enabled" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
+         <layout class="QFormLayout" >
+	   <item row="0" column="0" >
            <widget class="QLabel" name="label_5" >
             <property name="text" >
              <string>&lt;b>Title:&lt;/b></string>
@@ -101,7 +68,35 @@
              <string>&lt;b>Author: &lt;/b></string>
             </property>
            </widget>
+	    </item>
+	     <item row="1" column="1" >
+           <widget class="QComboBox" name="authorEdit" >
+            <property name="enabled" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>	   
+	  <item row="2" column="0" >
+           <widget class="QLabel" name="label_3" >
+            <property name="text" >
+             <string>&lt;b>Genre:&lt;/b></string>
+            </property>
+           </widget>
           </item>
+          <item row="2" column="1" >
+           <widget class="QComboBox" name="genreEdit" >
+            <property name="enabled" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="label_4" >
+            <property name="text" >
+             <string>&lt;b>Year:&lt;/b></string>
+            </property>
+           </widget>
+          </item>       
           <item row="3" column="1" >
            <widget class="QSpinBox" name="yearEdit" >
             <property name="enabled" >
@@ -115,13 +110,6 @@
             </property>
             <property name="minimum" >
              <number>-1000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_3" >
-            <property name="text" >
-             <string>&lt;b>Genre:&lt;/b></string>
             </property>
            </widget>
           </item>

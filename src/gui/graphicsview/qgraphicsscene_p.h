@@ -65,14 +65,21 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qmap.h>
 #include <QtCore/qset.h>
+#include <QtGui/qfont.h>
+#include <QtGui/qpalette.h>
+#include <QtGui/qstyle.h>
+
+QT_BEGIN_NAMESPACE
 
 class QGraphicsView;
+class QGraphicsWidget;
 
 class QGraphicsScenePrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QGraphicsScene)
 public:
     QGraphicsScenePrivate();
+    void init();
 
     QGraphicsScene::ItemIndexMethod indexMethod;
     int bspTreeDepth;
@@ -83,7 +90,7 @@ public:
     void resetIndex();
 
     QGraphicsSceneBspTree bspTree;
-    void _q_generateBspTree();
+    void _q_updateIndex();
     int lastItemCount;
 
     QRectF sceneRect;
@@ -102,8 +109,10 @@ public:
     QList<QGraphicsItem *> unindexedItems;
     QList<QGraphicsItem *> indexedItems;
     QList<QGraphicsItem *> pendingUpdateItems;
+    QList<QGraphicsItem *> unpolishedItems;
     QMap<QGraphicsItem *, QPointF> movingItemsInitialPositions;
     void _q_updateLater();
+    void _q_polishItems();
 
     QList<int> freeItemIndexes;
     bool regenerateIndex;
@@ -123,20 +132,38 @@ public:
     bool hasFocus;
     QGraphicsItem *focusItem;
     QGraphicsItem *lastFocusItem;
-    QGraphicsItem *mouseGrabberItem;
+    QGraphicsWidget *tabFocusFirst;
+    QGraphicsWidget *activeWindow;
+    int activationRefCount;
+
+    QList<QGraphicsWidget *> popupWidgets;
+    void addPopup(QGraphicsWidget *widget);
+    void removePopup(QGraphicsWidget *widget, bool itemIsDying = false);
+
     QGraphicsItem *lastMouseGrabberItem;
+    bool lastMouseGrabberItemHasImplicitMouseGrab;
+    QList<QGraphicsItem *> mouseGrabberItems;
+    void grabMouse(QGraphicsItem *item, bool implicit = false);
+    void ungrabMouse(QGraphicsItem *item, bool itemIsDying = false);
+    void clearMouseGrabber();
+
+    QList<QGraphicsItem *> keyboardGrabberItems;
+    void grabKeyboard(QGraphicsItem *item);
+    void ungrabKeyboard(QGraphicsItem *item, bool itemIsDying = false);
+    void clearKeyboardGrabber();
+    
     QGraphicsItem *dragDropItem;
+    QGraphicsWidget *enterWidget;
     Qt::DropAction lastDropAction;
     QList<QGraphicsItem *> cachedItemsUnderMouse;
     QList<QGraphicsItem *> hoverItems;
     QMap<Qt::MouseButton, QPointF> mouseGrabberButtonDownPos;
     QMap<Qt::MouseButton, QPointF> mouseGrabberButtonDownScenePos;
     QMap<Qt::MouseButton, QPoint> mouseGrabberButtonDownScreenPos;
-    QList<QGraphicsItem *> possibleMouseGrabbersForEvent(const QList<QGraphicsItem *> &items,
-                                                         QGraphicsSceneMouseEvent *event);
     QList<QGraphicsItem *> itemsAtPosition(const QPoint &screenPos,
                                            const QPointF &scenePos,
                                            QWidget *widget) const;
+    static bool itemCollidesWithPath(QGraphicsItem *item, const QPainterPath &path, Qt::ItemSelectionMode mode);
     void storeMouseButtonsForMouseGrabber(QGraphicsSceneMouseEvent *event);
 
     QList<QGraphicsView *> views;
@@ -149,6 +176,7 @@ public:
     bool sendEvent(QGraphicsItem *item, QEvent *event);
 
     bool dispatchHoverEvent(QGraphicsSceneHoverEvent *hoverEvent);
+    bool itemAcceptsHoverEvents_helper(const QGraphicsItem *item) const;
     void leaveScene();
 
     void cloneDragDropEvent(QGraphicsSceneDragDropEvent *dest,
@@ -159,9 +187,20 @@ public:
                         QGraphicsSceneHoverEvent *hoverEvent);
     void sendMouseEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mousePressEventHandler(QGraphicsSceneMouseEvent *mouseEvent);
+    QGraphicsWidget *windowForItem(const QGraphicsItem *item) const;
 
+    static bool closestItemFirst(const QGraphicsItem *item1, const QGraphicsItem *item2);
     static void sortItems(QList<QGraphicsItem *> *itemList);
+
+    static void drawItemHelper(QGraphicsItem *item, QPainter *painter,
+                               const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+    QStyle *style;
+    QFont font;
+    QPalette palette;
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_GRAPHICSVIEW
 

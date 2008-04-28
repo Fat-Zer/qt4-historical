@@ -50,6 +50,8 @@
 #include <qtoolbar.h>
 #include <qpainter.h>
 
+QT_BEGIN_NAMESPACE
+
 void QToolBarSeparator::initStyleOption(QStyleOption *option) const
 {
     option->initFrom(this);
@@ -85,5 +87,7 @@ void QToolBarSeparator::paintEvent(QPaintEvent *)
     initStyleOption(&opt);
     style()->drawPrimitive(QStyle::PE_IndicatorToolBarSeparator, &opt, &p, parentWidget());
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TOOLBAR

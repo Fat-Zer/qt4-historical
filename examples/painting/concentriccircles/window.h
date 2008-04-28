@@ -46,9 +46,12 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QLabel;
+QT_END_NAMESPACE
 class CircleWidget;
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -65,5 +68,6 @@ private:
     QLabel *floatLabel;
     CircleWidget *circleWidgets[2][2];
 };
+//! [0]
 
 #endif

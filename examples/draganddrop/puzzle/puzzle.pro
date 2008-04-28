@@ -12,3 +12,9 @@ target.path = $$[QT_INSTALL_EXAMPLES]/draganddrop/puzzle
 sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro *.jpg
 sources.path = $$[QT_INSTALL_EXAMPLES]/draganddrop/puzzle
 INSTALLS += target sources
+
+wince*: {
+   addFile.sources = example.jpg
+   addFile.path = .
+   DEPLOYMENT += addFile
+}

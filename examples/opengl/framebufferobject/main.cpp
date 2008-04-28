@@ -47,6 +47,8 @@
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(framebufferobject);
+
     QApplication a(argc, argv);
     if (!QGLFormat::hasOpenGL() || !QGLFramebufferObject::hasOpenGLFramebufferObjects()) {
 	QMessageBox::information(0, "OpenGL framebuffer objects",

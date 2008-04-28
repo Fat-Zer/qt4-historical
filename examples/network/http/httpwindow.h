@@ -46,6 +46,7 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QFile;
 class QHttp;
@@ -54,7 +55,9 @@ class QLabel;
 class QLineEdit;
 class QProgressDialog;
 class QPushButton;
+class QSslError;
 class QAuthenticator;
+QT_END_NAMESPACE
 
 class HttpWindow : public QDialog
 {
@@ -71,6 +74,9 @@ private slots:
     void updateDataReadProgress(int bytesRead, int totalBytes);
     void enableDownloadButton();
     void slotAuthenticationRequired(const QString &, quint16, QAuthenticator *);
+#ifndef QT_NO_OPENSSL
+    void sslErrors(const QList<QSslError> &errors);
+#endif
 
 private:
     QLabel *statusLabel;

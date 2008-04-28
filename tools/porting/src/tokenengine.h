@@ -51,6 +51,8 @@
 #include <QSharedDataPointer>
 #include <QMap>
 
+QT_BEGIN_NAMESPACE
+
 namespace TokenEngine {
 
 class TokenContainer;
@@ -384,5 +386,7 @@ TokenContainer copy(const TokenSequenceType &tokenSequence, int startToken, int 
 }
 
 } //namespace TokenEngine
+
+QT_END_NAMESPACE
 
 #endif

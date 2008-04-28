@@ -55,21 +55,25 @@
 
 Q_DECLARE_METATYPE(QPointer<FormHolder>)
 
+QT_BEGIN_NAMESPACE
+
 TrPreviewTool::TrPreviewTool(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags), currentTr(0)
 {
-    setAttribute(Qt::WA_DeleteOnClose, true);
-    QString x = tr("File");
+    setAttribute(Qt::WA_DeleteOnClose);
     ui.setupUi(this);
     workspace = new QWorkspace(this);
     setCentralWidget(workspace);
+
     QtWindowListMenu* wlm = new QtWindowListMenu(workspace,ui.menuBar);
     wlm->addTo(tr("Windows"), ui.menuBar, 2);
+
     trCombo = new QComboBox(ui.mainToolBar);
     trCombo->setEditable(false);
     trCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     trCombo->setMinimumContentsLength(16);
     trCombo->addItem(tr("<No Translation>"),QString());
+
     ui.mainToolBar->insertWidget(ui.actionOpenForm, trCombo);
     ui.mainToolBar->insertSeparator(ui.actionOpenForm);
     QAction* actionWhatsThis = QWhatsThis::createAction(this);
@@ -91,7 +95,6 @@ TrPreviewTool::TrPreviewTool(QWidget *parent, Qt::WindowFlags flags)
     ui.viewForms->setAlternatingRowColors(true);
     QPalette pal = palette();
     ui.viewForms->setPalette(pal);
-
 }
 
 void TrPreviewTool::on_viewForms_doubleClicked(const QModelIndex &index)
@@ -101,10 +104,14 @@ void TrPreviewTool::on_viewForms_doubleClicked(const QModelIndex &index)
     QPointer<FormHolder> holderPtr = qVariantValue<QPointer<FormHolder> >(var);
     if (holderPtr.isNull()) {
         holderPtr = createFormFromFile(path);
+        if (holderPtr == 0) {
+            showWarning(tr("Could not load form file:\n%1.").arg(path));
+            return;
+        }
         qVariantSetValue(var, holderPtr);
         m_uiFilesModel->setData(index, var, Qt::UserRole);
     }
-    
+
     holderPtr->show();
     holderPtr->activateWindow();
     holderPtr->setFocus(Qt::OtherFocusReason);
@@ -119,16 +126,18 @@ void TrPreviewTool::cascade()
     if (workspace) workspace->cascade();
 }
 
-bool TrPreviewTool::addFormFile(const QString &path) 
-{
+void TrPreviewTool::addFormFile(const QString &path)
+ {
+    QString fileName = QFileInfo(path).fileName();
+    if (m_uiFilesModel->findItems(fileName).size() != 0)
+        return;
+
     int row = m_uiFilesModel->rowCount();
-    bool ok = m_uiFilesModel->insertRows(row, 1);
-    if (ok) {
-        QModelIndex idx = m_uiFilesModel->index(row, 0);
-        m_uiFilesModel->setData(idx, path, Qt::ToolTipRole);
-        m_uiFilesModel->setData(idx, QFileInfo(path).fileName());
-    }
-    return ok;
+    m_uiFilesModel->insertRows(row, 1);
+    QModelIndex idx = m_uiFilesModel->index(row, 0);
+    m_uiFilesModel->setData(idx, QFileInfo(path).fileName());
+    m_uiFilesModel->setData(idx, fileName, Qt::DisplayRole);
+    m_uiFilesModel->setData(idx, path, Qt::ToolTipRole);
 }
 
 FormHolder* TrPreviewTool::createFormFromFile(const QString& path)
@@ -136,9 +145,9 @@ FormHolder* TrPreviewTool::createFormFromFile(const QString& path)
     static QStringList formFileList;
 
     FormHolder* formHolder = new FormHolder(workspace);
-    if(!formHolder->loadFormFile(path)) {
-	    delete formHolder;
-	    return 0;
+    if (!formHolder->loadFormFile(path)) {
+            delete formHolder;
+            return 0;
     }
     workspace->addWindow(formHolder);
     return formHolder;
@@ -148,43 +157,43 @@ void TrPreviewTool::openForm()
 {
     static QString initDir;
     QStringList pathList = QFileDialog::getOpenFileNames(this,
-							 tr("Open Forms"),
-							 initDir,
-							 tr("User interface form files (*.ui);;All files (*.*)"));
-    if(pathList.count())
-	initDir = QFileInfo(pathList.first()).absolutePath();
+                                                         tr("Open Forms"),
+                                                         initDir,
+                                                         tr("User interface form files (*.ui);;All files (*.*)"));
+    if (pathList.count())
+        initDir = QFileInfo(pathList.first()).absolutePath();
     else
-	return;
+        return;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     QHash<QString,FormHolder*> windowDict;
     foreach(QWidget* window,workspace->windowList()) {
-	FormHolder* holder = qobject_cast<FormHolder*>(window);
-	if(holder)
-	    windowDict.insert(holder->formFilePath(),holder);
+        FormHolder* holder = qobject_cast<FormHolder*>(window);
+        if (holder)
+            windowDict.insert(holder->formFilePath(),holder);
     }
     QString noGoodPaths;
-    foreach(QString path,pathList) {
-	if(windowDict.contains(path)) {
-	    // Already open
-	    workspace->setActiveWindow(windowDict.value(path));
-	}
-	else {
-	    FormHolder* formHolder = createFormFromFile(path);
-	    if(!formHolder) {
-		noGoodPaths += QDir::toNativeSeparators(path) + QLatin1Char('\n');
-	    }
-	    else {
-		formHolder->show();
-	    }
-	}
+    foreach(const QString &path,pathList) {
+        if (windowDict.contains(path)) {
+            // Already open
+            workspace->setActiveWindow(windowDict.value(path));
+        }
+        else {
+            FormHolder* formHolder = createFormFromFile(path);
+            if (!formHolder) {
+                noGoodPaths += QDir::toNativeSeparators(path) + QLatin1Char('\n');
+            }
+            else {
+                formHolder->show();
+            }
+        }
     }
 
     QApplication::restoreOverrideCursor();
 
-    if(!noGoodPaths.isEmpty())
-	showWarning(tr("Could not load form file(s):\n") + noGoodPaths);
+    if (!noGoodPaths.isEmpty())
+        showWarning(tr("Could not load form file(s):\n") + noGoodPaths);
 }
 
 
@@ -192,9 +201,9 @@ void TrPreviewTool::recreateForms()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     foreach(QWidget* window,workspace->windowList()) {
-	    FormHolder* holder = qobject_cast<FormHolder*>(window);
-	    if(holder)
-	        holder->retranslate();
+            FormHolder* holder = qobject_cast<FormHolder*>(window);
+            if (holder)
+                holder->retranslate();
     }
     QApplication::restoreOverrideCursor();
 }
@@ -203,12 +212,12 @@ void TrPreviewTool::recreateForms()
 void TrPreviewTool::translationSelected(int idx)
 {
     QTranslator* newTr = trDict.value(trCombo->itemData(idx).toString());
-    trCombo->setCurrentIndex(idx);	// If we're called programmatically
+    trCombo->setCurrentIndex(idx);        // If we're called programmatically
     // currentTr out of sync during resulting language change events; fix here if necessary
-    if(currentTr)
-	    QApplication::removeTranslator(currentTr);
-    if(newTr)
-	    QApplication::installTranslator(newTr);
+    if (currentTr)
+            QApplication::removeTranslator(currentTr);
+    if (newTr)
+            QApplication::installTranslator(newTr);
     currentTr = newTr;
     recreateForms();
 }
@@ -220,26 +229,26 @@ bool TrPreviewTool::loadTranslation(const QString &path, const QString &displayN
     QTranslator* newTr = new QTranslator(this);
     if (!trDict.contains(path)) {
         if (newTr->load(path)) {
-	        trDict.insert(path, newTr);
+                trDict.insert(path, newTr);
             QString trName = displayName.isEmpty() ? QFileInfo(path).fileName() : displayName;
             int idx = trCombo->findText(trName);
             if (idx != -1)
                 trName += QString::fromAscii("(%1)").arg(idx);  // Uniqify!
-	        trCombo->addItem(trName, path);
-	        trCombo->setCurrentIndex(trCombo->count() - 1);
+                trCombo->addItem(trName, path);
+                trCombo->setCurrentIndex(trCombo->count() - 1);
         } else {
             return false;
         }
-    }else {
+    } else {
         //already loaded: make active
         int idx = trCombo->findData(path);
-        if(idx >= 0)			// Should always be true
-	        translationSelected(idx);
+        if (idx >= 0)                        // Should always be true
+                translationSelected(idx);
     }
     return true;
 }
 
-bool TrPreviewTool::addTranslator(QTranslator *translator, const QString &path, const QString &displayName)
+void TrPreviewTool::addTranslator(QTranslator *translator, const QString &path, const QString &displayName)
 {
     if (!trDict.contains(path)) {
         trDict.insert(path, translator);
@@ -251,19 +260,18 @@ bool TrPreviewTool::addTranslator(QTranslator *translator, const QString &path, 
         trCombo->setCurrentIndex(trCombo->count() - 1);
     } else {
         int idx = trCombo->findData(path);
-        if(idx >= 0)			// Should always be true
-	        translationSelected(idx);
+        if (idx >= 0)                        // Should always be true
+            translationSelected(idx);
     }
-    return true;
 }
 
-bool TrPreviewTool::addTranslator(QTranslator *translator, const QString &displayName)
+void TrPreviewTool::addTranslator(QTranslator *translator, const QString &displayName)
 {
     Q_ASSERT(translator);
     QString path;
-    path.sprintf("#:%p", translator);   // the "path" here is a just the string value of the pointer, 
+    path.sprintf("#:%p", translator);   // the "path" here is a just the string value of the pointer,
                                         // which is always unique, and always start with '#:'.
-    return addTranslator(translator, path, displayName);
+    addTranslator(translator, path, displayName);
 }
 
 void TrPreviewTool::loadTranslation()
@@ -271,51 +279,50 @@ void TrPreviewTool::loadTranslation()
     //### Handle .ts files as well
     static QString initDir;
     QString path = QFileDialog::getOpenFileName(this,
-						tr("Load Translation"),
-						initDir,
-						tr("Translation files (*.qm);;All files (*.*)"));
-    if(!path.isEmpty()) {
-	    initDir = QFileInfo(path).absolutePath();
+                                                tr("Load Translation"),
+                                                initDir,
+                                                tr("Translation files (*.qm);;All files (*.*)"));
+    if (!path.isEmpty()) {
+            initDir = QFileInfo(path).absolutePath();
         if (!loadTranslation(path)) {
-	        showWarning(tr("Could not load translation file:\n") + QDir::toNativeSeparators(path));
+                showWarning(tr("Could not load translation file:\n") + QDir::toNativeSeparators(path));
         }
     }
 }
 
 void TrPreviewTool::reloadTranslations()
 {
-    QString path;
     QString noGoodPaths;
-    QList<QTranslator*> oldTrs;			
-    foreach(path,trDict.keys()) {
+    QList<QTranslator*> oldTrs;
+    foreach(const QString &path,trDict.keys()) {
         if (!path.startsWith(QLatin1String("#:"))) {
-	        QTranslator* newTr = new QTranslator(this); // ### check if we can just reload on the old translator object instead 
-	        if(newTr->load(path)) {
-	            oldTrs.append(trDict.value(path));
-	            trDict.insert(path, newTr);
-	        }
-	        else {
-	            noGoodPaths += QDir::toNativeSeparators(path) + QLatin1Char('\n');
-	        }
+                QTranslator* newTr = new QTranslator(this); // ### check if we can just reload on the old translator object instead
+                if (newTr->load(path)) {
+                    oldTrs.append(trDict.value(path));
+                    trDict.insert(path, newTr);
+                }
+                else {
+                    noGoodPaths += QDir::toNativeSeparators(path) + QLatin1Char('\n');
+                }
         }
     }
-    if(!noGoodPaths.isEmpty())
-	    showWarning(tr("Could not reload translation file(s):\n") + noGoodPaths);
+    if (!noGoodPaths.isEmpty())
+            showWarning(tr("Could not reload translation file(s):\n") + noGoodPaths);
     // Refresh
     translationSelected(trCombo->currentIndex());
     // Clean up now when we are sure it's not in use any longer
     foreach(QTranslator* oldTr,oldTrs) {
-	    delete oldTr;
+            delete oldTr;
     }
 }
 
 void TrPreviewTool::showWarning(const QString& warning)
 {
     QMessageBox::warning(this, tr("Qt Translation Preview Tool: Warning"),
-			 warning,
-			 QMessageBox::Ok,
-			 QMessageBox::NoButton,
-			 QMessageBox::NoButton);
+                         warning,
+                         QMessageBox::Ok,
+                         QMessageBox::NoButton,
+                         QMessageBox::NoButton);
 }
 
 
@@ -329,21 +336,19 @@ void TrPreviewTool::showAboutBox()
 }
 
 /**
- * Uninstall the translator if the window was deactivated (i.e. moved to linguist itself) 
+ * Uninstall the translator if the window was deactivated (i.e. moved to linguist itself)
  * in order to avoid that linguist uses those translations.
  */
 bool TrPreviewTool::event(QEvent *e)
 {
-    if(currentTr) {
+    if (currentTr) {
         if (e->type() == QEvent::WindowActivate) {
-            QApplication::installTranslator(currentTr);    
-            return true;
+            QApplication::installTranslator(currentTr);
         } else if (e->type() == QEvent::WindowDeactivate) {
             QApplication::removeTranslator(currentTr);
-            return true;
         }
     }
-    return false;
+    return QMainWindow::event(e);
 }
 
 QUiLoader* FormHolder::uiLoader = 0;
@@ -352,8 +357,8 @@ FormHolder::FormHolder(QWidget* parent, Qt::WindowFlags flags)
     : QWidget(parent,flags), form(0)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    if(!uiLoader)
-	uiLoader = new QUiLoader;
+    if (!uiLoader)
+        uiLoader = new QUiLoader;
     layout = new QHBoxLayout(this);
     layout->setMargin(0);
     setLayout(layout);
@@ -368,12 +373,12 @@ bool FormHolder::loadFormFile(const QString& path)
 {
     formPath = path;
     QFile file(path);
-    if(!file.open(QIODevice::ReadOnly))
-	return false;
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
 
     QWidget* newForm = uiLoader->load(&file,this);
     if (!newForm)
-	return false;
+        return false;
     delete form;
     form = newForm;
 
@@ -383,6 +388,7 @@ bool FormHolder::loadFormFile(const QString& path)
         m_sizeHint = form->size();
     }
     form->setWindowFlags(Qt::Widget);
+    form->setWindowModality(Qt::NonModal);
     layout->addWidget(form);
     QString ft = QLatin1String(" [") + tr("Preview Form") + QLatin1Char(']');
     ft = form->windowTitle() + ft;
@@ -400,3 +406,5 @@ void FormHolder::retranslate()
 {
     loadFormFile(formPath);
 }
+
+QT_END_NAMESPACE

@@ -44,7 +44,7 @@ sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro *.jpg *.png
 sources.path = $$[QT_INSTALL_DEMOS]/arthurplugin
 INSTALLS += target sources
 
-win32-msvc.net|win32-msvc {
+win32-msvc* {
 	QMAKE_CFLAGS += /Zm500
 	QMAKE_CXXFLAGS += /Zm500
 }

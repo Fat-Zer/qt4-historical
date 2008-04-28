@@ -59,6 +59,8 @@
 #include "QtGui/qregion.h"
 #include "QtCore/qlist.h"
 
+QT_BEGIN_NAMESPACE
+
 class QPolygonF;
 
 class QPainterPathData : public QPainterPathPrivate
@@ -130,5 +132,7 @@ inline void QPainterPathData::maybeMoveTo()
         require_moveTo = false;
     }
 }
+
+QT_END_NAMESPACE
 
 #endif // QPAINTERPATH_P_H

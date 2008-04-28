@@ -45,6 +45,8 @@
 #include <QtCore/qdebug.h>
 #include <qalgorithms.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace {
     enum { debugWidgetDataBase =  0 };
 }
@@ -125,8 +127,9 @@ QDesignerFormEditorInterface *QDesignerWidgetDataBaseInterface::core() const
 */
 int QDesignerWidgetDataBaseInterface::indexOfClassName(const QString &name, bool) const
 {
-    for (int i=0; i<count(); ++i) {
-        QDesignerWidgetDataBaseItemInterface *entry = item(i);
+    const int itemCount = count();
+    for (int i=0; i<itemCount; ++i) {
+        const QDesignerWidgetDataBaseItemInterface *entry = item(i);
         if (entry->name() == name)
             return i;
     }
@@ -141,7 +144,7 @@ int QDesignerWidgetDataBaseInterface::indexOfObject(QObject *object, bool) const
     if (!object)
         return -1;
 
-    QString className = QString::fromUtf8(object->metaObject()->className());
+    const QString className = QString::fromUtf8(object->metaObject()->className());
     return indexOfClassName(className);
 }
 
@@ -149,7 +152,7 @@ int QDesignerWidgetDataBaseInterface::indexOfObject(QObject *object, bool) const
 */
 bool QDesignerWidgetDataBaseInterface::isContainer(QObject *object, bool resolveName) const
 {
-    if (QDesignerWidgetDataBaseItemInterface *i = item(indexOfObject(object, resolveName)))
+    if (const QDesignerWidgetDataBaseItemInterface *i = item(indexOfObject(object, resolveName)))
         return i->isContainer();
     return false;
 }
@@ -158,7 +161,7 @@ bool QDesignerWidgetDataBaseInterface::isContainer(QObject *object, bool resolve
 */
 bool QDesignerWidgetDataBaseInterface::isCustom(QObject *object, bool resolveName) const
 {
-    if (QDesignerWidgetDataBaseItemInterface *i = item(indexOfObject(object, resolveName)))
+    if (const QDesignerWidgetDataBaseItemInterface *i = item(indexOfObject(object, resolveName)))
         return i->isCustom();
     return false;
 }
@@ -355,3 +358,5 @@ bool QDesignerWidgetDataBaseInterface::isCustom(QObject *object, bool resolveNam
 
     Returns a list of default values to be used as properties for the item.
 */
+
+QT_END_NAMESPACE

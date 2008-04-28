@@ -50,7 +50,9 @@
 #include <qdebug.h>
 #include <private/qt_mac_p.h>
 #include <private/qprintengine_mac_p.h>
-#include <private/qpixmap_p.h>
+#include <private/qpixmap_mac_p.h>
+
+QT_BEGIN_NAMESPACE
 
 /*****************************************************************************
   Internal variables and functions
@@ -61,6 +63,7 @@
   External functions
  *****************************************************************************/
 
+extern void qt_painter_removePaintDevice(QPaintDevice *); //qpainter.cpp
 
 /*****************************************************************************
   QPaintDevice member functions
@@ -75,7 +78,6 @@ QPaintDevice::~QPaintDevice()
     if(paintingActive())
         qWarning("QPaintDevice: Cannot destroy paint device that is being "
                  "painted, be sure to QPainter::end() painters");
-    extern void qt_painter_removePaintDevice(QPaintDevice *); //qpainter.cpp
     qt_painter_removePaintDevice(this);
 }
 
@@ -118,12 +120,14 @@ Q_GUI_EXPORT GrafPtr qt_mac_qd_context(const QPaintDevice *device)
         return static_cast<GrafPtr>(static_cast<const QPixmap *>(device)->macQDHandle());
     } else if(device->devType() == QInternal::Widget) {
         return static_cast<GrafPtr>(static_cast<const QWidget *>(device)->macQDHandle());
-    } if(device->devType() == QInternal::Printer) {
+    } else if(device->devType() == QInternal::Printer) {
         QPaintEngine *engine = static_cast<const QPrinter *>(device)->paintEngine();
         return static_cast<GrafPtr>(static_cast<const QMacPrintEngine *>(engine)->handle());
     }
     return 0;
 }
+
+extern CGColorSpaceRef qt_mac_colorSpaceForDeviceType(const QPaintDevice *pdev);
 
 /*! \internal
 
@@ -136,33 +140,36 @@ Q_GUI_EXPORT GrafPtr qt_mac_qd_context(const QPaintDevice *device)
 
 Q_GUI_EXPORT CGContextRef qt_mac_cg_context(const QPaintDevice *pdev)
 {
-    if(pdev->devType() == QInternal::Pixmap) {
+    if (pdev->devType() == QInternal::Pixmap) {
         const QPixmap *pm = static_cast<const QPixmap*>(pdev);
-        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-        CGImageRef img = (CGImageRef)pm->macCGHandle();
+        CGColorSpaceRef colorspace = qt_mac_colorSpaceForDeviceType(pdev);
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
-        uint flags = CGImageGetAlphaInfo(img);
-        CGBitmapInfo (*CGImageGetBitmapInfo_ptr)(CGImageRef) = CGImageGetBitmapInfo;
-        if(CGImageGetBitmapInfo_ptr)
-            flags |= (*CGImageGetBitmapInfo_ptr)(img);
-#else
-        CGImageAlphaInfo flags = CGImageGetAlphaInfo(img);
+        uint flags = kCGImageAlphaPremultipliedFirst;
+#ifdef kCGBitmapByteOrder32Host //only needed because CGImage.h added symbols in the minor version
+        if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4)
+            flags |= kCGBitmapByteOrder32Host;
 #endif
-        CGContextRef ret = CGBitmapContextCreate(pm->data->pixels, pm->data->w, pm->data->h,
-                                                 8, pm->data->nbytes / pm->data->h, colorspace,
+#else
+        CGImageAlphaInfo flags = kCGImageAlphaPremultipliedFirst;
+#endif
+        const QMacPixmapData *pmData = static_cast<const QMacPixmapData*>(pm->data);
+        CGContextRef ret = CGBitmapContextCreate(pmData->pixels, pmData->w, pmData->h,
+                                                 8, pmData->bytesPerRow, colorspace,
                                                  flags);
-        CGColorSpaceRelease(colorspace);
         if(!ret)
             qWarning("QPaintDevice: Unable to create context for pixmap (%d/%d/%d)",
-                     pm->data->w, pm->data->h, pm->data->nbytes);
-        CGContextTranslateCTM(ret, 0, pm->data->h);
+                     pmData->w, pmData->h, (pmData->bytesPerRow * pmData->h));
+        CGContextTranslateCTM(ret, 0, pmData->h);
         CGContextScaleCTM(ret, 1, -1);
-        CGImageRelease(img);
         return ret;
-    } else if(pdev->devType() == QInternal::Widget) {
+    } else if (pdev->devType() == QInternal::Widget) {
         CGContextRef ret = static_cast<CGContextRef>(static_cast<const QWidget *>(pdev)->macCGHandle());
         CGContextRetain(ret);
         return ret;
+    } else if (pdev->devType() == QInternal::MacQuartz) {
+        return static_cast<const QMacQuartzPaintDevice *>(pdev)->cgContext();
     }
     return 0;
 }
+
+QT_END_NAMESPACE

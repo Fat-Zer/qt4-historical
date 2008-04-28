@@ -5,6 +5,6 @@ RESOURCES     = classwizard.qrc
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/dialogs/classwizard
-sources.files = $$SOURCES $$HEADERS *.pro
+sources.files = $$SOURCES $$HEADERS $$FORMS $$RESOURCES *.pro images
 sources.path = $$[QT_INSTALL_EXAMPLES]/dialogs/classwizard
 INSTALLS += target sources

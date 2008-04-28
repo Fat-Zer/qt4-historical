@@ -66,35 +66,30 @@ void TorrentServer::removeClient(TorrentClient *client)
 
 void TorrentServer::incomingConnection(int socketDescriptor)
 {
-    PeerWireClient *client = new PeerWireClient(ConnectionManager::instance()->clientId(), this);
-    if (clients.isEmpty())
-        client->abort();
+    PeerWireClient *client =
+  	new PeerWireClient(ConnectionManager::instance()->clientId(), this);
 
     if (client->setSocketDescriptor(socketDescriptor)) {
-        if (ConnectionManager::instance()->canAddConnection()) {
+        if (ConnectionManager::instance()->canAddConnection() && !clients.isEmpty()) {
             connect(client, SIGNAL(infoHashReceived(const QByteArray &)),
                     this, SLOT(processInfoHash(const QByteArray &)));
             connect(client, SIGNAL(error(QAbstractSocket::SocketError)),
                     this, SLOT(removeClient()));
             RateController::instance()->addSocket(client);
             ConnectionManager::instance()->addConnection(client);
-            if (clients.size() == 1) {
-                client->disconnect(client, 0, this, 0);
-                clients.first()->setupIncomingConnection(client);
-            }
             return;
         }
     }
-
+    client->abort();
     delete client;
 }
 
 void TorrentServer::removeClient()
 {
     PeerWireClient *peer = qobject_cast<PeerWireClient *>(sender());
-    peer->deleteLater();
     RateController::instance()->removeSocket(peer);
     ConnectionManager::instance()->removeConnection(peer);
+    peer->deleteLater();
 }
 
 void TorrentServer::processInfoHash(const QByteArray &infoHash)

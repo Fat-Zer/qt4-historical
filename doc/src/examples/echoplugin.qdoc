@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example tools/echoplugin
     \title Echo Plugin Example
@@ -31,28 +74,24 @@
     application. The answer from the plugin is displayed in the
     QLabel.
 
-    \quotefromfile tools/echoplugin/echowindow/echowindow.h
 
     \section1 EchoWindow Class Definition
 
     The \c EchoWindow class lets us test the \c EchoPlugin through a
     GUI.
 
-    \skipto /class.*EchoWindow/
-    \printuntil /^\};/
+    \snippet examples/tools/echoplugin/echowindow/echowindow.h 0
 
     We load the plugin in \c loadPlugin() and cast it to \c
     EchoInterface. When the user clicks the \c button we take the 
     text in \c lineEdit and call the interface's \c echo() with it. 
 
-    \quotefromfile tools/echoplugin/echowindow/echowindow.cpp
 
     \section1 EchoWindow Class Implementation
 
     We start with a look at the constructor:
 
-    \skipto /::EchoWindow/
-    \printuntil /^\}/
+    \snippet examples/tools/echoplugin/echowindow/echowindow.cpp 0
 
     We create the widgets and set a title for the window. We then load
     the plugin. \c loadPlugin() returns false if the plugin could not
@@ -63,8 +102,7 @@
 
     Here is the implementation of \c sendEcho():
 
-    \skipto /::sendEcho/
-    \printuntil /^\}/
+    \snippet examples/tools/echoplugin/echowindow/echowindow.cpp 1
 
     This slot is called when the user pushes \c button or presses
     enter in \c lineEdit. We call \c echo() of the echo interface. In
@@ -74,16 +112,14 @@
 
     Here is the implementation of \c createGUI():
 
-    \skipto /::createGUI/
-    \printuntil /^\}/
+    \snippet examples/tools/echoplugin/echowindow/echowindow.cpp 2
 
     We create the widgets and lay them out in a grid layout. We
     connect the label and line edit to our \c sendEcho() slot.
 
     Here is the \c loadPlugin() function:
 
-    \skipto /loadPlugin/
-    \printuntil /^\}/
+    \snippet examples/tools/echoplugin/echowindow/echowindow.cpp 3
 
     Access to plugins at run-time is provided by QPluginLoader. You
     supply it with the filename of the shared library the plugin is
@@ -97,7 +133,6 @@
     instance() will return null, but this cannot happen in our
     example.
 
-    \quotefromfile tools/echoplugin/echowindow/echointerface.h
 
     \section1 EchoInterface Class Definition
 
@@ -106,8 +141,7 @@
     virtual functions. If non virtual functions were present in the
     class you would get misleading compile errors in the moc files.
 
-    \skipto /class.*EchoInterface/
-    \printto /endif/
+    \snippet examples/tools/echoplugin/echowindow/echointerface.h 0
 
     We declare \c echo(). In our \c EchoPlugin we use this method to
     return, or echo, \a message.
@@ -118,7 +152,6 @@
     implements the interface at run-time. The second argument is a
     string that must identify the interface in a unique way. 
 
-    \quotefromfile tools/echoplugin/plugin/echoplugin.h
 
     \section1 EchoPlugin Class Definition
 
@@ -128,22 +161,18 @@
     If a class implements more than one interface, they are given as 
     a comma separated list.
 
-    \skipto /class.*EchoPlugin/
-    \printuntil /^\};/
+    \snippet examples/tools/echoplugin/plugin/echoplugin.h 0
 
-    \quotefromfile tools/echoplugin/plugin/echoplugin.cpp
 
     \section1 EchoPlugin Class Implementation
 
     Here is the implementation of \c echo():
 
-    \skipto /::echo/
-    \printuntil /^\}/
+    \snippet examples/tools/echoplugin/plugin/echoplugin.cpp 0
 
     We simply return the functions parameter. 
 
-    \skipto /Q_EXPORT_PLUGIN2/
-    \printuntil /;/
+    \snippet examples/tools/echoplugin/plugin/echoplugin.cpp 1
 
     We use the Q_EXPORT_PLUGIN2 macro to let Qt know that the \c
     EchoPlugin class is a plugin. The first parameter is the name of
@@ -152,9 +181,7 @@
 
     \section1 The \c main() function
 
-    \quotefromfile tools/echoplugin/echowindow/main.cpp
-    \skipto /int main/
-    \printuntil /^\}/
+    \snippet examples/tools/echoplugin/echowindow/main.cpp 0
 
     We create an \c EchoWindow and display it as a top-level window.
 
@@ -167,14 +194,12 @@
     template and simply includes includes to directories in which
     the echo window and echo plugin lives:
 
-    \quotefromfile tools/echoplugin/echoplugin.pro
-    \printuntil plugin
+    \snippet examples/tools/echoplugin/echoplugin.pro 0
 
     The profile for the echo window does not need any plugin specific
     settings. We move on to the plugin profile:
 
-    \quotefromfile tools/echoplugin/plugin/plugin.pro
-    \printuntil /TARGET/
+    \snippet examples/tools/echoplugin/plugin/plugin.pro 0
 
     We need to set the TEMPLATE as we now want to make a library
     instead of an executable. We also need to tell qmake that we are

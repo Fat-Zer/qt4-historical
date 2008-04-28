@@ -43,6 +43,8 @@
 
 #include <QtDesigner/abstractformeditorplugin.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \internal
     \class QDesignerFormEditorPluginInterface
@@ -82,3 +84,5 @@
 
     Returns the core form editor interface associated with this component.
 */
+
+QT_END_NAMESPACE

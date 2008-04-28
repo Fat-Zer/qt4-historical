@@ -56,6 +56,7 @@
 #define FORMWINDOWBASE_H
 
 #include "shared_global_p.h"
+#include "qdesigner_utils_p.h"
 #include "grid_p.h"
 
 #include <QtDesigner/QDesignerFormWindowInterface>
@@ -63,11 +64,49 @@
 #include <QtCore/QVariantMap>
 #include <QtCore/QList>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerDnDItemInterface;
 class QMenu;
+class QListWidgetItem;
+class QTreeWidgetItem;
+class QTableWidgetItem;
 class QPoint;
+class QtResourceSet;
+class QDesignerPropertySheet;
 
 namespace qdesigner_internal {
+
+class QEditorFormBuilder;
+
+class QDESIGNER_SHARED_EXPORT DesignerPixmapCache : public QObject
+{
+    Q_OBJECT
+public:
+    DesignerPixmapCache(QObject *parent = 0);
+    QPixmap pixmap(const PropertySheetPixmapValue &value) const;
+    void clear();
+signals:
+    void reloaded();
+private:
+    mutable QMap<PropertySheetPixmapValue, QPixmap> m_cache;
+    friend class FormWindowBase;
+};
+
+class QDESIGNER_SHARED_EXPORT DesignerIconCache : public QObject
+{
+    Q_OBJECT
+public:
+    DesignerIconCache(DesignerPixmapCache *pixmapCache, QObject *parent = 0);
+    QIcon icon(const PropertySheetIconValue &value) const;
+    void clear();
+signals:
+    void reloaded();
+private:
+    mutable QMap<PropertySheetIconValue, QIcon> m_cache;
+    DesignerPixmapCache *m_pixmapCache;
+    friend class FormWindowBase;
+};
 
 class QDESIGNER_SHARED_EXPORT FormWindowBase: public QDesignerFormWindowInterface
 {
@@ -119,6 +158,29 @@ public:
 
     virtual void highlightWidget(QWidget *w, const QPoint &pos, HighlightMode mode = Highlight) = 0;
 
+    enum PasteMode { PasteAll, PasteActionsOnly };
+    virtual void paste(PasteMode pasteMode) = 0;
+
+    // Factory method to create a form builder
+    virtual QEditorFormBuilder *createFormBuilder() = 0;
+
+    virtual bool blockSelectionChanged(bool blocked) = 0;
+    virtual void emitSelectionChanged() = 0;
+
+    DesignerPixmapCache *pixmapCache() const;
+    DesignerIconCache *iconCache() const;
+    QtResourceSet *resourceSet() const;
+    void setResourceSet(QtResourceSet *resourceSet);
+    void addReloadableProperty(QDesignerPropertySheet *sheet, int index);
+    void removeReloadableProperty(QDesignerPropertySheet *sheet, int index);
+    void addReloadablePropertySheet(QDesignerPropertySheet *sheet, QObject *object);
+    void removeReloadablePropertySheet(QDesignerPropertySheet *sheet);
+    void reloadProperties();
+
+public slots:
+
+    void resourceSetActivated(QtResourceSet *resourceSet, bool resourceSetChanged);
+
 private:
     void syncGridFeature();
     static Grid m_defaultGrid;
@@ -126,7 +188,15 @@ private:
     Feature m_feature;
     Grid m_grid;
     bool m_hasFormGrid;
+    DesignerPixmapCache *m_pixmapCache;
+    DesignerIconCache *m_iconCache;
+    QtResourceSet *m_resourceSet;
+    QMap<QDesignerPropertySheet *, QMap<int, bool> > m_reloadableResources; // bool is dummy, QMap used as QSet
+    QMap<QDesignerPropertySheet *, QObject *> m_reloadablePropertySheets;
 };
+
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // FORMWINDOWBASE_H

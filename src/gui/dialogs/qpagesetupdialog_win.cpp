@@ -43,10 +43,13 @@
 
 #include "qpagesetupdialog.h"
 
+#ifndef QT_NO_PRINTDIALOG
 #include <qapplication.h>
 
 #include <private/qprintengine_win_p.h>
 #include <private/qabstractpagesetupdialog_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QPageSetupDialogPrivate : public QAbstractPageSetupDialogPrivate
 {
@@ -71,7 +74,24 @@ int QPageSetupDialog::exec()
     PAGESETUPDLG psd;
     memset(&psd, 0, sizeof(PAGESETUPDLG));
     psd.lStructSize = sizeof(PAGESETUPDLG);
-    psd.hDevMode = ep->devMode;
+
+    // we need a temp DEVMODE struct if we don't have a global DEVMODE
+    HGLOBAL hDevMode;
+    int devModeSize;
+    if (!ep->globalDevMode) {
+        QT_WA( { devModeSize = sizeof(DEVMODEW) + ((DEVMODEW *) ep->devMode)->dmDriverExtra; },
+               { devModeSize = sizeof(DEVMODEA) + ((DEVMODEA *) ep->devMode)->dmDriverExtra; });
+        hDevMode = GlobalAlloc(GHND, devModeSize);
+        if (hDevMode) {
+            void *dest = GlobalLock(hDevMode);
+            memcpy(dest, ep->devMode, devModeSize);
+            GlobalUnlock(hDevMode);
+        }
+        psd.hDevMode = hDevMode;
+    } else {
+        psd.hDevMode = ep->devMode;
+    }
+
     HGLOBAL *tempDevNames = ep->createDevNames();
     psd.hDevNames = tempDevNames;
 
@@ -83,35 +103,55 @@ int QPageSetupDialog::exec()
     QRect paperRect = d->printer->paperRect();
     QRect pageRect = d->printer->pageRect();
 
-    QRect marginRect = ep->getPageMargins();
-    psd.rtMargin.left   = marginRect.left();
-    psd.rtMargin.top    = marginRect.top();
-    psd.rtMargin.right  = marginRect.width();
-    psd.rtMargin.bottom = marginRect.height();
+    psd.Flags = PSD_MARGINS;
+    double multiplier = 1;
+    switch (QLocale::system().measurementSystem()) {
+    case QLocale::MetricSystem:
+        psd.Flags |= PSD_INHUNDREDTHSOFMILLIMETERS;
+        multiplier = 1;
+        break;
+    case QLocale::ImperialSystem:
+        psd.Flags |= PSD_INTHOUSANDTHSOFINCHES;
+        multiplier = 25.4/10;
+        break;
+    }
 
-    psd.Flags = PSD_INHUNDREDTHSOFMILLIMETERS
-                | PSD_MARGINS;
+    QRect marginRect = ep->getPageMargins();
+    psd.rtMargin.left   = marginRect.left()   / multiplier;
+    psd.rtMargin.top    = marginRect.top()    / multiplier;
+    psd.rtMargin.right  = marginRect.width()  / multiplier;;
+    psd.rtMargin.bottom = marginRect.height() / multiplier;;
 
     bool result = PageSetupDlg(&psd);
-
-    // ### margins too...
-
     if (result) {
         ep->readDevnames(psd.hDevNames);
         ep->readDevmode(psd.hDevMode);
 
-        QRect theseMargins = QRect(psd.rtMargin.left, psd.rtMargin.top,
-                                   psd.rtMargin.right, psd.rtMargin.bottom);
+        QRect theseMargins = QRect(psd.rtMargin.left   * multiplier,
+                                   psd.rtMargin.top    * multiplier,
+                                   psd.rtMargin.right  * multiplier,
+                                   psd.rtMargin.bottom * multiplier);
 
         if (theseMargins != marginRect) {
-            ep->setPageMargins(psd.rtMargin.left,
-                               psd.rtMargin.top,
-                               psd.rtMargin.right,
-                               psd.rtMargin.bottom);
+            ep->setPageMargins(psd.rtMargin.left   * multiplier,
+                               psd.rtMargin.top    * multiplier,
+                               psd.rtMargin.right  * multiplier,
+                               psd.rtMargin.bottom * multiplier);
+        }
+
+        // copy from our temp DEVMODE struct
+        if (!ep->globalDevMode && hDevMode) {
+            void *src = GlobalLock(hDevMode);
+            memcpy(ep->devMode, src, devModeSize);
+            GlobalUnlock(hDevMode);
         }
     }
 
+    if (!ep->globalDevMode && hDevMode)
+        GlobalFree(hDevMode);
     GlobalFree(tempDevNames);
-
     return result;
 }
+
+QT_END_NAMESPACE
+#endif

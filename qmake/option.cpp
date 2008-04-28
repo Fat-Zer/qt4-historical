@@ -51,6 +51,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+QT_BEGIN_NAMESPACE
+
 //convenience
 const char *Option::application_argv0 = 0;
 QString Option::prf_ext;
@@ -579,14 +581,18 @@ bool Option::postProcessProject(QMakeProject *project)
 QString
 Option::fixString(QString string, uchar flags)
 {
+    const QString orig_string = string;
     static QHash<FixStringCacheKey, QString> *cache = 0;
     if(!cache) {
         cache = new QHash<FixStringCacheKey, QString>;
         qmakeAddCacheClear(qmakeDeleteCacheClear_QHashFixStringCacheKeyQString, (void**)&cache);
     }
     FixStringCacheKey cacheKey(string, flags);
-    if(cache->contains(cacheKey))
-        return cache->value(cacheKey);
+    if(cache->contains(cacheKey)) {
+	const QString ret = cache->value(cacheKey);
+	//qDebug() << "Fix (cached) " << orig_string << "->" << ret;
+        return ret;
+    }
 
     //fix the environment variables
     if(flags & Option::FixEnvVars) {
@@ -626,6 +632,7 @@ Option::fixString(QString string, uchar flags)
         string = string.mid(1, string.length()-2);
 
     //cache
+    //qDebug() << "Fix" << orig_string << "->" << string;
     cache->insert(cacheKey, string);
     return string;
 }
@@ -701,6 +708,8 @@ qmakeAddCacheClear(qmakeCacheClearFunc func, void **data)
 
 #ifdef Q_OS_WIN
 # include <windows.h>
+
+QT_USE_NAMESPACE
 #endif
 
 QString qmake_libraryInfoFile()
@@ -763,3 +772,5 @@ QString qmake_libraryInfoFile()
         ret = QDir(QFileInfo(ret).absolutePath()).filePath("qt.conf");
     return ret;
 }
+
+QT_END_NAMESPACE

@@ -42,12 +42,17 @@
 ****************************************************************************/
 
 #include "qsvgiohandler.h"
+
+#ifndef QT_NO_SVGRENDERER
+
 #include "qsvgrenderer.h"
 #include "qimage.h"
 #include "qpixmap.h"
 #include "qpainter.h"
 #include "qvariant.h"
 #include "qdebug.h"
+
+QT_BEGIN_NAMESPACE
 
 class QSvgIOHandlerPrivate
 {
@@ -114,10 +119,12 @@ bool QSvgIOHandler::read(QImage *image)
 {
     if (d->load(device())) {
         *image = QImage(d->currentSize, QImage::Format_ARGB32_Premultiplied);
-        image->fill(0x00000000);
-        QPainter p(image);
-        d->r->render(&p);
-        p.end();
+        if (!d->currentSize.isEmpty()) {
+            image->fill(0x00000000);
+            QPainter p(image);
+            d->r->render(&p);
+            p.end();
+        }
         return true;
     }
 
@@ -176,3 +183,7 @@ bool QSvgIOHandler::canRead(QIODevice *device)
     QByteArray contents = device->peek(80);
     return contents.contains("<svg");
 }
+
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVGRENDERER

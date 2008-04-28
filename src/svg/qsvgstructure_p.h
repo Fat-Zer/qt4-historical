@@ -57,8 +57,12 @@
 
 #include "qsvgnode_p.h"
 
+#ifndef QT_NO_SVG
+
 #include "QtCore/qlist.h"
 #include "QtCore/qhash.h"
+
+QT_BEGIN_NAMESPACE
 
 class QSvgTinyDocument;
 class QSvgNode;
@@ -111,9 +115,9 @@ private:
 private:
     QString m_systemLanguage;
     QString m_systemLanguagePrefix;
-private:
-    static QHash<QString, bool> m_features;
-    static QHash<QString, bool> m_extensions;
 };
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG
 #endif // QSVGSTRUCTURE_P_H

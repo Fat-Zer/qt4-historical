@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt4-arthur.html
     \title The Arthur Paint System
@@ -62,7 +105,7 @@
     \o QuickDraw and CoreGraphics on Mac OS X
     \o X11 and the X Render Extension on Linux and Unix systems
     \omit
-    \o QVFb, VNC, and LinuxFb for Qtopia Core
+    \o QVFb, VNC, and LinuxFb for Qt for Embedded Linux
     \endomit
     \endlist
 
@@ -92,14 +135,7 @@
     Setting a linear gradient brush is done by creating a QLinearGradient
     object and setting it as a brush.
 
-    \code
-    QLinearGradient gradient(0, 0, 100, 100);
-    gradient.setColorAt(0, Qt::red);
-    gradient.setColorAt(0.5, Qt::green);
-    gradient.setColorAt(1, Qt::blue);
-    painter.setBrush(gradient);
-    painter.drawRect(0, 0, 100, 100);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 0
 
     The code shown above produces a pattern as show in the following
     pixmap:
@@ -110,14 +146,7 @@
     focal point. Setting a radial brush is done by creating a QRadialGradient
     object and setting it as a brush.
 
-    \code
-    QRadialGradient gradient(50, 50, 50, 30, 30);
-    gradient.setColorAt(0.2, Qt::white);
-    gradient.setColorAt(0.8, Qt::green);
-    gradient.setColorAt(1, Qt::black);
-    painter.setBrush(gradient);
-    painter.drawEllipse(0, 0, 100, 100);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 1
 
     The code shown above produces a pattern as shown in the following
     pixmap:
@@ -128,15 +157,7 @@
     angle. Setting a conical brush is done by creating a
     QConicalGradient object and setting it as a brush.
 
-    \code
-    QConicalGradient gradient(60, 40, 0);
-    gradient.setColorAt(0, Qt::black);
-    gradient.setColorAt(0.4, Qt::green);
-    gradient.setColorAt(0.6, Qt::white);
-    gradient.setColorAt(1, Qt::black);
-    painter.setBrush(gradient);
-    painter.drawEllipse(0, 0, 100, 100);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 2
 
     The code shown above produces a pattern as shown in the following
     pixmap:
@@ -151,15 +172,7 @@
     transparent color, while 255 represents a fully opaque color. For
     example:
 
-    \code
-    // Specfiy semi-transparent red
-    painter.setBrush(QColor(255, 0, 0, 127));
-    painter.drawRect(0, 0, width()/2, height());
-
-    // Specify semi-transparend blue
-    painter.setBrush(QColor(0, 0, 255, 127));
-    painter.drawRect(0, 0, width(), height()/2);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 3
 
     The code shown above produces the following output:
 
@@ -183,14 +196,7 @@
     provide the option of turning on anti-aliased edges when drawing
     graphics primitives.
 
-    \code
-    // One line without anti-aliasing
-    painter.drawLine(0, 0, width()/2, height());
-
-    // One line with anti-aliasing
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.drawLine(width()/2, 0, width()/2, height());
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 4
 
     This produces the following output:
 
@@ -231,13 +237,7 @@
     first add a rectangle, which becomes a closed subpath.  We then add
     two bezier curves, and finally draw the entire path.
 
-    \code
-    QPainterPath path;
-    path.addRect(20, 20, 60, 60);
-    path.addBezier(0, 0,  99, 0,  50, 50,  99, 99);
-    path.addBezier(99, 99,  0, 99,  50, 50,  0, 0);
-    painter.drawPath(path);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 5
 
     The code above produces the following output:
 
@@ -252,34 +252,18 @@
     painting to an off-screen pixmap then copying the pixmap to the
     screen. For example:
 
-    \code
-    QPixmap buffer(size());
-    QPainter painter(&buffer);
-
-    // Paint code here
-
-    painter.end();
-    bitBlt(this, 0, 0, &buffer);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 6
 
     Since the double-buffering is handled by QWidget internally this
     now becomes:
 
-    \code
-    QPainter painter(this);
-
-    // Paint code here
-
-    painter.end();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 7
 
     Double-buffering is turned on by default, but can be turned off for
     individual widgets by setting the widget attribute
     Qt::WA_PaintOnScreen.
 
-    \code
-    unbufferedWidget->setAttribute(Qt::WA_PaintOnScreen);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 8
 
     \section2 Pen and Brush Transformation
 
@@ -302,14 +286,7 @@
     possible to specify both texture and gradient fills for both
     text and outlines.
 
-    \code
-    QLinearGradient gradient(0, 0, 100, 100);
-    gradient.setColorAt(0, Qt::blue);
-    gradient.setColorAt(1, Qt::red);
-    painter.setPen(QPen(gradient, 0));
-    for (int y=fontSize; y<100; y+=fontSize)
-        drawText(0, y, text);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 9
 
     The code above produces the following output:
 
@@ -329,14 +306,7 @@
 
     Painting on an image is as simple as drawing on any other paint device.
 
-    \code
-    QImage image(100, 100, 32);
-    QPainter painter(&image);
-
-    // painter commands.
-
-    painter.end();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-arthur.qdoc 10
 
     \section2 SVG Rendering Support
 
@@ -361,9 +331,7 @@
     required. For example, a predetermined file can be loaded and displayed in
     a widget with little effort:
 
-    \quotefromfile snippets/qsvgwidget/main.cpp
-    \skipto QSvgWidget
-    \printuntil show
+    \snippet doc/src/snippets/qsvgwidget/main.cpp 0
 
     For applications with more specialized requirements, the QSvgRenderer class
     provides more control over the way SVG drawings are rendered and animated.

@@ -49,6 +49,7 @@
 #include "qevent.h"
 #include "qset.h"
 
+QT_BEGIN_NAMESPACE
 
 /*!
     \class Q3ButtonGroup
@@ -238,6 +239,7 @@ int Q3ButtonGroup::insert_helper(QAbstractButton *button, int id)
     connect(button, SIGNAL(pressed()) , SLOT(buttonPressed()));
     connect(button, SIGNAL(released()), SLOT(buttonReleased()));
     connect(button, SIGNAL(clicked()) , SLOT(buttonClicked()));
+    connect(button, SIGNAL(destroyed()) , SLOT(buttonDestroyed()));
     return id;
 }
 
@@ -323,7 +325,7 @@ QAbstractButton *Q3ButtonGroup::find(int id) const
 
 void Q3ButtonGroup::buttonPressed()
 {
-    QAbstractButton *senderButton = ::qobject_cast<QAbstractButton *>(sender());
+    QAbstractButton *senderButton = qobject_cast<QAbstractButton *>(sender());
     Q_ASSERT(senderButton);
     int senderId = id(senderButton);
     if (senderId != -1)
@@ -338,7 +340,7 @@ void Q3ButtonGroup::buttonPressed()
 
 void Q3ButtonGroup::buttonReleased()
 {
-    QAbstractButton *senderButton = ::qobject_cast<QAbstractButton *>(sender());
+    QAbstractButton *senderButton = qobject_cast<QAbstractButton *>(sender());
     Q_ASSERT(senderButton);
     int senderId = id(senderButton);
     if (senderId != -1)
@@ -353,11 +355,21 @@ void Q3ButtonGroup::buttonReleased()
 
 void Q3ButtonGroup::buttonClicked()
 {
-    QAbstractButton *senderButton = ::qobject_cast<QAbstractButton *>(sender());
+    QAbstractButton *senderButton = qobject_cast<QAbstractButton *>(sender());
     Q_ASSERT(senderButton);
     int senderId = id(senderButton);
     if (senderId != -1)
         emit clicked(senderId);
+}
+
+/*!
+  \internal
+*/
+void Q3ButtonGroup::buttonDestroyed()
+{
+    int id = buttonIds.key(static_cast<QAbstractButton *>(sender()), -1);
+    if (id != -1)
+        buttonIds.remove(id);
 }
 
 void Q3ButtonGroup::setButton(int id)
@@ -464,7 +476,7 @@ void Q3ButtonGroup::fixChildren() const
     if (children().count() == buttonIds.count())
         return; // small optimization, all our children have ids.
 
-    QList<QAbstractButton *> list = ::qFindChildren<QAbstractButton*>(this);
+    QList<QAbstractButton *> list = qFindChildren<QAbstractButton*>(this);
     QSet<QAbstractButton*> set;
     for (QMap<int, QAbstractButton*>::ConstIterator it = buttonIds.constBegin();
             it != buttonIds.constEnd(); ++it)
@@ -542,3 +554,5 @@ void Q3ButtonGroup::fixChildren() const
     The \a parent and \a name arguments are passed on to the QWidget
     constructor.
 */
+
+QT_END_NAMESPACE

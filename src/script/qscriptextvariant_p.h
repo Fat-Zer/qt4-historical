@@ -59,6 +59,8 @@
 
 #include "qscriptecmacore_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_SCRIPT
 
 namespace QScript { namespace Ext {
@@ -68,10 +70,8 @@ class Instance;
 class Variant: public Ecma::Core
 {
 public:
-    Variant(QScriptEnginePrivate *engine, QScriptClassInfo *classInfo);
+    Variant(QScriptEnginePrivate *engine);
     virtual ~Variant();
-
-    inline QScriptClassInfo *classInfo() const { return m_classInfo; }
 
     virtual void execute(QScriptContextPrivate *context);
 
@@ -97,12 +97,12 @@ protected:
                                             QScriptClassInfo *classInfo);
     static QScriptValueImpl method_valueOf(QScriptContextPrivate *context, QScriptEnginePrivate *eng,
                                            QScriptClassInfo *classInfo);
-
-protected:
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ext
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
+
 #endif // QSCRIPTEXTVARIANT_P_H

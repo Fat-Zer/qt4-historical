@@ -51,6 +51,9 @@
 #include "qlist.h"
 #include "qpainter.h"
 #include "q3accel.h"
+
+QT_BEGIN_NAMESPACE
+
 using namespace Qt;
 
 /*!
@@ -438,7 +441,7 @@ void Q3Wizard::help()
 	return;
 
 #if 0
-    Q3WizardPage *wpage = ::qobject_cast<Q3WizardPage*>(page);
+    Q3WizardPage *wpage = qobject_cast<Q3WizardPage*>(page);
     if ( wpage )
 	emit wpage->helpClicked();
 #endif
@@ -899,6 +902,7 @@ QWidget* Q3Wizard::page( int index ) const
 {
     if ( index >= pageCount() || index < 0 )
       return 0;
-
     return d->pages.at( index )->w;
 }
+
+QT_END_NAMESPACE

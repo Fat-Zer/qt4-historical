@@ -47,8 +47,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3TextBrowser>
 
-Q3TextBrowserPlugin::Q3TextBrowserPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3TextBrowserPlugin::Q3TextBrowserPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3TextBrowserPlugin::name() const
@@ -67,7 +69,7 @@ QString Q3TextBrowserPlugin::includeFile() const
 { return QLatin1String("Qt3Support/Q3TextBrowser"); }
 
 QIcon Q3TextBrowserPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3TextBrowserPlugin::isContainer() const
 { return false; }
@@ -83,3 +85,5 @@ void Q3TextBrowserPlugin::initialize(QDesignerFormEditorInterface *core)
     Q_UNUSED(core);
     m_initialized = true;
 }
+
+QT_END_NAMESPACE

@@ -43,6 +43,14 @@
 
 #include "qdnd_p.h"
 
+#ifndef QT_NO_DRAGANDDROP
+
+#if defined(Q_OS_WINCE)
+#include "qguifunctions_wince.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
 QOleEnumFmtEtc::QOleEnumFmtEtc(const QVector<FORMATETC> &fmtetcs)
 {
     m_isNull = false;
@@ -84,7 +92,11 @@ QOleEnumFmtEtc::~QOleEnumFmtEtc()
 {
     LPMALLOC pmalloc;
 
+#if !defined(Q_OS_WINCE)
     if (CoGetMalloc(MEMCTX_TASK, &pmalloc) == NOERROR) {
+#else
+    if (SHGetMalloc(&pmalloc) == NOERROR) {
+#endif
         for (int idx = 0; idx < m_lpfmtetcs.count(); ++idx) {
             LPFORMATETC tmpetc = m_lpfmtetcs.at(idx);
             if (tmpetc->ptd)
@@ -94,7 +106,6 @@ QOleEnumFmtEtc::~QOleEnumFmtEtc()
 
         pmalloc->Release();
     }
-
     m_lpfmtetcs.clear();
 }
 
@@ -225,7 +236,11 @@ bool QOleEnumFmtEtc::copyFormatEtc(LPFORMATETC dest, LPFORMATETC src) const
         LPVOID pout;
         LPMALLOC pmalloc;
 
+#if !defined(Q_OS_WINCE)
         if (CoGetMalloc(MEMCTX_TASK, &pmalloc) != NOERROR)
+#else
+        if (SHGetMalloc(&pmalloc) != NOERROR)
+#endif
             return false;
 
         pout = (LPVOID)pmalloc->Alloc(src->ptd->tdSize);
@@ -236,3 +251,6 @@ bool QOleEnumFmtEtc::copyFormatEtc(LPFORMATETC dest, LPFORMATETC src) const
 
     return true;
 }
+
+QT_END_NAMESPACE
+#endif //QT_NO_DRAGANDDROP

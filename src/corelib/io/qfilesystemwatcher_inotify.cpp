@@ -108,9 +108,15 @@
 # define __NR_inotify_init      269
 # define __NR_inotify_add_watch 270
 # define __NR_inotify_rm_watch  271
+#elif defined (__avr32__)
+# define __NR_inotify_init	240
+# define __NR_inotify_add_watch	241
+# define __NR_inotify_rm_watch	242
 #else
 # error "This architecture is not supported. Please talk to qt-bugs@trolltech.com"
 #endif
+
+QT_BEGIN_NAMESPACE
 
 #ifdef QT_LSB
 // ### the LSB doesn't standardize syscall, need to wait until glib2.4 is standardized
@@ -162,11 +168,17 @@ struct inotify_event {
 #define IN_MOVE                 (IN_MOVED_FROM | IN_MOVED_TO)
 }
 
+QT_END_NAMESPACE
+
 // --------- inotify.h end ----------
 
 #else /* QT_NO_INOTIFY */
+
 #include <sys/inotify.h>
+
 #endif
+
+QT_BEGIN_NAMESPACE
 
 QInotifyFileSystemWatcherEngine *QInotifyFileSystemWatcherEngine::create()
 {
@@ -303,30 +315,29 @@ void QInotifyFileSystemWatcherEngine::readFromInotify()
     ioctl(inotifyFd, FIONREAD, &buffSize);
     QVarLengthArray<char, 4096> buffer(buffSize);
     buffSize = read(inotifyFd, buffer.data(), buffSize);
-    const char *at = buffer.data();
-    const char * const end = at + buffSize;
-    while (at < end) {
-        const inotify_event *event = reinterpret_cast<const inotify_event *>(at);
-        // qDebug() << "inotify event, wd" << event->wd << "mask" << hex << event->mask;
+    inotify_event *ev = reinterpret_cast<inotify_event *>(buffer.data());
+    inotify_event *end = reinterpret_cast<inotify_event *>(buffer.data() + buffSize);
+    while (ev < end) {
+        // qDebug() << "inotify event, wd" << ev->wd << "mask" << hex << ev->mask;
 
-        int id = event->wd;
+        int id = ev->wd;
         QString path = idToPath.value(id);
         if (path.isEmpty()) {
             // perhaps a directory?
             id = -id;
             path = idToPath.value(id);
             if (path.isEmpty()) {
-                at += sizeof(inotify_event) + event->len;
+                ev += sizeof(inotify_event) + ev->len;
                 continue;
             }
         }
 
         // qDebug() << "event for path" << path;
 
-        if ((event->mask & (IN_DELETE_SELF | IN_UNMOUNT)) != 0) {
+        if ((ev->mask & (IN_DELETE_SELF | IN_UNMOUNT)) != 0) {
             pathToID.remove(path);
             idToPath.remove(id);
-            inotify_rm_watch(inotifyFd, event->wd);
+            inotify_rm_watch(inotifyFd, ev->wd);
 
             if (id < 0)
                 emit directoryChanged(path, true);
@@ -339,8 +350,10 @@ void QInotifyFileSystemWatcherEngine::readFromInotify()
                 emit fileChanged(path, false);
         }
 
-        at += sizeof(inotify_event) + event->len;
+        ev += sizeof(inotify_event) + ev->len;
     }
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_FILESYSTEMWATCHER

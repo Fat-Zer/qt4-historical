@@ -47,6 +47,8 @@
 #include <qstringlist.h>
 #include <qfileinfo.h>
 
+QT_BEGIN_NAMESPACE
+
 struct SourceFile;
 struct SourceDependChildren;
 class SourceFiles;
@@ -126,5 +128,7 @@ public:
 private:
     DependencyMode dep_mode;
 };
+
+QT_END_NAMESPACE
 
 #endif // MAKEFILEDEPS_H

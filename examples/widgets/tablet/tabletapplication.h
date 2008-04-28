@@ -48,6 +48,7 @@
 
 #include "tabletcanvas.h"
 
+//! [0]
 class TabletApplication : public QApplication
 {
     Q_OBJECT
@@ -63,5 +64,6 @@ public:
 private:
     TabletCanvas *myCanvas;
 };
+//! [0]
 
 #endif

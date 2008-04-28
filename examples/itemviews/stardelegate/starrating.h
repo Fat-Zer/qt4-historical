@@ -48,6 +48,7 @@
 #include <QPointF>
 #include <QVector>
 
+//! [0]
 class StarRating
 {
 public:
@@ -69,7 +70,10 @@ private:
     int myStarCount;
     int myMaxStarCount;
 };
+//! [0]
 
+//! [1]
 Q_DECLARE_METATYPE(StarRating)
+//! [1]
 
 #endif

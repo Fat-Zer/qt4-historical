@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*! 
     \page guibooks.html
 
@@ -8,11 +51,12 @@
     buying. Here we mention just a few user interface books that don't
     gather dust on our shelves.
 
-    \bold{\l{http://www.amazon.com/exec/obidos/ASIN/0131872494/trolltech/}{C++ GUI Programming with Qt 4}}
+    \bold{\l{http://www.amazon.com/gp/product/0132354160/ref=ase_trolltech/}{C++
+    GUI Programming with Qt 4, Second Edition}}
     by Jasmin Blanchette and Mark
-    Summerfield, ISBN 0-13-187249-4. This is the official Qt book written
-    by two veteran Trolls. The Qt 3 edition of the book is available
-    \l{http://phptr.com/content/images/0131240722/downloads/blanchette_book.pdf}{online}.
+    Summerfield, ISBN 0-13-235416-0. This is the official Qt book written
+    by two veteran Trolls. The first edition, which is based on Qt 4.1, is available
+    \l{http://www.qtrac.eu/C++-GUI-Programming-with-Qt-4-1st-ed.zip}{online}.
 
     \bold{\l{http://www.amazon.com/exec/obidos/ASIN/0385267746/trolltech/t}{The Design of Everyday Things}}
     by Donald Norman, ISBN 0-38526774-6, is one of the classics of human

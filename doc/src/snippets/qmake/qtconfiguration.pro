@@ -1,4 +1,5 @@
 # Show information about the Qt installation.
+#! [0]
 message(Qt version: $$[QT_VERSION])
 message(Qt is installed in $$[QT_INSTALL_PREFIX])
 message(Qt resources can be found in the following locations:)
@@ -12,6 +13,7 @@ message(Translation files: $$[QT_INSTALL_TRANSLATIONS])
 message(Settings: $$[QT_INSTALL_SETTINGS])
 message(Examples: $$[QT_INSTALL_EXAMPLES])
 message(Demonstrations: $$[QT_INSTALL_DEMOS])
+#! [0]
 
 # Show configuration information.
 message(CONFIG = $$CONFIG)

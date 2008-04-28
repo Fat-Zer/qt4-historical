@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example mainwindows/dockwidgets
     \title Dock Widgets Example
@@ -19,17 +62,13 @@
 
     Here's the class definition:
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.h
-    \skipto class MainWindow
-    \printuntil /^\};/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.h 0
 
     We will now review each function in turn.
 
     \section1 MainWindow Class Implementation
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto #include <QtGui>
-    \printuntil #include "mainwindow.h"
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 0
 
     We start by including \c <QtGui>, a header file that contains the
     definition of all classes in the \l QtCore and \l QtGui
@@ -37,9 +76,7 @@
     every class individually and is especially convenient if we add new
     widgets. We also include \c mainwindow.h.
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::MainWindow(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 1
 
     In the constructor, we start by creating a QTextEdit widget. Then we call
     QMainWindow::setCentralWidget(). This function passes ownership of
@@ -56,9 +93,7 @@
     createToolBars(), and \c createStatusBar() functions since they
     follow the same pattern as all the other Qt examples.
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::createDockWindows(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 9
 
     We create the customers dock window first, and in addition to a
     window title, we also pass it a \c this pointer so that it becomes a
@@ -90,9 +125,7 @@
     We briefly discuss the rest of the implementation, but have now
     covered everything relating to dock windows.
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::newLetter(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 2
 
     In this function we clear the QTextEdit so that it is empty. Next we
     create a QTextCursor on the QTextEdit. We move the cursor to the
@@ -103,9 +136,7 @@
     insert the skeleton of the letter including two markers \c NAME and
     \c ADDRESS. We will also use the \c{Yours sincerely,} text as a marker.
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::insertCustomer(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 6
 
     If the user clicks a customer we split the customer details into
     pieces. We then look for the \c NAME marker using the \c find()
@@ -118,9 +149,7 @@
     operation by the QTextEdit, so a single undo will revert all the
     insertions.
     
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::addParagraph(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 7
 
     This function works in a similar way to \c insertCustomer(). First
     we look for the marker, in this case, \c {Yours sincerely,}, and then
@@ -128,25 +157,19 @@
     we use a \c beginEditBlock() ... \c endEditBlock() pair so that the
     insertion can be undone as a single operation.
     
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::print(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 3
 
     Qt's QTextDocument class makes printing documents easy. We simply
     take the QTextEdit's QTextDocument, set up the printer and print the
     document.
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::save(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 4
 
     QTextEdit can output its contents in HTML format, so we prompt the
     user for the name of an HTML file and if they provide one we simply
     write the QTextEdit's contents in HTML format to the file.
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto ::undo(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 5
 
     If the focus is in the QTextEdit, pressing \key Ctrl+Z undoes as
     expected. But for the user's convenience we provide an

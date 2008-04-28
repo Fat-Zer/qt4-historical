@@ -51,6 +51,7 @@
 #include "qbuffer.h"
 #include "qbytearray.h"
 #include "qdatastream.h"
+#include "qmath.h"
 #include "qpaintengine_pic_p.h"
 #include "qpicture.h"
 #include "qpolygon.h"
@@ -60,7 +61,8 @@
 //#define QT_PICTURE_DEBUG
 #include <qdebug.h>
 
-#include <private/qmath_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QPicturePaintEnginePrivate : public QPaintEnginePrivate
 {
@@ -165,7 +167,7 @@ void QPicturePaintEngine::updatePen(const QPen &pen)
 #endif
     int pos;
     SERIALIZE_CMD(QPicturePrivate::PdcSetPen);
-    if (d->pic_d->dont_stream_pixmaps) {
+    if (d->pic_d->in_memory_only) {
         int index = d->pic_d->pen_list.size();
         d->pic_d->pen_list.append(pen);
         d->s << index;
@@ -219,7 +221,7 @@ void QPicturePaintEngine::updateBrush(const QBrush &brush)
 #endif
     int pos;
     SERIALIZE_CMD(QPicturePrivate::PdcSetBrush);
-    if (d->pic_d->dont_stream_pixmaps) {
+    if (d->pic_d->in_memory_only) {
         int index = d->pic_d->brush_list.size();
         d->pic_d->brush_list.append(brush);
         d->s << index;
@@ -418,7 +420,7 @@ void QPicturePaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const Q
     int pos;
     SERIALIZE_CMD(QPicturePrivate::PdcDrawPixmap);
 
-    if (d->pic_d->dont_stream_pixmaps) {
+    if (d->pic_d->in_memory_only) {
         int index = d->pic_d->pixmap_list.size();
         d->pic_d->pixmap_list.append(pm);
         d->s << r << index << sr;
@@ -436,7 +438,7 @@ void QPicturePaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
 #endif
     int pos;
     SERIALIZE_CMD(QPicturePrivate::PdcDrawTiledPixmap);
-    if (d->pic_d->dont_stream_pixmaps) {
+    if (d->pic_d->in_memory_only) {
         int index = d->pic_d->pixmap_list.size();
         d->pic_d->pixmap_list.append(pixmap);
         d->s << r << index << s;
@@ -501,5 +503,7 @@ void QPicturePaintEngine::updateState(const QPaintEngineState &state)
     if (flags & DirtyCompositionMode) updateCompositionMode(state.compositionMode());
     if (flags & DirtyOpacity) updateOpacity(state.opacity());
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_PICTURE

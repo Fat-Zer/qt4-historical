@@ -44,6 +44,7 @@
 #include "pathdeform.h"
 
 #include <QApplication>
+#include <QDebug>
 
 int main(int argc, char **argv)
 {
@@ -51,14 +52,23 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
-    PathDeformWidget deformWidget(0);
+    bool smallScreen = false;
+    for (int i=0; i<argc; i++)
+        if (QString(argv[i]) == "-small-screen")
+            smallScreen = true;
+
+    PathDeformWidget deformWidget(0, smallScreen);
+
     QStyle *arthurStyle = new ArthurStyle();
     deformWidget.setStyle(arthurStyle);
-
     QList<QWidget *> widgets = qFindChildren<QWidget *>(&deformWidget);
     foreach (QWidget *w, widgets)
         w->setStyle(arthurStyle);
-    deformWidget.show();
+
+    if (smallScreen)
+        deformWidget.showFullScreen();
+    else
+        deformWidget.show();
 
     return app.exec();
 }

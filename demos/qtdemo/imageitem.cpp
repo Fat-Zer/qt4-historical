@@ -44,10 +44,10 @@
 #include "imageitem.h"
 #include "colors.h"
 
-ImageItem::ImageItem(const QString &path, int maxWidth, int maxHeight, QGraphicsScene *scene,
+ImageItem::ImageItem(const QImage &image, int maxWidth, int maxHeight, QGraphicsScene *scene,
         QGraphicsItem *parent, bool adjustSize, float scale) : DemoItem(scene, parent)
 {
-    this->path = path;
+    this->image = image;
     this->maxWidth = maxWidth;
     this->maxHeight = maxHeight;
     this->adjustSize = adjustSize;
@@ -56,10 +56,8 @@ ImageItem::ImageItem(const QString &path, int maxWidth, int maxHeight, QGraphics
 
 QImage *ImageItem::createImage(const QMatrix &matrix) const
 {
-    QImage *original = new QImage();
-    if (!original->load(this->path)){
-        if (Colors::verbose)
-            qDebug() << "- ImageItem::createImage(): Could not load image:" << this->path;
+    QImage *original = new QImage(image);
+    if (original->isNull()){
         return original; // nothing we can do about it...
     }
 

@@ -64,30 +64,10 @@
 #include "qaccessible.h"
 #endif
 
-#include "private/qabstractbutton_p.h"
+#include "private/qpushbutton_p.h"
 
+QT_BEGIN_NAMESPACE
 
-class QPushButtonPrivate : public QAbstractButtonPrivate
-{
-    Q_DECLARE_PUBLIC(QPushButton)
-public:
-    enum AutoDefaultValue { Off = 0, On = 1, Auto = 2 };
-
-    QPushButtonPrivate()
-        : QAbstractButtonPrivate(QSizePolicy::PushButton), autoDefault(Auto),
-          defaultButton(false), flat(false), menuOpen(false) {}
-
-    inline void init() { resetLayoutItemMargins(); }
-    void resetLayoutItemMargins();
-    void _q_popupPressed();
-    QDialog *dialogParent() const;
-
-    QPointer<QMenu> menu;
-    uint autoDefault : 2;
-    uint defaultButton : 1;
-    uint flat : 1;
-    uint menuOpen : 1;
-};
 
 /*!
     \class QPushButton qpushbutton.h
@@ -107,9 +87,7 @@ public:
     preceding the preferred character with an ampersand in the
     text. For example:
 
-    \code
-        QPushButton *button = new QPushButton("&Download", this);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qpushbutton.cpp 0
 
     In this example the shortcut is \e{Alt+D}. See the \l
     {QShortcut#mnemonic}{QShortcut} documentation for details (to
@@ -298,6 +276,14 @@ QPushButton::QPushButton(const QIcon& icon, const QString &text, QWidget *parent
     d->init();
 }
 
+/*! \internal
+ */
+QPushButton::QPushButton(QPushButtonPrivate &dd, QWidget *parent)
+    : QAbstractButton(dd, parent)
+{
+    Q_D(QPushButton);
+    d->init();
+}
 
 /*!
     Destroys the push button.
@@ -737,5 +723,6 @@ QPushButton::QPushButton(const QIcon& icon, const QString &text, QWidget *parent
     Use menu() instead.
 */
 
+QT_END_NAMESPACE
 
 #include "moc_qpushbutton.cpp"

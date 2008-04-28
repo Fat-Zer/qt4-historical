@@ -45,18 +45,24 @@
 #include "calculatorform.h"
 
 
+//! [0]
 CalculatorForm::CalculatorForm(QWidget *parent)
     : QWidget(parent)
 {
     setupUi(this);
 }
+//! [0]
 
+//! [1]
 void CalculatorForm::on_inputSpinBox1_valueChanged(int value)
 {
     outputWidget->setText(QString::number(value + inputSpinBox2->value()));
 }
+//! [1]
 
+//! [2]
 void CalculatorForm::on_inputSpinBox2_valueChanged(int value)
 {
     outputWidget->setText(QString::number(value + inputSpinBox1->value()));
 }
+//! [2]

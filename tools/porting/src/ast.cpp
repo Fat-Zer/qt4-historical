@@ -46,6 +46,8 @@
 #include <QStringList>
 #include <stdio.h>
 
+QT_BEGIN_NAMESPACE
+
 int AST::N = 0;
 
 // ------------------------------------------------------------------------
@@ -1211,3 +1213,5 @@ AbstractExpressionAST::AbstractExpressionAST()
 {
     m_symbol = 0;
 }
+
+QT_END_NAMESPACE

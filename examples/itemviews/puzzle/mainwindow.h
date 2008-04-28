@@ -48,8 +48,10 @@
 #include <QMainWindow>
 
 class PuzzleWidget;
-class QListView;
 class PiecesModel;
+QT_BEGIN_NAMESPACE
+class QListView;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

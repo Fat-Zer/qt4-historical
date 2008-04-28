@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \headerfile <QtAlgorithms>
     \title Generic Algorithms
@@ -33,23 +76,14 @@
     a particular value. If you need that functionality, you can use
     qFill():
 
-    \code
-        QStringList list;
-        list << "one" << "two" << "three";
-
-        qFill(list.begin(), list.end(), "eleven");
-        // list: [ "eleven", "eleven", "eleven" ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 0
 
     qFill() takes a begin iterator, an end iterator, and a value.
     In the example above, we pass \c list.begin() and \c list.end()
     as the begin and end iterators, but this doesn't have to be
     the case:
 
-    \code
-        qFill(list.begin() + 1, list.end(), "six");
-        // list: [ "eleven", "six", "six" ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 1
 
     Different algorithms can have different requirements for the
     iterators they accept. For example, qFill() accepts two 
@@ -80,45 +114,13 @@
     name_table array and return the corresponding Unicode value from
     the \c value_table if the entity is recognized:
 
-    \code
-        QChar resolveEntity(const QString &entity)
-        {
-            static const QLatin1String name_table[] = {
-                "AElig", "Aacute", ..., "zwnj"
-            };
-            static const ushort value_table[] = {
-                0x0061, 0x00c1, ..., 0x200c
-            };
-            int N = sizeof(name_table) / sizeof(name_table[0]);
-
-            const QLatin1String *name = qBinaryFind(name_table, name_table + N,
-                                                    entity);
-            int index = name - name_table;
-            if (index == N)
-                return QChar();
-
-            return QChar(value_table[index]);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 2
 
     This kind of code is for advanced users only; for most
     applications, a QMap- or QHash-based approach would work just as
     well:
 
-    \code
-        QChar resolveEntity(const QString &entity)
-        {
-            static QMap<QString, int> entityMap;
-
-            if (!entityMap) {
-                entityMap.insert("AElig", 0x0061);
-                entityMap.insert("Aacute", 0x00c1);
-                ...
-                entityMap.insert("zwnj", 0x200c);
-            }
-            return QChar(entityMap.value(entity));
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 3
 
     \section1 Types of Iterators
 
@@ -199,18 +201,7 @@
     position \a begin2 + 1; and so on.
 
     Example:
-    \code
-        QStringList list;
-	list << "one" << "two" << "three";
-
-	QVector<QString> vect1(3);
-        qCopy(list.begin(), list.end(), vect1.begin());
-        // vect: [ "one", "two", "three" ]
-
-        QVector<QString> vect2(8);
-        qCopy(list.begin(), list.end(), vect2.begin() + 2);
-        // vect: [ "", "", "one", "two", "three", "", "", "" ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 4
 
     \sa qCopyBackward(), {input iterators}, {output iterators}
 */
@@ -226,14 +217,7 @@
     at position \a end2 - 2; and so on.
 
     Example:
-    \code
-        QStringList list;
-	list << "one" << "two" << "three";
-
-	QVector<QString> vect(5);
-        qCopyBackward(list.begin(), list.end(), vect.end());
-        // vect: [ "", "", "one", "two", "three" ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 5
 
     \sa qCopy(), {bidirectional iterators}
 */
@@ -246,22 +230,7 @@
     items compare equal; otherwise returns false.
 
     Example:
-    \code
-	QStringList list;
-        list << "one" << "two << "three";
-
-	QVector<QString> vect[3];
-        vect[0] = "one";
-        vect[1] = "two";
-        vect[2] = "three";
-
-	bool ret1 = qEqual(list.begin(), list.end(), vect.begin());
-        // ret1 == true
-
-        vect[2] = "seven";
-	bool rec2 = qEqual(list.begin(), list.end(), vect.begin());
-        // ret2 == false
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 6
 
     This function requires the item type (in the example above,
     QString) to implement \c operator==().
@@ -275,16 +244,7 @@
     Fills the range [\a begin, \a end) with \a value.
 
     Example:
-    \code
-	QStringList list;
-        list << "one" << "two" << "three";
-
-        qFill(list.begin(), list.end(), "eleven");
-        // list: [ "eleven", "eleven", "eleven" ]
-
-	qFill(list.begin() + 1, list.end(), "six");
-        // list: [ "eleven", "six", "six" ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 7
 
     \sa qCopy(), {forward iterators}
 */
@@ -305,16 +265,7 @@
     value isn't found.
 
     Example:
-    \code
-        QStringList list;
-        list << "one" << "two" << "three";
-
-        QStringList::iterator i1 = qFind(list.begin(), list.end(), "two");
-	// i1 == list.begin() + 1
-
-        QStringList::iterator i2 = qFind(list.begin(), list.end(), "seventy");
-	// i2 == list.end()
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 8
 
     This function requires the item type (in the example above,
     QString) to implement \c operator==().
@@ -338,22 +289,12 @@
     \relates <QtAlgorithms>
 
     Returns the number of occurrences of \a value in the range [\a begin, \a end),
-    which is returned in \a n.
+    which is returned in \a n. \a n is never initialized, the count is added to \a n.
+    It is the caller's responsibility to initialize \a n.
 
     Example:
 
-    \code
-       QList<int> list;
-       list << 3 << 3 << 6 << 6 << 6 << 8;
-
-       int countOf6;
-       qCount(list.begin(), list.end(), 6, countOf6);
-       // countOf6 == 3
-
-       int countOf7;
-       qCount(list.begin(), list.end(), 7, countOf7);
-       // countOf7 == 0
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 9
 
     This function requires the item type (in the example above,
     \c int) to implement \c operator==().
@@ -377,13 +318,7 @@ of \a value in the variable passed as a reference in argument \a n.
     Exchanges the values of variables \a var1 and \a var2.
 
     Example:
-    \code
-	double pi = 3.14;
-        double e = 2.71;
-
-	qSwap(pi, e);
-        // pi == 2.71, e == 3.14
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 10
 */
 
 /*! \fn void qSort(RandomAccessIterator begin, RandomAccessIterator end)
@@ -393,12 +328,7 @@ of \a value in the variable passed as a reference in argument \a n.
     using the quicksort algorithm.
 
     Example:
-    \code
-	QList<int> list;
-        list << 33 << 12 << 68 << 6 << 12;
-	qSort(list.begin(), list.end());
-        // list: [ 6, 12, 12, 33, 68 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 11
 
     The sort algorithm is efficient on large data sets. It operates
     in \l {linear-logarithmic time}, O(\e{n} log \e{n}).
@@ -424,31 +354,13 @@ of \a value in the variable passed as a reference in argument \a n.
     For example, here's how to sort the strings in a QStringList
     in case-insensitive alphabetical order:
 
-    \code
-        bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
-        {
-            return s1.toLower() < s2.toLower();
-        }
-
-        int doSomething()
-        {
-	    QStringList list;
-            list << "AlPha" << "beTA" << "gamma" << "DELTA";
-	    qSort(list.begin(), list.end(), caseInsensitiveLessThan);
-            // list: [ "AlPha", "beTA", "DELTA", "gamma" ]
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 12
 
     To sort values in reverse order, pass
     \l{qGreater()}{qGreater<T>()} as the \a lessThan parameter. For
     example:
 
-    \code
-	QList<int> list;
-        list << 33 << 12 << 68 << 6 << 12;
-	qSort(list.begin(), list.end(), qGreater<int>());
-        // list: [ 68, 33, 12, 12, 6 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 13
 
     If of two items neither is "less than" the other, the items are
     taken to be equal. It is then undefined which one of the two
@@ -460,16 +372,7 @@ of \a value in the variable passed as a reference in argument \a n.
     following code shows how to sort a list of strings case
     insensitively using QMap:
 
-    \code
-        QStringList list;
-        list << "AlPha" << "beTA" << "gamma" << "DELTA";
-
-        QMap<QString, QString> map;
-        foreach (QString str, list)
-            map.insert(str.toLower(), str);
-
-        list = map.values();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 14
 
     \sa QMap
 */
@@ -495,12 +398,7 @@ of \a value in the variable passed as a reference in argument \a n.
     property is often useful when sorting user-visible data.
 
     Example:
-    \code
-        QList<int> list;
-        list << 33 << 12 << 68 << 6 << 12;
-        qStableSort(list.begin(), list.end());
-        // list: [ 6, 12, 12, 33, 68 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 15
 
     The sort algorithm is efficient on large data sets. It operates
     in \l {linear-logarithmic time}, O(\e{n} log \e{n}).
@@ -523,20 +421,7 @@ of \a value in the variable passed as a reference in argument \a n.
     For example, here's how to sort the strings in a QStringList
     in case-insensitive alphabetical order:
 
-    \code
-        bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
-        {
-            return s1.toLower() < s2.toLower();
-        }
-
-        int doSomething()
-        {
-            QStringList list;
-            list << "AlPha" << "beTA" << "gamma" << "DELTA";
-            qStableSort(list.begin(), list.end(), caseInsensitiveLessThan);
-            // list: [ "AlPha", "beTA", "DELTA", "gamma" ]
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 16
     
     Note that earlier versions of Qt allowed using a lessThan function that took its
     arguments by non-const reference. From 4.3 and on this is no longer possible,
@@ -546,12 +431,7 @@ of \a value in the variable passed as a reference in argument \a n.
     \l{qGreater()}{qGreater<T>()} as the \a lessThan parameter. For
     example:
 
-    \code
-        QList<int> list;
-        list << 33 << 12 << 68 << 6 << 12;
-        qStableSort(list.begin(), list.end(), qGreater<int>());
-        // list: [ 68, 33, 12, 12, 6 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 17
 
     If of two items neither is "less than" the other, the items are
     taken to be equal. The item that appeared before the other in the
@@ -580,18 +460,7 @@ of \a value in the variable passed as a reference in argument \a n.
     ascending order; see qSort().
 
     Example:
-    \code
-	QList<int> list;
-        list << 3 << 3 << 6 << 6 << 6 << 8;
-
-        QList<int>::iterator i = qLowerBound(list.begin(), list.end(), 5);
-	list.insert(i, 5);
-        // list: [ 3, 3, 5, 6, 6, 6, 8 ]
-
-	i = qLowerBound(list.begin(), list.end(), 12);
-        list.insert(i, 12);
-        // list: [ 3, 3, 5, 6, 6, 6, 8, 12 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 18
 
     This function requires the item type (in the example above,
     \c{int}) to implement \c operator<().
@@ -599,21 +468,7 @@ of \a value in the variable passed as a reference in argument \a n.
     qLowerBound() can be used in conjunction with qUpperBound() to
     iterate over all occurrences of the same value:
 
-    \code
-	QVector<int> vect;
-        vect << 3 << 3 << 6 << 6 << 6 << 8;
-        QVector<int>::iterator begin6 =
-	        qLowerBound(vect.begin(), vect.end(), 6);
-        QVector<int>::iterator end6 =
-	        qUpperBound(begin6, vect.end(), 6);
-
-	QVector<int>::iterator i = begin6;
-        while (i != end6) {
-	    *i = 7;
-            ++i;
-        }
-        // vect: [ 3, 3, 7, 7, 7, 8 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 19
 
     \sa qUpperBound(), qBinaryFind()
 */
@@ -652,18 +507,7 @@ of \a value in the variable passed as a reference in argument \a n.
     ascending order; see qSort().
 
     Example:
-    \code
-	QList<int> list;
-        list << 3 << 3 << 6 << 6 << 6 << 8;
-
-        QList<int>::iterator i = qUpperBound(list.begin(), list.end(), 5);
-	list.insert(i, 5);
-        // list: [ 3, 3, 5, 6, 6, 6, 8 ]
-
-	i = qUpperBound(list.begin(), list.end(), 12);
-        list.insert(i, 12);
-        // list: [ 3, 3, 5, 6, 6, 6, 8, 12 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 20
 
     This function requires the item type (in the example above,
     \c{int}) to implement \c operator<().
@@ -671,21 +515,7 @@ of \a value in the variable passed as a reference in argument \a n.
     qUpperBound() can be used in conjunction with qLowerBound() to
     iterate over all occurrences of the same value:
 
-    \code
-	QVector<int> vect;
-        vect << 3 << 3 << 6 << 6 << 6 << 8;
-        QVector<int>::iterator begin6 =
-	        qLowerBound(vect.begin(), vect.end(), 6);
-        QVector<int>::iterator end6 =
-	        qUpperBound(vect.begin(), vect.end(), 6);
-
-	QVector<int>::iterator i = begin6;
-        while (i != end6) {
-	    *i = 7;
-            ++i;
-        }
-        // vect: [ 3, 3, 7, 7, 7, 8 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 21
 
     \sa qLowerBound(), qBinaryFind()
 */
@@ -728,14 +558,7 @@ of \a value in the variable passed as a reference in argument \a n.
     finer control.
 
     Example:
-    \code
-	QVector<int> vect;
-        vect << 3 << 3 << 6 << 6 << 6 << 8;
-
-	QVector<int>::iterator i =
-		qBinaryFind(vect.begin(), vect.end(), 6);
-	// i == vect.begin() + 2 (or 3 or 4)
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 22
 
     This function requires the item type (in the example above,
     QString) to implement \c operator<().
@@ -776,14 +599,7 @@ of \a value in the variable passed as a reference in argument \a n.
     example, \c{QWidget *}).
 
     Example:
-    \code
-	QList<Employee *> list;
-        list.append(new Employee("Blackpool", "Stephen"));
-        list.append(new Employee("Twist", "Oliver"));
-
-	qDeleteAll(list.begin(), list.end());
-        list.clear();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 23
 
     Notice that qDeleteAll() doesn't remove the items from the
     container; it merely calls \c delete on them. In the example
@@ -808,12 +624,7 @@ of \a value in the variable passed as a reference in argument \a n.
 
     Example:
 
-    \code
-	QList<int> list;
-        list << 33 << 12 << 68 << 6 << 12;
-	qSort(list.begin(), list.end(), qLess<int>());
-        // list: [ 68, 33, 12, 12, 6 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 24
 
     \sa {qGreater()}{qGreater<T>()}
 */
@@ -826,12 +637,7 @@ of \a value in the variable passed as a reference in argument \a n.
 
     Example:
 
-    \code
-	QList<int> list;
-        list << 33 << 12 << 68 << 6 << 12;
-	qSort(list.begin(), list.end(), qGreater<int>());
-        // list: [ 68, 33, 12, 12, 6 ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qalgorithms.qdoc 25
 
     \sa {qLess()}{qLess<T>()}
 */

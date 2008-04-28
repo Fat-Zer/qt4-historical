@@ -58,11 +58,13 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 struct Q_CORE_EXPORT QVectorData
 {
-    QBasicAtomic ref;
+    QBasicAtomicInt ref;
     int alloc;
     int size;
 #if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
@@ -82,7 +84,7 @@ struct Q_CORE_EXPORT QVectorData
 template <typename T>
 struct QVectorTypedData
 {
-    QBasicAtomic ref;
+    QBasicAtomicInt ref;
     int alloc;
     int size;
 #if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
@@ -295,6 +297,11 @@ private:
     QVectorData *malloc(int alloc);
     void realloc(int size, int alloc);
     void free(Data *d);
+    int sizeOfTypedData() {
+        // this is more or less the same as sizeof(Data), except that it doesn't
+        // count the padding at the end
+        return reinterpret_cast<const char *>(&(reinterpret_cast<const Data *>(this))->array[1]) - reinterpret_cast<const char *>(this);
+    }
 };
 
 template <typename T>
@@ -306,7 +313,7 @@ void QVector<T>::reserve(int asize)
 template <typename T>
 void QVector<T>::resize(int asize)
 { realloc(asize, (asize > d->alloc || (!d->capacity && asize < d->size && asize < (d->alloc >> 1))) ?
-          QVectorData::grow(sizeof(Data), asize, sizeof(T), QTypeInfo<T>::isStatic)
+          QVectorData::grow(sizeOfTypedData(), asize, sizeof(T), QTypeInfo<T>::isStatic)
           : d->alloc); }
 template <typename T>
 inline void QVector<T>::clear()
@@ -354,11 +361,10 @@ inline void QVector<T>::replace(int i, const T &t)
 template <typename T>
 QVector<T> &QVector<T>::operator=(const QVector<T> &v)
 {
-    typename QVector::Data *x = v.d;
-    x->ref.ref();
-    x = qAtomicSetPtr(&d, x);
-    if (!x->ref.deref())
-        free(x);
+    v.d->ref.ref();
+    if (!d->ref.deref())
+        free(d);
+    d = v.d;
     if (!d->sharable)
         detach_helper();
     return *this;
@@ -367,14 +373,14 @@ QVector<T> &QVector<T>::operator=(const QVector<T> &v)
 template <typename T>
 inline QVectorData *QVector<T>::malloc(int aalloc)
 {
-    return static_cast<QVectorData *>(qMalloc(sizeof(Data) + (aalloc - 1) * sizeof(T)));
+    return static_cast<QVectorData *>(qMalloc(sizeOfTypedData() + (aalloc - 1) * sizeof(T)));
 }
 
 template <typename T>
 QVector<T>::QVector(int asize)
 {
     p = malloc(asize);
-    d->ref.init(1);
+    d->ref = 1;
     d->alloc = d->size = asize;
     d->sharable = true;
     d->capacity = false;
@@ -392,7 +398,7 @@ template <typename T>
 QVector<T>::QVector(int asize, const T &t)
 {
     p = malloc(asize);
-    d->ref.init(1);
+    d->ref = 1;
     d->alloc = d->size = asize;
     d->sharable = true;
     d->capacity = false;
@@ -436,12 +442,11 @@ void QVector<T>::realloc(int asize, int aalloc)
     }
 
     if (aalloc != d->alloc || d->ref != 1) {
-
         // (re)allocate memory
         if (QTypeInfo<T>::isStatic) {
             x.p = malloc(aalloc);
         } else if (d->ref != 1) {
-            x.p = QVectorData::malloc(sizeof(Data), aalloc, sizeof(T), p);
+            x.p = QVectorData::malloc(sizeOfTypedData(), aalloc, sizeof(T), p);
         } else {
             if (QTypeInfo<T>::isComplex) {
                 // call the destructor on all objects that need to be
@@ -454,9 +459,9 @@ void QVector<T>::realloc(int asize, int aalloc)
                     i = d->array + asize;
                 }
             }
-            x.p = p = static_cast<QVectorData *>(qRealloc(p, sizeof(Data) + (aalloc - 1) * sizeof(T)));
+            x.p = p = static_cast<QVectorData *>(qRealloc(p, sizeOfTypedData() + (aalloc - 1) * sizeof(T)));
         }
-        x.d->ref.init(1);
+        x.d->ref = 1;
         x.d->sharable = true;
         x.d->capacity = d->capacity;
 
@@ -486,9 +491,9 @@ void QVector<T>::realloc(int asize, int aalloc)
     x.d->size = asize;
     x.d->alloc = aalloc;
     if (d != x.d) {
-        x.d = qAtomicSetPtr(&d, x.d);
-        if (!x.d->ref.deref())
-            free(x.d);
+        if (!d->ref.deref())
+            free(d);
+        d = x.d;
     }
 }
 
@@ -511,7 +516,7 @@ void QVector<T>::append(const T &t)
 {
     if (d->ref != 1 || d->size + 1 > d->alloc) {
         const T copy(t);
-        realloc(d->size, QVectorData::grow(sizeof(Data), d->size + 1, sizeof(T),
+        realloc(d->size, QVectorData::grow(sizeOfTypedData(), d->size + 1, sizeof(T),
                                            QTypeInfo<T>::isStatic));
         if (QTypeInfo<T>::isComplex)
             new (d->array + d->size) T(copy);
@@ -533,7 +538,7 @@ Q_TYPENAME QVector<T>::iterator QVector<T>::insert(iterator before, size_type n,
     if (n != 0) {
         const T copy(t);
         if (d->ref != 1 || d->size + n > d->alloc)
-            realloc(d->size, QVectorData::grow(sizeof(Data), d->size + n, sizeof(T),
+            realloc(d->size, QVectorData::grow(sizeOfTypedData(), d->size + n, sizeof(T),
                                                QTypeInfo<T>::isStatic));
         if (QTypeInfo<T>::isStatic) {
             T *b = d->array + d->size;
@@ -741,9 +746,13 @@ Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(Vector)
    ### Qt exports QPolygon and QPolygonF that inherit QVector<QPoint> and
    ### QVector<QPointF> respectively.
 */
+
 #ifdef Q_CC_MSVC
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <QtCore/QPointF>
 #include <QtCore/QPoint>
+QT_END_INCLUDE_NAMESPACE
+
 #if defined(QT_BUILD_CORE_LIB)
 #define Q_TEMPLATE_EXTERN
 #else
@@ -755,6 +764,8 @@ Q_TEMPLATE_EXTERN template class Q_CORE_EXPORT QVector<QPointF>;
 Q_TEMPLATE_EXTERN template class Q_CORE_EXPORT QVector<QPoint>;
 # pragma warning(pop)
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -63,6 +63,9 @@
 #include <QtDesigner/QDesignerCustomWidgetCollectionInterface>
 #include <QtCore/qplugin.h>
 #include <QtCore/qdebug.h>
+#include <QtGui/QIcon>
+
+QT_BEGIN_NAMESPACE
 
 class Qt3SupportWidgets: public QObject, public QDesignerCustomWidgetCollectionInterface
 {
@@ -80,23 +83,24 @@ private:
 Qt3SupportWidgets::Qt3SupportWidgets(QObject *parent)
     : QObject(parent)
 {
-    m_plugins.append(new Q3ToolBarPlugin(this));
-    m_plugins.append(new Q3IconViewPlugin(this));
-    m_plugins.append(new Q3GroupBoxPlugin(this));
-    m_plugins.append(new Q3FramePlugin(this));
-    m_plugins.append(new Q3WizardPlugin(this));
-    m_plugins.append(new Q3MainWindowPlugin(this));
-    m_plugins.append(new Q3WidgetStackPlugin(this));
-    m_plugins.append(new Q3ButtonGroupPlugin(this));
-    m_plugins.append(new Q3TablePlugin(this));
-    m_plugins.append(new Q3ListBoxPlugin(this));
-    m_plugins.append(new Q3ListViewPlugin(this));
-    m_plugins.append(new Q3TextEditPlugin(this));
-    m_plugins.append(new Q3DateEditPlugin(this));
-    m_plugins.append(new Q3TimeEditPlugin(this));
-    m_plugins.append(new Q3DateTimeEditPlugin(this));
-    m_plugins.append(new Q3ProgressBarPlugin(this));
-    m_plugins.append(new Q3TextBrowserPlugin(this));
+    const QIcon qt3Icon(QLatin1String(":/trolltech/formeditor/images/qt3logo.png"));
+    m_plugins.append(new Q3ToolBarPlugin(qt3Icon, this));
+    m_plugins.append(new Q3IconViewPlugin(qt3Icon, this));
+    m_plugins.append(new Q3GroupBoxPlugin(qt3Icon, this));
+    m_plugins.append(new Q3FramePlugin(qt3Icon, this));
+    m_plugins.append(new Q3WizardPlugin(qt3Icon, this));
+    m_plugins.append(new Q3MainWindowPlugin(qt3Icon, this));
+    m_plugins.append(new Q3WidgetStackPlugin(qt3Icon, this));
+    m_plugins.append(new Q3ButtonGroupPlugin(qt3Icon, this));
+    m_plugins.append(new Q3TablePlugin(qt3Icon, this));
+    m_plugins.append(new Q3ListBoxPlugin(qt3Icon, this));
+    m_plugins.append(new Q3ListViewPlugin(qt3Icon, this));
+    m_plugins.append(new Q3TextEditPlugin(qt3Icon, this));
+    m_plugins.append(new Q3DateEditPlugin(qt3Icon, this));
+    m_plugins.append(new Q3TimeEditPlugin(qt3Icon, this));
+    m_plugins.append(new Q3DateTimeEditPlugin(qt3Icon, this));
+    m_plugins.append(new Q3ProgressBarPlugin(qt3Icon, this));
+    m_plugins.append(new Q3TextBrowserPlugin(qt3Icon, this));
 }
 
 QList<QDesignerCustomWidgetInterface*> Qt3SupportWidgets::customWidgets() const
@@ -105,5 +109,7 @@ QList<QDesignerCustomWidgetInterface*> Qt3SupportWidgets::customWidgets() const
 }
 
 Q_EXPORT_PLUGIN(Qt3SupportWidgets)
+
+QT_END_NAMESPACE
 
 #include "qt3supportwidgets.moc"

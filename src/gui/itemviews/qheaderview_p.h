@@ -58,9 +58,12 @@
 #include "private/qabstractitemview_p.h"
 
 #ifndef QT_NO_ITEMVIEWS
+
 #include "QtCore/qbitarray.h"
 #include "QtGui/qapplication.h"
 #include "QtGui/qlabel.h"
+
+QT_BEGIN_NAMESPACE
 
 class QHeaderViewPrivate: public QAbstractItemViewPrivate
 {
@@ -218,6 +221,17 @@ public:
                 : model->rowCount(root));
     }
 
+    inline void doDelayedResizeSections() {
+        if (!delayedResize.isActive())
+            delayedResize.start(0, q_func());
+    }
+
+    inline void executePostedResize() const {
+        if (delayedResize.isActive() && state == NoState) {
+            delayedResize.stop();
+            const_cast<QHeaderView*>(q_func())->resizeSections();
+        }
+    }
 
     void clear();
     void flipSortIndicator(int section);
@@ -238,6 +252,7 @@ public:
     mutable QHash<int, int> hiddenSectionSize; // from logical index to section size
     mutable QHash<int, int> cascadingSectionSize; // from visual index to section size
     mutable QSize cachedSizeHint;
+    mutable QBasicTimer delayedResize;
 
     int firstCascadingSection;
     int lastCascadingSection;
@@ -344,6 +359,8 @@ public:
 #endif
 
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_ITEMVIEWS
 

@@ -51,6 +51,8 @@
 #include "qlayoutengine_p.h"
 #include "qlayout_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /*
     Returns true if the \a widget can be added to the \a layout;
     otherwise returns false.
@@ -508,8 +510,9 @@ void QBoxLayoutPrivate::calcHfw(int w)
     QBoxLayout also includes two margin widths:
 
     \list
-    \o setMargin() sets the width of the outer border. This is the width
-       of the reserved space along each of the QBoxLayout's four sides.
+    \o setContentsMargins() sets the width of the outer border on 
+       each side of the widget. This is the width of the reserved space 
+       along each of the QBoxLayout's four sides.
     \o setSpacing() sets the width between neighboring boxes. (You
        can use addSpacing() to get more space at a particular spot.)
     \endlist
@@ -696,8 +699,7 @@ QSize QBoxLayout::maximumSize() const
     if (d->dirty)
         const_cast<QBoxLayout*>(this)->d_func()->setupGeom();
 
-    QSize s = d->maxSize;
-    s = s.boundedTo(QSize(QLAYOUTSIZE_MAX, QLAYOUTSIZE_MAX));
+    QSize s = d->maxSize.boundedTo(QSize(QLAYOUTSIZE_MAX, QLAYOUTSIZE_MAX));
 
     if (alignment() & Qt::AlignHorizontal_Mask)
         s.setWidth(QLAYOUTSIZE_MAX);
@@ -921,11 +923,9 @@ void QBoxLayout::insertSpacing(int index, int size)
 
     QLayoutItem *b;
     if (horz(d->dir))
-        b = new QSpacerItem(size, 0, QSizePolicy::Fixed,
-                             QSizePolicy::Minimum);
+        b = QLayoutPrivate::createSpacerItem(this, size, 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
     else
-        b = new QSpacerItem(0, size, QSizePolicy::Minimum,
-                             QSizePolicy::Fixed);
+        b = QLayoutPrivate::createSpacerItem(this, 0, size, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     QBoxLayoutItem *it = new QBoxLayoutItem(b);
     it->magic = true;
@@ -948,13 +948,30 @@ void QBoxLayout::insertStretch(int index, int stretch)
 
     QLayoutItem *b;
     if (horz(d->dir))
-        b = new QSpacerItem(0, 0, QSizePolicy::Expanding,
-                             QSizePolicy::Minimum);
+        b = QLayoutPrivate::createSpacerItem(this, 0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
     else
-        b = new QSpacerItem(0, 0, QSizePolicy::Minimum,
-                             QSizePolicy::Expanding);
+        b = QLayoutPrivate::createSpacerItem(this, 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     QBoxLayoutItem *it = new QBoxLayoutItem(b, stretch);
+    it->magic = true;
+    d->list.insert(index, it);
+    invalidate();
+}
+
+/*!
+    Inserts \a spacerItem at position \a index, with zero minimum
+    size and stretch factor. If \a index is negative the
+    space is added at the end.
+
+    \sa addSpacerItem(), insertStretch(), insertSpacing()
+*/
+void QBoxLayout::insertSpacerItem(int index, QSpacerItem *spacerItem)
+{
+    Q_D(QBoxLayout);
+    if (index < 0)                                // append
+        index = d->list.count();
+
+    QBoxLayoutItem *it = new QBoxLayoutItem(spacerItem);
     it->magic = true;
     d->list.insert(index, it);
     invalidate();
@@ -1008,7 +1025,7 @@ void QBoxLayout::insertWidget(int index, QWidget *widget, int stretch,
     addChildWidget(widget);
     if (index < 0)                                // append
         index = d->list.count();
-    QWidgetItem *b = new QWidgetItem(widget);
+    QWidgetItem *b = QLayoutPrivate::createWidgetItem(this, widget);
     b->setAlignment(alignment);
     QBoxLayoutItem *it = new QBoxLayoutItem(b, stretch);
     d->list.insert(index, it);
@@ -1036,6 +1053,16 @@ void QBoxLayout::addSpacing(int size)
 void QBoxLayout::addStretch(int stretch)
 {
     insertStretch(-1, stretch);
+}
+
+/*!
+    Adds \a spacerItem to the end of this box layout.
+
+    \sa addSpacing(), addStretch()
+*/
+void QBoxLayout::addSpacerItem(QSpacerItem *spacerItem)
+{
+    insertSpacerItem(-1, spacerItem);
 }
 
 /*!
@@ -1086,9 +1113,9 @@ void QBoxLayout::addStrut(int size)
     Q_D(QBoxLayout);
     QLayoutItem *b;
     if (horz(d->dir))
-        b = new QSpacerItem(0, size, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        b = QLayoutPrivate::createSpacerItem(this, 0, size, QSizePolicy::Fixed, QSizePolicy::Minimum);
     else
-        b = new QSpacerItem(size, 0, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        b = QLayoutPrivate::createSpacerItem(this, size, 0, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     QBoxLayoutItem *it = new QBoxLayoutItem(b);
     it->magic = true;
@@ -1112,6 +1139,8 @@ void QBoxLayout::addStrut(int size)
 bool QBoxLayout::setStretchFactor(QWidget *widget, int stretch)
 {
     Q_D(QBoxLayout);
+    if (!widget)
+        return false;
     for (int i = 0; i < d->list.size(); ++i) {
         QBoxLayoutItem *box = d->list.at(i);
         if (box->item->widget() == widget) {
@@ -1214,14 +1243,13 @@ QBoxLayout::Direction QBoxLayout::direction() const
 
     The simplest use of the class is like this:
 
-    \quotefromfile snippets/layouts/layouts.cpp
-    \skipto window = new QWidget
-    \printline window
-    \printline button1
-    \printuntil button5
-    \printline layout = new QHBoxLayout
-    \printuntil window->setLayout(layout)
-    \printline show
+    \snippet doc/src/snippets/layouts/layouts.cpp 0
+    \snippet doc/src/snippets/layouts/layouts.cpp 1
+    \snippet doc/src/snippets/layouts/layouts.cpp 2
+    \codeline
+    \snippet doc/src/snippets/layouts/layouts.cpp 3
+    \snippet doc/src/snippets/layouts/layouts.cpp 4
+    \snippet doc/src/snippets/layouts/layouts.cpp 5
 
     First, we create the widgets we want in the layout. Then, we
     create the QHBoxLayout object and add the widgets into the
@@ -1333,15 +1361,13 @@ QHBoxLayout::~QHBoxLayout()
 
     The simplest use of the class is like this:
 
-    \quotefromfile snippets/layouts/layouts.cpp
-    \skipto layout = new QHBoxLayout
-    \skipto window = new QWidget
-    \printline window
-    \printline button1
-    \printuntil button5
-    \printline layout = new QVBoxLayout
-    \printuntil window->setLayout(layout)
-    \printline show
+    \snippet doc/src/snippets/layouts/layouts.cpp 6
+    \snippet doc/src/snippets/layouts/layouts.cpp 7
+    \snippet doc/src/snippets/layouts/layouts.cpp 8
+    \codeline
+    \snippet doc/src/snippets/layouts/layouts.cpp 9
+    \snippet doc/src/snippets/layouts/layouts.cpp 10
+    \snippet doc/src/snippets/layouts/layouts.cpp 11
 
     First, we create the widgets we want in the layout. Then, we
     create the QVBoxLayout object and add the widgets into the
@@ -1469,3 +1495,4 @@ QVBoxLayout::~QVBoxLayout()
     Use spacing() instead.
 */
 
+QT_END_NAMESPACE

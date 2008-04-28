@@ -60,6 +60,8 @@
 #include <QtCore/QList>
 #include <QtCore/QVariant>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
@@ -70,7 +72,7 @@ class QDESIGNER_SHARED_EXPORT SetPropertyCommentCommand: public QDesignerFormWin
     SetPropertyCommentCommand& operator=(const SetPropertyCommentCommand &);
 
 public:
-    SetPropertyCommentCommand(QDesignerFormWindowInterface *formWindow);
+    explicit SetPropertyCommentCommand(QDesignerFormWindowInterface *formWindow);
 
     bool init(QObject *object, const QString &propertyName, const QString &newCommentValue);
 
@@ -101,7 +103,8 @@ private:
     QString m_newCommentValue;
 };
 
-
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_PROPERTYCOMMENTCOMMAND_H

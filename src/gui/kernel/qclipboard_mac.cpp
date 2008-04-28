@@ -53,14 +53,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+QT_BEGIN_NAMESPACE
+
+QT_USE_NAMESPACE
+
 /*****************************************************************************
   QClipboard debug facilities
  *****************************************************************************/
 //#define DEBUG_PASTEBOARD
 
 #ifndef QT_NO_CLIPBOARD
-
-void qt_event_send_clipboard_changed(); //qapplication_mac.cpp
 
 /*****************************************************************************
   QClipboard member functions for mac.
@@ -97,10 +99,11 @@ static bool qt_mac_updateScrap(QClipboard::Mode mode)
 
 void QClipboard::clear(Mode mode)
 {
-    if (supportsMode(mode) == false)
+    if (!supportsMode(mode))
         return;
     qt_mac_updateScrap(mode);
     qt_mac_pasteboard(mode)->clear();
+    setMimeData(0, mode);
 }
 
 void QClipboard::ownerDestroyed()
@@ -119,12 +122,10 @@ bool QClipboard::event(QEvent *e)
         return QObject::event(e);
 
     if (qt_mac_updateScrap(QClipboard::Clipboard)) {
-        qt_mac_pasteboard(QClipboard::Clipboard)->setMimeData(0);
         emitChanged(QClipboard::Clipboard);
     }
 
     if (qt_mac_updateScrap(QClipboard::FindBuffer)) {
-        qt_mac_pasteboard(QClipboard::FindBuffer)->setMimeData(0);
         emitChanged(QClipboard::FindBuffer);
     }
 
@@ -133,7 +134,7 @@ bool QClipboard::event(QEvent *e)
 
 const QMimeData *QClipboard::mimeData(Mode mode) const
 {
-    if (supportsMode(mode) == false)
+    if (!supportsMode(mode))
         return 0;
     qt_mac_updateScrap(mode);
     return qt_mac_pasteboard(mode)->mimeData();
@@ -141,12 +142,11 @@ const QMimeData *QClipboard::mimeData(Mode mode) const
 
 void QClipboard::setMimeData(QMimeData *src, Mode mode)
 {
-    if (supportsMode(mode) == false)
+    if (!supportsMode(mode))
         return;
     qt_mac_updateScrap(mode);
     qt_mac_pasteboard(mode)->setMimeData(src);
     emitChanged(mode);
-    qt_event_send_clipboard_changed();
 }
 
 bool QClipboard::supportsMode(Mode mode) const
@@ -580,7 +580,6 @@ QMacPasteboard::clear()
     qDebug("PasteBoard: clear!");
 #endif
     clear_helper();
-    setMimeData(0);
 }
 
 bool
@@ -588,13 +587,19 @@ QMacPasteboard::sync() const
 {
     if (!paste)
         return false;
-    const bool ret = PasteboardSynchronize(paste) & kPasteboardModified;
+    const bool fromGlobal = PasteboardSynchronize(paste) & kPasteboardModified;
+    
+    if (fromGlobal)
+        const_cast<QMacPasteboard *>(this)->setMimeData(0);
+
 #ifdef DEBUG_PASTEBOARD
-    if(ret)
+    if(fromGlobal)
         qDebug("Pasteboard: Syncronize!");
 #endif
-    return ret;
+    return fromGlobal;
 }
 
 
 
+
+QT_END_NAMESPACE

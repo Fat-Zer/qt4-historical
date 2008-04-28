@@ -58,6 +58,8 @@
 #include "qevent.h"
 #include "qdialog_p.h"
 
+QT_BEGIN_NAMESPACE
+
 // This internal class adds extra validation to a QSpinBox by emitting textChanged(bool)
 // after events that may potentially change the visible text. Return or Enter key presses
 // are not propagated if the visible text is invalid. Instead, the visible text is modified
@@ -169,7 +171,9 @@ signals:
     void textChanged(bool);
 };
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qinputdialog.moc"
+QT_END_INCLUDE_NAMESPACE
 
 class QInputDialogPrivate : public QDialogPrivate
 {
@@ -282,10 +286,7 @@ void QInputDialogPrivate::init(const QString &title, const QString &lbl, QWidget
     getText(), getInteger(), getDouble() and getItem(). All the
     functions can be used in a similar way, for example:
 
-    \quotefromfile dialogs/standarddialogs/dialog.cpp
-    \skipuntil Dialog::setText
-    \skipline {
-    \printto }
+    \snippet examples/dialogs/standarddialogs/dialog.cpp 3
 
     The \c ok variable is set to true if the user clicks \gui OK;
     otherwise it is set to false.
@@ -377,10 +378,7 @@ QInputDialog::~QInputDialog()
 
     Use this static function like this:
 
-    \quotefromfile dialogs/standarddialogs/dialog.cpp
-    \skipuntil Dialog::setText
-    \skipline {
-    \printto }
+    \snippet examples/dialogs/standarddialogs/dialog.cpp 3
 
     \sa getInteger(), getDouble(), getItem()
 */
@@ -426,10 +424,7 @@ QString QInputDialog::getText(QWidget *parent, const QString &title, const QStri
 
     Use this static function like this:
 
-    \quotefromfile dialogs/standarddialogs/dialog.cpp
-    \skipuntil Dialog::setInteger
-    \skipline {
-    \printto }
+    \snippet examples/dialogs/standarddialogs/dialog.cpp 0
 
     \sa getText(), getDouble(), getItem()
 */
@@ -470,10 +465,7 @@ int QInputDialog::getInteger(QWidget *parent, const QString &title, const QStrin
 
     Use this static function like this:
 
-    \quotefromfile dialogs/standarddialogs/dialog.cpp
-    \skipuntil Dialog::setDouble
-    \skipline {
-    \printto }
+    \snippet examples/dialogs/standarddialogs/dialog.cpp 1
 
     \sa getText(), getInteger(), getItem()
 */
@@ -514,10 +506,7 @@ double QInputDialog::getDouble( QWidget *parent, const QString &title, const QSt
 
     Use this static function like this:
 
-    \quotefromfile dialogs/standarddialogs/dialog.cpp
-    \skipuntil Dialog::setItem
-    \skipline {
-    \printto }
+    \snippet examples/dialogs/standarddialogs/dialog.cpp 2
 
     \sa getText(), getInteger(), getDouble()
 */
@@ -584,4 +573,6 @@ QString QInputDialog::getItem(QWidget *parent, const QString &title, const QStri
     The \a name parameter is ignored.
 */
 
-#endif
+QT_END_NAMESPACE
+
+#endif // QT_NO_INPUTDIALOG

@@ -55,26 +55,20 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript { namespace Ecma {
 
 RegExp::RegExp(QScriptEnginePrivate *eng):
-    Core(eng)
+    Core(eng, QLatin1String("RegExp"), QScriptClassInfo::RegExpType)
 {
-    m_classInfo = eng->registerClass(QLatin1String("RegExp"));
-
-    publicPrototype.invalidate();
     newRegExp(&publicPrototype, QString(), QString());
 
     eng->newConstructor(&ctor, this, publicPrototype);
 
-    QScriptValue::PropertyFlags flags = QScriptValue::SkipInEnumeration;
-
-    publicPrototype.setProperty(QLatin1String("exec"),
-                                eng->createFunction(method_exec, 1, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("test"),
-                                eng->createFunction(method_test, 1, m_classInfo), flags);
-    publicPrototype.setProperty(QLatin1String("toString"),
-                                eng->createFunction(method_toString, 1, m_classInfo), flags);
+    addPrototypeFunction(QLatin1String("exec"), method_exec, 1);
+    addPrototypeFunction(QLatin1String("test"), method_test, 1);
+    addPrototypeFunction(QLatin1String("toString"), method_toString, 1);
 }
 
 RegExp::~RegExp()
@@ -84,15 +78,19 @@ RegExp::~RegExp()
 RegExp::Instance *RegExp::Instance::get(const QScriptValueImpl &object, QScriptClassInfo *klass)
 {
     if (! klass || klass == object.classInfo())
-        return QExplicitlySharedDataPointer<Instance> (static_cast<Instance*> (object.objectData().data()));
+        return static_cast<Instance*> (object.objectData());
 
     return 0;
 }
 
 void RegExp::execute(QScriptContextPrivate *context)
 {
+#ifndef Q_SCRIPT_NO_EVENT_NOTIFY
+    engine()->notifyFunctionEntry(context);
+#endif
     QString source;
     QString flags;
+    QScriptValueImpl error;
 
     if (context->argumentCount() > 0)
         source = context->argument(0).toString();
@@ -104,17 +102,20 @@ void RegExp::execute(QScriptContextPrivate *context)
             const QString legalFlags = QLatin1String("gim");
             for (int i = 0; i < flags.length(); ++i) {
                 if (legalFlags.indexOf(flags.at(i)) == -1) {
-                    context->throwError(
+                    error = context->throwError(
                         QScriptContext::SyntaxError,
                         QString::fromUtf8("invalid regular expression flag '%0'")
                         .arg(flags.at(i)));
-                    return;
+                    break;
                 }
             }
         }
     }
-
-    newRegExp(&context->m_result, source, flags);
+    if (!error.isValid())
+        newRegExp(&context->m_result, source, flags);
+#ifndef Q_SCRIPT_NO_EVENT_NOTIFY
+    engine()->notifyFunctionExit(context);
+#endif
 }
 
 void RegExp::newRegExp(QScriptValueImpl *result, const QString &pattern, const QString &flags)
@@ -133,7 +134,7 @@ void RegExp::newRegExp(QScriptValueImpl *result, const QString &pattern, const Q
 
     QScriptEnginePrivate *eng = engine();
     eng->newObject(result, publicPrototype, classInfo());
-    result->setObjectData(QExplicitlySharedDataPointer<QScriptObjectData>(instance));
+    result->setObjectData(instance);
     result->setProperty(QLatin1String("source"), QScriptValueImpl(eng, pattern), QScriptValue::ReadOnly);
 #endif // QT_NO_REGEXP
 }
@@ -159,7 +160,7 @@ void RegExp::newRegExp_helper(QScriptValueImpl *result, const QRegExp &rx,
 
     QScriptEnginePrivate *eng = engine();
     eng->newObject(result, publicPrototype, classInfo());
-    result->setObjectData(QExplicitlySharedDataPointer<QScriptObjectData>(instance));
+    result->setObjectData(instance);
 
     QScriptValue::PropertyFlags propertyFlags = QScriptValue::SkipInEnumeration
                                                 | QScriptValue::Undeletable
@@ -260,5 +261,7 @@ QScriptValueImpl RegExp::method_toString(QScriptContextPrivate *context, QScript
 }
 
 } } // namespace QScript::Ecma
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT

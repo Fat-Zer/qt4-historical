@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example draganddrop/fridgemagnets
     \title Fridge Magnets Example
@@ -27,9 +70,7 @@
     The \c DragWidget class inherits QWidget, providing support for
     drag and drop operations:
 
-    \quotefromfile draganddrop/fridgemagnets/dragwidget.h
-    \skipto class DragWidget
-    \printuntil };
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.h 0
 
     To enable drag and drop, we simply reimplement the \l
     {QWidget::}{dragEnterEvent()}, \l {QWidget::}{dragMoveEvent()} and
@@ -40,9 +81,7 @@
     In the constructor, we first open the file containing the words on
     our fridge magnets:
 
-    \quotefromfile draganddrop/fridgemagnets/dragwidget.cpp
-    \skipto DragWidget::DragWidget
-    \printuntil inputStream
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 0
 
     QFile is an I/O device for reading and writing text and binary
     files and resources, and may be used by itself or in combination
@@ -50,8 +89,7 @@
     contents of the file using the QTextStream class that provides a
     convenient interface for reading and writing text.
 
-    \skipto int x
-    \printuntil /^\s\s\s\s\}/
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 1
 
     Then we create the fridge magnets: As long as there is data (the
     QTextStream::atEnd() method returns true if there is no more data
@@ -61,14 +99,12 @@
     we calculate its position and ensure that it is visible by calling
     the QWidget::show() method.
 
-    \skipto newPalette
-    \printuntil setWindowTitle
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 2
 
     We also set the \c FridgeMagnets widget's palette, minimum size
     and window title.
 
-    \skipto setAcceptDrops
-    \printuntil /^\}/
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 3
 
     Finally, to enable our user to move the fridge magnets around, we
     must also set the \c FridgeMagnets widget's \l
@@ -88,11 +124,9 @@
     In our \c dragEnterEvent() implementation, we first determine
     whether we support the event's MIME type or not:
 
-    \skipto dragEnterEvent
-    \printuntil {
-    \skipto event->mimeData
-    \printuntil event->acceptProposedAction()
-    \printline }
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 4
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 5
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 6
 
     If the type is \c "application/x-fridgemagnet" and the event
     origins from any of this application's fridge magnet widgets, we
@@ -107,8 +141,7 @@
     origins from any other widget, we simply accept the proposed
     action.
 
-    \skipto else
-    \printuntil /^\}/
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 7
 
     We also accept the proposed action if the event's MIME type is \c
     text/plain, i.e., if QMimeData::hasText() returns true. If the
@@ -116,8 +149,7 @@
     \l {QDragMoveEvent::}{ignore()} method allowing the event to be
     propagated further.
 
-    \skipto dragMoveEvent
-    \printuntil /^\}/
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 8
 
     Drag move events occur when the cursor enters a widget, when it
     moves within the widget, and when a modifier key is pressed on the
@@ -128,8 +160,7 @@
     events.
 
     \target drop
-    \skipto dropEvent
-    \printuntil QMimeData
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 9
 
     Note that the \l {QWidget::}{dropEvent()} event handler behaves
     slightly different: We first get hold of the event's MIME
@@ -139,9 +170,8 @@
     types to ensure that information can be safely transferred between
     applications, and copied around within the same application.
 
-    \skipto itemData
-    \printuntil event->acceptProposedAction()
-    \printline }
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 10
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 11
 
     Then we retrieve the data associated with the \c
     "application/x-fridgemagnet" MIME type using a data stream, and
@@ -157,8 +187,7 @@
     {QDragMoveEvent::}{accept()} method. Otherwise, we simply accept
     the proposed action.
 
-    \skipto else if
-    \printuntil /^\}/
+    \snippet examples/draganddrop/fridgemagnets/dragwidget.cpp 12
 
     If the event's MIME type is \c text/plain, i.e., if
     QMimeData::hasText() returns true, we retrieve its text and split
@@ -179,9 +208,7 @@
     Each fridge magnet is represented by an instance of the \c
     DragLabel class:
 
-    \quotefromfile draganddrop/fridgemagnets/draglabel.h
-    \skipto class DragLabel
-    \printuntil };
+    \snippet examples/draganddrop/fridgemagnets/draglabel.h 0
 
     Earlier we set our main application widget's \l
     {QWidget::acceptDrops}{acceptDrops} property and reimplemented
@@ -197,9 +224,7 @@
     In the \c DragLabel constructor, we first create a QImage object
     on which we will draw the fridge magnet's text and frame:
 
-    \quotefromfile draganddrop/fridgemagnets/draglabel.cpp
-    \skipto DragLabel::DragLabel
-    \printuntil font.setStyleStrategy
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 0
 
     Its size depends on the current font size, and its format is
     QImage::Format_ARGB32_Premultiplied (i.e., the image is stored
@@ -211,8 +236,7 @@
     find an appropriate default family. The QFont::ForceOutline forces
     the use of outline fonts.
 
-    \skipto QPainter
-    \printuntil painter.end()
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 1
 
     To draw the text and frame onto the image, we use the QPainter
     class. QPainter provides highly optimized methods to do most of
@@ -228,8 +252,7 @@
     QPainter::Antialiasing render hint ensures that the paint engine
     will antialias the edges of primitives if possible.
 
-    \skipto setPixmap
-    \printuntil /^\}/
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 2
 
     When the painting is done, we convert our image to a pixmap using
     QPixmap's \l {QPixmap::}{fromImage()} method. This method also
@@ -246,10 +269,8 @@
     Now, let's take a look at the \l {QWidget::}{mousePressEvent()}
     event handler:
 
-    \skipto void DragLabel::mousePressEvent
-    \printline void DragLabel::mousePressEvent
-    \skipto QByteArray
-    \printuntil dataStream <<
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 3
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 4
 
     Mouse events occur when a mouse button is pressed or released
     inside a widget, or when the mouse cursor is moved. By
@@ -261,8 +282,7 @@
     array to store our item data, and a QDataStream object to stream
     the data to the byte array.
 
-    \skipto QMimeData
-    \printuntil mimeData->setText
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 5
 
     Then we create a new QMimeData object. As mentioned above,
     QMimeData objects associate the data that they hold with the
@@ -277,8 +297,7 @@
     method. We have already seen how our main widget detects both
     these MIME types with its event handlers.
 
-    \skipto QDrag
-    \printuntil hide()
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 6
 
 
     Finally, we create a QDrag object. It is the QDrag class that
@@ -299,8 +318,7 @@
     image itself to make the magnet appear as moving, immediately
     hiding the activated widget.
 
-    \skipto if
-    \printuntil /^\}/
+    \snippet examples/draganddrop/fridgemagnets/draglabel.cpp 7
 
     Then we start the drag using QDrag's \l {QDrag::}{exec()} method
     requesting that the magnet is moved when the drag is

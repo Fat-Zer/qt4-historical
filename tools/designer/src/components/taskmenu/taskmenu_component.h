@@ -49,6 +49,8 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 
 namespace qdesigner_internal {
@@ -57,7 +59,7 @@ class QT_TASKMENU_EXPORT TaskMenuComponent: public QObject
 {
     Q_OBJECT
 public:
-    TaskMenuComponent(QDesignerFormEditorInterface *core, QObject *parent = 0);
+    explicit TaskMenuComponent(QDesignerFormEditorInterface *core, QObject *parent = 0);
     virtual ~TaskMenuComponent();
 
     QDesignerFormEditorInterface *core() const;
@@ -67,5 +69,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TASKMENU_COMPONENT_H

@@ -47,14 +47,19 @@
 
 #include "sortingbox.h"
 
+//! [0]
 SortingBox::SortingBox()
 {
     setAttribute(Qt::WA_StaticContents);
+//! [0] //! [1]
     setMouseTracking(true);
+//! [1] //! [2]
     setBackgroundRole(QPalette::Base);
+//! [2]
 
     itemInMotion = 0;
 
+//! [3]
     newCircleButton = createToolButton(tr("New Circle"),
                                        QIcon(":/images/circle.png"),
                                        SLOT(createNewCircle()));
@@ -77,6 +82,7 @@ SortingBox::SortingBox()
     trianglePath.lineTo(120, 100);
     trianglePath.lineTo(x + 120 / 2, y);
 
+//! [3] //! [4]
     setWindowTitle(tr("Tool Tips"));
     resize(500, 300);
 
@@ -87,9 +93,12 @@ SortingBox::SortingBox()
     createShapeItem(trianglePath, tr("Triangle"),
                     initialItemPosition(trianglePath), initialItemColor());
 }
+//! [4]
 
+//! [5]
 bool SortingBox::event(QEvent *event)
 {
+//! [5] //! [6]
     if (event->type() == QEvent::ToolTip) {
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
         int index = itemAt(helpEvent->pos());
@@ -100,7 +109,9 @@ bool SortingBox::event(QEvent *event)
     }
     return QWidget::event(event);
 }
+//! [6]
 
+//! [7]
 void SortingBox::resizeEvent(QResizeEvent * /* event */)
 {
     int margin = style()->pixelMetric(QStyle::PM_DefaultTopLevelMargin);
@@ -111,19 +122,25 @@ void SortingBox::resizeEvent(QResizeEvent * /* event */)
     y = updateButtonGeometry(newSquareButton, x, y);
     updateButtonGeometry(newTriangleButton, x, y);
 }
+//! [7]
 
+//! [8]
 void SortingBox::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     foreach (ShapeItem shapeItem, shapeItems) {
+//! [8] //! [9]
         painter.translate(shapeItem.position());
+//! [9] //! [10]
         painter.setBrush(shapeItem.color());
         painter.drawPath(shapeItem.path());
         painter.translate(-shapeItem.position());
     }
 }
+//! [10]
 
+//! [11]
 void SortingBox::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -136,13 +153,17 @@ void SortingBox::mousePressEvent(QMouseEvent *event)
         }
     }
 }
+//! [11]
 
+//! [12]
 void SortingBox::mouseMoveEvent(QMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && itemInMotion)
         moveItemTo(event->pos());
 }
+//! [12]
 
+//! [13]
 void SortingBox::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && itemInMotion) {
@@ -150,28 +171,36 @@ void SortingBox::mouseReleaseEvent(QMouseEvent *event)
         itemInMotion = 0;
     }
 }
+//! [13]
 
+//! [14]
 void SortingBox::createNewCircle()
 {
     static int count = 1;
     createShapeItem(circlePath, tr("Circle <%1>").arg(++count),
                     randomItemPosition(), randomItemColor());
 }
+//! [14]
 
+//! [15]
 void SortingBox::createNewSquare()
 {
     static int count = 1;
     createShapeItem(squarePath, tr("Square <%1>").arg(++count),
                     randomItemPosition(), randomItemColor());
 }
+//! [15]
 
+//! [16]
 void SortingBox::createNewTriangle()
 {
     static int count = 1;
     createShapeItem(trianglePath, tr("Triangle <%1>").arg(++count),
                     randomItemPosition(), randomItemColor());
 }
+//! [16]
 
+//! [17]
 int SortingBox::itemAt(const QPoint &pos)
 {
     for (int i = shapeItems.size() - 1; i >= 0; --i) {
@@ -181,15 +210,20 @@ int SortingBox::itemAt(const QPoint &pos)
     }
     return -1;
 }
+//! [17]
 
+//! [18]
 void SortingBox::moveItemTo(const QPoint &pos)
 {
     QPoint offset = pos - previousPosition;
     itemInMotion->setPosition(itemInMotion->position() + offset);
+//! [18] //! [19]
     previousPosition = pos;
     update();
 }
+//! [19]
 
+//! [20]
 int SortingBox::updateButtonGeometry(QToolButton *button, int x, int y)
 {
     QSize size = button->sizeHint();
@@ -199,7 +233,9 @@ int SortingBox::updateButtonGeometry(QToolButton *button, int x, int y)
     return y - size.rheight()
            - style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing);
 }
+//! [20]
 
+//! [21]
 void SortingBox::createShapeItem(const QPainterPath &path,
                                  const QString &toolTip, const QPoint &pos,
                                  const QColor &color)
@@ -212,7 +248,9 @@ void SortingBox::createShapeItem(const QPainterPath &path,
     shapeItems.append(shapeItem);
     update();
 }
+//! [21]
 
+//! [22]
 QToolButton *SortingBox::createToolButton(const QString &toolTip,
                                           const QIcon &icon, const char *member)
 {
@@ -224,7 +262,9 @@ QToolButton *SortingBox::createToolButton(const QString &toolTip,
 
     return button;
 }
+//! [22]
 
+//! [23]
 QPoint SortingBox::initialItemPosition(const QPainterPath &path)
 {
     int x;
@@ -237,18 +277,25 @@ QPoint SortingBox::initialItemPosition(const QPainterPath &path)
 
     return QPoint(x, y);
 }
+//! [23]
 
+//! [24]
 QPoint SortingBox::randomItemPosition()
 {
     return QPoint(qrand() % (width() - 120), qrand() % (height() - 120));
 }
+//! [24]
 
+//! [25]
 QColor SortingBox::initialItemColor()
 {
     return QColor::fromHsv(((shapeItems.size() + 1) * 85) % 256, 255, 190);
 }
+//! [25]
 
+//! [26]
 QColor SortingBox::randomItemColor()
 {
     return QColor::fromHsv(qrand() % 256, 255, 190);
 }
+//! [26]

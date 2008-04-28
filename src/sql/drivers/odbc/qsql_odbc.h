@@ -85,6 +85,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QODBCPrivate;
 class QODBCDriverPrivate;
 class QODBCDriver;
@@ -113,6 +115,8 @@ protected:
     int size();
     int numRowsAffected();
     QSqlRecord record() const;
+    void virtual_hook(int id, void *data);
+    bool nextResult();
 
 private:
     QODBCPrivate *d;
@@ -154,6 +158,8 @@ private:
     QODBCDriverPrivate* d;
     friend class QODBCPrivate;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

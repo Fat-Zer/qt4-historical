@@ -53,6 +53,7 @@
 #include "treeitem.h"
 #include "treemodel.h"
 
+//! [0]
 TreeModel::TreeModel(const QString &data, QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -61,12 +62,16 @@ TreeModel::TreeModel(const QString &data, QObject *parent)
     rootItem = new TreeItem(rootData);
     setupModelData(data.split(QString("\n")), rootItem);
 }
+//! [0]
 
+//! [1]
 TreeModel::~TreeModel()
 {
     delete rootItem;
 }
+//! [1]
 
+//! [2]
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
@@ -74,7 +79,9 @@ int TreeModel::columnCount(const QModelIndex &parent) const
     else
         return rootItem->columnCount();
 }
+//! [2]
 
+//! [3]
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -87,7 +94,9 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
     return item->data(index.column());
 }
+//! [3]
 
+//! [4]
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
@@ -95,7 +104,9 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
+//! [4]
 
+//! [5]
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
@@ -104,7 +115,9 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
 
     return QVariant();
 }
+//! [5]
 
+//! [6]
 QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
             const
 {
@@ -124,7 +137,9 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
     else
         return QModelIndex();
 }
+//! [6]
 
+//! [7]
 QModelIndex TreeModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
@@ -138,7 +153,9 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
 
     return createIndex(parentItem->row(), 0, parentItem);
 }
+//! [7]
 
+//! [8]
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
     TreeItem *parentItem;
@@ -152,6 +169,7 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
     return parentItem->childCount();
 }
+//! [8]
 
 void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
 {

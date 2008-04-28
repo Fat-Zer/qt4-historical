@@ -60,6 +60,12 @@
 #include "qdnd_p.h"
 #include "qdebug.h"
 
+#if defined(Q_OS_WINCE)
+#include "qguifunctions_wince.h"
+#endif
+
+QT_BEGIN_NAMESPACE
+
 //#define QDND_DEBUG
 
 #ifdef QDND_DEBUG
@@ -154,36 +160,6 @@ private:
 };
 
 
-class QOleDropTarget : public IDropTarget
-{
-public:
-    QOleDropTarget(QWidget* w);
-
-    void releaseQt()
-    {
-        widget = 0;
-    }
-
-    // IUnknown methods
-    STDMETHOD(QueryInterface)(REFIID riid, void FAR* FAR* ppvObj);
-    STDMETHOD_(ULONG, AddRef)(void);
-    STDMETHOD_(ULONG, Release)(void);
-
-    // IDropTarget methods
-    STDMETHOD(DragEnter)(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect);
-    STDMETHOD(DragOver)(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect);
-    STDMETHOD(DragLeave)();
-    STDMETHOD(Drop)(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect);
-
-private:
-    ULONG m_refs;
-    QWidget* widget;
-    QRect answerRect;
-    QPoint lastPoint;
-    DWORD choosenEffect;
-    DWORD lastKeyState;
-};
-
 QOleDropSource::QOleDropSource()
 {
     m_refs = 1;
@@ -225,10 +201,11 @@ void QOleDropSource::createCursors()
             QPoint pmDest = QPoint(qMax(0, -hotSpot.x()), qMax(0, -hotSpot.y()));
             QPoint newHotSpot = hotSpot;
 
+#if !defined(Q_OS_WINCE) || defined(GWES_ICONCURS)
 			bool limitedCursorSize = (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based)
-				                  || (QSysInfo::WindowsVersion == QSysInfo::WV_NT);
+				                  || (QSysInfo::WindowsVersion == QSysInfo::WV_NT)
+                                  || (QSysInfo::WindowsVersion == QSysInfo::WV_CE);
 
-#ifndef Q_OS_TEMP
             if (limitedCursorSize) {
                 // Limited cursor size
                 int reqw = GetSystemMetrics(SM_CXCURSOR);
@@ -267,8 +244,10 @@ void QOleDropSource::createCursors()
                 newCursor = cpm;
             }
 
+#ifndef QT_NO_CURSOR
             cursors[actions.at(cnum)] = QCursor(newCursor, pm.isNull() ? 0 : qMax(0,newHotSpot.x()),
                                                 pm.isNull() ? 0 : qMax(0,newHotSpot.y()));
+#endif
         }
     }
 }
@@ -315,7 +294,6 @@ QOleDropSource::Release(void)
 //---------------------------------------------------------------------
 //                    IDropSource Methods
 //---------------------------------------------------------------------
-
 STDMETHODIMP
 QOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
 {
@@ -328,6 +306,15 @@ QOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
     } else if (!(grfKeyState & (MK_LBUTTON|MK_MBUTTON|MK_RBUTTON))) {
         return ResultFromScode(DRAGDROP_S_DROP);
     } else {
+#if defined(Q_OS_WINCE)
+        // grfKeyState is broken on CE, therefore need to check
+        // the state manually
+        if ((GetAsyncKeyState(VK_LBUTTON) == 0) &&
+            (GetAsyncKeyState(VK_MBUTTON) == 0) &&
+            (GetAsyncKeyState(VK_RBUTTON) == 0)) {
+            return ResultFromScode(DRAGDROP_S_DROP);
+        }
+#endif
         qApp->processEvents();
         return NOERROR;
     }
@@ -349,7 +336,9 @@ QOleDropSource::GiveFeedback(DWORD dwEffect)
     }
 
     if (cursors.contains(currentAction)) {
+#ifndef QT_NO_CURSOR
         SetCursor(cursors[currentAction].handle());
+#endif
         return ResultFromScode(S_OK);
     }
 
@@ -440,9 +429,11 @@ QOleDataObject::GetData(LPFORMATETC pformatetc, LPSTGMEDIUM pmedium)
 {
 #ifdef QDND_DEBUG
     qDebug("QOleDataObject::GetData(LPFORMATETC pformatetc, LPSTGMEDIUM pmedium)");
+#ifndef Q_OS_WINCE
     char buf[256] = {0};
     GetClipboardFormatNameA(pformatetc->cfFormat, buf, 255);
     qDebug("CF = %d : %s", pformatetc->cfFormat, buf);
+#endif
 #endif
 
     if (!data)
@@ -566,6 +557,11 @@ QOleDropTarget::QOleDropTarget(QWidget* w)
    m_refs = 1;
 }
 
+void QOleDropTarget::releaseQt()
+{
+    widget = 0;
+}
+
 //---------------------------------------------------------------------
 //                    IUnknown Methods
 //---------------------------------------------------------------------
@@ -622,18 +618,29 @@ QOleDropTarget::DragEnter(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, L
     QDragManager *manager = QDragManager::self();
     manager->dropData->currentDataObject = pDataObj;
     manager->dropData->currentDataObject->AddRef();
+    sendDragEnterEvent(widget, grfKeyState, pt, pdwEffect);
+    *pdwEffect = choosenEffect;
 
-    lastPoint = widget->mapFromGlobal(QPoint(pt.x,pt.y));
+    return NOERROR;
+}
+
+void QOleDropTarget::sendDragEnterEvent(QWidget *dragEnterWidget, DWORD grfKeyState,
+                                        POINTL pt, LPDWORD pdwEffect)
+{
+    Q_ASSERT(dragEnterWidget);
+    lastPoint = dragEnterWidget->mapFromGlobal(QPoint(pt.x,pt.y));
     lastKeyState = grfKeyState;
 
     choosenEffect = DROPEFFECT_NONE;
-    
+    currentWidget = dragEnterWidget;
+
+    QDragManager *manager = QDragManager::self();
     QMimeData * md = manager->source() ? manager->dragPrivate()->data : manager->dropData;
     QDragEnterEvent enterEvent(lastPoint, translateToQDragDropActions(*pdwEffect), md,
                       toQtMouseButtons(grfKeyState), toQtKeyboardModifiers(grfKeyState));
-    QApplication::sendEvent(widget, &enterEvent);
+    QApplication::sendEvent(dragEnterWidget, &enterEvent);
     answerRect = enterEvent.answerRect();
-    
+
     if (enterEvent.isAccepted()) {
         choosenEffect = translateToWinDragEffects(enterEvent.dropAction());
     }
@@ -647,7 +654,7 @@ QOleDropTarget::DragEnter(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, L
         moveEvent.setDropAction(enterEvent.dropAction());
         moveEvent.accept(); // accept by default, since enter event was accepted.
 
-        QApplication::sendEvent(widget, &moveEvent);
+        QApplication::sendEvent(dragEnterWidget, &moveEvent);
         if (moveEvent.isAccepted()) {
             answerRect = moveEvent.answerRect();
             choosenEffect = translateToWinDragEffects(moveEvent.dropAction());
@@ -655,9 +662,7 @@ QOleDropTarget::DragEnter(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, L
             choosenEffect = DROPEFFECT_NONE;
         }
     }
-    *pdwEffect = choosenEffect;
 
-    return NOERROR;
 }
 
 STDMETHODIMP
@@ -667,18 +672,30 @@ QOleDropTarget::DragOver(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)
     qDebug("QOleDropTarget::DragOver(grfKeyState %d, pt (%d,%d), pdwEffect %d)", grfKeyState, pt.x, pt.y, pdwEffect);
 #endif
 
-    if (!QApplicationPrivate::tryModalHelper(widget)) {
+    QWidget *dragOverWidget = widget->childAt(widget->mapFromGlobal(QPoint(pt.x, pt.y)));
+    if (!dragOverWidget)
+        dragOverWidget = widget;
+
+
+    if (!QApplicationPrivate::tryModalHelper(dragOverWidget)
+            || !dragOverWidget->testAttribute(Qt::WA_DropSiteRegistered)) {
         *pdwEffect = DROPEFFECT_NONE;
         return NOERROR;
     }
 
-
-
-    QPoint tmpPoint = widget->mapFromGlobal(QPoint(pt.x,pt.y));
+    QPoint tmpPoint = dragOverWidget->mapFromGlobal(QPoint(pt.x, pt.y));
     // see if we should compress this event
     if ((tmpPoint == lastPoint || answerRect.contains(tmpPoint)) && lastKeyState == grfKeyState) {
         *pdwEffect = choosenEffect;
         return NOERROR;
+    }
+
+    if (!dragOverWidget->internalWinId() && currentWidget && dragOverWidget != currentWidget) {
+        // Send drag leave event to the previous drag widget.
+        QDragLeaveEvent dragLeave;
+        QApplication::sendEvent(currentWidget, &dragLeave);
+        // Send drag enter event to the current drag widget.
+        sendDragEnterEvent(dragOverWidget, grfKeyState, pt, pdwEffect);
     }
 
     lastPoint = tmpPoint;
@@ -692,7 +709,7 @@ QOleDropTarget::DragOver(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)
         e.setDropAction(translateToQDragDropAction(choosenEffect));
         e.accept();
     }
-    QApplication::sendEvent(widget, &e);
+    QApplication::sendEvent(dragOverWidget, &e);
 
     answerRect = e.answerRect();
     if (e.isAccepted())
@@ -715,6 +732,7 @@ QOleDropTarget::DragLeave()
         return NOERROR;
     }
 
+    currentWidget = 0;
     QDragLeaveEvent e;
     QApplication::sendEvent(widget, &e);
 
@@ -737,12 +755,17 @@ QOleDropTarget::Drop(LPDATAOBJECT /*pDataObj*/, DWORD grfKeyState, POINTL pt, LP
     qDebug("QOleDropTarget::Drop(LPDATAOBJECT /*pDataObj*/, grfKeyState %d, POINTL pt, LPDWORD pdwEffect)", grfKeyState);
 #endif
 
-    if (!QApplicationPrivate::tryModalHelper(widget)) {
+    QWidget *dropWidget = widget->childAt(widget->mapFromGlobal(QPoint(pt.x, pt.y)));
+    if (!dropWidget)
+        dropWidget = widget;
+
+    if (!QApplicationPrivate::tryModalHelper(dropWidget)
+            || !dropWidget->testAttribute(Qt::WA_DropSiteRegistered)) {
         *pdwEffect = DROPEFFECT_NONE;
         return NOERROR;
     }
 
-    lastPoint = widget->mapFromGlobal(QPoint(pt.x,pt.y));
+    lastPoint = dropWidget->mapFromGlobal(QPoint(pt.x,pt.y));
     // grfKeyState does not all ways contain button state in the drop so if
     // it doesn't then use the last known button state;
     if ((grfKeyState & KEY_STATE_BUTTON_MASK) == 0)
@@ -753,7 +776,7 @@ QOleDropTarget::Drop(LPDATAOBJECT /*pDataObj*/, DWORD grfKeyState, POINTL pt, LP
     QMimeData *md = manager->source() ? manager->dragPrivate()->data : manager->dropData;
     QDropEvent e(lastPoint, translateToQDragDropActions(*pdwEffect), md,
                  toQtMouseButtons(grfKeyState), toQtKeyboardModifiers(grfKeyState));
-    QApplication::sendEvent(widget, &e);
+    QApplication::sendEvent(dropWidget, &e);
 
     if (e.isAccepted()) {
         if (e.dropAction() == Qt::MoveAction || e.dropAction() == Qt::TargetMoveAction) {
@@ -870,11 +893,11 @@ Qt::DropAction QDragManager::drag(QDrag *o)
     QOleDataObject *obj = new QOleDataObject(o->mimeData());
     DWORD allowedEffects = translateToWinDragEffects(dragPrivate()->possible_actions);
 
-#ifdef Q_OS_TEMP
-    HRESULT r = 0;
-    resultEffect = 0;
-#else
+#if !defined(Q_OS_WINCE) || defined(GWES_ICONCURS)
     HRESULT r = DoDragDrop(obj, src, allowedEffects, &resultEffect);
+#else
+    HRESULT r = DRAGDROP_S_CANCEL;
+    resultEffect = DROPEFFECT_MOVE;
 #endif
 
     Qt::DropAction ret = Qt::IgnoreAction;
@@ -928,29 +951,6 @@ void QDragManager::cancel(bool /* deleteSource */)
 #endif
 }
 
-
-void qt_olednd_unregister(QWidget* widget, QOleDropTarget *dst)
-{
-    dst->releaseQt();
-    dst->Release();
-#ifndef Q_OS_TEMP
-    CoLockObjectExternal(dst, FALSE, TRUE);
-    Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
-    RevokeDragDrop(widget->internalWinId());
-#endif
-}
-
-QOleDropTarget* qt_olednd_register(QWidget* widget)
-{
-    QOleDropTarget* dst = new QOleDropTarget(widget);
-#ifndef Q_OS_TEMP
-    Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
-    RegisterDragDrop(widget->internalWinId(), dst);
-    CoLockObjectExternal(dst, TRUE, TRUE);
-#endif
-    return dst;
-}
-
 void QDragManager::updatePixmap()
 {
     // not used in windows implementation
@@ -977,7 +977,6 @@ void QDragManager::drop()
     // not used in windows implementation
 }
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_DRAGANDDROP
-
-
-

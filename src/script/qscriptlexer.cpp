@@ -61,6 +61,10 @@
 #include <stdio.h>
 #include <string.h>
 
+QT_BEGIN_NAMESPACE
+
+extern double qstrtod(const char *s00, char const **se, bool *ok);
+
 #define shiftWindowsLineBreak() if(current == '\r' && next1 == '\n') shift(1);
 
 
@@ -73,7 +77,10 @@ QScript::Lexer::Lexer(QScriptEngine *eng)
       code(0), length(0),
       bol(true),
       current(0), next1(0), next2(0), next3(0),
-      check_reserved(true)
+      err(NoError),
+      check_reserved(true),
+      parenthesesState(IgnoreParentheses),
+      prohibitAutomaticSemicolon(false)
 {
     if (eng)
         driver = QScriptEnginePrivate::get(eng);
@@ -94,7 +101,7 @@ void QScript::Lexer::setCode(const QString &c, int lineno)
 {
     errmsg = QString();
     yylineno = lineno;
-    yycolumn = 0;
+    yycolumn = 1;
     restrKeyword = false;
     delimited = false;
     stackToken = -1;
@@ -447,7 +454,8 @@ int QScript::Lexer::lex()
                 shift(1);
                 state = InMultiLineComment;
             } else if (current == 0) {
-                if (!terminator && !delimited) {
+                syncProhibitAutomaticSemicolon();
+                if (!terminator && !delimited && !prohibitAutomaticSemicolon) {
                     // automatic semicolon insertion if program incomplete
                     token = QScriptGrammar::T_SEMICOLON;
                     stackToken = 0;
@@ -458,9 +466,10 @@ int QScript::Lexer::lex()
             } else if (isLineTerminator()) {
                 shiftWindowsLineBreak();
                 yylineno++;
-                yycolumn = -1;
+                yycolumn = 0;
                 bol = true;
                 terminator = true;
+                syncProhibitAutomaticSemicolon();
                 if (restrKeyword) {
                     token = QScriptGrammar::T_SEMICOLON;
                     setDone(Other);
@@ -489,7 +498,7 @@ int QScript::Lexer::lex()
                 recordStartPos();
                 token = matchPunctuator(current, next1, next2, next3);
                 if (token != -1) {
-                    if (terminator && !delimited
+                    if (terminator && !delimited && !prohibitAutomaticSemicolon
                         && (token == QScriptGrammar::T_PLUS_PLUS
                             || token == QScriptGrammar::T_MINUS_MINUS)) {
                         // automatic semicolon insertion
@@ -500,6 +509,7 @@ int QScript::Lexer::lex()
                 }
                 else {
                     setDone(Bad);
+                    err = IllegalCharacter;
                     errmsg = QLatin1String("Illegal character");
                 }
             }
@@ -510,6 +520,7 @@ int QScript::Lexer::lex()
                 setDone(String);
             } else if (current == 0 || isLineTerminator()) {
                 setDone(Bad);
+                err = UnclosedStringLiteral;
                 errmsg = QLatin1String("Unclosed string at end of line");
             } else if (current == '\\') {
                 state = InEscapeSequence;
@@ -535,6 +546,7 @@ int QScript::Lexer::lex()
                     state = InString;
                 } else {
                     setDone(Bad);
+                    err = IllegalEscapeSequence;
                     errmsg = QLatin1String("Illegal escape squence");
                 }
             } else if (current == 'x')
@@ -573,6 +585,7 @@ int QScript::Lexer::lex()
                 setDone(String);
             } else {
                 setDone(Bad);
+                err = IllegalUnicodeEscapeSequence;
                 errmsg = QLatin1String("Illegal unicode escape sequence");
             }
             break;
@@ -580,7 +593,7 @@ int QScript::Lexer::lex()
             if (isLineTerminator()) {
                 shiftWindowsLineBreak();
                 yylineno++;
-                yycolumn = -1;
+                yycolumn = 0;
                 terminator = true;
                 bol = true;
                 if (restrKeyword) {
@@ -595,6 +608,7 @@ int QScript::Lexer::lex()
         case InMultiLineComment:
             if (current == 0) {
                 setDone(Bad);
+                err = UnclosedComment;
                 errmsg = QLatin1String("Unclosed comment at end of file");
             } else if (isLineTerminator()) {
                 shiftWindowsLineBreak();
@@ -678,6 +692,7 @@ int QScript::Lexer::lex()
                 state = InExponent;
             } else {
                 setDone(Bad);
+                err = IllegalExponentIndicator;
                 errmsg = QLatin1String("Illegal syntax for exponential number");
             }
             break;
@@ -703,6 +718,7 @@ int QScript::Lexer::lex()
     if ((state == Number || state == Octal || state == Hex)
          && isIdentLetter(current)) {
         state = Bad;
+        err = IllegalIdentifier;
         errmsg = QLatin1String("Identifier cannot start with numeric literal");
     }
 
@@ -711,15 +727,14 @@ int QScript::Lexer::lex()
 
     double dval = 0;
     if (state == Number) {
-#if defined(Q_WS_WIN) || defined(Q_OS_SOLARIS) || defined(Q_OS_IRIX) || defined(Q_CC_HPACC) || defined(Q_OS_AIX) || defined(Q_OS_OPENBSD)
-        // ### This may cause autotest failure, but that's just plain weird...
-        dval = strtod(buffer8, 0L);
-#else
-        dval = strtold(buffer8, 0L);
-#endif
+        dval = qstrtod(buffer8, 0, 0);
     } else if (state == Hex) { // scan hex numbers
         quint64 i;
-#if defined(_MSC_VER) && _MSC_VER >= 1400
+#if defined(Q_OS_WINCE)
+        // sscanf, swscanf is broken under CE. Need to
+        // use our own implementation
+        i = QString::fromAscii(buffer8).remove(0,2).toULongLong(NULL,16);
+#elif defined(_MSC_VER) && _MSC_VER >= 1400
         sscanf_s(buffer8, "%llx", &i);
 #elif defined(Q_WS_WIN)
         sscanf(buffer8, "%I64x", &i);
@@ -734,7 +749,11 @@ int QScript::Lexer::lex()
         state = Number;
     } else if (state == Octal) {   // scan octal number
         quint64 ui;
-#if defined(_MSC_VER) && _MSC_VER >= 1400
+#if defined(Q_OS_WINCE)
+        // sscanf, swscanf is broken under CE. Need to
+        // use our own implementation
+        ui = QString::fromAscii(buffer8).toULongLong(NULL,8);
+#elif defined(_MSC_VER) && _MSC_VER >= 1400
         sscanf_s(buffer8, "%llo", &ui);
 #elif defined(Q_WS_WIN)
         sscanf(buffer8, "%I64o", &ui);
@@ -752,6 +771,23 @@ int QScript::Lexer::lex()
     restrKeyword = false;
     delimited = false;
 
+    switch (parenthesesState) {
+    case IgnoreParentheses:
+        break;
+    case CountParentheses:
+        if (token == QScriptGrammar::T_RPAREN) {
+            --parenthesesCount;
+            if (parenthesesCount == 0)
+                parenthesesState = BalancedParentheses;
+        } else if (token == QScriptGrammar::T_LPAREN) {
+            ++parenthesesCount;
+        }
+        break;
+    case BalancedParentheses:
+        parenthesesState = IgnoreParentheses;
+        break;
+    }
+
     switch (state) {
     case Eof:
         return 0;
@@ -768,9 +804,16 @@ int QScript::Lexer::lex()
                 qsyylval.ustr = 0;
             return QScriptGrammar::T_IDENTIFIER;
         }
-        if (token == QScriptGrammar::T_CONTINUE || token == QScriptGrammar::T_BREAK ||
-             token == QScriptGrammar::T_RETURN || token == QScriptGrammar::T_THROW)
+        if (token == QScriptGrammar::T_CONTINUE || token == QScriptGrammar::T_BREAK
+            || token == QScriptGrammar::T_RETURN || token == QScriptGrammar::T_THROW) {
             restrKeyword = true;
+        } else if (token == QScriptGrammar::T_IF || token == QScriptGrammar::T_FOR
+                   || token == QScriptGrammar::T_WHILE || token == QScriptGrammar::T_WITH) {
+            parenthesesState = CountParentheses;
+            parenthesesCount = 0;
+        } else if (token == QScriptGrammar::T_DO) {
+            parenthesesState = BalancedParentheses;
+        }
         return token;
     case String:
         if (driver)
@@ -1062,6 +1105,19 @@ bool QScript::Lexer::scanRegExp()
     return true;
 }
 
+void QScript::Lexer::syncProhibitAutomaticSemicolon()
+{
+    if (parenthesesState == BalancedParentheses) {
+        // we have seen something like "if (foo)", which means we should
+        // never insert an automatic semicolon at this point, since it would
+        // then be expanded into an empty statement (ECMA-262 7.9.1)
+        prohibitAutomaticSemicolon = true;
+        parenthesesState = IgnoreParentheses;
+    } else {
+        prohibitAutomaticSemicolon = false;
+    }
+}
+
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
-
-

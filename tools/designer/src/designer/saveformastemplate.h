@@ -46,13 +46,15 @@
 
 #include "ui_saveformastemplate.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 class SaveFormAsTemplate: public QDialog
 {
     Q_OBJECT
 public:
-    SaveFormAsTemplate(QDesignerFormWindowInterface *formWindow, QWidget *parent = 0);
+    explicit SaveFormAsTemplate(QDesignerFormWindowInterface *formWindow, QWidget *parent = 0);
     virtual ~SaveFormAsTemplate();
 
 private slots:
@@ -65,5 +67,7 @@ private:
     QDesignerFormWindowInterface *m_formWindow;
     int m_addPathIndex;
 };
+
+QT_END_NAMESPACE
 
 #endif // SAVEFORMASTEMPLATE_H

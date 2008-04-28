@@ -47,13 +47,15 @@
 #include <QtCore/QPointer>
 #include <QtGui/QMainWindow>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWorkbench;
 
 class QDesignerToolWindow: public QMainWindow
 {
     Q_OBJECT
 public:
-    QDesignerToolWindow(QDesignerWorkbench *workbench, QWidget *parent = 0, Qt::WindowFlags flags = Qt::Window);
+    explicit QDesignerToolWindow(QDesignerWorkbench *workbench, QWidget *parent = 0, Qt::WindowFlags flags = Qt::Window);
     virtual ~QDesignerToolWindow();
 
     QDesignerWorkbench *workbench() const;
@@ -79,5 +81,7 @@ private:
     QAction *m_action;
     bool m_saveSettings;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_TOOLWINDOW_H

@@ -1,5 +1,48 @@
 /****************************************************************************
 **
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/****************************************************************************
+**
 ** Qt Debugging Techniques
 **
 ** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
@@ -92,9 +135,7 @@
     If you include the <QtDebug> header file, the \c qDebug() function
     can also be used as an output stream. For example:
 
-    \code
-        qDebug() << "Widget" << widget << "at position" << widget->pos();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.debug.qdoc 0
 
     The Qt implementation of these functions prints the text to the
     \c stderr output under Unix/X11 and Mac OS X. With Windows, if it
@@ -125,9 +166,7 @@
     between each item. Here is an example for a class that represents
     a 2D coordinate.
 
-    \quotefromfile snippets/qdebugsnippet.cpp
-    \skipto /QDebug/
-    \printuntil /^\}/
+    \snippet doc/src/snippets/qdebugsnippet.cpp 0
 
     \section1 Debugging Macros
 
@@ -150,29 +189,14 @@
 
     These macros are useful for detecting program errors, e.g. like this:
 
-    \code
-        char *alloc(int size)
-        {
-            Q_ASSERT(size > 0);
-            char *ptr = new char[size];
-            Q_CHECK_PTR(ptr);
-            return ptr;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.debug.qdoc 1
 
     Q_ASSERT(), Q_ASSERT_X(), and Q_CHECK_PTR() expand to nothing if
     \c QT_NO_DEBUG is defined during compilation. For this reason,
     the arguments to these macro should not have any side-effects.
     Here is an incorrect usage of Q_CHECK_PTR():
 
-    \code
-        char *alloc(int size)
-        {
-            char *ptr;
-            Q_CHECK_PTR(ptr = new char[size]);  // WRONG
-            return ptr;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.debug.qdoc 2
 
     If this code is compiled with \c QT_NO_DEBUG defined, the code in
     the Q_CHECK_PTR() expression is not executed and \e alloc returns

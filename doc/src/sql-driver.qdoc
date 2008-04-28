@@ -1,11 +1,40 @@
 /****************************************************************************
 **
-** Documentation for sql driver programming.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** This file is part of the documentation of the Qt Toolkit.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -64,16 +93,7 @@
     machine. Run \c{configure -help} to see what drivers can be
     built. You should get an output similar to this:
 
-    \code
-        -no-sql-<driver> ... Disable SQL <driver> entirely.
-        -qt-sql-<driver> ... Enable a SQL <driver> in the Qt Library, by default
-                             none are turned on.
-        -plugin-sql-<driver> Enable SQL <driver> as a plugin to be linked to
-                             at run time.
-
-                             Possible values for <driver>:
-                             [ db2 ibase mysql oci odbc psql sqlite sqlite2 tds ]
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 0
 
     The \c configure script cannot detect the neccessary libraries
     and include files if they are not in the standard paths, so it
@@ -106,23 +126,11 @@
 
     Example stored procedure:
 
-    \code
-    create procedure qtestproc (OUT param1 INT, OUT param2 INT)
-    BEGIN
-        set param1 = 42;
-        set param2 = 43;
-    END
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 1
 
     Source code to access the OUT values:
 
-    \code
-        QSqlQuery q;
-        q.exec("call qtestproc (@outval1, @outval2)");
-        q.exec("select @outval1, @outval2");
-        q.next();
-        qDebug() << q.value(0) << q.value(1); // outputs "42" and "43"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 2
 
     \bold{Note:} \c{@outval1} and \c{@outval2} are variables local to the current
     connection and will not be affected by queries sent from another host
@@ -151,19 +159,12 @@
     libraries (here it is assumed that MySQL is installed in
     \c{/usr/local}) and run \c{make}:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/mysql
-        qmake -o Makefile "INCLUDEPATH+=/usr/local/include" "LIBS+=-L/usr/local/lib -lmysqlclient_r" mysql.pro
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 3
 
     After installing Qt, as described in the \l{Installing Qt/X11} document,
     you also need to install the plugin in the standard location:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/mysql
-        make install
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 4
 
     \section3 How to Build the QMYSQL Plugin on Windows
 
@@ -172,14 +173,12 @@
     Build the plugin as follows (here it is assumed that MySQL is
     installed in \c{C:\MySQL}):
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\mysql
-        qmake -o Makefile "INCLUDEPATH+=C:\MySQL\include" "LIBS+=C:\MySQL\lib\opt\libmysql.lib" mysql.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 5
 
     If you are not using a Microsoft compiler, replace \c nmake with \c
     make in the line above.
+
+    \bold{Note:} This database plugin is not supported for Windows CE.
 
     \target QOCI
     \section2 QOCI for the Oracle Call Interface (OCI)
@@ -189,6 +188,10 @@
     The Qt OCI plugin supports Oracle 9i, 10g and higher. After
     connecting to the Oracle server, the plugin will auto-detect the
     database version and enable features accordingly.
+
+    It's possible to connect to a Oracle database without a tnsnames.ora file.
+    This requires that the database SID is passed to the driver as the database
+    name and that a hostname is given.
 
     \section3 OCI User Authentication
 
@@ -227,19 +230,11 @@
     libraries and run make:
 
     For Oracle version 9:
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/oci
-        qmake -o Makefile "INCLUDEPATH+=$ORACLE_HOME/rdbms/public $ORACLE_HOME/rdbms/demo" "LIBS+=-L$ORACLE_HOME/lib -lclntsh -lwtc9" oci.pro
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 6
 
     For Oracle version 10, we assume that you installed the RPM packages of the
     Instant Client Package SDK (you need to adjust the version number accordingly):
-    \code
-        cd $QTDIR/plugins/src/sqldrivers/oci
-        qmake -o Makefile "INCLUDEPATH+=/usr/include/oracle/10.1.0.3/client/" "LIBS+=-L/usr/lib/oracle/10.1.0.3/client/lib" oci.pro
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 7
 
     \section3 How to Build the OCI Plugin on Windows
 
@@ -249,13 +244,7 @@
     Build the plugin as follows (here it is assumed that Oracle Client is
     installed in \c{C:\oracle}):
 
-    \code
-        set INCLUDE=%INCLUDE%;c:\oracle\oci\include
-        set LIB=%LIB%;c:\oracle\oci\lib\msvc
-        cd %QTDIR%\src\plugins\sqldrivers\oci
-        qmake -o Makefile oci.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 8
 
     If you are not using a Microsoft compiler, replace \c nmake with \c
     make in the line above.
@@ -263,9 +252,9 @@
     When you run your application you will also need to add the \c oci.dll
     path to your \c PATH environment variable:
 
-    \code
-        set PATH=%PATH%;c:\oracle\bin
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 9
+
+    \bold{Note:} This database plugin is not supported for Windows CE.
 
     \target QODBC
     \section2 QODBC for Open Database Connectivity (ODBC)
@@ -302,32 +291,43 @@
     ODBC_CHECK_DRIVER} line from the file \c{qsql_odbc.cpp}. Do this at
     your own risk!
 
+    By default Qt will instruct the ODBC driver to behave as an ODBC 2.x
+    driver. With some driver managers and ODBC 3.x drivers, for example
+    with the combination of unixODBC and the MaxDB ODBC driver, this can
+    cause the driver plugin not to work as expected. This can be avoided
+    by instructing the driver to behave as an ODBC 3.x driver by using the
+    SQL_ATTR_ODBC_VERSION connect option. Note that this will affect
+    different aspects of the ODBC driver's behavior, for example SQLSTATEs.
+    Before using this connect option consult the ODBC documentation to
+    fully understand the behavioral changes.
+
     If you experience very slow access of the ODBC datasource, make sure
     that ODBC call tracing is turned off in the ODBC datasource manager.
 
+    Some drivers don't support scrollable cursors. In that case case only
+    queries in forwardOnly mode can be used successfully.
+
     \section3 ODBC Stored Procedure Support
 
-    With Microsoft SQL Server the result set returned by a stored 
+    With Microsoft SQL Server the result set returned by a stored
     procedure that uses the return statement, or returns multiple result
-    sets, will be accessible only if you set the query's forward only 
-    mode to \e forward using \l QSqlQuery::setForwardOnly(). 
+    sets, will be accessible only if you set the query's forward only
+    mode to \e forward using \l QSqlQuery::setForwardOnly().
 
-    \code
-    \\ STORED_PROC uses the return statement or returns multiple result sets
-    QSqlQuery query;
-    query.setForwardOnly(true);
-    query.exec("{call STORED_PROC}");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 10
 
     \bold{Note:} The value returned by the stored procedure's return statement
-    is discarded. If the stored procedure returns multiple result sets only
-    the first will be accessible.
+    is discarded.
 
     \section3 ODBC Unicode Support
 
     The QODBC Plugin will use the Unicode API if UNICODE is defined. On
     Windows NT based systems, this is the default. Note that the ODBC
     driver and the DBMS must also support Unicode.
+
+    Some driver managers and drivers don't support UNICODE. To use the
+    QODBC plugin with such drivers it has to be compiled with the
+    Q_ODBC_VERSION_2 defined.
 
     For the Oracle 9 ODBC driver (Windows), it is neccessary to check
     "SQL_WCHAR support" in the ODBC driver manager otherwise Oracle
@@ -343,32 +343,30 @@
     libraries (here it is assumed that unixODBC is installed in
     \c{/usr/local/unixODBC}) and run \c{make}:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/odbc
-        qmake "INCLUDEPATH+=/usr/local/unixODBC/include" "LIBS+=-L/usr/local/unixODBC/lib -lodbc"
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 11
 
     \section3 How to Build the ODBC Plugin on Windows
 
     The ODBC header and include files should already be installed in the
     right directories. You just have to build the plugin as follows:
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\odbc
-        qmake -o Makefile odbc.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 12
 
     If you are not using a Microsoft compiler, replace \c nmake with \c
     make in the line above.
+
+    \bold{Note:} This database plugin is not officially supported for Windows CE.
 
     \target QPSQL
     \section2 QPSQL for PostgreSQL (Version 7.3 and Above)
 
     \section3 General Information about the QPSQL driver
 
-    The QPSQL driver supports version 7.3 and higher of PostgreSQL.
+    The QPSQL driver supports version 7.3 and higher of the PostgreSQL server.
+    We recommend that you use a client library from version 7.3.15, 7.4.13,
+    8.0.8, 8.1.4 or more recent as these versions contain security fixes, and
+    as the QPSQL driver might not build with older versions of the client
+    library depending on your platform.
 
     For more information about PostgreSQL visit \l http://www.postgresql.org.
 
@@ -400,38 +398,29 @@
     libraries, run \c qmake the following way (assuming that the
     PostgreSQL client is installed in \c{/usr}):
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/psql
-        qmake -o Makefile "INCLUDEPATH+=/usr/include/pgsql" "LIBS+=-L/usr/lib -lpq" psql.pro
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 13
 
     After installing Qt, as described in the \l{Installing Qt/X11} document,
     you also need to install the plugin in the standard location:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/psql
-        make install
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 14
 
     \section3 How to Build the QPSQL Plugin on Windows
 
     Install the PostgreSQL developer libraries. Assuming that PostgreSQL
     was installed in \c{C:\psql}, build the plugin as follows:
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\psql
-        qmake -o Makefile "INCLUDEPATH+=C:\psql\include" "LIBS+=C:\psql\lib\ms\libpq.lib" psql.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 15
+
+    \bold{Note:} This database plugin is not supported for Windows CE.
 
     \target QTDS
     \section2 QTDS for Sybase Adaptive Server
     \section3 General Information about QTDS
 
-    It is not possible to set the port with QSqlDatabase::setPort() due to limitations in the 
+    It is not possible to set the port with QSqlDatabase::setPort() due to limitations in the
     Sybase client library. Refer to the Sybase documentation for information on how to set up
-    a Sybase client configuration file to enable connections to databases on non-default ports. 
+    a Sybase client configuration file to enable connections to databases on non-default ports.
 
     \section3 How to Build the QDTS Plugin on Unix and Mac OS X
 
@@ -452,11 +441,7 @@
     point to the directory where you installed the client library and
     execute \c{qmake}:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/tds
-        qmake -o Makefile "INCLUDEPATH=$SYBASE/include" "LIBS=-L$SYBASE/lib -lsybdb"
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 16
 
     \section3 How to Build the QDTS Plugin on Windows
 
@@ -464,17 +449,15 @@
     Open Client (\l{http://www.sybase.com}). You must include \c
     NTWDBLIB.LIB to build the plugin:
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\tds
-        qmake -o Makefile "LIBS+=NTWDBLIB.LIB" tds.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 17
 
     By default the Microsoft library is used on Windows, if you want to
     force the use of the Sybase Open Client, you must define \c
     Q_USE_SYBASE in \c{%QTDIR%\src\sql\drivers\tds\qsql_tds.cpp}. If you
     are not using a Microsoft compiler, replace \c nmake with \c make in
     the line above.
+
+    \bold{Note:} This database plugin is not supported for Windows CE.
 
     \target QDB2
     \section2 QDB2 for IBM DB2 (Version 7.1 and Above)
@@ -494,33 +477,24 @@
 
     \section3 How to Build the QDB2 Plugin on Unix and Mac OS X
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/db2
-        qmake -o Makefile "INCLUDEPATH+=$DB2DIR/include" "LIBS+=-L$DB2DIR/lib -ldb2"
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 18
 
     After installing Qt, as described in the \l{Installing Qt/X11} document,
     you also need to install the plugin in the standard location:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/db2
-        make install
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 19
 
     \section3 How to Build the QDB2 Plugin on Windows
 
     The DB2 header and include files should already be installed in the
     right directories. You just have to build the plugin as follows:
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\db2
-        qmake -o Makefile "INCLUDEPATH+=<DB2 home>/sqllib/include" "LIBS+=<DB2 home>/sqllib/lib/db2cli.lib"
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 20
 
     If you are not using a Microsoft compiler, replace \c nmake
     with \c make in the line above.
+
+    \bold{Note:} This database plugin is not supported for Windows CE.
 
     \target QSQLITE2
     \section2 QSQLITE2 for SQLite Version 2
@@ -549,8 +523,14 @@
     until it runs into a timeout (see \c{QSQLITE_BUSY_TIMEOUT}
     at QSqlDatabase::setConnectOptions()).
 
-    SQLite doesn't have a type-system like other databases, so Qt
-    will interpret fields as strings.
+    In SQLite any column, with the exception of an INTEGER PRIMARY KEY column,
+    may be used to store any type of value. For instance, a column declared as
+    INTEGER may contain an integer value in one row and a text value in the
+    next. This is due to SQLite associating the type of a value with the value
+    itself rather than with the column it is stored in. A consequence of this
+    is that the type returned by QSqlField::type() only indicates the field's
+    recommended type. No assumption of the actual type should be made from
+    this and the type of the individual values should be checked.
 
     The driver is locked for updates while a select is executed. This
     may cause problems when using QSqlTableModel because Qt's item views
@@ -570,27 +550,16 @@
     can build it manually (replace \c $SQLITE by the directory where
     SQLite resides):
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/sqlite
-        qmake -o Makefile "INCLUDEPATH+=$SQLITE/include" "LIBS+=-L$SQLITE/lib -lsqlite"
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 21
 
     After installing Qt, as described in the \l{Installing Qt/X11} document,
     you also need to install the plugin in the standard location:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/sqlite
-        make install
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 22
 
     On Windows:
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\sqlite
-        qmake -o Makefile "INCLUDEPATH+=C:\SQLITE\INCLUDE" "LIBS+=C:\SQLITE\LIB\SQLITE3.LIB" sqlite.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 23
 
     \section3 QSQLITE File Format Compatibility
 
@@ -623,10 +592,7 @@
     database file, no matter whether it is stored locally or on another
     server.
 
-    \code
-        db.setHostName("MyServer");
-        db.setDatabaseName("C:\\test.gdb");
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 24
 
     You need the InterBase/Firebird development headers and libraries
     to build this plugin.
@@ -637,18 +603,14 @@
 
     \section3 QIBASE Unicode Support and Text Encoding
 
-    By default the driver connects to the database using UNICODE_FSS. This can 
+    By default the driver connects to the database using UNICODE_FSS. This can
     be overridden by setting the ISC_DPB_LC_CTYPE parameter with
     QSqlDatabase::setConnectOptions() before opening the connection.
 
-    \code
-       // connect to database using the Latin-1 character set 
-       db.setConnectOptions("ISC_DPB_LC_CTYPE=Latin1");
-       db.open();
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 25
 
     If Qt doesn't support the given text encoding the driver will issue a
-    warning message and connect to the database using UNICODE_FSS. 
+    warning message and connect to the database using UNICODE_FSS.
 
     Note that if the text encoding set when connecting to the database is
     not the same as in the database, problems with transliteration might arise.
@@ -659,12 +621,7 @@
     procedure, only IN values need to be bound via QSqlQuery::bindValue(). The
     RETURN/OUT values can be retrieved via QSqlQuery::value(). Example:
 
-    \code
-    QSqlQuery q;
-    q.exec("execute procedure my_procedure");
-    q.next();
-    qDebug() << q.value(0); // outputs the first RETURN/OUT value
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 26
 
     \section3 How to Build the QIBASE Plugin on Unix and Mac OS X
 
@@ -673,19 +630,11 @@
 
     If you are using InterBase:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/ibase
-        qmake -o Makefile "INCLUDEPATH+=/opt/interbase/include" "LIBS+=-L/opt/interbase/lib" ibase.pro
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 27
 
     If you are using Firebird, the Firebird library has to be set explicitly:
 
-    \code
-        cd $QTDIR/src/plugins/sqldrivers/ibase
-        qmake -o Makefile "INCLUDEPATH+=/opt/interbase/include" "LIBS+=-L/opt/interbase/lib -lfbclient" ibase.pro
-        make
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 28
 
     \section3 How to Build the QIBASE Plugin on Windows
 
@@ -694,24 +643,18 @@
 
     If you are using InterBase:
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\ibase
-        qmake -o Makefile "INCLUDEPATH+=C:\interbase\include" ibase.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 29
 
     If you are using Firebird, the Firebird library has to be set explicitely:
 
-    \code
-        cd %QTDIR%\src\plugins\sqldrivers\ibase
-        qmake -o Makefile "INCLUDEPATH+=C:\interbase\include" "LIBS+=-lfbclient" ibase.pro
-        nmake
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 30
 
     If you are not using a Microsoft compiler, replace \c nmake
     with \c make in the line above.
 
     Note that \c{C:\interbase\bin} must be in the \c PATH.
+
+    \bold{Note:} This database plugin is not supported for Windows CE.
 
     \target troubleshooting
     \section1 Troubleshooting
@@ -745,10 +688,7 @@
     If you are experiencing problems with loading plugins, and see output
     like this
 
-    \code
-        QSqlDatabase: QMYSQL driver not loaded
-        QSqlDatabase: available drivers: QMYSQL
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.sql-driver.qdoc 31
 
     the problem is probably that the plugin had the wrong build key. For
     debugging purposes, remove the corresponding entry in the
@@ -796,9 +736,7 @@
 
     The following code can be used as a skeleton for a SQL driver:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto class XyzResult
-    \printuntil };
-    \printline class XyzDriver
-    \printuntil };
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 47
+    \codeline
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 48
 */

@@ -62,6 +62,8 @@
 #include "qurl.h"
 #include "qcursor.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class Q3TextBrowser q3textbrowser.h
     \brief The Q3TextBrowser class provides a rich text browser with hypertext navigation.
@@ -94,9 +96,7 @@
     If you intend using the mime factory to read the data directly
     from the file system, you may have to specify the encoding for the
     file extension you are using. For example:
-    \code
-    mimeSourceFactory()->setExtensionType("qml", "text/utf8");
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.text.q3textbrowser.cpp 0
     This is to ensure that the factory is able to resolve the document
     names.
 
@@ -522,5 +522,7 @@ void Q3TextBrowser::emitLinkClicked(const QString &s)
     if (!d->textOrSourceChanged)
         setSource(s);
 }
+
+QT_END_NAMESPACE
 
 #endif  // QT_NO_TEXTBROWSER

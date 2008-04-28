@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example mainwindows/application
     \title Application Example
@@ -32,9 +75,7 @@
 
     Here's the class definition:
 
-    \quotefromfile mainwindows/application/mainwindow.h
-    \skipto class MainWindow
-    \printuntil /^\};/
+    \snippet examples/mainwindows/application/mainwindow.h 0
 
     The public API is restricted to the constructor. In the \c
     protected section, we reimplement QWidget::closeEvent() to detect
@@ -47,9 +88,7 @@
 
     \section1 MainWindow Class Implementation
 
-    \quotefromfile mainwindows/application/mainwindow.cpp
-    \skipto #include <QtGui>
-    \printuntil #include "mainwindow.h"
+    \snippet examples/mainwindows/application/mainwindow.cpp 0
 
     We start by including \c <QtGui>, a header file that contains the
     definition of all classes in the \l QtCore and \l QtGui
@@ -63,8 +102,8 @@
     generally a good idea to include only the header files that are
     strictly necessary from another header file.
 
-    \printline ::MainWindow(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 1
+    \snippet examples/mainwindows/application/mainwindow.cpp 2
 
     In the constructor, we start by creating a QTextEdit widget as a
     child of the main window (the \c this object). Then we call
@@ -86,8 +125,8 @@
     \c setCurrentFile() function. We'll come back to this later.
 
     \target close event handler
-    \printline ::closeEvent(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 3
+    \snippet examples/mainwindows/application/mainwindow.cpp 4
 
     When the user attempts to close the window, we call the private
     function \c maybeSave() to give the user the possibility to save
@@ -98,8 +137,8 @@
     that the application will stay up and running as if nothing
     happened.
 
-    \printline ::newFile(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 5
+    \snippet examples/mainwindows/application/mainwindow.cpp 6
 
     The \c newFile() slot is invoked when the user selects
     \menu{File|New} from the menu. We call \c maybeSave() to save any
@@ -108,8 +147,8 @@
     update the window title and clear the
     \l{QWidget::windowModified}{windowModified} flag.
 
-    \printline ::open(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 7
+    \snippet examples/mainwindows/application/mainwindow.cpp 8
 
     The \c open() slot is invoked when the user clicks
     \menu{File|Open}. We pop up a QFileDialog asking the user to
@@ -117,23 +156,23 @@
     not an empty string), we call the private function \c loadFile()
     to actually load the file.
 
-    \printline ::save(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 9
+    \snippet examples/mainwindows/application/mainwindow.cpp 10
 
     The \c save() slot is invoked when the user clicks
     \menu{File|Save}. If the user hasn't provided a name for the file
     yet, we call \c saveAs(); otherwise, we call the private function
     \c saveFile() to actually save the file.
 
-    \printline ::saveAs(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 11
+    \snippet examples/mainwindows/application/mainwindow.cpp 12
 
     In \c saveAs(), we start by popping up a QFileDialog asking the
     user to provide a name. If the user clicks \gui{Cancel}, the
     returned file name is empty, and we do nothing.
 
-    \printline ::about(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 13
+    \snippet examples/mainwindows/application/mainwindow.cpp 14
 
     The application's About box is done using one statement, using
     the QMessageBox::about() static function and relying on its
@@ -146,19 +185,18 @@
     The \l{Internationalization with Qt} overview convers
     \l{QObject::tr()}{tr()} in more detail.
 
-    \printline ::documentWasModified(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 15
+    \snippet examples/mainwindows/application/mainwindow.cpp 16
 
     The \c documentWasModified() slot is invoked each time the text
     in the QTextEdit changes because of user edits. We call
     QWidget::setWindowModified() to make the title bar show that the
     file was modified. How this is done varies on each platform.
 
-    \printline ::createActions(
-    \printuntil SLOT(open())
+    \snippet examples/mainwindows/application/mainwindow.cpp 17
+    \snippet examples/mainwindows/application/mainwindow.cpp 18
     \dots
-    \skipto aboutQtAct
-    \printuntil aboutQt()
+    \snippet examples/mainwindows/application/mainwindow.cpp 22
 
     The \c createActions() private function, which is called from the
     \c MainWindow constructor, creates \l{QAction}s. The code is very
@@ -187,8 +225,8 @@
     to this when we review the \c application.qrc file that's part of
     the project.
 
-    \printline cutAct->setEnabled
-    \printuntil }
+    \snippet examples/mainwindows/application/mainwindow.cpp 23
+    \snippet examples/mainwindows/application/mainwindow.cpp 24
 
     The \gui{Edit|Cut} and \gui{Edit|Copy} actions must be available
     only when the QTextEdit contains selected text. We disable them
@@ -196,8 +234,8 @@
     the QAction::setEnabled() slot, ensuring that the actions are
     disabled when the text editor has no selection.
 
-    \printline ::createMenus(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 25
+    \snippet examples/mainwindows/application/mainwindow.cpp 27
 
     Creating actions isn't sufficient to make them available to the
     user; we must also add them to the menu system. This is what \c
@@ -214,30 +252,25 @@
     side of the menu bar. Try running the application with various
     styles and see the results:
 
-    \code
-        application -style=windows
-        application -style=motif
-        application -style=cde
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.examples.application.qdoc 0
 
     Let's now review the toolbars:
 
-    \skipto ::createToolBars(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 30
 
     Creating toolbars is very similar to creating menus. The same
     actions that we put in the menus can be reused in the toolbars.
 
-    \printline ::createStatusBar(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 32
+    \snippet examples/mainwindows/application/mainwindow.cpp 33
 
     QMainWindow::statusBar() returns a pointer to the main window's
     QStatusBar widget. Like with \l{QMainWindow::menuBar()}, the
     widget is automatically created the first time the function is
     called.
 
-    \printline ::readSettings(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 34
+    \snippet examples/mainwindows/application/mainwindow.cpp 36
 
     The \c readSettings() function is called from the constructor to
     load the user's preferences and other application settings. The
@@ -260,16 +293,16 @@
     to call QWidget::resize() before QWidget::move(). The reason why
     is given in the \l{geometry.html}{Window Geometry} overview.
 
-    \printline ::writeSettings(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 37
+    \snippet examples/mainwindows/application/mainwindow.cpp 39
 
     The \c writeSettings() function is called from \c closeEvent().
     Writing settings is similar to reading them, except simpler. The
     arguments to the QSettings constructor must be the same as in \c
     readSettings().
 
-    \printline ::maybeSave(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 40
+    \snippet examples/mainwindows/application/mainwindow.cpp 41
 
     The \c maybeSave() function is called to save pending changes. If
     there are pending changes, it pops up a QMessageBox giving the
@@ -286,8 +319,8 @@
     return value and stop whatever it was doing if the return value
     is \c false.
 
-    \printline ::loadFile(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 42
+    \snippet examples/mainwindows/application/mainwindow.cpp 43
 
     In \c loadFile(), we use QFile and QTextStream to read in the
     data. The QFile object provides access to the bytes stored in a
@@ -314,15 +347,15 @@
     which we'll cover in a moment, and we display the string "File
     loaded" in the status bar for 2 seconds (2000 milliseconds).
 
-    \printline ::saveFile(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 44
+    \snippet examples/mainwindows/application/mainwindow.cpp 45
 
     Saving a file is very similar to loading one. Here, the
     QFile::Text flag ensures that on Windows, "\\n" is converted into
     "\\r\\n" to conform to the Windows convension.
 
-    \printline ::setCurrentFile(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 46
+    \snippet examples/mainwindows/application/mainwindow.cpp 47
 
     The \c setCurrentFile() function is called to reset the state of
     a few variables when a file is loaded or saved, or when the user
@@ -336,17 +369,15 @@
     QWidget::setWindowTitle() call shortens the file name to exclude
     the path. Here's the function:
 
-    \printline ::strippedName(
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/mainwindow.cpp 48
+    \snippet examples/mainwindows/application/mainwindow.cpp 49
 
     \section1 The main() Function
 
     The \c main() function for this application is typical of
     applications that contain one main window:
 
-    \quotefromfile mainwindows/application/main.cpp
-    \skipto #include
-    \printuntil /^\}/
+    \snippet examples/mainwindows/application/main.cpp 0
 
     \section1 The Resource File
 
@@ -360,7 +391,7 @@
     disk. Here's the \c application.qrc file that's used by the
     Application example:
 
-    \include mainwindows/application/application.qrc
+    \quotefile mainwindows/application/application.qrc
 
     The \c .png files listed in the \c application.qrc file are files
     that are part of the Application example's source tree. Paths are
@@ -370,9 +401,7 @@
     The resource file must be mentioned in the \c application.pro
     file  so that \c qmake knows about it:
 
-    \quotefromfile mainwindows/application/application.pro
-    \skipto RESOURCES
-    \printline RESOURCES
+    \snippet examples/mainwindows/application/application.pro 0
 
     \c qmake will produce make rules to generate a file called \c
     qrc_application.cpp that is linked into the application. This

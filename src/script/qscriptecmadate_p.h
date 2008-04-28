@@ -59,6 +59,8 @@
 
 #ifndef QT_NO_SCRIPT
 
+QT_BEGIN_NAMESPACE
+
 class QDate;
 class QDateTime;
 
@@ -69,8 +71,6 @@ class Date: public Core
 public:
     Date(QScriptEnginePrivate *engine);
     virtual ~Date();
-
-    inline QScriptClassInfo *classInfo() const { return m_classInfo; }
 
     virtual void execute(QScriptContextPrivate *context);
 
@@ -225,13 +225,12 @@ protected:
     static QScriptValueImpl method_toUTCString(QScriptContextPrivate *context,
                                                QScriptEnginePrivate *eng,
                                                QScriptClassInfo *classInfo);
-
-private:
-    QScriptClassInfo *m_classInfo;
 };
 
 } } // namespace QScript::Ecma
 
-#endif // QT_NO_SCRIPT
-#endif
+QT_END_NAMESPACE
 
+#endif // QT_NO_SCRIPT
+
+#endif

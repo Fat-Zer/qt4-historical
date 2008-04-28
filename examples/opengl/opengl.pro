@@ -1,4 +1,5 @@
 TEMPLATE      = subdirs
+!wince*: {
 SUBDIRS       = 2dpainting \
                 grabber \
                 hellogl \
@@ -9,6 +10,8 @@ SUBDIRS       = 2dpainting \
 		framebufferobject2 \
                 samplebuffers \
                 textures
+}
+wince*: SUBDIRS += hellogl_es
 
 
 # install

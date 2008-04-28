@@ -70,6 +70,9 @@
 #include <QtGui/QFocusFrame>
 
 #ifndef QT_NO_ACCESSIBILITY
+
+QT_BEGIN_NAMESPACE
+
 using namespace QAccessible2;
 
 QList<QWidget*> childWidgets(const QWidget *widget, bool includeTopLevel)
@@ -1066,7 +1069,7 @@ int QAccessibleTitleBar::navigate(RelationFlag relation, int entry, QAccessibleI
             int index = 1;
             int role;
             for (role = QDockWidgetLayout::CloseButton; role <= QDockWidgetLayout::FloatButton; ++role) {
-                QWidget *w = layout->widget((QDockWidgetLayout::Role)role);
+                QWidget *w = layout->widgetForRole((QDockWidgetLayout::Role)role);
                 if (!w->isVisible())
                     continue;
                 if (index == entry)
@@ -1115,7 +1118,7 @@ int QAccessibleTitleBar::childCount() const
     QDockWidgetLayout *layout = dockWidgetLayout();
     int count = 0;
     for (int role = QDockWidgetLayout::CloseButton; role <= QDockWidgetLayout::FloatButton; ++role) {
-        QWidget *w = layout->widget((QDockWidgetLayout::Role)role);
+        QWidget *w = layout->widgetForRole((QDockWidgetLayout::Role)role);
         if (w && w->isVisible())
             ++count;
     }
@@ -1137,7 +1140,7 @@ QAccessible::State QAccessibleTitleBar::state(int child) const
     QAccessible::State state = Normal;
     if (child) {
         QDockWidgetLayout *layout = dockWidgetLayout();
-        QAbstractButton *b = static_cast<QAbstractButton *>(layout->widget((QDockWidgetLayout::Role)child));
+        QAbstractButton *b = static_cast<QAbstractButton *>(layout->widgetForRole((QDockWidgetLayout::Role)child));
         if (b) {
             if (b->isDown())
                 state |= Pressed;
@@ -1176,7 +1179,7 @@ QRect QAccessibleTitleBar::rect (int child ) const
         QDockWidgetLayout *layout = dockWidgetLayout();
         int index = 1;
         for (int role = QDockWidgetLayout::CloseButton; role <= QDockWidgetLayout::FloatButton; ++role) {
-            QWidget *w = layout->widget((QDockWidgetLayout::Role)role);
+            QWidget *w = layout->widgetForRole((QDockWidgetLayout::Role)role);
             if (!w || !w->isVisible())
                 continue;
             if (index == child) {
@@ -1250,7 +1253,7 @@ bool QAccessibleTitleBar::doAction(int action, int child, const QVariantList& /*
     case DefaultAction:
     case Press: {
         QDockWidgetLayout *layout = dockWidgetLayout();
-        QAbstractButton *btn = static_cast<QAbstractButton *>(layout->widget((QDockWidgetLayout::Role)child));
+        QAbstractButton *btn = static_cast<QAbstractButton *>(layout->widgetForRole((QDockWidgetLayout::Role)child));
         if (btn)
             btn->animateClick();
         return true;
@@ -1626,6 +1629,25 @@ int QAccessibleMainWindow::navigate(RelationFlag relation, int entry, QAccessibl
     return QAccessibleWidgetEx::navigate(relation, entry, iface);
 }
 
+int QAccessibleMainWindow::childAt(int x, int y) const
+{
+    QWidget *w = widget();
+    if (!w->isVisible())
+        return -1;
+    QPoint gp = w->mapToGlobal(QPoint(0, 0));
+    if (!QRect(gp.x(), gp.y(), w->width(), w->height()).contains(x, y))
+        return -1;
+
+    QWidgetList kids = childWidgets(mainWindow(), true);
+    QPoint rp = mainWindow()->mapFromGlobal(QPoint(x, y));
+    for (int i = 0; i < kids.size(); ++i) {
+        QWidget *child = kids.at(i);
+        if (!child->isWindow() && !child->isHidden() && child->geometry().contains(rp)) {
+            return i + 1;
+        }
+    }
+    return 0;
+}
 
 QMainWindow *QAccessibleMainWindow::mainWindow() const
 {
@@ -1634,5 +1656,6 @@ QMainWindow *QAccessibleMainWindow::mainWindow() const
 
 #endif //QT_NO_MAINWINDOW
 
+QT_END_NAMESPACE
 
 #endif // QT_NO_ACCESSIBILITY

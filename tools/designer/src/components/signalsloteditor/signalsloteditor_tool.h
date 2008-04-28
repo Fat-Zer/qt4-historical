@@ -50,6 +50,8 @@
 #include <QtCore/QPointer>
 #include <QtDesigner/QDesignerFormWindowToolInterface>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 class QAction;
@@ -62,7 +64,7 @@ class QT_SIGNALSLOTEDITOR_EXPORT SignalSlotEditorTool: public QDesignerFormWindo
 {
     Q_OBJECT
 public:
-    SignalSlotEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent = 0);
+    explicit SignalSlotEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent = 0);
     virtual ~SignalSlotEditorTool();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -87,5 +89,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // SIGNALSLOTEDITOR_TOOL_H

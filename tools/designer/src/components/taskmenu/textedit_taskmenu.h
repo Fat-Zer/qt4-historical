@@ -45,10 +45,12 @@
 #define TEXTEDIT_TASKMENU_H
 
 #include <QtGui/QTextEdit>
-#include <QtCore/QPointer>
+#include <QtGui/QPlainTextEdit>
 
 #include <qdesigner_taskmenu_p.h>
-#include <QtDesigner/default_extensionfactory.h>
+#include <extensionfactory_p.h>
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormWindowInterface;
 
@@ -58,7 +60,9 @@ class TextEditTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
 public:
-    TextEditTaskMenu(QTextEdit *button, QObject *parent = 0);
+    explicit TextEditTaskMenu(QTextEdit *button, QObject *parent = 0);
+    explicit TextEditTaskMenu(QPlainTextEdit *button, QObject *parent = 0);
+
     virtual ~TextEditTaskMenu();
 
     virtual QAction *preferredEditAction() const;
@@ -66,26 +70,22 @@ public:
 
 private slots:
     void editText();
-    void editIcon();
-    void updateText(const QString &text);
 
 private:
-    QTextEdit *m_textEdit;
-    QPointer<QDesignerFormWindowInterface> m_formWindow;
+    void initialize();
+
+    const Qt::TextFormat m_format;
+    const QString m_property;
+    const QString m_windowTitle;
+
     mutable QList<QAction*> m_taskActions;
     QAction *m_editTextAction;
 };
 
-class TextEditTaskMenuFactory: public QExtensionFactory
-{
-    Q_OBJECT
-public:
-    TextEditTaskMenuFactory(QExtensionManager *extensionManager = 0);
-
-protected:
-    virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
-};
-
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QTextEdit, TextEditTaskMenu> TextEditTaskMenuFactory;
+typedef ExtensionFactory<QDesignerTaskMenuExtension, QPlainTextEdit, TextEditTaskMenu> PlainTextEditTaskMenuFactory;
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TEXTEDIT_TASKMENU_H

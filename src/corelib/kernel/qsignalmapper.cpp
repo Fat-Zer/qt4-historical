@@ -46,6 +46,8 @@
 #include "qhash.h"
 #include "qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QSignalMapperPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QSignalMapper)
@@ -91,18 +93,14 @@ public:
     signal, \c clicked(), which is emitted with the text of the button
     that was clicked:
 
-    \quotefromfile snippets/qsignalmapper/buttonwidget.h
-    \skipto QWidget
-    \printuntil QSignalMapper
-    \printuntil };
+    \snippet doc/src/snippets/qsignalmapper/buttonwidget.h 0
+    \snippet doc/src/snippets/qsignalmapper/buttonwidget.h 1
 
     The only function that we need to implement is the constructor:
 
-    \quotefromfile snippets/qsignalmapper/buttonwidget.cpp
-    \skipto ButtonWidget
-    \printuntil connect
-    \printuntil connect
-    \printuntil }
+    \snippet doc/src/snippets/qsignalmapper/buttonwidget.cpp 0
+    \snippet doc/src/snippets/qsignalmapper/buttonwidget.cpp 1
+    \snippet doc/src/snippets/qsignalmapper/buttonwidget.cpp 2
 
     A list of texts is passed to the constructor. A signal mapper is
     constructed and for each text in the list a QPushButton is
@@ -329,5 +327,9 @@ void QSignalMapper::map(QObject *sender)
     \sa setMapping()
 */
 
+QT_END_NAMESPACE
+
 #include "moc_qsignalmapper.cpp"
+
 #endif // QT_NO_SIGNALMAPPER
+

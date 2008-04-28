@@ -57,6 +57,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QMetaType {
@@ -105,6 +107,7 @@ public:
     static bool isRegistered(int type);
     static void *construct(int type, const void *copy = 0);
     static void destroy(int type, void *data);
+    static void unregisterType(const char *typeName);
 
 #ifndef QT_NO_DATASTREAM
     static bool save(QDataStream &stream, int type, const void *data);
@@ -212,26 +215,30 @@ inline int qRegisterMetaType(
 #endif
 }
 
-#define Q_DECLARE_METATYPE(TYPE) \
-template <> \
-struct QMetaTypeId< TYPE > \
-{ \
-    enum { Defined = 1 }; \
-    static int qt_metatype_id() \
-    { \
-        static QBasicAtomic metatype_id = Q_ATOMIC_INIT(0);     \
-        if (!metatype_id)                                       \
-            metatype_id = qRegisterMetaType< TYPE >(#TYPE);     \
-        return metatype_id;                                     \
-    } \
-};
+#define Q_DECLARE_METATYPE(TYPE)                                        \
+    QT_BEGIN_NAMESPACE                                                  \
+    template <>                                                         \
+    struct QMetaTypeId< TYPE >                                          \
+    {                                                                   \
+        enum { Defined = 1 };                                           \
+        static int qt_metatype_id()                                     \
+            {                                                           \
+                static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0); \
+                if (!metatype_id)                                       \
+                    metatype_id = qRegisterMetaType< TYPE >(#TYPE);     \
+                return metatype_id;                                     \
+            }                                                           \
+    };                                                                  \
+    QT_END_NAMESPACE
 
 #define Q_DECLARE_BUILTIN_METATYPE(TYPE, NAME) \
-template<> struct QMetaTypeId2<TYPE> \
-{ \
-    enum { Defined = 1, MetaType = QMetaType::NAME }; \
-    static inline int qt_metatype_id() { return QMetaType::NAME; } \
-};
+    QT_BEGIN_NAMESPACE \
+    template<> struct QMetaTypeId2<TYPE> \
+    { \
+        enum { Defined = 1, MetaType = QMetaType::NAME }; \
+        static inline int qt_metatype_id() { return QMetaType::NAME; } \
+    }; \
+    QT_END_NAMESPACE
 
 class QString;
 class QByteArray;
@@ -278,6 +285,8 @@ class QTextLength;
 class QTextFormat;
 class QMatrix;
 class QTransform;
+
+QT_END_NAMESPACE
 
 Q_DECLARE_BUILTIN_METATYPE(QString, QString)
 Q_DECLARE_BUILTIN_METATYPE(int, Int)

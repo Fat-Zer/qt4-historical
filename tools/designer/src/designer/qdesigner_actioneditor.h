@@ -46,16 +46,20 @@
 
 #include "qdesigner_toolwindow.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWorkbench;
 
 class QDesignerActionEditor: public QDesignerToolWindow
 {
     Q_OBJECT
 public:
-    QDesignerActionEditor(QDesignerWorkbench *workbench);
+    explicit QDesignerActionEditor(QDesignerWorkbench *workbench);
     virtual ~QDesignerActionEditor();
 
     virtual QRect geometryHint() const;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_ACTIONEDITOR_H

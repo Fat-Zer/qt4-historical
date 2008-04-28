@@ -46,9 +46,12 @@
 
 #include <QFrame>
 
+QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
+QT_END_NAMESPACE
 
+//! [0]
 class DragWidget : public QFrame
 {
 public:
@@ -60,5 +63,6 @@ protected:
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
 };
+//! [0]
 
 #endif

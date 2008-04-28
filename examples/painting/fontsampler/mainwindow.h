@@ -46,9 +46,11 @@
 
 #include "ui_mainwindowbase.h"
 
+QT_BEGIN_NAMESPACE
 class QTextEdit;
 class QTreeWidget;
 class QTreeWidgetItem;
+QT_END_NAMESPACE
 
 typedef QList<QTreeWidgetItem *> StyleItems;
 

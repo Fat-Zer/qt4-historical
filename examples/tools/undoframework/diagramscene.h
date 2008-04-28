@@ -47,10 +47,13 @@
 #include <QObject>
 #include <QGraphicsScene>
 
-class QGraphicsSceneDragDropEvent;
 class DiagramItem;
+QT_BEGIN_NAMESPACE
+class QGraphicsSceneDragDropEvent;
 class QGraphicsViewItem;
+QT_END_NAMESPACE
 
+//! [0]
 class DiagramScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -69,5 +72,6 @@ private:
     QGraphicsItem *movingItem;
     QPointF oldPos;
 };
+//! [0]
 
 #endif

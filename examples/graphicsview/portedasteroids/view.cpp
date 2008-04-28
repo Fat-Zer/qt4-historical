@@ -121,8 +121,10 @@ KAsteroidsView::KAsteroidsView( QWidget *parent, const char *name )
     view.setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     view.setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     view.setCacheMode(QGraphicsView::CacheBackground);
-    view.setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    view.setOptimizationFlag(QGraphicsView::DontClipPainter);
+    view.setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    view.setOptimizationFlags(QGraphicsView::DontClipPainter
+                              | QGraphicsView::DontSavePainterState
+                              | QGraphicsView::DontAdjustForAntialiasing);
     view.viewport()->setFocusProxy( this );
     rocks.setAutoDelete( TRUE );
     missiles.setAutoDelete( TRUE );
@@ -136,6 +138,7 @@ KAsteroidsView::KAsteroidsView( QWidget *parent, const char *name )
     textSprite = new QGraphicsTextItem( 0, &field );
     QFont font( "helvetica", 18 );
     textSprite->setFont( font );
+    textSprite->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
     shield = 0;
     shieldOn = FALSE;
@@ -624,17 +627,17 @@ void KAsteroidsView::processMissiles()
 
 	wrapSprite( missile );
 
-	QList<QGraphicsItem *> hits = missile->collidingItems();
+	QList<QGraphicsItem *> hits = missile->collidingItems(Qt::IntersectsItemBoundingRect);
 	QList<QGraphicsItem *>::Iterator hit;
 	for ( hit = hits.begin(); hit != hits.end(); ++hit )
 	{
 	    if ( (*hit)->type() >= ID_ROCK_LARGE &&
-		 (*hit)->type() <= ID_ROCK_SMALL )
+		 (*hit)->type() <= ID_ROCK_SMALL && (*hit)->collidesWithItem(missile) )
 	    {
-		shotsHit++;
-		rockHit( static_cast<AnimatedPixmapItem *>(*hit) );
-		missiles.removeRef( missile );
-		break;
+                shotsHit++;
+                rockHit( static_cast<AnimatedPixmapItem *>(*hit) );
+                missiles.removeRef( missile );
+                break;
 	    }
 	}
     }
@@ -657,12 +660,12 @@ void KAsteroidsView::processShip()
 		shield->setFrame( (shield->frame()+1) % shield->frameCount() );
 	    shield->setPos( ship->x() - 9, ship->y() - 9 );
 
-	    QList<QGraphicsItem *> hits = shield->collidingItems();
+	    QList<QGraphicsItem *> hits = shield->collidingItems(Qt::IntersectsItemBoundingRect);
 	    QList<QGraphicsItem *>::Iterator it;
 	    for ( it = hits.begin(); it != hits.end(); ++it )
 	    {
 		if ( (*it)->type() >= ID_ROCK_LARGE &&
-		     (*it)->type() <= ID_ROCK_SMALL )
+		     (*it)->type() <= ID_ROCK_SMALL && (*it)->collidesWithItem(shield) )
 		{
 		    int factor;
 		    switch ( (*it)->type() )
@@ -695,12 +698,12 @@ void KAsteroidsView::processShip()
 	if ( !shieldOn )
 	{
 	    shield->hide();
-	    QList<QGraphicsItem *> hits = ship->collidingItems();
+	    QList<QGraphicsItem *> hits = ship->collidingItems(Qt::IntersectsItemBoundingRect);
 	    QList<QGraphicsItem *>::Iterator it;
 	    for ( it = hits.begin(); it != hits.end(); ++it )
 	    {
 		if ( (*it)->type() >= ID_ROCK_LARGE &&
-		     (*it)->type() <= ID_ROCK_SMALL )
+		     (*it)->type() <= ID_ROCK_SMALL && (*it)->collidesWithItem(ship))
 		{
 		    KBit *bit;
 		    for ( int i = 0; i < 12; i++ )

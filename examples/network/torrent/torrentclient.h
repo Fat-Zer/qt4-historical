@@ -46,14 +46,16 @@
 
 #include <QBitArray>
 #include <QHostAddress>
+#include <QList>
 
 class MetaInfo;
 class PeerWireClient;
 class TorrentClientPrivate;
 class TorrentPeer;
 class TorrentPiece;
-template<typename T> class QList;
+QT_BEGIN_NAMESPACE
 class QTimerEvent;
+QT_END_NAMESPACE
 
 class TorrentPeer {
 public:

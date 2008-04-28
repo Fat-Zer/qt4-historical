@@ -60,6 +60,8 @@
 #include "qdesktopwidget.h"
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 /*****************************************************************************
   Externals
  *****************************************************************************/
@@ -563,5 +565,7 @@ QString Q3FileDialog::macGetSaveFileName(const QString &start, const QString &fi
         delete filts.takeFirst();
     return retstr;
 }
+
+QT_END_NAMESPACE
 
 #endif

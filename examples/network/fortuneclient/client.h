@@ -47,12 +47,15 @@
 #include <QDialog>
 #include <QTcpSocket>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTcpSocket;
+QT_END_NAMESPACE
 
+//! [0]
 class Client : public QDialog
 {
     Q_OBJECT
@@ -80,5 +83,6 @@ private:
     QString currentFortune;
     quint16 blockSize;
 };
+//! [0]
 
 #endif

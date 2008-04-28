@@ -44,8 +44,13 @@
 #ifndef QDESIGNER_ACTIONS_H
 #define QDESIGNER_ACTIONS_H
 
+#include "assistantclient.h"
+
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
+#include <QtGui/QPrinter>
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerWorkbench;
 
@@ -55,15 +60,19 @@ class QAction;
 class QActionGroup;
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
-class QAssistantClient;
 class QRect;
 class QWidget;
+class QPixmap;
+
+namespace qdesigner_internal {
+    class PreviewManager;
+}
 
 class QDesignerActions: public QObject
 {
     Q_OBJECT
 public:
-    QDesignerActions(QDesignerWorkbench *mainWindow);
+    explicit QDesignerActions(QDesignerWorkbench *mainWindow);
     virtual ~QDesignerActions();
 
     QDesignerWorkbench *workbench() const;
@@ -83,8 +92,8 @@ public:
     QActionGroup *uiMode() const;
     QAction *preferencesAction() const;
     QActionGroup *styleActions() const;
-
     // file actions
+    QAction *openFormAction() const;
     QAction *closeFormAction() const;
     // window actions
     QAction *minimizeAction() const;
@@ -92,11 +101,10 @@ public:
     QAction *editWidgets() const;
     // form actions
     QAction *previewFormAction() const;
+    QAction *viewCodeAction() const;
 
     void setBringAllToFrontVisible(bool visible);
     void setWindowListSeparatorVisible(bool visible);
-
-    virtual bool eventFilter(QObject *watched, QEvent *event);
 
     bool openForm(QWidget *parent);
 
@@ -104,6 +112,7 @@ public slots:
     void activeFormWindowChanged(QDesignerFormWindowInterface *formWindow);
     void createForm();
     void slotOpenForm();
+    void helpRequested(const QString &manual, const QString &document);
 
 signals:
     void useBigIcons(bool);
@@ -115,6 +124,7 @@ private slots:
     void saveFormAsTemplate();
     void previewForm(QAction *action = 0);
     void previewFormLater(QAction *action = 0);
+    void viewCode();
     void notImplementedYet();
     void shutdown();
     void editWidgetsSlot();
@@ -130,6 +140,9 @@ private slots:
     void backupForms();
     void showNewFormDialog(const QString &fileName);
     void showPreferencesDialog();
+    void savePreviewImage();
+    void printPreviewImage();
+    void updateCloseAction();
 
 private:
     bool saveFormAs(QDesignerFormWindowInterface *fw);
@@ -137,18 +150,18 @@ private:
     void updateRecentFileActions();
     void addRecentFile(const QString &fileName);
     void showHelp(const QString &help);
-    void updateCloseAction();
-    bool closePreview();
+    void closePreview();
     QRect fixDialogRect(const QRect &rect) const;
     QString fixResourceFileBackupPath(QDesignerFormWindowInterface *fwi, const QDir& backupDir);
     void showStatusBarMessage(const QString &message) const;
     QActionGroup *createHelpActions();
     bool ensureBackupDirectories();
+    QPixmap createPreviewPixmap(QDesignerFormWindowInterface *fw);
 
     enum { MaxRecentFiles = 10 };
     QDesignerWorkbench *m_workbench;
     QDesignerFormEditorInterface *m_core;
-    QAssistantClient *m_assistantClient;
+    AssistantClient m_assistantClient;
     QString m_openDirectory;
     QString m_saveDirectory;
 
@@ -176,10 +189,14 @@ private:
     QAction *m_saveAllFormsAction;
     QAction *m_saveFormAsTemplateAction;
     QAction *m_closeFormAction;
+    QAction *m_savePreviewImageAction;
+    QAction *m_printPreviewAction;
 
     QAction *m_quitAction;
 
     QAction *m_previewFormAction;
+    QAction *m_viewCodeAction;
+
     QAction *m_formSettings;
 
     QAction *m_minimizeAction;
@@ -189,8 +206,12 @@ private:
 
     QAction *m_preferencesAction;
 
-    QPointer<QWidget> m_previewWidget;
+#ifndef QT_NO_PRINTER
+    QPrinter m_printer;
+#endif
+    qdesigner_internal::PreviewManager *m_previewManager;
 };
 
-#endif // QDESIGNER_ACTIONS_H
+QT_END_NAMESPACE
 
+#endif // QDESIGNER_ACTIONS_H

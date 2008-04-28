@@ -1,7 +1,8 @@
 TEMPLATE = subdirs
-SUBDIRS = helloscript qscript context2d marshal defaultprototypes
+SUBDIRS = helloscript context2d defaultprototypes customclass
 
-!cross_compile:SUBDIRS += calculator tetrix
+!wince*:SUBDIRS += qscript marshal
+!wince*:!cross_compile:SUBDIRS += calculator tetrix
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/script

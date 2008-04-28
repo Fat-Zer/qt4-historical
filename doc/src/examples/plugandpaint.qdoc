@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example tools/plugandpaint
     \title Plug & Paint Example
@@ -46,10 +89,8 @@
     application to access extra functionality. They are implemented
     in the plugins.
 
-    \quotefromfile tools/plugandpaint/interfaces.h
 
-    \skipto class BrushInterface
-    \printuntil };
+    \snippet examples/tools/plugandpaint/interfaces.h 0
 
     The \c BrushInterface class declares four pure virtual functions.
     The first pure virtual function, \c brushes(), returns a list of
@@ -71,8 +112,7 @@
     virtual destructor. We provide the destructor to keep these
     compilers happy.
 
-    \skipto class ShapeInterface
-    \printuntil };
+    \snippet examples/tools/plugandpaint/interfaces.h 1
 
     The \c ShapeInterface class declares a \c shapes() function that
     works the same as \c{BrushInterface}'s \c brushes() function, and
@@ -82,15 +122,13 @@
     parent parameter can be used by the plugin to pop up a dialog
     asking the user to specify more information.
 
-    \skipto class FilterInterface
-    \printuntil };
+    \snippet examples/tools/plugandpaint/interfaces.h 2
 
     The \c FilterInterface class declares a \c filters() function
     that returns a list of filter names, and a \c filterImage()
     function that applies a filter to an image.
 
-    \skipto Q_DECLARE
-    \printuntil FilterInterface/
+    \snippet examples/tools/plugandpaint/interfaces.h 4
 
     To make it possible to query at run-time whether a plugin
     implements a given interface, we must use the \c
@@ -122,9 +160,7 @@
     \l{mainwindows/application}{Application}). Here, we'll
     concentrate on the parts of the code that are related to plugins.
 
-    \quotefromfile tools/plugandpaint/mainwindow.cpp
-    \skipto ::loadPlugins()
-    \printuntil populateMenus(plugin)
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 4
 
     The \c loadPlugins() function is called from the \c MainWindow
     constructor to detect plugins and update the \gui{Brush},
@@ -135,7 +171,7 @@
     QObject. That QObject implements plugin interfaces using multiple
     inheritance.
 
-    \printuntil pluginsDir.cd("plugins")
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 5
 
     The next step is to load dynamic plugins. We initialize the \c
     pluginsDir member variable to refer to the \c plugins
@@ -146,10 +182,9 @@
     this file is usually located in a subdirectory, so we need to
     take this into account.
 
-    \skipto foreach (
-    \printuntil pluginFileNames +=
-    \printline }
-    \printline }
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 6
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 7
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 8
 
     We use QDir::entryList() to get a list of all files in that
     directory. Then we iterate over the result using \l foreach and
@@ -162,15 +197,12 @@
 
     If QPluginLoader::instance() is non-null, we add it to the menus.
 
-    \skipto brushMenu->setEnabled
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 9
 
     At the end, we enable or disable the \gui{Brush}, \gui{Shapes},
     and \gui{Filters} menus based on whether they contain any items.
 
-    \quotefromfile tools/plugandpaint/mainwindow.cpp
-    \skipto ::populateMenus(
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 10
 
     For each plugin (static or dynamic), we check which interfaces it
     implements using \l qobject_cast(). First, we try to cast the
@@ -179,9 +211,7 @@
     by \c brushes(). Then we do the same with the \c ShapeInterface
     and the \c FilterInterface.
 
-    \quotefromfile tools/plugandpaint/mainwindow.cpp
-    \skipto ::aboutPlugins()
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 3
 
     The \c aboutPlugins() slot is called on startup and can be
     invoked at any time through the \gui{About Plugins} action. It
@@ -190,7 +220,6 @@
 
     \image plugandpaint-plugindialog.png Screenshot of the Plugin dialog
 
-    \skipto ::addToMenu
 
     The \c addToMenu() function is called from \c loadPlugin() to
     create \l{QAction}s for custom brushes, shapes, or filters and
@@ -198,9 +227,7 @@
     plugin from which it comes from as the parent; this makes it
     convenient to get access to the plugin later.
 
-    \quotefromfile tools/plugandpaint/mainwindow.cpp
-    \skipto ::changeBrush
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 0
 
     The \c changeBrush() slot is invoked when the user chooses one of
     the brushes from the \gui{Brush} menu. We start by finding out
@@ -211,8 +238,7 @@
     identifying the brush. Next time the user draws on the paint
     area, \c PaintArea will use this brush.
 
-    \skipto ::insertShape
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 1
 
     The \c insertShape() is invoked when the use chooses one of the
     shapes from the \gui{Shapes} menu. We retrieve the QAction that
@@ -220,8 +246,7 @@
     QAction, and finally we call \c ShapeInterface::generateShape()
     to obtain a QPainterPath.
 
-    \skipto ::applyFilter
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/mainwindow.cpp 2
 
     The \c applyFilter() slot is similar: We retrieve the QAction
     that invoked the slot, then the \c FilterInterface associated to
@@ -234,15 +259,12 @@
     The \c PaintArea class contains some code that deals with \c
     BrushInterface, so we'll review it briefly.
 
-    \quotefromfile tools/plugandpaint/paintarea.cpp
-    \skipto ::setBrush(
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/paintarea.cpp 0
 
     In \c setBrush(), we simply store the \c BrushInterface and the
     brush that are given to us by \c MainWindow.
 
-    \skipto ::mouseMoveEvent
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/paintarea.cpp 1
 
     In the \l{QWidget::mouseMoveEvent()}{mouse move event handler},
     we call the \c BrushInterface::mouseMove() function on the
@@ -256,9 +278,7 @@
     and a list of plugin file names. It calls \c findPlugins()
     to fill the QTreeWdiget with information about the plugins:
 
-    \quotefromfile tools/plugandpaint/plugindialog.cpp
-    \skipto ::findPlugins
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/plugindialog.cpp 0
 
     The \c findPlugins() is very similar to \c
     MainWindow::loadPlugins(). It uses QPluginLoader to access the
@@ -266,8 +286,7 @@
     populateTreeWidget() uses \l qobject_cast() to find out which
     interfaces are implemented by the plugins:
 
-    \skipto ::populateTreeWidget
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/plugindialog.cpp 1
 
     \section1 Importing Static Plugins
 
@@ -280,9 +299,7 @@
     For Plug & Paint, we have chosen to put Q_IMPORT_PLUGIN() in \c
     main.cpp:
 
-    \quotefromfile tools/plugandpaint/main.cpp
-    \skipto #include
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaint/main.cpp 0
 
     The argument to Q_IMPORT_PLUGIN() is the plugin's name, as
     specified with Q_EXPORT_PLUGIN2() in the \l{Exporting the
@@ -291,8 +308,7 @@
     In the \c .pro file, we need to specify the static library.
     Here's the project file for building Plug & Paint:
 
-    \quotefromfile tools/plugandpaint/plugandpaint.pro
-    \printto # install
+    \snippet examples/tools/plugandpaint/plugandpaint.pro 0
 
     The \c LIBS line variable specifies the library \c pnp_basictools
     located in the \c ../plugandpaintplugins/basictools directory.
@@ -329,9 +345,7 @@
 
     \section1 Declaration of the Plugin Class
 
-    \quotefromfile tools/plugandpaintplugins/basictools/basictoolsplugin.h
-    \skipto #include <plugandpaint/interfaces.h>
-    \printuntil Q_INTERFACES
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.h 0
 
     We start by including \c interfaces.h, which defines the plugin
     interfaces for the \l{tools/plugandpaint}{Plug & Paint}
@@ -348,8 +362,7 @@
     \l qobject_cast() in the \l{tools/plugandpaint}{Plug & Paint}
     application to detect interfaces.
 
-    \skipto public:
-    \printuntil };
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.h 2
 
     In the \c public section of the class, we declare all the
     functions from the three interfaces.
@@ -359,27 +372,23 @@
     Let's now review the implementation of the \c BasicToolsPlugin
     member functions inherited from \c BrushInterface.
 
-    \quotefromfile tools/plugandpaintplugins/basictools/basictoolsplugin.cpp
-    \skipto ::brushes
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 0
 
     The \c brushes() function returns a list of brushes provided by
     this plugin. We provide three brushes: \gui{Pencil}, \gui{Air
     Brush}, and \gui{Random Letters}.
 
-    \skipto ::mousePress
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 1
 
     On a mouse press event, we just call \c mouseMove() to draw the
     spot where the event occurred.
 
-    \skipto ::mouseMove
-    \printuntil transparentColor
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 2
 
     In \c mouseMove(), we start by saving the state of the QPainter
     and we compute a few variables that we'll need later.
 
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 3
 
     Then comes the brush-dependent part of the code:
 
@@ -401,16 +410,14 @@
     At the end, we restore the painter state to what it was upon
     entering the function and we return the bounding rectangle.
 
-    \skipto QRect BasicToolsPlugin::mouseRelease
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 4
 
     When the user releases the mouse, we do nothing and return an
     empty QRect.
 
     \section1 Implementation of the Shape Interface
 
-    \skipto QStringList BasicToolsPlugin::shapes() const
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 5
 
     The plugin provides three shapes: \gui{Circle}, \gui{Star}, and
     \gui{Text...}. The three dots after \gui{Text} are there because
@@ -422,8 +429,7 @@
     distinguish between the internal shape name and the name used in
     the user interface.
 
-    \skipto  QPainterPath BasicToolsPlugin::generateShape
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 6
 
     The \c generateShape() creates a QPainterPath for the specified
     shape. If the shape is \gui{Text}, we pop up a QInputDialog to
@@ -431,14 +437,12 @@
 
     \section1 Implementation of the Filter Interface
 
-    \skipto QStringList BasicToolsPlugin::filters() const
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 7
 
     The plugin provides three filters: \gui{Invert Pixels}, \gui{Swap
     RGB}, and \gui{Grayscale}.
 
-    \skipto QImage BasicToolsPlugin::filterImage(
-    \printuntil /^\}/
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 8
 
     The \c filterImage() function takes a filter name and a QImage as
     parameters and returns an altered QImage. The first thing we do
@@ -456,8 +460,7 @@
     Q_EXPORT_PLUGIN2() macro to specify which class provides the
     plugin:
 
-    \skipto Q_EXPORT_PLUGIN2
-    \printuntil )
+    \snippet examples/tools/plugandpaintplugins/basictools/basictoolsplugin.cpp 9
 
     This line may appear in any \c .cpp file that is part of the
     plugin's source code.
@@ -466,8 +469,7 @@
 
     Here's the project file for building the Basic Tools plugin:
 
-    \quotefromfile tools/plugandpaintplugins/basictools/basictools.pro
-    \printto # install
+    \snippet examples/tools/plugandpaintplugins/basictools/basictools.pro 0
 
     The \c .pro file differs from typical \c .pro files in many
     respects. First, it starts with a \c TEMPLATE entry specifying \c
@@ -520,8 +522,7 @@
 
     Here's the project file for building the Extra Filters plugin:
 
-    \quotefromfile tools/plugandpaintplugins/extrafilters/extrafilters.pro
-    \printto # install
+    \snippet examples/tools/plugandpaintplugins/extrafilters/extrafilters.pro 0
 
     The \c .pro file differs from typical \c .pro files in many
     respects. First, it starts with a \c TEMPLATE entry specifying \c

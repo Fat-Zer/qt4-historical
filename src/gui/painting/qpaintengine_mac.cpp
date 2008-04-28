@@ -54,17 +54,20 @@
 #include <qwidget.h>
 #include <qvarlengtharray.h>
 #include <qdebug.h>
+#include <qcoreapplication.h>
 
 #include <private/qfont_p.h>
 #include <private/qfontengine_p.h>
 #include <private/qpainter_p.h>
 #include <private/qpainterpath_p.h>
-#include <private/qpixmap_p.h>
+#include <private/qpixmap_mac_p.h>
 #include <private/qt_mac_p.h>
 #include <private/qtextengine_p.h>
 #include <private/qwidget_p.h>
 
 #include <string.h>
+
+QT_BEGIN_NAMESPACE
 
 extern int qt_antialiasing_threshold; // QApplication.cpp
 
@@ -109,6 +112,24 @@ inline static float qt_mac_convert_color_to_cg(int c) { return ((float)c * 1000 
 inline static int qt_mac_convert_color_from_cg(float c) { return qRound(c * 255); }
 CGAffineTransform qt_mac_convert_transform_to_cg(const QTransform &t) {
     return CGAffineTransformMake(t.m11(), t.m12(), t.m21(), t.m22(), t.dx(),  t.dy());
+}
+
+CGColorSpaceRef qt_mac_colorSpaceForDeviceType(const QPaintDevice *paintDevice)
+{
+    bool isWidget = (paintDevice->devType() == QInternal::Widget);
+    return QCoreGraphicsPaintEngine::macDisplayColorSpace(isWidget ? static_cast<const QWidget *>(paintDevice)
+                                                                   : 0);
+}
+
+inline static QCFType<CGColorRef> cgColorForQColor(const QColor &col, QPaintDevice *pdev)
+{
+    CGFloat components[] = {
+        qt_mac_convert_color_to_cg(col.red()),
+        qt_mac_convert_color_to_cg(col.green()),
+        qt_mac_convert_color_to_cg(col.blue()),
+        qt_mac_convert_color_to_cg(col.alpha())
+    };
+    return CGColorCreate(qt_mac_colorSpaceForDeviceType(pdev), components);
 }
 
 #ifdef QMAC_NATIVE_GRADIENTS
@@ -192,6 +213,91 @@ static CGMutablePathRef qt_mac_compose_path(const QPainterPath &p, float off=0)
     return ret;
 }
 
+CGColorSpaceRef QCoreGraphicsPaintEngine::m_genericColorSpace = 0;
+QHash<CGDirectDisplayID, CGColorSpaceRef> QCoreGraphicsPaintEngine::m_displayColorSpaceHash;
+bool QCoreGraphicsPaintEngine::m_postRoutineRegistered = false;
+
+CGColorSpaceRef QCoreGraphicsPaintEngine::macGenericColorSpace()
+{
+#if 0
+    if (!m_genericColorSpace) {
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+        if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+            m_genericColorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+        } else
+#endif
+        {
+            m_genericColorSpace = CGColorSpaceCreateDeviceRGB();
+        }
+        if (!m_postRoutineRegistered) {
+            m_postRoutineRegistered = true;
+            qAddPostRoutine(QCoreGraphicsPaintEngine::cleanUpMacColorSpaces);
+        }
+    }
+    return m_genericColorSpace;
+#else
+    // Just return the main display colorspace for the moment.
+    return macDisplayColorSpace();
+#endif
+}
+
+/*
+    Ideally, we should pass the widget in here, and use CGGetDisplaysWithRect() etc.
+    to support multiple displays correctly.
+*/
+CGColorSpaceRef QCoreGraphicsPaintEngine::macDisplayColorSpace(const QWidget *widget)
+{
+    CGColorSpaceRef colorSpace;
+
+    CGDirectDisplayID displayID;
+    CMProfileRef displayProfile = 0;
+    if (widget == 0) {
+        displayID = CGMainDisplayID();
+    } else {
+        const QRect &qrect = widget->window()->geometry();
+        CGRect rect = CGRectMake(qrect.x(), qrect.y(), qrect.width(), qrect.height());
+        CGDisplayCount throwAway;
+        CGDisplayErr dErr = CGGetDisplaysWithRect(rect, 1, &displayID, &throwAway);
+        if (dErr != kCGErrorSuccess)
+            return macDisplayColorSpace(0); // fall back on main display
+    }
+    if ((colorSpace = m_displayColorSpaceHash.value(displayID)))
+        return colorSpace;
+
+    CMError err = CMGetProfileByAVID((CMDisplayIDType)displayID, &displayProfile);
+    if (err != noErr) {
+        if (widget) {
+            return macDisplayColorSpace(0); // fall back on main display
+        } else {
+            return 0; // we're screwed
+        }
+    }
+
+    colorSpace = CGColorSpaceCreateWithPlatformColorSpace(displayProfile);
+    m_displayColorSpaceHash.insert(displayID, colorSpace);
+    CMCloseProfile(displayProfile);
+    if (!m_postRoutineRegistered) {
+        m_postRoutineRegistered = true;
+        qAddPostRoutine(QCoreGraphicsPaintEngine::cleanUpMacColorSpaces);
+    }
+    return colorSpace;
+}
+
+void QCoreGraphicsPaintEngine::cleanUpMacColorSpaces()
+{
+    if (m_genericColorSpace) {
+        CFRelease(m_genericColorSpace);
+        m_genericColorSpace = 0;
+    }
+    QHash<CGDirectDisplayID, CGColorSpaceRef>::const_iterator it = m_displayColorSpaceHash.constBegin();
+    while (it != m_displayColorSpaceHash.constEnd()) {
+        if (it.value())
+            CFRelease(it.value());
+        ++it;
+    }
+    m_displayColorSpaceHash.clear();
+}
+
 void qt_mac_clip_cg(CGContextRef hd, const QRegion &rgn, const QPoint *pt, CGAffineTransform *orig_xform)
 {
     CGAffineTransform old_xform = CGAffineTransformIdentity;
@@ -233,8 +339,10 @@ void qt_mac_clip_cg(CGContextRef hd, const QRegion &rgn, const QPoint *pt, CGAff
 #else
 #  define QMACPATTERN_MASK_MULTIPLIER 1
 #endif
-struct QMacPattern {
-    QMacPattern() : as_mask(false), image(0) { data.bytes = 0; }
+class QMacPattern
+{
+public:
+    QMacPattern() : as_mask(false), pdev(0), image(0) { data.bytes = 0; }
     ~QMacPattern() { CGImageRelease(image); }
     int width() {
         if(image)
@@ -258,6 +366,7 @@ struct QMacPattern {
         QPixmap pixmap;
         const uchar *bytes;
     } data;
+    QPaintDevice *pdev;
     //output
     CGImageRef image;
 };
@@ -265,6 +374,7 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
 {
     QMacPattern *pat = (QMacPattern*)info;
     int w = 0, h = 0;
+    bool isBitmap = (pat->data.pixmap.depth() == 1);
     if(!pat->image) { //lazy cache
         if(pat->as_mask) {
             Q_ASSERT(pat->data.bytes);
@@ -286,8 +396,7 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
             QPixmap pm(w*QMACPATTERN_MASK_MULTIPLIER, h*QMACPATTERN_MASK_MULTIPLIER);
             pm.fill(c0);
             CGContextRef pm_ctx = qt_mac_cg_context(&pm);
-            CGContextSetRGBFillColor(c, qt_mac_convert_color_to_cg(c1.red()), qt_mac_convert_color_to_cg(c1.green()),
-                                     qt_mac_convert_color_to_cg(c1.blue()),   qt_mac_convert_color_to_cg(c1.alpha()));
+            CGContextSetFillColorWithColor(c, cgColorForQColor(c1, pat->pdev));
             CGRect rect = CGRectMake(0, 0, w, h);
             for(int x = 0; x < QMACPATTERN_MASK_MULTIPLIER; ++x) {
                 rect.origin.x = x * w;
@@ -305,7 +414,7 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
         } else {
             w = pat->data.pixmap.width();
             h = pat->data.pixmap.height();
-            if(pat->data.pixmap.depth() == 1)
+            if (isBitmap)
                 pat->image = qt_mac_create_imagemask(pat->data.pixmap, pat->data.pixmap.rect());
             else
                 pat->image = (CGImageRef)pat->data.pixmap.macCGHandle();
@@ -317,15 +426,14 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
 
     //draw
     bool needRestore = false;
-    if(CGImageIsMask(pat->image)) {
+    if (CGImageIsMask(pat->image)) {
         CGContextSaveGState(c);
-        CGContextSetRGBFillColor(c, qt_mac_convert_color_to_cg(pat->foreground.red()),
-                qt_mac_convert_color_to_cg(pat->foreground.green()),
-                qt_mac_convert_color_to_cg(pat->foreground.blue()),
-                qt_mac_convert_color_to_cg(pat->foreground.alpha()));
+        CGContextSetFillColorWithColor(c, cgColorForQColor(pat->foreground, pat->pdev));
     }
     CGRect rect = CGRectMake(0, 0, w, h);
+
     HIViewDrawCGImage(c, &rect, pat->image);
+
     if(needRestore)
         CGContextRestoreGState(c);
 }
@@ -352,11 +460,11 @@ inline static QPaintEngine::PaintEngineFeatures qt_mac_cg_features()
         );
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
     if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
-        ret &= ~QPaintEngine::PorterDuff;
+        ret |= QPaintEngine::BlendModes;
     } else
 #endif
     {
-        ret &= ~(QPaintEngine::PorterDuff|QPaintEngine::BlendModes);
+        ret &= ~(QPaintEngine::BlendModes);
     }
     return ret;
 }
@@ -620,6 +728,11 @@ void
 QCoreGraphicsPaintEngine::drawPath(const QPainterPath &p)
 {
     Q_D(QCoreGraphicsPaintEngine);
+    Q_ASSERT(isActive());
+
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
+
     CGMutablePathRef path = qt_mac_compose_path(p);
     uchar ops = QCoreGraphicsPaintEnginePrivate::CGStroke;
     if(p.fillRule() == Qt::WindingFill)
@@ -636,6 +749,9 @@ QCoreGraphicsPaintEngine::drawRects(const QRectF *rects, int rectCount)
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
+
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
 
     for (int i=0; i<rectCount; ++i) {
         QRectF r = rects[i];
@@ -654,7 +770,10 @@ QCoreGraphicsPaintEngine::drawPoints(const QPointF *points, int pointCount)
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
 
-    if(d->current.pen.capStyle() == Qt::FlatCap)
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
+
+    if (d->current.pen.capStyle() == Qt::FlatCap)
         CGContextSetLineCap(d->hd, kCGLineCapSquare);
 
     CGMutablePathRef path = CGPathCreateMutable();
@@ -685,6 +804,9 @@ QCoreGraphicsPaintEngine::drawEllipse(const QRectF &r)
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
 
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
+
     CGMutablePathRef path = CGPathCreateMutable();
     CGAffineTransform transform = CGAffineTransformMakeScale(r.width() / r.height(), 1);
     CGPathAddArc(path, &transform,(r.x() + (r.width() / 2)) / (r.width() / r.height()),
@@ -699,6 +821,9 @@ QCoreGraphicsPaintEngine::drawPolygon(const QPointF *points, int pointCount, Pol
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
+
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
 
     CGMutablePathRef path = CGPathCreateMutable();
     CGPathMoveToPoint(path, 0, points[0].x(), points[0].y());
@@ -720,6 +845,9 @@ QCoreGraphicsPaintEngine::drawLines(const QLineF *lines, int lineCount)
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
 
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
+
     CGMutablePathRef path = CGPathCreateMutable();
     for(int i = 0; i < lineCount; i++) {
         const QPointF start = lines[i].p1(), end = lines[i].p2();
@@ -730,27 +858,27 @@ QCoreGraphicsPaintEngine::drawLines(const QLineF *lines, int lineCount)
     CGPathRelease(path);
 }
 
-void
-QCoreGraphicsPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
+void QCoreGraphicsPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
+
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
+
     if(pm.isNull())
         return;
 
     bool differentSize = (QRectF(0, 0, pm.width(), pm.height()) != sr), doRestore = false;
     CGRect rect = CGRectMake(qRound(r.x()), qRound(r.y()), qRound(r.width()), qRound(r.height()));
     QCFType<CGImageRef> image;
-    if(pm.depth() == 1) {
+    bool isBitmap = (pm.depth() == 1);
+    if (isBitmap) {
         doRestore = true;
         CGContextSaveGState(d->hd);
 
         const QColor &col = d->current.pen.color();
-        CGContextSetRGBFillColor(d->hd, qt_mac_convert_color_to_cg(col.red()),
-                qt_mac_convert_color_to_cg(col.green()),
-                qt_mac_convert_color_to_cg(col.blue()),
-                qt_mac_convert_color_to_cg(col.alpha()));
-
+        CGContextSetFillColorWithColor(d->hd, cgColorForQColor(col, d->pdev));
         image = qt_mac_create_imagemask(pm, sr);
     } else if (differentSize) {
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
@@ -762,16 +890,18 @@ QCoreGraphicsPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const Q
 #endif
         {
             const int sx = qRound(sr.x()), sy = qRound(sr.y()), sw = qRound(sr.width()), sh = qRound(sr.height());
-            quint32 *pantherData = pm.data->pixels + (sy * pm.width() + sx);
+            const QMacPixmapData *pmData = static_cast<const QMacPixmapData*>(pm.data);
+            quint32 *pantherData = pmData->pixels + (sy * pm.width() + sx);
             QCFType<CGDataProviderRef> provider = CGDataProviderCreateWithData(0, pantherData, sw*sh*sizeof(uint), 0);
             image = CGImageCreate(sw, sh, 8, 32, pm.width() * sizeof(uint),
-                                  QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
+                                  macGenericColorSpace(),
                                   kCGImageAlphaPremultipliedFirst, provider, 0, 0,
                                   kCGRenderingIntentDefault);
         }
     } else {
         image = (CGImageRef)pm.macCGHandle();
     }
+
     HIViewDrawCGImage(d->hd, &rect, image);
     if (doRestore)
         CGContextRestoreGState(d->hd);
@@ -820,11 +950,10 @@ CGImageRef qt_mac_createCGImageFromQImage(const QImage &img, const QImage **imag
         *imagePtr = image;
     return CGImageCreate(image->width(), image->height(), 8, 32,
                                         image->bytesPerLine(),
-                                        QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
+                                        QCoreGraphicsPaintEngine::macGenericColorSpace(),
                                         cgflags, dataProvider, 0, false, kCGRenderingIntentDefault);
 
 }
-
 
 void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRectF &sr,
                                          Qt::ImageConversionFlags flags)
@@ -832,13 +961,14 @@ void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, con
     Q_D(QCoreGraphicsPaintEngine);
     Q_UNUSED(flags);
     Q_ASSERT(isActive());
-    if (img.isNull())
+
+    if (img.isNull() || state->compositionMode() == QPainter::CompositionMode_Destination)
         return;
 
     const QImage *image;
     QCFType<CGImageRef> cgimage = qt_mac_createCGImageFromQImage(img, &image);
     CGRect rect = CGRectMake(r.x(), r.y(), r.width(), r.height());
-    if ((QRectF(0, 0, img.width(), img.height()) != sr)) {
+    if (QRectF(0, 0, img.width(), img.height()) != sr) {
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
         if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
             cgimage = CGImageCreateWithImageInRect(cgimage, CGRectMake(sr.x(), sr.y(),
@@ -855,20 +985,18 @@ void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, con
             QCFType<CGDataProviderRef> dataProvider = CGDataProviderCreateWithData(0, pantherData,
                                                                                    sw * sh * sizeof(uint), 0);
             cgimage = CGImageCreate(sw, sh, 8, 32, image->bytesPerLine(),
-                    QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
+                                    macGenericColorSpace(),
                     CGImageGetAlphaInfo(cgimage), dataProvider, 0, false, kCGRenderingIntentDefault);
         }
     }
     HIViewDrawCGImage(d->hd, &rect, cgimage);
 }
 
-void
-QCoreGraphicsPaintEngine::initialize()
+void QCoreGraphicsPaintEngine::initialize()
 {
 }
 
-void
-QCoreGraphicsPaintEngine::cleanup()
+void QCoreGraphicsPaintEngine::cleanup()
 {
 }
 
@@ -885,6 +1013,9 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
 
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
+
     //save the old state
     CGContextSaveGState(d->hd);
 
@@ -892,6 +1023,7 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
     QMacPattern *qpattern = new QMacPattern;
     qpattern->data.pixmap = pixmap;
     qpattern->foreground = d->current.pen.color();
+    qpattern->pdev = d->pdev;
     CGPatternCallbacks callbks;
     callbks.version = 0;
     callbks.drawPattern = qt_mac_draw_pattern;
@@ -929,6 +1061,9 @@ void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem 
     }
 #endif
 
+    if (state->compositionMode() == QPainter::CompositionMode_Destination)
+        return;
+
     const QTextItemInt &ti = static_cast<const QTextItemInt &>(item);
 
     QPen oldPen = painter()->pen();
@@ -939,15 +1074,25 @@ void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem 
 
     Q_ASSERT(type() == QPaintEngine::CoreGraphics);
 
-    QFontEngineMac *fe = static_cast<QFontEngineMac *>(ti.fontEngine);
+    QFontEngine *fe = ti.fontEngine;
 
     const bool textAA = state->renderHints() & QPainter::TextAntialiasing && fe->fontDef.pointSize > qt_antialiasing_threshold && !(fe->fontDef.styleStrategy & QFont::NoAntialias);
     const bool lineAA = state->renderHints() & QPainter::Antialiasing;
     if(textAA != lineAA)
         CGContextSetShouldAntialias(d->hd, textAA);
 
-    if (ti.num_glyphs)
-        fe->draw(d->hd, pos.x(), pos.y(), ti, paintDevice()->height());
+    if (ti.num_glyphs) {
+        switch (fe->type()) {
+        case QFontEngine::Mac:
+            static_cast<QFontEngineMac *>(fe)->draw(d->hd, pos.x(), pos.y(), ti, paintDevice()->height());
+            break;
+        case QFontEngine::Box:
+            d->drawBoxTextItem(pos, ti);
+            break;
+        default:
+            break;
+        }
+    }
 
     if(textAA != lineAA)
         CGContextSetShouldAntialias(d->hd, !textAA);
@@ -961,17 +1106,31 @@ QCoreGraphicsPaintEngine::supportedRenderHints() const
 {
     return QPainter::RenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 }
-
+enum CGCompositeMode {
+        kCGCompositeModeClear            = 0,
+        kCGCompositeModeCopy             = 1,
+        kCGCompositeModeSourceOver       = 2,
+        kCGCompositeModeSourceIn         = 3,
+        kCGCompositeModeSourceOut        = 4,
+        kCGCompositeModeSourceAtop       = 5,
+        kCGCompositeModeDestinationOver  = 6,
+        kCGCompositeModeDestinationIn    = 7,
+        kCGCompositeModeDestinationOut   = 8,
+        kCGCompositeModeDestinationAtop  = 9,
+        kCGCompositeModeXOR              = 10,
+        kCGCompositeModePlusDarker       = 11, // (max (0, (1-d) + (1-s)))
+        kCGCompositeModePlusLighter      = 12, // (min (1, s + d))
+    };
+extern "C" {
+    extern void CGContextSetCompositeOperation(CGContextRef, int);
+} // private function, but is in all versions of OS X.
 void
 QCoreGraphicsPaintEngine::updateCompositionMode(QPainter::CompositionMode mode)
 {
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
-    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
-        CGBlendMode cg_mode = kCGBlendModeNormal;
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
+        int cg_mode = kCGBlendModeNormal;
         switch(mode) {
-        case QPainter::CompositionMode_SourceOver:
-            cg_mode = kCGBlendModeNormal;
-            break;
         case QPainter::CompositionMode_Multiply:
             cg_mode = kCGBlendModeMultiply;
             break;
@@ -1005,24 +1164,151 @@ QCoreGraphicsPaintEngine::updateCompositionMode(QPainter::CompositionMode mode)
         case QPainter::CompositionMode_Exclusion:
             cg_mode = kCGBlendModeExclusion;
             break;
-        case QPainter::CompositionMode_DestinationOver:
-        case QPainter::CompositionMode_Clear:
-        case QPainter::CompositionMode_Source:
-        case QPainter::CompositionMode_Destination:
-        case QPainter::CompositionMode_SourceIn:
-        case QPainter::CompositionMode_DestinationIn:
-        case QPainter::CompositionMode_SourceOut:
-        case QPainter::CompositionMode_DestinationOut:
-        case QPainter::CompositionMode_SourceAtop:
-        case QPainter::CompositionMode_DestinationAtop:
-        case QPainter::CompositionMode_Xor:
         case QPainter::CompositionMode_Plus:
-            qWarning() << "QCoreGraphicsPaintEngine::updateCompositionMode unhandled mode" << mode;
+            cg_mode = kCGBlendModePlusLighter;
+            break;
+        case QPainter::CompositionMode_SourceOver:
+            cg_mode = kCGBlendModeNormal;
+            break;
+        case QPainter::CompositionMode_DestinationOver:
+            cg_mode = kCGBlendModeDestinationOver;
+            break;
+        case QPainter::CompositionMode_Clear:
+            cg_mode = kCGBlendModeClear;
+            break;
+        case QPainter::CompositionMode_Source:
+            cg_mode = kCGBlendModeCopy;
+            break;
+        case QPainter::CompositionMode_Destination:
+            cg_mode = -1;
+            break;
+        case QPainter::CompositionMode_SourceIn:
+            cg_mode = kCGBlendModeSourceIn;
+            break;
+        case QPainter::CompositionMode_DestinationIn:
+            cg_mode = kCGCompositeModeDestinationIn;
+            break;
+        case QPainter::CompositionMode_SourceOut:
+            cg_mode = kCGBlendModeSourceOut;
+            break;
+        case QPainter::CompositionMode_DestinationOut:
+            cg_mode = kCGBlendModeDestinationOver;
+            break;
+        case QPainter::CompositionMode_SourceAtop:
+            cg_mode = kCGBlendModeSourceAtop;
+            break;
+        case QPainter::CompositionMode_DestinationAtop:
+            cg_mode = kCGBlendModeDestinationAtop;
+            break;
+        case QPainter::CompositionMode_Xor:
+            cg_mode = kCGBlendModeXOR;
             break;
         }
-        CGContextSetBlendMode(d_func()->hd, cg_mode);
-    }
+        if (cg_mode > -1) {
+            CGContextSetBlendMode(d_func()->hd, CGBlendMode(cg_mode));
+        }
+    } else
 #endif
+    // The standard porter duff ops.
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3
+            && mode <= QPainter::CompositionMode_Xor) {
+        int cg_mode = kCGCompositeModeCopy;
+        switch (mode) {
+        case QPainter::CompositionMode_SourceOver:
+            cg_mode = kCGCompositeModeSourceOver;
+            break;
+        case QPainter::CompositionMode_DestinationOver:
+            cg_mode = kCGCompositeModeDestinationOver;
+            break;
+        case QPainter::CompositionMode_Clear:
+            cg_mode = kCGCompositeModeClear;
+            break;
+        default:
+            qWarning("QCoreGraphicsPaintEngine: Unhandled composition mode %d", (int)mode);
+            break;
+        case QPainter::CompositionMode_Source:
+            cg_mode = kCGCompositeModeCopy;
+            break;
+        case QPainter::CompositionMode_Destination:
+            cg_mode = CGCompositeMode(-1);
+            break;
+        case QPainter::CompositionMode_SourceIn:
+            cg_mode = kCGCompositeModeSourceIn;
+            break;
+        case QPainter::CompositionMode_DestinationIn:
+            cg_mode = kCGCompositeModeDestinationIn;
+            break;
+        case QPainter::CompositionMode_SourceOut:
+            cg_mode = kCGCompositeModeSourceOut;
+            break;
+        case QPainter::CompositionMode_DestinationOut:
+            cg_mode = kCGCompositeModeDestinationOut;
+            break;
+        case QPainter::CompositionMode_SourceAtop:
+            cg_mode = kCGCompositeModeSourceAtop;
+            break;
+        case QPainter::CompositionMode_DestinationAtop:
+            cg_mode = kCGCompositeModeDestinationAtop;
+            break;
+        case QPainter::CompositionMode_Xor:
+            cg_mode = kCGCompositeModeXOR;
+            break;
+        }
+        if (cg_mode > -1)
+            CGContextSetCompositeOperation(d_func()->hd, CGCompositeMode(cg_mode));
+    } else {
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+        bool needPrivateAPI = false;
+        if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+            int cg_mode = kCGBlendModeNormal;
+            switch (mode) {
+            case QPainter::CompositionMode_Multiply:
+                cg_mode = kCGBlendModeMultiply;
+                break;
+            case QPainter::CompositionMode_Screen:
+                cg_mode = kCGBlendModeScreen;
+                break;
+            case QPainter::CompositionMode_Overlay:
+                cg_mode = kCGBlendModeOverlay;
+                break;
+            case QPainter::CompositionMode_Darken:
+                cg_mode = kCGBlendModeDarken;
+                break;
+            case QPainter::CompositionMode_Lighten:
+                cg_mode = kCGBlendModeLighten;
+                break;
+            case QPainter::CompositionMode_ColorDodge:
+                cg_mode = kCGBlendModeColorDodge;
+                break;
+            case QPainter::CompositionMode_ColorBurn:
+                cg_mode = kCGBlendModeColorBurn;
+                break;
+            case QPainter::CompositionMode_HardLight:
+                cg_mode = kCGBlendModeHardLight;
+                break;
+            case QPainter::CompositionMode_SoftLight:
+                cg_mode = kCGBlendModeSoftLight;
+                break;
+            case QPainter::CompositionMode_Difference:
+                cg_mode = kCGBlendModeDifference;
+                break;
+            case QPainter::CompositionMode_Exclusion:
+                cg_mode = kCGBlendModeExclusion;
+                break;
+            case QPainter::CompositionMode_Plus:
+                needPrivateAPI = true;
+                cg_mode = kCGCompositeModePlusLighter;
+                break;
+            default:
+                break;
+            }
+            if (!needPrivateAPI)
+                CGContextSetBlendMode(d_func()->hd, CGBlendMode(cg_mode));
+            else
+                CGContextSetCompositeOperation(d_func()->hd, CGCompositeMode(cg_mode));
+        }
+#endif
+    }
 }
 
 void
@@ -1127,21 +1413,17 @@ QCoreGraphicsPaintEnginePrivate::setStrokePen(const QPen &pen)
     const CGFloat cglinewidth = pen.widthF() <= 0.0f ? 1.0f : float(pen.widthF());
     for(int i = 0; i < linedashes.size(); ++i) {
         linedashes[i] *= cglinewidth;
-        if(cglinecap == kCGLineCapSquare || cglinecap == kCGLineCapRound) {
+        if(cglinewidth < 3 && (cglinecap == kCGLineCapSquare || cglinecap == kCGLineCapRound)) {
             if((i%2))
                 linedashes[i] += cglinewidth/2;
             else
                 linedashes[i] -= cglinewidth/2;
         }
     }
-    CGContextSetLineDash(hd, 0, linedashes.data(), linedashes.size());
+    CGContextSetLineDash(hd, pen.dashOffset() * cglinewidth, linedashes.data(), linedashes.size());
 
     //color
-    const QColor &col = pen.color();
-    CGContextSetRGBStrokeColor(hd, qt_mac_convert_color_to_cg(col.red()),
-            qt_mac_convert_color_to_cg(col.green()),
-            qt_mac_convert_color_to_cg(col.blue()),
-            qt_mac_convert_color_to_cg(col.alpha()));
+    CGContextSetStrokeColorWithColor(hd, cgColorForQColor(pen.color(), pdev));
 }
 
 void
@@ -1154,13 +1436,12 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
         CGFunctionCallbacks callbacks = { 0, qt_mac_color_gradient_function, 0 };
         CGFunctionRef fill_func = CGFunctionCreate(const_cast<void *>(reinterpret_cast<const void *>(&brush)),
                 1, 0, 4, 0, &callbacks);
-        CGColorSpaceRef grad_colorspace = CGColorSpaceCreateDeviceRGB();
+        CGColorSpaceRef grad_colorspace = macGenericColorSpace();
         const QLinearGradient *linGrad = static_cast<const QLinearGradient*>(brush.gradient());
         const QPointF start = linGrad->start(), stop = linGrad->finalStop();
         d->shading = CGShadingCreateAxial(grad_colorspace, CGPointMake(start.x(), start.y()),
                 CGPointMake(stop.x(), stop.y()), fill_func, true, true);
         CGFunctionRelease(fill_func);
-        CGColorSpaceRelease(grad_colorspace);
 #endif
     } else if(bs == Qt::RadialGradientPattern || bs == Qt::ConicalGradientPattern) {
 #ifdef QMAC_NATIVE_GRADIENTS
@@ -1168,6 +1449,7 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
 #endif
     } else if(bs != Qt::SolidPattern && bs != Qt::NoBrush) {
         QMacPattern *qpattern = new QMacPattern;
+        qpattern->pdev = pdev;
         CGFloat components[4] = { 1.0, 1.0, 1.0, 1.0 };
         CGColorSpaceRef base_colorspace = 0;
         if(bs == Qt::TexturePattern) {
@@ -1177,7 +1459,7 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
                 components[0] = qt_mac_convert_color_to_cg(col.red());
                 components[1] = qt_mac_convert_color_to_cg(col.green());
                 components[2] = qt_mac_convert_color_to_cg(col.blue());
-                base_colorspace = CGColorSpaceCreateDeviceRGB();
+                base_colorspace = QCoreGraphicsPaintEngine::macGenericColorSpace();
             }
         } else {
             qpattern->as_mask = true;
@@ -1200,7 +1482,7 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
             components[0] = qt_mac_convert_color_to_cg(col.red());
             components[1] = qt_mac_convert_color_to_cg(col.green());
             components[2] = qt_mac_convert_color_to_cg(col.blue());
-            base_colorspace = CGColorSpaceCreateDeviceRGB();
+            base_colorspace = QCoreGraphicsPaintEngine::macGenericColorSpace();
         }
         int width = qpattern->width(), height = qpattern->height();
         qpattern->foreground = brush.color();
@@ -1222,14 +1504,8 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
 
         CGPatternRelease(fill_pattern);
         CGColorSpaceRelease(fill_colorspace);
-        if(base_colorspace)
-            CGColorSpaceRelease(base_colorspace);
     } else if(bs != Qt::NoBrush) {
-        const QColor &col = brush.color();
-        CGContextSetRGBFillColor(hd, qt_mac_convert_color_to_cg(col.red()),
-                qt_mac_convert_color_to_cg(col.green()),
-                qt_mac_convert_color_to_cg(col.blue()),
-                qt_mac_convert_color_to_cg(col.alpha()));
+        CGContextSetFillColorWithColor(hd, cgColorForQColor(brush.color(), pdev));
     }
 }
 
@@ -1335,7 +1611,7 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
         // fills the right pixel. This is needed since the y xais
         // in the Quartz coordinate system is inverted compared to Qt.
         if (!(q->state->renderHints() & QPainter::Antialiasing)) {
-            if (current.pen.style() == Qt::SolidLine)
+            if (current.pen.style() == Qt::SolidLine || current.pen.width() >= 3)
                 CGContextTranslateCTM(hd, double(pixelSize.x()) * 0.25, double(pixelSize.y()) * 0.25);
             else if (current.pen.style() == Qt::DotLine && QSysInfo::MacintoshVersion == QSysInfo::MV_10_3)
                 ; // Do nothing.
@@ -1370,3 +1646,5 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
             CGContextRestoreGState(hd);
     }
 }
+
+QT_END_NAMESPACE

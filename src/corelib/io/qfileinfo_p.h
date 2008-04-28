@@ -57,6 +57,8 @@
 
 #include "qfileinfo.h"
 
+QT_BEGIN_NAMESPACE
+
 class QFileInfoPrivate
 {
 public:
@@ -113,7 +115,7 @@ public:
             cachedFlags = 0;
         }
 
-        mutable QAtomic ref;
+        mutable QAtomicInt ref;
 
         QAbstractFileEngine *fileEngine;
         mutable QString fileName;
@@ -139,5 +141,7 @@ public:
     void detach();
 };
 
+
+QT_END_NAMESPACE
 #endif
 

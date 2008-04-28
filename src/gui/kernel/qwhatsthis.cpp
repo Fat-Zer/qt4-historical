@@ -72,6 +72,8 @@
 #include <qwidget.h>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QWhatsThis
     \brief The QWhatsThis class provides a simple description of any
@@ -109,9 +111,7 @@
     simple method to determine whether the text can be rendered as
     plain text. See Qt::mightBeRichText() for details.
 
-    \quotefile snippets/whatsthis/whatsthis.cpp
-    \skipto newAct =
-    \printuntil setWhatsThis
+    \snippet doc/src/snippets/whatsthis/whatsthis.cpp 0
 
     An alternative way to enter "What's This?" mode is to call
     createAction(), and add the returned QAction to either a menu or
@@ -187,10 +187,8 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
     instance = this;
     setAttribute(Qt::WA_DeleteOnClose, true);
     setAttribute(Qt::WA_NoSystemBackground, true);
-    QPalette pal(Qt::black, QColor(255,255,238),
-                 QColor(96,96,96), QColor(192,192,192), Qt::black,
-                 Qt::black, QColor(255,255,238));
-    setPalette(pal);
+    if (parent)
+        setPalette(parent->palette());
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
 #ifndef QT_NO_CURSOR
@@ -203,7 +201,11 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
         doc = new QTextDocument();
         doc->setUndoRedoEnabled(false);
         doc->setDefaultFont(QApplication::font(this));
+#ifdef QT_NO_TEXTHTMLPARSER
+        doc->setPlainText(text);
+#else
         doc->setHtml(text);
+#endif
         doc->setUndoRedoEnabled(false);
         doc->adjustSize();
         r.setTop(0);
@@ -315,8 +317,8 @@ void QWhatsThat::paintEvent(QPaintEvent*)
         r.adjust(0, 0, -shadowWidth, -shadowWidth);
     QPainter p(this);
     p.drawPixmap(0, 0, background);
-    p.setPen(palette().foreground().color());
-    p.setBrush(palette().brush(QPalette::Window));
+    p.setPen(QPen(palette().toolTipText(), 0));
+    p.setBrush(palette().toolTipBase());
     p.drawRect(r);
     int w = r.width();
     int h = r.height();
@@ -759,5 +761,8 @@ QAction *QWhatsThis::createAction(QObject *parent)
     return new QWhatsThisAction(parent);
 }
 
+QT_END_NAMESPACE
+
 #include "qwhatsthis.moc"
-#endif
+
+#endif // QT_NO_WHATSTHIS

@@ -45,6 +45,7 @@
 
 #include "dragwidget.h"
 
+//! [0]
 DragWidget::DragWidget(QWidget *parent)
     : QFrame(parent)
 {
@@ -70,6 +71,7 @@ DragWidget::DragWidget(QWidget *parent)
     houseIcon->show();
     houseIcon->setAttribute(Qt::WA_DeleteOnClose);
 }
+//! [0]
 
 void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
@@ -126,6 +128,7 @@ void DragWidget::dropEvent(QDropEvent *event)
     }
 }
 
+//! [1]
 void DragWidget::mousePressEvent(QMouseEvent *event)
 {
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
@@ -137,14 +140,19 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream << pixmap << QPoint(event->pos() - child->pos());
+//! [1]
 
+//! [2]
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);
+//! [2]
         
+//! [3]
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap);
     drag->setHotSpot(event->pos() - child->pos());
+//! [3]
 
     QPixmap tempPixmap = pixmap;
     QPainter painter;

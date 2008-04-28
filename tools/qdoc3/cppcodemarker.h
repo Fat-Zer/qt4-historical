@@ -50,6 +50,8 @@
 
 #include "codemarker.h"
 
+QT_BEGIN_NAMESPACE
+
 class CppCodeMarker : public CodeMarker
 {
 public:
@@ -76,5 +78,7 @@ public:
 private:
     QString addMarkUp( const QString& protectedCode, const Node *relative, const QString& dirPath );
 };
+
+QT_END_NAMESPACE
 
 #endif

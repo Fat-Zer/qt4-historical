@@ -58,10 +58,14 @@
 #include "QtCore/qstring.h"
 #include "QtCore/qstringlist.h"
 
-#ifdef Q_OS_WIN32
+QT_BEGIN_NAMESPACE
 
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
+
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "QtCore/qvector.h"
 #include "qt_windows.h"
+QT_END_INCLUDE_NAMESPACE
 
 // template implementation of the parsing algorithm
 // this is used from qcoreapplication_win.cpp and the tools (rcc, uic...)
@@ -76,7 +80,7 @@ static QVector<Char*> qWinCmdLine(Char *cmdParam, int length, int &argc)
     argc = 0;
 
     while (*p && p < p_end) {                                // parse cmd line arguments
-        while (QChar::fromLatin1(*p).isSpace())                        // skip white space
+        while (QChar((short)(*p)).isSpace())                          // skip white space
             p++;
         if (*p && p < p_end) {                                // arg starts
             int quote;
@@ -93,7 +97,7 @@ static QVector<Char*> qWinCmdLine(Char *cmdParam, int length, int &argc)
                 if (quote) {
                     if (*p == quote) {
                         p++;
-                        if (QChar::fromLatin1(*p).isSpace())
+                        if (QChar((short)(*p)).isSpace())
                             break;
                         quote = 0;
                     }
@@ -108,7 +112,7 @@ static QVector<Char*> qWinCmdLine(Char *cmdParam, int length, int &argc)
                     if (!quote && (*p == Char('\"') || *p == Char('\''))) {        // " or ' quote
                         quote = *p++;
                         continue;
-                    } else if (QChar::fromLatin1(*p).isSpace() && !quote)
+                    } else if (QChar((short)(*p)).isSpace() && !quote)
                         break;
                 }
                 if (*p)
@@ -163,5 +167,7 @@ static inline QStringList qCmdLineArgs(int argc, char *argv[])
 }
 
 #endif // Q_OS_WIN
+
+QT_END_NAMESPACE
 
 #endif // QCORECMDLINEARGS_WIN_P_H

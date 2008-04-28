@@ -43,6 +43,8 @@
 
 #include "qdesigner_objectinspector_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 QDesignerObjectInspector::QDesignerObjectInspector(QWidget *parent, Qt::WindowFlags flags) :
@@ -74,3 +76,5 @@ Selection::ObjectList Selection::selection() const
     return rc;
 }
 }
+
+QT_END_NAMESPACE

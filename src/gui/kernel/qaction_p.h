@@ -59,6 +59,8 @@
 #include "QtGui/qmenu.h"
 #include "private/qobject_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_ACTION
 
 #ifdef QT3_SUPPORT
@@ -101,6 +103,7 @@ public:
     uint separator : 1;
     uint fontSet : 1;
     QAction::MenuRole menuRole;
+    int iconVisibleInMenu : 3;  // Only has values -1, 0, and 1
     QList<QWidget *> widgets;
 #ifndef QT_NO_SHORTCUT
     void redoGrab(QShortcutMap &map);
@@ -118,5 +121,7 @@ public:
 };
 
 #endif // QT_NO_ACTION
+
+QT_END_NAMESPACE
 
 #endif // QACTION_P_H

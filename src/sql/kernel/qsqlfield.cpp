@@ -45,6 +45,8 @@
 #include "qatomic.h"
 #include "qdebug.h"
 
+QT_BEGIN_NAMESPACE
+
 class QSqlFieldPrivate
 {
 public:
@@ -78,12 +80,11 @@ public:
                 && len == other.len
                 && prec == other.prec
                 && def == other.def
-                && tp == other.tp
                 && gen == other.gen
                 && autoval == other.autoval);
     }
 
-    QAtomic ref;
+    QAtomicInt ref;
     QString nm;
     uint ro: 1;
     QVariant::Type type;
@@ -114,26 +115,21 @@ public:
     Field data values are stored as QVariants. Using an incompatible
     type is not permitted. For example:
 
-    \quotefromfile snippets/sqldatabase/sqldatabase.cpp
-    \skipto QSqlField_snippets
-    \skipto QSqlField field
-    \printuntil setValue
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 2
 
     However, the field will attempt to cast certain data types to the
     field data type where possible:
 
-    \skipto QSqlField field
-    \printuntil setValue
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 3
 
     QSqlField objects are rarely created explicitly in application
     code. They are usually accessed indirectly through \l{QSqlRecord}s
     that already contain a list of fields. For example:
 
-    \skipto QSqlQuery query
-    \printline QSqlQuery query
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 4
     \dots
-    \printline QSqlRecord record
-    \printline QSqlField field
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 5
+    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 6
 
     A QSqlField object can provide some meta-data about the field, for
     example, its name(), variant type(), length(), precision(),
@@ -560,3 +556,4 @@ void QSqlField::setAutoValue(bool autoVal)
     d->autoval = autoVal;
 }
 
+QT_END_NAMESPACE

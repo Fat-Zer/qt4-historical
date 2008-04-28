@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3GVector : public Q3PtrCollection	// generic vector
@@ -124,6 +126,8 @@ private:
 Q_COMPAT_EXPORT QDataStream &operator>>( QDataStream &, Q3GVector & );
 Q_COMPAT_EXPORT QDataStream &operator<<( QDataStream &, const Q3GVector & );
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

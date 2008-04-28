@@ -64,6 +64,8 @@
 Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)
 
+QT_BEGIN_NAMESPACE
+
 static QVariant::Type qGetColumnType(const QString &tpName)
 {
     const QString typeName = tpName.toLower();
@@ -79,7 +81,6 @@ static QVariant::Type qGetColumnType(const QString &tpName)
         return QVariant::ByteArray;
     return QVariant::String;
 }
-
 
 static QSqlError qMakeError(sqlite3 *access, const QString &descr, QSqlError::ErrorType type,
                             int errorCode = -1)
@@ -185,6 +186,12 @@ bool QSQLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, int i
     }
     skipRow = initialFetch;
 
+    if (!stmt) {
+        q->setLastError(QSqlError(QCoreApplication::translate("QSQLiteResult", "Unable to fetch row"),
+                                  QCoreApplication::translate("QSQLiteResult", "No query"), QSqlError::ConnectionError));
+        q->setAt(QSql::AfterLastRow);
+        return false;
+    }
     res = sqlite3_step(stmt);
 
     switch(res) {
@@ -341,6 +348,7 @@ bool QSQLiteResult::exec()
                 case QVariant::Double:
                     res = sqlite3_bind_double(d->stmt, i + 1, value.toDouble());
                     break;
+                case QVariant::UInt:
                 case QVariant::LongLong:
                     res = sqlite3_bind_int64(d->stmt, i + 1, value.toLongLong());
                     break;
@@ -451,11 +459,14 @@ bool QSQLiteDriver::hasFeature(DriverFeature f) const
     case PreparedQueries:
     case PositionalPlaceholders:
     case SimpleLocking:
+    case FinishQuery:
         return true;
     case QuerySize:
     case NamedPlaceholders:
     case BatchOperations:
     case LowPrecisionNumbers:
+    case EventNotifications:
+    case MultipleResultSets:
         return false;
     }
     return false;
@@ -613,8 +624,9 @@ static QSqlIndex qGetTableInfo(QSqlQuery &q, const QString &tableName, bool only
             continue;
         QString typeName = q.value(2).toString().toLower();
         QSqlField fld(q.value(1).toString(), qGetColumnType(typeName));
-        if (isPk && typeName == QLatin1String("integer"))
-            // integer primary key fields are auto-generated in sqlite
+        if (isPk && (typeName == QLatin1String("integer")))
+            // INTEGER PRIMARY KEY fields are auto-generated in sqlite
+            // INT PRIMARY KEY is not the same as INTEGER PRIMARY KEY!
             fld.setAutoValue(true);
         fld.setRequired(q.value(3).toInt() != 0);
         fld.setDefaultValue(q.value(4));
@@ -657,3 +669,4 @@ QString QSQLiteDriver::escapeIdentifier(const QString &identifier, IdentifierTyp
     return res;
 }
 
+QT_END_NAMESPACE

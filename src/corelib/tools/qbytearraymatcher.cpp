@@ -43,6 +43,8 @@
 
 #include "qbytearraymatcher.h"
 
+QT_BEGIN_NAMESPACE
+
 static inline void bm_init_skiptable(const uchar *cc, int l, uint *skiptable)
 {
     int i = 0;
@@ -196,3 +198,5 @@ int QByteArrayMatcher::indexIn(const QByteArray &ba, int from) const
 
     \sa setPattern()
 */
+
+QT_END_NAMESPACE

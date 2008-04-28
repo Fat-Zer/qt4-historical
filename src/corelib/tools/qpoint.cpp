@@ -45,6 +45,7 @@
 #include "qdatastream.h"
 #include "qdebug.h"
 
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QPoint
@@ -63,13 +64,7 @@
 
     Given a point \e p, the following statements are all equivalent:
 
-    \code
-        QPoint p;
-
-        p.setX(p.x() + 1);
-        p += QPoint(1, 0);
-        p.rx()++;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 0
 
     A QPoint object can also be used as a vector: Addition and
     subtraction are defined as for vectors (each component is added
@@ -152,10 +147,7 @@
 
     Using a reference makes it possible to directly manipulate x. For example:
 
-    \code
-        QPoint p(1, 2);
-        p.rx()--;   // p becomes (0, 2)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 1
 
     \sa x() setX()
 */
@@ -168,10 +160,7 @@
     Using a reference makes it possible to directly manipulate y. For
     example:
 
-    \code
-        QPoint p(1, 2);
-        p.ry()++;   // p becomes (1, 3)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 2
 
     \sa y(), setY()
 */
@@ -183,11 +172,7 @@
     Adds the given \a point to this point and returns a reference to
     this point. For example:
 
-    \code
-        QPoint p( 3, 7);
-        QPoint q(-1, 4);
-        p += q;    // p becomes (2, 11)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 3
 
     \sa operator-=()
 */
@@ -198,11 +183,7 @@
     Subtracts the given \a point from this point and returns a
     reference to this point. For example:
 
-    \code
-        QPoint p( 3, 7);
-        QPoint q(-1, 4);
-        p -= q;    // p becomes (4, 3)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 4
 
     \sa operator+=()
 */
@@ -213,10 +194,7 @@
     Multiplies this point's coordinates by the given \a factor, and
     returns a reference to this point. For example:
 
-    \code
-        QPoint p(-1, 4);
-        p *= 2.5;    // p becomes (-3, 10)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 5
 
     Note that the result is rounded to the nearest integer as points are held as
     integers. Use QPointF for floating point accuracy.
@@ -298,10 +276,7 @@
     Divides both x and y by the given \a divisor, and returns a reference to this
     point. For example:
 
-    \code
-        QPoint p(-3, 10);
-        p /= 2.5;           // p becomes (-1, 4)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 6
 
     Note that the result is rounded to the nearest integer as points are held as
     integers. Use QPointF for floating point accuracy.
@@ -376,23 +351,12 @@ QDataStream &operator>>(QDataStream &s, QPoint &p)
     traditionally known as the "Manhattan length" of the vector from
     the origin to the point. For example:
 
-    \code
-        QPoint oldPosition;
-
-        MyWidget::mouseMoveEvent(QMouseEvent *event)
-        {
-            QPoint point = event->pos() - oldPosition;
-            if (point.manhattanLength() > 3)
-                // the mouse has moved more than 3 pixels since the oldPosition
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 7
 
     This is a useful, and quick to calculate, approximation to the
     true length:
 
-    \code
-        int trueManhattanLength = sqrt(pow(x(), 2) + pow(y(), 2));
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 8
 
     The tradition of "Manhattan length" arises because such distances
     apply to travelers who can only travel on a rectangular grid, like
@@ -411,7 +375,7 @@ QDebug operator<<(QDebug dbg, const QPoint &p) {
 
 QDebug operator<<(QDebug d, const QPointF &p)
 {
-    d << "QPointF(" << p.x() << ", " << p.y() << ")";
+    d.nospace() << "QPointF(" << p.x() << ", " << p.y() << ")";
     return d;
 }
 #endif
@@ -434,13 +398,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
 
     Given a point \e p, the following statements are all equivalent:
 
-    \code
-        QPointF p;
-
-        p.setX(p.x() + 1.0);
-        p += QPoint(1.0, 0.0);
-        p.rx()++;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 9
 
     A QPointF object can also be used as a vector: Addition and
     subtraction are defined as for vectors (each component is added
@@ -525,10 +483,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
 
     Using a reference makes it possible to directly manipulate x. For example:
 
-    \code
-         QPoint p(1.1, 2.5);
-         p.rx()--;   // p becomes (0.1, 2.5)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 10
 
     \sa x(), setX()
 */
@@ -540,10 +495,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
 
     Using a reference makes it possible to directly manipulate y. For example:
 
-    \code
-        QPoint p(1.1, 2.5);
-        p.ry()++;   // p becomes (1.1, 3.5)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 11
 
     \sa y() setY()
 */
@@ -554,11 +506,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
     Adds the given \a point to this point and returns a reference to
     this point. For example:
 
-    \code
-        QPoint p( 3.1, 7.1);
-        QPoint q(-1.0, 4.1);
-        p += q;    // p becomes (2.1, 11.2)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 12
 
     \sa operator-=()
 */
@@ -569,11 +517,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
     Subtracts the given \a point from this point and returns a reference
     to this point. For example:
 
-    \code
-        QPoint p( 3.1, 7.1);
-        QPoint q(-1.0, 4.1);
-        p -= q;    // p becomes (4.1, 3.0)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 13
 
     \sa operator+=()
 */
@@ -584,10 +528,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
     Multiplies this point's coordinates by the given \a factor, and
     returns a reference to this point. For example:
 
-    \code
-         QPoint p(-1.1, 4.1);
-         p *= 2.5;    // p becomes (-2.75,10.25)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 14
 
     \sa operator/=()
 */
@@ -598,10 +539,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
     Divides both x and y by the given \a divisor, and returns a reference
     to this point. For example:
 
-    \code
-        QPoint p(-2.75, 10.25);
-        p /= 2.5;           // p becomes (-1.1,4.1)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qpoint.cpp 15
 
     \sa operator*=()
 */
@@ -725,3 +663,5 @@ QDataStream &operator>>(QDataStream &s, QPointF &p)
     return s;
 }
 #endif // QT_NO_DATASTREAM
+
+QT_END_NAMESPACE

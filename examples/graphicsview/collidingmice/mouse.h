@@ -47,6 +47,7 @@
 #include <QGraphicsItem>
 #include <QObject>
 
+//! [0]
 class Mouse : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -68,5 +69,6 @@ private:
     qreal mouseEyeDirection;
     QColor color;
 };
+//! [0]
 
 #endif

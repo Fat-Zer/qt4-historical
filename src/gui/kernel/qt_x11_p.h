@@ -191,6 +191,23 @@ typedef char *XPointer;
 // ### #define QT_NO_XIM
 #endif // QT_NO_XIM
 
+#ifndef QT_NO_XFIXES
+typedef Bool (*PtrXFixesQueryExtension)(Display *, int *, int *);
+typedef Status (*PtrXFixesQueryVersion)(Display *, int *, int *);
+typedef void (*PtrXFixesSetCursorName)(Display *dpy, Cursor cursor, const char *name);
+#endif // QT_NO_XFIXES
+
+#ifndef QT_NO_XCURSOR
+#include <X11/Xcursor/Xcursor.h>
+typedef Cursor (*PtrXcursorLibraryLoadCursor)(Display *, const char *);
+#endif // QT_NO_XCURSOR
+
+#ifndef QT_NO_XINERAMA
+typedef Bool (*PtrXineramaQueryExtension)(Display *dpy, int *event_base, int *error_base);
+typedef Bool (*PtrXineramaIsActive)(Display *dpy);
+typedef XineramaScreenInfo *(*PtrXineramaQueryScreens)(Display *dpy, int *number);
+#endif // QT_NO_XINERAMA
+
 
 /*
  * Solaris patch 108652-47 and higher fixes crases in
@@ -252,12 +269,12 @@ extern "C" char *XSetIMValues(XIM /* im */, ...);
 
 
 #ifdef QT_MITSHM
-
 #  include <X11/extensions/XShm.h>
 #endif // QT_MITSHM
 
-class QWidget;
+QT_BEGIN_NAMESPACE
 
+class QWidget;
 
 struct QX11InfoData {
     uint ref;
@@ -367,6 +384,12 @@ struct QX11Data
     int xfixes_major;
     int xfixes_eventbase;
     int xfixes_errorbase;
+
+#ifndef QT_NO_XFIXES
+    PtrXFixesQueryExtension ptrXFixesQueryExtension;
+    PtrXFixesQueryVersion ptrXFixesQueryVersion;
+    PtrXFixesSetCursorName ptrXFixesSetCursorName;
+#endif
 
     // true if Qt is compiled w/ Tablet support and we have a tablet.
     bool use_xinput;
@@ -528,13 +551,21 @@ struct QX11Data
         _NET_WM_FULL_PLACEMENT,
 
         _NET_WM_WINDOW_TYPE,
-        _NET_WM_WINDOW_TYPE_DIALOG,
+        _NET_WM_WINDOW_TYPE_DESKTOP,
+        _NET_WM_WINDOW_TYPE_DOCK,
+        _NET_WM_WINDOW_TYPE_TOOLBAR,
         _NET_WM_WINDOW_TYPE_MENU,
+        _NET_WM_WINDOW_TYPE_UTILITY,
+        _NET_WM_WINDOW_TYPE_SPLASH,
+        _NET_WM_WINDOW_TYPE_DIALOG,
+        _NET_WM_WINDOW_TYPE_DROPDOWN_MENU,
+        _NET_WM_WINDOW_TYPE_POPUP_MENU,
+        _NET_WM_WINDOW_TYPE_TOOLTIP,
+        _NET_WM_WINDOW_TYPE_NOTIFICATION,
+        _NET_WM_WINDOW_TYPE_COMBO,
+        _NET_WM_WINDOW_TYPE_DND,
         _NET_WM_WINDOW_TYPE_NORMAL,
         _KDE_NET_WM_WINDOW_TYPE_OVERRIDE,
-        _NET_WM_WINDOW_TYPE_SPLASH,
-        _NET_WM_WINDOW_TYPE_TOOLBAR,
-        _NET_WM_WINDOW_TYPE_UTILITY,
 
         _KDE_NET_WM_FRAME_STRUT,
 
@@ -542,6 +573,8 @@ struct QX11Data
         _NET_STARTUP_INFO_BEGIN,
 
         _NET_SUPPORTING_WM_CHECK,
+
+        _NET_WM_CM_S0,
 
         // Property formats
         COMPOUND_TEXT,
@@ -581,6 +614,10 @@ struct QX11Data
         // Xkb
         _XKB_RULES_NAMES,
 
+        // XEMBED
+        _XEMBED,
+        _XEMBED_INFO,
+
         NPredefinedAtoms,
 
         _QT_SETTINGS_TIMESTAMP = NPredefinedAtoms,
@@ -589,6 +626,19 @@ struct QX11Data
     Atom atoms[NAtoms];
 
     bool isSupportedByWM(Atom atom);
+
+    bool compositingManagerRunning;
+
+#ifndef QT_NO_XCURSOR
+    PtrXcursorLibraryLoadCursor ptrXcursorLibraryLoadCursor;
+#endif // QT_NO_XCURSOR
+
+#ifndef QT_NO_XINERAMA
+    PtrXineramaQueryExtension ptrXineramaQueryExtension;
+    PtrXineramaIsActive ptrXineramaIsActive;
+    PtrXineramaQueryScreens ptrXineramaQueryScreens;
+#endif // QT_NO_XINERAMA
+
 };
 
 extern QX11Data *qt_x11Data;
@@ -626,5 +676,8 @@ Q_DECLARE_TYPEINFO(XChar2b, Q_PRIMITIVE_TYPE);
 #ifndef QT_NO_XRENDER
 Q_DECLARE_TYPEINFO(XGlyphElt32, Q_PRIMITIVE_TYPE);
 #endif
+
+
+QT_END_NAMESPACE
 
 #endif // QT_X11_P_H

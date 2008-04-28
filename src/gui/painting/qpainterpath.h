@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QFont;
@@ -120,11 +122,19 @@ public:
     inline void addRect(qreal x, qreal y, qreal w, qreal h);
     void addEllipse(const QRectF &rect);
     inline void addEllipse(qreal x, qreal y, qreal w, qreal h);
+    inline void addEllipse(const QPointF &center, qreal rx, qreal ry);
     void addPolygon(const QPolygonF &polygon);
     void addText(const QPointF &point, const QFont &f, const QString &text);
     inline void addText(qreal x, qreal y, const QFont &f, const QString &text);
     void addPath(const QPainterPath &path);
     void addRegion(const QRegion &region);
+
+    void addRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
+                        Qt::SizeMode mode = Qt::AbsoluteSize);
+    inline void addRoundedRect(qreal x, qreal y, qreal w, qreal h,
+                               qreal xRadius, qreal yRadius,
+                               Qt::SizeMode mode = Qt::AbsoluteSize);
+
     void addRoundRect(const QRectF &rect, int xRnd, int yRnd);
     inline void addRoundRect(qreal x, qreal y, qreal w, qreal h,
                              int xRnd, int yRnd);
@@ -171,6 +181,8 @@ public:
     QPainterPath subtracted(const QPainterPath &r) const;
     QPainterPath subtractedInverted(const QPainterPath &r) const;
 
+    QPainterPath simplified() const;
+
     bool operator==(const QPainterPath &other) const;
     bool operator!=(const QPainterPath &other) const;
 
@@ -212,7 +224,7 @@ class QPainterPathPrivate
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPainterPath &);
 #endif
 private:
-    QAtomic ref;
+    QAtomicInt ref;
     QVector<QPainterPath::Element> elements;
 };
 
@@ -295,9 +307,21 @@ inline void QPainterPath::addEllipse(qreal x, qreal y, qreal w, qreal h)
     addEllipse(QRectF(x, y, w, h));
 }
 
+inline void QPainterPath::addEllipse(const QPointF &center, qreal rx, qreal ry)
+{
+    addEllipse(QRectF(center.x() - rx, center.y() - ry, 2 * rx, 2 * ry));
+}
+
 inline void QPainterPath::addRect(qreal x, qreal y, qreal w, qreal h)
 {
     addRect(QRectF(x, y, w, h));
+}
+
+inline void QPainterPath::addRoundedRect(qreal x, qreal y, qreal w, qreal h,
+                                         qreal xRadius, qreal yRadius,
+                                         Qt::SizeMode mode)
+{
+    addRoundedRect(QRectF(x, y, w, h), xRadius, yRadius, mode);
 }
 
 inline void QPainterPath::addRoundRect(qreal x, qreal y, qreal w, qreal h,
@@ -363,6 +387,12 @@ inline void QPainterPath::detach()
         detach_helper();
     setDirty(true);
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+Q_GUI_EXPORT QDebug operator<<(QDebug, const QPainterPath &);
+#endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

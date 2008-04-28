@@ -50,8 +50,10 @@
 #include <QtCore/qplugin.h>
 #include "qdesigner_q3widgetstack_p.h"
 
-Q3WidgetStackPlugin::Q3WidgetStackPlugin(QObject *parent)
-    : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3WidgetStackPlugin::Q3WidgetStackPlugin(const QIcon &icon, QObject *parent)
+    : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3WidgetStackPlugin::name() const
@@ -70,7 +72,7 @@ QString Q3WidgetStackPlugin::includeFile() const
 { return QLatin1String("q3widgetstack.h"); }
 
 QIcon Q3WidgetStackPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3WidgetStackPlugin::isContainer() const
 { return true; }
@@ -113,3 +115,5 @@ QString Q3WidgetStackPlugin::domXml() const
     </widget>\
     ");
 }
+
+QT_END_NAMESPACE

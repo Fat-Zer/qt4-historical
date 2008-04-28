@@ -46,8 +46,11 @@
 #include "renderarea.h"
 #include "window.h"
 
+//! [0]
 const int IdRole = Qt::UserRole;
+//! [0]
 
+//! [1]
 Window::Window()
 {
     renderArea = new RenderArea;
@@ -55,7 +58,7 @@ Window::Window()
     shapeComboBox = new QComboBox;
     shapeComboBox->addItem(tr("Polygon"), RenderArea::Polygon);
     shapeComboBox->addItem(tr("Rectangle"), RenderArea::Rect);
-    shapeComboBox->addItem(tr("Round Rectangle"), RenderArea::RoundRect);
+    shapeComboBox->addItem(tr("Rounded Rectangle"), RenderArea::RoundedRect);
     shapeComboBox->addItem(tr("Ellipse"), RenderArea::Ellipse);
     shapeComboBox->addItem(tr("Pie"), RenderArea::Pie);
     shapeComboBox->addItem(tr("Chord"), RenderArea::Chord);
@@ -69,14 +72,18 @@ Window::Window()
 
     shapeLabel = new QLabel(tr("&Shape:"));
     shapeLabel->setBuddy(shapeComboBox);
+//! [1]
 
+//! [2]
     penWidthSpinBox = new QSpinBox;
     penWidthSpinBox->setRange(0, 20);
     penWidthSpinBox->setSpecialValueText(tr("0 (cosmetic pen)"));
 
     penWidthLabel = new QLabel(tr("Pen &Width:"));
     penWidthLabel->setBuddy(penWidthSpinBox);
+//! [2]
 
+//! [3]
     penStyleComboBox = new QComboBox;
     penStyleComboBox->addItem(tr("Solid"), Qt::SolidLine);
     penStyleComboBox->addItem(tr("Dash"), Qt::DashLine);
@@ -103,7 +110,9 @@ Window::Window()
 
     penJoinLabel = new QLabel(tr("Pen &Join:"));
     penJoinLabel->setBuddy(penJoinComboBox);
+//! [3]
 
+//! [4]
     brushStyleComboBox = new QComboBox;
     brushStyleComboBox->addItem(tr("Linear Gradient"),
             Qt::LinearGradientPattern);
@@ -130,11 +139,17 @@ Window::Window()
 
     brushStyleLabel = new QLabel(tr("&Brush Style:"));
     brushStyleLabel->setBuddy(brushStyleComboBox);
+//! [4]
 
+//! [5]
     otherOptionsLabel = new QLabel(tr("Other Options:"));
+//! [5] //! [6]
     antialiasingCheckBox = new QCheckBox(tr("&Antialiasing"));
+//! [6] //! [7]
     transformationsCheckBox = new QCheckBox(tr("&Transformations"));
+//! [7]
 
+//! [8]
     connect(shapeComboBox, SIGNAL(activated(int)),
             this, SLOT(shapeChanged()));
     connect(penWidthSpinBox, SIGNAL(valueChanged(int)),
@@ -151,8 +166,11 @@ Window::Window()
             renderArea, SLOT(setAntialiased(bool)));
     connect(transformationsCheckBox, SIGNAL(toggled(bool)),
             renderArea, SLOT(setTransformed(bool)));
+//! [8]
 
+//! [9]
     QGridLayout *mainLayout = new QGridLayout;
+//! [9] //! [10]
     mainLayout->setColumnStretch(0, 1);
     mainLayout->setColumnStretch(3, 1);
     mainLayout->addWidget(renderArea, 0, 0, 1, 4);
@@ -182,14 +200,18 @@ Window::Window()
 
     setWindowTitle(tr("Basic Drawing"));
 }
+//! [10]
 
+//! [11]
 void Window::shapeChanged()
 {
     RenderArea::Shape shape = RenderArea::Shape(shapeComboBox->itemData(
             shapeComboBox->currentIndex(), IdRole).toInt());
     renderArea->setShape(shape);
 }
+//! [11]
 
+//! [12]
 void Window::penChanged()
 {
     int width = penWidthSpinBox->value();
@@ -202,18 +224,23 @@ void Window::penChanged()
 
     renderArea->setPen(QPen(Qt::blue, width, style, cap, join));
 }
+//! [12]
 
+//! [13]
 void Window::brushChanged()
 {
     Qt::BrushStyle style = Qt::BrushStyle(brushStyleComboBox->itemData(
+//! [13]
             brushStyleComboBox->currentIndex(), IdRole).toInt());
 
+//! [14]
     if (style == Qt::LinearGradientPattern) {
         QLinearGradient linearGradient(0, 0, 100, 100);
         linearGradient.setColorAt(0.0, Qt::white);
         linearGradient.setColorAt(0.2, Qt::green);
         linearGradient.setColorAt(1.0, Qt::black);
         renderArea->setBrush(linearGradient);
+//! [14] //! [15]
     } else if (style == Qt::RadialGradientPattern) {
         QRadialGradient radialGradient(50, 50, 50, 70, 70);
         radialGradient.setColorAt(0.0, Qt::white);
@@ -226,9 +253,12 @@ void Window::brushChanged()
         conicalGradient.setColorAt(0.2, Qt::green);
         conicalGradient.setColorAt(1.0, Qt::black);
         renderArea->setBrush(conicalGradient);
+//! [15] //! [16]
     } else if (style == Qt::TexturePattern) {
         renderArea->setBrush(QBrush(QPixmap(":/images/brick.png")));
+//! [16] //! [17]
     } else {
         renderArea->setBrush(QBrush(Qt::green, style));
     }
 }
+//! [17]

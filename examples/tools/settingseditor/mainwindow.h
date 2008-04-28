@@ -46,9 +46,11 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
 class QSettings;
+QT_END_NAMESPACE
 class LocationDialog;
 class SettingsTree;
 

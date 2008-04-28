@@ -45,9 +45,12 @@
 #include <QtGui/qpushbutton.h>
 #include <QtGui/qstyle.h>
 #include <QtGui/qlayout.h>
+#include <QtGui/qdialog.h>
 #include <QtGui/private/qwidget_p.h>
 
 #include "qdialogbuttonbox.h"
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QDialogButtonBox
@@ -85,16 +88,12 @@
     the buttons (or button texts) yourself and add them to the button box,
     specifying their role.
 
-    \quotefromfile dialogs/extension/finddialog.cpp
-    \skipto findButton
-    \printuntil buttonBox->addButton(moreButton, QDialogButtonBox::ActionRole);
+    \snippet examples/dialogs/extension/finddialog.cpp 1
 
     Alternatively, QDialogButtonBox provides several standard buttons (e.g. OK, Cancel, Save)
     that you can use. They exist as flags so you can OR them together in the constructor.
 
-    \quotefromfile dialogs/tabdialog/tabdialog.cpp
-    \skipto buttonBox
-    \printuntil connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    \snippet examples/dialogs/tabdialog/tabdialog.cpp 2
 
     You can mix and match normal buttons and standard buttons.
 
@@ -172,13 +171,13 @@ static QDialogButtonBox::ButtonRole roleFor(QDialogButtonBox::StandardButton but
     case QDialogButtonBox::Save:
     case QDialogButtonBox::Open:
     case QDialogButtonBox::SaveAll:
-    case QDialogButtonBox::Abort:
     case QDialogButtonBox::Retry:
+    case QDialogButtonBox::Ignore:
         return QDialogButtonBox::AcceptRole;
 
     case QDialogButtonBox::Cancel:
     case QDialogButtonBox::Close:
-    case QDialogButtonBox::Ignore:
+    case QDialogButtonBox::Abort:
         return QDialogButtonBox::RejectRole;
 
     case QDialogButtonBox::Discard:
@@ -360,7 +359,7 @@ void QDialogButtonBoxPrivate::layoutButtons()
     int tmpPolicy = layoutPolicy;
 
     static const int M = 5;
-    static int ModalRoles[M] = { AcceptRole, RejectRole, DestructiveRole, YesRole, NoRole };
+    static const int ModalRoles[M] = { AcceptRole, RejectRole, DestructiveRole, YesRole, NoRole };
     if (tmpPolicy == QDialogButtonBox::MacLayout) {
         bool hasModalButton = false;
         for (int i = 0; i < M; ++i) {
@@ -553,7 +552,7 @@ const char *QDialogButtonBoxPrivate::standardButtonText(QDialogButtonBox::Standa
     const char *buttonText = 0;
     switch (sbutton) {
     case QDialogButtonBox::Ok:
-        buttonText = QT_TRANSLATE_NOOP("QDialogButtonBox", "OK");
+        buttonText = QT_TRANSLATE_NOOP("QDialogButtonBox", "&OK");
         break;
     case QDialogButtonBox::Save:
         buttonText = QT_TRANSLATE_NOOP("QDialogButtonBox", "Save");
@@ -1096,14 +1095,18 @@ bool QDialogButtonBox::event(QEvent *event)
         QList<QAbstractButton *> acceptRoleList = d->buttonLists[AcceptRole];
         QPushButton *firstAcceptButton = acceptRoleList.isEmpty() ? 0 : qobject_cast<QPushButton *>(acceptRoleList.at(0));
         bool hasDefault = false;
+        QWidget *dialog = 0;
+        QWidget *p = this;
+        while (p && !p->isWindow()) {
+            p = p->parentWidget();
+            if ((dialog = qobject_cast<QDialog *>(p)))
+                break;
+        }
 
-        for (int i = d->buttonLayout->count() - 1; i >= 0; --i) {
-            QLayoutItem *item = d->buttonLayout->itemAt(i);
-            if (QPushButton *pb = qobject_cast<QPushButton *>(item->widget())) {
-                if (pb->isDefault() && pb != firstAcceptButton) {
-                    hasDefault = true;
-                    break;
-                }
+        foreach (QPushButton *pb, qFindChildren<QPushButton *>(dialog ? dialog : this)) {
+            if (pb->isDefault() && pb != firstAcceptButton) {
+                hasDefault = true;
+                break;
             }
         }
         if (!hasDefault && firstAcceptButton)
@@ -1114,5 +1117,7 @@ bool QDialogButtonBox::event(QEvent *event)
 
     return QWidget::event(event);
 }
+
+QT_END_NAMESPACE
 
 #include "moc_qdialogbuttonbox.cpp"

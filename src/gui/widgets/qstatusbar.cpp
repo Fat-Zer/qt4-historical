@@ -56,6 +56,8 @@
 
 #include <private/qwidget_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QStatusBarPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QStatusBar)
@@ -78,6 +80,7 @@ public:
 
 #ifndef QT_NO_SIZEGRIP
     QSizeGrip * resizer;
+    bool showSizeGrip;
 #endif
 
     int savedStrut;
@@ -92,6 +95,20 @@ public:
         }
         return i;
     }
+
+#ifndef QT_NO_SIZEGRIP
+    void tryToShowSizeGrip()
+    {
+        if (!showSizeGrip)
+            return;
+        showSizeGrip = false;
+        if (!resizer || resizer->isVisible())
+            return;
+        resizer->setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+        QMetaObject::invokeMethod(resizer, "_q_showIfNotHidden", Qt::DirectConnection);
+        resizer->setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+    }
+#endif
 };
 
 /*!
@@ -127,16 +144,12 @@ public:
 
     Use the showMessage() slot to display a \e temporary message:
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto MainWindow::createStatusBar()
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 8
 
     To remove a temporary message, use the clearMessage() slot, or set
     a time limit when calling showMessage(). For example:
 
-    \quotefromfile mainwindows/dockwidgets/mainwindow.cpp
-    \skipto void MainWindow::print()
-    \printuntil /^\}/
+    \snippet examples/mainwindows/dockwidgets/mainwindow.cpp 3
 
     Use the currentMessage() function to retrieve the temporary
     message currently shown. The QStatusBar class also provide the
@@ -149,9 +162,7 @@ public:
     addPermanentWidget() function. Use the removeWidget() function to
     remove such messages from the status bar.
 
-    \code
-        statusBar()->addWidget(new MyReadWriteIndication);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qstatusbar.cpp 0
 
     By default QStatusBar provides a QSizeGrip in the lower-right
     corner. You can disable it using the setSizeGripEnabled()
@@ -189,6 +200,7 @@ QStatusBar::QStatusBar(QWidget * parent, const char *name)
 
 #ifndef QT_NO_SIZEGRIP
     d->resizer = 0;
+    d->showSizeGrip = false;
     setSizeGripEnabled(true); // causes reformat()
 #else
     reformat();
@@ -439,13 +451,17 @@ void QStatusBar::setSizeGripEnabled(bool enabled)
     if (!enabled != !d->resizer) {
         if (enabled) {
             d->resizer = new QSizeGrip(this);
+            d->resizer->hide();
+            d->resizer->installEventFilter(this);
+            d->showSizeGrip = true;
         } else {
             delete d->resizer;
             d->resizer = 0;
+            d->showSizeGrip = false;
         }
         reformat();
         if (d->resizer && isVisible())
-            d->resizer->show();
+            d->tryToShowSizeGrip();
     }
 #endif
 }
@@ -561,7 +577,7 @@ void QStatusBar::clearMessage()
     if (d->tempItem.isEmpty())
         return;
     if (d->timer) {
-        delete d->timer;
+        qDeleteInEventHandler(d->timer);
         d->timer = 0;
     }
     d->tempItem.clear();
@@ -618,14 +634,28 @@ void QStatusBar::hideOrShow()
         item = d->items.at(i);
         if (!item || item->p)
             break;
-        if (haveMessage)
+        if (haveMessage && item->w->isVisible()) {
             item->w->hide();
-        else
+            item->w->setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+        } else if (!haveMessage && !item->w->testAttribute(Qt::WA_WState_ExplicitShowHide)) {
             item->w->show();
+        }
     }
 
     emit messageChanged(d->tempItem);
     repaint();
+}
+
+/*!
+  \reimp
+ */
+void QStatusBar::showEvent(QShowEvent *)
+{
+#ifndef QT_NO_SIZEGRIP
+    Q_D(QStatusBar);
+    if (d->resizer && d->showSizeGrip)
+        d->tryToShowSizeGrip();
+#endif
 }
 
 
@@ -642,6 +672,10 @@ void QStatusBar::paintEvent(QPaintEvent *)
     bool haveMessage = !d->tempItem.isEmpty();
 
     QPainter p(this);
+    QStyleOption opt;
+    opt.initFrom(this);
+    style()->drawPrimitive(QStyle::PE_PanelStatusBar, &opt, &p, this);
+
     QStatusBarPrivate::SBItem* item = 0;
 
     bool rtl = layoutDirection() == Qt::RightToLeft;
@@ -675,7 +709,7 @@ void QStatusBar::paintEvent(QPaintEvent *)
                                  item->w->width() + 4, item->w->height() + 2);
                 opt.palette = palette();
                 opt.state = QStyle::State_None;
-                style()->drawPrimitive(QStyle::PE_FrameStatusBar, &opt, &p, item->w);
+                style()->drawPrimitive(QStyle::PE_FrameStatusBarItem, &opt, &p, item->w);
             }
     }
     if (haveMessage) {
@@ -741,5 +775,7 @@ bool QStatusBar::event(QEvent *e)
     }
     return QWidget::event(e);
 }
+
+QT_END_NAMESPACE
 
 #endif

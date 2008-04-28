@@ -53,6 +53,8 @@
 #include <qdir.h>
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 Win32MakefileGenerator::Win32MakefileGenerator() : MakefileGenerator()
 {
 }
@@ -373,13 +375,11 @@ void Win32MakefileGenerator::processRcFileVar()
 
         QString originalName = project->values("TARGET").first() + project->values("TARGET_EXT").first();
 
-        ts << "#ifndef Q_CC_BOR" << endl;
-        ts << "# if defined(UNDER_CE) && UNDER_CE >= 400" << endl;
+        ts << "# if defined(UNDER_CE)" << endl;
         ts << "#  include <winbase.h>" << endl;
         ts << "# else" << endl;
         ts << "#  include <winver.h>" << endl;
         ts << "# endif" << endl;
-        ts << "#endif" << endl;
         ts << endl;
         ts << "VS_VERSION_INFO VERSIONINFO" << endl;
         ts << "\tFILEVERSION " << QString(versionString).replace(".", ",") << endl;
@@ -436,9 +436,12 @@ void Win32MakefileGenerator::processRcFileVar()
         }
         QString resFile = project->values("RC_FILE").first();
         resFile.replace(".rc", Option::res_ext);
-	project->values("RES_FILE").prepend(fileInfo(resFile).fileName());
+        project->values("RES_FILE").prepend(fileInfo(resFile).fileName());
         if (!project->values("OBJECTS_DIR").isEmpty())
-            project->values("RES_FILE").first().prepend(project->values("OBJECTS_DIR").first() + Option::dir_sep);
+            if(project->isActiveConfig("staticlib"))
+                project->values("RES_FILE").first().prepend(fileInfo(project->values("DESTDIR").first()).absoluteFilePath() + Option::dir_sep);
+            else
+              project->values("RES_FILE").first().prepend(project->values("OBJECTS_DIR").first() + Option::dir_sep);
         project->values("RES_FILE").first() = Option::fixPathToTargetOS(project->values("RES_FILE").first(), false, false);
 	project->values("POST_TARGETDEPS") += project->values("RES_FILE");
         project->values("CLEAN_FILES") += project->values("RES_FILE");
@@ -795,3 +798,5 @@ QString Win32MakefileGenerator::escapeFilePath(const QString &path) const
     }
     return ret;
 }
+
+QT_END_NAMESPACE

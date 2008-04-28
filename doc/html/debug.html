@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/debug.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/debug.qdoc -->
 <head>
-  <title>Qt 4.3: Debugging Techniques</title>
+  <title>Qt 4.4: Debugging Techniques</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -12,7 +12,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Debugging Techniques<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Debugging Techniques<br /><span class="subtitle"></span>
+</h1>
 <p>Here we present some useful hints to help you with debugging your Qt-based software.</p>
 <ul><li><a href="#configuring-qt-for-debugging">Configuring Qt for Debugging</a></li>
 <ul><li><a href="#mac-os-x-and-xcode">Mac OS X and Xcode</a></li>
@@ -50,7 +51,7 @@
 <li><a href="qtglobal.html#qFatal">qFatal</a>() is used for writing fatal error messages shortly before exiting.</li>
 </ul>
 <p>If you include the &lt;QtDebug&gt; header file, the <tt>qDebug()</tt> function can also be used as an output stream. For example:</p>
-<pre> qDebug() &lt;&lt; &quot;Widget&quot; &lt;&lt; widget &lt;&lt; &quot;at position&quot; &lt;&lt; widget-&gt;pos();</pre>
+<pre>         qDebug() &lt;&lt; &quot;Widget&quot; &lt;&lt; widget &lt;&lt; &quot;at position&quot; &lt;&lt; widget-&gt;pos();</pre>
 <p>The Qt implementation of these functions prints the text to the <tt>stderr</tt> output under Unix/X11 and Mac OS X. With Windows, if it is a console application, the text is sent to console; otherwise, it is sent to the debugger. You can take over these functions by installing a message handler using <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>().</p>
 <p>If the <tt>QT_FATAL_WARNINGS</tt> environment variable is set, <a href="qtglobal.html#qWarning">qWarning</a>() exits after printing the warning message. This makes it easy to obtain a backtrace in the debugger.</p>
 <p>Both <a href="qtglobal.html#qDebug">qDebug</a>() and <a href="qtglobal.html#qWarning">qWarning</a>() are debugging tools. They can be compiled away by defining <tt>QT_NO_DEBUG_OUTPUT</tt> and <tt>QT_NO_WARNING_OUTPUT</tt> during compilation.</p>
@@ -74,20 +75,20 @@
 <li><a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a>(ptr), where <tt>ptr</tt> is a pointer. Writes the warning &quot;In file xyz.cpp, line 234: Out of memory&quot; and exits if <tt>ptr</tt> is 0.</li>
 </ul>
 <p>These macros are useful for detecting program errors, e.g&#x2e; like this:</p>
-<pre> char *alloc(int size)
- {
-     Q_ASSERT(size &gt; 0);
-     char *ptr = new char[size];
-     Q_CHECK_PTR(ptr);
-     return ptr;
- }</pre>
+<pre>         char *alloc(int size)
+         {
+             Q_ASSERT(size &gt; 0);
+             char *ptr = new char[size];
+             Q_CHECK_PTR(ptr);
+             return ptr;
+         }</pre>
 <p><a href="qtglobal.html#Q_ASSERT">Q_ASSERT</a>(), <a href="qtglobal.html#Q_ASSERT_X">Q_ASSERT_X</a>(), and <a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a>() expand to nothing if <tt>QT_NO_DEBUG</tt> is defined during compilation. For this reason, the arguments to these macro should not have any side-effects. Here is an incorrect usage of <a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a>():</p>
-<pre> char *alloc(int size)
- {
-     char *ptr;
-     Q_CHECK_PTR(ptr = new char[size]);  <span class="comment">//</span> WRONG
-     return ptr;
- }</pre>
+<pre>         char *alloc(int size)
+         {
+             char *ptr;
+             Q_CHECK_PTR(ptr = new char[size]);  // WRONG
+             return ptr;
+         }</pre>
 <p>If this code is compiled with <tt>QT_NO_DEBUG</tt> defined, the code in the <a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a>() expression is not executed and <i>alloc</i> returns an unitialized pointer.</p>
 <p>The Qt library contains hundreds of internal checks that will print warning messages when a programming error is detected. We therefore recommend that you use a debug version of Qt when developing Qt-based software.</p>
 <a name="common-bugs"></a>
@@ -97,6 +98,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

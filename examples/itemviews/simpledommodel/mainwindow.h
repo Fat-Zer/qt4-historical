@@ -48,8 +48,10 @@
 #include <QString>
 
 class DomModel;
+QT_BEGIN_NAMESPACE
 class QMenu;
 class QTreeView;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

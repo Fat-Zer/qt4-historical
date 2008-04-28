@@ -50,6 +50,8 @@ TRANSLATOR qdesigner_internal::StringListEditorButton
 
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 using namespace qdesigner_internal;
 
 StringListEditorButton::StringListEditorButton(
@@ -57,7 +59,8 @@ StringListEditorButton::StringListEditorButton(
     : QToolButton(parent), m_stringList(stringList)
 {
     setFocusPolicy(Qt::NoFocus);
-    setText(tr("Change StringList"));
+    setText(tr("Change String List"));
+    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
     connect(this, SIGNAL(clicked()), this, SLOT(showStringListEditor()));
 }
@@ -77,6 +80,8 @@ void StringListEditorButton::showStringListEditor()
     QStringList lst = StringListEditor::getStringList(0, m_stringList, &result);
     if (result == QDialog::Accepted) {
         m_stringList = lst;
-        emit changed();
+        emit stringListChanged(m_stringList);
     }
 }
+
+QT_END_NAMESPACE

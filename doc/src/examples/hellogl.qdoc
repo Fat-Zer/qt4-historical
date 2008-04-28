@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example opengl/hellogl
     \title Hello GL Example
@@ -21,21 +64,17 @@
     constructor, destructor, \l{QWidget::sizeHint()}{sizeHint()}, and
     \l{QWidget::minimumSizeHint()}{minimumSizeHint()} functions:
 
-    \quotefromfile opengl/hellogl/glwidget.h
-    \skipto class GLWidget
-    \printuntil sizeHint()
+    \snippet examples/opengl/hellogl/glwidget.h 0
 
     We use a destructor to ensure that any OpenGL-specific data structures
     are deleted when the widget is no longer needed.
 
-    \skipto public slots
-    \printuntil zRotationChanged
+    \snippet examples/opengl/hellogl/glwidget.h 1
 
     The signals and slots are used to allow other objects to interact with the
     3D scene.
 
-    \skipto protected:
-    \printuntil mouseMoveEvent
+    \snippet examples/opengl/hellogl/glwidget.h 2
 
     OpenGL initialization, viewport resizing, and painting are handled by
     reimplementing the QGLWidget::initializeGL(), QGLWidget::resizeGL(), and
@@ -43,8 +82,7 @@
     directly with the scene using the mouse, we reimplement
     QWidget::mousePressEvent() and QWidget::mouseMoveEvent().
 
-    \skipto private:
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.h 3
 
     The rest of the class contains utility functions and variables that are
     used to construct and hold orientation information for the scene. The
@@ -62,34 +100,30 @@
     The constructor provides default rotation angles for the scene, initializes
     the variable used for the display list, and sets up some colors for later use.
 
-    \quotefromfile opengl/hellogl/glwidget.cpp
-    \skipto ::GLWidget
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 0
 
     We also implement a destructor to release OpenGL-related resources when the
     widget is deleted:
 
-    \skipto ::~GLWidget
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 1
 
     The destructor ensures that the display list is deleted properly.
 
     We provide size hint functions to ensure that the widget is shown at a
     reasonable size:
 
-    \skipto ::minimumSizeHint
-    \printuntil /^\}/
-    \printuntil ::sizeHint
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 2
+    \codeline
+    \snippet examples/opengl/hellogl/glwidget.cpp 3
+    \snippet examples/opengl/hellogl/glwidget.cpp 4
 
     The widget provides three slots that enable other components in the
     example to change the orientation of the scene:
 
-    \skipto setXRotation
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 5
 
     In the above slot, the \c xRot variable is updated only if the new angle
-    is different to the old one, the \c xRotationChanged() signals is emitted to
+    is different to the old one, the \c xRotationChanged() signal is emitted to
     allow other components to be updated, and the widget's
     \l{QGLWidget::updateGL()}{updateGL()} handler function is called.
 
@@ -104,8 +138,7 @@
     certain rendering flags, and setting other properties used to customize the
     rendering process.
 
-    \skipto ::initializeGL
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 6
 
     In this example, we reimplement the function to set the background color,
     create a display list containing information about the object we want to
@@ -124,8 +157,7 @@
     based on the length of the smallest side of the widget to ensure that
     the scene is not distorted if the widget has sides of unequal length:
 
-    \skipto ::resizeGL
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 8
 
     A discussion of the projection transformation used is outside the scope of
     this example. Please consult the OpenGL reference documentation for an
@@ -138,9 +170,7 @@
     decorated with pure OpenGL content, we reimplement QGLWidget::paintGL()
     \e instead of reimplementing QWidget::paintEvent():
 
-    \quotefromfile opengl/hellogl/glwidget.cpp
-    \skipto ::paintGL
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 7
 
     In this example, we clear the widget using the background color that
     we defined in the \l{QGLWidget::initializeGL()}{initializeGL()} function,
@@ -156,15 +186,13 @@
     The \l{QWidget::mousePressEvent()}{mousePressEvent()} function simply
     records the position of the mouse when a button is initially pressed:
 
-    \skipto ::mousePressEvent
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 9
 
     The \l{QWidget::mouseMoveEvent()}{mouseMoveEvent()} function uses the
     previous location of the mouse cursor to determine how much the object
     in the scene should be rotated, and in which direction:
 
-    \skipto ::mouseMoveEvent
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/glwidget.cpp 10
 
     Since the user is expected to hold down the mouse button and drag the
     cursor to rotate the object, the cursor's position is updated every time
@@ -182,9 +210,7 @@
     The \c Window class is used as a container for the \c GLWidget used to
     display the scene:
 
-    \quotefromfile opengl/hellogl/window.h
-    \skipto class
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/window.h 0
 
     In addition, it contains sliders that are used to change the orientation
     of the object in the scene.
@@ -194,9 +220,7 @@
     The constructor constructs an instance of the \c GLWidget class and some
     sliders to manipulate its contents.
 
-    \quotefromfile opengl/hellogl/window.cpp
-    \skipto ::Window
-    \printuntil zRotationChanged
+    \snippet examples/opengl/hellogl/window.cpp 0
 
     We connect the \l{QAbstractSlider::valueChanged()}{valueChanged()} signal
     from each of the sliders to the appropriate slots in \c{glWidget}.
@@ -208,8 +232,7 @@
     \l{QAbstractSlider::setValue()}{setValue()} slots in the
     corresponding sliders.
 
-    \skipto QHBoxLayout
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/window.cpp 1
 
     The sliders are placed horizontally in a layout alongside the \c GLWidget,
     and initialized with suitable default values.
@@ -218,15 +241,14 @@
     that it is set up with a suitable range, step value, tick interval, and
     page step value before returning it to the calling function:
 
-    \skipto ::createSlider
-    \printuntil /^\}/
+    \snippet examples/opengl/hellogl/window.cpp 2
 
     \section1 Summary
 
     The \c GLWidget class implementation shows how to subclass QGLWidget for
     the purposes of rendering a 3D scene using OpenGL calls. Since QGLWidget
     is a subclass of QWidget, subclasses of QGLWidget can be placed in layouts
-    and provide interactive features just like normal custom widgets.
+    and provided with interactive features just like normal custom widgets.
 
     We ensure that the widget is able to correctly render the scene using OpenGL
     by reimplementing the following functions:

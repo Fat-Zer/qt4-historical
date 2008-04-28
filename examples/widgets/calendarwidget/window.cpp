@@ -45,6 +45,7 @@
 
 #include "window.h"
 
+//! [0]
 Window::Window()
 {
     createPreviewGroupBox();
@@ -65,17 +66,20 @@ Window::Window()
 
     setWindowTitle(tr("Calendar Widget"));
 }
+//! [0]
 
 void Window::localeChanged(int index)
 {
     calendar->setLocale(localeCombo->itemData(index).toLocale());
 }
 
+//! [1]
 void Window::firstDayChanged(int index)
 {
     calendar->setFirstDayOfWeek(Qt::DayOfWeek(
                                 firstDayCombo->itemData(index).toInt()));
 }
+//! [1]
 
 void Window::selectionModeChanged(int index)
 {
@@ -95,23 +99,30 @@ void Window::verticalHeaderChanged(int index)
         verticalHeaderCombo->itemData(index).toInt()));
 }
 
+//! [2]
 void Window::selectedDateChanged()
 {
     currentDateEdit->setDate(calendar->selectedDate());
 }
+//! [2]
 
+//! [3]
 void Window::minimumDateChanged(const QDate &date)
 {
     calendar->setMinimumDate(date);
     maximumDateEdit->setDate(calendar->maximumDate());
 }
+//! [3]
 
+//! [4]
 void Window::maximumDateChanged(const QDate &date)
 {
     calendar->setMaximumDate(date);
     minimumDateEdit->setDate(calendar->minimumDate());
 }
+//! [4]
 
+//! [5]
 void Window::weekdayFormatChanged()
 {
     QTextCharFormat format;
@@ -124,7 +135,9 @@ void Window::weekdayFormatChanged()
     calendar->setWeekdayTextFormat(Qt::Thursday, format);
     calendar->setWeekdayTextFormat(Qt::Friday, format);
 }
+//! [5]
 
+//! [6]
 void Window::weekendFormatChanged()
 {
     QTextCharFormat format;
@@ -134,7 +147,9 @@ void Window::weekendFormatChanged()
     calendar->setWeekdayTextFormat(Qt::Saturday, format);
     calendar->setWeekdayTextFormat(Qt::Sunday, format);
 }
+//! [6]
 
+//! [7]
 void Window::reformatHeaders()
 {
     QString text = headerTextFormatCombo->currentText();
@@ -149,7 +164,9 @@ void Window::reformatHeaders()
     }
     calendar->setHeaderTextFormat(format);
 }
+//! [7]
 
+//! [8]
 void Window::reformatCalendarPage()
 {
     QTextCharFormat mayFirstFormat;
@@ -169,7 +186,9 @@ void Window::reformatCalendarPage()
         date = date.addDays(1);
     calendar->setDateTextFormat(date, firstFridayFormat);
 }
+//! [8]
 
+//! [9]
 void Window::createPreviewGroupBox()
 {
     previewGroupBox = new QGroupBox(tr("Preview"));
@@ -186,7 +205,9 @@ void Window::createPreviewGroupBox()
     previewLayout->addWidget(calendar, 0, 0, Qt::AlignCenter);
     previewGroupBox->setLayout(previewLayout);
 }
+//! [9]
 
+//! [10]
 void Window::createGeneralOptionsGroupBox()
 {
     generalOptionsGroupBox = new QGroupBox(tr("General Options"));
@@ -225,6 +246,7 @@ void Window::createGeneralOptionsGroupBox()
 
     firstDayLabel = new QLabel(tr("Wee&k starts on:"));
     firstDayLabel->setBuddy(firstDayCombo);
+//! [10]
 
     selectionModeCombo = new QComboBox;
     selectionModeCombo->addItem(tr("Single selection"),
@@ -260,6 +282,7 @@ void Window::createGeneralOptionsGroupBox()
     verticalHeaderLabel = new QLabel(tr("&Vertical header:"));
     verticalHeaderLabel->setBuddy(verticalHeaderCombo);
 
+//! [11]
     connect(localeCombo, SIGNAL(currentIndexChanged(int)),
             this, SLOT(localeChanged(int)));
     connect(firstDayCombo, SIGNAL(currentIndexChanged(int)),
@@ -274,6 +297,7 @@ void Window::createGeneralOptionsGroupBox()
             this, SLOT(horizontalHeaderChanged(int)));
     connect(verticalHeaderCombo, SIGNAL(currentIndexChanged(int)),
             this, SLOT(verticalHeaderChanged(int)));
+//! [11]
 
     QHBoxLayout *checkBoxLayout = new QHBoxLayout;
     checkBoxLayout->addWidget(gridCheckBox);
@@ -294,12 +318,15 @@ void Window::createGeneralOptionsGroupBox()
     outerLayout->addWidget(verticalHeaderCombo, 5, 1);
     generalOptionsGroupBox->setLayout(outerLayout);
 
+//! [12]
     firstDayChanged(firstDayCombo->currentIndex());
     selectionModeChanged(selectionModeCombo->currentIndex());
     horizontalHeaderChanged(horizontalHeaderCombo->currentIndex());
     verticalHeaderChanged(verticalHeaderCombo->currentIndex());
 }
+//! [12]
 
+//! [13]
 void Window::createDatesGroupBox()
 {
     datesGroupBox = new QGroupBox(tr("Dates"));
@@ -331,6 +358,7 @@ void Window::createDatesGroupBox()
     maximumDateLabel = new QLabel(tr("Ma&ximum Date:"));
     maximumDateLabel->setBuddy(maximumDateEdit);
 
+//! [13] //! [14]
     connect(currentDateEdit, SIGNAL(dateChanged(const QDate &)),
             calendar, SLOT(setSelectedDate(const QDate &)));
     connect(calendar, SIGNAL(selectionChanged()),
@@ -340,6 +368,7 @@ void Window::createDatesGroupBox()
     connect(maximumDateEdit, SIGNAL(dateChanged(const QDate &)),
             this, SLOT(maximumDateChanged(const QDate &)));
 
+//! [14]
     QGridLayout *dateBoxLayout = new QGridLayout;
     dateBoxLayout->addWidget(currentDateLabel, 1, 0);
     dateBoxLayout->addWidget(currentDateEdit, 1, 1);
@@ -350,8 +379,11 @@ void Window::createDatesGroupBox()
     dateBoxLayout->setRowStretch(3, 1);
 
     datesGroupBox->setLayout(dateBoxLayout);
+//! [15]
 }
+//! [15]
 
+//! [16]
 void Window::createTextFormatsGroupBox()
 {
     textFormatsGroupBox = new QGroupBox(tr("Text Formats"));
@@ -370,6 +402,7 @@ void Window::createTextFormatsGroupBox()
     weekendColorLabel = new QLabel(tr("Week&end color:"));
     weekendColorLabel->setBuddy(weekendColorCombo);
 
+//! [16] //! [17]
     headerTextFormatCombo = new QComboBox;
     headerTextFormatCombo->addItem(tr("Bold"));
     headerTextFormatCombo->addItem(tr("Italic"));
@@ -382,6 +415,7 @@ void Window::createTextFormatsGroupBox()
 
     mayFirstCheckBox = new QCheckBox(tr("May &1 in red"));
 
+//! [17] //! [18]
     connect(weekdayColorCombo, SIGNAL(currentIndexChanged(int)),
             this, SLOT(weekdayFormatChanged()));
     connect(weekendColorCombo, SIGNAL(currentIndexChanged(int)),
@@ -393,6 +427,7 @@ void Window::createTextFormatsGroupBox()
     connect(mayFirstCheckBox, SIGNAL(toggled(bool)),
             this, SLOT(reformatCalendarPage()));
 
+//! [18]
     QHBoxLayout *checkBoxLayout = new QHBoxLayout;
     checkBoxLayout->addWidget(firstFridayCheckBox);
     checkBoxLayout->addStretch();
@@ -410,10 +445,13 @@ void Window::createTextFormatsGroupBox()
 
     weekdayFormatChanged();
     weekendFormatChanged();
+//! [19]
     reformatHeaders();
     reformatCalendarPage();
 }
+//! [19]
 
+//! [20]
 QComboBox *Window::createColorComboBox()
 {
     QComboBox *comboBox = new QComboBox;
@@ -423,3 +461,4 @@ QComboBox *Window::createColorComboBox()
     comboBox->addItem(tr("Magenta"), Qt::magenta);
     return comboBox;
 }
+//! [20]

@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QGridLayoutPrivate;
@@ -126,8 +128,9 @@ public:
     inline QT3_SUPPORT void setOrigin(Qt::Corner corner) { setOriginCorner(corner); }
     inline QT3_SUPPORT Qt::Corner origin() const { return originCorner(); }
 #endif
-    QLayoutItem *itemAt(int) const;
-    QLayoutItem *takeAt(int);
+    QLayoutItem *itemAt(int index) const;
+    QLayoutItem *itemAtPosition(int row, int column) const;
+    QLayoutItem *takeAt(int index);
     int count() const;
     void setGeometry(const QRect&);
 
@@ -167,6 +170,8 @@ public:
     inline QT3_SUPPORT int rowSpacing(int row) const {return rowMinimumHeight(row); }
 #endif
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

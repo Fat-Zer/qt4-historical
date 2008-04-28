@@ -54,6 +54,8 @@
 #include "generator.h"
 #include "location.h"
 
+QT_BEGIN_NAMESPACE
+
 class ClassNode;
 class InnerNode;
 class NamespaceNode;
@@ -73,12 +75,13 @@ protected:
     QString outFileName();
     void beginSubPage( const Location& location, const QString& fileName );
     void endSubPage();
+    virtual void generateInnerNode( const InnerNode *node, CodeMarker *marker );
     QTextStream& out();
 
 private:
-    void generateInnerNode( const InnerNode *node, CodeMarker *marker );
-
     QStack<QTextStream *> outStreamStack;
 };
+
+QT_END_NAMESPACE
 
 #endif

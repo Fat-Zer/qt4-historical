@@ -46,11 +46,14 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QDateTimeEdit;
 class QDoubleSpinBox;
 class QGroupBox;
 class QLabel;
+QT_END_NAMESPACE
 
+//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -76,5 +79,6 @@ private:
     QGroupBox *doubleSpinBoxesGroup;
     QLabel *meetingLabel;
 };
+//! [0]
 
 #endif

@@ -47,10 +47,13 @@
 #include <QDesignerTaskMenuExtension>
 #include <QExtensionFactory>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QExtensionManager;
+QT_END_NAMESPACE
 class TicTacToe;
 
+//! [0]
 class TicTacToeTaskMenu : public QObject, public QDesignerTaskMenuExtension
 {
     Q_OBJECT
@@ -69,7 +72,9 @@ private:
     QAction *editStateAction;
     TicTacToe *ticTacToe;
 };
+//! [0]
 
+//! [1]
 class TicTacToeTaskMenuFactory : public QExtensionFactory
 {
     Q_OBJECT
@@ -80,5 +85,6 @@ public:
 protected:
     QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
 };
+//! [1]
 
 #endif

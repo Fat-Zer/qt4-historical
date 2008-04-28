@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QVariant;
 
 class QDesignerPropertySheetExtension
@@ -79,7 +81,11 @@ public:
     virtual void setChanged(int index, bool changed) = 0;
 
 };
-Q_DECLARE_EXTENSION_INTERFACE(QDesignerPropertySheetExtension, "com.trolltech.Qt.Designer.PropertySheet")
+
+Q_DECLARE_EXTENSION_INTERFACE(QDesignerPropertySheetExtension,
+    "com.trolltech.Qt.Designer.PropertySheet")
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

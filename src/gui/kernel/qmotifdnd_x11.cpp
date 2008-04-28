@@ -86,14 +86,11 @@ in doc/dnd.doc, where the documentation system can see it. */
 
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 static Window sourceWindow = XNone;
 static QWidget *dropWidget = 0;
 static Qt::DropAction lastAcceptedAction = Qt::IgnoreAction;
-
-
-
-
-
 
 static Atom Dnd_selection = 0;
 static Time Dnd_selection_time;
@@ -128,7 +125,7 @@ static ushort num_src_targets ;
 #define DND_COPY        (1L << 1)
 #define DND_LINK        (1L << 2)
 
-Qt::DropActions DndOperationsToQtDropActions(uchar op)
+static Qt::DropActions DndOperationsToQtDropActions(uchar op)
 {
     Qt::DropActions actions = Qt::IgnoreAction;
     if (op | DND_MOVE)
@@ -140,7 +137,7 @@ Qt::DropActions DndOperationsToQtDropActions(uchar op)
     return actions;
 }
 
-uchar QtDropActionToDndOperation(Qt::DropAction action)
+static uchar QtDropActionToDndOperation(Qt::DropAction action)
 {
     switch (action & Qt::ActionMask) {
     case Qt::CopyAction:
@@ -332,9 +329,9 @@ typedef struct {
 } DndTargetsTableRec, * DndTargetsTable;
 
 
-static int _DndIndexToTargets(Display * display,
-                              int index,
-                              Atom ** targets);
+static ushort _DndIndexToTargets(Display * display,
+                                 int index,
+                                 Atom ** targets);
 
 extern void qt_x11_intern_atom(const char *, Atom *);
 
@@ -449,7 +446,7 @@ static void DndFillClientMessage(Display * dpy, Window window,
     case DND_TOP_LEVEL_LEAVE:
         dnd_message->data.top.src_window = dnd_data->src_window ;
         dnd_message->data.top.property = dnd_data->property ;
-        break ; /* cannot fall thru since the byte layout is different in
+        break ; /* cannot fall through since the byte layout is different in
                    both set of messages, see top and pot union stuff */
 
     case DND_DRAG_MOTION:
@@ -505,7 +502,7 @@ static Bool DndParseClientMessage(XClientMessageEvent *cm, DndData * dnd_data,
         }
         dnd_data->src_window = dnd_message->data.top.src_window ;
         dnd_data->property = dnd_message->data.top.property ;
-        break ; /* cannot fall thru, see above comment in write msg */
+        break ; /* cannot fall through, see above comment in write msg */
 
     case DND_DRAG_MOTION:
     case DND_OPERATION_CHANGED:
@@ -544,7 +541,7 @@ static Window MotifWindow(Display *display)
 
     /* this version does no caching, so it's slow: round trip each time */
 
-    if ((XGetWindowProperty (display, DefaultRootWindow(display),
+    if ((XGetWindowProperty (display, RootWindow(display, 0),
                              ATOM(_MOTIF_DRAG_WINDOW),
                              0L, 100000L, False, AnyPropertyType,
                              &type, &format, &size, &bytes_after,
@@ -562,7 +559,7 @@ static Window MotifWindow(Display *display)
         sAttributes.override_redirect = True;
         sAttributes.event_mask = PropertyChangeMask;
         motif_window = XCreateWindow (display,
-                                      DefaultRootWindow (display),
+                                      RootWindow (display, 0),
                                       -170, -560, 1, 1, 0, 0,
                                       InputOnly, CopyFromParent,
                                       (CWOverrideRedirect |CWEventMask),
@@ -661,7 +658,7 @@ static DndTargetsTable TargetsTable(Display *display)
 }
 
 
-static int _DndIndexToTargets(Display * display,
+static ushort _DndIndexToTargets(Display * display,
                               int index,
                               Atom ** targets)
 {
@@ -674,7 +671,7 @@ static int _DndIndexToTargets(Display * display,
         (index >= targets_table->num_entries)) {
         if (targets_table)
             XFree((char*)targets_table);
-        return -1;
+        return 0;
     }
 
     /* transfer the correct target list index */
@@ -1027,5 +1024,7 @@ void QX11Data::motifdndHandle(QWidget *widget, const XEvent * xe, bool /* passiv
         break;
     }   //  end of switch (dnd_data.reason)
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_DRAGANDDROP

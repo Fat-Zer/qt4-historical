@@ -52,6 +52,8 @@
 #include <QtGui/QFont>
 #include <QtGui/QFontMetrics>
 
+QT_BEGIN_NAMESPACE
+
 class QUndoStack;
 class QDesignerFormWindowInterface;
 
@@ -72,6 +74,9 @@ public slots:
     void widgetRemoved(QWidget*);
     void initTabOrder();
 
+private slots:
+    void showTabOrderDialog();
+
 protected:
     virtual void paintEvent(QPaintEvent *e);
     virtual void mouseMoveEvent(QMouseEvent *e);
@@ -88,7 +93,7 @@ private:
 
     QPointer<QDesignerFormWindowInterface> m_form_window;
 
-    QList<QWidget*> m_tab_order_list;
+    QWidgetList m_tab_order_list;
 
     QWidget *m_bg_widget;
     QUndoStack *m_undo_stack;
@@ -100,5 +105,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif

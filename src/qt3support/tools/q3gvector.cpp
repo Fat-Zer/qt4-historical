@@ -58,6 +58,8 @@
 #  include "private/qmutexpool_p.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 #define USE_MALLOC				// comment to use new/delete
 
 #undef NEW
@@ -368,7 +370,7 @@ static Q3GVector *sort_vec=0;			// current sort vector
 extern "C" {
 #endif
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 static int _cdecl cmp_vec( const void *n1, const void *n2 )
 #else
 static int cmp_vec( const void *n1, const void *n2 )
@@ -593,3 +595,5 @@ bool Q3GVector::operator==( const Q3GVector &v ) const
 }
 
 #endif // QT_NO_DATASTREAM
+
+QT_END_NAMESPACE

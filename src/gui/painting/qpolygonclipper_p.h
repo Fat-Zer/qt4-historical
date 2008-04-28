@@ -57,6 +57,8 @@
 
 #include "private/qdatabuffer_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /* based on sutherland-hodgman line-by-line clipping, as described in
    Computer Graphics and Principles */
 template <typename InType, typename OutType, typename CastType> class QPolygonClipper
@@ -310,5 +312,7 @@ private:
     QDataBuffer<OutType> buffer1;
     QDataBuffer<OutType> buffer2;
 };
+
+QT_END_NAMESPACE
 
 #endif // QPOLYGONCLIPPER_P_H

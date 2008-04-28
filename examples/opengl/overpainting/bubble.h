@@ -50,7 +50,9 @@
 #include <QRect>
 #include <QRectF>
 
+QT_BEGIN_NAMESPACE
 class QPainter;
+QT_END_NAMESPACE
 
 class Bubble
 {

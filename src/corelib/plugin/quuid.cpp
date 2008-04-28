@@ -45,6 +45,8 @@
 
 #include "qdatastream.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QUuid
     \brief The QUuid class stores a Universally Unique Identifier (UUID).
@@ -110,10 +112,7 @@
     b8.
 
     Example:
-    \code
-    // {67C8770B-44F1-410A-AB9A-F9B5446F13EE}
-    QUuid IID_MyInterface(0x67c8770b, 0x44f1, 0x410a, 0xab, 0x9a, 0xf9, 0xb5, 0x44, 0x6f, 0x13, 0xee)
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.plugin.quuid.cpp 0
 */
 
 #ifndef QT_NO_QUUID_STRING
@@ -351,7 +350,8 @@ QUuid::Version QUuid::version() const
 
     Returns true if this QUuid is of the same variant,
     and lexicographically before the \a other QUuid;
-    otherwise returns false.
+    otherwise returns false. If it is a different variant,
+    return is based on a comparison of those two variants.
 
     \sa variant()
 */
@@ -359,7 +359,7 @@ QUuid::Version QUuid::version() const
 bool QUuid::operator<(const QUuid &other) const
 {
     if (variant() != other.variant())
-        return false;
+        return variant() < other.variant();
 
     ISLESS(data1, other.data1);
     ISLESS(data2, other.data2);
@@ -375,7 +375,8 @@ bool QUuid::operator<(const QUuid &other) const
 
     Returns true if this QUuid is of the same variant,
     and lexicographically after the \a other QUuid;
-    otherwise returns false.
+    otherwise returns false. If it is a different variant,
+    return is based on a comparison of those two variants.
 
     \sa variant()
 */
@@ -383,7 +384,7 @@ bool QUuid::operator<(const QUuid &other) const
 bool QUuid::operator>(const QUuid &other) const
 {
     if (variant() != other.variant())
-        return false;
+        return variant() > other.variant();
 
     ISMORE(data1, other.data1);
     ISMORE(data2, other.data2);
@@ -409,7 +410,11 @@ bool QUuid::operator>(const QUuid &other) const
     \sa variant(), version()
 */
 #if defined(Q_OS_WIN32)
+
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <objbase.h> // For CoCreateGuid
+QT_END_INCLUDE_NAMESPACE
+
 QUuid QUuid::createUuid()
 {
     GUID guid;
@@ -417,9 +422,14 @@ QUuid QUuid::createUuid()
     QUuid result = guid;
     return result;
 }
+
 #else // !Q_OS_WIN32
+
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "qdatetime.h"
 #include "stdlib.h" // For srand/rand
+QT_END_INCLUDE_NAMESPACE
+
 QUuid QUuid::createUuid()
 {
     static const int intbits = sizeof(int)*8;
@@ -461,3 +471,5 @@ QUuid QUuid::createUuid()
     Returns true if this UUID is not equal to the Windows GUID \a
     guid; otherwise returns false.
 */
+
+QT_END_NAMESPACE

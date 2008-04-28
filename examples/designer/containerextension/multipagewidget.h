@@ -46,10 +46,13 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QComboBox;
 class QStackedWidget;
 class QVBoxLayout;
+QT_END_NAMESPACE
 
+//! [0]
 class MultiPageWidget : public QWidget
 {
     Q_OBJECT
@@ -82,5 +85,6 @@ private:
     QComboBox *comboBox;
     QVBoxLayout *layout;
 };
+//! [0]
 
 #endif

@@ -46,6 +46,8 @@
 #include <qpointer.h>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QExtensionFactory
 
@@ -80,42 +82,13 @@
     You can either create a new QExtensionFactory and reimplement the
     QExtensionFactory::createExtension() function. For example:
 
-    \code
-        QObject *ANewExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            if (iid != Q_TYPEID(QDesignerContainerExtension))
-                return 0;
-
-            if (MyCustomWidget *widget = qobject_cast<MyCustomWidget*>
-                   (object))
-                return new MyContainerExtension(widget, parent);
-
-            return 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.extension.default_extensionfactory.cpp 0
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create your extension as well. For example:
 
-    \code
-        QObject *AGeneralExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object);
-
-            if (widget && (iid == Q_TYPEID(QDesignerTaskMenuExtension))) {
-                return new MyTaskMenuExtension(widget, parent);
-
-            } else if (widget && (iid == Q_TYPEID(QDesignerContainerExtension))) {
-                return new MyContainerExtension(widget, parent);
-
-            } else {
-                return 0;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/tools.designer.src.lib.extension.default_extensionfactory.cpp 1
 
     For a complete example using the QExtensionFactory class, see the
     \l {designer/taskmenuextension}{Task Menu Extension example}. The
@@ -144,12 +117,13 @@ QObject *QExtensionFactory::extension(QObject *object, const QString &iid) const
 {
     if (!object)
         return 0;
+    const IdObjectKey key = qMakePair(iid, object);
 
-    QPair<QString, QObject*> key = qMakePair(iid, object);
-    if (!m_extensions.contains(key)) {
+    ExtensionMap::iterator it = m_extensions.find(key);
+    if (it == m_extensions.end()) {
         if (QObject *ext = createExtension(object, iid, const_cast<QExtensionFactory*>(this))) {
             connect(ext, SIGNAL(destroyed(QObject*)), this, SLOT(objectDestroyed(QObject*)));
-            m_extensions.insert(key, ext);
+            it = m_extensions.insert(key, ext);
         }
     }
 
@@ -158,12 +132,15 @@ QObject *QExtensionFactory::extension(QObject *object, const QString &iid) const
         m_extended.insert(object, true);
     }
 
-    return m_extensions.value(key);
+    if (it == m_extensions.end())
+        return 0;
+
+    return it.value();
 }
 
 void QExtensionFactory::objectDestroyed(QObject *object)
 {
-    QMutableMapIterator< QPair<QString,QObject*>, QObject*> it(m_extensions);
+    QMutableMapIterator< IdObjectKey, QObject*> it(m_extensions);
     while (it.hasNext()) {
         it.next();
 
@@ -199,3 +176,5 @@ QExtensionManager *QExtensionFactory::extensionManager() const
 {
     return static_cast<QExtensionManager *>(parent());
 }
+
+QT_END_NAMESPACE

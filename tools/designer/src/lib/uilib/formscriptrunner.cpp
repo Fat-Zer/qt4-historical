@@ -42,12 +42,15 @@
 ****************************************************************************/
 
 #include "formscriptrunner_p.h"
+#include "formbuilderextra_p.h"
 #include "ui4_p.h"
 
 #include <QtScript/QScriptEngine>
 #include <QtGui/QWidget>
 #include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
+
+QT_BEGIN_NAMESPACE
 
 namespace {
     enum { debugFormScriptRunner = 0 };
@@ -111,8 +114,9 @@ void QFormScriptRunner::QFormScriptRunnerPrivate::initializeEngine(QWidget *w, c
         childrenArray.setProperty(i, scriptEngine.newQObject(children[i]));
     }
 
-    ctx ->activationObject().setProperty(QLatin1String("widget"),   widgetObject);
-    ctx ->activationObject().setProperty(QLatin1String("childWidgets"), childrenArray);
+    const QFormBuilderStrings &strings = QFormBuilderStrings::instance();
+    ctx ->activationObject().setProperty(strings.scriptWidgetVariable, widgetObject);
+    ctx ->activationObject().setProperty(strings.scriptChildWidgetsVariable, childrenArray);
 }
 
 QString QFormScriptRunner::QFormScriptRunnerPrivate::engineError(QScriptEngine &scriptEngine) {
@@ -202,3 +206,5 @@ void QFormScriptRunner::clearErrors()
 #ifdef QFORMINTERNAL_NAMESPACE
 } // namespace QFormInternal
 #endif
+
+QT_END_NAMESPACE

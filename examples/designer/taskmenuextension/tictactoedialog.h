@@ -46,9 +46,12 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
+QT_END_NAMESPACE
 class TicTacToe;
 
+//! [0]
 class TicTacToeDialog : public QDialog
 {
     Q_OBJECT
@@ -67,5 +70,6 @@ private:
     TicTacToe *ticTacToe;
     QDialogButtonBox *buttonBox;
 };
+//! [0]
 
 #endif

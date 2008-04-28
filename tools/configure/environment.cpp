@@ -63,6 +63,8 @@ using namespace std;
 #endif
 
 
+QT_BEGIN_NAMESPACE
+
 struct CompilerInfo{
     Compiler compiler;
     const char *compilerStr;
@@ -77,6 +79,7 @@ struct CompilerInfo{
     {CC_NET2002, "Microsoft (R) 32-bit C/C++ Optimizing Compiler.NET 2002 (7.0)",  "Software\\Microsoft\\VisualStudio\\7.0\\Setup\\VC\\ProductDir", "cl.exe"}, // link.exe, lib.exe
     {CC_NET2003, "Microsoft (R) 32-bit C/C++ Optimizing Compiler.NET 2003 (7.1)",  "Software\\Microsoft\\VisualStudio\\7.1\\Setup\\VC\\ProductDir", "cl.exe"}, // link.exe, lib.exe
     {CC_NET2005, "Microsoft (R) 32-bit C/C++ Optimizing Compiler.NET 2005 (8.0)",  "Software\\Microsoft\\VisualStudio\\SxS\\VC7\\8.0", "cl.exe"}, // link.exe, lib.exe
+    {CC_NET2008, "Microsoft (R) 32-bit C/C++ Optimizing Compiler.NET 2008 (9.0)",  "Software\\Microsoft\\VisualStudio\\SxS\\VC7\\9.0", "cl.exe"}, // link.exe, lib.exe
     {CC_UNKNOWN, "Unknown", 0, 0},
 };
 
@@ -252,12 +255,17 @@ QString Environment::detectQMakeSpec()
 {
     QString spec;
     switch (detectCompiler()) {
+    case CC_NET2008:
+        spec = "win32-msvc2008";
+        break;
     case CC_NET2005:
         spec = "win32-msvc2005";
         break;
-    case CC_NET2002:
     case CC_NET2003:
-        spec = "win32-msvc.net";
+        spec = "win32-msvc2003";
+        break;
+    case CC_NET2002:
+        spec = "win32-msvc2002";
         break;
     case CC_MSVC4:
     case CC_MSVC5:
@@ -676,3 +684,5 @@ bool Environment::rmdir(const QString &name)
     result &= dir.rmdir(cleanName);
     return result;
 }
+
+QT_END_NAMESPACE

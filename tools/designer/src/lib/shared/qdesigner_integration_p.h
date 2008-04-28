@@ -56,13 +56,15 @@
 #define QDESIGNER_INTEGRATION_H
 
 #include "shared_global_p.h"
-#include "abstractintegration.h"
+#include <QtDesigner/QDesignerIntegrationInterface>
 
 #include <QtCore/QObject>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
-class QDesignerFormWindowManagerInterface;
+class QDesignerResourceBrowserInterface;
 
 class QVariant;
 class QWidget;
@@ -70,26 +72,33 @@ class QWidget;
 namespace qdesigner_internal {
 
 struct Selection;
+class QDesignerIntegrationPrivate;
 
 class QDESIGNER_SHARED_EXPORT QDesignerIntegration: public QDesignerIntegrationInterface
 {
     Q_OBJECT
 public:
-    QDesignerIntegration(QDesignerFormEditorInterface *core, QObject *parent = 0);
+    explicit QDesignerIntegration(QDesignerFormEditorInterface *core, QObject *parent = 0);
     virtual ~QDesignerIntegration();
+
+    static void requestHelp(const QDesignerFormEditorInterface *core, const QString &manual, const QString &document);
 
     virtual QWidget *containerWindow(QWidget *widget) const;
 
     // Load plugins into widget database and factory.
     static void initializePlugins(QDesignerFormEditorInterface *formEditor);
-    void emitObjectNameChanged(QDesignerFormWindowInterface *formWindow, QObject *object, const QString &name);
+    void emitObjectNameChanged(QDesignerFormWindowInterface *formWindow, QObject *object, const QString &newName, const QString &oldName);
+
+    // Create a resource browser specific to integration. Language integration takes precedence
+    virtual QDesignerResourceBrowserInterface *createResourceBrowser(QWidget *parent = 0);
 
 signals:
     void propertyChanged(QDesignerFormWindowInterface *formWindow, const QString &name, const QVariant &value);
-    void objectNameChanged(QDesignerFormWindowInterface *formWindow, QObject *object, const QString &name);
+    void objectNameChanged(QDesignerFormWindowInterface *formWindow, QObject *object, const QString &newName, const QString &oldName);
+    void helpRequested(const QString &manual, const QString &document);
 
 public slots:
-    virtual void updateProperty(const QString &name, const QVariant &value);
+    virtual void updateProperty(const QString &name, const QVariant &value, bool enableSubPropertyHandling);
     // Additional signals of designer property editor
     virtual void updatePropertyComment(const QString &name, const QString &value);
     virtual void resetProperty(const QString &name);
@@ -105,14 +114,19 @@ public slots:
 
     void updateCustomWidgetPlugins();
 
+private slots:
+    void updatePropertyPrivate(const QString &name, const QVariant &value);
+
 private:
     void initialize();
     void getSelection(Selection &s);
     QObject *propertyEditorObject();
 
-    QDesignerFormWindowManagerInterface *m_formWindowManager;
+    QDesignerIntegrationPrivate *m_d;
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_INTEGRATION_H

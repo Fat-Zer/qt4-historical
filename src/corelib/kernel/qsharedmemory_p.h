@@ -48,56 +48,122 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of qapplication_qws.cpp and qgfxvnc_qws.cpp.  This header file may
-// change from version to version without notice, or even be removed.
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "qplatformdefs.h"
-#include "QtCore/qstring.h"
+#include "qsharedmemory.h"
 
-#if !defined(QT_NO_QWS_MULTIPROCESS)
+#ifdef QT_NO_SHAREDMEMORY
+namespace QSharedMemoryPrivate
+{
+    int createUnixKeyFile(const QString &fileName);
+    QString makePlatformSafeKey(const QString &key,
+            const QString &prefix = QLatin1String("qipc_sharedmemory_"));
+}
+#else
 
-class Q_CORE_EXPORT QSharedMemory {
+#include "qsystemsemaphore.h"
+#include "private/qobject_p.h"
+
+#ifdef Q_OS_WIN
+#include <qt_windows.h>
+#else
+#include <sys/sem.h>
+#endif
+
+QT_BEGIN_NAMESPACE
+
+#ifndef QT_NO_SYSTEMSEMAPHORE
+/*!
+  Helper class
+  */
+class QSharedMemoryLocker
+{
+
 public:
+    inline QSharedMemoryLocker(QSharedMemory *sharedMemory) : q_sm(sharedMemory)
+    {
+        Q_ASSERT(q_sm);
+    }
 
-    QSharedMemory();
-    ~QSharedMemory();
+    inline ~QSharedMemoryLocker()
+    {
+        if (q_sm)
+            q_sm->unlock();
+    }
 
-    void setPermissions(mode_t mode);
-    int size() const;
-    void *address() { return shmBase; };
-
-    int id() const { return shmId; }
-
-    void detach();
-
-    bool create(int size);
-    bool attach(int id);
-
-    //bool create(int size, const QString &filename, char c = 'Q');
-    //bool attach(const QString &filename, char c = 'Q');
-// old API
-
-    QSharedMemory(int, const QString &, char c = 'Q');
-    void * base() { return address(); };
-
-    bool create();
-    void destroy();
-
-    bool attach();
+    inline bool lock()
+    {
+        if (q_sm && q_sm->lock())
+            return true;
+        q_sm = 0;
+        return false;
+    }
 
 private:
-    void *shmBase;
-    int shmSize;
-    QString shmFile;
-    char character;
-    int shmId;
-    key_t key;
+    QSharedMemory *q_sm;
+};
+#endif // QT_NO_SYSTEMSEMAPHORE
+
+class Q_AUTOTEST_EXPORT QSharedMemoryPrivate : public QObjectPrivate
+{
+    Q_DECLARE_PUBLIC(QSharedMemory)
+
+public:
+    QSharedMemoryPrivate();
+
+    void *memory;
+    int size;
+    QString key;
+    QSharedMemory::SharedMemoryError error;
+    QString errorString;
+#ifndef QT_NO_SYSTEMSEMAPHORE
+    QSystemSemaphore systemSemaphore;
+    bool lockedByMe;
+#endif
+
+    static int createUnixKeyFile(const QString &fileName);
+    static QString makePlatformSafeKey(const QString &key,
+            const QString &prefix = QLatin1String("qipc_sharedmemory_"));
+#ifdef Q_OS_WIN
+    HANDLE handle();
+#else
+    key_t handle();
+#endif
+    bool initKey();
+    bool cleanHandle();
+    bool create(int size);
+    bool attach(QSharedMemory::AccessMode mode);
+    bool detach();
+
+    void setErrorString(const QString &function);
+
+#ifndef QT_NO_SYSTEMSEMAPHORE
+    bool tryLocker(QSharedMemoryLocker *locker, const QString function) {
+        if (!locker->lock()) {
+            errorString = QSharedMemory::tr("%1: unable to lock").arg(function);
+            error = QSharedMemory::LockError;
+            return false;
+        }
+        return true;
+    }
+#endif // QT_NO_SYSTEMSEMAPHORE
+
+private:
+#ifdef Q_OS_WIN
+    HANDLE hand;
+#else
+    key_t unix_key;
+#endif
 };
 
-#endif // QT_NO_QWS_MULTIPROCESS
+QT_END_NAMESPACE
+
+#endif // QT_NO_SHAREDMEMORY
 
 #endif // QSHAREDMEMORY_P_H
+

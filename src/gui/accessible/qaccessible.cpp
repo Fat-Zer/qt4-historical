@@ -55,6 +55,8 @@
 
 #include "qwidget.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QAccessible
     \brief The QAccessible class provides enums and static functions
@@ -151,7 +153,7 @@
 
     \omitvalue ForegroundColor
     \omitvalue BackgroundColor
-    
+
     \sa QAccessibleInterface::invokeMethod()
 */
 
@@ -391,7 +393,7 @@
 
 #ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QAccessibleFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/accessible")))
+    (QAccessibleFactoryInterface_iid, QLatin1String("/accessible")))
 #endif
 
 Q_GLOBAL_STATIC(QList<QAccessible::InterfaceFactory>, qAccessibleFactories);
@@ -591,11 +593,11 @@ bool QAccessible::isActive()
   \c ValueChange when the position of a slider has been changed. \a
   child is the (1-based) index of the child element that has changed.
   When \a child is 0, the object itself has changed.
-  
+
   Call this function whenever the state of your accessible object or
   one of its sub-elements has been changed either programmatically
   (e.g. by calling QLabel::setText()) or by user interaction.
-  
+
   If there are no accessibility tools listening to this event, the
   performance penalty for calling this function is small, but if determining
   the parameters of the call is expensive you can test isActive() to
@@ -813,14 +815,7 @@ const QAccessibleInterface *other, int otherChild) const
     The following code demonstrates how to use this function to
     navigate to the first child of an object:
 
-    \code
-        QAccessibleInterface *child = 0;
-        int targetChild = object->navigate(Accessible::Child, 1, &child);
-        if (child) {
-            // ...
-            delete child;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.accessible.qaccessible.cpp 0
 
     \i \e{Geometric relationships} -- the index of the child from
     which to start navigating in the specified direction. \a entry
@@ -1080,4 +1075,7 @@ QAccessible2Interface *QAccessibleInterface::cast_helper(QAccessible2::Interface
         return static_cast<QAccessibleInterfaceEx *>(this)->interface_cast(t);
     return 0;
 }
+
+QT_END_NAMESPACE
+
 #endif

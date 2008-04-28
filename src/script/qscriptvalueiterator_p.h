@@ -55,25 +55,23 @@
 // We mean it.
 //
 
-#include "qscriptvalue.h"
+QT_BEGIN_NAMESPACE
 
+class QScriptValueIteratorImpl;
+
+class QScriptValueIterator;
 class QScriptValueIteratorPrivate
 {
     Q_DECLARE_PUBLIC(QScriptValueIterator)
 public:
-    inline QScriptValueIteratorPrivate(QScriptValueIterator *q,
-                                       const QScriptValue &o)
-        : q_ptr(q), object(o), index(-1),
-          forward(false), nextIndex(-1)
-        { }
+    QScriptValueIteratorPrivate();
+    ~QScriptValueIteratorPrivate();
 
     QScriptValueIterator *q_ptr;
 
-    QScriptValue object;
-    int index;
-
-    bool forward;
-    int nextIndex;
+    QScriptValueIteratorImpl *it;
 };
+
+QT_END_NAMESPACE
 
 #endif // QSCRIPTVALUEITERATOR_P_H

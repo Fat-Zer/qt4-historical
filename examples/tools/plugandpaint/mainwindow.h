@@ -48,10 +48,12 @@
 #include <QMainWindow>
 #include <QStringList>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QMenu;
 class QScrollArea;
+QT_END_NAMESPACE
 class PaintArea;
 
 class MainWindow : public QMainWindow

@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QThreadData;
@@ -106,7 +108,7 @@ Q_SIGNALS:
     void terminated();
 
 protected:
-    virtual void run() = 0;
+    virtual void run();
     int exec();
 
     static void setTerminationEnabled(bool enabled = true);
@@ -154,6 +156,8 @@ private:
 };
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

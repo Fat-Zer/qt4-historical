@@ -65,6 +65,8 @@
 # define QMAC_SHIFT QChar(kShiftUnicode)
 #endif
 
+QT_BEGIN_NAMESPACE
+
 #ifdef Q_WS_MAC
 static bool qt_sequence_no_mnemonics = true;
 #else
@@ -107,12 +109,7 @@ void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemoni
     printing a document, and can be specified in any of the following
     ways:
 
-    \code
-    QKeySequence(QKeySequence::Print}
-    QKeySequence(tr("Ctrl+P"))
-    QKeySequence(tr("Ctrl+p"))
-    QKeySequence(Qt::CTRL + Qt::Key_P)
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qkeysequence.cpp 0
 
     Note that, for letters, the case used in the specification string does not
     matter. In the above examples, the user does not need to hold down the
@@ -180,7 +177,7 @@ void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemoni
     \row    \i PreviousChild    \i Ctrl+Shift+Tab, Back, Ctrl+Shift+F6  \i Ctrl+{, Back, Ctrl+Shift+Tab \i Ctrl+Shift+Tab, Back, Ctrl+Period \i Ctrl+Shift+Tab, Back
     \row    \i Find             \i Ctrl+F                               \i Ctrl+F                   \i Ctrl+F         \i Ctrl+F
     \row    \i FindNext         \i F3, Ctrl+G                           \i Ctrl+G                   \i F3             \i Ctrl+G, F3
-    \row    \i FindPrevious     \i Shift+F3, Ctrl+Shift+G               \i Ctrl+Shift+G             \i Shift+F3       \i Ctrl+Shift+G, F3
+    \row    \i FindPrevious     \i Shift+F3, Ctrl+Shift+G               \i Ctrl+Shift+G             \i Shift+F3       \i Ctrl+Shift+G, Shift+F3
     \row    \i Replace          \i Ctrl+H                               \i (none)                   \i Ctrl+R         \i Ctrl+H
     \row    \i SelectAll        \i Ctrl+A                               \i Ctrl+A                   \i Ctrl+A         \i Ctrl+A 
     \row    \i Bold             \i Ctrl+B                               \i Ctrl+B                   \i Ctrl+B         \i Ctrl+B
@@ -279,10 +276,7 @@ void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemoni
     For example, the key sequence, \key{Ctrl X} followed by \key{Ctrl C}, can
     be specified using either of the following ways:
 
-    \code
-    QKeySequence(tr("Ctrl+X, Ctrl+C"))
-    QKeySequence(Qt::CTRL + Qt::Key_X, Qt::CTRL + Qt::Key_C)
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qkeysequence.cpp 1
 
     \sa QShortcut
 */
@@ -518,8 +512,8 @@ const QKeyBinding QKeySequencePrivate::keyBindings[] = {
     {QKeySequence::AddTab,                  1,          Qt::CTRL | Qt::SHIFT | Qt::Key_N,       QApplicationPrivate::KB_KDE},
     {QKeySequence::Redo,                    0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Z,       QApplicationPrivate::KB_Win | QApplicationPrivate::KB_X11},
     {QKeySequence::Redo,                    1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Z,       QApplicationPrivate::KB_Mac}, //different priority from above
-    {QKeySequence::PreviousChild,           1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Tab,     QApplicationPrivate::KB_Win | QApplicationPrivate::KB_X11},
-    {QKeySequence::PreviousChild,           0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Tab,     QApplicationPrivate::KB_Mac },//different priority from above 
+    {QKeySequence::PreviousChild,           1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Backtab, QApplicationPrivate::KB_Win | QApplicationPrivate::KB_X11},
+    {QKeySequence::PreviousChild,           0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Backtab, QApplicationPrivate::KB_Mac },//different priority from above 
     {QKeySequence::SelectStartOfDocument,   0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Home,    QApplicationPrivate::KB_Win | QApplicationPrivate::KB_X11},
     {QKeySequence::SelectEndOfDocument,     0,          Qt::CTRL | Qt::SHIFT | Qt::Key_End,     QApplicationPrivate::KB_Win | QApplicationPrivate::KB_X11},
     {QKeySequence::SelectPreviousWord,      0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Left,    QApplicationPrivate::KB_Win | QApplicationPrivate::KB_X11},
@@ -680,11 +674,7 @@ QKeySequence::QKeySequence()
     \endlink(), so that shortcut keys can be replaced in
     translations:
 
-    \code
-        QMenu *file = new QMenu(this);
-        file->addAction(tr("&Open..."), this, SLOT(open()),
-                          QKeySequence(tr("Ctrl+O", "File|Open")));
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qkeysequence.cpp 2
 
     Note the "File|Open" translator comment. It is by no means
     necessary, but it provides some context for the human translator.
@@ -808,6 +798,8 @@ bool QKeySequence::isEmpty() const
     in English. At the time of writing, Microsoft and Open Group do
     not appear to have issued equivalent recommendations for other
     languages.
+
+    \sa qt_set_sequence_auto_mnemonic()
 */
 QKeySequence QKeySequence::mnemonic(const QString &text)
 {
@@ -1383,3 +1375,5 @@ QDebug operator<<(QDebug dbg, const QKeySequence &p)
     \fn DataPtr &QKeySequence::data_ptr()
     \internal
 */
+
+QT_END_NAMESPACE

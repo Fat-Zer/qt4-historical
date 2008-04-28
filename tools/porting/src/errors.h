@@ -47,6 +47,8 @@
 
 #include <QString>
 
+QT_BEGIN_NAMESPACE
+
 class Error
 {
 public:
@@ -65,5 +67,7 @@ public:
     QT_STATIC_CONST Error& SyntaxError;
     QT_STATIC_CONST Error& ParseError;
 };
+
+QT_END_NAMESPACE
 
 #endif

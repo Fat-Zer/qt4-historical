@@ -48,6 +48,8 @@
 #include "qstringlist.h"
 #include "qtextcodec.h"
 
+QT_BEGIN_NAMESPACE
+
 struct QMimeDataStruct
 {
     QString format;
@@ -58,6 +60,7 @@ class QMimeDataPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QMimeData)
 public:
+    void removeData(const QString &format);
     void setData(const QString &format, const QVariant &data);
     QVariant getData(const QString &format) const;
 
@@ -66,15 +69,20 @@ public:
     QList<QMimeDataStruct> dataList;
 };
 
-void QMimeDataPrivate::setData(const QString &format, const QVariant &data)
+void QMimeDataPrivate::removeData(const QString &format)
 {
-    // remove it first if the format is already here.
     for (int i=0; i<dataList.size(); i++) {
         if (dataList.at(i).format == format) {
             dataList.removeAt(i);
-            break;
+            return;
         }
     }
+}
+
+void QMimeDataPrivate::setData(const QString &format, const QVariant &data)
+{
+    // remove it first if the format is already here.
+    removeData(format);
     QMimeDataStruct mimeData;
     mimeData.format = format;
     mimeData.data = data;
@@ -137,11 +145,19 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Ty
             // fall through
         }
         case QVariant::Url: {
+            QByteArray ba = data.toByteArray();
+            // Qt 3.x will send text/uri-list with a trailing
+            // null-terminator (that is *not* sent for any other
+            // text/* mime-type), so chop it off
+            if (ba.endsWith('\0'))
+                ba.chop(1);
+
+            QList<QByteArray> urls = ba.split('\n');
             QList<QVariant> list;
-            QList<QByteArray> urls = data.toByteArray().split('\n');
             for (int i = 0; i < urls.size(); ++i) {
                 QByteArray ba = urls.at(i).trimmed();
-                list.append(QUrl::fromEncoded(ba));
+                if (!ba.isEmpty())
+                    list.append(QUrl::fromEncoded(ba));
             }
             return list;
         }
@@ -221,35 +237,16 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Ty
     For example, if your write a widget that accepts URL drags, you
     would end up writing code like this:
 
-    \code
-        void MyWidget::dragEnterEvent(QDragEnterEvent *event)
-        {
-            if (event->mimeData()->hasUrls())
-                event->acceptProposedAction();
-        }
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 0
 
-        void MyWidget::dropEvent(QDropEvent *event)
-        {
-            if (event->mimeData()->hasUrls()) {
-                QUrl url = event->mimeData()->urls();
-                ...
-            }
-        }
-    \endcode
-
-    There are three appraches for storing custom data in a QMimeData
+    There are three approaches for storing custom data in a QMimeData
     object:
 
     \list 1
     \o  Custom data can be stored directly in a QMimeData object as a
         QByteArray using setData(). For example:
 
-        \code
-            QByteArray csvData = ...;
-
-            QMimeData *mimeData = new QMimeData;
-            mimeData->setData("text/csv", csvData);
-        \endcode
+        \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 1
 
     \o  We can subclass QMimeData and reimplement hasFormat(),
         formats(), and retrieveData().
@@ -259,16 +256,7 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Ty
         it, and use a qobject_cast() in the receiver's drop event
         handler. For example:
 
-        \code
-        void MyWidget::dropEvent(QDropEvent *event)
-        {
-            const MyMimeData *myData =
-                    qobject_cast<const MyMimeData *>(event->mimeData());
-            if (myData) {
-                // access myData's data directly (not through QMimeData's API)
-            }
-        }
-        \endcode
+        \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 2
     \endlist
 
     \section1 Platform-Specific MIME Types
@@ -278,16 +266,11 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Ty
     indicate that they represent data in non-standard formats.
     The formats will take the following form:
 
-    \code
-    application/x-qt-windows-mime;value="<custom type>"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 3
 
     The following are examples of custom MIME types:
 
-    \code
-    application/x-qt-windows-mime;value="FileGroupDescriptor"
-    application/x-qt-windows-mime;value="FileContents"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 4
 
     The \c value declaration of each format describes the way in which the
     data is encoded.
@@ -451,12 +434,7 @@ bool QMimeData::hasHtml() const
     library, whereas QImage belongs to \l QtGui. To convert the
     QVariant to a QImage, simply use qvariant_cast(). For example:
 
-    \code
-        if (event->mimeData()->hasImage()) {
-            QImage image = qvariant_cast<QImage>(event->mimeData()->imageData());
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 5
 
     \sa hasImage()
 */
@@ -473,9 +451,7 @@ QVariant QMimeData::imageData() const
     library, whereas QImage belongs to \l QtGui. The conversion
     from QImage to QVariant is implicit. For example:
 
-    \code
-        mimeData->setImageData(QImage("beautifulfjord.png"));
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 6
 
     \sa hasImage(), setData()
 */
@@ -505,12 +481,7 @@ bool QMimeData::hasImage() const
     library, whereas QColor belongs to \l QtGui. To convert the
     QVariant to a QColor, simply use qvariant_cast(). For example:
 
-    \code
-        if (event->mimeData()->hasColor()) {
-            QColor color = qvariant_cast<QColor>(event->mimeData()->colorData());
-            ...
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmimedata.cpp 7
 
     \sa hasColor(), setColorData(), data()
 */
@@ -637,3 +608,14 @@ void QMimeData::clear()
     Q_D(QMimeData);
     d->dataList.clear();
 }
+
+/*!
+    Removes the data entry for \a mimeType in the object.
+*/
+void QMimeData::removeFormat(const QString &mimeType)
+{
+    Q_D(QMimeData);
+    d->removeData(mimeType);
+}
+
+QT_END_NAMESPACE

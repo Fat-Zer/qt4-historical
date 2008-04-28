@@ -50,6 +50,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QDataStream
     \reentrant
@@ -79,24 +81,11 @@
 
     Example (write binary data to a stream):
 
-    \code
-        QFile file("file.dat");
-        file.open(QIODevice::WriteOnly);
-        QDataStream out(&file);   // we will serialize the data into the file
-        out << "the answer is";   // serialize a string
-        out << (qint32)42;        // serialize an integer
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 0
 
     Example (read binary data from a stream):
 
-    \code
-        QFile file("file.dat");
-        file.open(QIODevice::ReadOnly);
-        QDataStream in(&file);    // read the data serialized from the file
-        QString str;
-        qint32 a;
-        in >> str >> a;           // extract "the answer is" and 42
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 1
 
     Each item written to the stream is written in a predefined binary
     format that varies depending on the item's type. Supported Qt
@@ -131,9 +120,7 @@
     compatibility, you can hardcode the version number in the
     application:
 
-    \code
-        stream.setVersion(QDataStream::Qt_4_0);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 2
 
     If you are producing a new binary data format, such as a file
     format for documents created by your application, you could use a
@@ -141,53 +128,11 @@
     would write a brief header containing a magic string and a version
     number to give yourself room for future expansion. For example:
 
-    \code
-        QFile file("file.xxx");
-        file.open(QIODevice::WriteOnly);
-        QDataStream out(&file);
-
-        // Write a header with a "magic number" and a version
-        out << (quint32)0xA0B0C0D0;
-        out << (qint32)123;
-
-        out.setVersion(QDataStream::Qt_4_0);
-
-        // Write the data
-        out << lots_of_interesting_data;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 3
 
     Then read it in with:
 
-    \code
-        QFile file("file.xxx");
-        file.open(QIODevice::ReadOnly);
-        QDataStream in(&file);
-
-        // Read and check the header
-        quint32 magic;
-        in >> magic;
-        if (magic != 0xA0B0C0D0)
-            return XXX_BAD_FILE_FORMAT;
-
-        // Read the version
-        qint32 version;
-        in >> version;
-        if (version < 100)
-            return XXX_BAD_FILE_TOO_OLD;
-        if (version > 123)
-            return XXX_BAD_FILE_TOO_NEW;
-
-        if (version <= 110)
-            in.setVersion(QDataStream::Qt_3_2);
-        else
-            in.setVersion(QDataStream::Qt_4_0);
-
-        // Read the data
-        in >> lots_of_interesting_data;
-        if (version >= 120)
-            in >> data_new_in_XXX_version_1_2;
-        in >> other_interesting_data;
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 4
 
     You can select which byte order to use when serializing data. The
     default setting is big endian (MSB first). Changing it to little
@@ -221,7 +166,7 @@
     The byte order used for reading/writing the data.
 
     \value BigEndian Most significant byte first (the default)
-    \value LittleEndian Less significant byte first
+    \value LittleEndian Least significant byte first
 */
 
 /*!
@@ -254,7 +199,7 @@
 #endif
 
 enum {
-    DefaultStreamVersion = QDataStream::Qt_4_3
+    DefaultStreamVersion = QDataStream::Qt_4_4
 };
 
 // ### 4.0: when streaming invalid QVariants, just the type should
@@ -408,9 +353,9 @@ void QDataStream::setDevice(QIODevice *d)
 }
 
 /*!
-    Unsets the I/O device. This is the same as calling setDevice(0).
-
-    \sa device(), setDevice()
+    \obsolete
+    Unsets the I/O device.
+    Use setDevice(0) instead.
 */
 
 void QDataStream::unsetDevice()
@@ -536,6 +481,7 @@ void QDataStream::setByteOrder(ByteOrder bo)
     \value Qt_4_1 Version 7 (Qt 4.0, Qt 4.1)
     \value Qt_4_2 Version 8 (Qt 4.2)
     \value Qt_4_3 Version 9 (Qt 4.3)
+    \value Qt_4_4 Version 10 (Qt 4.4)
 
     \sa setVersion(), version()
 */
@@ -567,23 +513,21 @@ void QDataStream::setByteOrder(ByteOrder bo)
 
     \table
     \header \i Qt Version       \i QDataStream Version
-    \row \i Qt 4.2              \i 8
-    \row \i Qt 4.0              \i 7
-    \row \i Qt 3.3              \i 6
-    \row \i Qt 3.1, 3.2         \i 5
-    \row \i Qt 3.0              \i 4
-    \row \i Qt 2.1, 2.2, 2.3    \i 3
-    \row \i Qt 2.0              \i 2
-    \row \i Qt 1.x              \i 1
+    \row \i Qt 4.3                  \i 9
+    \row \i Qt 4.2                  \i 8
+    \row \i Qt 4.0, 4.1            \i 7
+    \row \i Qt 3.3                  \i 6
+    \row \i Qt 3.1, 3.2             \i 5
+    \row \i Qt 3.0                  \i 4
+    \row \i Qt 2.1, 2.2, 2.3      \i 3
+    \row \i Qt 2.0                  \i 2
+    \row \i Qt 1.x                  \i 1
     \endtable
 
     The \l Version enum provides symbolic constants for the different
     versions of Qt. For example:
 
-    \code
-        QDataStream out(file);
-        out.setVersion(QDataStream::Qt_4_0);
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 5
 
     \sa version(), Version
 */
@@ -1273,5 +1217,7 @@ int QDataStream::skipRawData(int len)
     Use writeRawData() instead.
 */
 #endif
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_DATASTREAM

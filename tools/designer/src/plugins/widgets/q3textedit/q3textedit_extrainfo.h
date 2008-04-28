@@ -50,6 +50,8 @@
 
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class Q3TextEdit;
 class Q3TextEditItem;
 class DomItem;
@@ -87,5 +89,7 @@ protected:
 private:
     QDesignerFormEditorInterface *m_core;
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3TEXTEDIT_EXTRAINFO_H

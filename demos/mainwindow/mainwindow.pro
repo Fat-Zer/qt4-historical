@@ -10,6 +10,7 @@ RESOURCES += mainwindow.qrc
 
 # install
 target.path = $$[QT_INSTALL_DEMOS]/mainwindow
-sources.files = $$SOURCES $$HEADERS *.pro $$RESOURCES qt.png 
+sources.files = $$SOURCES $$HEADERS $$FORMS $$RESOURCES *.png *.jpg *.pro
 sources.path = $$[QT_INSTALL_DEMOS]/mainwindow
 INSTALLS += target sources
+

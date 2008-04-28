@@ -48,6 +48,9 @@
 #include <QtDesigner/QDesignerActionEditorInterface>
 #include <QtDesigner/QDesignerComponents>
 
+#include <QtGui/QAction>
+
+QT_BEGIN_NAMESPACE
 
 QDesignerActionEditor::QDesignerActionEditor(QDesignerWorkbench *workbench)
     : QDesignerToolWindow(workbench)
@@ -59,6 +62,7 @@ QDesignerActionEditor::QDesignerActionEditor(QDesignerWorkbench *workbench)
     setCentralWidget(widget);
 
     setWindowTitle(tr("Action Editor"));
+    action()->setObjectName(QLatin1String("__qt_action_editor_tool_action"));
 }
 
 QDesignerActionEditor::~QDesignerActionEditor()
@@ -75,3 +79,5 @@ QRect QDesignerActionEditor::geometryHint() const
     return QRect((g.width() - sz.width() - margin), margin,
                   sz.width(), sz.height());
 }
+
+QT_END_NAMESPACE

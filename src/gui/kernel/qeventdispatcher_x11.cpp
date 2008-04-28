@@ -49,6 +49,8 @@
 #include "qt_x11_p.h"
 #include <private/qeventdispatcher_unix_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QEventDispatcherX11Private : public QEventDispatcherUNIXPrivate
 {
     Q_DECLARE_PUBLIC(QEventDispatcherX11)
@@ -187,3 +189,5 @@ int QEventDispatcherX11::select(int nfds, fd_set *readfds, fd_set *writefds, fd_
     }
     return QEventDispatcherUNIX::select(nfds, readfds, writefds, exceptfds, timeout);
 }
+
+QT_END_NAMESPACE

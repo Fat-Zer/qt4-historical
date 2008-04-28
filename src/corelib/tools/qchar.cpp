@@ -57,6 +57,8 @@
 
 #include "qunicodetables.cpp"
 
+QT_BEGIN_NAMESPACE
+
 #define LAST_UNICODE_CHAR 0x10ffff
 
 #ifndef QT_NO_CODEC_FOR_C_STRINGS
@@ -175,17 +177,17 @@
     Specifies which version of the \l{http://www.unicode.org/}{Unicode standard}
     introduced a certain character.
 
-    \value Unicode_1_1  Version 1.1.
-    \value Unicode_2_0  Version 2.0.
-    \value Unicode_2_1_2  Version 2.1.2.
-    \value Unicode_3_0  Version 3.0.
-    \value Unicode_3_1  Version 3.1.
-    \value Unicode_3_2  Version 3.2.
-    \value Unicode_4_0  Version 4.0.
-    \value Unicode_4_1  Version 4.1.
-    \value Unicode_5_0  Version 5.0.
+    \value Unicode_1_1  Version 1.1
+    \value Unicode_2_0  Version 2.0
+    \value Unicode_2_1_2  Version 2.1.2
+    \value Unicode_3_0  Version 3.0
+    \value Unicode_3_1  Version 3.1
+    \value Unicode_3_2  Version 3.2
+    \value Unicode_4_0  Version 4.0
+    \value Unicode_4_1  Version 4.1
+    \value Unicode_5_0  Version 5.0
     \value Unicode_Unassigned  The value is not assigned to any character
-        in version 4.0 of Unicode.
+        in version 5.0 of Unicode.
 
     \sa unicodeVersion()
 */
@@ -550,6 +552,8 @@ bool QChar::isSpace() const
 /*!
     Returns true if the character is a mark (Mark_* categories);
     otherwise returns false.
+    
+    See QChar::Category for more information regarding marks.
 */
 bool QChar::isMark() const
 {
@@ -661,8 +665,8 @@ bool QChar::isSymbol() const
 /*!
   \fn static uint QChar::surrogateToUcs4(ushort high, ushort low)
 
-  Converts a utf16 surrogate pair (\a high, \a low) to it's ucs4
-  code point.
+  Converts a UTF16 surrogate pair with the given \a high and \a low values
+  to its UCS-4 code point.
 */
 
 /*!
@@ -726,8 +730,9 @@ QChar::Category QChar::category() const
 }
 
 /*! 
-\overload
-Returns the category of the UCS-4-encoded character specified by \a ucs4.
+    \overload
+    \since 4.3
+    Returns the category of the UCS-4-encoded character specified by \a ucs4.
  */
 QChar::Category QChar::category(uint ucs4)
 {
@@ -737,8 +742,8 @@ QChar::Category QChar::category(uint ucs4)
 }
 
 /*! 
-\overload
-Returns the category of the UCS-2-encoded character specified by \a ucs2.
+    \overload
+    Returns the category of the UCS-2-encoded character specified by \a ucs2.
  */
 QChar::Category QChar::category(ushort ucs2)
 {
@@ -899,7 +904,8 @@ enum {
 };
 
 // buffer has to have a length of 3. It's needed for Hangul decomposition
-static const unsigned short * QT_FASTCALL decomposition(uint ucs4, int *length, int *tag, unsigned short *buffer)
+static const unsigned short * QT_FASTCALL decompositionHelper
+    (uint ucs4, int *length, int *tag, unsigned short *buffer)
 {
     *length = 0;
     if (ucs4 > LAST_UNICODE_CHAR)
@@ -942,7 +948,7 @@ QString QChar::decomposition(uint ucs4)
     unsigned short buffer[3];
     int length;
     int tag;
-    const unsigned short *d = ::decomposition(ucs4, &length, &tag, buffer);
+    const unsigned short *d = decompositionHelper(ucs4, &length, &tag, buffer);
     return QString::fromUtf16(d, length);
 }
 
@@ -1232,6 +1238,7 @@ ushort QChar::toCaseFolded(ushort ucs2)
 */
 
 /*!
+    \fn char QChar::toAscii() const
     Returns the character value of the QChar obtained using the current
     codec used to read C strings, or 0 if the character is not representable
     using this codec. The default codec handles Latin-1 encoded text,
@@ -1244,7 +1251,11 @@ ushort QChar::toCaseFolded(ushort ucs2)
 
     \sa toLatin1(), unicode(), QTextCodec::codecForCStrings()
 */
+#ifdef Q_COMPILER_MANGLES_RETURN_TYPE
 const char QChar::toAscii() const
+#else
+char QChar::toAscii() const
+#endif
 {
 #ifndef QT_NO_CODEC_FOR_C_STRINGS
     if (QTextCodec::codecForCStrings())
@@ -1412,7 +1423,8 @@ QDataStream &operator>>(QDataStream &in, QChar &chr)
 // ---------------------------------------------------------------------------
 
 
-static QString decompose(const QString &str, bool canonical, QChar::UnicodeVersion version)
+static QString decomposeHelper
+    (const QString &str, bool canonical, QChar::UnicodeVersion version)
 {
     unsigned short buffer[3];
 
@@ -1433,7 +1445,7 @@ static QString decompose(const QString &str, bool canonical, QChar::UnicodeVersi
             continue;
         int length;
         int tag;
-        const unsigned short *d = decomposition(ucs4, &length, &tag, buffer);
+        const unsigned short *d = decompositionHelper(ucs4, &length, &tag, buffer);
         if (!d || (canonical && tag != QChar::Canonical))
             continue;
 
@@ -1448,7 +1460,7 @@ static QString decompose(const QString &str, bool canonical, QChar::UnicodeVersi
 }
 
 
-static ushort ligature(ushort u1, ushort u2)
+static ushort ligatureHelper(ushort u1, ushort u2)
 {
     // hangul L-V pair
     int LIndex = u1 - Hangul_LBase;
@@ -1479,7 +1491,7 @@ static ushort ligature(ushort u1, ushort u2)
     return 0;
 }
 
-static QString compose(const QString &str)
+static QString composeHelper(const QString &str)
 {
     QString s = str;
 
@@ -1502,7 +1514,7 @@ static QString compose(const QString &str)
         int combining = QChar::combiningClass(uc);
         if (starter == pos - 1 || combining > lastCombining) {
             // allowed to form ligature with S
-            QChar ligature = ::ligature(s.utf16()[starter], uc);
+            QChar ligature = ligatureHelper(s.utf16()[starter], uc);
             if (ligature.unicode()) {
                 s[starter] = ligature;
                 s.remove(pos, 1);
@@ -1518,7 +1530,8 @@ static QString compose(const QString &str)
 }
 
 
-static QString canonicalOrder(const QString &str, QChar::UnicodeVersion version)
+static QString canonicalOrderHelper
+    (const QString &str, QChar::UnicodeVersion version)
 {
     QString s = str;
     const int l = s.length()-1;
@@ -1603,3 +1616,5 @@ Q_CORE_EXPORT QUnicodeTables::LineBreakClass QUnicodeTables::lineBreakClass(uint
     return (QUnicodeTables::LineBreakClass) qGetProp(ucs4)->line_break_class;
 }
 
+
+QT_END_NAMESPACE

@@ -46,6 +46,7 @@
 #include "mainwindow.h"
 #include "scribblearea.h"
 
+//! [0]
 MainWindow::MainWindow()
 {
     scribbleArea = new ScribbleArea;
@@ -57,8 +58,11 @@ MainWindow::MainWindow()
     setWindowTitle(tr("Scribble"));
     resize(500, 500);
 }
+//! [0]
 
+//! [1]
 void MainWindow::closeEvent(QCloseEvent *event)
+//! [1] //! [2]
 {
     if (maybeSave()) {
         event->accept();
@@ -66,8 +70,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
     }
 }
+//! [2]
 
+//! [3]
 void MainWindow::open()
+//! [3] //! [4]
 {
     if (maybeSave()) {
         QString fileName = QFileDialog::getOpenFileName(this,
@@ -76,22 +83,31 @@ void MainWindow::open()
             scribbleArea->openImage(fileName);
     }
 }
+//! [4]
 
+//! [5]
 void MainWindow::save()
+//! [5] //! [6]
 {
     QAction *action = qobject_cast<QAction *>(sender());
     QByteArray fileFormat = action->data().toByteArray();
     saveFile(fileFormat);
 }
+//! [6]
 
+//! [7]
 void MainWindow::penColor()
+//! [7] //! [8]
 {
     QColor newColor = QColorDialog::getColor(scribbleArea->penColor());
     if (newColor.isValid())
         scribbleArea->setPenColor(newColor);
 }
+//! [8]
 
+//! [9]
 void MainWindow::penWidth()
+//! [9] //! [10]
 {
     bool ok;
     int newWidth = QInputDialog::getInteger(this, tr("Scribble"),
@@ -101,8 +117,11 @@ void MainWindow::penWidth()
     if (ok)
         scribbleArea->setPenWidth(newWidth);
 }
+//! [10]
 
+//! [11]
 void MainWindow::about()
+//! [11] //! [12]
 {
     QMessageBox::about(this, tr("About Scribble"),
             tr("<p>The <b>Scribble</b> example shows how to use QMainWindow as the "
@@ -117,8 +136,11 @@ void MainWindow::about()
                "how to use QPainter to draw an image in real time, as well as "
                "to repaint widgets.</p>"));
 }
+//! [12]
 
+//! [13]
 void MainWindow::createActions()
+//! [13] //! [14]
 {
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O"));
@@ -157,8 +179,11 @@ void MainWindow::createActions()
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
+//! [14]
 
+//! [15]
 void MainWindow::createMenus()
+//! [15] //! [16]
 {
     saveAsMenu = new QMenu(tr("&Save As"), this);
     foreach (QAction *action, saveAsActs)
@@ -185,8 +210,11 @@ void MainWindow::createMenus()
     menuBar()->addMenu(optionMenu);
     menuBar()->addMenu(helpMenu);
 }
+//! [16]
 
+//! [17]
 bool MainWindow::maybeSave()
+//! [17] //! [18]
 {
     if (scribbleArea->isModified()) {
        QMessageBox::StandardButton ret;
@@ -203,8 +231,11 @@ bool MainWindow::maybeSave()
     }
     return true;
 }
+//! [18]
 
+//! [19]
 bool MainWindow::saveFile(const QByteArray &fileFormat)
+//! [19] //! [20]
 {
     QString initialPath = QDir::currentPath() + "/untitled." + fileFormat;
 
@@ -219,3 +250,4 @@ bool MainWindow::saveFile(const QByteArray &fileFormat)
         return scribbleArea->saveImage(fileName, fileFormat);
     }
 }
+//! [20]

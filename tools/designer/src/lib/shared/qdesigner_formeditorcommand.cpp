@@ -45,6 +45,8 @@
 #include "qdesigner_formeditorcommand_p.h"
 #include <QtDesigner/QDesignerFormEditorInterface>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 // ---- QDesignerFormEditorCommand ----
@@ -60,3 +62,5 @@ QDesignerFormEditorInterface *QDesignerFormEditorCommand::core() const
 }
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

@@ -46,12 +46,15 @@
 
 #include <QtPlugin>
 
+//! [0]
 AnalogClockPlugin::AnalogClockPlugin(QObject *parent)
     : QObject(parent)
 {
     initialized = false;
 }
+//! [0]
 
+//! [1]
 void AnalogClockPlugin::initialize(QDesignerFormEditorInterface * /* core */)
 {
     if (initialized)
@@ -59,50 +62,69 @@ void AnalogClockPlugin::initialize(QDesignerFormEditorInterface * /* core */)
 
     initialized = true;
 }
+//! [1]
 
+//! [2]
 bool AnalogClockPlugin::isInitialized() const
 {
     return initialized;
 }
+//! [2]
 
+//! [3]
 QWidget *AnalogClockPlugin::createWidget(QWidget *parent)
 {
     return new AnalogClock(parent);
 }
+//! [3]
 
+//! [4]
 QString AnalogClockPlugin::name() const
 {
     return "AnalogClock";
 }
+//! [4]
 
+//! [5]
 QString AnalogClockPlugin::group() const
 {
     return "Display Widgets [Examples]";
 }
+//! [5]
 
+//! [6]
 QIcon AnalogClockPlugin::icon() const
 {
     return QIcon();
 }
+//! [6]
 
+//! [7]
 QString AnalogClockPlugin::toolTip() const
 {
     return "";
 }
+//! [7]
 
+//! [8]
 QString AnalogClockPlugin::whatsThis() const
 {
     return "";
 }
+//! [8]
 
+//! [9]
 bool AnalogClockPlugin::isContainer() const
 {
     return false;
 }
+//! [9]
 
+//! [10]
 QString AnalogClockPlugin::domXml() const
 {
     return "<widget class=\"AnalogClock\" name=\"analogClock\">\n"
+//! [11]
            " <property name=\"geometry\">\n"
            "  <rect>\n"
            "   <x>0</x>\n"
@@ -111,6 +133,7 @@ QString AnalogClockPlugin::domXml() const
            "   <height>100</height>\n"
            "  </rect>\n"
            " </property>\n"
+//! [11]
            " <property name=\"toolTip\" >\n"
            "  <string>The current time</string>\n"
            " </property>\n"
@@ -120,10 +143,15 @@ QString AnalogClockPlugin::domXml() const
            " </property>\n"
            "</widget>\n";
 }
+//! [10]
 
+//! [12]
 QString AnalogClockPlugin::includeFile() const
 {
     return "analogclock.h";
 }
+//! [12]
 
+//! [13]
 Q_EXPORT_PLUGIN2(customwidgetplugin, AnalogClockPlugin)
+//! [13]

@@ -60,6 +60,8 @@
 #ifndef QT_NO_IM
 #ifndef QT_NO_LIBRARY
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QInputContextPlugin
     \brief The QInputContextPlugin class provides an abstract base for custom QInputContext plugins.
@@ -161,5 +163,8 @@ QInputContextPlugin::~QInputContextPlugin()
 {
 }
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_LIBRARY
+
 #endif // QT_NO_IM

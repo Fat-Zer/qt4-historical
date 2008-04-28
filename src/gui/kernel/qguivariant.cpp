@@ -65,6 +65,8 @@
 
 #include "private/qvariant_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifdef QT3_SUPPORT
 extern QDataStream &qt_stream_out_qcolorgroup(QDataStream &s, const QColorGroup &g);
 extern QDataStream &qt_stream_in_qcolorgroup(QDataStream &s, QColorGroup &g);
@@ -671,3 +673,4 @@ int qUnregisterGuiVariant()
 }
 Q_DESTRUCTOR_FUNCTION(qUnregisterGuiVariant)
 
+QT_END_NAMESPACE

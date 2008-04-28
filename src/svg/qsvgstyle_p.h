@@ -56,12 +56,17 @@
 //
 
 #include "QtGui/qpainter.h"
+
+#ifndef QT_NO_SVG
+
 #include "QtGui/qpen.h"
 #include "QtGui/qbrush.h"
 #include "QtGui/qmatrix.h"
 #include "QtGui/qcolor.h"
 #include "QtGui/qfont.h"
 #include <qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 class QPainter;
 class QSvgNode;
@@ -350,7 +355,7 @@ private:
 class QSvgGradientStyle : public QSvgStyleProperty
 {
 public:
-    QSvgGradientStyle(QGradient *grad, bool resolveBounds=false);
+    QSvgGradientStyle(QGradient *grad);
     ~QSvgGradientStyle() { delete m_gradient; }
     virtual void apply(QPainter *p, const QRectF &, QSvgNode *node);
     virtual void revert(QPainter *p);
@@ -377,7 +382,6 @@ private:
     QList<qreal>  m_resolvePoints;
 
     QBrush m_oldFill;
-    bool   m_resolveBounds;
 
     QMatrix m_matrix;
 
@@ -556,4 +560,7 @@ public:
 
 // audio-level     v  	x  	'inherit' | <Number.datatype>
 
+QT_END_NAMESPACE
+
+#endif // QT_NO_SVG
 #endif // QSVGSTYLE_P_H

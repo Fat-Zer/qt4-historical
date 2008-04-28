@@ -59,6 +59,8 @@
 #include "QtGui/qpaintengine.h"
 #include "private/qpicture_p.h" // for QPaintCommands
 
+QT_BEGIN_NAMESPACE
+
 class Q3SVGPaintEnginePrivate;
 
 class Q3SVGPaintEngine : public QPaintEngine
@@ -122,5 +124,7 @@ protected:
 private:
     Q_DISABLE_COPY(Q3SVGPaintEngine)
 };
+
+QT_END_NAMESPACE
 
 #endif // Q3PAINTENGINE_SVG_P_H

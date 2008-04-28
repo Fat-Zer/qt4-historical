@@ -52,6 +52,8 @@
 #include <qdebug.h>
 #include <time.h>
 
+QT_BEGIN_NAMESPACE
+
 UnixMakefileGenerator::UnixMakefileGenerator() : MakefileGenerator(), init_flag(false), include_deps(false)
 {
 
@@ -1413,14 +1415,34 @@ UnixMakefileGenerator::writePkgConfigFile()
 
     // libs
     QStringList libs;
-    if(!project->isEmpty("QMAKE_INTERNAL_PRL_LIBS"))
+    if(!project->isEmpty("QMAKE_INTERNAL_PRL_LIBS")) {
         libs = project->values("QMAKE_INTERNAL_PRL_LIBS");
-    else
+    } else {
         libs << "QMAKE_LIBS"; //obvious one
+    }
     libs << "QMAKE_LFLAGS_THREAD"; //not sure about this one, but what about things like -pthread?
-    t << "Libs: -L${libdir} -l" << lname.left(lname.length()-Option::libtool_ext.length()) << " ";
-    for(QStringList::ConstIterator it = libs.begin(); it != libs.end(); ++it)
+    t << "Libs: ";
+    QString pkgConfiglibDir;
+    QString pkgConfiglibName;
+    if (Option::target_mode == Option::TARG_MACX_MODE && project->isActiveConfig("lib_bundle")) {
+        pkgConfiglibDir = "-F${libdir}";
+        QString bundle;
+        if (!project->isEmpty("QMAKE_FRAMEWORK_BUNDLE_NAME"))
+            bundle = unescapeFilePath(project->first("QMAKE_FRAMEWORK_BUNDLE_NAME"));
+        else
+            bundle = unescapeFilePath(project->first("TARGET"));
+        int suffix = bundle.lastIndexOf(".framework");
+        if (suffix != -1)
+            bundle = bundle.left(suffix);
+        pkgConfiglibName = "-framework " + bundle + " ";
+    } else {
+        pkgConfiglibDir = "-L${libdir}";
+        pkgConfiglibName = "-l" + lname.left(lname.length()-Option::libtool_ext.length());
+    }
+    t << pkgConfiglibDir << " " << pkgConfiglibName << " ";
+    for(QStringList::ConstIterator it = libs.begin(); it != libs.end(); ++it) {
         t << project->values((*it)).join(" ") << " ";
+    }
     t << endl;
 
     // flags
@@ -1434,3 +1456,5 @@ UnixMakefileGenerator::writePkgConfigFile()
       << " -I${includedir}" << endl;
     t << endl;
 }
+
+QT_END_NAMESPACE

@@ -61,6 +61,8 @@
 #include <QtCore/QList>
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
@@ -71,7 +73,7 @@ class QDESIGNER_SHARED_EXPORT ScriptCommand: public QDesignerFormWindowCommand
     ScriptCommand& operator=(const ScriptCommand &);
 
 public:
-    ScriptCommand(QDesignerFormWindowInterface *formWindow);
+    explicit ScriptCommand(QDesignerFormWindowInterface *formWindow);
 
     typedef QList<QObject *> ObjectList;
     bool init(const ObjectList &list, const QString &script);
@@ -87,5 +89,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_SCRIPTCOMMAND_H

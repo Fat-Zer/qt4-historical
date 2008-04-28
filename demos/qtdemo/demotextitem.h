@@ -46,12 +46,12 @@
 
 #include <QtGui>
 #include "demoitem.h"
- 
+
 class DemoTextItem : public DemoItem
 {
 public:
     enum TYPE {STATIC_TEXT, DYNAMIC_TEXT};
-     
+
     DemoTextItem(const QString &text, const QFont &font, const QColor &textColor,
         float textWidth, QGraphicsScene *scene = 0, QGraphicsItem *parent = 0, TYPE type = STATIC_TEXT, const QColor &bgColor = QColor());
     void setText(const QString &text);
@@ -62,7 +62,7 @@ public:
 protected:
     virtual QImage *createImage(const QMatrix &matrix) const; // overridden
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option = 0, QWidget *widget = 0); // overridden
-    
+
 private:
     float textWidth;
     QString text;

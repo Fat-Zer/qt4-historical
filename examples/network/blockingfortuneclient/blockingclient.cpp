@@ -79,10 +79,13 @@ BlockingClient::BlockingClient(QWidget *parent)
     connect(getFortuneButton, SIGNAL(clicked()),
             this, SLOT(requestNewFortune()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+//! [0]
     connect(&thread, SIGNAL(newFortune(const QString &)),
             this, SLOT(showFortune(const QString &)));
+//! [0] //! [1]
     connect(&thread, SIGNAL(error(int, const QString &)),
             this, SLOT(displayError(int, const QString &)));
+//! [1]
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(hostLabel, 0, 0);
@@ -97,24 +100,30 @@ BlockingClient::BlockingClient(QWidget *parent)
     portLineEdit->setFocus();
 }
 
+//! [2]
 void BlockingClient::requestNewFortune()
 {
     getFortuneButton->setEnabled(false);
     thread.requestNewFortune(hostLineEdit->text(),
                              portLineEdit->text().toInt());
 }
+//! [2]
 
+//! [3]
 void BlockingClient::showFortune(const QString &nextFortune)
 {
     if (nextFortune == currentFortune) {
         requestNewFortune();
         return;
     }
+//! [3]
 
+//! [4]
     currentFortune = nextFortune;
     statusLabel->setText(currentFortune);
     getFortuneButton->setEnabled(true);
 }
+//! [4]
 
 void BlockingClient::displayError(int socketError, const QString &message)
 {

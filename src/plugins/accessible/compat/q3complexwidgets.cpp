@@ -48,6 +48,8 @@
 
 #include <qapplication.h>
 
+QT_BEGIN_NAMESPACE
+
 Q3AccessibleHeader::Q3AccessibleHeader(QWidget *w)
     : QAccessibleWidget(w)
 {
@@ -337,4 +339,4 @@ bool Q3AccessibleTitleBar::doAction(int, int child, const QVariantList &)
     return false;
 }
 
-
+QT_END_NAMESPACE

@@ -46,6 +46,8 @@
 #include "qx11info_x11.h"
 #include "qt_x11_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QX11Info
     \brief The QX11Info class provides information about the X display
@@ -88,12 +90,11 @@ QX11Info::QX11Info(const QX11Info &other)
 */
 QX11Info &QX11Info::operator=(const QX11Info &other)
 {
-    QX11InfoData *x = other.x11data;
-    if (x)
-        ++x->ref;
-    x = qAtomicSetPtr(&x11data, x);
-    if (x && !--x->ref)
-        delete x;
+    if (other.x11data)
+        ++other.x11data->ref;
+    if (x11data && !--x11data->ref)
+        delete x11data;
+    x11data = other.x11data;
     return *this;
 }
 
@@ -528,3 +529,14 @@ void *QX11Info::visual() const
 
 bool QX11Info::defaultVisual() const
 { return x11data ? x11data->defaultVisual : QX11Info::appDefaultVisual(); }
+
+
+/*!
+    Returns true if there is a compositing manager running.
+*/
+bool QX11Info::isCompositingManagerRunning()
+{
+    return X11 ? X11->compositingManagerRunning : false;
+}
+
+QT_END_NAMESPACE

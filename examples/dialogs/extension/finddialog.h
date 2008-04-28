@@ -46,13 +46,16 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QDialogButtonBox;
 class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+QT_END_NAMESPACE
 
+//! [0]
 class FindDialog : public QDialog
 {
     Q_OBJECT
@@ -73,5 +76,6 @@ private:
     QPushButton *moreButton;
     QWidget *extension;
 };
+//! [0]
 
 #endif

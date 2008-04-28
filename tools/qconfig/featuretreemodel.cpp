@@ -46,6 +46,8 @@
 #include <QColor>
 #include <QtDebug>
 
+QT_BEGIN_NAMESPACE
+
 class Node
 {
 public:
@@ -444,3 +446,5 @@ void FeatureTreeModel::clear()
     featureIndexMap.clear();
     emit layoutChanged();
 }
+
+QT_END_NAMESPACE

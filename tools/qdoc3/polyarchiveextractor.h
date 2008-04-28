@@ -50,6 +50,8 @@
 
 #include "archiveextractor.h"
 
+QT_BEGIN_NAMESPACE
+
 class PolyArchiveExtractor : public ArchiveExtractor
 {
 public:
@@ -64,5 +66,7 @@ public:
 private:
     QString cmd;
 };
+
+QT_END_NAMESPACE
 
 #endif

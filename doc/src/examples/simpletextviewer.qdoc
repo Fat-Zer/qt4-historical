@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example assistant/simpletextviewer
     \title Simple Text Viewer Example
@@ -48,9 +91,7 @@
     displaying the application's documentation. Here is the relevant
     parts of the \c MainWindow class definition:
 
-    \quotefromfile assistant/simpletextviewer/mainwindow.h
-    \skipto QAssistantClient *
-    \printline QAssistantClient
+    \snippet examples/assistant/simpletextviewer/mainwindow.h 3
 
     To use Qt Assistant as an application's help tool, we must provide
     the application with a QAssistantClient object. An instance of the
@@ -64,25 +105,20 @@
     library. To use it you must add \c {CONFIG += assistant} to your
     pro file.
 
-    \quotefromfile assistant/simpletextviewer/mainwindow.h
-    \skipto initializeAssistant
-    \printline initializeAssistant
+    \snippet examples/assistant/simpletextviewer/mainwindow.h 2
 
     We declare the private \c initializeAssistant() function to create
     and initialize the application's QAssistantClient object. It is a
     convenience function used when constructing the main window
     widget.
 
-    \quotefromfile assistant/simpletextviewer/mainwindow.h
-    \skipto assistant
-    \printline assistant
+    \snippet examples/assistant/simpletextviewer/mainwindow.h 0
 
     To facilitate the \gui {Open Assistant} menu entry in the \gui
     Help menu we declare a private \c assistant() slot which will open
     the application's instance of Qt Assistant on user requests.
 
-    \skipto closeEvent
-    \printline closeEvent
+    \snippet examples/assistant/simpletextviewer/mainwindow.h 1
 
     Finally, we must reimplement the protected QWidget::closeEvent()
     event handler to ensure that the application's Qt Assistant
@@ -94,16 +130,12 @@
     required actions and menus, and initialize the application's
     QAssistantClient object:
 
-    \quotefromfile assistant/simpletextviewer/mainwindow.cpp
-    \skipto MainWindow
-    \printuntil /^\}/
+    \snippet examples/assistant/simpletextviewer/mainwindow.cpp 0
 
     When the user select the \gui {Open Assistant} entry in the main
     window's \gui Help menu, it triggers the \c assistant() slot.
 
-    \quotefromfile assistant/simpletextviewer/mainwindow.cpp
-    \skipto assistant()
-    \printuntil /^\}/
+    \snippet examples/assistant/simpletextviewer/mainwindow.cpp 2
 
     In this slot we use the QAssistantClient::showPage() function to
     make Qt Assistant show the documentation's index page. This
@@ -130,8 +162,7 @@
     custom documentation in the \c initializeAssistant() function
     called from the constructor:
 
-    \skipto ::initializeAssistant()
-    \printuntil /^\}/
+    \snippet examples/assistant/simpletextviewer/mainwindow.cpp 4
 
     First we create the QAssistantClient object, then we set the
     command line arguments that are applied when Qt Assistant is
@@ -166,7 +197,7 @@
     <H4><center>/documentation/simpletextviewer.adp</center></H4>
     \endraw
 
-    \include assistant/simpletextviewer/documentation/simpletextviewer.adp
+    \quotefile assistant/simpletextviewer/documentation/simpletextviewer.adp
 
     The \c simpletextviewer.adp file quoted above, describes the
     Simple Text Viewer application's documentation and consists of two
@@ -185,9 +216,7 @@
 
     \endtable
 
-    \quotefromfile assistant/simpletextviewer/mainwindow.cpp
-    \skipto open()
-    \printuntil /^\}/
+    \snippet examples/assistant/simpletextviewer/mainwindow.cpp 3
 
     When the user choose the \gui Open entry in the \gui File menu, it
     triggers the \c open() slot which will pop up a find file
@@ -204,9 +233,7 @@
     {Modal Dialogs}{modal dialog} (i.e. blocking until the user closes
     the dialog).
 
-    \quotefromfile assistant/simpletextviewer/mainwindow.cpp
-    \skipto closeEvent
-    \printuntil /^\}/
+    \snippet examples/assistant/simpletextviewer/mainwindow.cpp 1
 
     When launching Qt Assistant using the QAssistantClient, the
     application is run in its own process. For that reason we must
@@ -224,9 +251,7 @@
     is given an option to browse the existing file system to find the
     relevant directory.
 
-    \quotefromfile assistant/simpletextviewer/findfiledialog.h
-    \skipto class FindFileDialog
-    \printuntil /^\}/
+    \snippet examples/assistant/simpletextviewer/findfiledialog.h 0
 
     The only relevant members to observe in the \c FindFileDialog
     class definition is the private \c help() slot. The slot is
@@ -236,12 +261,9 @@
 
     \section1 FindFileDialog Class Implementation
 
-    \quotefromfile assistant/simpletextviewer/findfiledialog.cpp
-    \skipto FindFileDialog
-    \printuntil currentEditor
+    \snippet examples/assistant/simpletextviewer/findfiledialog.cpp 0
     \dots
-    \skipto /^\}/
-    \printline /^\}/
+    \snippet examples/assistant/simpletextviewer/findfiledialog.cpp 1
 
     In the constructor we save the references to the QAssistantClient
     and QTextEdit objects passed as arguments. The QAssistantClient
@@ -249,8 +271,7 @@
     we will see shortly, while the QTextEdit will be used in the
     dialog's \c openFile() slot to display the chosen file.
 
-    \skipto help()
-    \printuntil /^\}/
+    \snippet examples/assistant/simpletextviewer/findfiledialog.cpp 2
 
     The \c help() slot is called when the user clicks the dialog's
     \gui Help button. It brings the current Qt Assistant instance to

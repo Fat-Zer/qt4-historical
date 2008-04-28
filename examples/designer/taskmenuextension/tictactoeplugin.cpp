@@ -49,6 +49,7 @@
 #include "tictactoeplugin.h"
 #include "tictactoetaskmenu.h"
 
+//! [0]
 TicTacToePlugin::TicTacToePlugin(QObject *parent)
     : QObject(parent)
 {
@@ -102,18 +103,25 @@ bool TicTacToePlugin::isInitialized() const
     return initialized;
 }
 
+//! [0] //! [1]
 void TicTacToePlugin::initialize(QDesignerFormEditorInterface *formEditor)
 {
+//! [1] //! [2]
     if (initialized)
         return;
 
     QExtensionManager *manager = formEditor->extensionManager();
     Q_ASSERT(manager != 0);
+//! [2]
 
+//! [3]
     manager->registerExtensions(new TicTacToeTaskMenuFactory(manager),
                                 Q_TYPEID(QDesignerTaskMenuExtension));
 
     initialized = true;
 }
+//! [3]
 
+//! [4]
 Q_EXPORT_PLUGIN2(taskmenuextension, TicTacToePlugin)
+//! [4]

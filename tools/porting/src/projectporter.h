@@ -49,6 +49,8 @@
 #include <QString>
 #include <QSet>
 
+QT_BEGIN_NAMESPACE
+
 class ProjectPorter : public QObject
 {
 Q_OBJECT
@@ -76,5 +78,7 @@ private:
     bool analyze;
     bool warnings;
 };
+
+QT_END_NAMESPACE
 
 #endif

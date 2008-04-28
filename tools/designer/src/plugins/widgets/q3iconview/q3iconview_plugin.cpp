@@ -51,8 +51,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3IconView>
 
-Q3IconViewPlugin::Q3IconViewPlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3IconViewPlugin::Q3IconViewPlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3IconViewPlugin::name() const
@@ -71,7 +73,7 @@ QString Q3IconViewPlugin::includeFile() const
 { return QLatin1String("q3iconview.h"); }
 
 QIcon Q3IconViewPlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3IconViewPlugin::isContainer() const
 { return false; }
@@ -115,3 +117,5 @@ QString Q3IconViewPlugin::domXml() const
     ");
 }
 
+
+QT_END_NAMESPACE

@@ -57,6 +57,8 @@
 
 #include "QtCore/qobject.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_SOUND
 
 class QSound;
@@ -94,5 +96,7 @@ protected:
 };
 
 #endif // QT_NO_SOUND
+
+QT_END_NAMESPACE
 
 #endif // QSOUND_P_H

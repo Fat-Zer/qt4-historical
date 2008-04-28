@@ -59,6 +59,8 @@
 # include "private/qt_mac_p.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 using namespace Qt;
 
 static const int coord_limit = 4000;
@@ -125,7 +127,9 @@ public:
         : QWidget (parent,name,f) {}
 };
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include "q3scrollview.moc"
+QT_END_INCLUDE_NAMESPACE
 
 class Q3ScrollViewData {
 public:
@@ -384,23 +388,10 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     reliable size on X11 servers). In this usage, you just make one
     large child in the Q3ScrollView. The child should be a child of the
     viewport() of the scrollview and be added with addChild():
-    \code
-        Q3ScrollView* sv = new Q3ScrollView(...);
-        QWidget *widget = new QWidget(sv->viewport());
-        QVBoxLayout *layout = new QVBoxLayout(widget);
-        addChild(widget);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 0
     You can go on to add arbitrary child widgets to the single child
     in the scrollview as you would with any widget:
-    \code
-        QLabel* child1 = new QLabel("CHILD", widget);
-        QLabel* child2 = new QLabel("CHILD", widget);
-        QLabel* child3 = new QLabel("CHILD", widget);
-        layout->addWidget(child1);
-        layout->addWidget(child2);
-        layout->addWidget(child3);
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 1
 
     Here the Q3ScrollView has four children: the viewport(), the
     verticalScrollBar(), the horizontalScrollBar() and a small
@@ -421,15 +412,7 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     add some widgets by making them children of the viewport() and
     adding them with addChild() (this is the same as the process for
     the single large widget in the previous example):
-    \code
-        Q3ScrollView* sv = new Q3ScrollView(...);
-        QLabel* child1 = new QLabel("CHILD", sv->viewport());
-        sv->addChild(child1);
-        QLabel* child2 = new QLabel("CHILD", sv->viewport());
-        sv->addChild(child2);
-        QLabel* child3 = new QLabel("CHILD", sv->viewport());
-        sv->addChild(child3);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 2
     Here, the Q3ScrollView has the same four children: the viewport(),
     the verticalScrollBar(), the horizontalScrollBar() and a small
     cornerWidget(). The viewport() has the three QLabel objects as
@@ -447,16 +430,7 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     reimplement drawContents() to paint the contents. You then call
     enableClipper(true) and add widgets, again by making them children
     of the viewport(), and adding them with addChild():
-    \code
-        Q3ScrollView* sv = new Q3ScrollView(...);
-        sv->enableClipper(true);
-        QLabel* child1 = new QLabel("CHILD", sv->viewport());
-        sv->addChild(child1);
-        QLabel* child2 = new QLabel("CHILD", sv->viewport());
-        sv->addChild(child2);
-        QLabel* child3 = new QLabel("CHILD", sv->viewport());
-        sv->addChild(child3);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 3
 
     Here, the Q3ScrollView has four children:  the clipper() (not the
     viewport() this time), the verticalScrollBar(), the
@@ -2375,25 +2349,7 @@ void Q3ScrollView::drawContentsOffset(QPainter* p, int offsetx, int offsety, int
     rectangle is in the scrollview's coordinates.
 
     For example:
-    \code
-    {
-        // Fill a 40000 by 50000 rectangle at (100000,150000)
-
-        // Calculate the coordinates...
-        int x1 = 100000, y1 = 150000;
-        int x2 = x1+40000-1, y2 = y1+50000-1;
-
-        // Clip the coordinates so X/Windows will not have problems...
-        if (x1 < clipx) x1=clipx;
-        if (y1 < clipy) y1=clipy;
-        if (x2 > clipx+clipw-1) x2=clipx+clipw-1;
-        if (y2 > clipy+cliph-1) y2=clipy+cliph-1;
-
-        // Paint using the small coordinates...
-        if (x2 >= x1 && y2 >= y1)
-            p->fillRect(x1, y1, x2-x1+1, y2-y1+1, red);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 4
 
     The clip rectangle and translation of the painter \a p is already
     set appropriately.
@@ -2843,5 +2799,7 @@ QSize Q3ScrollView::cachedSizeHint() const
 {
     return d->use_cached_size_hint ? d->cachedSizeHint : QSize();
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCROLLVIEW

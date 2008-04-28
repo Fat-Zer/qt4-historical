@@ -65,6 +65,8 @@
 #include <QtCore/QVariant>
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class QObject;
 class QWidget;
 class QLayout;
@@ -78,14 +80,14 @@ class QDESIGNER_SHARED_EXPORT WidgetFactory: public QDesignerWidgetFactoryInterf
 {
     Q_OBJECT
 public:
-    WidgetFactory(QDesignerFormEditorInterface *core, QObject *parent = 0);
+    explicit WidgetFactory(QDesignerFormEditorInterface *core, QObject *parent = 0);
     ~WidgetFactory();
 
     virtual QWidget* containerOfWidget(QWidget *widget) const;
     virtual QWidget* widgetOfContainer(QWidget *widget) const;
 
     QObject* createObject(const QString &className, QObject* parent) const;
-    
+
     virtual QWidget *createWidget(const QString &className, QWidget *parentWidget) const;
     virtual QLayout *createLayout(QWidget *widget, QLayout *layout, int type) const;
 
@@ -103,8 +105,39 @@ public slots:
     void loadPlugins();
 
 private:
-    QWidget* createCustomWidget(const QString &className, QWidget *parentWidget) const;
-    
+    struct Strings { // Reduce string allocations by storing predefined strings
+        Strings();
+        const QString m_alignment;
+        const QString m_bottomMargin;
+        const QString m_geometry;
+        const QString m_leftMargin;
+        const QString m_line;
+        const QString m_objectName;
+        const QString m_spacerName;
+        const QString m_orientation;
+        const QString m_q3WidgetStack;
+        const QString m_qAction;
+        const QString m_qAxWidget;
+        const QString m_qDialog;
+        const QString m_qDockWidget;
+        const QString m_qLayoutWidget;
+        const QString m_qMenu;
+        const QString m_qMenuBar;
+        const QString m_qWidget;
+        const QString m_rightMargin;
+        const QString m_sizeHint;
+        const QString m_spacer;
+        const QString m_text;
+        const QString m_title;
+        const QString m_topMargin;
+        const QString m_windowIcon;
+        const QString m_windowTitle;
+    };
+
+    QWidget* createCustomWidget(const QString &className, QWidget *parentWidget, bool *creationError) const;
+    QDesignerFormWindowInterface *findFormWindow(QWidget *parentWidget) const;
+
+    const Strings m_strings;
     QDesignerFormEditorInterface *m_core;
     typedef QMap<QString, QDesignerCustomWidgetInterface*> CustomWidgetFactoryMap;
     CustomWidgetFactoryMap m_customFactory;
@@ -115,5 +148,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // WIDGETFACTORY_H

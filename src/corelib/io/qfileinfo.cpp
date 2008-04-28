@@ -51,6 +51,8 @@
 #include "qhash.h"
 #include "qdir.h"
 
+QT_BEGIN_NAMESPACE
+
 class QFileInfoPrivate
 {
 public:
@@ -87,7 +89,7 @@ public:
             fileFlags = 0;
             cachedFlags = 0;
         }
-        mutable QAtomic ref;
+        mutable QAtomicInt ref;
 
         QAbstractFileEngine *fileEngine;
         mutable QString fileName;
@@ -204,8 +206,8 @@ uint
 QFileInfoPrivate::getFileFlags(QAbstractFileEngine::FileFlags request) const
 {
     // We split the testing into tests for for LinkType, BundleType and the rest.
-    // In order to determine if a file is a symlink or not, we have to lstat(). 
-    // If we're not interested in that information, we might as well avoid one 
+    // In order to determine if a file is a symlink or not, we have to lstat().
+    // If we're not interested in that information, we might as well avoid one
     // extra syscall. Bundle detecton on Mac can be slow, expecially on network
     // paths, so we separate out that as well.
 
@@ -315,52 +317,22 @@ QDateTime
     transparently; similarly, opening a symlink using QFile
     effectively opens the link's target. For example:
 
-    \code
-        #ifdef Q_OS_UNIX
-
-        QFileInfo info1("/home/bob/bin/untabify");
-        info1.isSymLink();          // returns true
-        info1.absoluteFilePath();   // returns "/home/bob/bin/untabify"
-        info1.size();               // returns 56201
-        info1.symLinkTarget();      // returns "/opt/pretty++/bin/untabify"
-
-        QFileInfo info2(info1.symLinkTarget());
-        info1.isSymLink();          // returns false
-        info1.absoluteFilePath();   // returns "/opt/pretty++/bin/untabify"
-        info1.size();               // returns 56201
-
-        #endif
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 0
 
     On Windows, symlinks (shortcuts) are \c .lnk files. The reported
     size() is that of the symlink (not the link's target), and
     opening a symlink using QFile opens the \c .lnk file. For
     example:
 
-    \code
-        #ifdef Q_OS_WIN
-
-        QFileInfo info1("C:\\Documents and Settings\\Bob\\untabify.lnk");
-        info1.isSymLink();          // returns true
-        info1.absoluteFilePath();   // returns "C:/Documents and Settings/Bob/untabify.lnk"
-        info1.size();               // returns 743
-        info1.symLinkTarget();      // returns "C:/Pretty++/untabify"
-
-        QFileInfo info2(info1.symLinkTarget());
-        info1.isSymLink();          // returns false
-        info1.absoluteFilePath();   // returns "C:/Pretty++/untabify"
-        info1.size();               // returns 63942
-
-        #endif
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 1
 
     Elements of the file's name can be extracted with path() and
     fileName(). The fileName()'s parts can be extracted with
-    baseName() and extension(). QFileInfo objects to directories
-    created by Qt classes will not have a trailing file separator. If
-    you wish to use trailing separators in your own file info objects,
-    just append one to the file name given to the constructors or
-    setFile().
+    baseName(), suffix() or completeSuffix(). QFileInfo objects to
+    directories created by Qt classes will not have a trailing file
+    separator. If you wish to use trailing separators in your own file
+    info objects, just append one to the file name given to the constructors
+    or setFile().
 
     The file's dates are returned by created(), lastModified() and
     lastRead(). Information about the file's access permissions is
@@ -554,19 +526,7 @@ QFileInfo &QFileInfo::operator=(const QFileInfo &fileinfo)
     path relative to the current directory.
 
     Example:
-    \code
-    QString absolute = "/local/bin";
-    QString relative = "local/bin";
-    QFileInfo absFile(absolute);
-    QFileInfo relFile(relative);
-
-    QDir::setCurrent(QDir::rootPath());
-    // absFile and relFile now point to the same file
-
-    QDir::setCurrent("/tmp");
-    // absFile now points to "/local/bin",
-    // while relFile points to "/tmp/local/bin"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 2
 
     \sa isRelative(), QDir::setCurrent(), QDir::isRelativePath()
 */
@@ -782,6 +742,9 @@ QFileInfo::exists() const
 /*!
     Refreshes the information about the file, i.e. reads in information
     from the file system the next time a cached property is fetched.
+
+   \note On Windows CE, there might be a delay for the file system driver
+    to detect changes on the file.
 */
 
 void
@@ -811,10 +774,7 @@ QFileInfo::filePath() const
     Returns the name of the file, excluding the path.
 
     Example:
-    \code
-        QFileInfo fi("/tmp/archive.tar.gz");
-        QString name = fi.fileName();                // name = "archive.tar.gz"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 3
 
     \sa isRelative(), filePath(), baseName(), extension()
 */
@@ -836,10 +796,7 @@ QFileInfo::fileName() const
     path isBundle(). On all other platforms an empty QString is returned.
 
     Example:
-    \code
-        QFileInfo fi("/Applications/Safari.app");
-        QString bundle = fi.bundleName();                // name = "Safari"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 4
 
     \sa isBundle(), filePath(), baseName(), extension()
 */
@@ -860,10 +817,7 @@ QFileInfo::bundleName() const
     not including) the \e first '.' character.
 
     Example:
-    \code
-        QFileInfo fi("/tmp/archive.tar.gz");
-        QString base = fi.baseName();  // base = "archive"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 5
 
 
     The base name of a file is computed equally on all platforms, independent
@@ -889,10 +843,7 @@ QFileInfo::baseName() const
     to (but not including) the \e last '.' character.
 
     Example:
-    \code
-        QFileInfo fi("/tmp/archive.tar.gz");
-        QString base = fi.completeBaseName();  // base = "archive.tar"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 6
 
     \sa fileName(), suffix(), completeSuffix(), baseName()
 */
@@ -915,10 +866,7 @@ QFileInfo::completeBaseName() const
     (but not including) the first '.'.
 
     Example:
-    \code
-        QFileInfo fi("/tmp/archive.tar.gz");
-        QString ext = fi.completeSuffix();  // ext = "tar.gz"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 7
 
     \sa fileName(), suffix(), baseName(), completeBaseName()
 */
@@ -943,10 +891,7 @@ QFileInfo::completeSuffix() const
     including) the last '.'.
 
     Example:
-    \code
-        QFileInfo fi("/tmp/archive.tar.gz");
-        QString ext = fi.suffix();  // ext = "gz"
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 8
 
     The suffix of a file is computed equally on all platforms, independent of
     file naming conventions (e.g., ".bashrc" on Unix has an empty base name,
@@ -981,6 +926,7 @@ QFileInfo::suffix() const
 QDir
 QFileInfo::dir() const
 {
+    // ### Qt5: Maybe rename this to parentDirectory(), considering what it actually do?
     return QDir(path());
 }
 
@@ -1131,11 +1077,7 @@ QFileInfo::isBundle() const
 
     Example:
 
-    \code
-        QFileInfo info(fileName);
-        if (info.isSymLink())
-            fileName = info.symLinkTarget();
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 9
 
     \sa isFile(), isDir(), symLinkTarget()
 */
@@ -1278,13 +1220,7 @@ QFileInfo::groupId() const
     always returns true.
 
     Example:
-    \code
-        QFileInfo fi("/tmp/archive.tar.gz");
-        if (fi.permission(QFile::WriteUser | QFile::ReadGroup))
-            qWarning("I can change the file; my group can read the file");
-        if (fi.permission(QFile::WriteGroup | QFile::WriteOther))
-            qWarning("The group or others can change the file");
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 10
 
     \sa isReadable(), isWritable(), isExecutable()
 */
@@ -1453,6 +1389,13 @@ QFileInfo::setCaching(bool enable)
 */
 
 /*!
+    \fn QString QFileInfo::dirPath(bool absPath) const
+
+    Use absoluteFilePath() if the absolute path is wanted (\a absPath
+    is true) or path() if it's not necessary (\a absPath is false).
+*/
+
+/*!
     \fn bool QFileInfo::convertToAbs()
 
     Use makeAbsolute() instead.
@@ -1490,3 +1433,5 @@ QFileInfo::setCaching(bool enable)
 
     Synonym for QList<QFileInfo>.
 */
+
+QT_END_NAMESPACE

@@ -44,8 +44,11 @@
 #include "qrect.h"
 #include "qdatastream.h"
 #include "qdebug.h"
+#include "qmath.h"
 
 #include <math.h>
+
+QT_BEGIN_NAMESPACE
 
 /*!
     \class QRect
@@ -63,10 +66,7 @@
     height integers, or from a QPoint and a QSize.  The following code
     creates two identical rectangles.
 
-    \code
-        QRect r1(100, 200, 11, 16);
-        QRect r2(QPoint(100, 200), QSize(11, 16));
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qrect.cpp 0
 
     There is a third constructor that creates a QRect using the
     top-left and bottom-right coordinates, but we recommend that you
@@ -115,7 +115,7 @@
     has both width and height set to 0.
 
     Note that due to the way QRect and QRectF are defined, an
-    empty QRect is defined in essentially the same way as QRectF. 
+    empty QRect is defined in essentially the same way as QRectF.
 
     Finally, QRect objects can be streamed as well as compared.
 
@@ -299,17 +299,15 @@
 
 QRect QRect::normalized() const
 {
-    if (isNull() || width() == 0 || height() == 0)
-        return *this;
     QRect r;
-    if (x2 < x1) {                                // swap bad x values
+    if (x2 < x1 - 1) {                                // swap bad x values
         r.x1 = x2;
         r.x2 = x1;
     } else {
         r.x1 = x1;
         r.x2 = x2;
     }
-    if (y2 < y1) {                                // swap bad y values
+    if (y2 < y1 - 1) {                                // swap bad y values
         r.y1 = y2;
         r.y2 = y1;
     } else {
@@ -494,7 +492,7 @@ QRect QRect::normalized() const
     \fn void QRect::setTopLeft(const QPoint &position)
 
     Set the top-left corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    position. May change the size, but will never change the
     bottom-right corner of the rectangle.
 
     \sa topLeft(), moveTopLeft()
@@ -504,7 +502,7 @@ QRect QRect::normalized() const
     \fn void QRect::setBottomRight(const QPoint &position)
 
     Set the bottom-right corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    position. May change the size, but will never change the
     top-left corner of the rectangle.
 
     \sa bottomRight(), moveBottomRight()
@@ -514,7 +512,7 @@ QRect QRect::normalized() const
     \fn void QRect::setTopRight(const QPoint &position)
 
     Set the top-right corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    position. May change the size, but will never change the
     bottom-left corner of the rectangle.
 
     \sa topRight(), moveTopRight()
@@ -524,7 +522,7 @@ QRect QRect::normalized() const
     \fn void QRect::setBottomLeft(const QPoint &position)
 
     Set the bottom-left corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    position. May change the size, but will never change the
     top-right corner of the rectangle.
 
     \sa bottomLeft(), moveBottomLeft()
@@ -1187,10 +1185,7 @@ QDebug operator<<(QDebug dbg, const QRect &r) {
     height integers, or from a QPoint and a QSize.  The following code
     creates two identical rectangles.
 
-    \code
-        QRectF r1(100, 200, 11, 16);
-        QRectF r2(QPoint(100, 200), QSize(11, 16));
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.tools.qrect.cpp 1
 
     There is also a third constructor creating a QRectF from a QRect,
     and a corresponding toRect() function that returns a QRect object
@@ -1513,7 +1508,7 @@ QRectF QRectF::normalized() const
     \fn void QRectF::setTopLeft(const QPointF &position)
 
     Set the top-left corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    position. May change the size, but will never change the
     bottom-right corner of the rectangle.
 
     \sa topLeft(), moveTopLeft()
@@ -1522,8 +1517,8 @@ QRectF QRectF::normalized() const
 /*!
     \fn void QRectF::setBottomRight(const QPointF &position)
 
-    Set the top-right corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    Set the bottom-right corner of the rectangle to the given \a
+    position. May change the size, but will never change the
     top-left corner of the rectangle.
 
     \sa bottomRight(), moveBottomRight()
@@ -1533,7 +1528,7 @@ QRectF QRectF::normalized() const
     \fn void QRectF::setTopRight(const QPointF &position)
 
     Set the top-right corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    position. May change the size, but will never change the
     bottom-left corner of the rectangle.
 
     \sa topRight(), moveTopRight()
@@ -1543,7 +1538,7 @@ QRectF QRectF::normalized() const
     \fn void QRectF::setBottomLeft(const QPointF &position)
 
     Set the bottom-left corner of the rectangle to the given \a
-    position. May change the size, but will the never change the
+    position. May change the size, but will never change the
     top-right corner of the rectangle.
 
     \sa bottomLeft(), moveBottomLeft()
@@ -2071,10 +2066,10 @@ bool QRectF::intersects(const QRectF &r) const
 
 QRect QRectF::toAlignedRect() const
 {
-    int xmin = int(floor(x()));
-    int xmax = int(ceil(x() + width()));
-    int ymin = int(floor(y()));
-    int ymax = int(ceil(y() + height()));
+    int xmin = int(qFloor(x()));
+    int xmax = int(qCeil(x() + width()));
+    int ymin = int(qFloor(y()));
+    int ymax = int(qCeil(y() + height()));
     return QRect(xmin, ymin, xmax - xmin, ymax - ymin);
 }
 
@@ -2157,3 +2152,5 @@ QDebug operator<<(QDebug dbg, const QRectF &r) {
     return dbg.space();
 }
 #endif
+
+QT_END_NAMESPACE

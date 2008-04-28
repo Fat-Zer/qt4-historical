@@ -62,6 +62,13 @@
 #elif defined(Q_OS_AIX)
 #  define NO_BOM
 #  define UTF16 "UCS-2"
+#elif defined(Q_OS_MAC)
+#  define NO_BOM
+#  if Q_BYTE_ORDER == Q_BIG_ENDIAN
+#    define UTF16 "UTF-16BE"
+#  else
+#    define UTF16 "UTF-16LE"
+#  endif
 #else
 #  define UTF16 "UTF-16"
 #endif
@@ -79,6 +86,8 @@ static Ptr_iconv ptr_iconv = 0;
 static Ptr_iconv_close ptr_iconv_close = 0;
 #endif
 
+QT_BEGIN_NAMESPACE
+
 QIconvCodec::QIconvCodec()
     : utf16Codec(0)
 {
@@ -93,6 +102,7 @@ QIconvCodec::QIconvCodec()
 #ifdef Q_OS_MAC
     if (ptr_iconv_open == 0) {
         QLibrary libiconv(QLatin1String("/usr/lib/libiconv"));
+        libiconv.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 
         ptr_iconv_open = reinterpret_cast<Ptr_iconv_open>(libiconv.resolve("libiconv_open"));
         ptr_iconv = reinterpret_cast<Ptr_iconv>(libiconv.resolve("libiconv"));
@@ -279,7 +289,8 @@ iconv_t QIconvCodec::createIconv_t(const char *to, const char *from)
     iconv_t cd = (iconv_t) -1;
 #if defined(__GLIBC__) || defined(GNU_LIBICONV)
     // both GLIBC and libgnuiconv will use the locale's encoding if from or to is an empty string
-    char *codeset = "";
+    static const char empty_codeset[] = "";
+    const char *codeset = empty_codeset;
     cd = iconv_open(to ? to : codeset, from ? from : codeset);
 #else
     char *codeset = 0;
@@ -359,3 +370,5 @@ iconv_t QIconvCodec::createIconv_t(const char *to, const char *from)
 
     return cd;
 }
+
+QT_END_NAMESPACE

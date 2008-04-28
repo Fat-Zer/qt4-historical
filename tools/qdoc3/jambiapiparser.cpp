@@ -52,6 +52,8 @@
 #include "node.h"
 #include "tree.h"
 
+QT_BEGIN_NAMESPACE
+
 static const char USED_INTERNALLY[] = "";
 
 static Text textWithFixedBrief(const Text &text, const Text &beforeBrief,
@@ -542,3 +544,5 @@ bool JambiApiParser::makeFunctionNode(InnerNode *parent, const QString &synopsis
     }
     return true;
 }
+
+QT_END_NAMESPACE

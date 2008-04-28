@@ -56,6 +56,8 @@
 
 #include <qimage.h>
 
+QT_BEGIN_NAMESPACE
+
 /*
   This version will convert the img to a supported format
 */
@@ -65,5 +67,7 @@ QImage qSmoothScaleImageAutoConvert(QImage &img, int w, int h);
   This version accepts only supported formats.
 */
 QImage qSmoothScaleImage(const QImage &img, int w, int h);
+
+QT_END_NAMESPACE
 
 #endif

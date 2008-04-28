@@ -46,11 +46,13 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QLabel;
 class QMenu;
 class QScrollArea;
 class QSlider;
+QT_END_NAMESPACE
 class GLWidget;
 
 class MainWindow : public QMainWindow

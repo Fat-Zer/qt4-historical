@@ -44,7 +44,9 @@
 #ifndef QLONGLONGVALIDATOR_H
 #define QLONGLONGVALIDATOR_H
 
-#include <QValidator>
+#include <QtGui/QValidator>
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -104,5 +106,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QLONGLONGVALIDATOR_H

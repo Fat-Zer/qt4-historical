@@ -62,9 +62,9 @@
 #include <private/qunicodetables_p.h>
 #include <qfontdatabase.h>
 
-
-extern HDC   shared_dc;                // common dc for all fonts
-
+QT_BEGIN_NAMESPACE
+        
+extern HDC   shared_dc();                // common dc for all fonts
 
 // ### maybe move to qapplication_win
 QFont qt_LOGFONTtoQFont(LOGFONT& lf, bool /*scale*/)
@@ -88,8 +88,7 @@ QFont qt_LOGFONTtoQFont(LOGFONT& lf, bool /*scale*/)
         qf.setWeight(weight);
     }
     int lfh = qAbs(lf.lfHeight);
-    Q_ASSERT(shared_dc);
-    qf.setPointSizeF(lfh * 72.0 / GetDeviceCaps(shared_dc,LOGPIXELSY));
+    qf.setPointSizeF(lfh * 72.0 / GetDeviceCaps(shared_dc(),LOGPIXELSY));
     qf.setUnderline(false);
     qf.setOverline(false);
     qf.setStrikeOut(false);
@@ -123,19 +122,11 @@ static inline float pointSize(const QFontDef &fd, int dpi)
 
 void QFont::initialize()
 {
-    if (QFontCache::instance)
-        return;
-    shared_dc = CreateCompatibleDC(qt_win_display_dc());
-    if (!shared_dc)
-        qErrnoWarning("QFont::initialize: CreateCompatibleDC failed");
-    new QFontCache();
 }
 
 void QFont::cleanup()
 {
-    delete QFontCache::instance;
-    DeleteDC(shared_dc);
-    shared_dc = 0;
+    QFontCache::cleanup();
 }
 
 HFONT QFont::handle() const
@@ -145,7 +136,7 @@ HFONT QFont::handle() const
     if (engine->type() == QFontEngine::Multi)
         engine = static_cast<QFontEngineMulti *>(engine)->engine(0);
     if (engine->type() == QFontEngine::Win)
-	return engine->hfont;
+	return static_cast<QFontEngineWin *>(engine)->hfont;
     return 0;
 }
 
@@ -185,3 +176,5 @@ QString QFont::lastResortFont() const
 {
     return QString::fromLatin1("arial");
 }
+
+QT_END_NAMESPACE

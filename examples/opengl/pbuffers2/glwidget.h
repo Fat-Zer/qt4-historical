@@ -75,6 +75,7 @@ private:
     float rot_x, rot_y, rot_z;
     GLuint tile_list;
     GLfloat *wave;
+    bool hasDynamicTextureUpdate;
 
     QImage logo;
     QTimeLine *anim;

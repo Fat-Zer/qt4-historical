@@ -65,6 +65,7 @@
 
 #ifdef Q_WS_WIN
 #include "QtCore/qt_windows.h"
+#include <private/qdnd_p.h>
 #endif // Q_WS_WIN
 
 #ifdef Q_WS_X11
@@ -76,12 +77,10 @@
 #include "QtGui/qscreen_qws.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 #if defined(Q_WS_QWS) || defined(Q_WS_X11)
 //#define Q_WIDGET_USE_DIRTYLIST
-#endif
-
-#ifndef Q_WS_MAC
-#define Q_WIDGET_CACHE_OPAQUEREGIONS
 #endif
 
 //#define Q_WIN_USE_QT_UPDATE_EVENT
@@ -94,15 +93,14 @@
 #if defined(Q_WS_QWS)
 class QWSManager;
 #endif
-#if defined(Q_WS_WIN)
-class QOleDropTarget;
-#endif
 #if defined(Q_WS_MAC)
 class QCoreGraphicsPaintEnginePrivate;
 #endif
 class QPaintEngine;
 class QPixmap;
 class QWidgetBackingStore;
+class QGraphicsProxyWidget;
+class QWidgetItemV2;
 
 class QStyle;
 
@@ -110,18 +108,24 @@ struct QTLWExtra {
     QString caption; // widget caption
     QString iconText; // widget icon text
     QString role; // widget role
+    QString filePath; // widget file path
     QIcon *icon; // widget icon
     QPixmap *iconPixmap;
     short incw, inch; // size increments
      // frame strut, don't use these directly, use QWidgetPrivate::frameStrut() instead.
     QRect frameStrut;
+    qreal globalOpacity;
     uint opacity : 8;
     uint posFromMove : 1;
+    uint sizeAdjusted : 1;
+    uint inRenderWithPainter : 1;
+    uint inTopLevelResize : 1;
 #ifndef Q_WS_MAC
     QWidgetBackingStore *backingStore;
 #endif
 #if defined(Q_WS_WIN)
     ulong savedFlags; // Save window flags while showing fullscreen
+    uint embedded : 1; // window is embedded in another application
 #else
     Qt::WindowFlags savedFlags; // Save widget flags while showing fullscreen
 #endif
@@ -147,15 +151,14 @@ struct QTLWExtra {
 #if defined(Q_WS_QWS) && !defined (QT_NO_QWS_MANAGER)
     QWSManager *qwsManager;
 #endif
-#if defined Q_WS_QWS
-    bool inPaintTransaction;
-#endif
 #if defined(Q_WS_WIN)
     HICON winIconBig; // internal big Windows icon
     HICON winIconSmall; // internal small Windows icon
 #endif
     QRect normalGeometry; // used by showMin/maximized/FullScreen
     QWindowSurface *windowSurface;
+    QPainter *sharedPainter;
+    QGraphicsProxyWidget *proxyWidget; // if the widget is embedded
 };
 
 struct QWExtra {
@@ -166,8 +169,9 @@ struct QWExtra {
     QCursor *curs;
 #endif
     QTLWExtra *topextra; // only useful for TLWs
-#if defined(Q_WS_WIN)
+#if defined(Q_WS_WIN) && !defined(QT_NO_DRAGANDDROP)
     QOleDropTarget *dropTarget; // drop target
+    QList<QPointer<QWidget> > oleDropWidgets;
 #endif
 #if defined(Q_WS_X11)
     WId xDndProxy; // XDND forwarding to embedded windows
@@ -209,6 +213,7 @@ public:
 #endif
 #ifdef Q_WS_QWS
     void setMaxWindowState_helper();
+    void setFullScreenSize_helper();
 #endif
     void init(QWidget *desktopWidget, Qt::WindowFlags f);
     void create_sys(WId window, bool initializeWindow, bool destroyOldWindow);
@@ -263,41 +268,49 @@ public:
 
     void setUpdatesEnabled_helper(bool );
 
-    void paintBackground(QPainter *, const QRect &, bool asRoot = true) const;
+    void paintBackground(QPainter *, const QRect &, int flags = DrawAsRoot) const;
     enum DrawWidgetFlags {
         DrawAsRoot = 0x01,
         DrawPaintOnScreen = 0x02,
         DrawRecursive = 0x04,
         DrawInvisible = 0x08,
-        DontSubtractOpaqueChildren = 0x10
+        DontSubtractOpaqueChildren = 0x10,
+        DontSetCompositionMode = 0x20
     };
-    void drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QPoint &offset, int flags = DrawAsRoot | DrawRecursive);
-
-#ifdef Q_WS_MAC
-    void render_helper(QWidget *widget, QPaintDevice *result, const QPoint &offset,
-                       const QRect &rect, QWidget::RenderFlags renderFlags);
+    QRegion prepareToRender(const QRegion &region, QWidget::RenderFlags renderFlags, QWidget *topLevel);
+    void drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QPoint &offset, int flags = DrawAsRoot | DrawRecursive,
+                    QPainter *sharedPainter = 0);
+    void paintSiblingsRecursive(QPaintDevice *pdev, const QObjectList& children, int index, const QRegion &rgn,
+                                const QPoint &offset, int flags
+#ifdef Q_BACKINGSTORE_SUBSURFACES
+                                , const QWindowSurface *currentSurface
 #endif
+                                , QPainter *sharedPainter);
+
+    QPainter *beginSharedPainter();
+    bool endSharedPainter();
+    static QGraphicsProxyWidget * nearestGraphicsProxyWidget(QWidget *origin);
 
     QRect clipRect() const;
     QRegion clipRegion() const;
+#ifdef QT_GREENPHONE_OPT
+    void subtractOpaqueChildren(QRegion &rgn, const QRect &clipRgn, const QPoint &offset, int startIdx = 0) const;
+#else
     void subtractOpaqueChildren(QRegion &rgn, const QRegion &clipRgn, const QPoint &offset, int startIdx = 0) const;
+#endif
     void subtractOpaqueSiblings(QRegion &rgn, const QPoint &offset) const;
     void updateIsOpaque();
     bool isOpaque() const;
     bool hasBackground() const;
+    bool paintOnScreen() const;
 
-#ifdef Q_WIDGET_CACHE_OPAQUEREGIONS
     QRegion getOpaqueRegion() const;
-    QRegion getOpaqueChildren() const;
+    const QRegion &getOpaqueChildren() const;
     void setDirtyOpaqueRegion();
-
-#if defined(Q_WIDGET_USE_DIRTYLIST) || (QT_VERSION >= 0x040400)
-    QRegion getOpaqueSiblings() const;
-#endif
+    QRegion getOpaqueSiblings(const QRegion &clipRegion) const;
 
     QRegion opaqueChildren;
     bool dirtyOpaqueChildren;
-#endif
 
     enum CloseMode {
         CloseNoEvent,
@@ -309,12 +322,14 @@ public:
     bool compositeEvent(QEvent *e);
     void setWindowIcon_helper();
     void setWindowIcon_sys(bool forceReset = false);
+    void setWindowOpacity_sys(qreal opacity);
 
     void focusInputContext();
 
 #if defined(Q_WS_X11)
-    void setWindowRole(const char *role);
+    void setWindowRole();
     void sendStartupMessage(const char *message) const;
+    void setNetWmWindowTypes();
 #endif
 
 #if defined (Q_WS_WIN)
@@ -323,16 +338,16 @@ public:
 
     void scrollChildren(int dx, int dy);
 
-#ifndef Q_WS_MAC
-    void dirtyWidget_sys(const QRegion &rgn);
+    void dirtyWidget_sys(const QRegion &rgn, bool updateImmediately = false);
     void cleanWidget_sys(const QRegion& rgn);
+#ifndef Q_WS_MAC
     void moveRect(const QRect &, int dx, int dy);
     void scrollRect(const QRect &, int dx, int dy);
     void invalidateBuffer(const QRegion &);
     bool isOverlapped(const QRect&) const;
-# if defined(Q_WS_X11) || (defined(Q_WS_WIN) && defined(Q_WIN_USE_QT_UPDATE_EVENT))
+#endif
+#if defined(Q_WS_X11) || defined(Q_WS_WIN) || defined(Q_WS_MAC)
     QRegion dirtyOnScreen;
-# endif
 #endif
 
     void reparentFocusWidgets(QWidget *oldtlw);
@@ -351,6 +366,8 @@ public:
 #ifdef Q_WS_MAC
     void setGeometry_sys_helper(int, int, int, int, bool);
 #endif
+    void sendPendingMoveAndResizeEvents(bool recursive = false, bool disableUpdates = false);
+    void activateChildLayoutsRecursively();
     void show_recursive();
     void show_helper();
     void show_sys();
@@ -360,6 +377,10 @@ public:
 
     void setEnabled_helper(bool);
     void registerDropSite(bool);
+#if defined(Q_WS_WIN) && !defined(QT_NO_DRAGANDDROP)
+    QOleDropTarget *registerOleDnd(QWidget *widget);
+    void unregisterOleDnd(QWidget *widget, QOleDropTarget *target);
+#endif
     static void adjustFlags(Qt::WindowFlags &flags, QWidget *w = 0);
 
     void updateFrameStrut();
@@ -380,12 +401,14 @@ public:
 
 #ifdef Q_WS_MAC
     void setWindowModified_sys(bool b);
+    void setWindowFilePath_sys(const QString &filePath);
     void createWindow_sys();
     void determineWindowClass();
     void initWindowPtr();
     void transferChildren();
 #endif
     void setWindowTitle_helper(const QString &cap);
+    void setWindowFilePath_helper(const QString &filePath);
 
     bool setMinimumSize_helper(int &minw, int &minh);
     bool setMaximumSize_helper(int &maxw, int &maxh);
@@ -431,6 +454,7 @@ public:
     QList<QAction*> actions;
 #endif
     QLayout *layout;
+    QWidgetItemV2 *widgetItem;
 #if !defined(QT_NO_IM)
     QPointer<QInputContext> ic;
 #endif
@@ -493,7 +517,7 @@ public:
     static bool qt_widget_rgn(QWidget *, short, RgnHandle, bool);
 
 
-    // Each wiget keeps a list of all its child and grandchild OpeGL widgets.
+    // Each wiget keeps a list of all its child and grandchild OpenGL widgets.
     // This list is used to update the gl context whenever a parent and a granparent
     // moves, and also to check for intersections with gl widgets within the window
     // when a widget moves.
@@ -506,6 +530,12 @@ public:
     };
     QList<GlWidgetInfo> glWidgets;
 
+    // dirtyOnWidget contains the areas in the widget that needs to be repained,
+    // in the same way as dirtyOnScreen does for the window. Areas are added in
+    // dirtyWidget_sys and cleared in the paint event. In scroll_sys we then use
+    // this information repaint invalid areas when widgets are scrolled.
+    QRegion dirtyOnWidget;
+
     //these are here just for code compat (HIViews)
     QRegion clp;
     Qt::HANDLE qd_hd;
@@ -517,7 +547,11 @@ public:
 #endif
 
 #if defined(Q_WS_X11) || defined (Q_WS_WIN) || defined(Q_WS_MAC)
+#ifdef Q_WS_MAC
+    void setWSGeometry(bool dontShow=false, const QRect &oldRect = QRect());
+#else
     void setWSGeometry(bool dontShow=false);
+#endif
 
     inline QPoint mapToWS(const QPoint &p) const
     { return p - data.wrect.topLeft(); }
@@ -539,6 +573,39 @@ public:
     void setModal_sys();
     QSizePolicy size_policy;
     QLocale locale;
+
+#ifdef Q_WS_X11
+    static QWidget *mouseGrabber;
+    static QWidget *keyboardGrabber;
+#endif
+    QPaintDevice *redirectDev;
+    QPoint redirectOffset;
+
+    inline void setRedirected(QPaintDevice *replacement, const QPoint &offset)
+    {
+        Q_ASSERT(q_func()->testAttribute(Qt::WA_WState_InPaintEvent));
+        redirectDev = replacement;
+        redirectOffset = offset;
+    }
+
+    inline QPaintDevice *redirected(QPoint *offset) const
+    {
+        if (offset)
+            *offset = redirectDev ? redirectOffset : QPoint();
+        return redirectDev;
+    }
+
+    inline void restoreRedirected()
+    { redirectDev = 0; }
+
+    inline QGraphicsProxyWidget *graphicsProxyWidget() const
+    {
+        if (QTLWExtra *tlwExtra = maybeTopData())
+            return tlwExtra->proxyWidget;
+        return 0;
+    }
+
+    QSize adjustedSize() const;
 };
 
 inline QWExtra *QWidgetPrivate::extraData() const
@@ -565,5 +632,7 @@ inline QWidgetBackingStore *QWidgetPrivate::maybeBackingStore() const
     return x ? x->backingStore : 0;
 }
 #endif
+
+QT_END_NAMESPACE
 
 #endif // QWIDGET_P_H

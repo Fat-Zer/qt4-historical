@@ -56,6 +56,8 @@
 #include "q3cleanuphandler.h"
 #include "private/qtextimagehandler_p.h"
 
+QT_BEGIN_NAMESPACE
+
 static Q3MimeSourceFactory* defaultfactory = 0;
 static Q3SingleCleanupHandler<Q3MimeSourceFactory> qmime_cleanup_factory;
 
@@ -126,34 +128,20 @@ static QImage richTextImageLoader(const QString &name, const QString &context)
     images that are stored in the program itself, not loaded from the
     hard disk. Your program may, for example, define some image data
     as:
-    \code
-    static const char* myimage_data[]={
-    "...",
-    ...
-    "..."};
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 0
 
     To be able to use this image within some rich text, for example
     inside a QLabel, you must create a QImage from the raw data and
     insert it into the factory with a unique name:
-    \code
-    Q3MimeSourceFactory::defaultFactory()->setImage("myimage", QImage(myimage_data));
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 1
 
     Now you can create a rich text QLabel with
 
-    \code
-    QLabel* label = new QLabel(
-        "Rich text with embedded image:<img source=\"myimage\">"
-        "Isn't that <em>cute</em>?");
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 2
 
     When no longer needed, you can clear the data from the factory:
 
-    \code
-    delete label;
-    Q3MimeSourceFactory::defaultFactory()->setData("myimage", 0);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 3
 */
 
 
@@ -237,12 +225,7 @@ QMimeSource* Q3MimeSourceFactory::dataInternal(const QString& abs_name, const QM
     The factory understands all the image formats supported by
     QImageReader. Any other mime types are determined by the file name
     extension. The default settings are
-    \code
-    setExtensionType("html", "text/html;charset=iso8859-1");
-    setExtensionType("htm", "text/html;charset=iso8859-1");
-    setExtensionType("txt", "text/plain");
-    setExtensionType("xml", "text/xml;charset=UTF-8");
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 4
     The effect of these is that file names ending in "txt" will be
     treated as text encoded in the local encoding; those ending in
     "xml" will be treated as text encoded in Unicode UTF-8 encoding.
@@ -561,4 +544,6 @@ QImage qImageFromMimeSource(const QString &abs_name)
     return img;
 }
 
-#endif // QT_NO_MIME
+QT_END_NAMESPACE
+
+#endif // QT_NO_MIMEFACTORY

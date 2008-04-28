@@ -48,6 +48,8 @@
 #include <QString>
 #include <QByteArray>
 
+QT_BEGIN_NAMESPACE
+
 class FileWriter
 {
 public:
@@ -69,5 +71,7 @@ private:
 };
 
 QByteArray detectLineEndings(const QByteArray &array);
+
+QT_END_NAMESPACE
 
 #endif

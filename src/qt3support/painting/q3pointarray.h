@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3PointArray : public QPolygon
@@ -66,6 +68,8 @@ public:
 #endif
     Q3PointArray cubicBezier() const;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

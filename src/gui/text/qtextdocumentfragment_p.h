@@ -66,6 +66,8 @@
 #include "QtCore/qvarlengtharray.h"
 #include "QtCore/qdatastream.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTextDocumentFragmentPrivate;
 
 class QTextCopyHelper
@@ -105,13 +107,15 @@ public:
 
     void insert(QTextCursor &cursor) const;
 
-    QAtomic ref;
+    QAtomicInt ref;
     QTextDocument *doc;
 
     uint importedFromPlainText : 1;
 private:
     Q_DISABLE_COPY(QTextDocumentFragmentPrivate)
 };
+
+#ifndef QT_NO_TEXTHTMLPARSER
 
 class QTextHtmlImporter : public QTextHtmlParser
 {
@@ -208,16 +212,27 @@ private:
         int rowSpan, colSpan;
     };
 
+    enum WhiteSpace
+    {
+        RemoveWhiteSpace,
+        CollapseWhiteSpace,
+        PreserveWhiteSpace
+    };
+
+    WhiteSpace compressNextWhitespace;
+
     QTextDocument *doc;
     QTextCursor cursor;
     QTextHtmlParserNode::WhiteSpaceMode wsm;
     ImportMode importMode;
-    bool compressNextWhitespace;
     bool hasBlock;
     bool forceBlockMerging;
     bool blockTagClosed;
     int currentNodeIdx;
     const QTextHtmlParserNode *currentNode;
 };
+
+QT_END_NAMESPACE
+#endif // QT_NO_TEXTHTMLPARSER
 
 #endif // QTEXTDOCUMENTFRAGMENT_P_H

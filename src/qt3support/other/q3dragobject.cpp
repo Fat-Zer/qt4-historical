@@ -66,6 +66,12 @@
 #include <private/qobject_p.h>
 
 #include <ctype.h>
+#if defined(Q_OS_WINCE)
+#include "qfunctions_wince.h"
+#include <winsock.h>
+#endif
+
+QT_BEGIN_NAMESPACE
 
 static QWidget *last_target = 0;
 
@@ -816,6 +822,7 @@ void Q3ImageDrag::setImage(QImage image)
             format = "image/ppm";
         d->ofmts.append(format);
     }
+    d->ofmts.append("application/x-qt-image");
 }
 
 /*!
@@ -833,8 +840,12 @@ const char * Q3ImageDrag::format(int i) const
 QByteArray Q3ImageDrag::encodedData(const char* fmt) const
 {
     Q_D(const Q3ImageDrag);
-    if (qstrnicmp(fmt, "image/", 6)==0) {
-        QByteArray f(fmt+6);
+    QString imgFormat(fmt);
+    if (imgFormat == QLatin1String("application/x-qt-image"))
+        imgFormat = QLatin1String("image/PNG");
+
+    if (imgFormat.startsWith("image/")){
+        QByteArray f(imgFormat.mid(6).toAscii());
         QByteArray dat;
         QBuffer w(&dat);
         w.open(QIODevice::WriteOnly);
@@ -858,14 +869,7 @@ QByteArray Q3ImageDrag::encodedData(const char* fmt) const
 */
 bool Q3ImageDrag::canDecode(const QMimeSource* e)
 {
-    const QList<QByteArray> fileFormats = QImageReader::supportedImageFormats();
-
-    for (int i = 0; i < fileFormats.count(); ++i) {
-        if (e->provides("image" + fileFormats.at(i).toLower()))
-            return true;
-    }
-
-    return false;
+    return e->provides("application/x-qt-image");
 }
 
 /*!
@@ -881,33 +885,14 @@ bool Q3ImageDrag::decode(const QMimeSource* e, QImage& img)
     if (!e)
         return false;
 
-    QByteArray payload;
-    QList<QByteArray> fileFormats = QImageReader::supportedImageFormats();
-
-    // PNG is best of all
-    // (this is a rather strange hack, but it works now)
-    for (int i=0; i < fileFormats.count(); i++) {
-        if (fileFormats.at(i).toLower() == "png") {
-            fileFormats.prepend("png");
-            break ;
-        }
-    } // move to front
-
-    for (int i = 0; i < fileFormats.count(); ++i) {
-        QByteArray type = "image/" + fileFormats.at(i).toLower();
-        if (! e->provides(type))
-            continue;
-        payload = e->encodedData(type);
-        if (!payload.isEmpty())
-            break;
-    }
-
+    QByteArray payload = e->encodedData("application/x-qt-image");
     if (payload.isEmpty())
         return false;
 
     img.loadFromData(payload);
     if (img.isNull())
         return false;
+
     return true;
 }
 
@@ -1584,3 +1569,5 @@ bool Q3ColorDrag::decode(QMimeSource *e, QColor &col)
     col.setRgb(r, g, b, a);
     return true;
 }
+
+QT_END_NAMESPACE

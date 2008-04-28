@@ -50,6 +50,8 @@
 
 #include <QtDesigner/QDesignerFormWindowToolInterface>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 class QAction;
@@ -62,7 +64,7 @@ class QT_TABORDEREDITOR_EXPORT TabOrderEditorTool: public QDesignerFormWindowToo
 {
     Q_OBJECT
 public:
-    TabOrderEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent = 0);
+    explicit TabOrderEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent = 0);
     virtual ~TabOrderEditorTool();
 
     virtual QDesignerFormEditorInterface *core() const;
@@ -83,5 +85,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // TABORDEREDITOR_TOOL_H

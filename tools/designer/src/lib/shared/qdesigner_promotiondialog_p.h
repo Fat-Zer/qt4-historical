@@ -58,6 +58,7 @@
 #include <QtGui/QDialog>
 #include <QtGui/QGroupBox>
 
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
@@ -133,6 +134,9 @@ namespace qdesigner_internal {
         void slotIncludeFileChanged(QDesignerWidgetDataBaseItemInterface *, const QString &includeFile);
         void slotClassNameChanged(QDesignerWidgetDataBaseItemInterface *, const QString &newName);
         void slotUpdateFromWidgetDatabase();
+        void slotTreeViewContextMenu(const QPoint &);
+        void slotEditSignalsSlots();
+
     private:
         QDialogButtonBox *createButtonBox();
         void delayedUpdateFromWidgetDatabase();
@@ -143,6 +147,7 @@ namespace qdesigner_internal {
 
         const Mode m_mode;
         const QString m_promotableWidgetClassName;
+        QDesignerFormEditorInterface *m_core;
         QString *m_promoteTo;
         QDesignerPromotionInterface *m_promotion;
         PromotionModel *m_model;
@@ -152,5 +157,7 @@ namespace qdesigner_internal {
         QString m_lastSelectedBaseClass;
     };
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // PROMOTIONEDITORDIALOG_H

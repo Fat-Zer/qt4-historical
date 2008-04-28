@@ -64,6 +64,8 @@
 
 #include <QtDesigner/QDesignerComponents>
 
+QT_BEGIN_NAMESPACE
+
 static const char *designerApplicationName = "Designer";
 static const char *designerWarningPrefix = "Designer: ";
 
@@ -212,6 +214,7 @@ void QDesigner::initialize()
     m_workbench = new QDesignerWorkbench();
 
     emit initialized();
+    qInstallMsgHandler(designerMessageHandler); // Warn when loading faulty forms
 
     m_suppressNewFormShow = m_workbench->readInBackup();
 
@@ -229,7 +232,6 @@ void QDesigner::initialize()
         showErrorMessageBox(m_initializationErrors);
         m_initializationErrors.clear();
     }
-    qInstallMsgHandler (designerMessageHandler);
 }
 
 bool QDesigner::event(QEvent *ev)
@@ -277,3 +279,5 @@ void QDesigner::callCreateForm()
     if (!m_suppressNewFormShow)
         m_workbench->actionManager()->createForm();
 }
+
+QT_END_NAMESPACE

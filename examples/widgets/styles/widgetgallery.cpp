@@ -46,6 +46,7 @@
 #include "norwegianwoodstyle.h"
 #include "widgetgallery.h"
 
+//! [0]
 WidgetGallery::WidgetGallery(QWidget *parent)
     : QDialog(parent)
 {
@@ -68,8 +69,11 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     createBottomLeftTabWidget();
     createBottomRightGroupBox();
     createProgressBar();
+//! [0]
 
+//! [1]
     connect(styleComboBox, SIGNAL(activated(const QString &)),
+//! [1] //! [2]
             this, SLOT(changeStyle(const QString &)));
     connect(useStylePaletteCheckBox, SIGNAL(toggled(bool)),
             this, SLOT(changePalette()));
@@ -81,8 +85,11 @@ WidgetGallery::WidgetGallery(QWidget *parent)
             bottomLeftTabWidget, SLOT(setDisabled(bool)));
     connect(disableWidgetsCheckBox, SIGNAL(toggled(bool)),
             bottomRightGroupBox, SLOT(setDisabled(bool)));
+//! [2]
 
+//! [3]
     QHBoxLayout *topLayout = new QHBoxLayout;
+//! [3] //! [4]
     topLayout->addWidget(styleLabel);
     topLayout->addWidget(styleComboBox);
     topLayout->addStretch(1);
@@ -105,8 +112,11 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     setWindowTitle(tr("Styles"));
     changeStyle("NorwegianWood");
 }
+//! [4]
 
+//! [5]
 void WidgetGallery::changeStyle(const QString &styleName)
+//! [5] //! [6]
 {
     if (styleName == "NorwegianWood") {
         QApplication::setStyle(new NorwegianWoodStyle);
@@ -115,23 +125,32 @@ void WidgetGallery::changeStyle(const QString &styleName)
     }
     changePalette();
 }
+//! [6]
 
+//! [7]
 void WidgetGallery::changePalette()
+//! [7] //! [8]
 {
     if (useStylePaletteCheckBox->isChecked())
         QApplication::setPalette(QApplication::style()->standardPalette());
     else
         QApplication::setPalette(originalPalette);
 }
+//! [8]
 
+//! [9]
 void WidgetGallery::advanceProgressBar()
+//! [9] //! [10]
 {
     int curVal = progressBar->value();
     int maxVal = progressBar->maximum();
     progressBar->setValue(curVal + (maxVal - curVal) / 100);
 }
+//! [10]
 
+//! [11]
 void WidgetGallery::createTopLeftGroupBox()
+//! [11] //! [12]
 {
     topLeftGroupBox = new QGroupBox(tr("Group 1"));
 
@@ -152,6 +171,7 @@ void WidgetGallery::createTopLeftGroupBox()
     layout->addStretch(1);
     topLeftGroupBox->setLayout(layout);
 }
+//! [12]
 
 void WidgetGallery::createTopRightGroupBox()
 {
@@ -244,6 +264,7 @@ void WidgetGallery::createBottomRightGroupBox()
     bottomRightGroupBox->setLayout(layout);
 }
 
+//! [13]
 void WidgetGallery::createProgressBar()
 {
     progressBar = new QProgressBar;
@@ -254,3 +275,4 @@ void WidgetGallery::createProgressBar()
     connect(timer, SIGNAL(timeout()), this, SLOT(advanceProgressBar()));
     timer->start(1000);
 }
+//! [13]

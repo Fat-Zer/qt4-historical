@@ -50,6 +50,8 @@
 
 #include <glib.h>
 
+QT_BEGIN_NAMESPACE
+
 struct GX11EventSource
 {
     GSource source;
@@ -74,13 +76,17 @@ static gboolean x11EventSourcePrepare(GSource *s, gint *timeout)
     if (timeout)
         *timeout = -1;
     GX11EventSource *source = reinterpret_cast<GX11EventSource *>(s);
-    return XEventsQueued(X11->display, QueuedAfterFlush) || !source->d->queuedUserInputEvents.isEmpty();
+    return (XEventsQueued(X11->display, QueuedAfterFlush)
+            || (!(source->flags & QEventLoop::ExcludeUserInputEvents)
+                && !source->d->queuedUserInputEvents.isEmpty()));
 }
 
 static gboolean x11EventSourceCheck(GSource *s)
 {
     GX11EventSource *source = reinterpret_cast<GX11EventSource *>(s);
-    return XEventsQueued(X11->display, QueuedAfterFlush) || !source->d->queuedUserInputEvents.isEmpty();
+    return (XEventsQueued(X11->display, QueuedAfterFlush)
+            || (!(source->flags & QEventLoop::ExcludeUserInputEvents)
+                && !source->d->queuedUserInputEvents.isEmpty()));
 }
 
 static gboolean x11EventSourceDispatch(GSource *s, GSourceFunc callback, gpointer user_data)
@@ -209,3 +215,5 @@ void QGuiEventDispatcherGlib::startingUp()
     d->x11EventSource->d = d;
     g_source_add_poll(&d->x11EventSource->source, &d->x11EventSource->pollfd);
 }
+
+QT_END_NAMESPACE

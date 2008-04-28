@@ -58,6 +58,8 @@
 #include "qt_windows.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 #define QDATETIMEEDIT_HIDDEN_CHAR QLatin1Char('0')
 
 class Q_COMPAT_EXPORT QNumberSection
@@ -250,7 +252,7 @@ public:
     }
     void setSectionSelection(int sec, int selstart, int selend)
     {
-        if (sec < 0 || sec >= sections.count())
+        if (sec < 0 || sec > (int)sections.count())
             return;
         sections[sec].setSelectionStart(selstart);
         sections[sec].setSelectionEnd(selend);
@@ -352,13 +354,13 @@ public:
 
     int mapSection(int sec)
     {
-        return (sec >= 0 && sec < sections.count() ? sections[sec].index() : -1);
+        return sections[sec].index();
     }
 
 protected:
     void applyFocusSelection()
     {
-        if (focusSec > -1 && focusSec < sections.count()) {
+        if (focusSec > -1) {
             int selstart = sections[focusSec].selectionStart();
             int selend = sections[focusSec].selectionEnd();
             parag->setSelection(Q3TextDocument::Standard, selstart, selend);
@@ -426,7 +428,7 @@ public:
     void changeEvent(QEvent *e)
     {
 	if (e->type() == QEvent::EnabledChange && isEnabled()) {
-	    Q3DateEdit *de = ::qobject_cast<Q3DateEdit*>(parentWidget());
+	    Q3DateEdit *de = qobject_cast<Q3DateEdit*>(parentWidget());
 	    if (de) {
 		setUpEnabled(de->date() < de->maxValue());
 		setDownEnabled(de->date() > de->minValue());
@@ -869,13 +871,7 @@ public:
     information. It is recommended that the Q3DateEdit be initialised
     with a date, e.g.
 
-    \code
-    Q3DateEdit *dateEdit = new Q3DateEdit(QDate::currentDate(), this);
-    dateEdit->setRange(QDate::currentDate().addDays(-365),
-                        QDate::currentDate().addDays( 365));
-    dateEdit->setOrder(Q3DateEdit::MDY);
-    dateEdit->setAutoAdvance(true);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3datetimeedit.cpp 0
 
     Here we've created a new Q3DateEdit object initialised with today's
     date and restricted the valid date range to today plus or minus
@@ -1800,11 +1796,7 @@ public:
     they complete a section using setAutoAdvance(). Times appear in
     hour, minute, second order. It is recommended that the Q3TimeEdit
     is initialised with a time, e.g.
-    \code
-    QTime timeNow = QTime::currentTime();
-    Q3TimeEdit *timeEdit = new Q3TimeEdit(timeNow, this);
-    timeEdit->setRange(timeNow, timeNow.addSecs(60 * 60));
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3datetimeedit.cpp 1
     Here we've created a Q3TimeEdit widget set to the current time.
     We've also set the minimum value to the current time and the
     maximum time to one hour from now.
@@ -2622,11 +2614,7 @@ public:
 
     It is recommended that the Q3DateTimeEdit is initialised with a
     datetime, e.g.
-    \code
-    Q3DateTimeEdit *dateTimeEdit = new Q3DateTimeEdit(QDateTime::currentDateTime(), this);
-    dateTimeEdit->dateEdit()->setRange(QDateTime::currentDate(),
-                                        QDateTime::currentDate().addDays(7));
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.widgets.q3datetimeedit.cpp 2
     Here we've created a new Q3DateTimeEdit set to the current date and
     time, and set the date to have a minimum date of now and a maximum
     date of a week from now.
@@ -2832,6 +2820,8 @@ bool Q3DateTimeEdit::autoAdvance() const
     Returns the internal widget used for editing the time part of the
     datetime.
 */
+
+QT_END_NAMESPACE
 
 #include "q3datetimeedit.moc"
 

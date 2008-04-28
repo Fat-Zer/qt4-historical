@@ -46,6 +46,8 @@
 
 #include <qdesigner_dnditem_p.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 class FormWindow;
@@ -59,5 +61,7 @@ public:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // FORMWINDOW_DNDITEM_H

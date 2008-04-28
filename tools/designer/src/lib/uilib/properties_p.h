@@ -64,6 +64,8 @@
 
 #include "formbuilderextra_p.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifdef QFORMINTERNAL_NAMESPACE
 namespace QFormInternal
 {
@@ -72,7 +74,6 @@ namespace QFormInternal
 class QAbstractFormBuilder;
 class DomProperty;
 
-QDESIGNER_UILIB_EXPORT DomProperty *variantToDomProperty(const QString &propertyName, const QVariant &value, bool translateString);
 QDESIGNER_UILIB_EXPORT DomProperty *variantToDomProperty(QAbstractFormBuilder *abstractFormBuilder, QObject *object, const QString &propertyName, const QVariant &value);
 
 
@@ -149,5 +150,7 @@ inline EnumType enumKeyOfObjectToValue(const char *enumName, const char *key, co
 #ifdef QFORMINTERNAL_NAMESPACE
 }
 #endif
+
+QT_END_NAMESPACE
 
 #endif // UILIBPROPERTIES_H

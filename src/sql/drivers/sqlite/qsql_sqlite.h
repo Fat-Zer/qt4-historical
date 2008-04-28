@@ -48,11 +48,14 @@
 #include <QtSql/qsqlresult.h>
 #include <QtSql/private/qsqlcachedresult_p.h>
 
+struct sqlite3;
+
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 class QSQLiteDriverPrivate;
 class QSQLiteResultPrivate;
 class QSQLiteDriver;
-struct sqlite3;
 
 class QSQLiteResult : public QSqlCachedResult
 {
@@ -108,6 +111,8 @@ public:
 private:
     QSQLiteDriverPrivate* d;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

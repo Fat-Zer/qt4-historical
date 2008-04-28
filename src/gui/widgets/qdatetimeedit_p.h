@@ -61,19 +61,102 @@
 #include "QtGui/qtoolbutton.h"
 #include "QtGui/qmenu.h"
 #include "QtGui/qlabel.h"
+#include "QtGui/qdatetimeedit.h"
+#include "QtGui/private/qabstractspinbox_p.h"
+#include "QtCore/private/qdatetime_p.h"
+
 #include "qdebug.h"
 
 #ifndef QT_NO_DATETIMEEDIT
+
+QT_BEGIN_NAMESPACE
+
+class QCalendarPopup;
+class QDateTimeEditPrivate : public QAbstractSpinBoxPrivate, public QDateTimeParser
+{
+    Q_DECLARE_PUBLIC(QDateTimeEdit)
+public:
+    QDateTimeEditPrivate();
+
+    void init(const QVariant &var);
+    void readLocaleSettings();
+
+    void emitSignals(EmitPolicy ep, const QVariant &old);
+    QString textFromValue(const QVariant &f) const;
+    QVariant valueFromText(const QString &f) const;
+    virtual void _q_editorCursorPositionChanged(int oldpos, int newpos);
+    virtual void interpret(EmitPolicy ep);
+    virtual void clearCache() const;
+
+    QDateTime validateAndInterpret(QString &input, int &, QValidator::State &state,
+                                   bool fixup = false) const;
+    void clearSection(int index);
+    virtual QString displayText() const { return edit->displayText(); } // this is from QDateTimeParser
+
+    int absoluteIndex(QDateTimeEdit::Section s, int index) const;
+    int absoluteIndex(const SectionNode &s) const;
+    void updateEdit();
+    QDateTime stepBy(int index, int steps, bool test = false) const;
+    int sectionAt(int pos) const;
+    int closestSection(int index, bool forward) const;
+    int nextPrevSection(int index, bool forward) const;
+    void setSelected(int index, bool forward = false);
+
+    void updateCache(const QVariant &val, const QString &str) const;
+
+    void updateTimeSpec();
+    virtual QDateTime getMinimum() const { return minimum.toDateTime(); }
+    virtual QDateTime getMaximum() const { return maximum.toDateTime(); }
+    virtual QLocale locale() const { return q_func()->locale(); }
+    QString valueToText(const QVariant &var) const { return textFromValue(var); }
+    QString getAmPmText(AmPm ap, Case cs) const;
+    int cursorPosition() const { return edit ? edit->cursorPosition() : -1; }
+
+    virtual QStyle::SubControl newHoverControl(const QPoint &pos);
+    virtual void updateEditFieldGeometry();
+    virtual QVariant getZeroVariant() const;
+    virtual void setRange(const QVariant &min, const QVariant &max);
+
+    void _q_resetButton();
+    void updateArrow(QStyle::StateFlag state);
+    bool calendarPopupEnabled() const;
+    void syncCalendarWidget();
+
+    bool isSeparatorKey(const QKeyEvent *k) const;
+
+    static QDateTimeEdit::Sections convertSections(QDateTimeParser::Sections s);
+    static QDateTimeEdit::Section convertToPublic(QDateTimeParser::Section s);
+
+    void initCalendarPopup(QCalendarWidget *cw = 0);
+    void positionCalendarPopup();
+
+    QDateTimeEdit::Sections sections;
+    mutable bool cacheGuard;
+
+    QString defaultDateFormat, defaultTimeFormat, defaultDateTimeFormat, unreversedFormat;
+    Qt::LayoutDirection layoutDirection;
+    mutable QVariant conflictGuard;
+    bool hasHadFocus, formatExplicitlySet, calendarPopup;
+    QStyle::StateFlag arrowState;
+    QCalendarPopup *monthCalendar;
+
+#ifdef QT_KEYPAD_NAVIGATION
+    bool focusOnButton;
+#endif
+};
+
 
 class QCalendarPopup : public QWidget
 {
     Q_OBJECT
 public:
-    QCalendarPopup(const QDate &date, QWidget *parent = 0);
+    QCalendarPopup(QWidget *parent = 0, QCalendarWidget *cw = 0);
     QDate selectedDate() { return calendar->selectedDate(); }
     void setDate(const QDate &date);
     void setDateRange(const QDate &min, const QDate &max);
-
+    void setFirstDayOfWeek(Qt::DayOfWeek dow) { calendar->setFirstDayOfWeek(dow); }
+    QCalendarWidget *calendarWidget() const { return calendar; }
+    void setCalendarWidget(QCalendarWidget *cw);
 Q_SIGNALS:
     void activated(const QDate &date);
     void newDateSelected(const QDate &newDate);
@@ -86,7 +169,7 @@ private Q_SLOTS:
 
 protected:
     void hideEvent(QHideEvent *);
-    void mousePressEvent(QMouseEvent *e); 
+    void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *);
     bool event(QEvent *e);
 
@@ -94,8 +177,9 @@ private:
     QCalendarWidget *calendar;
     QDate oldDate;
     bool dateChanged;
-
 };
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_DATETIMEEDIT
 

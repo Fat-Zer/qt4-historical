@@ -59,7 +59,7 @@ XFormView::XFormView(QWidget *parent)
     m_scale = 1.0;
     m_shear = 0.0;
 
-    pixmap = QPixmap(":/res/bg1.jpg");
+    pixmap = QPixmap(":/trolltech/arthurplugin/bg1.jpg");
     pts = new HoverPoints(this, HoverPoints::CircleShape);
     pts->setConnectionType(HoverPoints::LineConnection);
     pts->setEditable(false);
@@ -155,34 +155,34 @@ void XFormView::setAnimation(bool animate)
 
 void XFormView::changeRotation(int r)
 {
-    setRotation(double(r)/10.0);
+    setRotation(qreal(r) / 10);
 }
 
 void XFormView::changeScale(int s)
 {
-    setScale(double(s)/1000.0);
+    setScale(qreal(s) / 1000);
 }
 
 void XFormView::changeShear(int s)
 {
-    setShear(double(s)/1000.0);
+    setShear(qreal(s) / 1000);
 }
 
-void XFormView::setShear(double s)
+void XFormView::setShear(qreal s)
 {
     m_shear = s;
     update();
 }
 
-void XFormView::setScale(double s)
+void XFormView::setScale(qreal s)
 {
     m_scale = s;
     update();
 }
 
-void XFormView::setRotation(double r)
+void XFormView::setRotation(qreal r)
 {
-    double old_rot = m_rotation;
+    qreal old_rot = m_rotation;
     m_rotation = r;
 
     QPointF center(pts->points().at(0));
@@ -206,8 +206,8 @@ void XFormView::timerEvent(QTimerEvent *e)
         pts->setPoints(pts->points() * m);
 
         setUpdatesEnabled(false);
-        static double scale_inc = 0.003;
-        static double shear_inc = -0.001;
+        static qreal scale_inc = 0.003;
+        static qreal shear_inc = -0.001;
         emit scaleChanged(int((m_scale + scale_inc) * 1000));
         emit shearChanged(int((m_shear + shear_inc) * 1000));
         if (m_scale >= 4.0 || m_scale <= 0.1)
@@ -222,8 +222,8 @@ void XFormView::timerEvent(QTimerEvent *e)
 
 void XFormView::wheelEvent(QWheelEvent *e)
 {
-    m_scale += e->delta()/600.0;
-    m_scale = qMax(.1, qMin(4.0, m_scale));
+    m_scale += e->delta() / qreal(600);
+    m_scale = qMax(qreal(0.1), qMin(qreal(4), m_scale));
     emit scaleChanged(int(m_scale*1000));
 }
 
@@ -240,7 +240,7 @@ void XFormView::reset()
 
 void XFormView::drawPixmapType(QPainter *painter)
 {
-    QPointF center(pixmap.width()/2.0, pixmap.height()/2.0);
+    QPointF center(pixmap.width() / qreal(2), pixmap.height() / qreal(2));
     painter->translate(ctrlPoints.at(0) - center);
 
     painter->translate(center);
@@ -863,8 +863,8 @@ XFormWidget::XFormWidget(QWidget *parent)
 #ifdef QT_OPENGL_SUPPORT
     connect(enableOpenGLButton, SIGNAL(clicked(bool)), view, SLOT(enableOpenGL(bool)));
 #endif
-    view->loadSourceFile(":res/xform.cpp");
-    view->loadDescription(":res/xform.html");
+    view->loadSourceFile(":/trolltech/arthurplugin/xform.cpp");
+    view->loadDescription(":/trolltech/arthurplugin/xform.html");
 
     // defaults
     view->reset();

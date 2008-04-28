@@ -50,6 +50,7 @@
 #include <QSize>
 #include <QSpinBox>
 
+//! [0]
 class SpinBoxDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -67,5 +68,6 @@ public:
     void updateEditorGeometry(QWidget *editor,
         const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
+//! [0]
 
 #endif

@@ -51,6 +51,7 @@
 #include <qcolormap.h>
 #include <qvarlengtharray.h>
 #include <qdebug.h>
+#include <qcolor.h>
 
 #include <windows.h>
 
@@ -123,6 +124,8 @@ typedef bool (APIENTRY *PFNWGLCHOOSEPIXELFORMATARB)(HDC hdc,
 #define WGL_TYPE_COLORINDEX_ARB        0x202C
 #endif
 
+QT_BEGIN_NAMESPACE
+
 class QGLCmapPrivate
 {
 public:
@@ -149,11 +152,6 @@ public:
 ** Definition of QColorMap class
 **
 ****************************************************************************/
-
-#ifndef QGLCMAP_H
-#define QGLCMAP_H
-
-#include <qcolor.h>
 
 class QGLCmapPrivate;
 
@@ -186,8 +184,6 @@ private:
     void detach();
     QGLCmapPrivate* d;
 };
-
-#endif
 
 
 QGLCmap::QGLCmap(int maxSize) // add a bool prealloc?
@@ -639,7 +635,9 @@ QGLFormat pfiToQGLFormat(HDC hdc, int pfi)
 class QGLTempContext
 {
 public:
-    QGLTempContext() {
+    QGLTempContext(QWidget *parent = 0) {
+        if (parent)
+            dmy.setParent(parent);
         dmy_pdc = GetDC(dmy.winId());
         PIXELFORMATDESCRIPTOR dmy_pfd;
         memset(&dmy_pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -677,11 +675,7 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
 
     bool result = true;
     HDC myDc;
-
-    // NB! the QGLTempContext object is needed for the
-    // wglGetProcAddress() calls to succeed and are absolutely
-    // necessary - don't remove!
-    QGLTempContext tmp_ctx;
+    QWidget *widget = 0;
 
     if (deviceIsPixmap()) {
         if (d->glFormat.plane())
@@ -701,9 +695,15 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         d->hbitmap = CreateDIBSection(qt_win_display_dc(), &bmi, DIB_RGB_COLORS, 0, 0, 0);
         SelectObject(myDc, d->hbitmap);
     } else {
-        d->win = ((QWidget*)d->paintDevice)->winId();
+        widget = static_cast<QWidget *>(d->paintDevice);
+        d->win = widget->winId();
         myDc = GetDC(d->win);
     }
+
+    // NB! the QGLTempContext object is needed for the
+    // wglGetProcAddress() calls to succeed and are absolutely
+    // necessary - don't remove!
+    QGLTempContext tmp_ctx(widget);
 
     if (!myDc) {
         qWarning("QGLContext::chooseContext(): Paint device cannot be null");
@@ -1316,31 +1316,6 @@ void QGLWidgetPrivate::updateColormap()
     ReleaseDC(q->winId(), hdc);
 }
 
-bool QGLWidget::event(QEvent *e)
-{
-    Q_D(QGLWidget);
-    if (e->type() == QEvent::ParentChange) {
-        setContext(new QGLContext(d->glcx->requestedFormat(), this));
-        // the overlay needs to be recreated as well
-        delete d->olcx;
-        if (isValid() && context()->format().hasOverlay()) {
-            d->olcx = new QGLContext(QGLFormat::defaultOverlayFormat(), this);
-            if (!d->olcx->create(isSharing() ? d->glcx : 0)) {
-                delete d->olcx;
-                d->olcx = 0;
-                d->glcx->d_func()->glFormat.setOverlay(false);
-            }
-        } else {
-            d->olcx = 0;
-        }
-    } else if (e->type() == QEvent::Show && !format().rgba()) {
-        d->updateColormap();
-    }
-
-    return QWidget::event(e);
-}
-
-
 void QGLWidget::setMouseTracking(bool enable)
 {
     QWidget::setMouseTracking(enable);
@@ -1431,11 +1406,12 @@ void QGLWidget::setContext(QGLContext *context,
     }
 
     if (!d->glcx->isValid()) {
+        bool wasSharing = shareContext || oldcx && oldcx->isSharing();
         d->glcx->create(shareContext ? shareContext : oldcx);
         // the above is a trick to keep disp lists etc when a
         // QGLWidget has been reparented, so remove the sharing
         // flag if we don't actually have a sharing context.
-        if (!shareContext)
+        if (!wasSharing)
             d->glcx->d_ptr->sharing = false;
     }
 
@@ -1498,3 +1474,5 @@ void QGLExtensions::init()
     QGLTempContext temp_ctx;
     init_extensions();
 }
+
+QT_END_NAMESPACE

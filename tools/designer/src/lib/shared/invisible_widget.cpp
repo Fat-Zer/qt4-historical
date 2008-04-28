@@ -43,6 +43,8 @@
 
 #include "invisible_widget_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
 
 InvisibleWidget::InvisibleWidget(QWidget *parent)
@@ -53,3 +55,5 @@ InvisibleWidget::InvisibleWidget(QWidget *parent)
 }
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE

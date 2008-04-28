@@ -58,6 +58,8 @@
 #include <string.h>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 #if defined(QT_HPUX_LD) // for HP-UX < 11.x and 32 bit
 
 bool QLibraryPrivate::load_sys()
@@ -110,7 +112,9 @@ void* QLibraryPrivate::resolve_sys(const char* symbol)
 }
 
 #else // POSIX
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <dlfcn.h>
+QT_END_INCLUDE_NAMESPACE
 
 static QString qdlerror()
 {
@@ -134,14 +138,14 @@ bool QLibraryPrivate::load_sys()
     if (pluginState != IsAPlugin) {
         prefixes << QLatin1String("lib");
 #if defined(Q_OS_HPUX)
-        if (majorVerNum > -1) {
-            suffixes << QString::fromLatin1(".sl.%1").arg(majorVerNum);
+        if (!fullVersion.isEmpty()) {
+            suffixes << QString::fromLatin1(".sl.%1").arg(fullVersion);
         } else {
             suffixes << QLatin1String(".sl");
         }
 # if defined(__ia64)
-        if (majorVerNum > -1) {
-            suffixes << QString::fromLatin1(".so.%1").arg(majorVerNum);
+        if (!fullVersion.isEmpty()) {
+            suffixes << QString::fromLatin1(".so.%1").arg(fullVersion);
         } else {
             suffixes << QLatin1String(".so");
         }
@@ -149,16 +153,16 @@ bool QLibraryPrivate::load_sys()
 #elif defined(Q_OS_AIX)
         suffixes << ".a";
 #else
-        if (majorVerNum > -1) {
-            suffixes << QString::fromLatin1(".so.%1").arg(majorVerNum);
+        if (!fullVersion.isEmpty()) {
+            suffixes << QString::fromLatin1(".so.%1").arg(fullVersion);
         } else {
             suffixes << QLatin1String(".so");
         }
 #endif
 # ifdef Q_OS_MAC
-        if (majorVerNum > -1) {
-            suffixes << QString::fromLatin1(".%1.bundle").arg(majorVerNum);
-            suffixes << QString::fromLatin1(".%1.dylib").arg(majorVerNum);
+        if (!fullVersion.isEmpty()) {
+            suffixes << QString::fromLatin1(".%1.bundle").arg(fullVersion);
+            suffixes << QString::fromLatin1(".%1.dylib").arg(fullVersion);
         } else {
             suffixes << QLatin1String(".bundle") << QLatin1String(".dylib");
         }
@@ -172,15 +176,24 @@ bool QLibraryPrivate::load_sys()
     }
     if (loadHints & QLibrary::ExportExternalSymbolsHint) {
         dlFlags |= RTLD_GLOBAL;
+    } 
+#if !defined(Q_OS_CYGWIN)
+    else {
+#if defined(Q_OS_MAC)
+        if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4)
+#endif        
+        dlFlags |= RTLD_LOCAL;
     }
+#endif
 #if defined(Q_OS_AIX)	// Not sure if any other platform actually support this thing.
     if (loadHints & QLibrary::LoadArchiveMemberHint) {
         dlFlags |= RTLD_MEMBER;
     }
 #endif
     QString attempt;
-    for(int prefix = 0; !pHnd && prefix < prefixes.size(); prefix++) {
-        for(int suffix = 0; !pHnd && suffix < suffixes.size(); suffix++) {
+    bool retry = true;
+    for(int prefix = 0; retry && !pHnd && prefix < prefixes.size(); prefix++) {
+        for(int suffix = 0; retry && !pHnd && suffix < suffixes.size(); suffix++) {
             if (!prefixes.at(prefix).isEmpty() && name.startsWith(prefixes.at(prefix)))
                 continue;
             if (!suffixes.at(suffix).isEmpty() && name.endsWith(suffixes.at(suffix)))
@@ -195,8 +208,16 @@ bool QLibraryPrivate::load_sys()
                 attempt = path + prefixes.at(prefix) + name + suffixes.at(suffix);
             }
             pHnd = dlopen(QFile::encodeName(attempt), dlFlags);
+            if (!pHnd && fileName.startsWith(QLatin1Char('/')) && QFile::exists(attempt)) {
+                // We only want to continue if dlopen failed due to that the shared library did not exist.
+                // However, we are only able to apply this check for absolute filenames (since they are
+                // not influenced by the content of LD_LIBRARY_PATH, /etc/ld.so.cache, DT_RPATH etc...)
+                // This is all because dlerror is flawed and cannot tell us the reason why it failed.
+                retry = false;
+            }
         }
     }
+
 #ifdef Q_OS_MAC
     if (!pHnd) {
         if (CFBundleRef bundle = CFBundleGetBundleWithIdentifier(QCFString(fileName))) {
@@ -256,5 +277,7 @@ void* QLibraryPrivate::resolve_sys(const char* symbol)
 }
 
 #endif // POSIX
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_LIBRARY

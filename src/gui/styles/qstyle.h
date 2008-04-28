@@ -54,6 +54,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QAction;
@@ -156,7 +158,8 @@ public:
         PE_FrameGroupBox,
         PE_FrameLineEdit,
         PE_FrameMenu,
-        PE_FrameStatusBar,
+        PE_FrameStatusBar, // obsolete
+        PE_FrameStatusBarItem = PE_FrameStatusBar,
         PE_FrameTabWidget,
         PE_FrameWindow,
         PE_FrameButtonBevel,
@@ -177,6 +180,7 @@ public:
         PE_IndicatorBranch,
         PE_IndicatorButtonDropDown,
         PE_IndicatorViewItemCheck,
+        PE_IndicatorItemViewItemCheck = PE_IndicatorViewItemCheck,
         PE_IndicatorCheckBox,
         PE_IndicatorDockWidgetResizeHandle,
         PE_IndicatorHeaderArrow,
@@ -196,6 +200,12 @@ public:
         PE_Widget,
 
         PE_IndicatorColumnViewArrow,
+        PE_IndicatorItemViewItemDrop,
+
+        PE_PanelItemViewItem,
+        PE_PanelItemViewRow, // ### Qt 5: remove
+
+        PE_PanelStatusBar,
 
         // do not add any values below/greater this
         PE_CustomBase = 0xf000000
@@ -264,6 +274,8 @@ public:
 
         CE_ColumnViewGrip,
 
+        CE_ItemViewItem,
+
         // do not add any values below/greater than this
         CE_CustomBase = 0xf0000000
     };
@@ -318,6 +330,7 @@ public:
         SE_TabWidgetRightCorner,
 
         SE_ViewItemCheckIndicator,
+        SE_ItemViewItemCheckIndicator = SE_ViewItemCheckIndicator,
 
         SE_TabBarTearIndicator,
 
@@ -346,6 +359,10 @@ public:
         SE_FrameLayoutItem,
         SE_GroupBoxLayoutItem,
         SE_TabWidgetLayoutItem,
+
+        SE_ItemViewItemDecoration,
+        SE_ItemViewItemText,
+        SE_ItemViewItemFocusRect,
 
         // do not add any values below/greater than this
         SE_CustomBase = 0xf0000000
@@ -422,7 +439,7 @@ public:
         SC_GroupBoxLabel =         0x00000002,
         SC_GroupBoxContents =      0x00000004,
         SC_GroupBoxFrame =         0x00000008,
-        
+
         SC_MdiMinButton     =      0x00000001,
         SC_MdiNormalButton  =      0x00000002,
         SC_MdiCloseButton   =      0x00000004,
@@ -553,6 +570,9 @@ public:
         PM_LayoutBottomMargin,
         PM_LayoutHorizontalSpacing,
         PM_LayoutVerticalSpacing,
+        PM_TabBar_ScrollButtonOverlap,
+
+        PM_TextCursorWidth,
 
         // do not add any values below/greater than this
         PM_CustomBase = 0xf0000000
@@ -586,6 +606,7 @@ public:
         CT_HeaderSection,
         CT_GroupBox,
         CT_MdiControls,
+        CT_ItemViewItem,
         // do not add any values below/greater than this
         CT_CustomBase = 0xf0000000
     };
@@ -678,6 +699,16 @@ public:
         SH_WizardStyle,
         SH_ItemView_ArrowKeysNavigateIntoChildren,
         SH_Menu_Mask,
+        SH_Menu_FlashTriggeredItem,
+        SH_Menu_FadeOutOnHide,
+        SH_SpinBox_ClickAutoRepeatThreshold,
+        SH_ItemView_PaintAlternatingRowColorsForEmptyArea,
+	    SH_FormLayoutWrapPolicy,
+        SH_TabWidget_DefaultTabPosition,
+        SH_ToolBar_Movable,
+        SH_FormLayoutFieldGrowthPolicy,
+        SH_FormLayoutFormAlignment,
+        SH_FormLayoutLabelAlignment,
 
         // Add new style hint values here
 
@@ -753,6 +784,17 @@ public:
         SP_DirHomeIcon,
         SP_CommandLink,
         SP_VistaShield,
+        SP_BrowserReload,
+        SP_BrowserStop,
+        SP_MediaPlay,
+        SP_MediaStop,
+        SP_MediaPause,
+        SP_MediaSkipForward,
+        SP_MediaSkipBackward,
+        SP_MediaSeekForward,
+        SP_MediaSeekBackward,
+        SP_MediaVolume,
+        SP_MediaVolumeMuted,
         // do not add any values below/greater than this
         SP_CustomBase = 0xf0000000
     };
@@ -789,9 +831,9 @@ protected Q_SLOTS:
     QIcon standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt = 0,
                                      const QWidget *widget = 0) const;
     int layoutSpacingImplementation(QSizePolicy::ControlType control1,
-                                    QSizePolicy::ControlType control2, 
+                                    QSizePolicy::ControlType control2,
                                     Qt::Orientation orientation,
-                                    const QStyleOption *option = 0, 
+                                    const QStyleOption *option = 0,
                                     const QWidget *widget = 0) const;
 
 private:
@@ -807,6 +849,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QStyle::SubControls)
 #if !defined(QT_NO_DEBUG_STREAM) && !defined(QT_NO_DEBUG)
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, QStyle::State state);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

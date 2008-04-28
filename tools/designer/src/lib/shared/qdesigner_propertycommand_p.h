@@ -61,6 +61,8 @@
 #include <QtCore/QList>
 #include <QtCore/QPair>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 class QDesignerPropertySheetExtension;
 
@@ -69,7 +71,7 @@ namespace qdesigner_internal {
 class QDesignerIntegration;
 
 enum SpecialProperty {
-        SP_None, SP_ObjectName, SP_WindowTitle,
+        SP_None, SP_ObjectName, SP_LayoutName, SP_SpacerName,SP_WindowTitle,
         SP_MinimumSize, SP_MaximumSize, SP_Geometry, SP_Icon,SP_CurrentTabName,
         SP_AutoDefault, SP_Alignment
 };
@@ -116,6 +118,9 @@ public:
     // can be merged into one command (that is, object and name match)
     bool canMerge(const PropertyHelper &other) const;
     QDesignerIntegration *integration(QDesignerFormWindowInterface *fw) const;
+
+    static void triggerActionChanged(QAction *a);
+
 private:
     // Apply the value and update. Returns corrected value
     Value applyValue(QDesignerFormWindowInterface *fw, const QVariant &oldValue, Value newValue);
@@ -125,7 +130,7 @@ private:
 
     void updateObject(QDesignerFormWindowInterface *fw, const QVariant &oldValue, const QVariant &newValue);
     QVariant findDefaultValue(QDesignerFormWindowInterface *fw) const;
-
+    void ensureUniqueObjectName(QDesignerFormWindowInterface *fw, QObject *object) const;
     SpecialProperty m_specialProperty;
 
     QPointer<QObject> m_object;
@@ -144,7 +149,7 @@ class QDESIGNER_SHARED_EXPORT PropertyListCommand : public QDesignerFormWindowCo
 public:
     typedef QList<QObject *> ObjectList;
 
-    PropertyListCommand(QDesignerFormWindowInterface *formWindow);
+    explicit PropertyListCommand(QDesignerFormWindowInterface *formWindow);
 
     QObject* object(int index = 0) const;
 
@@ -212,11 +217,11 @@ class QDESIGNER_SHARED_EXPORT SetPropertyCommand: public PropertyListCommand
 public:
     typedef QList<QObject *> ObjectList;
 
-    SetPropertyCommand(QDesignerFormWindowInterface *formWindow);
+    explicit SetPropertyCommand(QDesignerFormWindowInterface *formWindow);
 
     bool init(QObject *object, const QString &propertyName, const QVariant &newValue);
     bool init(const ObjectList &list, const QString &propertyName, const QVariant &newValue,
-              QObject *referenceObject = 0);
+              QObject *referenceObject = 0, bool enableSubPropertyHandling = true);
 
 
     inline QVariant newValue() const
@@ -242,7 +247,7 @@ class QDESIGNER_SHARED_EXPORT ResetPropertyCommand: public PropertyListCommand
 public:
     typedef QList<QObject *> ObjectList;
 
-    ResetPropertyCommand(QDesignerFormWindowInterface *formWindow);
+    explicit ResetPropertyCommand(QDesignerFormWindowInterface *formWindow);
 
     bool init(QObject *object, const QString &propertyName);
     bool init(const ObjectList &list, const QString &propertyName, QObject *referenceObject = 0);
@@ -262,7 +267,7 @@ class QDESIGNER_SHARED_EXPORT AddDynamicPropertyCommand: public QDesignerFormWin
 {
 
 public:
-    AddDynamicPropertyCommand(QDesignerFormWindowInterface *formWindow);
+    explicit AddDynamicPropertyCommand(QDesignerFormWindowInterface *formWindow);
 
     bool init(const QList<QObject *> &selection, QObject *current, const QString &propertyName, const QVariant &value);
 
@@ -279,7 +284,7 @@ class QDESIGNER_SHARED_EXPORT RemoveDynamicPropertyCommand: public QDesignerForm
 {
 
 public:
-    RemoveDynamicPropertyCommand(QDesignerFormWindowInterface *formWindow);
+    explicit RemoveDynamicPropertyCommand(QDesignerFormWindowInterface *formWindow);
 
     bool init(const QList<QObject *> &selection, QObject *current, const QString &propertyName);
 
@@ -292,5 +297,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_PROPERTYCOMMAND_H

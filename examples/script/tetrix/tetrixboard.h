@@ -48,7 +48,9 @@
 #include <QFrame>
 #include <QPointer>
 
+QT_BEGIN_NAMESPACE
 class QLabel;
+QT_END_NAMESPACE
 
 class TetrixBoard : public QFrame
 {

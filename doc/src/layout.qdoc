@@ -1,11 +1,40 @@
 /****************************************************************************
 **
-** Explanation of the layout subsystem.
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** This file is part of the documentation of the Qt Toolkit.
 **
-** This file is part of the Qt GUI Toolkit.
-** EDITIONS: FREE, PROFESSIONAL, ENTERPRISE
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -57,7 +86,7 @@
 
     \section1 Horizontal, Vertical, and Grid Layouts
 
-    The easiest way to give you widgets a good layout is to use the
+    The easiest way to give your widgets a good layout is to use the
     built-in layout managers: QHBoxLayout, QVBoxLayout, and
     QGridLayout. These classes inherit from QLayout, which in turn
     derives from QObject (not QWidget). They take care of geometry
@@ -86,31 +115,29 @@
     geometry of five \l{QPushButton}s, as shown on the first
     screenshot above:
 
-    \quotefromfile snippets/layouts/layouts.cpp
-    \skipto window = new QWidget
-    \printline window
-    \printline button1
-    \printuntil button5
-    \printline layout = new QHBoxLayout
-    \printuntil setLayout(layout)
-    \printline show
+    \snippet doc/src/snippets/layouts/layouts.cpp 0
+    \snippet doc/src/snippets/layouts/layouts.cpp 1
+    \snippet doc/src/snippets/layouts/layouts.cpp 2
+    \codeline
+    \snippet doc/src/snippets/layouts/layouts.cpp 3
+    \snippet doc/src/snippets/layouts/layouts.cpp 4
+    \snippet doc/src/snippets/layouts/layouts.cpp 5
 
     The code for QVBoxLayout is identical, except the line where the
     layout is created. The code for QGridLayout is a bit different,
     because we need to specify the row and column position of the
     child widget:
 
-    \skipto layout = new QVBoxLayout
-    \skipto window = new QWidget
-    \printline window
-    \printline button1
-    \printuntil button5
-    \printline layout = new QGridLayout
-    \printuntil setLayout(layout)
-    \printline show
+    \snippet doc/src/snippets/layouts/layouts.cpp 12
+    \snippet doc/src/snippets/layouts/layouts.cpp 13
+    \snippet doc/src/snippets/layouts/layouts.cpp 14
+    \codeline
+    \snippet doc/src/snippets/layouts/layouts.cpp 15
+    \snippet doc/src/snippets/layouts/layouts.cpp 16
+    \snippet doc/src/snippets/layouts/layouts.cpp 17
 
     The third QPushButton spans 2 columns. This is possible by
-    specifying 2 as the fourth argument to QGridLayout::addWidget().
+    specifying 2 as the fifth argument to QGridLayout::addWidget().
 
     When you use a layout, you don't need to pass a parent when
     constructing the child widgets. The layout will automatically
@@ -271,42 +298,11 @@
 
     \section2 The Header File (\c card.h)
 
-    \code
-        #ifndef CARD_H
-        #define CARD_H
-
-        #include <QLayout>
-        #include <QList>
-
-        class CardLayout : public QLayout
-        {
-        public:
-            CardLayout(QWidget *parent, int dist)
-                : QLayout(parent, 0, dist) {}
-            CardLayout(QLayout *parent, int dist)
-                : QLayout(parent, dist) {}
-            CardLayout(int dist)
-                : QLayout(dist) {}
-            ~CardLayout();
-
-            void addItem(QLayoutItem *item);
-            QSize sizeHint() const;
-            QSize minimumSize() const;
-            QLayoutItem *itemAt(int) const;
-            QLayoutItem *takeAt(int);
-            void setGeometry(const QRect &rect);
-
-        private:
-            QList<QLayoutItem*> list;
-        };
-        #endif
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.layout.qdoc 0
 
     \section2 The Implementation File (\c card.cpp)
 
-    \code
-        #include "card.h"
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.layout.qdoc 1
 
     First we define two functions that iterate over the layout: 
     itemAt() and takeAt(). These functions are used internally by the
@@ -319,20 +315,7 @@
     data structure, we may have to spend more effort defining a linear
     order for the items.
 
-    \code
-        QLayoutItem *CardLayout::itemAt(int idx) const
-        {
-            // QList::value() performs index checking, and returns 0 if we are
-            // outside the valid range
-            return list.value(idx);
-        }
-
-        QLayoutItem *CardLayout::takeAt(int idx)
-        {
-            // QList::take does not do index checking
-            return idx >= 0 && idx < list.size() ? list.takeAt(idx) : 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.layout.qdoc 2
 
     addItem() implements the default placement strategy for layout items.
     It must be implemented. It is used by QLayout::add(), by the QLayout
@@ -341,82 +324,26 @@
     provide extra access functions such as the row and column spanning
     overloads of \l QGridLayout::addItem(), addWidget(), and addLayout().
 
-    \code
-        void CardLayout::addItem(QLayoutItem *item)
-        {
-            list.append(item);
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.layout.qdoc 3
 
     The layout takes over responsibility of the items added. Since
     QLayoutItem does not inherit QObject, we must delete the items
     manually. The function QLayout::deleteAllItems() uses takeAt()
     defined above to delete all the items in the layout.
 
-    \code
-        CardLayout::~CardLayout()
-        {
-            deleteAllItems();
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.layout.qdoc 4
 
     The setGeometry() function actually performs the layout. The rectangle
     supplied as an argument does not include margin(). If relevant, use
     spacing() as the distance between items.
 
-    \code
-        void CardLayout::setGeometry(const QRect &r)
-        {
-            QLayout::setGeometry(r);
-
-            if (list.size() == 0)
-                return;
-
-            int w = r.width() - (list.count() - 1) * spacing();
-            int h = r.height() - (list.count() - 1) * spacing();
-            int i = 0;
-            while (i < list.size()) {
-                QLayoutItem *o = list.at(i);
-                QRect geom(r.x() + i * spacing(), r.y() + i * spacing(), w, h);
-                o->setGeometry(geom);
-                ++i;
-            }
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.layout.qdoc 5
 
     sizeHint() and minimumSize() are normally very similar in
     implementation. The sizes returned by both functions should include
     spacing(), but not margin().
 
-    \code
-        QSize CardLayout::sizeHint() const
-        {
-            QSize s(0,0);
-            int n = list.count();
-            if (n > 0)
-                s = QSize(100,70); //start with a nice default size
-            int i = 0;
-            while (i < n) {
-                QLayoutItem *o = list.at(i);
-                s = s.expandedTo(o->sizeHint());
-                ++i;
-            }
-            return s + n*QSize(spacing(), spacing());
-        }
-
-        QSize CardLayout::minimumSize() const
-        {
-            QSize s(0,0);
-            int n = list.count();
-            int i = 0;
-            while (i < n) {
-                QLayoutItem *o = list.at(i);
-                s = s.expandedTo(o->minimumSize());
-                ++i;
-            }
-            return s + n*QSize(spacing(), spacing());
-        }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.layout.qdoc 6
 
     \section2 Further Notes
 

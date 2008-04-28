@@ -59,6 +59,8 @@
 #include <QtGui/QDialog>
 #include <QtGui/QLabel>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
@@ -69,7 +71,7 @@ class QDESIGNER_SHARED_EXPORT QDesignerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    QDesignerWidget(QDesignerFormWindowInterface* formWindow, QWidget *parent = 0);
+    explicit QDesignerWidget(QDesignerFormWindowInterface* formWindow, QWidget *parent = 0);
     virtual ~QDesignerWidget();
 
     QDesignerFormWindowInterface* formWindow() const;
@@ -81,7 +83,6 @@ public:
 
 protected:
     virtual void paintEvent(QPaintEvent *e);
-    virtual void dragEnterEvent(QDragEnterEvent *e);
 
 private:
     qdesigner_internal::FormWindowBase* m_formWindow;
@@ -91,7 +92,7 @@ class QDESIGNER_SHARED_EXPORT QDesignerDialog : public QDialog
 {
     Q_OBJECT
 public:
-    QDesignerDialog(QDesignerFormWindowInterface *fw, QWidget *parent);
+    explicit QDesignerDialog(QDesignerFormWindowInterface *fw, QWidget *parent);
 
     virtual QSize minimumSizeHint() const
     { return QWidget::minimumSizeHint().expandedTo(QSize(16, 16)); }
@@ -108,7 +109,7 @@ class QDESIGNER_SHARED_EXPORT Line : public QFrame
     Q_OBJECT
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
 public:
-    Line(QWidget *parent) : QFrame(parent)
+    explicit Line(QWidget *parent) : QFrame(parent)
     { setAttribute(Qt::WA_MouseNoMask); setFrameStyle(HLine | Sunken); }
 
     inline void setOrientation(Qt::Orientation orient)
@@ -117,5 +118,7 @@ public:
     inline Qt::Orientation orientation() const
     { return frameShape() == HLine ? Qt::Horizontal : Qt::Vertical; }
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_WIDGET_H

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 class QCheckBoxPrivate;
@@ -105,6 +107,8 @@ private:
     Q_DECLARE_PRIVATE(QCheckBox)
     Q_DISABLE_COPY(QCheckBox)
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

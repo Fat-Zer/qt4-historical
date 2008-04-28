@@ -6,3 +6,4 @@ SOURCES += main.cpp
 target.path = $$[QT_INSTALL_EXAMPLES]/script/marshal
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS marshal.pro
 sources.path = $$[QT_INSTALL_EXAMPLES]/script/marshal
+INSTALLS += target sources

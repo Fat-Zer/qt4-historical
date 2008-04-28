@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example opengl/overpainting
     \title Overpainting Example
@@ -35,19 +78,11 @@
     class as a whole, we show the first few lines of the class and only
     discuss the changes we have made to the rest of it:
 
-    \quotefromfile opengl/overpainting/glwidget.h
-    \skipto class GLWidget
-    \printuntil ~GLWidget
+    \snippet examples/opengl/overpainting/glwidget.h 0
     \dots
-    \skipto protected:
-    \printuntil showEvent
-    \skipto private slots:
-    \printuntil animate
-    \skipto private
-    \printuntil drawInstructions
+    \snippet examples/opengl/overpainting/glwidget.h 1
     \dots
-    \skipto bubbles
-    \printuntil /^\};/
+    \snippet examples/opengl/overpainting/glwidget.h 4
 
     As usual, the widget uses \l{QGLWidget::initializeGL()}{initializeGL()}
     to set up objects for our scene and perform other OpenGL initialization tasks.
@@ -66,7 +101,7 @@
     2D graphics and animation. The \c animate() slot is called periodically by the
     \c animationTimer to update the widget; the \c createBubbles() function
     initializes the \c bubbles list with instances of a helper class used to
-    draw the animation; the \c formatInstructions() function is responsible for
+    draw the animation; the \c drawInstructions() function is responsible for
     a semi-transparent messages that is also overpainted onto the OpenGL scene.
 
     \section1 GLWidget Class Implementation
@@ -75,25 +110,21 @@
     relevant to this example. In the constructor, we initialize a QTimer to
     control the animation:
 
-    \quotefromfile opengl/overpainting/glwidget.cpp
-    \skipto GLWidget::GLWidget
-    \printuntil /^\}/
+    \snippet examples/opengl/overpainting/glwidget.cpp 0
 
-    For a small performance improvement, we set the widget's Qt::WA_NoSystemBackground
-    attribute to instruct the underlying window system not to paint a background for
-    the widget.
+    We turn off the widget's \l{QWidget::autoFillBackground}{autoFillBackground} property to
+    instruct OpenGL not to paint a background for the widget when
+    \l{QPainter::begin()}{QPainter::begin()} is called.
 
     As in the \l{Hello GL Example}{Hello GL} example, the destructor is responsible
     for freeing any OpenGL-related resources:
 
-    \skipto ~GLWidget
-    \printuntil /^\}/
+    \snippet examples/opengl/overpainting/glwidget.cpp 1
 
     The \c initializeGL() function is fairly minimal, only setting up the display
     list used in the scene.
 
-    \skipto initializeGL(
-    \printuntil /^\}/
+    \snippet examples/opengl/overpainting/glwidget.cpp 2
 
     To cooperate fully with QPainter, we defer matrix stack operations and attribute
     initialization until the widget needs to be updated.
@@ -110,42 +141,38 @@
     and other attributes. We use an OpenGL stack operation to preserve the
     original matrix state, allowing us to recover it later:
 
-    \skipto ::paintEvent
-    \printuntil glPushMatrix
+    \snippet examples/opengl/overpainting/glwidget.cpp 4
 
     We define a color to use for the widget's background, and set up various
     attributes that define how the scene will be rendered.
 
-    \skipto qglClearColor
-    \printuntil setupViewport
+    \snippet examples/opengl/overpainting/glwidget.cpp 6
 
     We call the \c setupViewport() private function to set up the
     projection used for the scene. This is unnecessary in OpenGL
-    examples that implement the \l{QGLWidget::}{paintGL()}
+    examples that implement the \l{QGLWidget::paintGL()}{paintGL()}
     function because the matrix stacks are usually unmodified between
-    calls to \l{QGLWidget::}{resizeGL()} and \l{QGLWidget::}{paintGL()}.
+    calls to \l{QGLWidget::resizeGL()}{resizeGL()} and
+    \l{QGLWidget::paintGL()}{paintGL()}.
 
     Since the widget's background is not drawn by the system or by Qt, we use
     an OpenGL call to paint it before positioning the object defined earlier
     in the scene:
 
-    \skipto glClear
-    \printuntil glCallList
+    \snippet examples/opengl/overpainting/glwidget.cpp 7
 
     Once the list containing the object has been executed, the matrix stack
     needs to be restored to its original state at the start of this function
     before we can begin overpainting:
 
-    \skipto glMatrixMode
-    \printuntil glPopMatrix
+    \snippet examples/opengl/overpainting/glwidget.cpp 8
 
     With the 3D graphics done, we construct a QPainter for use on the widget
     and simply overpaint the widget with 2D graphics; in this case, using a
     helper class to draw a number of translucent bubbles onto the widget,
     and calling \c drawInstructions() to overlay some instructions:
 
-    \skipto QPainter
-    \printuntil /^\}/
+    \snippet examples/opengl/overpainting/glwidget.cpp 10
 
     When QPainter::end() is called, suitable OpenGL-specific calls are made to
     write the scene, and its additional contents, onto the widget.
@@ -154,19 +181,14 @@
     sets up the dimensions of the viewport and defines a projection
     transformation:
 
-    \skipto ::resizeGL
-    \printuntil /^\}/
-
-    Additionally, we take the opportunity to format the instructions to fit the
-    width of the viewport.
+    \snippet examples/opengl/overpainting/glwidget.cpp 11
 
     Ideally, we want to arrange the 2D graphics to suit the widget's dimensions.
     To achieve this, we implement the \l{QWidget::showEvent()}{showEvent()} handler,
     creating new graphic elements (bubbles) if necessary at appropriate positions
     in the widget.
 
-    \skipto ::showEvent
-    \printuntil /^\}/
+    \snippet examples/opengl/overpainting/glwidget.cpp 12
 
     This function only has an effect if less than 20 bubbles have already been
     created.
@@ -175,8 +197,7 @@
     the \l{QTimer::timeout()}{timeout()} signal. This keeps the bubbles moving
     around.
 
-    \skipto ::animate
-    \printuntil /^\}/
+    \snippet examples/opengl/overpainting/glwidget.cpp 13
 
     We simply iterate over the bubbles in the \c bubbles list, updating the
     widget before and after each of them is moved.
@@ -184,18 +205,13 @@
     The \c setupViewport() function is called from \c paintEvent()
     and \c resizeGL().
 
-    \skipto ::setupViewport
-    \printuntil /^\}/
+    \snippet examples/opengl/overpainting/glwidget.cpp 14
 
     The \c drawInstructions() function is used to prepare some basic
     instructions that will be painted with the other 2D graphics over
     the 3D scene.
 
-    \skipto ::drawInstructions
-    \printuntil /^\}/
-
-    The instructions are painted directly onto the widget using the QPainter
-    supplied by the \l{QWidget::paintEvent()}{paintEvent()} handler function.
+    \snippet examples/opengl/overpainting/glwidget.cpp 15
 
     \section1 Summary
 
@@ -215,7 +231,7 @@
     \o Reimplement QWidget::paintEvent() to draw both 2D and 3D graphics.
     \endlist
 
-    The \l{QWidget::paintEvent()}{paintEvent()} implementation must perform the
+    The \l{QWidget::paintEvent()}{paintEvent()} implementation performs the
     following tasks:
 
     \list

@@ -53,6 +53,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 struct QRegExpPrivate;
@@ -89,8 +91,8 @@ public:
     void setPatternSyntax(PatternSyntax syntax);
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT bool wildcard() const { return patternSyntax() == Wildcard; }
-    inline QT3_SUPPORT void setWildcard(bool wildcard)
-    { setPatternSyntax(wildcard ? Wildcard : RegExp); }
+    inline QT3_SUPPORT void setWildcard(bool aWildcard)
+    { setPatternSyntax(aWildcard ? Wildcard : RegExp); }
 #endif
 
     bool isMinimal() const;
@@ -123,11 +125,11 @@ public:
     static QString escape(const QString &str);
 
 #ifdef QT3_SUPPORT
-    inline QT3_SUPPORT_CONSTRUCTOR QRegExp(const QString &pattern, bool cs, bool wildcard = false)
+    inline QT3_SUPPORT_CONSTRUCTOR QRegExp(const QString &aPattern, bool cs, bool aWildcard = false)
     {
         new (this)
-            QRegExp(pattern, cs ? Qt::CaseSensitive : Qt::CaseInsensitive,
-                    wildcard ? Wildcard : RegExp);
+            QRegExp(aPattern, cs ? Qt::CaseSensitive : Qt::CaseInsensitive,
+                    aWildcard ? Wildcard : RegExp);
     }
 #endif
 
@@ -141,6 +143,8 @@ Q_DECLARE_TYPEINFO(QRegExp, Q_MOVABLE_TYPE);
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &out, const QRegExp &regExp);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &in, QRegExp &regExp);
 #endif
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

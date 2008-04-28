@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 class QCursor;
 class QWidget;
 
@@ -91,6 +93,8 @@ public:
 Q_SIGNALS:
     void changed();
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

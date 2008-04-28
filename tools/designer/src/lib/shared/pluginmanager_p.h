@@ -59,16 +59,18 @@
 
 #include <QtCore/QMap>
 #include <QtCore/QStringList>
-#include <QtCore/QSettings>
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormEditorInterface;
 class QDesignerCustomWidgetInterface;
+class QDesignerPluginManagerPrivate;
 
 class QDESIGNER_SHARED_EXPORT QDesignerPluginManager: public QObject
 {
     Q_OBJECT
 public:
-    QDesignerPluginManager(QDesignerFormEditorInterface *core);
+    explicit QDesignerPluginManager(QDesignerFormEditorInterface *core);
     virtual ~QDesignerPluginManager();
 
     QDesignerFormEditorInterface *core() const;
@@ -103,18 +105,11 @@ private:
     void registerPlugin(const QString &plugin);
 
 private:
-    QDesignerFormEditorInterface *m_core;
-    QStringList m_pluginPaths;
-    QStringList m_registeredPlugins;
-    QStringList m_disabledPlugins;
-
-    typedef QMap<QString, QString> FailedPluginMap;
-    FailedPluginMap m_failedPlugins;
-
-    typedef QList<QDesignerCustomWidgetInterface*> CustomWidgetList;
-    CustomWidgetList m_customWidgets;
-
-    QStringList defaultPluginPaths() const;
+    static QStringList defaultPluginPaths();
+    
+    QDesignerPluginManagerPrivate *m_d;
 };
+
+QT_END_NAMESPACE
 
 #endif // PLUGINMANAGER_H

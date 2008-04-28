@@ -46,6 +46,8 @@
 
 #include "treewalker.h"
 
+QT_BEGIN_NAMESPACE
+
 class QTextStream;
 class Driver;
 class Uic;
@@ -66,10 +68,9 @@ struct Validator : public TreeWalker
     void acceptAction(DomAction *node);
 
 private:
-    Driver *driver;
-    QTextStream &output;
-    const Option &option;
-    Uic *uic;
+    Driver *m_driver;
 };
+
+QT_END_NAMESPACE
 
 #endif // VALIDATOR_H

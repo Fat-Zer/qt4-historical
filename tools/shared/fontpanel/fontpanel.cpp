@@ -45,21 +45,13 @@
 
 #include <QtGui/QLabel>
 #include <QtGui/QComboBox>
-#include <QtGui/QGridLayout>
+#include <QtGui/QFormLayout>
 #include <QtGui/QSpacerItem>
 #include <QtGui/QFontComboBox>
 #include <QtCore/QTimer>
 #include <QtGui/QLineEdit>
 
-
-// Add a row consisting of widget and a description label to a grid.
-static void addGridRow(const QString &description, QGridLayout *gridLayout, QWidget *w, int &row) {
-    QLabel *label = new QLabel(description);
-    label->setBuddy(w);
-    gridLayout->addWidget(label, row, 0);
-    gridLayout->addWidget(w, row, 1);
-    ++row;
-}
+QT_BEGIN_NAMESPACE
 
 FontPanel::FontPanel(QWidget *parentWidget) :
     QGroupBox(parentWidget),
@@ -72,9 +64,7 @@ FontPanel::FontPanel(QWidget *parentWidget) :
 {
     setTitle(tr("Font"));
 
-    QGridLayout *gridLayout = new QGridLayout(this);
-    int row = 0;
-
+    QFormLayout *formLayout = new QFormLayout(this);
     // writing systems
     m_writingSystemComboBox->setEditable(false);
 
@@ -83,21 +73,21 @@ FontPanel::FontPanel(QWidget *parentWidget) :
     foreach (QFontDatabase::WritingSystem ws, writingSystems)
         m_writingSystemComboBox->addItem(QFontDatabase::writingSystemName(ws), QVariant(ws));
     connect(m_writingSystemComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotWritingSystemChanged(int)));
-    addGridRow(tr("&Writing system"), gridLayout, m_writingSystemComboBox, row);
+    formLayout->addRow(tr("&Writing system"), m_writingSystemComboBox);
 
     connect(m_familyComboBox, SIGNAL( currentFontChanged(QFont)), this, SLOT(slotFamilyChanged(QFont)));
-    addGridRow(tr("&Family"), gridLayout, m_familyComboBox, row);
+    formLayout->addRow(tr("&Family"), m_familyComboBox);
 
     m_styleComboBox->setEditable(false);
     connect(m_styleComboBox,  SIGNAL(currentIndexChanged(int)),  this, SLOT(slotStyleChanged(int)));
-    addGridRow(tr("&Style"), gridLayout, m_styleComboBox, row);
+    formLayout->addRow(tr("&Style"), m_styleComboBox);
 
     m_pointSizeComboBox->setEditable(false);
     connect(m_pointSizeComboBox, SIGNAL(currentIndexChanged(int)),  this, SLOT(slotPointSizeChanged(int)));
-    addGridRow(tr("&Point size"), gridLayout, m_pointSizeComboBox, row);
+    formLayout->addRow(tr("&Point size"), m_pointSizeComboBox);
 
     m_previewLineEdit->setReadOnly(true);
-    gridLayout->addWidget (m_previewLineEdit, row, 0, 1, 2);
+    formLayout->addRow(m_previewLineEdit);
 
     setWritingSystem(QFontDatabase::Any);
 }
@@ -310,6 +300,7 @@ void FontPanel::delayedPreviewFontUpdate()
     }
     if (m_previewFontUpdateTimer->isActive())
         return;
-
     m_previewFontUpdateTimer->start();
 }
+
+QT_END_NAMESPACE

@@ -54,6 +54,8 @@
 #include <QtCore/qdebug.h>
 #include <private/qwidget_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QSplashScreenPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QSplashScreen)
@@ -96,12 +98,9 @@ public:
    some initialization tasks are performed before the application's
    main window is shown:
 
-   \quotefromfile snippets/qsplashscreen/main.cpp
-   \skipto main(
-   \printuntil app.processEvents();
+   \snippet doc/src/snippets/qsplashscreen/main.cpp 0
    \dots
-   \skipto MainWindow
-   \printuntil /^\}/
+   \snippet doc/src/snippets/qsplashscreen/main.cpp 1
 
    The user can hide the splash screen by clicking on it with the
    mouse. Since the splash screen is typically displayed before the
@@ -112,21 +111,7 @@ public:
    for example, announcing connections established or modules loaded
    as the application starts up:
 
-   \code
-       QPixmap pixmap(":/splash.png");
-       QSplashScreen *splash = new QSplashScreen(pixmap);
-       splash->show();
-
-       ... // Loading some items
-       splash->showMessage("Loaded modules");
-
-       qApp->processEvents();
-
-       ... // Establishing connections
-       splash->showMessage("Established connections");
-
-       qApp->processEvents();
-   \endcode
+   \snippet doc/src/snippets/code/src.gui.widgets.qsplashscreen.cpp 0
 
    QSplashScreen supports this with the showMessage() function. If you
    wish to do your own drawing you can get a pointer to the pixmap
@@ -303,8 +288,8 @@ void QSplashScreenPrivate::drawContents()
 /*!
     \internal
 */
-inline QSplashScreenPrivate::QSplashScreenPrivate() : currAlign(Qt::AlignLeft) 
-{ 
+inline QSplashScreenPrivate::QSplashScreenPrivate() : currAlign(Qt::AlignLeft)
+{
 }
 
 /*!
@@ -321,7 +306,11 @@ void QSplashScreen::drawContents(QPainter *painter)
     r.setRect(r.x() + 5, r.y() + 5, r.width() - 10, r.height() - 10);
     if (Qt::mightBeRichText(d->currStatus)) {
         QTextDocument doc;
+#ifdef QT_NO_TEXTHTMLPARSER
+        doc.setPlainText(d->currStatus);
+#else
         doc.setHtml(d->currStatus);
+#endif
         doc.setTextWidth(r.width());
         QTextCursor cursor(&doc);
         cursor.select(QTextCursor::Document);
@@ -357,5 +346,7 @@ bool QSplashScreen::event(QEvent *e)
 {
     return QWidget::event(e);
 }
+
+QT_END_NAMESPACE
 
 #endif //QT_NO_SPLASHSCREEN

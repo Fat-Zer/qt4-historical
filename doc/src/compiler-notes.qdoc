@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page compiler-notes.html
     \ingroup platform-notes
@@ -82,28 +125,29 @@
     \list
 
     \o Intel(R) C++ Compiler for applications running on IA-32,
-    Version 10.1 Build 20080112 Package ID: l_cc_p_10.1.012
+    Version 10.1 Build 20080212 Package ID: l_cc_p_10.1.013
 
     \o Intel(R) C++ Compiler for applications running on Intel(R) 64,
-    Version 10.1 Build 20080112 Package ID: l_cc_p_10.1.012
+    Version 10.1 Build 20080212 Package ID: l_cc_p_10.1.013
 
     \endlist
 
-    \section2 Known issues with Intel C++ Compiler for Linux
+    \section2 Known Issues with Intel C++ Compiler for Linux
 
     \list
     \o Precompiled header support does not work prior in version
        10.0.025 and older. For these compilers, you should configure Qt
        with -no-pch. Precompiled header support works properly in version
-       10.0.026.
+       10.0.026 and later.
     \o Version 10.0.026 for Intel 64 is known to miscompile qmake when
        building in release mode. For now, configure Qt with
        -debug. Version 10.1.008 and later can compile qmake in release
        mode.
-    \o Versions 10.1.008, 10.1.011, and 10.1.012 for both IA-32 and
-       Intel 64 is known crash with "(0): internal error: 0_47021"
-       when compiling Designer in release mode. For now, configure Qt
-       with -debug. This issue has been reported to Intel and is
+    \o Versions 10.1.008 to 10.1.013 for both IA-32 and Intel 64 are
+       known crash with "(0): internal error: 0_47021" when compiling
+       QtXmlPatterns, QtWebKit, and Designer in release mode. For now,
+       Qt turns off optimizations for these modules when building in
+       release mode. This issue has been reported to Intel and is
        awaiting resolution.
     \endlist
 
@@ -163,9 +207,7 @@
     \c{C:\Program files\Qt\}) so you will have to move it to another place,
     or explicitly set the path yourself; for example:
 
-    \code
-    QTDIR=C:\Progra~1\Qt
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.compiler-notes.qdoc 0
 
     Visual C++ 6.0 requires Service Pack 5 to work correctly with Qt.
     If you are using Visual C++ version 6.0 we highly recommend that you
@@ -187,7 +229,6 @@
     \l{http://www.trolltech.com/developer/knowledgebase/faq.2006-12-18.3281869860}{Knowledge Base entry}
     for more information.
 
-    \target xlC
     \section1 IBM xlC (AIX)
 
     The makeC++SharedLib utility must be in your PATH and be up to date to
@@ -199,9 +240,7 @@
     \o "The second step is to use the makeC++SharedLib command to create the
        shared object. The command has many optional arguments, but in its
        simplest form, can be used as follows:"
-       \code
-       /usr/vacpp/bin/makeC++SharedLib -o shr1.o cplussource1.o
-       \endcode
+       \snippet doc/src/snippets/code/doc.src.compiler-notes.qdoc 1
     \o "The full path name to the command is not required; however, to avoid
        this, you will have to add the directory in which it is located to
        your PATH environment variable. The command is located in the

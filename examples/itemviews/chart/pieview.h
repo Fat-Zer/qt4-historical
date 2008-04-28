@@ -54,8 +54,11 @@
 #include <QPoint>
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QRubberBand;
+QT_END_NAMESPACE
 
+//! [0]
 class PieView : public QAbstractItemView
 {
     Q_OBJECT
@@ -109,5 +112,6 @@ private:
     QPoint origin;
     QRubberBand *rubberBand;
 };
+//! [0]
 
 #endif

@@ -64,11 +64,7 @@ public:
 
     void start(const MetaInfo &info);
     void stop();
-
-    inline qint64 uploadCount() const { return uploadedBytes; }
-    inline qint64 downloadCount() const { return downloadedBytes; }
-    inline void setUploadCount(qint64 bytes) { uploadedBytes = bytes; }
-    inline void setDownloadCount(qint64 bytes) { downloadedBytes = bytes; }
+    void startSeeding();
 
 signals:
     void connectionError(QHttp::Error error);
@@ -104,6 +100,7 @@ private:
     
     bool firstTrackerRequest;
     bool lastTrackerRequest;
+    bool firstSeeding;
 };
 
 #endif

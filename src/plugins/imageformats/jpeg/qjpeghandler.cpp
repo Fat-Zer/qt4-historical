@@ -74,6 +74,8 @@ extern "C" {
 #endif
 }
 
+QT_BEGIN_NAMESPACE
+
 //#define QT_NO_IMAGE_SMOOTHSCALE
 #ifndef QT_NO_IMAGE_SMOOTHSCALE
 class QImageSmoothScalerPrivate;
@@ -132,7 +134,7 @@ QImageSmoothScaler::QImageSmoothScaler(const int srcWidth, const int srcHeight,
     sModeStr[0] = '\0';
 
     d = new QImageSmoothScalerPrivate;
-#if defined(Q_OS_WIN) && defined(_MSC_VER) && _MSC_VER >= 1400
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE) && defined(_MSC_VER) && _MSC_VER >= 1400
     sscanf_s(parameters, "Scale( %i, %i, %1023s )", &dstWidth, &dstHeight, sModeStr, sizeof(sModeStr));
 #else
     sscanf(parameters, "Scale( %i, %i, %s )", &dstWidth, &dstHeight, sModeStr);
@@ -687,7 +689,7 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
 
 
         } else if (params.contains(QLatin1String("Scale"))) {
-#if defined(_MSC_VER) && _MSC_VER >= 1400
+#if defined(_MSC_VER) && _MSC_VER >= 1400 && !defined(Q_OS_WINCE)
             sscanf_s(params.toLatin1().data(), "Scale(%i, %i, %1023s)",
                    &sWidth, &sHeight, sModeStr, sizeof(sModeStr));
 #else
@@ -1145,3 +1147,5 @@ QByteArray QJpegHandler::name() const
 {
     return "jpeg";
 }
+
+QT_END_NAMESPACE

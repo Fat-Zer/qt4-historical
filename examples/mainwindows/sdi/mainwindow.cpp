@@ -243,9 +243,11 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
+//! [0]
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
+//! [0]
     fileToolBar->addAction(saveAct);
 
     editToolBar = addToolBar(tr("Edit"));

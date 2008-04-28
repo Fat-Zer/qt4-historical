@@ -66,6 +66,8 @@
 
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 class Q3ListBoxPrivate
 {
 public:
@@ -4252,7 +4254,7 @@ Q3ListBoxItem *Q3ListBox::firstItem() const
 extern "C" {
 #endif
 
-#ifdef Q_OS_TEMP
+#ifdef Q_OS_WINCE
 static int _cdecl cmpListBoxItems(const void *n1, const void *n2)
 #else
 static int cmpListBoxItems(const void *n1, const void *n2)
@@ -4680,5 +4682,7 @@ int Q3ListBoxItem::rtti() const
 
     \sa StringComparisonMode
 */
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_LISTBOX

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/gui/itemviews/qitemselectionmodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/itemviews/qitemselectionmodel.cpp -->
 <head>
-  <title>Qt 4.3: QItemSelection Class Reference</title>
+  <title>Qt 4.4: QItemSelection Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QItemSelection Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QItemSelection Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+</h1>
 <p>The QItemSelection class manages information about selected items in a model. <a href="#details">More...</a></p>
 <pre> #include &lt;QItemSelection&gt;</pre><p>Inherits <a href="qlist.html">QList&lt;QItemSelectionRange&gt;</a>.</p>
 <ul>
@@ -30,7 +31,7 @@
 <li><div class="fn"/>void <b><a href="qitemselection.html#select">select</a></b> ( const QModelIndex &amp; <i>topLeft</i>, const QModelIndex &amp; <i>bottomRight</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>60 public functions inherited from <a href="qlist.html#public-functions">QList</a></li>
+<li><div class="fn"/>61 public functions inherited from <a href="qlist.html#public-functions">QList</a></li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -47,11 +48,11 @@
 <p>A QItemSelection describes the items in a model that have been selected by the user. A QItemSelection is basically a list of selection ranges, see <a href="qitemselectionrange.html">QItemSelectionRange</a>. It provides functions for creating and manipulating selections, and selecting a range of items from a model.</p>
 <p>The QItemSelection class is one of the <a href="model-view.html">Model/View Classes</a> and is part of Qt's <a href="model-view-programming.html">model/view framework</a>.</p>
 <p>An item selection can be constructed and initialized to contain a range of items from an existing model. The following example constructs a selection that contains a range of items from the given <tt>model</tt>, beginning at the <tt>topLeft</tt>, and ending at the <tt>bottomRight</tt>.</p>
-<pre> QItemSelection *selection = new QItemSelection(topLeft, bottomRight);</pre>
+<pre>     QItemSelection *selection = new QItemSelection(topLeft, bottomRight);</pre>
 <p>An empty item selection can be constructed, and later populated as required. So, if the model is going to be unavailable when we construct the item selection, we can rewrite the above code in the following way:</p>
-<pre> QItemSelection *selection = new QItemSelection();
- ...
- selection-&gt;select(topLeft, bottomRight);</pre>
+<pre>     QItemSelection *selection = new QItemSelection();
+     ...
+     selection-&gt;select(topLeft, bottomRight);</pre>
 <p>QItemSelection saves memory, and avoids unnecessary work, by working with selection ranges rather than recording the model item index for each item in the selection. Generally, an instance of this class will contain a list of non-overlapping selection ranges.</p>
 <p>Use <a href="qitemselection.html#merge">merge</a>() to merge one item selection into another without making overlapping ranges. Use <a href="qitemselection.html#split">split</a>() to split one selection range into smaller ranges based on a another selection range.</p>
 <p>See also <a href="model-view-programming.html">Model/View Programming</a> and <a href="qitemselectionmodel.html">QItemSelectionModel</a>.</p>
@@ -84,6 +85,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -50,6 +50,8 @@
 #include <QList>
 #include <QMultiMap>
 
+QT_BEGIN_NAMESPACE
+
 class ReplaceToken
 {
 public:
@@ -61,5 +63,7 @@ private:
     QMultiMap<QByteArray, TokenReplacement*> tokenRuleLookup;
     const QList<TokenReplacement*> tokenReplacementRules;
 };
+
+QT_END_NAMESPACE
 
 #endif

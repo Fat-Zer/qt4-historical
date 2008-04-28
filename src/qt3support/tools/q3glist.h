@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3LNode
@@ -271,6 +273,8 @@ protected:
     inline Q3LNode *next() { return node->next; }
     Q3LNode *node;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

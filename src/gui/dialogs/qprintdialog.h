@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PRINTDIALOG
@@ -55,6 +57,28 @@ QT_MODULE(Gui)
 class QPrintDialogPrivate;
 class QPushButton;
 class QPrinter;
+
+
+#if defined (Q_OS_UNIX) && !defined(QTOPIA_PRINTDIALOG) && !defined(Q_WS_MAC)
+class QUnixPrintWidgetPrivate;
+
+class Q_GUI_EXPORT QUnixPrintWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    QUnixPrintWidget(QPrinter *printer, QWidget *parent = 0);
+    ~QUnixPrintWidget();
+    void updatePrinter();
+
+private:
+    friend class QPrintDialogPrivate;
+    friend class QUnixPrintWidgetPrivate;
+    QUnixPrintWidgetPrivate *d;
+    Q_PRIVATE_SLOT(d, void _q_printerChanged(int))
+    Q_PRIVATE_SLOT(d, void _q_btnBrowseClicked())
+    Q_PRIVATE_SLOT(d, void _q_btnPropertiesClicked())
+};
+#endif
 
 class Q_GUI_EXPORT QPrintDialog : public QAbstractPrintDialog
 {
@@ -65,27 +89,30 @@ public:
     ~QPrintDialog();
 
     int exec();
+#if defined (Q_OS_UNIX) && !defined(Q_OS_MAC)
+    virtual void accept();
+#endif
 
-#if defined (Q_OS_UNIX) && !defined (Q_OS_MAC) && defined (QT3_SUPPORT)
+#if defined (Q_OS_UNIX) && defined (QT3_SUPPORT)
     void setPrinter(QPrinter *, bool = false);
     QPrinter *printer() const;
     void addButton(QPushButton *button);
 #endif
 
 #ifdef QTOPIA_PRINTDIALOG
+public:
     bool eventFilter(QObject *, QEvent *);
 #endif
 
 private:
 #ifndef QTOPIA_PRINTDIALOG
-    Q_PRIVATE_SLOT(d_func(), void _q_printToFileChanged(int))
-    Q_PRIVATE_SLOT(d_func(), void _q_rbPrintRangeToggled(bool))
-    Q_PRIVATE_SLOT(d_func(), void _q_printerChanged(int))
     Q_PRIVATE_SLOT(d_func(), void _q_chbPrintLastFirstToggled(bool))
-#ifndef QT_NO_FILEDIALOG
-    Q_PRIVATE_SLOT(d_func(), void _q_btnBrowseClicked())
+#if defined (Q_OS_UNIX) && !defined (Q_OS_MAC)
+    Q_PRIVATE_SLOT(d_func(), void _q_collapseOrExpandDialog())
 #endif
-    Q_PRIVATE_SLOT(d_func(), void _q_btnPropertiesClicked())
+# if defined(Q_OS_UNIX) && !defined(QT_NO_MESSAGEBOX)
+    Q_PRIVATE_SLOT(d_func(), void _q_checkFields())
+# endif
 #else // QTOPIA_PRINTDIALOG
     Q_PRIVATE_SLOT(d_func(), void _q_okClicked())
     Q_PRIVATE_SLOT(d_func(),void _q_printerOrFileSelected(QAbstractButton *b))
@@ -99,9 +126,12 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_setLastPage(int))
     Q_PRIVATE_SLOT(d_func(), void _q_fileNameEditChanged(const QString &text))
 #endif // QTOPIA_PRINTDIALOG
+    friend class QUnixPrintWidget;
 };
 
 #endif // QT_NO_PRINTDIALOG
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

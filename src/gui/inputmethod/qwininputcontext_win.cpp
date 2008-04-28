@@ -56,6 +56,12 @@
 #include <objbase.h>
 #include <initguid.h>
 
+#ifdef Q_IME_DEBUG
+#include "qdebug.h"
+#endif 
+
+QT_BEGIN_NAMESPACE
+
 DEFINE_GUID(IID_IActiveIMMApp,
 0x08c0e040, 0x62d1, 0x11d1, 0x93, 0x26, 0x0, 0x60, 0xb0, 0x67, 0xb8, 0x6e);
 
@@ -221,7 +227,7 @@ QWinInputContext::QWinInputContext(QObject *parent)
             aimmpump->Start();
     }
 
-#ifndef Q_OS_TEMP
+#ifndef Q_OS_WINCE
     // figure out whether a RTL language is installed
     typedef BOOL(WINAPI *PtrIsValidLanguageGroup)(DWORD,DWORD);
     PtrIsValidLanguageGroup isValidLanguageGroup = (PtrIsValidLanguageGroup)QLibrary::resolve(QLatin1String("kernel32"), "IsValidLanguageGroup");
@@ -237,7 +243,7 @@ QWinInputContext::QWinInputContext(QObject *parent)
                           || IsValidLocale(MAKELCID(MAKELANGID(LANG_FARSI, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED);
 #else
     qt_use_rtl_extensions = false;
-#endif // Q_OS_TEMP
+#endif
 
     WM_MSIME_MOUSE = QT_WA_INLINE(RegisterWindowMessage(L"MSIMEMouseOperation"), RegisterWindowMessageA("MSIMEMouseOperation"));
 }
@@ -301,16 +307,14 @@ static LONG getCompositionString(HIMC himc, DWORD dwIndex, LPVOID lpbuf, DWORD d
     LONG len = 0;
     if (unicode)
         *unicode = true;
-#ifndef Q_OS_TEMP
     if (aimm)
         aimm->GetCompositionStringW(himc, dwIndex, dBufLen, &len, lpbuf);
     else
-#endif
     {
         if(QSysInfo::WindowsVersion != QSysInfo::WV_95) {
             len = ImmGetCompositionStringW(himc, dwIndex, lpbuf, dBufLen);
         }
-#ifndef Q_OS_TEMP
+#if !defined(Q_OS_WINCE)
         else {
             len = ImmGetCompositionStringA(himc, dwIndex, lpbuf, dBufLen);
             if (unicode)
@@ -367,7 +371,6 @@ static QString getString(HIMC himc, DWORD dwindex, int *selStart = 0, int *selLe
     if (unicode) {
         return QString((QChar *)buffer, len/sizeof(QChar));
     }
-//#ifdef Q_OS_TEMP
     else {
         buffer[len] = 0;
         WCHAR *wc = new WCHAR[len+1];
@@ -377,7 +380,6 @@ static QString getString(HIMC himc, DWORD dwindex, int *selStart = 0, int *selLe
         delete [] wc;
         return res;
     }
-//#endif
 }
 
 void QWinInputContext::TranslateMessage(const MSG *msg)
@@ -389,9 +391,7 @@ void QWinInputContext::TranslateMessage(const MSG *msg)
 LRESULT QWinInputContext::DefWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     LRESULT retval;
-#ifndef Q_OS_TEMP
     if (!aimm || aimm->OnDefWindowProc(hwnd, msg, wParam, lParam, &retval) != S_OK)
-#endif
     {
         QT_WA({
             retval = ::DefWindowProc(hwnd, msg, wParam, lParam);
@@ -410,7 +410,7 @@ void QWinInputContext::update()
         return;
 
     Q_ASSERT(w->testAttribute(Qt::WA_WState_Created));
-    HIMC imc = getContext(w->winId());
+    HIMC imc = getContext(w->effectiveWinId());
 
     if (!imc)
         return;
@@ -436,6 +436,15 @@ void QWinInputContext::update()
     });
 
     QRect r = w->inputMethodQuery(Qt::ImMicroFocus).toRect();
+
+    // The ime window positions are based on the WinId with active focus.
+    QWidget *imeWnd = QWidget::find(::GetFocus());
+    if (imeWnd && !aimm) {
+        QPoint pt (r.topLeft());
+        pt = w->mapToGlobal(pt);
+        pt = imeWnd->mapFromGlobal(pt);
+        r.moveTo(pt);
+    }
 
     COMPOSITIONFORM cf;
     // ### need X-like inputStyle config settings
@@ -464,7 +473,7 @@ void QWinInputContext::update()
         ImmSetCandidateWindow(imc, &candf);
     }
 
-    releaseContext(w->winId(), imc);
+    releaseContext(w->effectiveWinId(), imc);
 }
 
 
@@ -485,9 +494,9 @@ bool QWinInputContext::endComposition()
 
     if (fw) {
         Q_ASSERT(fw->testAttribute(Qt::WA_WState_Created));
-        HIMC imc = getContext(fw->winId());
+        HIMC imc = getContext(fw->effectiveWinId());
         notifyIME(imc, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
-        releaseContext(fw->winId(), imc);
+        releaseContext(fw->effectiveWinId(), imc);
         if(haveCaret) {
             DestroyCaret();
             haveCaret = false;
@@ -532,9 +541,9 @@ void QWinInputContext::reset()
 
     if (fw) {
         Q_ASSERT(fw->testAttribute(Qt::WA_WState_Created));
-        HIMC imc = getContext(fw->winId());
+        HIMC imc = getContext(fw->effectiveWinId());
         notifyIME(imc, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
-        releaseContext(fw->winId(), imc);
+        releaseContext(fw->effectiveWinId(), imc);
     }
 
 }
@@ -553,8 +562,8 @@ bool QWinInputContext::startComposition()
     if (fw) {
         Q_ASSERT(fw->testAttribute(Qt::WA_WState_Created));
         imePosition = 0;
-        haveCaret = CreateCaret(fw->winId(), 0, 1, 1);
-        HideCaret(fw->winId());
+        haveCaret = CreateCaret(fw->effectiveWinId(), 0, 1, 1);
+        HideCaret(fw->effectiveWinId());
         update();
     }
     return fw != 0;
@@ -595,7 +604,7 @@ bool QWinInputContext::composition(LPARAM lParam)
     QWidget *fw = qApp->focusWidget();
     if (fw) {
         Q_ASSERT(fw->testAttribute(Qt::WA_WState_Created));
-        HIMC imc = getContext(fw->winId());
+        HIMC imc = getContext(fw->effectiveWinId());
         QInputMethodEvent e;
         if (lParam & (GCS_COMPSTR | GCS_COMPATTR | GCS_CURSORPOS)) {
             if (imePosition == -1)
@@ -641,7 +650,7 @@ bool QWinInputContext::composition(LPARAM lParam)
         }
         result = qt_sendSpontaneousEvent(fw, &e);
         update();
-        releaseContext(fw->winId(), imc);
+        releaseContext(fw->effectiveWinId(), imc);
     }
 #ifdef Q_IME_DEBUG
     qDebug("imecomposition: cursor pos at %d, str=%x", imePosition, str[0].unicode());
@@ -650,6 +659,98 @@ bool QWinInputContext::composition(LPARAM lParam)
 }
 
 static HIMC defaultContext = 0;
+
+// checks whether widget is a popup
+inline bool isPopup(QWidget *w)
+{
+    if (w && (w->windowFlags() & Qt::Popup) == Qt::Popup)
+        return true;
+    else 
+        return false;
+}
+// checks whether widget is in a popup
+inline bool isInPopup(QWidget *w)
+{
+    if (w && (isPopup(w) ||  isPopup(w->window())))
+        return true;
+    else 
+        return false;
+}
+
+// find the parent widget, which is a non popup toplevel
+// this is valid only if the widget is/in a popup
+inline QWidget *findParentforPopup(QWidget *w)
+{
+    QWidget *e = QWidget::find(w->effectiveWinId());
+    // check if this or its parent is a popup
+    while (isInPopup(e)) {
+        e = e->window()->parentWidget();
+        if (!e) 
+            break;
+        e = QWidget::find(e->effectiveWinId());
+    }
+    if (e)
+        return e->window();
+    else
+        return 0;
+}
+
+// enables or disables the ime 
+inline void enableIme(QWidget *w,  bool value) 
+{
+    if (value) {
+        // enable ime
+        if (defaultContext)
+            ImmAssociateContext(w->effectiveWinId(), defaultContext);
+    } else {
+        // disable ime
+        HIMC oldimc = ImmAssociateContext(w->effectiveWinId(), 0);
+        if (!defaultContext)
+            defaultContext = oldimc;
+    }
+}
+
+
+void QWinInputContext::updateImeStatus(QWidget *w, bool hasFocus)
+{
+    if (!w)
+        return;
+    bool e = w->testAttribute(Qt::WA_InputMethodEnabled) && w->isEnabled();
+    bool hasIme = e && hasFocus;
+#ifdef Q_IME_DEBUG
+    qDebug("%s HasFocus = %d hasIme = %d e = %d ", w->className(), hasFocus, hasIme, e);
+#endif
+    if (hasFocus || e) {
+        if (isInPopup(w))
+            enablePopupChild(w, hasIme);
+        else
+            enable(w, hasIme);
+    }
+}
+
+void QWinInputContext::enablePopupChild(QWidget *w, bool e)
+{
+    if (aimm) {
+        enable(w, e);
+        return;
+    }
+
+    if (!w || !isInPopup(w))
+        return;
+#ifdef Q_IME_DEBUG
+    qDebug("enablePopupChild: w=%s, enable = %s", w ? w->className() : "(null)" , e ? "true" : "false");
+#endif
+    QWidget *parent = findParentforPopup(w);
+    if (parent) {
+        // update ime status of the normal toplevel parent of the popup
+        enableIme(parent, e);
+    }
+    QWidget *toplevel = w->window();
+    if (toplevel) {
+        // update ime status of the toplevel popup
+        enableIme(toplevel, e);
+    }
+}
 
 void QWinInputContext::enable(QWidget *w, bool e)
 {
@@ -662,20 +763,17 @@ void QWinInputContext::enable(QWidget *w, bool e)
         if(aimm) {
             HIMC oldimc;
             if (!e) {
-                aimm->AssociateContext(w->winId(), 0, &oldimc);
+                aimm->AssociateContext(w->effectiveWinId(), 0, &oldimc);
                 if (!defaultContext)
                     defaultContext = oldimc;
             } else if (defaultContext) {
-                aimm->AssociateContext(w->winId(), defaultContext, &oldimc);
+                aimm->AssociateContext(w->effectiveWinId(), defaultContext, &oldimc);
             }
         } else {
-            if (!e) {
-                HIMC oldimc = ImmAssociateContext(w->winId(), 0);
-                if (!defaultContext)
-                    defaultContext = oldimc;
-            } else if (defaultContext) {
-                ImmAssociateContext(w->winId(), defaultContext);
-            }
+            // update ime status on the widget
+            QWidget *p = QWidget::find(w->effectiveWinId());
+            if (p)
+                enableIme(p, e);
         }
     }
 }
@@ -703,11 +801,13 @@ void QWinInputContext::mouseHandler(int pos, QMouseEvent *e)
     DWORD button = MK_LBUTTON;
 
     QWidget *fw = focusWidget();
-    Q_ASSERT(fw->testAttribute(Qt::WA_WState_Created));
-    HIMC himc = getContext(fw->winId());
-    HWND ime_wnd = getDefaultIMEWnd(fw->winId());
-    SendMessage(ime_wnd, WM_MSIME_MOUSE, MAKELONG(MAKEWORD(button, pos == 0 ? 2 : 1), pos), (LPARAM)himc);
-    releaseContext(fw->winId(), himc);
+    if (fw) {
+        Q_ASSERT(fw->testAttribute(Qt::WA_WState_Created));
+        HIMC himc = getContext(fw->effectiveWinId());
+        HWND ime_wnd = getDefaultIMEWnd(fw->effectiveWinId());
+        SendMessage(ime_wnd, WM_MSIME_MOUSE, MAKELONG(MAKEWORD(button, pos == 0 ? 2 : 1), pos), (LPARAM)himc);
+        releaseContext(fw->effectiveWinId(), himc);
+    }
     //qDebug("mouseHandler: got value %d pos=%d", ret,pos);
 }
 
@@ -715,3 +815,5 @@ QString QWinInputContext::language()
 {
     return QString();
 }
+
+QT_END_NAMESPACE

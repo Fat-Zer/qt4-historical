@@ -86,6 +86,8 @@
 
 #include "qstring.h"
 
+QT_BEGIN_NAMESPACE
+
 /*
     Helper class that automates refernce counting for CFtypes.
     After constructing the QCFType object, it can be copied like a
@@ -139,6 +141,8 @@ public:
 private:
     QString string;
 };
+
+QT_END_NAMESPACE
 
 #if (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5)
 typedef float CGFloat;

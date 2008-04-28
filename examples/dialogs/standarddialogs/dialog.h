@@ -46,9 +46,11 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QLabel;
 class QErrorMessage;
+QT_END_NAMESPACE
 
 class Dialog : public QDialog
 {

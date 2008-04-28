@@ -51,6 +51,7 @@
 
 class DomItem;
 
+//! [0]
 class DomModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -73,5 +74,6 @@ private:
     QDomDocument domDocument;
     DomItem *rootItem;
 };
+//! [0]
 
 #endif

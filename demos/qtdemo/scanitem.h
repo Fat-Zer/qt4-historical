@@ -52,10 +52,10 @@ class ScanItem : public DemoItem
 public:
     ScanItem(QGraphicsScene *scene = 0, QGraphicsItem *parent = 0);
     virtual ~ScanItem();
-    
+
 protected:
     QImage *createImage(const QMatrix &matrix) const;
-    
+
 };
 
 #endif // SCAN_ITEM_H

@@ -48,6 +48,8 @@
 #include <QFileInfo>
 #include <QDir>
 
+QT_BEGIN_NAMESPACE
+
 PortingRules *PortingRules::theInstance  = 0;
 
 void PortingRules::createInstance(QString xmlFilePath)
@@ -292,3 +294,5 @@ void PortingRules::addLogError(const QString text) const
 {
     Logger::instance()->addEntry(new PlainLogEntry(QLatin1String("Error"), QLatin1String("Porting"), text));
 }
+
+QT_END_NAMESPACE

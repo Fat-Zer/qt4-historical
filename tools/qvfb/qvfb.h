@@ -46,14 +46,17 @@
 
 #include <QMainWindow>
 #include <QStringList>
+#include "qvfbview.h"
 
-class QVFbView;
+QT_BEGIN_NAMESPACE
+
+class QVFbAbstractView;
 class QVFbRateDialog;
 class QPopupMenu;
 class QMenuData;
 class QAction;
 class Config;
-class Skin;
+class DeviceSkin;
 class QVFb;
 class QLabel;
 class QMenu;
@@ -76,13 +79,17 @@ class QVFb: public QMainWindow
 {
     Q_OBJECT
 public:
-    QVFb(int display_id, int w, int h, int d, int r, const QString &skin, QWidget *parent = 0, Qt::WindowFlags wflags = 0);
+    enum DisplayType { QWS, X11 };
+
+    QVFb( int display_id, int w, int h, int d, int r, const QString &skin, DisplayType displayType, QWidget *parent = 0, Qt::WindowFlags wflags = 0 );
     ~QVFb();
 
     void enableCursor( bool e );
-    void popupMenu();
 
     QSize sizeHint() const;
+
+public slots:
+     void popupMenu();
 
 protected slots:
     void saveImage();
@@ -95,6 +102,7 @@ protected slots:
     void configure();
     void skinConfigChosen(int i);
     void chooseSize(const QSize& sz);
+    void chooseDepth(int depth, QVFbView::PixelFormat displayFormat);
 
     void setZoom1();
     void setZoom2();
@@ -117,11 +125,11 @@ protected:
 
 private:
     void findSkins(const QString &currentSkin);
-    void init(int display_id, int w, int h, int d, int r, const QString& skin);
-    Skin *skin;
+    void init( int display_id, int w, int h, int d, int r, const QString& skin );
+    DeviceSkin *skin;
     double skinscaleH,skinscaleV;
-    QVFbView *view;
-    QVFbView *secondaryView;
+    QVFbAbstractView *view;
+    QVFbAbstractView *secondaryView;
     QVFbRateDialog *rateDlg;
     QMenu *viewMenu;
     QAction *cursorAction;
@@ -131,6 +139,7 @@ private:
     int currentSkinIndex;
     Zoomer *zoomer;
     QScrollArea* scroller;
+    DisplayType displayType;
 
     int refreshRate;
 private slots:
@@ -140,5 +149,7 @@ private slots:
     void setB400(int n);
     void updateGammaLabels();
 };
+
+QT_END_NAMESPACE
 
 #endif

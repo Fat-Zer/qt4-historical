@@ -55,6 +55,8 @@
 
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
+
 static const double deg2rad = 0.017453292519943295769;        // pi/180
 static const char piData[] = "version=\"1.0\" standalone=\"no\"";
 static const char publicId[] = "-//W3C//DTD SVG 20001102//EN";
@@ -1535,3 +1537,4 @@ static QString qt_svg_compose_path(const QPainterPath &path)
     return str;
 }
 
+QT_END_NAMESPACE

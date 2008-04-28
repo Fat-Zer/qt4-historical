@@ -47,6 +47,10 @@
 #include "qcommonstyle.h"
 #include "qstyle_p.h"
 
+#include "qstyleoption.h"
+
+QT_BEGIN_NAMESPACE
+
 //
 //  W A R N I N G
 //  -------------
@@ -61,11 +65,40 @@
 
 // Private class
 class QCommonStylePrivate : public QStylePrivate
-{   
+{
     Q_DECLARE_PUBLIC(QCommonStyle)
 public:
     inline QCommonStylePrivate()
     { }
+
+#ifndef QT_NO_ITEMVIEWS
+    void viewItemDrawText(QPainter *p, const QStyleOptionViewItemV4 *option, const QRect &rect) const;
+    void viewItemLayout(const QStyleOptionViewItemV4 *opt,  QRect *checkRect,
+                        QRect *pixmapRect, QRect *textRect, bool sizehint) const;
+    QSize viewItemSize(const QStyleOptionViewItemV4 *option, int role) const;
+
+    mutable QRect decorationRect, displayRect, checkRect;
+    mutable QStyleOptionViewItemV4 cachedOption;
+    bool isViewItemCached(const QStyleOptionViewItemV4 &option) const {
+        return option.rect == cachedOption.rect
+               && option.direction == cachedOption.direction
+               && option.state == cachedOption.state
+               && option.displayAlignment == cachedOption.displayAlignment
+               && option.decorationAlignment == cachedOption.decorationAlignment
+               && option.decorationPosition == cachedOption.decorationPosition
+               && option.decorationSize == cachedOption.decorationSize
+               && option.font == cachedOption.font
+               && option.features == cachedOption.features
+               && option.widget == cachedOption.widget
+               && option.index == cachedOption.index
+               && option.icon.isNull() == cachedOption.icon.isNull()
+               && option.text == cachedOption.text
+               && option.viewItemPosition == cachedOption.viewItemPosition;
+    }
+#endif
+
 };
+
+QT_END_NAMESPACE
 
 #endif //QCOMMONSTYLE_P_H

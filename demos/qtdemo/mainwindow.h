@@ -53,16 +53,16 @@ class ImageItem;
 class MainWindow : public QGraphicsView
 {
     Q_OBJECT
-    
+
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void enableMask(bool enable);
     void toggleFullscreen();
-    int performBenchmark();    
+    int performBenchmark();
     void switchTimerOnOff(bool on);
     void start();
-    
+
     QGraphicsScene *scene;
     bool loop;
 
@@ -80,7 +80,9 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void drawBackground(QPainter *painter, const QRectF &rect);
     void drawItems(QPainter *painter, int numItems, QGraphicsItem ** items, const QStyleOptionGraphicsItem* options);
-    
+    void focusInEvent(QFocusEvent *event);
+    void focusOutEvent(QFocusEvent *event);
+
 private slots:
     void tick();
 
@@ -92,6 +94,8 @@ private:
     bool measureFps();
     void forceFpsMedianCalculation();
     void checkAdapt();
+    void setRenderingSystem();
+
     QTimer updateTimer;
     QTime demoStartTime;
     QTime fpsTime;
@@ -99,6 +103,8 @@ private:
     ImageItem *trolltechLogo;
     ImageItem *qtLogo;
     bool doneAdapt;
+    bool useTimer;
+    DemoTextItem *pausedLabel;
 };
 
 #endif // MAIN_WINDOW_H

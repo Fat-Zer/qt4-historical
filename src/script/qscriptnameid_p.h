@@ -55,6 +55,10 @@
 // We mean it.
 //
 
+#include <QtCore/qglobal.h>
+
+QT_BEGIN_NAMESPACE
+
 class QScriptNameIdImpl
 {
 public:
@@ -69,5 +73,7 @@ public:
     inline QScriptNameIdImpl(const QString &_s):
         s(_s), h(0), next(0), used(0), persistent(0), unique(0), pad(0) { }
 };
+
+QT_END_NAMESPACE
 
 #endif // QSCRIPTNAMEID_P_H

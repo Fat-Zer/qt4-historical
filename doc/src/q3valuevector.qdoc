@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \class Q3ValueVector
     \brief The Q3ValueVector class is a value-based template class that provides a dynamic array.
@@ -43,55 +86,10 @@
     objects it contains.
 
     Example:
-    \code
-    #include <qvaluevector.h>
-    #include <qstring.h>
-    #include <stdio.h>
-
-    class Employee
-    {
-    public:
-	Employee(): s(0) {}
-	Employee( const QString& name, int salary )
-	    : n( name ), s( salary )
-	{ }
-
-	QString name()   const	 	{ return n; }
-	int	salary() const	 	{ return s; }
-	void	setSalary( int salary )	{ s = salary; }
-    private:
-	QString n;
-	int     s;
-    };
-
-    int main()
-    {
-	typedef Q3ValueVector<Employee> EmployeeVector;
-	EmployeeVector vec( 3 );  // vector of 3 Employees
-
-	vec[0] = Employee( "Bill", 50000 );
-	vec[1] = Employee( "Steve", 80000 );
-	vec[2] = Employee( "Ron", 60000 );
-
-	Employee joe( "Joe", 50000 );
-	vec.push_back( joe );  // vector expands to accommodate 4 Employees
-	joe.setSalary( 70000 );
-	
-	EmployeeVector::iterator it;
-	for( it = vec.begin(); it != vec.end(); ++it )
-	    printf( "%s earns %d\n", (*it).name().latin1(), (*it).salary() );
-
-	return 0;
-    }
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuevector.qdoc 0
 
     Program output:
-    \code
-	Bill earns 50000
-	Steve earns 80000
-	Ron earns 60000
-	Joe earns 50000
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuevector.qdoc 1
 
     As you can see, the most recent change to Joe's salary did not
     affect the value in the vector because the vector created a copy
@@ -120,26 +118,13 @@
     an element that does not exist (your application will probably
     crash). For example:
 
-    \code
-    Q3ValueVector<int> vec1;  // an empty vector
-    vec1[10] = 4;  // WARNING: undefined, probably a crash
-
-    Q3ValueVector<QString> vec2(25); // initialize with 25 elements
-    vec2[10] = "Dave";  // OK
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuevector.qdoc 2
 
     Whenever inserting, removing or referencing elements in a vector,
     always make sure you are referring to valid positions. For
     example:
 
-    \code
-    void func( Q3ValueVector<int>& vec )
-    {
-	if ( vec.size() > 10 ) {
-	    vec[9] = 99; // OK
-	}
-    };
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuevector.qdoc 3
 
     The iterators provided by vector are random access iterators,
     therefore you can use them with many generic algorithms, for
@@ -158,21 +143,7 @@
     application will crash or do unpredictable things). Use back() and
     front() with caution, for example:
 
-    \code
-    Q3ValueVector<int> vec( 3 );
-    vec.push_back( 1 );
-    vec.push_back( 2 );
-    vec.push_back( 3 );
-    ...
-    if ( !vec.empty() ) {
-	// OK: modify the first element
-	int& i = vec.front();
-	i = 18;
-    }
-    ...
-    Q3ValueVector<double> dvec;
-    double d = dvec.back(); // undefined behavior
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.q3valuevector.qdoc 4
 
     Because Q3ValueVector manages memory dynamically, it is recommended
     that you contruct a vector with an initial size. Inserting and

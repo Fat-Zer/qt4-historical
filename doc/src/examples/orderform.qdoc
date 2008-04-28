@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example richtext/orderform
     \title Order Form Example
@@ -16,9 +59,7 @@
     \c verify() to allow contents of the \c DetailsDialog to be verified later.
     This is further explained in \c DetailsDialog Implementation.
 
-    \quotefromfile richtext/orderform/detailsdialog.h
-    \skipto class DetailsDialog
-    \printuntil };
+    \snippet examples/richtext/orderform/detailsdialog.h 0
 
     The constructor of \c DetailsDialog accepts parameters \a title and
     \a parent. The class defines four \e{getter} functions: \c orderItems(),
@@ -47,15 +88,11 @@
     \c rejected() signals are connected to the \c verify() and \c reject()
     slots in \c DetailsDialog.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto DetailsDialog::DetailsDialog
-    \printuntil (reject()));
+    \snippet examples/richtext/orderform/detailsdialog.cpp 0
 
     A QGridLayout is used to place all the objects on the \c DetailsDialog.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto QGridLayout *mainLayout
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/detailsdialog.cpp 1
 
     The \c setupItemsTable() function instantiates the QTableWidget object,
     \c itemsTable, and sets the number of rows based on the QStringList
@@ -67,39 +104,29 @@
     \c itemsTable have this value for quantity; but this can be modified by
     editing the contents of the cells at run time.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto void DetailsDialog::setupItemsTable()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/detailsdialog.cpp 2
 
     The \c orderItems() function extracts data from the \c itemsTable and
     returns it in the form of a QList<QPair<QString,int>> where each QPair
     corresponds to an item and the quantity ordered.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto QList<QPair<QString, int> > DetailsDialog::orderItems()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/detailsdialog.cpp 3
 
     The \c senderName() function is used to return the value of the QLineEdit
     used to store the name field for the order form.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto QString DetailsDialog::senderName()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/detailsdialog.cpp 4
 
     The \c senderAddress() function is used to return the value of the
     QTextEdit containing the address for the order form.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto QString DetailsDialog::senderAddress()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/detailsdialog.cpp 5
 
     The \c sendOffers() function is used to return a \c true or \c false
     value that is used to determine if the customer in the order form
     wishes to receive more information on the company's offers and promotions.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto bool DetailsDialog::sendOffers()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/detailsdialog.cpp 6
 
     The \c verify() function is an additionally implemented slot used to
     verify the details entered by the user into the \c DetailsDialog. If
@@ -107,9 +134,7 @@
     providing the user the option to discard the \c DetailsDialog. Otherwise,
     the details are accepted and the \c accept() function is invoked.
 
-    \quotefromfile richtext/orderform/detailsdialog.cpp
-    \skipto void DetailsDialog::verify()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/detailsdialog.cpp 7
 
     \section1 MainWindow Definition
 
@@ -117,9 +142,7 @@
     slots - \c openDialog() and \c printFile(). It also contains a private
     instance of QTabWidget, \c letters.
 
-    \quotefromfile richtext/orderform/mainwindow.h
-    \skipto class MainWindow
-    \printuntil };
+    \snippet examples/richtext/orderform/mainwindow.h 0
 
     \section1 MainWindow Implementation
 
@@ -129,24 +152,20 @@
     and the default close() slot. The QTabWidget, \c letters, is
     instantiated and set as the window's central widget.
 
-    \quotefromfile richtext/orderform/mainwindow.cpp
-    \skipto MainWindow::MainWindow
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/mainwindow.cpp 0
 
     The \c createLetter() function creates a new QTabWidget with a QTextEdit,
     \c editor, as the parent. This function accepts four parameters that
     correspond to we obtained through \c DetailsDialog, in order to "fill"
     the \c editor.
 
-    \skipto void MainWindow::createLetter
-    \printuntil (tabIndex);
+    \snippet examples/richtext/orderform/mainwindow.cpp 1
 
     We then obtain the cursor for the \c editor using QTextEdit::textCursor().
     The \c cursor is then moved to the start of the document using
     QTextCursor::Start.
 
-    \skipto QTextCursor cursor
-    \printuntil (QTextCursor::Start);
+    \snippet examples/richtext/orderform/mainwindow.cpp 2
 
     Recall the structure of a \l{Rich Text Document Structure}
     {Rich Text Document}, where sequences of frames and
@@ -177,8 +196,7 @@
 
     This is accomplished with the following code:
 
-    \skipto QTextFrame *topFrame
-    \printuntil cursor.insertText("Another country");
+    \snippet examples/richtext/orderform/mainwindow.cpp 3
 
     Note that \c topFrame is the \c {editor}'s top-level frame and is not shown
     in the document structure.
@@ -187,8 +205,7 @@
     \c topFrame and fill in the customer's name (provided by the constructor)
     and address - using a \c foreach loop to traverse the QString, \c address.
 
-    \skipto cursor.setPosition
-    \printuntil }
+    \snippet examples/richtext/orderform/mainwindow.cpp 4
 
     The \c cursor is now back in \c topFrame and the document structure for
     the above portion of code is:
@@ -208,15 +225,12 @@
     {setWidth()} to increase the width of \c bodyFrameFormat and we insert
     a new frame with that width.
 
-    \skipto cursor.insertBlock()
-    \printuntil cursor.insertFrame(bodyFrameFormat);
+    \snippet examples/richtext/orderform/mainwindow.cpp 5
 
     The following code inserts standard text into the order form.
 
-    \skipto cursor.insertText(tr("I would like to place an order for
-    \printuntil cursor.insertBlock();
-    \skipto cursor.insertBlock();
-    \printuntil ();
+    \snippet examples/richtext/orderform/mainwindow.cpp 6
+    \snippet examples/richtext/orderform/mainwindow.cpp 7
 
     This part of the document structure now contains the date, a frame with
     \c bodyFrameFormat, as well as the standard text.
@@ -243,20 +257,17 @@
     A QTextTableFormat object, \c orderTableFormat, is used to hold the type
     of item and the quantity ordered.
 
-    \skipto QTextTableFormat orderTableFormat;
-    \printuntil cursor.currentFrame()->setFrameFormat(orderFrameFormat);
+    \snippet examples/richtext/orderform/mainwindow.cpp 8
 
     We use \l{QTextTable::cellAt()}{cellAt()} to set the headers for the
     \c orderTable.
 
-    \skipto cursor = orderTable->cellAt(0,0)
-    \printuntil cursor.insertText(tr("Quantity"), boldFormat);
+    \snippet examples/richtext/orderform/mainwindow.cpp 9
 
     Then, we iterate through the QList of QPair objects to populate
     \c orderTable.
 
-    \skipto for
-    \printuntil }
+    \snippet examples/richtext/orderform/mainwindow.cpp 10
 
     The resulting document structure for this section is:
 
@@ -289,16 +300,13 @@
     \l{QTextFrame::lastPosition()}{lastPosition()} and more standard text
     is inserted.
 
-    \skipto cursor.setPosition
-    \printuntil cursor.insertBlock();
-    \skipto cursor.insertText
-    \printuntil cursor.insertBlock();
+    \snippet examples/richtext/orderform/mainwindow.cpp 11
+    \snippet examples/richtext/orderform/mainwindow.cpp 12
 
     Another QTextTable is inserted, to display the customer's
     preference regarding offers.
 
-    \skipto QTextTable *offersTable
-    \printuntil cursor.insertText("X", boldFormat);
+    \snippet examples/richtext/orderform/mainwindow.cpp 13
 
     The document structure for this portion is:
 
@@ -323,8 +331,7 @@
     name. More blocks are inserted for spacing purposes. The \c printAction
     is enabled to indicate that an order form can now be printed.
 
-    \skipto cursor.setPosition
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/mainwindow.cpp 14
 
     The bottom portion of the document structure is:
 
@@ -346,24 +353,18 @@
     The \c createSample() function is used for illustration purposes, to create
     a sample order form.
 
-    \quotefromfile richtext/orderform/mainwindow.cpp
-    \skipto void MainWindow::createSample()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/mainwindow.cpp 15
 
     The \c openDialog() function opens a \c DetailsDialog object. If the
     details in \c dialog are accepted, the \c createLetter() function is
     invoked using the parameters extracted from \c dialog.
 
-    \quotefromfile richtext/orderform/mainwindow.cpp
-    \skipto void MainWindow::openDialog()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/mainwindow.cpp 16
 
     In order to print out the order form, a \c printFile() function is
     included, as shown below:
 
-    \quotefromfile richtext/orderform/mainwindow.cpp
-    \skipto void MainWindow::printFile()
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/mainwindow.cpp 17
 
     This function also allows the user to print a selected area with
     QTextCursor::hasSelection(), instead of printing the entire document.
@@ -374,8 +375,6 @@
     640x480 pixels before invoking the \c show() function and
     \c createSample() function.
 
-    \quotefromfile richtext/orderform/main.cpp
-    \skipto int main
-    \printuntil /^\}/
+    \snippet examples/richtext/orderform/main.cpp 0
 
 */

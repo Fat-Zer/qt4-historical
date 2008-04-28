@@ -50,8 +50,10 @@
 #include <QPainterPath>
 #include <QImage>
 
+//! [0]
 #include <plugandpaint/interfaces.h>
 
+//! [1]
 class BasicToolsPlugin : public QObject,
                          public BrushInterface,
                          public ShapeInterface,
@@ -59,8 +61,11 @@ class BasicToolsPlugin : public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(BrushInterface ShapeInterface FilterInterface)
+//! [0]
 
+//! [2]
 public:
+//! [1]
     // BrushInterface
     QStringList brushes() const;
     QRect mousePress(const QString &brush, QPainter &painter,
@@ -78,6 +83,8 @@ public:
     QStringList filters() const;
     QImage filterImage(const QString &filter, const QImage &image,
                        QWidget *parent);
+//! [3]
 };
+//! [2] //! [3]
 
 #endif

@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(OpenGL)
 
 class QGLFramebufferObjectPrivate;
@@ -65,7 +67,7 @@ public:
 
     QGLFramebufferObject(const QSize &size, GLenum target = GL_TEXTURE_2D);
     QGLFramebufferObject(int width, int height, GLenum target = GL_TEXTURE_2D);
-#if !defined(Q_WS_QWS) || defined(Q_QDOC)
+#if !defined(QT_OPENGL_ES) || defined(Q_QDOC)
     QGLFramebufferObject(const QSize &size, Attachment attachment,
                          GLenum target = GL_TEXTURE_2D, GLenum internal_format = GL_RGBA8);
     QGLFramebufferObject(int width, int height, Attachment attachment,
@@ -102,6 +104,13 @@ public:
 
     static bool hasOpenGLFramebufferObjects();
 
+    void drawTexture(const QRectF &target, GLuint textureId, GLenum textureTarget = GL_TEXTURE_2D);
+    void drawTexture(const QPointF &point, GLuint textureId, GLenum textureTarget = GL_TEXTURE_2D);
+#ifdef Q_MAC_COMPAT_GL_FUNCTIONS
+    void drawTexture(const QRectF &target, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget = GL_TEXTURE_2D);
+    void drawTexture(const QPointF &point, QMacCompatGLuint textureId, QMacCompatGLenum textureTarget = GL_TEXTURE_2D);
+#endif
+
 protected:
     int metric(PaintDeviceMetric metric) const;
     int devType() const { return QInternal::FramebufferObject; }
@@ -111,6 +120,8 @@ private:
     QGLFramebufferObjectPrivate *d_ptr;
     friend class QGLDrawable;
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 #endif // QGLFRAMEBUFFEROBJECT_H

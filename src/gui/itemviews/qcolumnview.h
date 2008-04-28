@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_COLUMNVIEW
@@ -101,6 +103,7 @@ protected:
 
     // QColumnView functions
     virtual QAbstractItemView* createColumn(const QModelIndex &rootIndex);
+    void initializeColumn(QAbstractItemView *column) const;
 
 protected Q_SLOTS:
     // QAbstractItemView overloads
@@ -115,6 +118,8 @@ private:
 };
 
 #endif // QT_NO_COLUMNVIEW
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

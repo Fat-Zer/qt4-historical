@@ -61,6 +61,8 @@
 # include <private/qcore_mac_p.h>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QToolTip
 
@@ -96,7 +98,9 @@
     QAbstractItemView::viewportEvent() function and handle it yourself.
 
     The default tool tip color and font can be customized with
-    setPalette() and setFont().
+    setPalette() and setFont(). When a tooltip is currently on
+    display, isVisible() returns true and text() the currently visible
+    text.
 
     \sa QWidget::toolTip, QAction::toolTip, {Tool Tips Example}
 */
@@ -105,7 +109,7 @@ class QTipLabel : public QLabel
 {
     Q_OBJECT
 public:
-    QTipLabel(const QPoint &pos, const QString &text, QWidget *w);
+    QTipLabel(const QString &text, QWidget *w);
     ~QTipLabel();
     static QTipLabel *instance;
 
@@ -116,7 +120,7 @@ public:
 
     void reuseTip(const QString &text);
     void hideTip();
-    void hideTipImmidiatly();
+    void hideTipImmediately();
     void setTipRect(QWidget *w, const QRect &r);
     void restartHideTimer();
     bool tipChanged(const QPoint &pos, const QString &text, QObject *o);
@@ -137,11 +141,13 @@ private:
 
 QTipLabel *QTipLabel::instance = 0;
 
-QTipLabel::QTipLabel(const QPoint &pos, const QString &text, QWidget *w)
-    : QLabel(QApplication::desktop()->screen(getTipScreen(pos, w)), Qt::ToolTip), widget(0)
+QTipLabel::QTipLabel(const QString &text, QWidget *w)
+    : QLabel(w, Qt::ToolTip), widget(0)
 {
     delete instance;
     instance = this;
+    setForegroundRole(QPalette::ToolTipText);
+    setBackgroundRole(QPalette::ToolTipBase);
     setPalette(QToolTip::palette());
     ensurePolished();
     setMargin(1 + style()->pixelMetric(QStyle::PM_ToolTipLabelFrameWidth, 0, this));
@@ -200,7 +206,7 @@ void QTipLabel::mouseMoveEvent(QMouseEvent *e)
 {
     if (rect.isNull())
         return;
-    QPoint pos = mapToGlobal(e->pos());
+    QPoint pos = e->globalPos();
     if (widget)
         pos = widget->mapFromGlobal(pos);
     if (!rect.contains(pos))
@@ -218,7 +224,7 @@ void QTipLabel::hideTip()
     hideTimer.start(300, this);
 }
 
-void QTipLabel::hideTipImmidiatly()
+void QTipLabel::hideTipImmediately()
 {
     close(); // to trigger QEvent::Close which stops the animation
     deleteLater();
@@ -247,9 +253,9 @@ void QTipLabel::timerEvent(QTimerEvent *e)
             QTipLabel::instance->fadingOut = true; // will never be false again.
         }
         else
-            hideTipImmidiatly();
+            hideTipImmediately();
 #else
-        hideTipImmidiatly();
+        hideTipImmediately();
 #endif
     }
 }
@@ -257,16 +263,18 @@ void QTipLabel::timerEvent(QTimerEvent *e)
 bool QTipLabel::eventFilter(QObject *o, QEvent *e)
 {
     switch (e->type()) {
+#ifdef Q_WS_MAC
     case QEvent::KeyPress:
     case QEvent::KeyRelease: {
         int key = static_cast<QKeyEvent *>(e)->key();
         Qt::KeyboardModifiers mody = static_cast<QKeyEvent *>(e)->modifiers();
-
-        if ((mody & Qt::KeyboardModifierMask)
-            || (key == Qt::Key_Shift || key == Qt::Key_Control
-                || key == Qt::Key_Alt || key == Qt::Key_Meta))
-            break;
+        if (!(mody & Qt::KeyboardModifierMask)
+            && key != Qt::Key_Shift && key != Qt::Key_Control
+            && key != Qt::Key_Alt && key != Qt::Key_Meta)
+            hideTip();
+        break;
     }
+#endif
     case QEvent::Leave:
         hideTip();
         break;
@@ -278,7 +286,7 @@ bool QTipLabel::eventFilter(QObject *o, QEvent *e)
     case QEvent::FocusIn:
     case QEvent::FocusOut:
     case QEvent::Wheel:
-        hideTipImmidiatly();
+        hideTipImmediately();
         break;
 
     case QEvent::MouseMove:
@@ -372,7 +380,10 @@ void QToolTip::showText(const QPoint &pos, const QString &text, QWidget *w, cons
         else if (!QTipLabel::instance->fadingOut){
             // If the tip has changed, reuse the one
             // that is showing (removes flickering)
-            if (QTipLabel::instance->tipChanged(pos, text, w)){
+            QPoint localPos = pos;
+            if (w)
+                localPos = w->mapFromGlobal(pos);
+            if (QTipLabel::instance->tipChanged(localPos, text, w)){
                 QTipLabel::instance->reuseTip(text);
                 QTipLabel::instance->setTipRect(w, rect);
                 QTipLabel::instance->placeTip(pos, w);
@@ -382,7 +393,7 @@ void QToolTip::showText(const QPoint &pos, const QString &text, QWidget *w, cons
     }
 
     if (!text.isEmpty()){ // no tip can be reused, create new tip:
-        new QTipLabel(pos, text, w); // sets QTipLabel::instance to itself
+        new QTipLabel(text, w); // sets QTipLabel::instance to itself
         QTipLabel::instance->setTipRect(w, rect);
         QTipLabel::instance->placeTip(pos, w);
         QTipLabel::instance->setObjectName(QLatin1String("qtooltip_label"));
@@ -423,9 +434,29 @@ void QToolTip::showText(const QPoint &pos, const QString &text, QWidget *w)
 */
 
 
-Q_GLOBAL_STATIC_WITH_ARGS(QPalette, tooltip_palette, (Qt::black, QColor(255,255,220),
-                                                      QColor(96,96,96), Qt::black, Qt::black,
-                                                      Qt::black, QColor(255,255,220)))
+/*!
+  Returns true if this tooltip is currently shown.
+
+  \sa showText()
+ */
+bool QToolTip::isVisible()
+{
+    return (QTipLabel::instance != 0 && QTipLabel::instance->isVisible());
+}
+
+/*!
+  Returns the tooltip text, if a tooltip is visible, or an
+  empty string if a tooltip is not visible.
+ */
+QString QToolTip::text()
+{
+    if (QTipLabel::instance)
+        return QTipLabel::instance->text();
+    return QString();
+}
+
+
+Q_GLOBAL_STATIC(QPalette, tooltip_palette)
 
 /*!
     Returns the palette used to render tooltips.
@@ -453,6 +484,8 @@ QFont QToolTip::font()
 void QToolTip::setPalette(const QPalette &palette)
 {
     *tooltip_palette() = palette;
+    if (QTipLabel::instance)
+        QTipLabel::instance->setPalette(palette);
 }
 
 /*!
@@ -498,6 +531,8 @@ void QToolTip::setFont(const QFont &font)
     widget->setToolTip("");
     \endcode
 */
+
+QT_END_NAMESPACE
 
 #include "qtooltip.moc"
 #endif // QT_NO_TOOLTIP

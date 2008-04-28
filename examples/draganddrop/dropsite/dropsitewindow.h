@@ -46,13 +46,16 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QLabel;
 class QMimeData;
 class QPushButton;
 class QTableWidget;
+QT_END_NAMESPACE
 class DropArea;
 
+//! [DropSiteWindow header]
 class DropSiteWindow : public QWidget
 {
     Q_OBJECT
@@ -72,5 +75,6 @@ private:
     QPushButton *quitButton;
     QDialogButtonBox *buttonBox;
 };
+//! [DropSiteWindow header]
 
 #endif

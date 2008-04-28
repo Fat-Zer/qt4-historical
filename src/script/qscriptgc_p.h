@@ -64,6 +64,8 @@
 
 #include "qscriptmemorypool_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace QScript {
 
 class GCBlock
@@ -90,7 +92,7 @@ public:
     }
 };
 
-template <typename _Tp>
+template <typename _Tp, typename _FinalizerArg>
 class GCAlloc
 {
 private:
@@ -102,6 +104,7 @@ private:
     GCBlock *m_free;
     bool m_blocked_gc;
     bool m_force_gc;
+    bool m_sweeping;
     MemoryPool pool;
     _Tp trivial;
 
@@ -118,12 +121,14 @@ public:
         m_current(0),
         m_free(0),
         m_blocked_gc(false),
-        m_force_gc(false) {}
+        m_force_gc(false),
+        m_sweeping(false) {}
 
     inline ~GCAlloc() {
     }
 
-    inline void destruct() {
+    inline void destruct(_FinalizerArg farg) {
+        m_sweeping = true;
         GCBlock *blk = m_free;
 
         if (! blk) {
@@ -137,7 +142,7 @@ public:
 
             Q_ASSERT(was->data());
             _Tp *data = reinterpret_cast<_Tp*>(was->data());
-            data->finalize();
+            data->finalize(farg);
             data->~_Tp();
             blk->~GCBlock();
 
@@ -146,6 +151,7 @@ public:
                 m_head = 0;
             }
         }
+        m_sweeping = false;
     }
 
     inline int newAllocatedBlocks() const { return m_new_allocated_blocks; }
@@ -193,6 +199,11 @@ public:
         return m_blocked_gc;
     }
 
+    inline bool sweeping() const
+    {
+        return m_sweeping;
+    }
+
     inline bool blockGC(bool block)
     {
         bool was = m_blocked_gc;
@@ -232,8 +243,9 @@ public:
     inline GCBlock *head() const
     { return m_head; }
 
-    void sweep(int generation)
+    void sweep(int generation, _FinalizerArg farg)
     {
+        m_sweeping = true;
         GCBlock *blk = m_head;
         m_current = 0;
 
@@ -256,7 +268,7 @@ public:
                     m_head = 0;
 
                 _Tp *data = reinterpret_cast<_Tp *>(tmp->data());
-                data->finalize(); // we need it
+                data->finalize(farg); // we need it
                 tmp->~GCBlock();
             } else {
                 m_current = blk;
@@ -266,13 +278,46 @@ public:
 
         if (! m_current)
             m_head = m_current;
+        m_sweeping = false;
     }
 
+    class const_iterator
+    {
+    public:
+        typedef _Tp value_type;
+        typedef const _Tp *pointer;
+        typedef const _Tp &reference;
+        inline const_iterator() : i(0) { }
+        inline const_iterator(GCBlock *block) : i(block) { }
+        inline const_iterator(const const_iterator &o)
+        { i = reinterpret_cast<const const_iterator &>(o).i; }
+
+        inline const _Tp *data() const { return reinterpret_cast<_Tp*>(i->data()); }
+        inline const _Tp &value() const { return *reinterpret_cast<_Tp*>(i->data()); }
+        inline const _Tp &operator*() const { return *reinterpret_cast<_Tp*>(i->data()); }
+        inline const _Tp *operator->() const { return reinterpret_cast<_Tp*>(i->data()); }
+        inline bool operator==(const const_iterator &o) const { return i == o.i; }
+        inline bool operator!=(const const_iterator &o) const { return i != o.i; }
+
+        inline const_iterator &operator++() {
+            i = i->next;
+            return *this;
+        }
+    private:
+        GCBlock *i;
+    };
+    friend class const_iterator;
+
+    inline const_iterator constBegin() const { return const_iterator(m_head); }
+    inline const_iterator constEnd() const { return const_iterator(0); }
+    
 private:
     Q_DISABLE_COPY(GCAlloc)
 };
 
 } // namespace QScript
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SCRIPT
 #endif // QSCRIPT_GC_H

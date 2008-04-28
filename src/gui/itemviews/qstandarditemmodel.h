@@ -54,6 +54,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_STANDARDITEMMODEL
@@ -241,6 +243,8 @@ protected:
     QStandardItem(QStandardItemPrivate &dd);
     QStandardItem &operator=(const QStandardItem &other);
     QStandardItemPrivate *d_ptr;
+
+    void emitDataChanged();
 
 private:
     Q_DECLARE_PRIVATE(QStandardItem)
@@ -442,6 +446,8 @@ Q_GUI_EXPORT QDataStream &operator<<(QDataStream &out, const QStandardItem &item
 #endif
 
 #endif // QT_NO_STANDARDITEMMODEL
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

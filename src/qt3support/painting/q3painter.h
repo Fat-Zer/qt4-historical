@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3Painter : public QPainter
@@ -113,6 +115,8 @@ void Q_COMPAT_EXPORT Q3Painter::drawChord(const QRect &r, int angle, int arcLeng
 {
     QPainter::drawChord(adjustedRectangle(r), angle, arcLength);
 }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

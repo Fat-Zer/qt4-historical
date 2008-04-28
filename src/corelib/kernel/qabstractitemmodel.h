@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 class QAbstractItemModel;
@@ -79,10 +81,15 @@ public:
     inline bool operator!=(const QModelIndex &other) const
         { return !(*this == other); }
     inline bool operator<(const QModelIndex &other) const
-        { if (r < other.r) return true;
-          if (r == other.r && c < other.c) return true;
-          if (r == other.r && c == other.c && p < other.p) return true;
-          if (r == other.r && c == other.c && p == other.p) return m < other.m;
+        {
+          if (r < other.r) return true;
+          if (r == other.r) {
+              if (c < other.c) return true;
+              if (c == other.c) {
+                  if (p < other.p) return true;
+                  if (p == other.p) return m < other.m;
+              }
+          }
           return false; }
 private:
     inline QModelIndex(int row, int column, void *ptr, const QAbstractItemModel *model);
@@ -357,7 +364,7 @@ inline QModelIndex QModelIndex::parent() const
 { return m ? m->parent(*this) : QModelIndex(); }
 
 inline QModelIndex QModelIndex::sibling(int arow, int acolumn) const
-{ return m ? m->index(arow, acolumn, m->parent(*this)) : QModelIndex(); }
+{ return m ? (r == arow && c == acolumn) ? *this : m->index(arow, acolumn, m->parent(*this)) : QModelIndex(); }
 
 inline QModelIndex QModelIndex::child(int arow, int acolumn) const
 { return m ? m->index(arow, acolumn, *this) : QModelIndex(); }
@@ -370,6 +377,8 @@ inline Qt::ItemFlags QModelIndex::flags() const
 
 inline uint qHash(const QModelIndex &index)
 { return uint((index.row() << 4) + index.column() + index.internalId()); }
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -51,6 +51,8 @@
 #include <QXmlDefaultHandler>
 #include <QXmlSimpleReader>
 
+QT_BEGIN_NAMESPACE
+
 class ContentHandler: public QXmlDefaultHandler
 {
 public:
@@ -221,3 +223,5 @@ QString Porting::renameEnumerator(const QString &enumName) const
     int index = findRule(m_renamedEnums, enumName);
     return index == -1 ? QString() : m_renamedEnums.at(index).second;
 }
+
+QT_END_NAMESPACE

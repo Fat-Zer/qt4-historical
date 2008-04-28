@@ -57,18 +57,26 @@ public:
 
 private slots:
     void about();
+//! [0]
     void assistant();
+//! [0]
     void open();
 
 protected:
+//! [1]
     void closeEvent(QCloseEvent *event);
+//! [1]
 
 private:
     void createActions();
     void createMenus();
+//! [2]
     void initializeAssistant();
+//! [2]
 
+//! [3]
     QAssistantClient *assistantClient;
+//! [3]
     QTextEdit *textViewer;
 
     QMenu *fileMenu;

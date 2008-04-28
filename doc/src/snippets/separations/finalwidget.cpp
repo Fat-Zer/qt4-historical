@@ -85,18 +85,24 @@ void FinalWidget::mouseMoveEvent(QMouseEvent *event)
     QDrag *drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
+//! [0]
     QByteArray output;
     QBuffer outputBuffer(&output);
     outputBuffer.open(QIODevice::WriteOnly);
     imageLabel->pixmap()->toImage().save(&outputBuffer, "PNG");
     mimeData->setData("image/png", output);
+//! [0]
 /*
+//! [1]
     mimeData->setImageData(QVariant(*imageLabel->pixmap()));
+//! [1]
 */
     drag->setMimeData(mimeData);
     drag->setPixmap(imageLabel->pixmap()->scaled(64, 64, Qt::KeepAspectRatio));
+//! [2]
     drag->setHotSpot(QPoint(drag->pixmap().width()/2,
                             drag->pixmap().height()));
+//! [2]
 
     drag->start();
 }

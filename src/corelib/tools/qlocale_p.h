@@ -58,6 +58,10 @@
 #include "QtCore/qstring.h"
 #include "QtCore/qvarlengtharray.h"
 
+#include "qlocale.h"
+
+QT_BEGIN_NAMESPACE
+
 struct Q_CORE_EXPORT QLocalePrivate
 {
 public:
@@ -72,6 +76,8 @@ public:
 
     quint32 languageId() const { return m_language_id; }
     quint32 countryId() const { return m_country_id; }
+
+    QLocale::MeasurementSystem measurementSystem() const { return m_measurement_system; }
 
     enum DoubleForm {
         DFExponent = 0,
@@ -129,6 +135,9 @@ public:
     enum NumberMode { IntegerMode, DoubleStandardMode, DoubleScientificMode };
     bool validateChars(const QString &str, NumberMode numMode, QByteArray *buff, int decDigits = -1) const;
 
+    QString dateTimeToString(const QString &format, const QDate *date, const QTime *time,
+                             const QLocale *q) const;
+
     quint32 m_language_id, m_country_id;
 
     quint16 m_decimal, m_group, m_list, m_percent,
@@ -138,6 +147,8 @@ public:
     quint32 m_short_time_format_idx, m_long_time_format_idx;
     quint32 m_short_month_names_idx, m_long_month_names_idx;
     quint32 m_short_day_names_idx, m_long_day_names_idx;
+
+    QLocale::MeasurementSystem m_measurement_system;
 };
 
 inline char QLocalePrivate::digitToCLocale(const QChar &in) const
@@ -175,5 +186,7 @@ inline char QLocalePrivate::digitToCLocale(const QChar &in) const
 
     return 0;
 }
+
+QT_END_NAMESPACE
 
 #endif // QLOCALE_P_H

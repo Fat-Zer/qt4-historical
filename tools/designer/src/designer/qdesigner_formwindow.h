@@ -47,6 +47,8 @@
 #include <QtCore/QPointer>
 #include <QtGui/QWidget>
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerWorkbench;
 class QDesignerFormWindowInterface;
 
@@ -92,5 +94,7 @@ private:
     bool m_initialized;
     bool m_windowTitleInitialized;
 };
+
+QT_END_NAMESPACE
 
 #endif // QDESIGNER_FORMWINDOW_H

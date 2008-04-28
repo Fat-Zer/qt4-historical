@@ -72,6 +72,8 @@
 
 typedef __m64 m64;
 
+QT_BEGIN_NAMESPACE
+
 struct QMMXCommonIntrinsics
 {
     static inline m64 alpha(m64 x) {
@@ -98,7 +100,7 @@ struct QMMXCommonIntrinsics
     }
 
     static inline m64 interpolate_pixel_256(const m64 &x, const m64 &a,
-                                            const m64 &y, const m64 &b)
+                                           const m64 &y, const m64 &b)
     {
         m64 res = _mm_adds_pu16(_mm_mullo_pi16(x, a), _mm_mullo_pi16(y, b));
         return _mm_srli_pi16(res, 8);
@@ -152,7 +154,7 @@ static void QT_FASTCALL comp_func_solid_Clear(uint *dest, int length, uint, uint
         return;
 
     if (const_alpha == 255) {
-        QT_MEMFILL_UINT(dest, length, 0);
+        qt_memfill(static_cast<quint32*>(dest), quint32(0), length);
     } else {
         C_FF; C_80; C_00;
         m64 ia = MM::negate(MM::load_alpha(const_alpha));
@@ -167,7 +169,7 @@ template <class MM>
 static void QT_FASTCALL comp_func_Clear(uint *dest, const uint *, int length, uint const_alpha)
 {
     if (const_alpha == 255) {
-        QT_MEMFILL_UINT(dest, length, 0);
+        qt_memfill(static_cast<quint32*>(dest), quint32(0), length);
     } else {
         C_FF; C_80; C_00;
         m64 ia = MM::negate(MM::load_alpha(const_alpha));
@@ -185,7 +187,7 @@ template <class MM>
 static void QT_FASTCALL comp_func_solid_Source(uint *dest, int length, uint src, uint const_alpha)
 {
     if (const_alpha == 255) {
-        QT_MEMFILL_UINT(dest, length, src);
+        qt_memfill(static_cast<quint32*>(dest), quint32(src), length);
     } else {
         C_FF; C_80; C_00;
         const m64 a = MM::load_alpha(const_alpha);
@@ -224,7 +226,7 @@ template <class MM>
 static void QT_FASTCALL comp_func_solid_SourceOver(uint *dest, int length, uint src, uint const_alpha)
 {
     if ((const_alpha & qAlpha(src)) == 255) {
-        QT_MEMFILL_UINT(dest, length, src);
+        qt_memfill(static_cast<quint32*>(dest), quint32(src), length);
     } else {
         C_FF; C_80; C_00;
         m64 s = MM::load(src);
@@ -647,7 +649,7 @@ static inline void qt_blend_color_argb_x86(int count, const QSpan *spans,
         while (count--) {
             uint *target = ((uint *)data->rasterBuffer->scanLine(spans->y)) + spans->x;
             if (spans->coverage == 255) {
-                QT_MEMFILL_UINT(target, spans->len, data->solid.color);
+                qt_memfill(static_cast<quint32*>(target), quint32(data->solid.color), spans->len);
             } else {
                 // dest = s * ca + d * (1 - sa*ca) --> dest = s * ca + d * (1-ca)
                 m64 ca = MM::load_alpha(spans->coverage);
@@ -676,9 +678,13 @@ static inline void qt_blend_color_argb_x86(int count, const QSpan *spans,
 struct QMMXIntrinsics : public QMMXCommonIntrinsics
 {
     static inline void end() {
-        _mm_empty();
+#if !defined(Q_OS_WINCE) 
+       _mm_empty();
+#endif
     }
 };
 #endif // QT_HAVE_MMX
+
+QT_END_NAMESPACE
 
 #endif // QDRAWHELPER_MMX_P_H

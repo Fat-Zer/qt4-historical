@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt3to4.html
     \title qt3to4 - The Qt 3 to 4 Porting Tool
@@ -18,10 +61,7 @@
     files, or on an entire project specified by a \c qmake \c .pro
     file:
 
-    \code
-        qt3to4 myfile.cpp
-        qt3to4 myapp.pro
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt3to4.qdoc 0
 
     In project mode, \c qt3to4 reads the \c .pro file and converts
     all files specified in it. The tool modifies the files in place.
@@ -58,21 +98,7 @@
     possible to create a "patch" file that includes the original file and adds
     or disables rules. The syntax for this file looks like this:
 
-    \code
-    <Rules>
-      <Include>/path/to/q3porting.xml</Include>
-
-      <item Type="RenamedHeader" Disable="True" >
-        <Qt4>q3sqlselectcursor.h</Qt4>
-        <Qt3>qsqlselectcursor.h</Qt3>
-      </item>
-
-      <item Type="RenamedHeader" >
-        <Qt4>newclass.h</Qt4>
-        <Qt3>oldclass.h</Qt3>
-      </item>
-    </Rules>
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt3to4.qdoc 1
 
     \section1 Logging
 
@@ -112,9 +138,7 @@
     In some cases, you might get compiler errors because of identifiers
     in the global namespace (e.g., \c CTRL). Adding
 
-    \code
-        using namespace Qt;
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt3to4.qdoc 2
 
     at the beginning of the source file that contains
     the indentifier solves the problem.

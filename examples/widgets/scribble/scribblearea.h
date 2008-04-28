@@ -49,6 +49,7 @@
 #include <QPoint>
 #include <QWidget>
 
+//! [0]
 class ScribbleArea : public QWidget
 {
     Q_OBJECT
@@ -87,5 +88,6 @@ private:
     QImage image;
     QPoint lastPoint;
 };
+//! [0]
 
 #endif

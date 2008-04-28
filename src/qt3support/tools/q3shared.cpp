@@ -43,6 +43,8 @@
 
 #include "q3shared.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
   \class Q3Shared
   \brief The Q3Shared class is used internally for implementing shared classes.
@@ -68,3 +70,5 @@
   Decrements the reference count and returns true if
   any references remain. 
 */
+
+QT_END_NAMESPACE

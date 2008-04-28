@@ -46,7 +46,11 @@
 
 #include <QtCore/qnamespace.h>
 
+typedef struct _XDisplay Display;
+
 QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 QT_MODULE(Gui)
 
@@ -54,8 +58,6 @@ struct QX11InfoData;
 class QPaintDevice;
 class QApplicationPrivate;
 class QX11InfoPrivate;
-
-typedef struct _XDisplay Display;
 
 class Q_GUI_EXPORT QX11Info
 {
@@ -91,6 +93,7 @@ public:
     static unsigned long appUserTime();
     static void setAppTime(unsigned long time);
     static void setAppUserTime(unsigned long time);
+    static bool isCompositingManagerRunning();
 
 protected:
     void copyX11Data(const QPaintDevice *);
@@ -102,6 +105,7 @@ protected:
 
     friend class QX11PaintEngine;
     friend class QPixmap;
+    friend class QX11PixmapData;
     friend class QWidget;
     friend class QWidgetPrivate;
     friend class QGLWidget;
@@ -109,6 +113,8 @@ protected:
                         Qt::HANDLE colormap);
     friend void qt_cleanup();
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

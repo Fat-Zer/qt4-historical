@@ -47,8 +47,11 @@
 #include <QIcon>
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QLabel;
+QT_END_NAMESPACE
 
+//! [0]
 class IconPreviewArea : public QWidget
 {
     Q_OBJECT
@@ -72,5 +75,6 @@ private:
     QLabel *modeLabels[NumModes];
     QLabel *pixmapLabels[NumModes][NumStates];
 };
+//! [0]
 
 #endif

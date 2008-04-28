@@ -44,13 +44,15 @@
 #include <qimageiohandler.h>
 #include <qstringlist.h>
 
-#ifndef QT_NO_IMAGEFORMATPLUGIN
+#if !defined(QT_NO_IMAGEFORMATPLUGIN) && !defined(QT_NO_SVGRENDERER)
 
 #include "qsvgiohandler.h"
 
 #include <qiodevice.h>
 #include <qbytearray.h>
 #include <qdebug.h>
+
+QT_BEGIN_NAMESPACE
 
 class QSvgPlugin : public QImageIOPlugin
 {
@@ -96,5 +98,7 @@ QImageIOHandler *QSvgPlugin::create(QIODevice *device, const QByteArray &format)
 
 Q_EXPORT_STATIC_PLUGIN(QSvgPlugin)
 Q_EXPORT_PLUGIN2(qsvg, QSvgPlugin)
+
+QT_END_NAMESPACE
 
 #endif // !QT_NO_IMAGEFORMATPLUGIN

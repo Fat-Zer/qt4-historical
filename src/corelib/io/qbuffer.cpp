@@ -44,6 +44,8 @@
 #include "qbuffer.h"
 #include "private/qiodevice_p.h"
 
+QT_BEGIN_NAMESPACE
+
 /** QBufferPrivate **/
 class QBufferPrivate : public QIODevicePrivate
 {
@@ -94,10 +96,7 @@ void QBufferPrivate::_q_emitSignals()
     interface. The QByteArray is treated just as a standard random-accessed
     file. Example:
 
-    \quotefromfile snippets/buffer/buffer.cpp
-    \skipto main_snippet
-    \skipto QBuffer buffer
-    \printto /^\}/
+    \snippet doc/src/snippets/buffer/buffer.cpp 0
 
     By default, an internal QByteArray buffer is created for you when
     you create a QBuffer. You can access this buffer directly by
@@ -115,16 +114,12 @@ void QBufferPrivate::_q_emitSignals()
     The following code snippet shows how to write data to a
     QByteArray using QDataStream and QBuffer:
 
-    \skipto write_datastream_snippet
-    \skipto QByteArray
-    \printto /^\}/
+    \snippet doc/src/snippets/buffer/buffer.cpp 1
 
     Effectively, we convert the application's QPalette into a byte
     array. Here's how to read the data from the QByteArray:
 
-    \skipto read_datastream_snippet
-    \skipto QPalette
-    \printto /^\}/
+    \snippet doc/src/snippets/buffer/buffer.cpp 2
 
     QTextStream and QDataStream also provide convenience constructors
     that take a QByteArray and that create a QBuffer behind the
@@ -187,10 +182,7 @@ QBuffer::QBuffer(QObject *parent)
 
     Example:
 
-    \quotefromfile snippets/buffer/buffer.cpp
-    \skipto bytearray_ptr_ctor_snippet
-    \skipto QByteArray
-    \printto /^\}/
+    \snippet doc/src/snippets/buffer/buffer.cpp 3
 
     \sa open(), setBuffer(), setData()
 */
@@ -226,10 +218,7 @@ QBuffer::~QBuffer()
 
     Example:
 
-    \quotefromfile snippets/buffer/buffer.cpp
-    \skipto setBuffer_snippet
-    \skipto QByteArray
-    \printto /^\}/
+    \snippet doc/src/snippets/buffer/buffer.cpp 4
 
     If \a byteArray is 0, the buffer creates its own internal
     QByteArray to work on. This byte array is initially empty.
@@ -378,7 +367,17 @@ qint64 QBuffer::size() const
 bool QBuffer::seek(qint64 pos)
 {
     Q_D(QBuffer);
-    if (pos < 0 || pos >= d->buf->size() + 1) {
+    if (pos > d->buf->size() && isWritable()) {
+        if (seek(d->buf->size())) {
+            const qint64 gapSize = pos - d->buf->size();
+            if (write(QByteArray(gapSize, 0)) != gapSize) {
+                qWarning("QBuffer::seek: Unable to fill gap");
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } else if (pos > d->buf->size() || pos < 0) {
         qWarning("QBuffer::seek: Invalid pos: %d", int(pos));
         return false;
     }
@@ -448,6 +447,9 @@ qint64 QBuffer::writeData(const char *data, qint64 len)
     return len;
 }
 
+QT_END_NAMESPACE
+
 #ifndef QT_NO_QOBJECT
 # include "moc_qbuffer.cpp"
 #endif
+

@@ -46,7 +46,7 @@
 
 #include <QtGui>
 #include "demoitem.h"
- 
+
 class HeadingItem : public DemoItem
 {
 public:
@@ -56,7 +56,7 @@ public:
 
 protected:
     virtual QImage *createImage(const QMatrix &matrix) const; // overridden
-    
+
 private:
     QString text;
 };

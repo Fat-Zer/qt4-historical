@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/qt3support/canvas/q3canvas.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/canvas/q3canvas.cpp -->
 <head>
-  <title>Qt 4.3: Q3Canvas Class Reference</title>
+  <title>Qt 4.4: Q3Canvas Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,8 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3Canvas Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3Canvas Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
+</h1>
 <p>The Q3Canvas class provides a 2D area that can contain <a href="q3canvasitem.html">Q3CanvasItem</a> objects. <a href="#details">More...</a></p>
 <pre> #include &lt;Q3Canvas&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qcanvas">Porting to Qt 4</a> for more information.</p>
 <p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
@@ -185,11 +186,11 @@
 <h3 class="fn"><a name="drawArea"></a>void Q3Canvas::drawArea ( const <a href="qrect.html">QRect</a> &amp; <i>clip</i>, <a href="qpainter.html">QPainter</a> * <i>painter</i>, bool <i>dbuf</i> = false )</h3>
 <p>Paints all canvas items that are in the area <i>clip</i> to <i>painter</i>, using double-buffering if <i>dbuf</i> is true.</p>
 <p>e.g&#x2e; to print the canvas to a printer:</p>
-<pre> QPrinter pr;
- if (pr.setup()) {
-     QPainter p(&amp;pr);
-     canvas.drawArea(canvas.rect(), &amp;p);
- }</pre>
+<pre>     QPrinter pr;
+     if (pr.setup()) {
+         QPainter p(&amp;pr);
+         canvas.drawArea(canvas.rect(), &amp;p);
+     }</pre>
 <a name="//apple_ref/cpp/instm/Q3Canvas/drawBackground" />
 <h3 class="fn"><a name="drawBackground"></a>void Q3Canvas::drawBackground ( <a href="qpainter.html">QPainter</a> &amp; <i>painter</i>, const <a href="qrect.html">QRect</a> &amp; <i>clip</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This virtual function is called for all updates of the canvas. It renders any background graphics using the painter <i>painter</i>, in the area <i>clip</i>. If the canvas has a background pixmap or a tiled background, that graphic is used, otherwise the canvas is cleared using the background color.</p>
@@ -314,6 +315,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

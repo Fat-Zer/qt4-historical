@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3Support)
 
 class Q3SocketPrivate;
@@ -149,6 +151,8 @@ private:	// Disabled copy constructor and operator=
     Q3Socket &operator=( const Q3Socket & );
 #endif
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

@@ -49,6 +49,8 @@
 #include <private/qobject_p.h>
 #include "qsound_p.h"
 
+QT_BEGIN_NAMESPACE
+
 static QList<QAuServer*> *servers=0;
 
 QAuServer::QAuServer(QObject* parent)
@@ -112,17 +114,12 @@ public:
     applications: asynchronously playing a sound file. This is most
     easily accomplished using the static play() function:
 
-    \code
-        QSound::play("mysounds/bells.wav");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qsound.cpp 0
 
     Alternatively, create a QSound object from the sound file first
     and then call the play() slot:
 
-    \code
-        QSound bells("mysounds/bells.wav");
-        bells.play();
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.kernel.qsound.cpp 1
 
     Once created a QSound object can be queried for its fileName() and
     total number of loops() (i.e. the number of times the sound will
@@ -155,7 +152,7 @@ public:
     \o NSSound is used. All formats that NSSound supports, including QuickTime formats, 
     are supported by Qt/Mac.
     \row
-    \o Qtopia Core
+    \o Qt for Embedded Linux
     \o A built-in mixing sound server is used, accessing \c /dev/dsp
     directly. Only the WAVE format is supported.
     \endtable
@@ -386,5 +383,6 @@ QAuBucket::~QAuBucket()
     Use the isAvailable() function instead.
 */
 
+QT_END_NAMESPACE
 
 #endif // QT_NO_SOUND

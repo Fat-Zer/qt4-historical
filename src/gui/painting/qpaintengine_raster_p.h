@@ -65,6 +65,8 @@
 
 #include <stdlib.h>
 
+QT_BEGIN_NAMESPACE
+
 class QFTOutlineMapper;
 class QRasterPaintEnginePrivate;
 class QRasterBuffer;
@@ -186,6 +188,7 @@ public:
 
     void drawBitmap(const QPointF &pos, const QPixmap &image, QSpanData *fill);
 
+    void rasterize(QT_FT_Outline *outline, ProcessSpans callback, QSpanData *spanData, QRasterBuffer *rasterBuffer);
     void rasterize(QT_FT_Outline *outline, ProcessSpans callback, void *userData, QRasterBuffer *rasterBuffer);
     void setClipRect(const QRect &rect);
     void setClipRegion(const QRegion &region);
@@ -204,6 +207,8 @@ public:
     ProcessSpans getPenFunc(const QRectF &rect, const QSpanData *data) const;
     ProcessSpans getBrushFunc(const QRect &rect, const QSpanData *data) const;
     ProcessSpans getBrushFunc(const QRectF &rect, const QSpanData *data) const;
+
+    void initializeRasterizer(QSpanData *data);
 
     QPointF brushOffset;
     QBrush brush;
@@ -349,6 +354,7 @@ public:
           m_hdc(0),
           m_bitmap(0),
           m_null_bitmap(0),
+          m_text_buffer(false),
           m_width(0),
           m_height(0),
           m_buffer(0)
@@ -372,17 +378,16 @@ public:
     void init();
 
     void prepare(QImage *image);
-#ifdef Q_WS_QWS
-void prepare(QCustomRasterPaintDevice *device);
-#endif
-#if defined(Q_WS_QWS) || defined(Q_WS_MAC)
     void prepare(QPixmap *pix);
+#ifdef Q_WS_QWS
+    void prepare(QCustomRasterPaintDevice *device);
 #endif
     void prepare(int w, int h);
     void prepareBuffer(int w, int h);
 
 #ifdef Q_WS_WIN
     void setupHDC(bool clear_type);
+    inline void setTextBuffer(bool t);
 #endif
 
     void resetBuffer(int val=0);
@@ -399,6 +404,7 @@ void prepare(QCustomRasterPaintDevice *device);
     int width() const { return m_width; }
     int height() const { return m_height; }
     int bytesPerLine() const { return bytes_per_line; }
+    int bytesPerPixel() const { return bytes_per_pixel; }
 
     uchar *buffer() const { return m_buffer; }
 
@@ -425,12 +431,18 @@ private:
     HDC m_hdc;
     HBITMAP m_bitmap;
     HBITMAP m_null_bitmap;
+    bool m_text_buffer;
 #endif
-
     int m_width;
     int m_height;
     int bytes_per_line;
+    int bytes_per_pixel;
     uchar *m_buffer;
 };
 
+#ifdef Q_WS_WIN
+inline void QRasterBuffer::setTextBuffer(bool t) { m_text_buffer = t; }
+#endif
+
+QT_END_NAMESPACE
 #endif // QPAINTENGINE_RASTER_P_H

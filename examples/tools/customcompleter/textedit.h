@@ -46,8 +46,11 @@
 
 #include <QTextEdit>
 
+QT_BEGIN_NAMESPACE
 class QCompleter;
+QT_END_NAMESPACE
 
+//! [0]
 class TextEdit : public QTextEdit
 {
     Q_OBJECT
@@ -72,6 +75,7 @@ private:
 private:
     QCompleter *c;
 };
+//! [0]
 
 #endif // TEXTEDIT_H
 

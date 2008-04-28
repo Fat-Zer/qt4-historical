@@ -50,6 +50,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_PROCESS
@@ -100,7 +102,7 @@ public:
     virtual QString readLineStderr();
 
     // get platform dependent process information
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     typedef void* PID;
 #else
     typedef Q_LONG PID;
@@ -136,7 +138,7 @@ private:
 
     void init();
     void reset();
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     uint readStddev( Qt::HANDLE dev, char *buf, uint bytes );
 #endif
     Q3Membuf* membufStdout();
@@ -178,6 +180,8 @@ private:
 };
 
 #endif // QT_NO_PROCESS
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

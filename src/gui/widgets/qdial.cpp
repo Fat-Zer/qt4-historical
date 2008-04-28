@@ -62,6 +62,8 @@
 #include "qaccessible.h"
 #endif
 
+QT_BEGIN_NAMESPACE
+
 class QDialPrivate : public QAbstractSliderPrivate
 {
     Q_DECLARE_PUBLIC(QDial)
@@ -71,7 +73,7 @@ public:
         wrapping = false;
         tracking = true;
         doNotEmit = false;
-        target = 3.7;
+        target = qreal(3.7);
     }
 
     qreal target;
@@ -207,6 +209,10 @@ int QDialPrivate::valueFromPoint(const QPoint &p) const
     defined \l singleStep, \key{Page Up} and \key{Page Down} by the defined
     \l pageStep, and the \key Home and \key End keys set the value to the
     defined \l minimum and \l maximum values.
+
+    If you are using the mouse wheel to adjust the dial, the increment value
+    is determined by the lesser value of \l{QApplication::wheelScrollLines()}
+    {wheelScrollLines} multipled by \l singleStep, and \l pageStep.
 
     \table
     \row \o \inlineimage plastique-dial.png Screenshot of a dial in the Plastique widget style
@@ -512,5 +518,6 @@ bool QDial::event(QEvent *e)
     Use QAbstractSlider::sliderReleased() instead.
 */
 
+QT_END_NAMESPACE
 
 #endif // QT_NO_DIAL

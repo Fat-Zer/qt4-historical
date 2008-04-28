@@ -53,6 +53,9 @@
 #include "q3tl.h"
 
 #include <stdlib.h>
+
+QT_BEGIN_NAMESPACE
+
 using namespace Qt;
 
 class Q3CanvasData {
@@ -1292,13 +1295,7 @@ void Q3Canvas::ensureOffScrSize(int osw, int osh)
     painter, using double-buffering if \a dbuf is true.
 
     e.g. to print the canvas to a printer:
-    \code
-    QPrinter pr;
-    if (pr.setup()) {
-	QPainter p(&pr);
-	canvas.drawArea(canvas.rect(), &p);
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.canvas.q3canvas.cpp 0
 */
 void Q3Canvas::drawArea(const QRect& clip, QPainter* painter, bool dbuf)
 {
@@ -1306,7 +1303,10 @@ void Q3Canvas::drawArea(const QRect& clip, QPainter* painter, bool dbuf)
 	drawCanvasArea(clip, painter, dbuf);
 }
 
+QT_BEGIN_INCLUDE_NAMESPACE
 #include <qdebug.h>
+QT_END_INCLUDE_NAMESPACE
+
 /*!
   \internal
 */
@@ -3319,16 +3319,7 @@ void Q3CanvasSprite::draw(QPainter& painter)
     subclass Q3CanvasView. You might then reimplement
     Q3ScrollView::contentsMousePressEvent(). For example:
 
-    \code
-    void MyCanvasView::contentsMousePressEvent(QMouseEvent* e)
-    {
-        Q3CanvasItemList l = canvas()->collisions(e->pos());
-        for (Q3CanvasItemList::Iterator it=l.begin(); it!=l.end(); ++it) {
-            if ((*it)->rtti() == Q3CanvasRectangle::RTTI)
-                qDebug("A Q3CanvasRectangle lies somewhere at this point");
-        }
-    }
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.canvas.q3canvas.cpp 1
 
     The canvas view shows canvas canvas(); this can be changed using
     setCanvas().
@@ -3337,16 +3328,7 @@ void Q3CanvasSprite::draw(QPainter& painter)
     canvas in various ways, for example, zooming in or out or rotating.
     For example:
 
-    \code
-    QMatrix wm;
-    wm.scale(2, 2);   // Zooms in by 2 times
-    wm.rotate(90);    // Rotates 90 degrees counter clockwise
-                      // around the origin.
-    wm.translate(0, -canvas->height());
-                      // moves the canvas down so what was visible
-                      // before is still visible.
-    myCanvasView->setWorldMatrix(wm);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.canvas.q3canvas.cpp 2
 
     Use setWorldMatrix() to set the canvas view's world matrix: you must
     ensure that the world matrix is invertible. The current world matrix
@@ -3358,11 +3340,7 @@ void Q3CanvasSprite::draw(QPainter& painter)
     The following code finds the part of the canvas that is visible in
     this view, i.e. the bounding rectangle of the view in canvas coordinates.
 
-    \code
-    QRect rc = QRect(myCanvasView->contentsX(), myCanvasView->contentsY(),
-                     myCanvasView->visibleWidth(), myCanvasView->visibleHeight());
-    QRect canvasRect = myCanvasView->inverseWorldMatrix().mapRect(rc);
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.canvas.q3canvas.cpp 3
 
     \sa QMatrix QPainter::setWorldMatrix(), QtCanvas, {Porting to Graphics View}
 */
@@ -4913,17 +4891,7 @@ void Q3CanvasText::removeFromChunks()
 
     For example:
 
-    \code
-	Q3CanvasItem* item;
-	// Find an item, e.g. with Q3CanvasItem::collisions().
-	...
-	if (item->rtti() == MySprite::RTTI) {
-	    MySprite* s = (MySprite*)item;
-	    if (s->isDamagable()) s->loseHitPoints(1000);
-	    if (s->isHot()) myself->loseHitPoints(1000);
-	    ...
-	}
-    \endcode
+    \snippet doc/src/snippets/code/src.qt3support.canvas.q3canvas.cpp 4
 */
 int Q3CanvasItem::rtti() const { return RTTI; }
 int Q3CanvasItem::RTTI = Rtti_Item;
@@ -5195,3 +5163,5 @@ void Q3CanvasPolygonalItem::scanPolygon(const Q3PointArray& pa, int winding, QPo
     Q3CanvasPolygonScanner scanner(process);
     scanner.scan(pa,winding);
 }
+
+QT_END_NAMESPACE

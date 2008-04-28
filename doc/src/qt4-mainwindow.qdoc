@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \page qt4-mainwindow.html
     \title The Qt 4 Main Window Classes
@@ -54,25 +97,17 @@
     the first time it is called. You can also call
     QMainWindow::setMenuBar() to use a custom menu bar in the main window.
 
-    \code
-        MainWindow::MainWindow(QWidget *parent)
-            : QMainWindow(parent)
-        {
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 0
     \dots
-    \quotefromfile mainwindows/menus/mainwindow.cpp
-    \skipto newAct = new QAction
-    \printuntil connect(openAct
+    \snippet examples/mainwindows/menus/mainwindow.cpp 5
     \dots
 
     Once actions have been created, we can add them to the main window
-    components. To begin with, we add them to the popup menus:
+    components. To begin with, we add them to the pop-up menus:
 
-    \skipto fileMenu = menuBar()->addMenu(
-    \printuntil addAction(openAct)
+    \snippet examples/mainwindows/menus/mainwindow.cpp 10
     \dots
-    \skipto fileMenu->addSeparator()
-    \printuntil fileMenu->addSeparator()
+    \snippet examples/mainwindows/menus/mainwindow.cpp 11
     \dots
 
     The QToolBar and QMenu classes use Qt's action system to provide a
@@ -84,14 +119,9 @@
     We create a toolbar as a child of the main window, and add the desired
     actions to it:
 
-    \quotefromfile mainwindows/sdi/mainwindow.cpp
-    \skipto fileToolBar = addToolBar(
-    \printuntil openAct
+    \snippet examples/mainwindows/sdi/mainwindow.cpp 0
     \dots
-    \code
-            fileToolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-            addToolBar(Qt::TopToolBarArea, fileToolbar);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 1
 
     In this example, the toolbar is restricted to the top and bottom
     toolbar areas of the main window, and is initially placed in the
@@ -103,9 +133,7 @@
     dock widget as a child of the main window, and add widgets as children
     of the dock widget:
 
-    \quotefromfile snippets/dockwidgets/mainwindow.cpp
-    \skipto contentsWindow
-    \printuntil setWidget
+    \snippet doc/src/snippets/dockwidgets/mainwindow.cpp 0
 
     In this example, the dock widget can only be placed in the left and
     right dock areas, and it is initially placed in the left dock area. 
@@ -115,12 +143,7 @@
     required, the default can be changed with the
     QMainWindow::setCorner() function:
 
-    \code
-        setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
-        setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-        setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
-        setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 2
 
     The following diagram shows the configuration produced by the above code.
     Note that the left and right dock widgets will occupy the top and bottom
@@ -131,10 +154,7 @@
     Once all of the main window components have been set up, the central widget
     is created and installed by using code similar to the following:
 
-    \code
-        QWidget *centralWidget = new QWidget(this);
-        setCentralWidget(centralWidget);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 3
 
     The central widget can be any subclass of QWidget.
 
@@ -208,38 +228,17 @@
     constructed using the general QMenu class.
 
     Qt 3:
-    \code
-        QPopupMenu *fileMenu = new QPopupMenu(this);
-        openAction->addTo(fileMenu);
-        saveAction->addTo(fileMenu);
-        ...
-        menuBar()->insertItem(tr("&File"), fileMenu);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 4
     Qt 4:
-    \code
-        QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-        fileMenu->addAction(openAction);
-        fileMenu->addAction(saveAction);
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 5
 
     Toolbars follow the same pattern as menus, with the new, more
     consistent behavior:
 
     Qt 3:
-    \code
-        QToolBar *fileTools = new QToolBar(this, "file toolbar");
-        openAction->addTo(fileTools);
-        saveAction->addTo(fileTools);
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 6
     Qt 4:
-    \code
-        QToolBar *fileTools = addToolBar(tr("File Tool Bar"));
-        fileTools->addAction(openAction);
-        fileTools->addAction(saveAction);
-        ...
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 7
 
     The behavior of dock widgets is now configured through the member
     functions of QDockWidget. For example, compare the old and new ways
@@ -247,13 +246,7 @@
     main window.
 
     In Qt 3:
-    \code
-        QDockWidget *dockWidget = new QDockWidget(this);
-        mainWin->moveDockWidget(dockWidget, Qt::DockLeft);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 8
     In Qt 4:
-    \code
-        QDockWidget *dockWidget = new QDockWidget(mainWindow);
-        mainWindow->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.qt4-mainwindow.qdoc 9
 */

@@ -47,6 +47,8 @@
 #include "ui_mainwindowbase.h"
 #include <QVariant>
 
+QT_BEGIN_NAMESPACE
+
 class ColorButton;
 class PreviewFrame;
 
@@ -89,5 +91,7 @@ protected slots:
     virtual void init();
     virtual void destroy();
 };
+
+QT_END_NAMESPACE
 
 #endif // MAINWINDOWBASE_H

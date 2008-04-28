@@ -45,6 +45,8 @@
 
 #include "qvfbprotocol.h"
 
+QT_BEGIN_NAMESPACE
+
 class QVFbHeader;
 class QTimer;
 class QMMapViewProtocol : public QVFbViewProtocol
@@ -60,6 +62,7 @@ public:
     int  numcols() const;
     QVector<QRgb> clut() const;
     unsigned char *data() const;
+    int brightness() const;
 
     void setRate(int);
     int rate() const;
@@ -82,5 +85,7 @@ private:
     unsigned char *dataCache;
     QTimer *mRefreshTimer;
 };
+
+QT_END_NAMESPACE
 
 #endif

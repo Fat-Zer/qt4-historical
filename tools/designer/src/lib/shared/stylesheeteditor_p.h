@@ -60,7 +60,12 @@
 #include <QtGui/QLabel>
 #include "shared_global_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDesignerFormWindowInterface;
+class QDesignerFormEditorInterface;
+
+class QDialogButtonBox;
 
 namespace qdesigner_internal {
 
@@ -71,26 +76,70 @@ public:
     StyleSheetEditor(QWidget *parent = 0);
 };
 
+// Edit a style sheet.
 class QDESIGNER_SHARED_EXPORT StyleSheetEditorDialog : public QDialog
 {
     Q_OBJECT
 public:
-    StyleSheetEditorDialog(QWidget *parent, QWidget *widget);
-    StyleSheetEditor *editor() const;
+    enum Mode {
+        ModeGlobal, // resources are disabled (we don't have current resource set loaded), used e.g. in configuration dialog context
+        ModePerForm // resources are available
+    };
+
+    StyleSheetEditorDialog(QDesignerFormEditorInterface *core, QWidget *parent, Mode mode = ModePerForm);
+    QString text() const;
+    void setText(const QString &t);
+
+    static bool isStyleSheetValid(const QString &styleSheet);
+
+
+private slots:
+    void validateStyleSheet();
+    void slotContextMenuRequested(const QPoint &pos);
+    void slotAddResource(const QString &property);
+    void slotAddGradient(const QString &property);
+    void slotAddColor(const QString &property);
+    void slotAddFont();
+    void slotRequestHelp();
+
+protected:
+    QDialogButtonBox *buttonBox() const;
+    void setOkButtonEnabled(bool v);
+
+private:
+    void insertCssProperty(const QString &name, const QString &value);
+
+    QDialogButtonBox *m_buttonBox;
+    StyleSheetEditor *m_editor;
+    QLabel *m_validityLabel;
+    QDesignerFormEditorInterface *m_core;
+    QAction *m_addResourceAction;
+    QAction *m_addGradientAction;
+    QAction *m_addColorAction;
+    QAction *m_addFontAction;
+};
+
+// Edit the style sheet property of the designer selection.
+// Provides an "Apply" button.
+
+class QDESIGNER_SHARED_EXPORT StyleSheetPropertyEditorDialog : public StyleSheetEditorDialog
+{
+    Q_OBJECT
+public:
+    StyleSheetPropertyEditorDialog(QWidget *parent, QDesignerFormWindowInterface *fw, QWidget *widget);
 
     static bool isStyleSheetValid(const QString &styleSheet);
 
 private slots:
     void applyStyleSheet();
-    void validateStyleSheet();
 
 private:
-    StyleSheetEditor *m_editor;
     QDesignerFormWindowInterface *m_fw;
     QWidget *m_widget;
-    QLabel *validityLabel;
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // STYLESHEETEDITOR_H

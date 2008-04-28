@@ -55,7 +55,7 @@
 // We mean it.
 //
 
-#include <QtCore/qshareddata.h>
+#include <QtCore/qglobal.h>
 
 #ifndef QT_NO_SCRIPT
 
@@ -64,11 +64,14 @@
 #include "qscriptmemberfwd_p.h"
 #include "qscriptvalueimplfwd_p.h"
 
+QT_BEGIN_NAMESPACE
+
 class QScriptObject
 {
 public:
     inline void reset();
-    inline void finalize();
+    inline void finalize(QScriptEngine *engine);
+    inline void finalizeData(QScriptEngine *engine);
 
     inline bool findMember(QScriptNameIdImpl *nameId,
                            QScript::Member *m) const;
@@ -95,10 +98,15 @@ public:
     QScriptValueImpl m_prototype;
     QScriptValueImpl m_scope;
     QScriptValueImpl m_internalValue; // [[value]]
-    QExplicitlySharedDataPointer<QScriptObjectData> m_data;
+    QScriptObjectData *m_data;
     QScript::Buffer<QScript::Member> m_members;
     QScript::Buffer<QScriptValueImpl> m_objects;
+    qint64 m_id;
+    QScriptClassInfo *m_class;
 };
 
+QT_END_NAMESPACE
+
 #endif // QT_NO_SCRIPT
+
 #endif

@@ -54,6 +54,8 @@
 #include "semantic.h"
 #include <QSharedData>
 
+QT_BEGIN_NAMESPACE
+
 class TranslationUnitData : public QSharedData
 {
 public:
@@ -87,5 +89,7 @@ private:
     CppLexer lexer;
     Parser parser;
 };
+
+QT_END_NAMESPACE
 
 #endif

@@ -64,6 +64,9 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtCore/QPair>
+#include <QtCore/QStringList>
+
+QT_BEGIN_NAMESPACE
 
 class QObject;
 class QDesignerCustomWidgetInterface;
@@ -118,6 +121,15 @@ public:
 
     static WidgetDataBaseItem *clone(const QDesignerWidgetDataBaseItemInterface *item);
 
+    QStringList fakeSlots() const;
+    void setFakeSlots(const QStringList &);
+
+    QStringList fakeSignals() const;
+    void setFakeSignals(const QStringList &);
+
+    QString addPageMethod() const;
+    void setAddPageMethod(const QString &m);
+
 private:
     QString m_name;
     QString m_group;
@@ -126,6 +138,7 @@ private:
     QString m_includeFile;
     QString m_pluginPath;
     QString m_extends;
+    QString m_addPageMethod;
     QIcon m_icon;
     uint m_compat: 1;
     uint m_container: 1;
@@ -133,6 +146,8 @@ private:
     uint m_custom: 1;
     uint m_promoted: 1;
     QList<QVariant> m_defaultPropertyValues;
+    QStringList m_fakeSlots;
+    QStringList m_fakeSignals;
 };
 
 enum IncludeType { IncludeLocal, IncludeGlobal  };
@@ -157,6 +172,11 @@ public:
 
 
     void grabDefaultPropertyValues();
+
+    // Helpers for 'New Form' wizards in integrations. Obtain a list of suitable classes and generate XML for them.
+    static QStringList formWidgetClasses(const QDesignerFormEditorInterface *core);
+    static QStringList customFormWidgetClasses(const QDesignerFormEditorInterface *core);
+    static QString formTemplate(const QDesignerFormEditorInterface *core, const QString &className, const QString &objectName);
 
 public slots:
     void loadPlugins();
@@ -183,5 +203,7 @@ QDESIGNER_SHARED_EXPORT WidgetDataBaseItemList
         promotionCandidates(const QDesignerWidgetDataBaseInterface *db,
                             const QString &baseClassName);
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // WIDGETDATABASE_H

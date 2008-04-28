@@ -46,6 +46,8 @@
 #include <QDomElement>
 #include <QFile>
 
+QT_BEGIN_NAMESPACE
+
 void Ui3Reader::computeDeps(const QDomElement &e,
         QStringList &globalIncludes,
         QStringList &localIncludes, bool impl)
@@ -128,3 +130,5 @@ void Ui3Reader::computeDeps(const QDomElement &e,
         }
     }
 }
+
+QT_END_NAMESPACE

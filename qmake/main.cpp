@@ -57,6 +57,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+QT_BEGIN_NAMESPACE
+
 // for Borland, main is defined to qMain which breaks qmake
 #undef main
 #ifdef Q_OS_MAC
@@ -82,7 +84,7 @@ bool qmake_setpwd(const QString &p)
     return false;
 }
 
-int main(int argc, char **argv)
+int runQMake(int argc, char **argv)
 {
     // parse command line
     int ret = Option::init(argc, argv);
@@ -186,4 +188,11 @@ int main(int argc, char **argv)
     }
     qmakeClearCaches();
     return exit_val;
+}
+
+QT_END_NAMESPACE
+
+int main(int argc, char **argv)
+{
+    return QT_PREPEND_NAMESPACE(runQMake)(argc, argv);
 }

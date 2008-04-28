@@ -47,9 +47,12 @@
 #include <QtGui/QLayout>
 #include <QtCore/qplugin.h>
 
-Q3GroupBoxPlugin::Q3GroupBoxPlugin(QObject *parent)
+QT_BEGIN_NAMESPACE
+
+Q3GroupBoxPlugin::Q3GroupBoxPlugin(const QIcon &icon, QObject *parent)
     : QObject(parent),
-      m_initialized(false)
+      m_initialized(false),
+      m_icon(icon)
 {
 }
 
@@ -85,7 +88,7 @@ QString Q3GroupBoxPlugin::includeFile() const
 
 QIcon Q3GroupBoxPlugin::icon() const
 {
-    return QIcon();
+    return m_icon;
 }
 
 bool Q3GroupBoxPlugin::isContainer() const
@@ -113,3 +116,5 @@ void Q3GroupBoxPlugin::initialize(QDesignerFormEditorInterface *core)
     m_initialized = true;
 }
 
+
+QT_END_NAMESPACE

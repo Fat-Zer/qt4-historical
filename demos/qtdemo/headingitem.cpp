@@ -56,7 +56,7 @@ QImage *HeadingItem::createImage(const QMatrix &matrix) const
     float sx = qMin(matrix.m11(), matrix.m22());
     float sy = matrix.m22() < sx ? sx : matrix.m22();
     QFontMetrics fm(Colors::headingFont());
-    
+
     float w = fm.width(this->text) + 1;
     float h = fm.height();
     float xShadow = 3.0f;
@@ -66,27 +66,27 @@ QImage *HeadingItem::createImage(const QMatrix &matrix) const
     image->fill(QColor(0, 0, 0, 0).rgba());
     QPainter painter(image);
     painter.setFont(Colors::headingFont());
-    painter.scale(sx, sy);   
-    
+    painter.scale(sx, sy);
+
     //draw shadow
-    QLinearGradient brush_shadow(xShadow, yShadow, w, yShadow);        
+    QLinearGradient brush_shadow(xShadow, yShadow, w, yShadow);
     brush_shadow.setSpread(QLinearGradient::PadSpread);
     if (Colors::useEightBitPalette)
         brush_shadow.setColorAt(0.0f, QColor(0, 0, 0));
     else
         brush_shadow.setColorAt(0.0f, QColor(0, 0, 0, 100));
-    QPen pen_shadow; 
+    QPen pen_shadow;
     pen_shadow.setBrush(brush_shadow);
     painter.setPen(pen_shadow);
     painter.drawText(int(xShadow), int(yShadow), int(w), int(h), Qt::AlignLeft, this->text);
 
     // draw text
-    QLinearGradient brush_text(0, 0, w, w);        
+    QLinearGradient brush_text(0, 0, w, w);
     brush_text.setSpread(QLinearGradient::PadSpread);
     brush_text.setColorAt(0.0f, QColor(255, 255, 255));
     brush_text.setColorAt(0.2f, QColor(255, 255, 255));
     brush_text.setColorAt(0.5f, QColor(190, 190, 190));
-    QPen pen_text; 
+    QPen pen_text;
     pen_text.setBrush(brush_text);
     painter.setPen(pen_text);
     painter.drawText(0, 0, int(w), int(h), Qt::AlignLeft, this->text);

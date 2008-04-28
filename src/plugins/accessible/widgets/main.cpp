@@ -56,6 +56,8 @@
 
 #ifndef QT_NO_ACCESSIBILITY
 
+QT_BEGIN_NAMESPACE
+
 class AccessibleFactory : public QAccessiblePlugin
 {
 public:
@@ -277,7 +279,7 @@ QAccessibleInterface *AccessibleFactory::create(const QString &classname, QObjec
         iface = new QAccessibleTextEdit(widget);
 #endif
     } else if (classname == QLatin1String("QTipLabel")) {
-        iface = new QAccessibleWidgetEx(widget, ToolTip);
+        iface = new QAccessibleDisplay(widget, ToolTip);
     } else if (classname == QLatin1String("QFrame")) {
         iface = new QAccessibleWidget(widget, Border);
 #ifndef QT_NO_STACKEDWIDGET
@@ -333,5 +335,7 @@ QAccessibleInterface *AccessibleFactory::create(const QString &classname, QObjec
 
 Q_EXPORT_STATIC_PLUGIN(AccessibleFactory)
 Q_EXPORT_PLUGIN2(qtaccessiblewidgets, AccessibleFactory)
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_ACCESSIBILITY

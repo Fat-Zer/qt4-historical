@@ -45,7 +45,9 @@
 #include "qcoreapplication.h"
 #include <qlibrary.h>
 
-QRegion::QRegionData QRegion::shared_empty = { Q_ATOMIC_INIT(1), 0, 0 };
+QT_BEGIN_NAMESPACE
+
+QRegion::QRegionData QRegion::shared_empty = { Q_BASIC_ATOMIC_INITIALIZER(1), 0, 0 };
 
 #define RGN_CACHE_SIZE 200
 #ifdef RGN_CACHE_SIZE
@@ -134,9 +136,10 @@ QRegion qt_mac_convert_mac_region(HIShapeRef shape)
 {
     if (ptrHIShapeGetAsQDRgn == 0) {
         QLibrary library(QLatin1String("/System/Library/Frameworks/Carbon.framework/Carbon"));
-        ptrHIShapeGetAsQDRgn = reinterpret_cast<PtrHIShapeGetAsQDRgn>(library.resolve("HIShapeGetAsQDRgn"));
+        library.setLoadHints(QLibrary::ExportExternalSymbolsHint);
+		ptrHIShapeGetAsQDRgn = reinterpret_cast<PtrHIShapeGetAsQDRgn>(library.resolve("HIShapeGetAsQDRgn"));
     }
-    
+
     RgnHandle rgn = qt_mac_get_rgn();
     ptrHIShapeGetAsQDRgn(shape, rgn);
     QRegion ret = qt_mac_convert_mac_region(rgn);
@@ -153,15 +156,21 @@ RgnHandle QRegion::handle(bool require_rgn) const
         d->rgn = qt_mac_get_rgn();
         if(d->qt_rgn && d->qt_rgn->numRects) {
             RgnHandle tmp_rgn = qt_mac_get_rgn();
-            for(int i = 0; i < d->qt_rgn->numRects; ++i) {
-                const QRect &qt_r = d->qt_rgn->rects[i];
-                SetRectRgn(tmp_rgn, qMax(SHRT_MIN, qt_r.x()), qMax(SHRT_MIN, qt_r.y()),
-                           qMin(SHRT_MAX, qt_r.right() + 1),
-                           qMin(SHRT_MAX, qt_r.bottom() + 1));
+            int n = d->qt_rgn->numRects;
+            const QRect *qt_r = (n == 1 ? &d->qt_rgn->extents : d->qt_rgn->rects.constData());
+            while (n--) {
+                SetRectRgn(tmp_rgn,
+                           qMax(SHRT_MIN, qt_r->x()),
+                           qMax(SHRT_MIN, qt_r->y()),
+                           qMin(SHRT_MAX, qt_r->right() + 1),
+                           qMin(SHRT_MAX, qt_r->bottom() + 1));
                 UnionRgn(d->rgn, tmp_rgn, d->rgn);
+                ++qt_r;
             }
             qt_mac_dispose_rgn(tmp_rgn);
         }
     }
     return d->rgn;
 }
+
+QT_END_NAMESPACE

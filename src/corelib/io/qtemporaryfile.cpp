@@ -52,21 +52,26 @@
 #include "private/qfsfileengine_p.h"
 
 #include <stdlib.h>
-#include <errno.h>
+#if !defined(Q_OS_WINCE)
+#  include <errno.h>
+#  include <sys/stat.h>
+#  include <sys/types.h>
+#else
+#  include <types.h>
+#endif
 
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
-#include <sys/types.h>
 
-#ifdef Q_OS_WIN
-#include <process.h>
-#if defined(_MSC_VER) && _MSC_VER >= 1400
-#include <share.h>
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
+# include <process.h>
+# if defined(_MSC_VER) && _MSC_VER >= 1400
+#  include <share.h>
+# endif
 #endif
-#endif
+
+QT_BEGIN_NAMESPACE
 
 /*
  * Copyright (c) 1987, 1993
@@ -101,7 +106,7 @@ static int _gettemp(char *path, int *doopen, int domkdir, int slen)
 	char *start, *trv, *suffp;
 	struct stat sbuf;
 	int rval;
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN)
     int pid;
 #else
 	pid_t pid;
@@ -158,6 +163,17 @@ static int _gettemp(char *path, int *doopen, int domkdir, int slen)
 				break;
 			if (*trv == '/') {
 				*trv = '\0';
+#if defined (Q_OS_WIN)
+                                if (trv - path == 2 && path[1] == ':') {
+                                    // Special case for Windows drives
+                                    // (e.g., "C:" => "C:\").
+                                    // ### Better to use a Windows
+                                    // call for this.
+									char drive[] = "c:\\";
+                                    drive[0] = path[0];
+                                    rval = stat(drive, &sbuf);
+                                } else
+#endif
 				rval = stat(path, &sbuf);
 				*trv = '/';
 				if (rval != 0)
@@ -173,19 +189,32 @@ static int _gettemp(char *path, int *doopen, int domkdir, int slen)
 
 	for (;;) {
 		if (doopen) {
-#if defined(Q_OS_WIN) && defined(_MSC_VER) && _MSC_VER >= 1400
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE) && defined(_MSC_VER) && _MSC_VER >= 1400
                         if (_sopen_s(doopen, path, QT_OPEN_CREAT|O_EXCL|QT_OPEN_RDWR|QT_OPEN_BINARY
 #ifdef QT_LARGEFILE_SUPPORT
                                      |QT_OPEN_LARGEFILE
 #endif
                                      , _SH_DENYNO, _S_IREAD | _S_IWRITE)== 0)
 #else
+#if defined(Q_OS_WINCE)
+            QString targetPath;
+            if (QDir::isAbsolutePath(QString::fromLatin1(path)))
+                targetPath = QLatin1String(path);
+            else
+                targetPath = QDir::currentPath().append(QLatin1String("/")) + QLatin1String(path);
+
+            if ((*doopen =
+                open(targetPath.toLocal8Bit(), O_CREAT|O_EXCL|O_RDWR
+#else
                         if ((*doopen =
                             open(path, QT_OPEN_CREAT|O_EXCL|QT_OPEN_RDWR
+#endif
 #ifdef QT_LARGEFILE_SUPPORT
                                  |QT_OPEN_LARGEFILE
 #endif
-#  if defined(Q_OS_WIN)
+#  if defined(Q_OS_WINCE)
+							     |_O_BINARY
+#  elif defined(Q_OS_WIN)
                                  |O_BINARY
 #  endif
                                  , 0600)) >= 0)
@@ -236,7 +265,7 @@ static int _gettemp(char *path, int *doopen, int domkdir, int slen)
 
 static int qt_mkstemps(char *path, int slen)
 {
-	int fd;
+	int fd = 0;
 	return (_gettemp(path, &fd, 0, slen) ? fd : -1);
 }
 
@@ -354,16 +383,7 @@ QTemporaryFilePrivate::~QTemporaryFilePrivate()
 
     Example:
 
-    \code
-        {
-            QTemporaryFile file;
-            if (file.open()) {
-                // file.fileName() returns the unique file name
-            }
-
-            // the QTemporaryFile destructor removes the temporary file
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.io.qtemporaryfile.cpp 0
 
     Reopening a QTemporaryFile after calling close() is safe. For as long as
     the QTemporaryFile object itself is not destroyed, the unique temporary
@@ -563,17 +583,19 @@ void QTemporaryFile::setFileTemplate(const QString &name)
 }
 
 /*!
-    \fn QTemporaryFile *QTemporaryFile::createLocalFile(const QString &fileName)
-    \overload
+  \fn QTemporaryFile *QTemporaryFile::createLocalFile(const QString &fileName)
+  \overload
 
-    Works on the given \a fileName rather than an existing QFile
-    object.
+  Works on the given \a fileName rather than an existing QFile
+  object.
 */
 
 
 /*!
-    Creates and returns a local temporary file whose contents are a
-    copy of the contents of the given \a file.
+  If \a file is not on a local disk, a temporary file is created
+  on a local disk, \a file is copied into the temporary local file,
+  and a pointer to the temporary local file is returned. If \a file
+  is already on a local disk, a copy is not created and 0 is returned.
 */
 QTemporaryFile *QTemporaryFile::createLocalFile(QFile &file)
 {
@@ -645,3 +667,5 @@ bool QTemporaryFile::open(OpenMode flags)
 }
 
 #endif // QT_NO_TEMPORARYFILE
+
+QT_END_NAMESPACE

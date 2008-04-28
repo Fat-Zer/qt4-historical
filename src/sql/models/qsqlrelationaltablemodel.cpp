@@ -57,6 +57,8 @@
 
 #include "qdebug.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QSqlRelation
     \brief The QSqlRelation class stores information about an SQL foreign key.
@@ -232,12 +234,10 @@ void QSqlRelationalTableModelPrivate::clearCache()
     The following code snippet shows how the QSqlRelationalTableModel
     was set up:
 
-    \quotefromfile sql/relationaltablemodel/relationaltablemodel.cpp
-    \skipto model->setTable
-    \printline model->setTable
-    \skipto setRelation
-    \printline setRelation
-    \printline setRelation
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 0
+    \codeline
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 1
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 2
 
     The setRelation() function calls establish a relationship between
     two tables. The first call specifies that column 2 in table \c
@@ -253,9 +253,7 @@ void QSqlRelationalTableModelPrivate::clearCache()
     call QAbstractItemView::setItemDelegate() on the view with an
     instance of QSqlRelationalDelegate:
 
-    \quotefromfile sql/relationaltablemodel/relationaltablemodel.cpp
-    \skipto QTableView *view = new
-    \printuntil setItemDelegate
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 4
 
     The \l{sql/relationaltablemodel} example illustrates how to use
     QSqlRelationalTableModel in conjunction with
@@ -355,11 +353,9 @@ bool QSqlRelationalTableModel::setData(const QModelIndex &index, const QVariant 
 
     Example:
 
-    \quotefromfile sql/relationaltablemodel/relationaltablemodel.cpp
-    \skipto model->setTable
-    \printline model->setTable
-    \skipto setRelation
-    \printline setRelation
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 0
+    \codeline
+    \snippet examples/sql/relationaltablemodel/relationaltablemodel.cpp 1
 
     The setRelation() call specifies that column 2 in table \c
     employee is a foreign key that maps with field \c id of table \c
@@ -629,3 +625,4 @@ bool QSqlRelationalTableModel::removeColumns(int column, int count, const QModel
     return QSqlTableModel::removeColumns(column, count, parent);
 }
 
+QT_END_NAMESPACE

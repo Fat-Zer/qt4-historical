@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_THREAD
@@ -75,6 +77,8 @@ private:
 };
 
 #endif // QT_NO_THREAD
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

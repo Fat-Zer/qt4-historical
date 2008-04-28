@@ -45,6 +45,7 @@
 
 #include "previewwindow.h"
 
+//! [0]
 PreviewWindow::PreviewWindow(QWidget *parent)
     : QWidget(parent)
 {
@@ -62,7 +63,9 @@ PreviewWindow::PreviewWindow(QWidget *parent)
 
     setWindowTitle(tr("Preview"));
 }
+//! [0]
 
+//! [1]
 void PreviewWindow::setWindowFlags(Qt::WindowFlags flags)
 {
     QWidget::setWindowFlags(flags);
@@ -113,3 +116,4 @@ void PreviewWindow::setWindowFlags(Qt::WindowFlags flags)
 
     textEdit->setPlainText(text);
 }
+//! [1]

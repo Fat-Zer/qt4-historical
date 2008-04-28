@@ -1,1 +1,1 @@
-#include "../../src/network/qhostaddress.h"
+#include "../../src/network/kernel/qhostaddress.h"

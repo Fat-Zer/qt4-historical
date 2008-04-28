@@ -148,5 +148,4 @@
 
 #define QT_SOCKLEN_T		int
 
-
 #endif // QPLATFORMDEFS_H

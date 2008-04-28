@@ -53,6 +53,8 @@
 
 #include <stdio.h>
 
+QT_BEGIN_NAMESPACE
+
 
 /*!
     \class QtWindowListMenu
@@ -69,16 +71,16 @@
 
     The QtWindowListMenu is added to the menubar (or any descendant of
     QMenuBar) using addTo().
-    
+
     This class inherits publicly from QMenu, so the items
     "Tile", "Cascade", "Close" and "Close All" may be modified
     or removed, and new items may be added. However, removing menu items
-    which correspond to windows on the workspace results in undefined 
+    which correspond to windows on the workspace results in undefined
     behavior.
 */
 
 /*!
-    Constructs a QtWindowListMenu object. The \a parent 
+    Constructs a QtWindowListMenu object. The \a parent
     parameter is passed to the QMenu constructor, and the \a name parameter
     is set as the object name. The
     \a workspace parameter specifies which QWorkspace object the menu
@@ -91,7 +93,7 @@
 QtWindowListMenu::QtWindowListMenu(QWorkspace *workspace, QWidget *parent,
 					    const char *name)
 	: QMenu(parent), groupWindows(this)
-{    
+{
     setObjectName(QLatin1String(name));
     m_menubar = 0;
     m_my_action = 0;
@@ -102,8 +104,8 @@ QtWindowListMenu::QtWindowListMenu(QWorkspace *workspace, QWidget *parent,
     if (m_workspace != 0) {
 	    m_workspace->installEventFilter(this);
         connect(m_workspace, SIGNAL(windowActivated(QWidget*)),
-                this, SLOT(addWindow(QWidget*)));                                   
-            
+                this, SLOT(addWindow(QWidget*)));
+
 	    m_tile_action = addAction(tr("Tile"), m_workspace, SLOT(tile()));
 	    m_cascade_action = addAction(tr("Cascade"), m_workspace, SLOT(cascade()));
 	    addSeparator();
@@ -117,33 +119,18 @@ QtWindowListMenu::QtWindowListMenu(QWorkspace *workspace, QWidget *parent,
 /*
     If \a on is false, the window titles in the menu will have the form:
 
-    \code
-    Unnamed
-    Unnamed2
-    SomeDocument.txt
-    ...
-    \endcode
+    \snippet doc/src/snippets/code/tools.linguist.linguist.previewtool.qtwindowlistmenu.cpp 0
 
-    If \a on is true and \a amperstands if false, the window titles in the menu 
+    If \a on is true and \a amperstands if false, the window titles in the menu
     will have the form:
-    
-    \code
-    1 Unnamed
-    2 Unnamed2
-    3 SomeDocument.txt
-    ...
-    \endcode
-    
+
+    \snippet doc/src/snippets/code/tools.linguist.linguist.previewtool.qtwindowlistmenu.cpp 1
+
     If both \a on and \a amperstands are true, the window titles in the menu
     will have the form:
-    
-    \code
-    &1 Unnamed
-    &2 Unnamed2
-    &3 SomeDocument.txt
-    ...
-    \endcode
-    
+
+    \snippet doc/src/snippets/code/tools.linguist.linguist.previewtool.qtwindowlistmenu.cpp 2
+
     Calling this method has no effect on window titles that are already in the
     menu at the time when the call is made. It should therefore be called
     right after the QtWindowListMenu is created, before any windows are
@@ -158,21 +145,21 @@ void QtWindowListMenu::setNumbering(bool on, bool amperstands)
 */
 
 /*!
-    Adds this window list menu to \a menubar at position \a idx, with the 
+    Adds this window list menu to \a menubar at position \a idx, with the
     name \a text. If \a idx is -1, the window list menu is appended
-    as the last item on the menubar. Does nothing and returns null if this 
+    as the last item on the menubar. Does nothing and returns null if this
     menu is already assigned to a menubar. Otherwise returns a pointer to
-    the QAction object for the inserted menu item.  
+    the QAction object for the inserted menu item.
 */
 
 QAction *QtWindowListMenu::addTo(const QString &text, QMenuBar *menubar, int idx)
 {
-    if (menubar == 0 || m_menubar != 0) 
+    if (menubar == 0 || m_menubar != 0)
     	return 0;
     m_menubar = menubar;
 
     QList<QAction *> actions = m_menubar->actions();
-    
+
     QAction *action = 0;
     if (idx >= 0 && idx < actions.size())
         action = actions[idx];
@@ -205,15 +192,15 @@ void QtWindowListMenu::removeWindow(QWidget *w, bool windowDestroyed)
     if (!windowDestroyed) {
 	    w->removeEventFilter(this);
 	    disconnect(w, 0, this, 0);
-    }    
-    if (*it != 0) { 
+    }
+    if (*it != 0) {
         removeAction(*it);
         groupWindows.removeAction(*it);
     }
 
     m_window_list.erase(it);
 
-    if (isEmpty()) 
+    if (isEmpty())
     	setEnabled(false);
 }
 
@@ -229,43 +216,43 @@ void QtWindowListMenu::addWindow(QWidget *w)
 {
     if (w == 0) {
 	    if (m_menubar != 0 && m_close_current_action != 0)
-	        m_close_current_action->setEnabled(false);	    
+	        m_close_current_action->setEnabled(false);
 	    return;
     }
 
     if (m_menubar != 0 && m_close_current_action != 0)
     	m_close_current_action->setEnabled(true);
 
-    WindowList::iterator it = m_window_list.find(w);    
+    WindowList::iterator it = m_window_list.find(w);
     if (it == m_window_list.end()) {
 	    m_window_list[w] = 0;
 	    w->installEventFilter(this);
-	    connect(w, SIGNAL(destroyed(QObject*)), 
+	    connect(w, SIGNAL(destroyed(QObject*)),
     	    	this, SLOT(windowDestroyed(QObject*)));
     	it = m_window_list.find(w);
     }
-    
+
     if (!w->isVisible() && !w->isMinimized())
         return;
-    
+
     if (*it == 0) {
         *it = new QAction(w->windowTitle(), &groupWindows);
         (*it)->setCheckable(true);
         if (!m_default_icon.isNull())
             (*it)->setIcon(m_default_icon);
-        addAction(*it);      
+        addAction(*it);
         connect(*it, SIGNAL(toggled(bool)), this, SLOT(setSenderChecked(bool)));
-        connect(*it, SIGNAL(triggered()), w, SLOT(setFocus()));                               
+        connect(*it, SIGNAL(triggered()), w, SLOT(setFocus()));
         connect(*it, SIGNAL(triggered()), w, SLOT(show()));
     }
-    
+
     setChecked(true, *it);
     setEnabled(true);
 }
 
 /*!
-    Adds the widget \a widget to this QtWindowListMenu, and sets the icon of its menu item 
-    to be \a icon. 
+    Adds the widget \a widget to this QtWindowListMenu, and sets the icon of its menu item
+    to be \a icon.
 */
 
 void QtWindowListMenu::addWindow(QWidget *widget, const QIcon &icon)
@@ -275,8 +262,8 @@ void QtWindowListMenu::addWindow(QWidget *widget, const QIcon &icon)
 }
 
 /*!
-    Sets \a icon as the icon of the menu item belonging to the widget \a widget. If \a icon is 
-    a null icon, then the menu item's icon will be cleared instead of set.    
+    Sets \a icon as the icon of the menu item belonging to the widget \a widget. If \a icon is
+    a null icon, then the menu item's icon will be cleared instead of set.
 */
 void QtWindowListMenu::setWindowIcon(QWidget *widget, const QIcon &icon)
 {
@@ -286,7 +273,7 @@ void QtWindowListMenu::setWindowIcon(QWidget *widget, const QIcon &icon)
 }
 
 /*!
-    Sets \a icon as the default menu item icon for this QtWindowListMenu. The menu items for each of the windows 
+    Sets \a icon as the default menu item icon for this QtWindowListMenu. The menu items for each of the windows
     currently listed in the menu will get this as their current icon. New menu items added to the menu will also
     get this icon by default. If \a icon is a null icon, then the default icon will be cleared.
 */
@@ -294,7 +281,7 @@ void QtWindowListMenu::setDefaultIcon(const QIcon &icon)
 {
     m_default_icon = icon;
     WindowList::iterator it;
-    for (it=m_window_list.begin();it!=m_window_list.end();++it) 
+    for (it=m_window_list.begin();it!=m_window_list.end();++it)
         (*it)->setIcon(icon);
 }
 
@@ -358,7 +345,7 @@ bool QtWindowListMenu::eventFilter(QObject *obj, QEvent *e)
         if (w == 0)
 	        return false;
 	    WindowList::iterator it = m_window_list.find(w);
-	    if (it == m_window_list.end()) 
+	    if (it == m_window_list.end())
             return false;
 
 	    switch (e->type()) {
@@ -369,16 +356,16 @@ bool QtWindowListMenu::eventFilter(QObject *obj, QEvent *e)
 	    case QEvent::Close:
 		    // we keep the window in the m_window_list, it might be show()n again.
             if (*it != 0) {
-	    	    removeAction(*it);		    
+	    	    removeAction(*it);
                 groupWindows.removeAction(*it);
             }
 		    *it = 0;
-		    if (isEmpty()) 
+		    if (isEmpty())
 	    	    setEnabled(false);
 		    break;
 	    case QEvent::WindowTitleChange:
-    		if (*it != 0) 
-                (*it)->setText(w->windowTitle());	    	
+    		if (*it != 0)
+                (*it)->setText(w->windowTitle());
 		    break;
 	    default: break;
 	    }
@@ -394,7 +381,7 @@ void QtWindowListMenu::windowDestroyed(QObject *obj)
     removeWindow((QWidget*)obj, true);
 }
 
-/*! 
+/*!
     Enables or disables the window list menu, according to the value
     of \a b. Normally it is not necessary to call this function, since
     QtWindowListMenu automatically enables itself whenever there is
@@ -405,7 +392,7 @@ void QtWindowListMenu::windowDestroyed(QObject *obj)
 
 void QtWindowListMenu::setEnabled(bool b)
 {
-    if (m_menubar != 0) 
+    if (m_menubar != 0)
         m_my_action->setEnabled(b);
 }
 
@@ -440,8 +427,9 @@ void QtWindowListMenu::setTileIcon(const QIcon &icon)
     Sets \a icon as the icon of the menu item which closes all windows in the workspace.
     If \a icon is a null icon, then the menu item's icon will be cleared instead of set.
 */
-void QtWindowListMenu::setCloseAllIcon(const QIcon &icon) 
+void QtWindowListMenu::setCloseAllIcon(const QIcon &icon)
 {
     m_close_all_action->setIcon(icon);
 }
 
+QT_END_NAMESPACE

@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_MESSAGEBOX
@@ -144,6 +146,9 @@ public:
     QPushButton *addButton(const QString &text, ButtonRole role);
     QPushButton *addButton(StandardButton button);
     void removeButton(QAbstractButton *button);
+#ifdef Q_OS_WINCE
+    void setVisible(bool visible);
+#endif
 
 /*
     These are probably overkill:
@@ -331,15 +336,23 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMessageBox::StandardButtons)
 
 #define QT_REQUIRE_VERSION(argc, argv, str) { QString s = QString::fromLatin1(str);\
-QString sq = qVersion(); if ((sq.section('.',0,0).toInt()<<16)+\
-(sq.section('.',1,1).toInt()<<8)+sq.section('.',2,2).toInt()<(s.section('.',0,0).toInt()<<16)+\
-(s.section('.',1,1).toInt()<<8)+s.section('.',2,2).toInt()){if (!qApp){ new \
-QApplication(argc,argv);} QString s = QApplication::tr("Executable '%1' requires Qt "\
+QString sq = QString::fromLatin1(qVersion()); \
+if ((sq.section(QChar::fromLatin1('.'),0,0).toInt()<<16)+\
+(sq.section(QChar::fromLatin1('.'),1,1).toInt()<<8)+\
+sq.section(QChar::fromLatin1('.'),2,2).toInt()<(s.section(QChar::fromLatin1('.'),0,0).toInt()<<16)+\
+(s.section(QChar::fromLatin1('.'),1,1).toInt()<<8)+\
+s.section(QChar::fromLatin1('.'),2,2).toInt()) { \
+if (!qApp){ \
+    new QApplication(argc,argv); \
+} \
+QString s = QApplication::tr("Executable '%1' requires Qt "\
  "%2, found Qt %3.").arg(qAppName()).arg(QString::fromLatin1(\
-str)).arg(qVersion()); QMessageBox::critical(0, QApplication::tr(\
-"Incompatible Qt Library Error"), s, QMessageBox::Abort,0); qFatal(s.toLatin1().data()); }}
+str)).arg(QString::fromLatin1(qVersion())); QMessageBox::critical(0, QApplication::tr(\
+"Incompatible Qt Library Error"), s, QMessageBox::Abort, 0); qFatal(s.toLatin1().data()); }}
 
 #endif // QT_NO_MESSAGEBOX
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

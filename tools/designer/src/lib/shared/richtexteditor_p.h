@@ -59,43 +59,44 @@
 #include <QtGui/QDialog>
 #include "shared_global_p.h"
 
+QT_BEGIN_NAMESPACE
+
+class QTabWidget;
 class QToolBar;
+
+class QDesignerFormEditorInterface;
 
 namespace qdesigner_internal {
 
-class QDESIGNER_SHARED_EXPORT RichTextEditor : public QTextEdit
-{
-    Q_OBJECT
-public:
-    RichTextEditor(QWidget *parent = 0);
-    void setDefaultFont(const QFont &font);
-
-    QToolBar *createToolBar(QWidget *parent = 0);
-
-public slots:
-    void setFontBold(bool b);
-    void setFontPointSize(double);
-    void setText(const QString &text);
-    QString text(Qt::TextFormat format) const;
-
-signals:
-    void textChanged();
-
-private:
-    Qt::TextFormat detectFormat() const;
-};
+class RichTextEditor;
 
 class QDESIGNER_SHARED_EXPORT RichTextEditorDialog : public QDialog
 {
     Q_OBJECT
 public:
-    RichTextEditorDialog(QWidget *parent = 0);
-    RichTextEditor *editor();
+    RichTextEditorDialog(QDesignerFormEditorInterface *core, QWidget *parent = 0);
+
+    int showDialog();
+    void setDefaultFont(const QFont &font);
+    void setText(const QString &text);
+    QString text(Qt::TextFormat format = Qt::AutoText) const;
+
+private slots:
+    void tabIndexChanged(int newIndex);
+    void richTextChanged();
+    void sourceChanged();
 
 private:
+    enum TabIndex { RichTextIndex, SourceIndex };
+    enum State { Clean, RichTextChanged, SourceChanged };
     RichTextEditor *m_editor;
+    QTextEdit      *m_text_edit;
+    QTabWidget     *m_tab_widget;
+    State m_state;
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // RITCHTEXTEDITOR_H

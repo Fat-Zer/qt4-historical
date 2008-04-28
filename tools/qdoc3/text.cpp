@@ -50,6 +50,8 @@
 #include "text.h"
 #include <stdio.h>
 
+QT_BEGIN_NAMESPACE
+
 Text::Text()
     : first(0), last(0)
 {
@@ -189,6 +191,20 @@ Text Text::sectionHeading(const Atom *sectionLeft)
     return Text();
 }
 
+const Atom *Text::sectionHeadingAtom(const Atom *sectionLeft)
+{
+    if ( sectionLeft != 0 ) {
+	const Atom *begin = sectionLeft;
+	while ( begin != 0 && begin->type() != Atom::SectionHeadingLeft )
+	    begin = begin->next();
+	if ( begin != 0 )
+	    begin = begin->next();
+
+	return begin;
+    }
+    return 0;
+}
+
 void Text::dump() const
 {
     const Atom *atom = firstAtom();
@@ -253,3 +269,5 @@ int Text::compare(const Text &text1, const Text &text2)
         atom2 = atom2->next();
     }
 }
+
+QT_END_NAMESPACE

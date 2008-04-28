@@ -66,6 +66,8 @@
 #include <private/qdialog_p.h>
 #include <private/qfont_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QFontListView : public QListView
 {
     Q_OBJECT
@@ -118,22 +120,10 @@ QFontListView::QFontListView(QWidget *parent)
 
   Examples:
 
-  \code
-    bool ok;
-    QFont font = QFontDialog::getFont(
-                    &ok, QFont("Helvetica [Cronyx]", 10), this);
-    if (ok) {
-        // the user clicked OK and font is set to the font the user selected
-    } else {
-        // the user canceled the dialog; font is set to the initial
-        // value, in this case Helvetica [Cronyx], 10
-    }
-  \endcode
+  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 0
 
     The dialog can also be used to set a widget's font directly:
-  \code
-    myWidget.setFont(QFontDialog::getFont(0, myWidget.font()));
-  \endcode
+  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 1
   If the user clicks OK the font they chose will be used for myWidget,
   and if they click Cancel the original font is used.
 
@@ -364,7 +354,11 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WindowFlags f)
     buttonBox->addButton(modal ? QDialogButtonBox::Cancel : QDialogButtonBox::Close);
     connect(buttonBox, SIGNAL(rejected()), SLOT(reject()));
 
+#if defined(Q_OS_WINCE)
+    resize(180, 120);
+#else
     resize(500, 360);
+#endif //Q_OS_WINCE
 
     d->sizeEdit->installEventFilter(this);
     d->familyList->installEventFilter(this);
@@ -397,21 +391,10 @@ QFontDialog::~QFontDialog()
   set to false if the user clicks \gui Cancel.
 
   Examples:
-  \code
-    bool ok;
-    QFont font = QFontDialog::getFont(&ok, QFont("Times", 12), this);
-    if (ok) {
-        // font is set to the font the user selected
-    } else {
-        // the user canceled the dialog; font is set to the initial
-        // value, in this case Times, 12.
-    }
-  \endcode
+  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 2
 
     The dialog can also be used to set a widget's font directly:
-  \code
-    myWidget.setFont(QFontDialog::getFont(0, myWidget.font()));
-  \endcode
+  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 3
   In this example, if the user clicks OK the font they chose will be
   used, and if they click Cancel the original font is used.
 */
@@ -444,16 +427,7 @@ QFont QFontDialog::getFont(bool *ok, const QFont &initial,
   \gui Cancel.
 
   Example:
-  \code
-    bool ok;
-    QFont font = QFontDialog::getFont(&ok, this);
-    if (ok) {
-        // font is set to the font the user selected
-    } else {
-        // the user canceled the dialog; font is set to the default
-        // application font, QApplication::font()
-    }
-  \endcode
+  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 4
 
 */
 QFont QFontDialog::getFont(bool *ok, QWidget *parent)
@@ -888,7 +862,9 @@ QFont QFontDialog::font() const
     The \a name parameter is ignored.
 */
 
+QT_END_NAMESPACE
+
 #include "qfontdialog.moc"
 #include "moc_qfontdialog.cpp"
 
-#endif
+#endif // QT_NO_FONTDIALOG

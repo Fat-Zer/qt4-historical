@@ -54,12 +54,16 @@
 
 #include <windows.h>
 
-#ifndef Q_OS_TEMP
+
+#ifndef Q_OS_WINCE
 #ifndef _MT
 #define _MT
 #endif
 #include <process.h>
 #endif
+
+#ifndef QT_NO_THREAD
+QT_BEGIN_NAMESPACE
 
 void qt_watch_adopted_thread(const HANDLE adoptedThreadHandle, QThread *qthread);
 void qt_adopted_thread_watcher_function(void *);
@@ -100,9 +104,11 @@ QThreadData *QThreadData::current()
             threadData->deref();
         }
 
-        const bool isMainThread = q_atomic_test_and_set_ptr(&QCoreApplicationPrivate::theMainThread, 0, threadData->thread);
-        if (!isMainThread) {
-            HANDLE realHandle;
+        if (!QCoreApplicationPrivate::theMainThread) {
+            QCoreApplicationPrivate::theMainThread = threadData->thread;
+        } else {
+            HANDLE realHandle = INVALID_HANDLE_VALUE;
+#if !defined(Q_OS_WINCE) || (defined(_WIN32_WCE) && (_WIN32_WCE>=0x600))
             DuplicateHandle(GetCurrentProcess(),
                     GetCurrentThread(),
                     GetCurrentProcess(),
@@ -110,6 +116,9 @@ QThreadData *QThreadData::current()
                     0,
                     FALSE,
                     DUPLICATE_SAME_ACCESS);
+#else
+			realHandle = (HANDLE)GetCurrentThreadId();
+#endif
             qt_watch_adopted_thread(realHandle, threadData->thread);
         }
     }
@@ -203,7 +212,9 @@ void qt_adopted_thread_watcher_function(void *)
 //             printf("(qt) - qt_adopted_thread_watcher_function... called\n");
             const int qthreadIndex = handleIndex - 1;
             QThreadData::get2(qt_adopted_qthreads.at(qthreadIndex))->deref();
+#if !defined(Q_OS_WINCE) || (defined(_WIN32_WCE) && (_WIN32_WCE>=0x600))
             CloseHandle(qt_adopted_thread_handles.at(handleIndex));
+#endif
             QMutexLocker lock(&qt_adopted_thread_watcher_mutex);
             qt_adopted_thread_handles.remove(handleIndex);
             qt_adopted_qthreads.remove(qthreadIndex);
@@ -215,11 +226,15 @@ void qt_adopted_thread_watcher_function(void *)
  ** QThreadPrivate
  *************************************************************************/
 
+#endif // QT_NO_THREAD
+
 void QThreadPrivate::createEventDispatcher(QThreadData *data)
 {
     data->eventDispatcher = new QEventDispatcherWin32;
     data->eventDispatcher->startingUp();
 }
+
+#ifndef QT_NO_THREAD
 
 unsigned int __stdcall QThreadPrivate::start(void *arg)
 {
@@ -277,7 +292,6 @@ void QThreadPrivate::finish(void *arg, bool lockAnyway)
     if (lockAnyway)
         d->mutex.unlock();
 }
-
 
 /**************************************************************************
  ** QThread
@@ -538,3 +552,6 @@ void QThread::setPriority(Priority priority)
         qErrnoWarning("QThread::setPriority: Failed to set thread priority");
     }
 }
+
+QT_END_NAMESPACE
+#endif // QT_NO_THREAD

@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example desktop/systray
     \title System Tray Icon Example
@@ -28,9 +71,7 @@
 
     The \c Window class inherits QWidget:
 
-    \quotefromfile desktop/systray/window.h
-    \skipto class Window
-    \printuntil };
+    \snippet examples/desktop/systray/window.h 0
 
     We implement several private slots to respond to user
     interaction. The other private functions are only convenience
@@ -57,9 +98,7 @@
     When constructing the editor widget, we first create the various
     editor elements before we create the actual system tray icon:
 
-    \quotefromfile desktop/systray/window.cpp
-    \skipto Window::Window()
-    \printuntil /^\}/
+    \snippet examples/desktop/systray/window.cpp 0
 
     We ensure that the application responds to user input by
     connecting most of the editor's input widgets (including the
@@ -68,8 +107,7 @@
     connected to the \e {icon}'s \l {QSystemTrayIcon::}{setVisible()}
     function instead.
 
-    \skipto void Window::setIcon
-    \printuntil /^\}/
+    \snippet examples/desktop/systray/window.cpp 3
 
     The \c setIcon() slot is triggered whenever the current index in
     the icon combobox changes, i.e., whenever the user chooses another
@@ -89,8 +127,7 @@
     propagated to the system tray. If this behavior is unacceptable,
     we suggest using an icon with no transparency.
 
-    \skipto void Window::iconActivated
-    \printuntil /^\}/
+    \snippet examples/desktop/systray/window.cpp 4
 
     Whenever the user activates the system tray icon, it emits its \l
     {QSystemTrayIcon::}{activated()} signal passing the triggering
@@ -107,23 +144,24 @@
     using the middle mouse button, it calls the custom \c
     showMessage() slot:
 
-    \skipto void Window::showMessage
-    \printuntil /^\}/
+    \snippet examples/desktop/systray/window.cpp 5
 
-    When the \c showMessage() slot is triggered, we first retrieve the
+    When the \e showMessage() slot is triggered, we first retrieve the
     message icon depending on the currently chosen message type. The
     QSystemTrayIcon::MessageIcon enum describes the icon that is shown
-    when a balloon message is displayed.  Then we call
+    when a balloon message is displayed. Then we call
     QSystemTrayIcon's \l {QSystemTrayIcon::}{showMessage()} function
-    that shows the provided message with the given title, body and
-    icon for the time specified in milliseconds.  QSystemTrayIcon also
-    has a corresponding signal, \l
-    {QSystemTrayIcon::}{messageClicked()}, that is emitted when a
-    message (displayed using \l {QSystemTrayIcon::}{showMessage()}) is
-    clicked by the user.
+    to show the message with the title, body, and icon for the time
+    specified in milliseconds.
+    
+    Mac OS X users note: The Growl notification system must be
+    installed for QSystemTrayIcon::showMessage() to display messages.
 
-    \skipto void Window::messageClicked
-    \printuntil /^\}/
+    QSystemTrayIcon also has the corresponding, \l {QSystemTrayIcon::}
+    {messageClicked()} signal, which is emitted when the user clicks a
+    message displayed by \l {QSystemTrayIcon::}{showMessage()}.
+
+    \snippet examples/desktop/systray/window.cpp 6
 
     In the constructor, we connected the \l
     {QSystemTrayIcon::}{messageClicked()} signal to our custom \c
@@ -140,17 +178,14 @@
     As we mentioned earlier, we reimplement a couple of QWidget's
     virtual functions:
 
-    \quotefromfile desktop/systray/window.cpp
-    \skipto void Window::setVisible
-    \printuntil /^\}/
+    \snippet examples/desktop/systray/window.cpp 1
 
     Our reimplementation of the QWidget::setVisible() function updates
     the tray icon's menu whenever the editor's appearance changes,
     e.g., when maximizing or minimizing the main application window,
     before calling the base class implementation.
 
-    \skipto void Window::closeEvent
-    \printuntil /^\}/
+    \snippet examples/desktop/systray/window.cpp 2
 
     We have reimplemented the QWidget::closeEvent() event handler to
     receive widget close events, showing the above message to the

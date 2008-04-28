@@ -47,9 +47,11 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QMenu>
 
+QT_BEGIN_NAMESPACE
+
 namespace qdesigner_internal {
-    PropertyLineEdit::PropertyLineEdit(QWidget *parent, bool wantNewLine) :
-        QLineEdit(parent), m_wantNewLine(wantNewLine)
+    PropertyLineEdit::PropertyLineEdit(QWidget *parent) :
+        QLineEdit(parent), m_wantNewLine(false)
     {
     }
 
@@ -93,3 +95,4 @@ namespace qdesigner_internal {
     }
 }
 
+QT_END_NAMESPACE

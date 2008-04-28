@@ -48,6 +48,7 @@
 
 #include "starrating.h"
 
+//! [0]
 class StarEditor : public QWidget
 {
     Q_OBJECT
@@ -74,5 +75,6 @@ private:
 
     StarRating myStarRating;
 };
+//! [0]
 
 #endif

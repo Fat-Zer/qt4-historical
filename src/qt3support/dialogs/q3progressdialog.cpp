@@ -57,6 +57,8 @@
 #include "qtimer.h"
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 // If the operation is expected to take this long (as predicted by
 // progress time), show the progress dialog.
 static const int defaultShowTime    = 4000;
@@ -143,19 +145,7 @@ public:
   running to ensure that the application doesn't freeze. Do the
   operation in a loop, call \l setProgress() at intervals, and check
   for cancellation with wasCanceled(). For example:
-\code
-Q3ProgressDialog progress("Copying files...", "Abort Copy", numFiles,
-                          this, "progress", true);
-for (int i = 0; i < numFiles; i++) {
-    progress.setProgress(i);
-    qApp->processEvents();
-
-    if (progress.wasCanceled())
-        break;
-    //... copy one file
-}
-progress.setProgress(numFiles);
-\endcode
+\snippet doc/src/snippets/code/src.qt3support.dialogs.q3progressdialog.cpp 0
 
   A modeless progress dialog is suitable for operations that take
   place in the background, where the user is able to interact with the
@@ -167,32 +157,7 @@ progress.setProgress(numFiles);
   You need to have an event loop to be running, connect the
   canceled() signal to a slot that stops the operation, and call \l
   setProgress() at intervals. For example:
-\code
-Operation::Operation(QObject *parent = 0)
-    : QObject(parent), steps(0)
-{
-    pd = new Q3ProgressDialog("Operation in progress.", "Cancel", 100);
-    connect(pd, SIGNAL(canceled()), this, SLOT(cancel()));
-    t = new QTimer(this);
-    connect(t, SIGNAL(timeout()), this, SLOT(perform()));
-    t->start(0);
-}
-
-void Operation::perform()
-{
-    pd->setProgress(steps);
-    //... perform one percent of the operation
-    steps++;
-    if (steps > pd->totalSteps())
-        t->stop();
-}
-
-void Operation::cancel()
-{
-    t->stop();
-    //... cleanup
-}
-\endcode
+\snippet doc/src/snippets/code/src.qt3support.dialogs.q3progressdialog.cpp 1
 
 
   In both modes the progress dialog may be customized by
@@ -881,5 +846,7 @@ void Q3ProgressDialog::forceShow()
     d->shown_once = true;
 }
 
+
+QT_END_NAMESPACE
 
 #endif

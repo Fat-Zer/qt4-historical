@@ -43,6 +43,8 @@
 
 #include <qstringlist.h>
 
+QT_BEGIN_NAMESPACE
+
 /*! \typedef QStringListIterator
     \relates QStringList
 
@@ -100,9 +102,7 @@
     {QList::operator+=()}{operator+=()} and \l
     {QStringList::operator<<()}{operator<<()} functions. For example:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList fonts
-    \printuntil Courier
+    \snippet doc/src/snippets/qstringlist/main.cpp 0
 
     \section1 Iterating over the strings
 
@@ -111,21 +111,15 @@
 
     Indexing:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto for (int i = 0; i < fonts.size(); ++i)
-    \printuntil cout << fonts.at(i).toLocal8Bit().constData() << end
+    \snippet doc/src/snippets/qstringlist/main.cpp 1
 
     Java-style iterator:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringListIterator
-    \printuntil cout << javaStyleIterator
+    \snippet doc/src/snippets/qstringlist/main.cpp 2
 
     STL-style iterator:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList::const_iterator
-    \printuntil cout << (*constIterator)
+    \snippet doc/src/snippets/qstringlist/main.cpp 3
 
     The QStringListIterator class is simply a type definition for
     QListIterator<QString>. QStringList also provide the
@@ -139,16 +133,12 @@
     string list into a single string (with an optional separator)
     using the join() function. For example:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto fonts.join
-    \printuntil // str
+    \snippet doc/src/snippets/qstringlist/main.cpp 4
 
     To break up a string into a string list, use the QString::split()
     function:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList list;
-    \printuntil // list
+    \snippet doc/src/snippets/qstringlist/main.cpp 6
 
     The argument to split can be a single character, a string, or a
     QRegExp.
@@ -162,9 +152,7 @@
     contain a particular substring (or match a particular regular
     expression):
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto monospacedFonts
-    \printline monospacedFonts
+    \snippet doc/src/snippets/qstringlist/main.cpp 7
 
     The contains() function tells you whether the list contains a
     given string, while the indexOf() function returns the index of
@@ -175,9 +163,7 @@
     Finally, the replaceInStrings() function calls QString::replace()
     on each string in the string list in turn. For example:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList files
-    \printuntil // files
+    \snippet doc/src/snippets/qstringlist/main.cpp 8
 
     \sa QString
 */
@@ -194,9 +180,7 @@
     Constructs a string list that contains the given string, \a
     str. Longer lists are easily created like this:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto  longerList
-    \printline  longerList
+    \snippet doc/src/snippets/qstringlist/main.cpp 9
 
     \sa append()
 */
@@ -296,19 +280,13 @@ void QtPrivate::QStringList_sort(QStringList *that)
     comparison is case sensitive; otherwise the comparison is case
     insensitive.
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList list;
-    \printline QStringList list;
-    \skipto list << "Bill Murray"
-    \printuntil  // result
+    \snippet doc/src/snippets/qstringlist/main.cpp 5
+    \snippet doc/src/snippets/qstringlist/main.cpp 10
 
     This is equivalent to
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList result;
-    \printline QStringList result;
-    \skipto foreach
-    \printuntil }
+    \snippet doc/src/snippets/qstringlist/main.cpp 11
+    \snippet doc/src/snippets/qstringlist/main.cpp 12
 
     \sa contains()
 */
@@ -338,7 +316,7 @@ QBool QtPrivate::QStringList_contains(const QStringList *that, const QString &st
 {
     QStringMatcher matcher(str, cs);
     for (int i = 0; i < that->size(); ++i) {
-        QString string(that->at(i));
+        const QString & string = that->at(i);
         if (string.length() == str.length() && matcher.indexIn(string) == 0)
             return QBool(true);
     }
@@ -374,11 +352,8 @@ QStringList QtPrivate::QStringList_filter(const QStringList *that, const QRegExp
 
     For example:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList list;
-    \printline QStringList list;
-    \skipto list << "alpha"
-    \printuntil  // list
+    \snippet doc/src/snippets/qstringlist/main.cpp 5
+    \snippet doc/src/snippets/qstringlist/main.cpp 13
 
     \sa QString::replace()
 */
@@ -401,13 +376,8 @@ void QtPrivate::QStringList_replaceInStrings(QStringList *that, const QString &b
 
     For example:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList list;
-    \printline QStringList list;
-    \skipto list << "alpha"
-    \skipto list.clear()
-    \skipto list << "alpha"
-    \printuntil  // list
+    \snippet doc/src/snippets/qstringlist/main.cpp 5
+    \snippet doc/src/snippets/qstringlist/main.cpp 14
 
     For regular expressions that contain \l{capturing parentheses},
     occurrences of \bold{\\1}, \bold{\\2}, ..., in \a after are
@@ -415,11 +385,8 @@ void QtPrivate::QStringList_replaceInStrings(QStringList *that, const QString &b
 
     For example:
 
-    \quotefromfile snippets/qstringlist/main.cpp
-    \skipto QStringList list;
-    \printline QStringList list;
-    \skipto list << "Bill Clinton" << "Murray, Bill"
-    \printuntil  // list
+    \snippet doc/src/snippets/qstringlist/main.cpp 5
+    \snippet doc/src/snippets/qstringlist/main.cpp 15
 */
 void QtPrivate::QStringList_replaceInStrings(QStringList *that, const QRegExp &rx, const QString &after)
 {
@@ -610,3 +577,5 @@ int QtPrivate::QStringList_lastIndexOf(const QStringList *that, const QRegExp &r
 
     \sa indexOf(), QList::lastIndexOf()
 */
+
+QT_END_NAMESPACE

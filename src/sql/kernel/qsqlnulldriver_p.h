@@ -60,12 +60,14 @@
 #include "QtSql/qsqlerror.h"
 #include "QtSql/qsqlresult.h"
 
+QT_BEGIN_NAMESPACE
+
 class QSqlNullResult : public QSqlResult
 {
 public:
     inline explicit QSqlNullResult(const QSqlDriver* d): QSqlResult(d)
     { QSqlResult::setLastError(
-            QSqlError(QLatin1String("Driver not loaded"), QLatin1String("Driver not loaded"))); }
+            QSqlError(QLatin1String("Driver not loaded"), QLatin1String("Driver not loaded"), QSqlError::ConnectionError)); }
 protected:
     inline QVariant data(int) { return QVariant(); }
     inline bool reset (const QString&) { return false; }
@@ -95,7 +97,7 @@ class QSqlNullDriver : public QSqlDriver
 public:
     inline QSqlNullDriver(): QSqlDriver()
     { QSqlDriver::setLastError(
-            QSqlError(QLatin1String("Driver not loaded"), QLatin1String("Driver not loaded"))); }
+            QSqlError(QLatin1String("Driver not loaded"), QLatin1String("Driver not loaded"), QSqlError::ConnectionError)); }
     inline bool hasFeature(DriverFeature) const { return false; }
     inline bool open(const QString &, const QString & , const QString & ,
               const QString &, int, const QString&)
@@ -108,5 +110,7 @@ protected:
     inline void setOpenError(bool) {}
     inline void setLastError(const QSqlError&) {}
 };
+
+QT_END_NAMESPACE
 
 #endif // QSQLNULLDRIVER_P_H

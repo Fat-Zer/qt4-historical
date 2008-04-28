@@ -63,7 +63,11 @@
 #include <time.h>
 #include <stdlib.h>
 #include <qregexp.h>
+
+QT_BEGIN_NAMESPACE
 //#include <qdir.h>
 //#include "option.h"
+
+QT_END_NAMESPACE
 
 #endif

@@ -46,9 +46,9 @@
 
 #include <QDockWidget>
 
-class QAction;
-class QActionGroup;
-class QMenu;
+QT_FORWARD_DECLARE_CLASS(QAction)
+QT_FORWARD_DECLARE_CLASS(QActionGroup)
+QT_FORWARD_DECLARE_CLASS(QMenu)
 
 class ColorSwatch : public QDockWidget
 {

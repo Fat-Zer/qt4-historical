@@ -49,7 +49,9 @@
 
 class PiecesList;
 class PuzzleWidget;
+QT_BEGIN_NAMESPACE
 class QListWidgetItem;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

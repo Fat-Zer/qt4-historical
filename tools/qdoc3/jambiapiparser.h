@@ -53,6 +53,8 @@
 
 #include "codeparser.h"
 
+QT_BEGIN_NAMESPACE
+
 struct ClassOrEnumInfo
 {
     QString tag;
@@ -93,5 +95,7 @@ private:
     Location japiLocation;
     QStack<ClassOrEnumInfo> classAndEnumStack;
 };
+
+QT_END_NAMESPACE
 
 #endif

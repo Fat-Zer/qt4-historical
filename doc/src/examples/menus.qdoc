@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example mainwindows/menus
     \title Menus Example
@@ -30,9 +73,7 @@
     tool bars, dock widgets and a status bar around a large central
     widget.
 
-    \quotefromfile mainwindows/menus/mainwindow.h
-    \skipto class MainWindow
-    \printuntil contextMenuEvent
+    \snippet examples/mainwindows/menus/mainwindow.h 0
 
     In this example, we will see how to implement pull-down menus as
     well as a context menu. In order to implement a custom context
@@ -40,8 +81,7 @@
     {QWidget::}{contextMenuEvent()} function to receive the context
     menu events for our main window.
 
-    \skipto private slots
-    \printuntil void aboutQt
+    \snippet examples/mainwindows/menus/mainwindow.h 1
 
     We must also implement a collection of private slots to respond to
     the user activating any of our menu entries.  Note that these
@@ -49,16 +89,14 @@
     i.e., most of them are only displaying the action's path in the
     main window's central widget.
 
-    \skipto private
-    \printuntil createMenus
+    \snippet examples/mainwindows/menus/mainwindow.h 2
 
     We have chosen to simplify the constructor by implementing two
     private convenience functions to create the various actions, to
     add them to menus and to insert the menus into our main window's
     menu bar.
 
-    \skipto fileMenu
-    \printuntil };
+    \snippet examples/mainwindows/menus/mainwindow.h 3
 
     Finally, we declare the various menus and actions as well as a
     simple information label in the application wide scope.
@@ -82,11 +120,9 @@
     window takes ownership of the widget pointer and deletes it at the
     appropriate time.
 
-    \quotefromfile mainwindows/menus/mainwindow.cpp
-    \skipto MainWindow::MainWindow
-    \printuntil setCentralWidget
-    \skipto topFiller
-    \printuntil setLayout
+    \snippet examples/mainwindows/menus/mainwindow.cpp 0
+    \codeline
+    \snippet examples/mainwindows/menus/mainwindow.cpp 1
 
     Then we create the information label as well as a top and bottom
     filler that we add to a layout which we install on the central
@@ -95,8 +131,7 @@
     layout with a main window as a parent, is considered an error. You
     should always set your own layout on the central widget instead.
 
-    \skipto createActions()
-    \printuntil /^\}/
+    \snippet examples/mainwindows/menus/mainwindow.cpp 2
 
     To create the actions and menus we call our two convenience
     functions: \c createActions() and \c createMenus(). We will get
@@ -113,8 +148,7 @@
     Now, let's take a closer look at the \c createActions() convenience
     function that creates the various actions:
 
-    \skipto void MainWindow::createActions()
-    \printuntil connect
+    \snippet examples/mainwindows/menus/mainwindow.cpp 4
     \dots
 
     A QAction object may contain an icon, a text, a shortcut, a status
@@ -133,8 +167,7 @@
     The rest of the actions are created in a similar manner. Please
     see the source code for details.
 
-    \skipto alignmentGroup
-    \printuntil /^\}/
+    \snippet examples/mainwindows/menus/mainwindow.cpp 7
 
 
     Once we have created the \gui {Left Align}, \gui {Right Align},
@@ -152,8 +185,7 @@
     function to add the actions to the menus and to insert the menus
     into the menu bar:
 
-    \skipto void MainWindow::createMenus()
-    \printuntil helpMenu->addAction(aboutQtAct)
+    \snippet examples/mainwindows/menus/mainwindow.cpp 8
 
     QMenuBar's \l {QMenuBar::addMenu()}{addMenu()} function appends a
     new QMenu with the given title, to the menu bar (note that the
@@ -173,8 +205,7 @@
     returns true, and adds the new action to the menu's list of
     actions.
 
-    \skipto formatMenu
-    \printuntil /^\}/
+    \snippet examples/mainwindows/menus/mainwindow.cpp 12
 
     Note the \gui Format menu. First of all, it is added as a submenu
     to the \gui Edit Menu using QMenu's \l
@@ -185,9 +216,7 @@
     to the menu separately while the action group does its magic
     behind the scene.
 
-    \quotefromfile mainwindows/menus/mainwindow.cpp
-    \skipto  void MainWindow::contextMenuEvent
-    \printuntil /^\}/
+    \snippet examples/mainwindows/menus/mainwindow.cpp 3
 
     To provide a custom context menu, we must reimplement QWidget's \l
     {QWidget::}{contextMenuEvent()} function to receive the widget's

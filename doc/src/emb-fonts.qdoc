@@ -42,24 +42,24 @@
 ****************************************************************************/
 
 /*!
-    \page qtopiacore-fonts.html
+    \page qt-embedded-fonts.html
 
-    \title Qtopia Core Fonts
-    \ingroup qtopiacore
+    \title Qt for Embedded Linux Fonts
+    \ingroup qt-embedded
 
-    \l {Qtopia Core} uses the \l
-    {http://freetype.sourceforge.net/freetype2/index.html}{FreeType 2}
+    \l {Qt for Embedded Linux} uses the
+    \l{http://freetype.sourceforge.net/freetype2/index.html}{FreeType 2}
     font engine to produce font output. The formats supported depends on
     the locally installed version of the FreeType library. In addition,
-    \l {Qtopia Core} supports the Qt Prerendered Font formats (\l QPF and \l QPF2):
-    light-weight non-scalable font formats specific to \l {Qtopia Core}. QPF2 is the
-    native format of \l {Qtopia Core}. QPF is the legacy format used by Qt/Embedded
-    2.x and 3.x. Several of the formats may be rendered using anti-aliasing
-    for improved readability.
+    \l{Qt for Embedded Linux} supports the Qt Prerendered Font formats (\l QPF and \l QPF2):
+    light-weight non-scalable font formats specific to \l {Qt for Embedded Linux}.
+    QPF2 is the native format of \l{Qt for Embedded Linux}. QPF is the legacy
+    format used by Qt/Embedded 2.x and 3.x. Several of the formats may be rendered
+    using anti-aliasing for improved readability.
 
-    When \l {Qtopia Core} applications run, they look for fonts in \l {Qtopia Core}'s
-    \c lib/fonts/ directory. \l {Qtopia Core} will automatically detect prerendered
-    fonts and TrueType fonts. For compatibility, \l {Qtopia Core} will also read the
+    When \l{Qt for Embedded Linux} applications run, they look for fonts in
+    Qt's \c lib/fonts/ directory. \l {Qt for Embedded Linux} will automatically detect
+    prerendered fonts and TrueType fonts. For compatibility, it will also read the
     legacy \c lib/fonts/fontdir file.
 
     Support for other font formats can be added, contact
@@ -74,16 +74,17 @@
     \bold {Optimization}
 
     The \l FreeType, \l QPF2 and \l QPF formats are features that can be
-    disabled using \l {Qtopia Core}'s feature definition system,
+    disabled using the
+    \l{Fine-Tuning Features in Qt for Embedded Linux}{feature definition system},
     reducing the size of Qt and saving resources.
 
     Note that at least one font format must be defined.
 
-    See the \l {Fine-Tuning Features in Qtopia Core} documentation for
+    See the \l {Fine-Tuning Features in Qt for Embedded Linux} documentation for
     details.
 
     \o
-    \inlineimage qtopiacore-fontfeatures.png
+    \inlineimage qt-embedded-fontfeatures.png
     \endtable
 
     All supported fonts use the Unicode character encoding. Most fonts
@@ -95,7 +96,7 @@
     \section1 FreeType Formats
 
     The \l {http://freetype.sourceforge.net/freetype2/index.html}{FreeType 2}
-    library (and therefore \l {Qtopia Core}) can support the following font formats:
+    library (and therefore \l{Qt for Embedded Linux}) can support the following font formats:
 
     \list
         \o TrueType (TTF)
@@ -121,7 +122,7 @@
     reducing memory requirements and speeding up text rendering.
 
     \omit
-    \l {Qtopia Core} will by default use the system FreeType library if it exists.
+    \l {Qt for Embedded Linux} will by default use the system FreeType library if it exists.
     Otherwise it will use a copy of the FreeType library in Qt, which by default only
     supports TrueType fonts to reduce footprint.
     \endomit
@@ -130,10 +131,10 @@
     \section1 Qt Prerendered Font (QPF2)
 
     The Qt Prerendered Font (QPF2) is an architecture-independent,
-    light-weight and non-scalable font format specific to \l {Qtopia Core}.
+    light-weight and non-scalable font format specific to \l{Qt for Embedded Linux}.
 
     Trolltech provides the cross-platform \c makeqpf tool, included in the
-    \c tools directory of both \l {Qt} and \l {Qtopia Core}, which allows
+    \c tools directory of both \l {Qt} and \l{Qt for Embedded Linux}, which allows
     generation of QPF2 files from system fonts.
 
     QPF2 supports anti-aliasing and complex writing systems, using information
@@ -146,32 +147,30 @@
 
     Trolltech provides support for the legacy QPF format for compatibility
     reasons. QPF is based on the internal font engine data structure of Qt/Embedded
-    (\l {Qtopia Core}'s predecessor) versions 2 and 3.
+    versions 2 and 3.
 
     Note that the file name describes the font, for example \c helvetica_120_50.qpf
     is 12 point Helvetica while \c helvetica_120_50i.qpf is 12 point Helvetica \e italic.
 
-\omit
+    \omit
     \section1 Memory Requirements
 
-    Taking advantage of the way the QPF format is structured, Qtopia
-    Core memory-maps the data rather than reading and parsing it. This
-    reduces RAM consumption even further.
+    Taking advantage of the way the QPF format is structured, Qt for
+    Embedded Linux memory-maps the data rather than reading and parsing it.
+    This reduces RAM consumption even further.
 
     Scalable fonts use a larger amount of memory per font, but
     these fonts provide a memory saving if many different sizes of each
     font are needed.
-\endomit
+    \endomit
 
     \section1 The Legacy \c fontdir File
 
-    For compatibility reasons \l {Qtopia Core} supports the \c fontdir
+    For compatibility reasons \l{Qt for Embedded Linux} supports the \c fontdir
     file, if present. The file defines additional fonts available to the
     application, and has the following format:
 
-    \code
-        name file renderer italic weight size flags
-    \endcode
+    \snippet doc/src/snippets/code/doc.src.emb-fonts.qdoc 0
 
     \table 100%
     \header \o Field \o Description

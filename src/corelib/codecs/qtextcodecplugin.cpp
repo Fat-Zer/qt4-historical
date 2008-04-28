@@ -46,6 +46,8 @@
 
 #ifndef QT_NO_TEXTCODECPLUGIN
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QTextCodecPlugin
     \brief The QTextCodecPlugin class provides an abstract base for custom QTextCodec plugins.
@@ -92,22 +94,7 @@
 
     Example:
 
-    \code
-        QList<QByteArray> MyCodecPlugin::names() const
-        {
-            return QList<QByteArray> << "IBM01140" << "hp15-tw";
-        }
-
-        QTextCodec *MyCodecPlugin::createForName(const QByteArray &name)
-        {
-            if (name == "IBM01140") {
-                return new Ibm01140Codec;
-            } else if (name == "hp15-tw") {
-                return new Hp15TwCodec;
-            }
-            return 0;
-        }
-    \endcode
+    \snippet doc/src/snippets/code/src.corelib.codecs.qtextcodecplugin.cpp 0
 
     \sa names()
 */
@@ -170,5 +157,7 @@ QTextCodec *QTextCodecPlugin::create(const QString &name)
         return createForMib(name.mid(4).toInt());
     return createForName(name.toLatin1());
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_TEXTCODECPLUGIN

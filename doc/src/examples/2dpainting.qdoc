@@ -1,3 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /*!
     \example opengl/2dpainting
     \title 2D Painting Example
@@ -39,9 +82,7 @@
 
     The \c Helper class is minimal:
 
-    \quotefromfile opengl/2dpainting/helper.h
-    \skipto class Helper
-    \printuntil /^\};/
+    \snippet examples/opengl/2dpainting/helper.h 0
 
     Apart from the constructor, it only provides a \c paint() function to paint
     using a painter supplied by one of our widget subclasses.
@@ -51,9 +92,7 @@
     The constructor of the class sets up the resources it needs to paint
     content onto a widget:
 
-    \quotefromfile opengl/2dpainting/helper.cpp
-    \skipto Helper::Helper
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/helper.cpp 0
 
     The actual painting is performed in the \c paint() function. This takes
     a QPainter that has already been set up to paint onto a paint device
@@ -61,8 +100,7 @@
     about the region to be painted, and a measure of the elapsed time (in
     milliseconds) since the paint device was last updated.
 
-    \skipto ::paint(
-    \printuntil translate(
+    \snippet examples/opengl/2dpainting/helper.cpp 1
 
     We begin painting by filling in the region contained in the paint event
     before translating the origin of the coordinate system so that the rest
@@ -73,15 +111,13 @@
     animate them so that they appear to move outward and around the coordinate
     system's origin:
 
-    \skipto save()
-    \printuntil restore()
+    \snippet examples/opengl/2dpainting/helper.cpp 2
 
     Since the coordinate system is rotated many times during
     this process, we \l{QPainter::save()}{save()} the QPainter's state
     beforehand and \l{QPainter::restore()}{restore()} it afterwards.
 
-    \skipto setPen(
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/helper.cpp 3
 
     We draw some text at the origin to complete the effect.
 
@@ -90,9 +126,7 @@
     The \c Widget class provides a basic custom widget that we use to
     display the simple animation painted by the \c Helper class.
 
-    \quotefromfile opengl/2dpainting/widget.h
-    \skipto class
-    \printuntil /^\};/
+    \snippet examples/opengl/2dpainting/widget.h 0
 
     Apart from the constructor, it only contains a
     \l{QWidget::paintEvent()}{paintEvent()} function, that lets us draw
@@ -107,15 +141,12 @@
     \c Helper object supplied and calling the base class's constructor,
     and enforces a fixed size for the widget:
 
-    \quotefromfile opengl/2dpainting/widget.cpp
-    \skipto Widget::Widget
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/widget.cpp 0
 
     The \c animate() slot is called whenever a timer, which we define later, times
     out:
 
-    \skipto ::animate()
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/widget.cpp 1
 
     Here, we determine the interval that has elapsed since the timer last
     timed out, and we add it to any existing value before repainting the
@@ -127,17 +158,14 @@
     to implement a paint event that sets up a QPainter for the widget and calls
     the helper's \c paint() function:
 
-    \skipto ::paintEvent(
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/widget.cpp 2
 
     \section1 GLWidget Class Definition
 
     The \c GLWidget class definition is basically the same as the \c Widget
     class except that it is derived from QGLWidget.
 
-    \quotefromfile opengl/2dpainting/glwidget.h
-    \skipto class
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/glwidget.h 0
 
     Again, the member variables record the \c Helper used to paint the
     widget and the elapsed time since the previous update.
@@ -146,9 +174,7 @@
 
     The constructor differs a little from the \c Widget class's constructor:
 
-    \quotefromfile opengl/2dpainting/glwidget.cpp
-    \skipto GLWidget::GLWidget
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/glwidget.cpp 0
 
     As well as initializing the \c elapsed member variable and storing the
     \c Helper object used to paint the widget, the base class's constructor
@@ -159,13 +185,11 @@
     The \c animate() slot is exactly the same as that provided by the \c Widget
     class:
 
-    \skipto ::animate()
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/glwidget.cpp 1
 
     The \c paintEvent() is almost the same as that found in the \c Widget class:
 
-    \skipto ::paintEvent(
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/glwidget.cpp 2
 
     Since anti-aliasing will be enabled if available, we only need to set up
     a QPainter on the widget and call the helper's \c paint() function to display
@@ -175,9 +199,7 @@
 
     The \c Window class has a basic, minimal definition:
 
-    \quotefromfile opengl/2dpainting/window.h
-    \skipto class
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/window.h 0
 
     It contains a single \c Helper object that will be shared between all
     widgets.
@@ -187,9 +209,7 @@
     The constructor does all the work, creating a widget of each type and
     inserting them with labels into a layout:
 
-    \quotefromfile opengl/2dpainting/window.cpp
-    \skipto Window::Window
-    \printuntil /^\}/
+    \snippet examples/opengl/2dpainting/window.cpp 0
 
     A timer with a 50 millisecond time out is constructed for animation purposes,
     and connected to the \c animate() slots of the \c Widget and \c GLWidget objects.

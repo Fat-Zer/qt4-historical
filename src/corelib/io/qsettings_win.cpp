@@ -42,11 +42,16 @@
 ****************************************************************************/
 
 #include "qsettings.h"
+
+#ifndef QT_NO_SETTINGS
+
 #include "qsettings_p.h"
 #include "qvector.h"
 #include "qmap.h"
 #include "qt_windows.h"
 #include "qdebug.h"
+
+QT_BEGIN_NAMESPACE
 
 /*  Keys are stored in QStrings. If the variable name starts with 'u', this is a "user"
     key, ie. "foo/bar/alpha/beta". If the variable name starts with 'r', this is a "registry"
@@ -122,14 +127,23 @@ static void mergeKeySets(NameSet *dest, const QStringList &src)
 static QString errorCodeToString(DWORD errorCode)
 {
     QString result;
-    char *data = 0;
-    FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-                    0, errorCode, 0,
-                    (char*)&data, 0, 0);
-    result = QString::fromLocal8Bit(data);
-    if (data != 0)
-        LocalFree(data);
-
+	QT_WA({
+		wchar_t *data = 0;
+		FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+			0, errorCode, 0,
+			data, 0, 0);
+		result = QString::fromUtf16(reinterpret_cast<const ushort *> (data));
+		if (data != 0)
+			LocalFree(data);
+	},	{
+		char *data = 0;
+		FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+			0, errorCode, 0,
+			(char *)&data, 0, 0);
+		result = QString::fromLocal8Bit(data);
+		if (data != 0)
+			LocalFree(data);
+	})
     if (result.endsWith(QLatin1String("\n")))
         result.truncate(result.length() - 1);
 
@@ -434,6 +448,7 @@ private:
 
 QWinSettingsPrivate::QWinSettingsPrivate(QSettings::Scope scope, const QString &organization,
                                          const QString &application)
+    : QSettingsPrivate(QSettings::NativeFormat, scope, organization, application)
 {
     deleteWriteHandleOnExit = false;
 
@@ -460,6 +475,7 @@ QWinSettingsPrivate::QWinSettingsPrivate(QSettings::Scope scope, const QString &
 }
 
 QWinSettingsPrivate::QWinSettingsPrivate(QString rPath)
+    : QSettingsPrivate(QSettings::NativeFormat)
 {
     deleteWriteHandleOnExit = false;
 
@@ -607,8 +623,11 @@ HKEY QWinSettingsPrivate::writeHandle() const
 QWinSettingsPrivate::~QWinSettingsPrivate()
 {
     if (deleteWriteHandleOnExit && writeHandle() != 0) {
-        QString emptyKey;
+#if defined(Q_OS_WINCE)
+        remove(regList.at(0).key()); 
+#else
         DWORD res;
+        QString emptyKey;
         QT_WA( {
             res = RegDeleteKeyW(writeHandle(), reinterpret_cast<const wchar_t *>(emptyKey.utf16()));
         }, {
@@ -618,6 +637,7 @@ QWinSettingsPrivate::~QWinSettingsPrivate()
             qWarning("QSettings: Failed to delete key \"%s\": %s",
                     regList.at(0).key().toLatin1().data(), errorCodeToString(res).toLatin1().data());
         }
+#endif
     }
 
     for (int i = 0; i < regList.size(); ++i)
@@ -668,6 +688,10 @@ void QWinSettingsPrivate::remove(const QString &uKey)
                 }
             }
         } else {
+#if defined(Q_OS_WINCE)
+            // For WinCE always Close the handle first.
+            RegCloseKey(handle);
+#endif
             QT_WA( {
                 res = RegDeleteKeyW(writeHandle(), reinterpret_cast<const wchar_t *>(rKey.utf16()));
             }, {
@@ -924,3 +948,6 @@ QSettingsPrivate *QSettingsPrivate::create(const QString &fileName, QSettings::F
         return new QConfFileSettingsPrivate(fileName, format);
     }
 }
+
+QT_END_NAMESPACE
+#endif // QT_NO_SETTINGS

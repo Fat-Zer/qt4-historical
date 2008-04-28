@@ -53,6 +53,8 @@
 
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
+
 //#define QSPINBOX_QSBDEBUG
 #ifdef QSPINBOX_QSBDEBUG
 #  define QSBDEBUG qDebug
@@ -66,7 +68,7 @@ class QSpinBoxPrivate : public QAbstractSpinBoxPrivate
 {
     Q_DECLARE_PUBLIC(QSpinBox)
 public:
-    QSpinBoxPrivate();
+    QSpinBoxPrivate(QWidget *parent = 0);
     void emitSignals(EmitPolicy ep, const QVariant &);
 
     virtual QVariant valueFromText(const QString &n) const;
@@ -85,7 +87,7 @@ class QDoubleSpinBoxPrivate : public QAbstractSpinBoxPrivate
 {
     Q_DECLARE_PUBLIC(QDoubleSpinBox)
 public:
-    QDoubleSpinBoxPrivate();
+    QDoubleSpinBoxPrivate(QWidget *parent = 0);
     void emitSignals(EmitPolicy ep, const QVariant &);
     bool isIntermediateValue(const QString &str) const;
 
@@ -162,11 +164,9 @@ public:
     for a custom spin box that allows the user to enter icon sizes
     (e.g., "32 x 32"):
 
-    \quotefromfile widgets/icons/iconsizespinbox.cpp
-    \skipto ::valueFromText
-    \printuntil /^\}$/
-    \skipto ::textFromValue
-    \printuntil /^\}$/
+    \snippet examples/widgets/icons/iconsizespinbox.cpp 1
+    \codeline
+    \snippet examples/widgets/icons/iconsizespinbox.cpp 2
 
     See the \l{widgets/icons}{Icons} example for the full source
     code.
@@ -199,7 +199,7 @@ public:
 */
 
 QSpinBox::QSpinBox(QWidget *parent)
-    : QAbstractSpinBox(*new QSpinBoxPrivate, parent)
+    : QAbstractSpinBox(*new QSpinBoxPrivate(parent), parent)
 {
     Q_D(QSpinBox);
     d->init();
@@ -211,7 +211,7 @@ QSpinBox::QSpinBox(QWidget *parent)
     argument and then use setObjectName() instead.
 */
 QSpinBox::QSpinBox(QWidget *parent, const char *name)
-    : QAbstractSpinBox(*new QSpinBoxPrivate, parent)
+    : QAbstractSpinBox(*new QSpinBoxPrivate(parent), parent)
 {
     Q_D(QSpinBox);
     setObjectName(QString::fromAscii(name));
@@ -223,7 +223,7 @@ QSpinBox::QSpinBox(QWidget *parent, const char *name)
     argument and then use setObjectName() instead.
 */
 QSpinBox::QSpinBox(int minimum, int maximum, int step, QWidget *parent, const char *name)
-    : QAbstractSpinBox(*new QSpinBoxPrivate, parent)
+    : QAbstractSpinBox(*new QSpinBoxPrivate(parent), parent)
 {
     Q_D(QSpinBox);
     d->minimum = QVariant(qMin<int>(minimum, maximum));
@@ -263,9 +263,7 @@ void QSpinBox::setValue(int value)
     Typical use is to display a unit of measurement or a currency
     symbol. For example:
 
-    \code
-        sb->setPrefix("$");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 0
 
     To turn off the prefix display, set this property to an empty
     string. The default is no prefix. The prefix is not displayed when
@@ -298,9 +296,7 @@ void QSpinBox::setPrefix(const QString &prefix)
     use is to display a unit of measurement or a currency symbol. For
     example:
 
-    \code
-        sb->setSuffix(" km");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 1
 
     To turn off the suffix display, set this property to an empty
     string. The default is no suffix. The suffix is not displayed for
@@ -428,14 +424,9 @@ void QSpinBox::setMaximum(int maximum)
     Convenience function to set the \a minimum, and \a maximum values
     with a single function call.
 
-    \code
-    setRange(minimum, maximum);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 2
     is equivalent to:
-    \code
-    setMinimum(minimum);
-    setMaximum(maximum);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 3
 
     \sa minimum maximum
 */
@@ -450,7 +441,7 @@ void QSpinBox::setRange(int minimum, int maximum)
     This virtual function is used by the spin box whenever it needs
     to display the given \a value. The default implementation returns
     a string containing \a value printed in the standard way using
-    QLocale().toString(). Reimplementations may return anything. (See
+    QWidget::locale().toString(). Reimplementations may return anything. (See
     the example in the detailed description.)
 
     Note: QSpinBox does not call this function for specialValueText()
@@ -466,7 +457,7 @@ void QSpinBox::setRange(int minimum, int maximum)
 QString QSpinBox::textFromValue(int value) const
 {
     Q_D(const QSpinBox);
-    QString str = QLocale().toString(value);
+    QString str = locale().toString(value);
     if (qAbs(value) >= 1000) {
         str.remove(d->thousand);
     }
@@ -601,7 +592,7 @@ void QSpinBox::fixup(QString &input) const
     \sa setMinimum(), setMaximum(), setSingleStep()
 */
 QDoubleSpinBox::QDoubleSpinBox(QWidget *parent)
-    : QAbstractSpinBox(*new QDoubleSpinBoxPrivate, parent)
+    : QAbstractSpinBox(*new QDoubleSpinBoxPrivate(parent), parent)
 {
 }
 
@@ -638,9 +629,7 @@ void QDoubleSpinBox::setValue(double value)
     Typical use is to display a unit of measurement or a currency
     symbol. For example:
 
-    \code
-        spinbox->setPrefix("$");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 4
 
     To turn off the prefix display, set this property to an empty
     string. The default is no prefix. The prefix is not displayed when
@@ -674,9 +663,7 @@ void QDoubleSpinBox::setPrefix(const QString &prefix)
     use is to display a unit of measurement or a currency symbol. For
     example:
 
-    \code
-        spinbox->setSuffix(" km");
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 5
 
     To turn off the suffix display, set this property to an empty
     string. The default is no suffix. The suffix is not displayed for
@@ -811,14 +798,9 @@ void QDoubleSpinBox::setMaximum(double maximum)
     Note: The maximum and minimum values will be rounded to match the
     decimals property.
 
-    \code
-    setRange(minimum, maximum);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 6
     is equivalent to:
-    \code
-    setMinimum(minimum);
-    setMaximum(maximum);
-    \endcode
+    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 7
 
     \sa minimum maximum
 */
@@ -863,7 +845,7 @@ void QDoubleSpinBox::setDecimals(int decimals)
 /*!
     This virtual function is used by the spin box whenever it needs to
     display the given \a value. The default implementation returns a string
-    containing \a value printed using QLocale().toString(\a value,
+    containing \a value printed using QWidget::locale().toString(\a value,
     QLatin1Char('f'), decimals()) and will remove the thousand
     separator. Reimplementations may return anything.
 
@@ -881,7 +863,7 @@ void QDoubleSpinBox::setDecimals(int decimals)
 QString QDoubleSpinBox::textFromValue(double value) const
 {
     Q_D(const QDoubleSpinBox);
-    QString str = QLocale().toString(value, 'f', d->decimals);
+    QString str = locale().toString(value, 'f', d->decimals);
     if (qAbs(value) >= 1000.0) {
         str.remove(d->thousand);
     }
@@ -940,14 +922,14 @@ void QDoubleSpinBox::fixup(QString &input) const
     Constructs a QSpinBoxPrivate object
 */
 
-QSpinBoxPrivate::QSpinBoxPrivate()
+QSpinBoxPrivate::QSpinBoxPrivate(QWidget *parent)
 {
     minimum = QVariant((int)0);
     maximum = QVariant((int)99);
     value = minimum;
     singleStep = QVariant((int)1);
     type = QVariant::Int;
-    const QString str = QLocale().toString(4567);
+    const QString str = (parent ? parent->locale() : QLocale()).toString(4567);
     if (str.size() == 5) {
         thousand = QChar(str.at(1));
     }
@@ -1003,7 +985,7 @@ QVariant QSpinBoxPrivate::valueFromText(const QString &text) const
 
 bool QSpinBoxPrivate::isIntermediateValue(const QString &str) const
 {
-    const int num = QLocale().toInt(str, 0, 10);
+    const int num = q_func()->locale().toInt(str, 0, 10);
     const int min = minimum.toInt();
     const int max = maximum.toInt();
 
@@ -1073,13 +1055,13 @@ QVariant QSpinBoxPrivate::validateAndInterpret(QString &input, int &pos,
     } else {
         bool ok = false;
         bool removedThousand = false;
-        num = QLocale().toInt(copy, &ok, 10);
+        num = q_func()->locale().toInt(copy, &ok, 10);
         if (!ok && copy.contains(thousand) && (max >= 1000 || min <= -1000)) {
             const int s = copy.size();
             copy.remove(thousand);
             pos = qMax(0, pos - (s - copy.size()));
             removedThousand = true;
-            num = QLocale().toInt(copy, &ok, 10);
+            num = q_func()->locale().toInt(copy, &ok, 10);
         }
         QSBDEBUG() << __FILE__ << __LINE__<< "num is set to" << num;
         if (!ok) {
@@ -1118,7 +1100,7 @@ QVariant QSpinBoxPrivate::validateAndInterpret(QString &input, int &pos,
     Constructs a QSpinBoxPrivate object
 */
 
-QDoubleSpinBoxPrivate::QDoubleSpinBoxPrivate()
+QDoubleSpinBoxPrivate::QDoubleSpinBoxPrivate(QWidget *parent)
 {
     minimum = QVariant(0.0);
     maximum = QVariant(99.99);
@@ -1126,7 +1108,7 @@ QDoubleSpinBoxPrivate::QDoubleSpinBoxPrivate()
     singleStep = QVariant(1.0);
     decimals = 2;
     type = QVariant::Double;
-    const QString str = QLocale().toString(4567.1);
+    const QString str = (parent ? parent->locale() : QLocale()).toString(4567.1);
     if (str.size() == 6) {
         delimiter = str.at(4);
         thousand = QChar((ushort)0);
@@ -1269,8 +1251,9 @@ QVariant QDoubleSpinBoxPrivate::valueFromText(const QString &f) const
 
 double QDoubleSpinBoxPrivate::round(double value) const
 {
-    const QString strDbl = QString::number(value, 'f', decimals);
-    return strDbl.toDouble();
+    Q_Q(const QDoubleSpinBox);
+    const QString strDbl = q->locale().toString(value, 'f', decimals);
+    return q->locale().toDouble(strDbl);
 }
 
 
@@ -1362,7 +1345,7 @@ QVariant QDoubleSpinBoxPrivate::validateAndInterpret(QString &input, int &pos,
 
     {
         bool ok = false;
-        QLocale loc;
+        QLocale loc(q_func()->locale());
         num = loc.toDouble(copy, &ok);
         QSBDEBUG() << __FILE__ << __LINE__ << loc << copy << num << ok;
         bool notAcceptable = false;
@@ -1544,5 +1527,7 @@ bool QSpinBox::event(QEvent *event)
         d->setLayoutItemMargins(QStyle::SE_SpinBoxLayoutItem);
     return QAbstractSpinBox::event(event);
 }
+
+QT_END_NAMESPACE
 
 #endif // QT_NO_SPINBOX

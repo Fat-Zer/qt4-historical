@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qmake-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qmake-manual.qdoc -->
 <head>
-  <title>Qt 4.3: qmake Project Files</title>
+  <title>Qt 4.4: qmake Project Files</title>
   <link rel="prev" href="qmake-using.html" />
   <link rel="contents" href="qmake-manual.html" />
   <link rel="next" href="qmake-running.html" />
@@ -20,7 +20,8 @@
 [<a href="qmake-manual.html">Contents</a>]
 [Next: <a href="qmake-running.html">Running qmake</a>]
 </p>
-<h1 align="center">qmake Project Files<br /><small></small></h1>
+<h1 class="title">qmake Project Files<br /><span class="subtitle"></span>
+</h1>
 <p>Project files contain all the information required by <tt>qmake</tt> to build your application, library, or plugin. The resources used by your project are generally specified using a series of declarations, but support for simple programming constructs allow you to describe different build processes for different platforms and environments.</p>
 <ul><li><a href="#project-file-elements">Project File Elements</a></li>
 <ul><li><a href="#variables">Variables</a></li>
@@ -120,7 +121,7 @@
 <tr valign="top" class="odd"><td>warn_off</td><td>The compiler should output as few warnings as possible.</td></tr>
 </table></p>
 <p>The <tt>debug_and_release</tt> option is special in that it enables <i>both</i> debug and release versions of a project to be built. In such a case, the Makefile that <tt>qmake</tt> generates includes a rule that builds both versions, and this can be invoked in the following way:</p>
-<pre> make all</pre>
+<pre>         make all</pre>
 <p>Adding the <tt>build_all</tt> option to the <tt>CONFIG</tt> variable makes this rule the default when building the project, and installation targets will be created for both debug and release builds.</p>
 <p>Note that each of the options specified in the <tt>CONFIG</tt> variable can also be used as a scope condition. You can test for the presence of certain configuration options by using the built-in <a href="qmake-function-reference.html#config-config">CONFIG()</a> function. For example, the following lines show the function as the condition in a scope to test whether only the <tt>opengl</tt> option is in use:</p>
 <pre> CONFIG(opengl) {
@@ -138,17 +139,17 @@
 </table></p>
 <p>When using <a href="qmake-variable-reference.html#template">application or library project templates</a>, more specialized configuration options can be used to fine tune the build process. These are explained in details in the <a href="qmake-common-projects.html">Common Projects</a> chapter of this manual.</p>
 <p>For example, if your application uses the Qt library and you want to build it as a multi-threaded application in <tt>debug</tt> mode, your project file will contain the following line:</p>
-<pre> CONFIG += qt thread debug</pre>
+<pre>         CONFIG += qt thread debug</pre>
 <p>Note, that you must use &quot;+=&quot;, not &quot;=&quot;, or <tt>qmake</tt> will not be able to use Qt's configuration to determine the settings needed for your project.</p>
 <a name="declaring-qt-libraries"></a>
 <h2>Declaring Qt Libraries</h2>
 <p>If the <tt>CONFIG</tt> variable contains the <tt>qt</tt> value, qmake's support for Qt applications is enabled. This makes it possible to fine-tune which of the Qt modules are used by your application. This is achieved with the <tt>QT</tt> variable which can be used to declare the required extension modules. For example, we can enable the XML and network modules in the following way:</p>
-<pre> CONFIG += qt
- QT += network xml</pre>
+<pre>         CONFIG += qt
+         QT += network xml</pre>
 <p>Note that <tt>QT</tt> includes the <tt>core</tt> and <tt>gui</tt> modules by default, so the above declaration <i>adds</i> the network and XML modules to this default list. The following assignment <i>omits</i> the default modules, and will lead to errors when the application's source code is being compiled:</p>
-<pre> QT = network xml # This will omit the core and gui modules.</pre>
+<pre>         QT = network xml # This will omit the core and gui modules.</pre>
 <p>If you want to build a project <i>without</i> the <tt>gui</tt> module, you need to exclude it with the &quot;-=&quot; operator. By default, <tt>QT</tt> contains both <tt>core</tt> and <tt>gui</tt>, so the following line will result in a minimal Qt project being built:</p>
-<pre> QT -= gui # Only the core module is used.</pre>
+<pre>         QT -= gui # Only the core module is used.</pre>
 <p>The table below shows the options that can be used with the <tt>QT</tt> variable and the features that are associated with each of them:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Option</th><th>Features</th></tr></thead>
@@ -166,18 +167,18 @@
 <h2>Configuration Features</h2>
 <p><tt>qmake</tt> can be set up with extra configuration features that are specified in feature (.prf) files. These extra features often provide support for custom tools that are used during the build process. To add a feature to the build process, append the feature name (the stem of the feature filename) to the <tt>CONFIG</tt> variable.</p>
 <p>For example, <tt>qmake</tt> can configure the build process to take advantage of external libraries that are supported by <a href="http://www.freedesktop.org/wiki/Software_2fpkgconfig">pkg-config</a>, such as the D-Bus and ogg libraries, with the following lines:</p>
-<pre> CONFIG += link_pkgconfig
- PKGCONFIG += ogg dbus-1</pre>
+<pre>         CONFIG += link_pkgconfig
+         PKGCONFIG += ogg dbus-1</pre>
 <p>More information about features can be found in the <a href="qmake-advanced-usage.html#adding-new-configuration-features">Adding New Configuration Features</a> section of the <a href="qmake-advanced-usage.html">qmake Advanced Usage</a> chapter.</p>
 <a name="declaring-other-libraries"></a>
 <h2>Declaring Other Libraries</h2>
 <p>If you are using other libraries in your project in addition to those supplied with Qt, you need to specify them in your project file.</p>
 <p>The paths that <tt>qmake</tt> searches for libraries and the specific libraries to link against can be added to the list of values in the <a href="qmake-variable-reference.html#libs">LIBS</a> variable. The paths to the libraries themselves can be given, or the familiar Unix-style notation for specifying libraries and paths can be used if preferred.</p>
 <p>For example, the following lines show how a library can be specified:</p>
-<pre> LIBS += -L/usr/local/lib -lmath</pre>
+<pre>         LIBS += -L/usr/local/lib -lmath</pre>
 <p>The paths containing header files can also be specified in a similar way using the <a href="qmake-variable-reference.html#includepath">INCLUDEPATH</a> variable.</p>
 <p>For example, it is possible to add several paths to be searched for header files:</p>
-<pre> INCLUDEPATH = c:/msdev/include d:/stl/include</pre>
+<pre>         INCLUDEPATH = c:/msdev/include d:/stl/include</pre>
 <p>
 [Previous: <a href="qmake-using.html">Using qmake</a>]
 [<a href="qmake-manual.html">Contents</a>]
@@ -187,6 +188,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
 </tr></table></div></address></body>
 </html>

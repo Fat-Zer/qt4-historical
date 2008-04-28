@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_STRINGLISTMODEL
@@ -66,7 +68,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    
+
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
@@ -75,12 +77,16 @@ public:
     QStringList stringList() const;
     void setStringList(const QStringList &strings);
 
+    Qt::DropActions supportedDropActions() const;
+
 private:
     Q_DISABLE_COPY(QStringListModel)
     QStringList lst;
 };
 
 #endif // QT_NO_STRINGLISTMODEL
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

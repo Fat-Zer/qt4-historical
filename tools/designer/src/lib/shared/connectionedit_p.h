@@ -67,10 +67,12 @@
 #include <QtGui/QPolygonF>
 
 #include <QtGui/QUndoCommand>
-#
+
+QT_BEGIN_NAMESPACE
 
 class QDesignerFormWindowInterface;
 class QUndoStack;
+class QMenu;
 
 namespace qdesigner_internal {
 
@@ -100,8 +102,8 @@ public:
 class QDESIGNER_SHARED_EXPORT Connection : public CETypes
 {
 public:
-    Connection(ConnectionEdit *edit);
-    Connection(ConnectionEdit *edit, QObject *source, QObject *target);
+    explicit Connection(ConnectionEdit *edit);
+    explicit Connection(ConnectionEdit *edit, QObject *source, QObject *target);
     virtual ~Connection() {}
 
     QObject *object(EndPoint::Type type) const
@@ -174,13 +176,10 @@ public:
 
     void setSelected(Connection *con, bool sel);
     bool selected(const Connection *con) const;
-    void selectNone();
 
     int connectionCount() const { return m_con_list.size(); }
     Connection *connection(int i) const { return m_con_list.at(i); }
     int indexOfConnection(Connection *con) const { return m_con_list.indexOf(con); }
-
-    virtual void deleteSelected();
 
     virtual void setSource(Connection *con, const QString &obj_name);
     virtual void setTarget(Connection *con, const QString &obj_name);
@@ -204,6 +203,9 @@ signals:
     void connectionChanged(Connection *con);
 
 public slots:
+    void selectNone();
+    void selectAll();
+    virtual void deleteSelected();
     virtual void setBackground(QWidget *background);
     virtual void updateBackground();
     virtual void widgetRemoved(QWidget *w);
@@ -218,24 +220,34 @@ protected:
     virtual void keyPressEvent(QKeyEvent *e);
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void resizeEvent(QResizeEvent *e);
+    virtual void contextMenuEvent(QContextMenuEvent * event);
 
     virtual Connection *createConnection(QWidget *source, QWidget *target);
     virtual void modifyConnection(Connection *con);
 
     virtual QWidget *widgetAt(const QPoint &pos) const;
+    virtual void createContextMenu(QMenu &menu);
     void addConnection(Connection *con);
     QRect widgetRect(QWidget *w) const;
-    
+
     enum State { Editing, Connecting, Dragging };
     State state() const;
 
     virtual void endConnection(QWidget *target, const QPoint &pos);
+
+    const ConnectionList &connectionList() const { return m_con_list; }
+    const ConnectionSet &selection()  const      { return m_sel_con_set; }
+    Connection *takeConnection(Connection *con);
+    Connection *newlyAddedConnection()           { return m_tmp_con; }
+    void clearNewlyAddedConnection();
+
+    void findObjectsUnderMouse(const QPoint &pos);
+
 private:
     void startConnection(QWidget *source, const QPoint &pos);
     void continueConnection(QWidget *target, const QPoint &pos);
     void abortConnection();
 
-    void findObjectsUnderMouse(const QPoint &pos);
     void startDrag(const EndPoint &end_point, const QPoint &pos);
     void continueDrag(const QPoint &pos);
     void endDrag(const QPoint &pos);
@@ -243,11 +255,11 @@ private:
     Connection *connectionAt(const QPoint &pos) const;
     EndPoint endPointAt(const QPoint &pos) const;
     void paintConnection(QPainter *p, Connection *con,
-			 WidgetSet *heavy_highlight_set,
-			 WidgetSet *light_highlight_set) const;
+                         WidgetSet *heavy_highlight_set,
+                         WidgetSet *light_highlight_set) const;
     void paintLabel(QPainter *p, EndPoint::Type type, Connection *con);
 
-    
+
     QPointer<QWidget> m_bg_widget;
     QUndoStack *m_undo_stack;
     bool m_enable_update_background;
@@ -265,7 +277,6 @@ private:
     const QColor m_active_color;
 
 private:
-    friend class BuddyEditor;
     friend class Connection;
     friend class AddConnectionCommand;
     friend class DeleteConnectionsCommand;
@@ -275,7 +286,7 @@ private:
 class QDESIGNER_SHARED_EXPORT CECommand : public QUndoCommand, public CETypes
 {
 public:
-    CECommand(ConnectionEdit *edit)
+   explicit  CECommand(ConnectionEdit *edit)
         : m_edit(edit) {}
 
     virtual bool mergeWith(const QUndoCommand *) { return false; }
@@ -307,5 +318,7 @@ private:
 };
 
 } // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif // CONNECTIONEDIT_H

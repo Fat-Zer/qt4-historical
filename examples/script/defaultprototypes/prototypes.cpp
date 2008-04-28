@@ -50,6 +50,7 @@
 Q_DECLARE_METATYPE(QListWidgetItem*)
 Q_DECLARE_METATYPE(QListWidget*)
 
+//! [0]
 ListWidgetItemPrototype::ListWidgetItemPrototype(QObject *parent)
     : QObject(parent)
 {
@@ -74,9 +75,11 @@ QString ListWidgetItemPrototype::toString() const
 {
     return QString("ListWidgetItem(text = %0)").arg(text());
 }
+//! [0]
 
 
 
+//! [1]
 ListWidgetPrototype::ListWidgetPrototype(QObject *parent)
     : QObject(parent)
 {
@@ -106,3 +109,4 @@ void ListWidgetPrototype::setBackgroundColor(const QString &colorName)
         widget->setPalette(palette);
     }
 }
+//! [1]

@@ -52,6 +52,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_DNS
@@ -166,6 +168,8 @@ private Q_SLOTS:
 };
 
 #endif // QT_NO_DNS
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

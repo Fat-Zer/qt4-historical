@@ -43,6 +43,8 @@
 
 #include <QtDesigner/extension.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QAbstractExtensionFactory
 
@@ -147,14 +149,7 @@
    object is of type T (or of a subclass); otherwise returns 0. The
    extension is retrieved using the given extension \a manager.
 
-   \code
-       QDesignerPropertySheetExtension *propertySheet;
-       QExtensionManager manager = formEditor->extensionManager();
-
-       propertySheet = qt_extension<QDesignerPropertySheetExtension*>(manager, widget);
-
-       if(propertySheet) {...}
-   \endcode
+   \snippet doc/src/snippets/code/tools.designer.src.lib.extension.extension.cpp 0
 
    When implementing a custom widget plugin, a pointer to \QD's
    current QDesignerFormEditorInterface object (\c formEditor) is
@@ -176,9 +171,7 @@
    extension class called \a ExtensionName. The \a Identifier must be
    unique. For example:
 
-   \code
-   Q_DECLARE_EXTENSION_INTERFACE(MyExtension, "com.mycompany.myproduct.myextension")
-   \endcode
+   \snippet doc/src/snippets/code/tools.designer.src.lib.extension.extension.cpp 1
 
    Using the company and product names is a good way to ensure
    uniqueness of the identifier.
@@ -192,3 +185,4 @@
    \sa Q_DECLARE_INTERFACE()
 */
 
+QT_END_NAMESPACE

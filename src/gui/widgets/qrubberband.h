@@ -48,6 +48,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_RUBBERBAND
@@ -96,6 +98,8 @@ inline void QRubberBand::move(int ax, int ay)
 { setGeometry(ax, ay, width(), height()); }
 
 #endif // QT_NO_RUBBERBAND
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

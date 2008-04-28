@@ -77,6 +77,8 @@
 #include <iostream>
 #endif
 
+QT_BEGIN_NAMESPACE
+
 class QTextFormatCollection;
 class QTextFormat;
 class QTextBlockFormat;
@@ -104,8 +106,8 @@ class QTextBlockData : public QFragment
 {
 public:
     inline void initialize()
-    { layout = 0; userData = 0; userState = -1; }
-    void invalidate() const;
+        { layout = 0; userData = 0; userState = -1; revision = 0; hidden = 0; }
+    inline void invalidate() const;
     inline void free()
     { delete layout; layout = 0; delete userData; userData = 0; }
 
@@ -114,6 +116,8 @@ public:
     mutable QTextLayout *layout;
     mutable QTextBlockUserData *userData;
     mutable int userState;
+    mutable int revision : 31;
+    mutable uint hidden : 1;
 };
 
 
@@ -150,6 +154,7 @@ public:
         QAbstractUndoItem *custom;
         int objectIndex;
     };
+    quint32 revision;
 
     bool tryMerge(const QTextUndoCommand &other);
 };
@@ -279,7 +284,7 @@ public:
     QTextDocument *document() { return q_func(); }
     const QTextDocument *document() const { return q_func(); }
 
-    void ensureMaximumBlockCount();
+    bool ensureMaximumBlockCount();
 
 private:
     QTextDocumentPrivate(const QTextDocumentPrivate& m);
@@ -321,15 +326,24 @@ private:
     QMap<QUrl, QVariant> cachedResources;
     QString defaultStyleSheet;
 
-    QTextOption defaultTextOption;
     int lastBlockCount;
 
 public:
+    QTextOption defaultTextOption;
+#ifndef QT_NO_CSSPARSER
     QCss::StyleSheet parsedDefaultStyleSheet;
+#endif
     int maximumBlockCount;
+    bool needsEnsureMaximumBlockCount;
     bool inContentsChange;
     QSizeF pageSize;
     QString title;
+    QString url;
+    qreal indentWidth;
+
+    void mergeCachedResources(const QTextDocumentPrivate *priv);
+
+    friend class QTextHtmlExporter;
 };
 
 class QTextTable;
@@ -368,10 +382,15 @@ private:
 
     void emitFontFamily(const QString &family);
 
+    void emitBackgroundAttribute(const QTextFormat &format);
+    QString findUrlForImage(const QTextDocument *doc, qint64 cacheKey, bool isPixmap);
+
     QString html;
     QTextCharFormat defaultCharFormat;
     const QTextDocument *doc;
     bool fragmentMarkers;
 };
+
+QT_END_NAMESPACE
 
 #endif // QTEXTDOCUMENT_P_H

@@ -51,6 +51,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3Support)
 
 /* Q3SqlFieldInfo Class
@@ -157,6 +159,8 @@ public:
     { calc = calculated; }
 
 };
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

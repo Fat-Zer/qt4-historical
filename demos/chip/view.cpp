@@ -48,7 +48,7 @@
 #include <QtOpenGL>
 #endif
 
-#include <math.h>
+#include <qmath.h>
 
 View::View(const QString &name, QWidget *parent)
     : QFrame(parent)
@@ -179,7 +179,7 @@ void View::setResetButtonEnabled()
 
 void View::setupMatrix()
 {
-    qreal scale = ::pow(2.0, (zoomSlider->value() - 250) / 50.0);
+    qreal scale = qPow(qreal(2), (zoomSlider->value() - 250) / qreal(50));
 
     QMatrix matrix;
     matrix.scale(scale, scale);
@@ -203,12 +203,14 @@ void View::toggleAntialiasing()
 
 void View::print()
 {
+#ifndef QT_NO_PRINTER
     QPrinter printer;
     QPrintDialog dialog(&printer, this);
     if (dialog.exec() == QDialog::Accepted) {
         QPainter painter(&printer);
         graphicsView->render(&painter);
     }
+#endif
 }
 
 void View::zoomIn()

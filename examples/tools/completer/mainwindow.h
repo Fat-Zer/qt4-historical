@@ -46,6 +46,7 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
 class QComboBox;
 class QCompleter;
@@ -53,7 +54,9 @@ class QLabel;
 class QLineEdit;
 class QProgressBar;
 class QCheckBox;
+QT_END_NAMESPACE
 
+//! [0]
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -66,7 +69,9 @@ private slots:
     void changeCase(int);
     void changeMode(int);
     void changeModel();
+//! [0]
 
+//! [1]
 private:
     void createMenu();
     QAbstractItemModel *modelFromFile(const QString& fileName);
@@ -79,5 +84,6 @@ private:
     QLabel *contentsLabel;
     QLineEdit *lineEdit;
 };
+//! [1]
 
 #endif // MAINWINDOW_H

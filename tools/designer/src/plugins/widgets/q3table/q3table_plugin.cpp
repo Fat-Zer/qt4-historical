@@ -51,8 +51,10 @@
 #include <QtGui/QIcon>
 #include <Qt3Support/Q3Table>
 
-Q3TablePlugin::Q3TablePlugin(QObject *parent)
-        : QObject(parent), m_initialized(false)
+QT_BEGIN_NAMESPACE
+
+Q3TablePlugin::Q3TablePlugin(const QIcon &icon, QObject *parent)
+        : QObject(parent), m_initialized(false), m_icon(icon)
 {}
 
 QString Q3TablePlugin::name() const
@@ -71,7 +73,7 @@ QString Q3TablePlugin::includeFile() const
 { return QLatin1String("q3table.h"); }
 
 QIcon Q3TablePlugin::icon() const
-{ return QIcon(); }
+{ return m_icon; }
 
 bool Q3TablePlugin::isContainer() const
 { return false; }
@@ -116,3 +118,5 @@ QString Q3TablePlugin::domXml() const
 }
 
 
+
+QT_END_NAMESPACE

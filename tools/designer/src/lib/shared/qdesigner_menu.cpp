@@ -70,7 +70,8 @@
 #include <QtGui/qevent.h>
 
 Q_DECLARE_METATYPE(QAction*)
-Q_DECLARE_METATYPE(QListWidgetItem*)
+
+QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;
 
@@ -674,22 +675,9 @@ bool QDesignerMenu::eventFilter(QObject *object, QEvent *event)
     return false;
 };
 
-int QDesignerMenu::actionAtPosition(const QPoint &pos) const
-{
-    for (int i = 0; i<actions().count(); ++i) {
-        QRect g = actionGeometry(safeActionAt(i));
-        g.setTopLeft(QPoint(0, 0));
-
-        if (g.contains(pos))
-            return i;
-    }
-
-    return -1;
-}
-
 int QDesignerMenu::findAction(const QPoint &pos) const
 {
-    const int index = actionAtPosition(pos);
+    const int index = actionIndexAt(this, pos, Qt::Vertical);
     if (index == -1)
         return realActionCount();
 
@@ -1360,4 +1348,4 @@ void QDesignerMenu::keyReleaseEvent(QKeyEvent *event)
     event->ignore();
 }
 
-
+QT_END_NAMESPACE

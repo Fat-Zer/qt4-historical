@@ -58,6 +58,8 @@
 #include "separator.h"
 #include "tokenizer.h"
 
+QT_BEGIN_NAMESPACE
+
 QList<Generator *> Generator::generators;
 QMap<QString, QMap<QString, QString> > Generator::fmtLeftMaps;
 QMap<QString, QMap<QString, QString> > Generator::fmtRightMaps;
@@ -501,31 +503,31 @@ void Generator::generateModuleWarning(const ClassNode *classe, CodeMarker *marke
 QString Generator::indent( int level, const QString& markedCode )
 {
     if ( level == 0 )
-	return markedCode;
+        return markedCode;
 
     QString t;
     int column = 0;
 
     int i = 0;
     while ( i < (int) markedCode.length() ) {
-	if ( markedCode[i] == '<' ) {
-	    while ( i < (int) markedCode.length() ) {
-		t += markedCode[i++];
-		if ( markedCode[i - 1] == '>' )
-		    break;
-	    }
-	} else {
-	    if ( markedCode[i] == '\n' ) {
-		column = 0;
-	    } else {
-		if ( column == 0 ) {
-		    for ( int j = 0; j < level; j++ )
-			t += ' ';
-		}
-		column++;
-	    }
-	    t += markedCode[i++];
-	}
+        if ( markedCode.at(i) == QLatin1Char('<') ) {
+            while ( i < (int) markedCode.length() ) {
+                t += markedCode.at(i++);
+                if ( markedCode.at(i - 1) == QLatin1Char('>') )
+                    break;
+            }
+        } else {
+            if ( markedCode.at(i) == QLatin1Char('\n') ) {
+                column = 0;
+            } else {
+                if ( column == 0 ) {
+                    for ( int j = 0; j < level; j++ )
+                        t += QLatin1Char(' ');
+                }
+                column++;
+            }
+            t += markedCode.at(i++);
+        }
     }
     return t;
 }
@@ -533,11 +535,11 @@ QString Generator::indent( int level, const QString& markedCode )
 QString Generator::plainCode( const QString& markedCode )
 {
     QString t = markedCode;
-    t.replace( tag, "" );
-    t.replace( quot, "\"" );
-    t.replace( gt, ">" );
-    t.replace( lt, "<" );
-    t.replace( amp, "&" );
+    t.replace( tag, QString() );
+    t.replace( quot, QLatin1String("\"") );
+    t.replace( gt, QLatin1String(">") );
+    t.replace( lt, QLatin1String("<") );
+    t.replace( amp, QLatin1String("&") );
     return t;
 }
 
@@ -565,13 +567,17 @@ QString Generator::typeString( const Node *node )
 QString Generator::imageFileName( const Node *relative, const QString& fileBase )
 {
     QString userFriendlyFilePath;
-    QString filePath = Config::findFile(relative->doc().location(), imageFiles, imageDirs, fileBase,
-					imgFileExts[format()], userFriendlyFilePath);
-    if (filePath.isEmpty())
-	return "";
+    QString filePath = Config::findFile(
+        relative->doc().location(), imageFiles, imageDirs, fileBase,
+        imgFileExts[format()], userFriendlyFilePath);
 
-    return "images/"
-           + Config::copyFile(relative->doc().location(), filePath, userFriendlyFilePath, outputDir() + "/images");
+    if (filePath.isEmpty())
+        return QString();
+
+    return QLatin1String("images/")
+           + Config::copyFile(relative->doc().location(),
+                              filePath, userFriendlyFilePath,
+                              outputDir() + QLatin1String("/images"));
 }
 
 void Generator::setImageFileExtensions( const QStringList& extensions )
@@ -702,6 +708,10 @@ void Generator::generateStatus( const Node *node, CodeMarker *marker )
                  << " for more information."
                  << Atom::ParaRight;
         }
+        break;
+    case Node::Internal:
+    default:
+        break;
     }
     generateText(text, node, marker);
 }
@@ -910,3 +920,5 @@ QString Generator::fullName(const Node *node, const Node *relative,
     else
         return marker->plainFullName(node, relative);
 }
+
+QT_END_NAMESPACE

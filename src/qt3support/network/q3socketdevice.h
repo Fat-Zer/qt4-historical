@@ -49,6 +49,8 @@
 
 QT_BEGIN_HEADER
 
+QT_BEGIN_NAMESPACE
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_NETWORK
@@ -153,7 +155,7 @@ private:
     virtual void setOption( Option, int );
 
     void	 fetchConnectionParameters();
-#if defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     void	 fetchPeerConnectionParameters();
 #endif
 
@@ -169,6 +171,8 @@ private:	// Disabled copy constructor and operator=
 };
 
 #endif // QT_NO_NETWORK
+
+QT_END_NAMESPACE
 
 QT_END_HEADER
 

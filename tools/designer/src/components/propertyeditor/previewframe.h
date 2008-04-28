@@ -47,6 +47,8 @@
 #include <QtGui/QFrame>
 #include <QtCore/QPointer>
 
+QT_BEGIN_NAMESPACE
+
 class QMdiArea;
 class QMdiSubWindow;
 
@@ -56,7 +58,7 @@ class PreviewFrame: public QFrame
 {
     Q_OBJECT
 public:
-    PreviewFrame(QWidget *parent);
+    explicit PreviewFrame(QWidget *parent);
 
     void setPreviewPalette(const QPalette &palette);
     void setSubWindowActive(bool active);
@@ -70,5 +72,7 @@ private:
 };
 
 }  // namespace qdesigner_internal
+
+QT_END_NAMESPACE
 
 #endif

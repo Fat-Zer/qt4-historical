@@ -51,6 +51,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+QT_BEGIN_NAMESPACE
+
 struct QMetaObject;
 
 struct Type
@@ -234,5 +236,7 @@ inline QByteArray noRef(const QByteArray &type)
         return type.left(type.length()-1);
     return type;
 }
+
+QT_END_NAMESPACE
 
 #endif // MOC_H

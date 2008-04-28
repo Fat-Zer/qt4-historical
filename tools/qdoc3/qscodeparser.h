@@ -51,6 +51,8 @@
 #include "cppcodeparser.h"
 #include "cpptoqsconverter.h"
 
+QT_BEGIN_NAMESPACE
+
 class QsCodeParser : public CppCodeParser
 {
 public:
@@ -122,5 +124,7 @@ private:
 
     static int tabSize;
 };
+
+QT_END_NAMESPACE
 
 #endif

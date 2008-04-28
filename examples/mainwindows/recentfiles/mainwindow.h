@@ -47,9 +47,11 @@
 #include <QList>
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
 class QTextEdit;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

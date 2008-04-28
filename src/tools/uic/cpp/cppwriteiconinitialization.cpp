@@ -48,7 +48,10 @@
 #include "utils.h"
 #include "uic.h"
 
-#include <QTextStream>
+#include <QtCore/QTextStream>
+#include <QtCore/QString>
+
+QT_BEGIN_NAMESPACE
 
 namespace CPP {
 
@@ -65,7 +68,7 @@ void WriteIconInitialization::acceptUI(DomUI *node)
 
     QString className = node->elementClass() + option.postfix;
 
-    output << option.indent << "static QPixmap " << "icon(IconID id)\n"
+    output << option.indent << "static QPixmap " << iconFromDataFunction() << "(IconID id)\n"
            << option.indent << "{\n";
 
     WriteIconData(uic).acceptUI(node);
@@ -78,6 +81,11 @@ void WriteIconInitialization::acceptUI(DomUI *node)
 
     output << option.indent << "} // switch\n"
            << option.indent << "} // icon\n\n";
+}
+
+QString WriteIconInitialization::iconFromDataFunction()
+{
+    return QLatin1String("qt_get_icon");
 }
 
 void WriteIconInitialization::acceptImages(DomImages *images)
@@ -105,3 +113,5 @@ void WriteIconInitialization::acceptImage(DomImage *image)
 }
 
 } // namespace CPP
+
+QT_END_NAMESPACE

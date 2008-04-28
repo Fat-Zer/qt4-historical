@@ -50,10 +50,15 @@
 #include <QRect>
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 class QPaintEvent;
+QT_END_NAMESPACE
 
+//! [0]
 enum Operation { NoTransformation, Translate, Rotate, Scale };
+//! [0]
 
+//! [1]
 class RenderArea : public QWidget
 {
     Q_OBJECT
@@ -69,7 +74,9 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event);
+//! [1]
 
+//! [2]
 private:
     void drawCoordinates(QPainter &painter);
     void drawOutline(QPainter &painter);
@@ -81,5 +88,6 @@ private:
     QRect xBoundingRect;
     QRect yBoundingRect;
 };
+//! [2]
 
 #endif

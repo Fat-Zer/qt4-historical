@@ -59,6 +59,8 @@
 #include <QSize>
 #include <QRect>
 
+QT_BEGIN_NAMESPACE
+
 #ifndef QT_NO_TOOLBAR
 
 class QToolBar;
@@ -70,7 +72,7 @@ class QToolBarAreaLayoutItem
 {
 public:
     QToolBarAreaLayoutItem(QLayoutItem *item = 0)
-        : widgetItem(item), pos(0), size(-1), gap(false) {}
+        : widgetItem(item), pos(0), size(-1), extraSpace(0), gap(false) {}
 
     bool skip() const;
     QSize minimumSize() const;
@@ -79,6 +81,7 @@ public:
     QLayoutItem *widgetItem;
     int pos;
     int size;
+    int extraSpace;
     bool gap;
 };
 
@@ -113,10 +116,12 @@ public:
 
     void fitLayout();
 
-    void insertToolBar(QToolBar *before, QToolBar *toolBar);
+    QLayoutItem *insertToolBar(QToolBar *before, QToolBar *toolBar);
+    void insertItem(QToolBar *before, QLayoutItem *item);
     void removeToolBar(QToolBar *toolBar);
     void insertToolBarBreak(QToolBar *before);
     void removeToolBarBreak(QToolBar *before);
+    void moveToolBar(QToolBar *toolbar, int pos); 
 
     QList<int> gapIndex(const QPoint &pos) const;
     bool insertGap(QList<int> path, QLayoutItem *item);
@@ -127,6 +132,7 @@ public:
     QRect rect;
     Qt::Orientation o;
     QInternal::DockPosition dockPos;
+    bool dirty;
 };
 
 class QToolBarAreaLayout
@@ -155,12 +161,16 @@ public:
     QLayoutItem *takeAt(int *x, int index);
     void deleteAllLayoutItems();
 
-    void insertToolBar(QToolBar *before, QToolBar *toolBar);
+    QLayoutItem *insertToolBar(QToolBar *before, QToolBar *toolBar);
     void removeToolBar(QToolBar *toolBar);
-    void addToolBar(QInternal::DockPosition pos, QToolBar *toolBar);
+    QLayoutItem *addToolBar(QInternal::DockPosition pos, QToolBar *toolBar);
     void insertToolBarBreak(QToolBar *before);
     void removeToolBarBreak(QToolBar *before);
     void addToolBarBreak(QInternal::DockPosition pos);
+    void moveToolBar(QToolBar *toolbar, int pos); 
+
+    void insertItem(QInternal::DockPosition pos, QLayoutItem *item);
+    void insertItem(QToolBar *before, QLayoutItem *item);
 
     QInternal::DockPosition findToolBar(QToolBar *toolBar) const;
     bool toolBarBreak(QToolBar *toolBar) const;
@@ -169,18 +179,22 @@ public:
 
     QList<int> indexOf(QWidget *toolBar) const;
     QList<int> gapIndex(const QPoint &pos) const;
+    QList<int> currentGapIndex() const;
     bool insertGap(QList<int> path, QLayoutItem *item);
     void remove(QList<int> path);
+    void remove(QLayoutItem *item);
     void clear();
     QToolBarAreaLayoutItem &item(QList<int> path);
     QRect itemRect(QList<int> path) const;
     QLayoutItem *plug(QList<int> path);
-    QLayoutItem *unplug(QList<int> path);
+    QLayoutItem *unplug(QList<int> path, QToolBarAreaLayout *other);
 
     void saveState(QDataStream &stream) const;
-    bool restoreState(QDataStream &stream, const QList<QToolBar*> &toolBars, uchar tmarker);
+    bool restoreState(QDataStream &stream, const QList<QToolBar*> &toolBars, uchar tmarker, bool pre43, bool testing = false);
     bool isEmpty() const;
 };
 
+
+QT_END_NAMESPACE
 #endif // QT_NO_TOOLBAR
 #endif // QTOOLBARAREALAYOUT_P_H

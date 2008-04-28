@@ -46,6 +46,7 @@
 
 #include <QWidget>
 
+//! [0]
 class ShapedClock : public QWidget
 {
     Q_OBJECT
@@ -63,5 +64,6 @@ protected:
 private:
     QPoint dragPosition;
 };
+//! [0]
 
 #endif

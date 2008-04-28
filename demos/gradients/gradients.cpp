@@ -206,7 +206,7 @@ inline static bool x_less_than(const QPointF &p1, const QPointF &p2)
 
 void GradientEditor::pointsUpdated()
 {
-    double w = m_alpha_shade->width();
+    qreal w = m_alpha_shade->width();
 
     QGradientStops stops;
 
@@ -220,7 +220,7 @@ void GradientEditor::pointsUpdated()
     qSort(points.begin(), points.end(), x_less_than);
 
     for (int i=0; i<points.size(); ++i) {
-        double x = int(points.at(i).x());
+        qreal x = int(points.at(i).x());
         if (i < points.size() - 1 && x == points.at(i+1).x())
             continue;
         QColor color((0x00ff0000 & m_red_shade->colorAt(int(x))) >> 16,
@@ -252,13 +252,13 @@ void GradientEditor::setGradientStops(const QGradientStops &stops)
 {
     QPolygonF pts_red, pts_green, pts_blue, pts_alpha;
 
-    double h_red = m_red_shade->height();
-    double h_green = m_green_shade->height();
-    double h_blue = m_blue_shade->height();
-    double h_alpha = m_alpha_shade->height();
+    qreal h_red = m_red_shade->height();
+    qreal h_green = m_green_shade->height();
+    qreal h_blue = m_blue_shade->height();
+    qreal h_alpha = m_alpha_shade->height();
 
     for (int i=0; i<stops.size(); ++i) {
-        double pos = stops.at(i).first;
+        qreal pos = stops.at(i).first;
         QRgb color = stops.at(i).second.rgba();
         pts_red << QPointF(pos * m_red_shade->width(), h_red - qRed(color) * h_red / 255);
         pts_green << QPointF(pos * m_green_shade->width(), h_green - qGreen(color) * h_green / 255);
@@ -505,7 +505,7 @@ void GradientRenderer::paint(QPainter *p)
         g = QRadialGradient(line.p1(), qMin(width(), height()) / 3.0, line.p2());
     } else {
         QLineF l(pts.at(0), pts.at(1));
-        double angle = l.angle(QLineF(0, 0, 1, 0));
+        qreal angle = l.angle(QLineF(0, 0, 1, 0));
         if (l.dy() > 0)
             angle = 360 - angle;
         g = QConicalGradient(pts.at(0), angle);

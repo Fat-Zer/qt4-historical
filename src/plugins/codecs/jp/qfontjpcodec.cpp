@@ -45,6 +45,8 @@
 
 #include "qjpunicode.h"
 
+QT_BEGIN_NAMESPACE
+
 #ifdef Q_WS_X11
 // JIS X 0201
 
@@ -141,3 +143,5 @@ QByteArray QFontJis0208Codec::convertFromUnicode(const QChar *uc, int len, Conve
 }
 
 #endif
+
+QT_END_NAMESPACE

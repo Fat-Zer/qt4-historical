@@ -58,6 +58,8 @@
 
 #include <private/qfontengine_ft_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QFreetypeFace;
 
 // --------------------------------------------------------------------------
@@ -85,11 +87,12 @@ public:
     QFontEngine::FaceId faceId() const;
     QFontEngine::Properties properties() const;
     void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
-    QByteArray getSfntTable(uint tag) const;
+    bool getSfntTableData(uint tag, uchar *buffer, uint *length) const;
     int synthesized() const;
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs,
                       QTextEngine::ShaperFlags flags) const;
+    void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
 
     glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);
     glyph_metrics_t boundingBox(glyph_t glyph);
@@ -162,5 +165,7 @@ protected:
 };
 
 #endif // QT_NO_FONTCONFIG
+
+QT_END_NAMESPACE
 
 #endif // QFONTENGINE_X11_P_H

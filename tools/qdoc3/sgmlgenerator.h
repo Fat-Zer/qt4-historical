@@ -50,6 +50,8 @@
 
 #include "bookgenerator.h"
 
+QT_BEGIN_NAMESPACE
+
 class SgmlGenerator : public BookGenerator
 {
 public:
@@ -61,5 +63,7 @@ public:
 protected:
     // ###
 };
+
+QT_END_NAMESPACE
 
 #endif

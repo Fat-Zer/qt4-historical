@@ -47,6 +47,8 @@
 #include "proitems.h"
 #include "proreader.h"
 
+QT_BEGIN_NAMESPACE
+
 ProReader::ProReader()
 {
     m_fixBackSlashes = false;
@@ -273,7 +275,7 @@ void ProReader::insertComment(const QByteArray &comment)
 
     QByteArray strComment;
     if (!m_commentItem)
-        strComment = m_pendingComment;     
+        strComment = m_pendingComment;
     else
         strComment = m_commentItem->comment();
 
@@ -345,7 +347,7 @@ void ProReader::updateItem()
 
     ProBlock *block = currentBlock();
     if (block->blockKind() & ProBlock::VariableKind) {
-        m_commentItem = new ProValue(m_proitem, 
+        m_commentItem = new ProValue(m_proitem,
             static_cast<ProVariable*>(block));
     } else if (m_proitem.endsWith(')')) {
         m_commentItem = new ProFunction(m_proitem);
@@ -357,3 +359,5 @@ void ProReader::updateItem()
 
     m_proitem.clear();
 }
+
+QT_END_NAMESPACE

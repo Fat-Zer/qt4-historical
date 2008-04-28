@@ -45,7 +45,11 @@
 #include "ui4_p.h"
 #include <spacer_widget_p.h>
 #include <qdesigner_formbuilder_p.h>
+#include <qtresourcemodel_p.h>
 #include <formscriptrunner_p.h>
+#include <QtDesigner/QDesignerFormEditorInterface>
+
+QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 /*******************************************************************************
@@ -60,9 +64,9 @@ public:
     virtual QWidget *createWidget(DomWidget *ui_widget, QWidget *parentWidget)
     { return QDesignerFormBuilder::createWidget(ui_widget, parentWidget); }
 
+    QWidget *createWidgetWithResources(const DomUI *dom_ui, DomWidget *dom_widget, DomResources *dom_resources, QWidget *result);
+
 protected:
-    using QDesignerFormBuilder::create;
-    using QDesignerFormBuilder::createWidget;
 
     virtual QWidget *create(DomWidget *ui_widget, QWidget *parents);
     virtual QWidget *createWidget(const QString &widgetName, QWidget *parentWidget, const QString &name);
@@ -92,6 +96,19 @@ QWidget *WidgetBoxResource::create(DomWidget *ui_widget, QWidget *parent)
     result->setObjectName(ui_widget->attributeName());
 
     return result;
+}
+
+QWidget *WidgetBoxResource::createWidgetWithResources(const DomUI *dom_ui, DomWidget *dom_widget, DomResources *dom_resources, QWidget *result)
+{
+    initialize(dom_ui);
+    QtResourceSet *resourceSet = core()->resourceModel()->currentResourceSet();
+    createResources(dom_resources);
+    core()->resourceModel()->setCurrentResourceSet(internalResourceSet());
+
+    QWidget *widget = createWidget(dom_widget, result);
+    core()->resourceModel()->setCurrentResourceSet(resourceSet);
+    core()->resourceModel()->removeResourceSet(internalResourceSet());
+    return widget;
 }
 
 /*******************************************************************************
@@ -139,12 +156,12 @@ static QSize domWidgetSize(DomWidget *dw)
     return QSize();
 }
 
-static QWidget *decorationFromDomWidget(DomWidget *dom_widget, QDesignerFormEditorInterface *core)
+static QWidget *decorationFromDomWidget(const DomUI *dom_ui, DomWidget *dom_widget, DomResources *dom_resources, QDesignerFormEditorInterface *core)
 {
     QWidget *result = new QWidget(0, Qt::ToolTip);
 
     WidgetBoxResource builder(core);
-    QWidget *w = builder.createWidget(dom_widget, result);
+    QWidget *w = builder.createWidgetWithResources(dom_ui, dom_widget, dom_resources, result);
     QSize size = domWidgetSize(dom_widget);
     const QSize minimumSize = w->minimumSizeHint();
     if (!size.isValid())
@@ -154,27 +171,24 @@ static QWidget *decorationFromDomWidget(DomWidget *dom_widget, QDesignerFormEdit
     if (size.height() < minimumSize.height())
         size.setHeight(minimumSize.height());
     // A QWidget might have size -1,-1 if no geometry property is specified in the widget box.
-    const QSize decoSize = size.expandedTo(QSize(16, 16));
-    w->setGeometry(QRect(QPoint(0, 0), decoSize));
-    result->resize(decoSize);
+    if (size.isEmpty())
+        size = size.expandedTo(QSize(16, 16));
+    w->setGeometry(QRect(QPoint(0, 0), size));
+    result->resize(size);
     return result;
 }
 
 WidgetBoxDnDItem::WidgetBoxDnDItem(QDesignerFormEditorInterface *core,
-                                    DomWidget *dom_widget,
-                                    const QPoint &global_mouse_pos)
-    : QDesignerDnDItem(CopyDrop)
+                                   DomUI *dom_ui,
+                                   const QPoint &global_mouse_pos) :
+    QDesignerDnDItem(CopyDrop)
 {
-    DomWidget *root_dom_widget = new DomWidget;
-    QList<DomWidget*> child_list;
-    child_list.append(dom_widget);
-    root_dom_widget->setElementWidget(child_list);
-    DomUI *dom_ui = new DomUI();
-    dom_ui->setElementWidget(root_dom_widget);
-
-    QWidget *decoration = decorationFromDomWidget(dom_widget, core);
+    DomWidget *child = dom_ui->elementWidget()->elementWidget().front();
+    QWidget *decoration = decorationFromDomWidget(dom_ui, child, dom_ui->elementResources(), core);
     decoration->move(global_mouse_pos - QPoint(5, 5));
 
     init(dom_ui, 0, decoration, global_mouse_pos);
 }
 }
+
+QT_END_NAMESPACE

@@ -44,41 +44,51 @@
 #ifndef TRANSLATOR_H
 #define TRANSLATOR_H
 
-#include <QObject>
 #include <QByteArray>
-#include <QStringList>
+#include <QDir>
+#include <QList>
 #include <QLocale>
+#include <QMap>
+#include <QObject>
+#include <QString>
+#include <QStringList>
 #include <QTranslator>
 
 #include <private/qtranslator_p.h>
 
+QT_BEGIN_NAMESPACE
+
 class QIODevice;
+class QTextCodec;
 class TranslatorPrivate;
 template <typename T> class QList;
 
 class TranslatorMessage
 {
 public:
-    TranslatorMessage();
-    TranslatorMessage(const char * context, const char * sourceText,
-                       const char * comment,
-                       const QString &fileName,
-                       int lineNumber,                       
-                       const QStringList& translations = QStringList());
-    TranslatorMessage(const TranslatorMessage & m);
+    enum Type { Unfinished, Finished, Obsolete };
 
-    TranslatorMessage & operator=(const TranslatorMessage & m);
+    TranslatorMessage();
+    TranslatorMessage(const QByteArray &context, const QByteArray &sourceText,
+        const QByteArray &comment, const QByteArray &userData,
+        const QString &fileName, int lineNumber,
+        const QStringList& translations = QStringList(),
+        bool utf8 = false, Type type = Unfinished, bool plural = false);
 
     uint hash() const { return m_hash; }
-    const char *context() const { return m_context.isNull() ? 0 : m_context.constData(); }
-    const char *sourceText() const { return m_sourcetext.isNull() ? 0 : m_sourcetext.constData(); }
-    const char *comment() const { return m_comment.isNull() ? 0 : m_comment.constData(); }
+    QByteArray context() const { return m_context; }
+    QByteArray sourceText() const { return m_sourcetext; }
+    QByteArray comment() const { return m_comment; }
 
-    inline void setTranslations(const QStringList &translations);
-    QStringList translations() const { return m_translations; }
-    void setTranslation(const QString &translation) { m_translations = QStringList(translation); }
+    void setTranslations(const QStringList &translations)
+        { m_translations = translations; }
+    QStringList translations() const
+        { return m_translations; }
+    void setTranslation(const QString &translation)
+        { m_translations = QStringList(translation); }
     QString translation() const { return m_translations.value(0); }
-    bool isTranslated() const { return m_translations.count() > 1 || !m_translations.value(0).isEmpty(); }
+    bool isTranslated() const
+        { return m_translations.count() > 1 || !m_translations.value(0).isEmpty(); }
 
     enum Prefix { NoPrefix, Hash, HashContext, HashContextSourceText,
                   HashContextSourceTextComment };
@@ -87,27 +97,29 @@ public:
     Prefix commonPrefix(const TranslatorMessage&) const;
 
     bool operator==(const TranslatorMessage& m) const;
-    bool operator!=(const TranslatorMessage& m) const
-    { return !operator==(m); }
     bool operator<(const TranslatorMessage& m) const;
-    bool operator<=(const TranslatorMessage& m) const
-    { return !m.operator<(*this); }
-    bool operator>(const TranslatorMessage& m) const
-    { return m.operator<(*this); }
-    bool operator>=(const TranslatorMessage& m) const
-    { return !operator<(m); }
 
-    QString fileName(void) const { return m_fileName; }
+    QString fileName() const { return m_fileName; }
     void setFileName(const QString &fileName) { m_fileName = fileName; }
-    int lineNumber(void) const { return m_lineNumber; }
+    int lineNumber() const { return m_lineNumber; }
     void setLineNumber(int lineNumber) { m_lineNumber = lineNumber; }
+    QByteArray userData() const { return m_userData; }
+    void setUserData(const QByteArray &userData) { m_userData = userData; }
+
     bool isNull() const { return m_sourcetext.isNull() && m_lineNumber == -1 && m_translations.isEmpty(); }
+
+    void setType( Type nt ) { ty = nt; }
+    Type type() const { return ty; }
+    bool utf8() const { return utfeight; }
+    bool isPlural() const { return m_plural; }
+    void setPlural(bool isplural) { m_plural = isplural; }
 
 private:
     uint        m_hash;
     QByteArray  m_context;
     QByteArray  m_sourcetext;
     QByteArray  m_comment;
+    QByteArray  m_userData;
     QStringList m_translations;
     QString     m_fileName;
     int         m_lineNumber;
@@ -115,11 +127,14 @@ private:
     enum Tag { Tag_End = 1, Tag_SourceText16, Tag_Translation, Tag_Context16,
                Tag_Obsolete1, Tag_SourceText, Tag_Context, Tag_Comment,
                Tag_Obsolete2 };
-};
-Q_DECLARE_TYPEINFO(TranslatorMessage, Q_MOVABLE_TYPE);
 
-inline void TranslatorMessage::setTranslations(const QStringList &translations)
-{ m_translations = translations; }
+    bool utfeight;
+    Type ty;
+    bool m_plural;
+};
+
+
+Q_DECLARE_TYPEINFO(TranslatorMessage, Q_MOVABLE_TYPE);
 
 class Translator : public QObject
 {
@@ -127,11 +142,11 @@ class Translator : public QObject
 
 public:
     explicit Translator(QObject *parent = 0);
-    ~Translator();
+    virtual ~Translator();
 
-    virtual TranslatorMessage findMessage(const char *context, const char *sourceText,
-                                          const char *comment, 
-                                          const QString &fileName = QLatin1String(""), int lineNumber = -1) const;
+    virtual TranslatorMessage findMessage(const QByteArray &context,
+        const QByteArray &sourceText, const QByteArray &comment,
+        const QString &fileName = QString(), int lineNumber = -1) const;
 
     void clear();
 
@@ -140,17 +155,16 @@ public:
     bool save(const QString & filename, SaveMode mode = Everything);
     bool save(QIODevice *iod, SaveMode mode = Everything);
 
-    void insert(const TranslatorMessage&);
-    inline void insert(const char *context, const char *sourceText, const QString &fileName, int lineNo, const QStringList &translations) {
-        insert(TranslatorMessage(context, sourceText, "", fileName, lineNo, translations ));
+    void insert(const TranslatorMessage &);
+    void remove(const TranslatorMessage &);
+    void remove(const QByteArray &context, const QByteArray &sourceText) {
+        remove(TranslatorMessage(context, sourceText, "", "", QString(), -1));
     }
-    void remove(const TranslatorMessage&);
-    inline void remove(const char *context, const char *sourceText) {
-        remove(TranslatorMessage(context, sourceText, "", QLatin1String(""), -1));
-    }
-    bool contains(const char *context, const char *sourceText, const char * comment = 0) const;
+    bool contains(const QByteArray &context, const QByteArray &sourceText,
+        const QByteArray & comment = QByteArray()) const;
 
-    bool contains(const char *context, const char *comment, const QString &fileName, int lineNumber) const;
+    bool contains(const QByteArray &context, const QByteArray &comment,
+        const QString &fileName, int lineNumber) const;
 
     void squeeze(SaveMode = Everything);
     void unsqueeze();
@@ -452,5 +466,7 @@ static const int NumerusTableSize = sizeof(numerusTable) / sizeof(numerusTable[0
 
 bool getNumerusInfo(QLocale::Language language, QLocale::Country country,
                            QByteArray *rules, QStringList *forms);
+
+QT_END_NAMESPACE
 
 #endif // TRANSLATOR_H

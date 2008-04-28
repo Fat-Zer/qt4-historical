@@ -49,8 +49,10 @@
 #include <stdio.h>
 #include <ctype.h>
 
-typedef QMap<QByteArray, MetaTranslatorMessage> TMM;
-typedef QList<MetaTranslatorMessage> TML;
+QT_BEGIN_NAMESPACE
+
+typedef QMap<QByteArray, TranslatorMessage> TMM;
+typedef QList<TranslatorMessage> TML;
 
 static bool isDigitFriendly( int c )
 {
@@ -235,10 +237,11 @@ int applyNumberHeuristic( MetaTranslator *tor )
 
     for ( it = all.begin(); it != all.end(); ++it ) {
         bool hasTranslation = (*it).isTranslated();
-        if ( (*it).type() == MetaTranslatorMessage::Unfinished ) {
+        if ( (*it).type() == TranslatorMessage::Unfinished ) {
             if ( !hasTranslation )
-                untranslated.insert(QByteArray((*it).context()) + "\n" + (*it).sourceText() + "\n"
-                                    + (*it).comment(), *it);
+                untranslated.insert((*it).context() + "\n"
+                    + (*it).sourceText() + "\n"
+                    + (*it).comment(), *it);
         } else if ( hasTranslation && (*it).translations().count() == 1 ) {
             translated.insert( zeroKey((*it).sourceText()), *it );
         }
@@ -248,7 +251,7 @@ int applyNumberHeuristic( MetaTranslator *tor )
         t = translated.find( zeroKey((*u).sourceText()) );
         if ( t != translated.end() && !t.key().isEmpty() &&
              qstrcmp((*t).sourceText(), (*u).sourceText()) != 0 ) {
-            MetaTranslatorMessage m( *u );
+            TranslatorMessage m( *u );
             m.setTranslation(translationAttempt((*t).translation(), (*t).sourceText(),
                                                 (*u).sourceText()));
             tor->insert( m );
@@ -257,3 +260,5 @@ int applyNumberHeuristic( MetaTranslator *tor )
     }
     return inserted;
 }
+
+QT_END_NAMESPACE
