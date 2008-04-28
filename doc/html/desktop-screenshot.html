@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/screenshot.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-x11-opensource-src-4.4.0/doc/src/examples/screenshot.qdoc -->
 <head>
   <title>Qt 4.4: Screenshot Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -21,7 +21,7 @@
 <li><a href="desktop-screenshot-main-cpp.html">desktop/screenshot/main.cpp</a></li>
 <li><a href="desktop-screenshot-screenshot-pro.html">desktop/screenshot/screenshot.pro</a></li>
 </ul>
-<p>The Screenshot example shows how to take a screenshot of the desktop using <a href="qapplication.html">QApplication</a> and <a href="qdesktopwidget.html">QDesktopWidget</a>. It also shows how to use <a href="qtimer.html">QTimer</a> to provide a single-shot timer, and how to reimplement the <a href="qwidget.html#resizeEvent">QWidget::resizeEvent</a>() event handler to make sure that an application resizes smoothly and without data loss.</p>
+<p>The Screenshot example shows how to take a screenshot of the desktop using <a href="qapplication.html">QApplication</a> and QDesktopWidget. It also shows how to use <a href="qtimer.html">QTimer</a> to provide a single-shot timer, and how to reimplement the <a href="qwidget.html#resizeEvent">QWidget::resizeEvent</a>() event handler to make sure that an application resizes smoothly and without data loss.</p>
 <p align="center"><img src="images/screenshot-example.png" /></p><p>With the application the users can take a screenshot of their desktop. They are provided with a couple of options:</p>
 <ul>
 <li>Delaying the screenshot, giving them time to rearrange their desktop.</li>
@@ -158,7 +158,7 @@
          show();
  }</pre>
 <p>We take the screenshot using the static <a href="qpixmap.html#grabWindow">QPixmap::grabWindow</a>() function. The function grabs the contents of the window passed as an argument, makes a pixmap out of it and returns that pixmap.</p>
-<p>We identify the argument window using the QWidget::winID() function which returns the window system identifier. Here it returns the identifier of the current <a href="qdesktopwidget.html">QDesktopWidget</a> retrieved by the <a href="qapplication.html#desktop">QApplication::desktop</a>() function. The <a href="qdesktopwidget.html">QDesktopWidget</a> class provides access to screen information, and inherits QWidget::winID().</p>
+<p>We identify the argument window using the QWidget::winID() function which returns the window system identifier. Here it returns the identifier of the current QDesktopWidget retrieved by the <a href="qapplication.html#desktop">QApplication::desktop</a>() function. The QDesktopWidget class provides access to screen information, and inherits QWidget::winID().</p>
 <p>We update the screenshot preview label using the private <tt>updateScreenshotLabel()</tt> function. Then we enable the <b>New Screenshot</b> button, and finally we make the <tt>Screenshot</tt> widget visible if it was hidden during the screenshot.</p>
 <pre> void Screenshot::updateCheckBox()
  {

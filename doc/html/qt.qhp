@@ -876,9 +876,6 @@
                     <section ref="qdesktopservices.html" title="QDesktopServices Class Reference">
                         <section ref="qdesktopservices-members.html" title="List of all members"></section>
                     </section>
-                    <section ref="qdesktopwidget.html" title="QDesktopWidget Class Reference">
-                        <section ref="qdesktopwidget-members.html" title="List of all members"></section>
-                    </section>
                     <section ref="qdial.html" title="QDial Class Reference">
                         <section ref="qdial-members.html" title="List of all members"></section>
                         <section ref="qdial-qt3.html" title="Qt 3 support members"></section>
@@ -1484,13 +1481,6 @@
                         <section ref="qlocale-members.html" title="List of all members"></section>
                     </section>
                     <section ref="qlocale-data.html" title="QLocale::Data Class Reference"></section>
-                    <section ref="qmacpasteboardmime.html" title="QMacPasteboardMime Class Reference">
-                        <section ref="qmacpasteboardmime-members.html" title="List of all members"></section>
-                    </section>
-                    <section ref="qmacstyle.html" title="QMacStyle Class Reference">
-                        <section ref="qmacstyle-members.html" title="List of all members"></section>
-                        <section ref="qmacstyle-obsolete.html" title="Obsolete members"></section>
-                    </section>
                     <section ref="qmainwindow.html" title="QMainWindow Class Reference">
                         <section ref="qmainwindow-members.html" title="List of all members"></section>
                     </section>
@@ -2554,9 +2544,6 @@
                     </section>
                     <section ref="qwindowstatechangeevent.html" title="QWindowStateChangeEvent Class Reference">
                         <section ref="qwindowstatechangeevent-members.html" title="List of all members"></section>
-                    </section>
-                    <section ref="qwindowsmime.html" title="QWindowsMime Class Reference">
-                        <section ref="qwindowsmime-members.html" title="List of all members"></section>
                     </section>
                     <section ref="qwindowsstyle.html" title="QWindowsStyle Class Reference">
                         <section ref="qwindowsstyle-members.html" title="List of all members"></section>
@@ -8415,6 +8402,8 @@
             <keyword name="type" id="QApplication::type" ref="qapplication.html#type"></keyword>
             <keyword name="wheelScrollLines" id="QApplication::wheelScrollLines" ref="qapplication.html#wheelScrollLines-prop"></keyword>
             <keyword name="widgetAt" id="QApplication::widgetAt" ref="qapplication.html#widgetAt"></keyword>
+            <keyword name="winFocus" id="QApplication::winFocus" ref="qapplication.html#winFocus"></keyword>
+            <keyword name="winMouseButtonUp" id="QApplication::winMouseButtonUp" ref="qapplication.html#winMouseButtonUp"></keyword>
             <keyword name="winStyleHighlightColor" id="QApplication::winStyleHighlightColor" ref="qapplication-qt3.html#winStyleHighlightColor"></keyword>
             <keyword name="winVersion" id="QApplication::winVersion" ref="qapplication-qt3.html#winVersion"></keyword>
             <keyword name="windowIcon" id="QApplication::windowIcon" ref="qapplication.html#windowIcon-prop"></keyword>
@@ -10017,17 +10006,6 @@
             <keyword name="setUrlHandler" id="QDesktopServices::setUrlHandler" ref="qdesktopservices.html#setUrlHandler"></keyword>
             <keyword name="storageLocation" id="QDesktopServices::storageLocation" ref="qdesktopservices.html#storageLocation"></keyword>
             <keyword name="unsetUrlHandler" id="QDesktopServices::unsetUrlHandler" ref="qdesktopservices.html#unsetUrlHandler"></keyword>
-            <keyword name="QDesktopWidget" id="QDesktopWidget" ref="qdesktopwidget.html"></keyword>
-            <keyword name="availableGeometry" id="QDesktopWidget::availableGeometry" ref="qdesktopwidget.html#availableGeometry"></keyword>
-            <keyword name="isVirtualDesktop" id="QDesktopWidget::isVirtualDesktop" ref="qdesktopwidget.html#isVirtualDesktop"></keyword>
-            <keyword name="numScreens" id="QDesktopWidget::numScreens" ref="qdesktopwidget.html#numScreens"></keyword>
-            <keyword name="primaryScreen" id="QDesktopWidget::primaryScreen" ref="qdesktopwidget.html#primaryScreen"></keyword>
-            <keyword name="resized" id="QDesktopWidget::resized" ref="qdesktopwidget.html#resized"></keyword>
-            <keyword name="screen" id="QDesktopWidget::screen" ref="qdesktopwidget.html#screen"></keyword>
-            <keyword name="screenGeometry" id="QDesktopWidget::screenGeometry" ref="qdesktopwidget.html#screenGeometry"></keyword>
-            <keyword name="screenNumber" id="QDesktopWidget::screenNumber" ref="qdesktopwidget.html#screenNumber"></keyword>
-            <keyword name="workAreaResized" id="QDesktopWidget::workAreaResized" ref="qdesktopwidget.html#workAreaResized"></keyword>
-            <keyword name="~QDesktopWidget" id="QDesktopWidget::~QDesktopWidget" ref="qdesktopwidget.html#dtor.QDesktopWidget"></keyword>
             <keyword name="QDial" id="QDial" ref="qdial.html"></keyword>
             <keyword name="dialMoved" id="QDial::dialMoved" ref="qdial-qt3.html#dialMoved"></keyword>
             <keyword name="dialPressed" id="QDial::dialPressed" ref="qdial-qt3.html#dialPressed"></keyword>
@@ -10859,12 +10837,26 @@
             <keyword name="QFAIL" id="QFAIL" ref="qtest.html#QFAIL"></keyword>
             <keyword name="QFETCH" id="QFETCH" ref="qtest.html#QFETCH"></keyword>
             <keyword name="QFSFileEngine" id="QFSFileEngine" ref="qfsfileengine.html"></keyword>
+            <keyword name="caseSensitive" id="QFSFileEngine::caseSensitive" ref="qfsfileengine.html#caseSensitive"></keyword>
+            <keyword name="copy" id="QFSFileEngine::copy" ref="qfsfileengine.html#copy"></keyword>
             <keyword name="currentPath" id="QFSFileEngine::currentPath" ref="qfsfileengine.html#currentPath"></keyword>
             <keyword name="drives" id="QFSFileEngine::drives" ref="qfsfileengine.html#drives"></keyword>
+            <keyword name="fileName" id="QFSFileEngine::fileName" ref="qfsfileengine.html#fileName"></keyword>
+            <keyword name="fileTime" id="QFSFileEngine::fileTime" ref="qfsfileengine.html#fileTime"></keyword>
             <keyword name="homePath" id="QFSFileEngine::homePath" ref="qfsfileengine.html#homePath"></keyword>
+            <keyword name="isRelativePath" id="QFSFileEngine::isRelativePath" ref="qfsfileengine.html#isRelativePath"></keyword>
+            <keyword name="link" id="QFSFileEngine::link" ref="qfsfileengine.html#link"></keyword>
+            <keyword name="mkdir" id="QFSFileEngine::mkdir" ref="qfsfileengine.html#mkdir"></keyword>
             <keyword name="open" id="QFSFileEngine::open" ref="qfsfileengine.html#open"></keyword>
+            <keyword name="owner" id="QFSFileEngine::owner" ref="qfsfileengine.html#owner"></keyword>
+            <keyword name="ownerId" id="QFSFileEngine::ownerId" ref="qfsfileengine.html#ownerId"></keyword>
+            <keyword name="remove" id="QFSFileEngine::remove" ref="qfsfileengine.html#remove"></keyword>
+            <keyword name="rename" id="QFSFileEngine::rename" ref="qfsfileengine.html#rename"></keyword>
+            <keyword name="rmdir" id="QFSFileEngine::rmdir" ref="qfsfileengine.html#rmdir"></keyword>
             <keyword name="rootPath" id="QFSFileEngine::rootPath" ref="qfsfileengine.html#rootPath"></keyword>
             <keyword name="setCurrentPath" id="QFSFileEngine::setCurrentPath" ref="qfsfileengine.html#setCurrentPath"></keyword>
+            <keyword name="setPermissions" id="QFSFileEngine::setPermissions" ref="qfsfileengine.html#setPermissions"></keyword>
+            <keyword name="setSize" id="QFSFileEngine::setSize" ref="qfsfileengine.html#setSize"></keyword>
             <keyword name="tempPath" id="QFSFileEngine::tempPath" ref="qfsfileengine.html#tempPath"></keyword>
             <keyword name="~QFSFileEngine" id="QFSFileEngine::~QFSFileEngine" ref="qfsfileengine.html#dtor.QFSFileEngine"></keyword>
             <keyword name="QFile" id="QFile" ref="qfile.html"></keyword>
@@ -14918,33 +14910,6 @@
             <keyword name="zeroDigit" id="QLocale::zeroDigit" ref="qlocale.html#zeroDigit"></keyword>
             <keyword name="QMAX" id="QMAX" ref="qtglobal-obsolete.html#QMAX"></keyword>
             <keyword name="QMIN" id="QMIN" ref="qtglobal-obsolete.html#QMIN"></keyword>
-            <keyword name="QMacPasteboardMime" id="QMacPasteboardMime" ref="qmacpasteboardmime.html"></keyword>
-            <keyword name="all" id="QMacPasteboardMime::all" ref="qmacpasteboardmime.html#all"></keyword>
-            <keyword name="canConvert" id="QMacPasteboardMime::canConvert" ref="qmacpasteboardmime.html#canConvert"></keyword>
-            <keyword name="convertFromMime" id="QMacPasteboardMime::convertFromMime" ref="qmacpasteboardmime.html#convertFromMime"></keyword>
-            <keyword name="convertToMime" id="QMacPasteboardMime::convertToMime" ref="qmacpasteboardmime.html#convertToMime"></keyword>
-            <keyword name="convertor" id="QMacPasteboardMime::convertor" ref="qmacpasteboardmime.html#convertor"></keyword>
-            <keyword name="convertorName" id="QMacPasteboardMime::convertorName" ref="qmacpasteboardmime.html#convertorName"></keyword>
-            <keyword name="flavorFor" id="QMacPasteboardMime::flavorFor" ref="qmacpasteboardmime.html#flavorFor"></keyword>
-            <keyword name="flavorToMime" id="QMacPasteboardMime::flavorToMime" ref="qmacpasteboardmime.html#flavorToMime"></keyword>
-            <keyword name="mimeFor" id="QMacPasteboardMime::mimeFor" ref="qmacpasteboardmime.html#mimeFor"></keyword>
-            <keyword name="~QMacPasteboardMime" id="QMacPasteboardMime::~QMacPasteboardMime" ref="qmacpasteboardmime.html#dtor.QMacPasteboardMime"></keyword>
-            <keyword name="QMacStyle" id="QMacStyle" ref="qmacstyle.html"></keyword>
-            <keyword name="QMacStyle::FocusRectPolicy" id="QMacStyle::FocusRectPolicy" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::FocusEnabled" id="QMacStyle::FocusEnabled" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::FocusDisabled" id="QMacStyle::FocusDisabled" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::FocusDefault" id="QMacStyle::FocusDefault" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::WidgetSizePolicy" id="QMacStyle::WidgetSizePolicy" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeSmall" id="QMacStyle::SizeSmall" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeLarge" id="QMacStyle::SizeLarge" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeMini" id="QMacStyle::SizeMini" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeDefault" id="QMacStyle::SizeDefault" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeNone" id="QMacStyle::SizeNone" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="focusRectPolicy" id="QMacStyle::focusRectPolicy" ref="qmacstyle-obsolete.html#focusRectPolicy"></keyword>
-            <keyword name="setFocusRectPolicy" id="QMacStyle::setFocusRectPolicy" ref="qmacstyle-obsolete.html#setFocusRectPolicy"></keyword>
-            <keyword name="setWidgetSizePolicy" id="QMacStyle::setWidgetSizePolicy" ref="qmacstyle-obsolete.html#setWidgetSizePolicy"></keyword>
-            <keyword name="widgetSizePolicy" id="QMacStyle::widgetSizePolicy" ref="qmacstyle-obsolete.html#widgetSizePolicy"></keyword>
-            <keyword name="~QMacStyle" id="QMacStyle::~QMacStyle" ref="qmacstyle.html#dtor.QMacStyle"></keyword>
             <keyword name="QMainWindow" id="QMainWindow" ref="qmainwindow.html"></keyword>
             <keyword name="QMainWindow::DockOption" id="QMainWindow::DockOption" ref="qmainwindow.html#DockOption-enum"></keyword>
             <keyword name="QMainWindow::AnimatedDocks" id="QMainWindow::AnimatedDocks" ref="qmainwindow.html#DockOption-enum"></keyword>
@@ -15217,6 +15182,7 @@
             <keyword name="itemGeometry" id="QMenu::itemGeometry" ref="qmenu-qt3.html#itemGeometry"></keyword>
             <keyword name="itemHeight" id="QMenu::itemHeight" ref="qmenu-qt3.html#itemHeight"></keyword>
             <keyword name="itemParameter" id="QMenu::itemParameter" ref="qmenu-qt3.html#itemParameter"></keyword>
+            <keyword name="macMenu" id="QMenu::macMenu" ref="qmenu.html#macMenu"></keyword>
             <keyword name="menuAction" id="QMenu::menuAction" ref="qmenu.html#menuAction"></keyword>
             <keyword name="pixmap" id="QMenu::pixmap" ref="qmenu-qt3.html#pixmap"></keyword>
             <keyword name="popup" id="QMenu::popup" ref="qmenu.html#popup"></keyword>
@@ -15285,6 +15251,7 @@
             <keyword name="itemAtPos" id="QMenuBar::itemAtPos" ref="qmenubar-qt3.html#itemAtPos"></keyword>
             <keyword name="itemParameter" id="QMenuBar::itemParameter" ref="qmenubar-qt3.html#itemParameter"></keyword>
             <keyword name="itemRect" id="QMenuBar::itemRect" ref="qmenubar-qt3.html#itemRect"></keyword>
+            <keyword name="macMenu" id="QMenuBar::macMenu" ref="qmenubar.html#macMenu"></keyword>
             <keyword name="margin" id="QMenuBar::margin" ref="qmenubar-qt3.html#margin"></keyword>
             <keyword name="pixmap" id="QMenuBar::pixmap" ref="qmenubar-qt3.html#pixmap"></keyword>
             <keyword name="removeItem" id="QMenuBar::removeItem" ref="qmenubar-qt3.html#removeItem"></keyword>
@@ -16082,6 +16049,7 @@
             <keyword name="QPaintDevice::PdmPhysicalDpiX" id="QPaintDevice::PdmPhysicalDpiX" ref="qpaintdevice.html#PaintDeviceMetric-enum"></keyword>
             <keyword name="QPaintDevice::PdmPhysicalDpiY" id="QPaintDevice::PdmPhysicalDpiY" ref="qpaintdevice.html#PaintDeviceMetric-enum"></keyword>
             <keyword name="depth" id="QPaintDevice::depth" ref="qpaintdevice.html#depth"></keyword>
+            <keyword name="getDC" id="QPaintDevice::getDC" ref="qpaintdevice.html#getDC"></keyword>
             <keyword name="height" id="QPaintDevice::height" ref="qpaintdevice.html#height"></keyword>
             <keyword name="heightMM" id="QPaintDevice::heightMM" ref="qpaintdevice.html#heightMM"></keyword>
             <keyword name="logicalDpiX" id="QPaintDevice::logicalDpiX" ref="qpaintdevice.html#logicalDpiX"></keyword>
@@ -16093,6 +16061,7 @@
             <keyword name="physicalDpiX" id="QPaintDevice::physicalDpiX" ref="qpaintdevice.html#physicalDpiX"></keyword>
             <keyword name="physicalDpiY" id="QPaintDevice::physicalDpiY" ref="qpaintdevice.html#physicalDpiY"></keyword>
             <keyword name="qwsDisplay" id="QPaintDevice::qwsDisplay" ref="qpaintdevice.html#qwsDisplay"></keyword>
+            <keyword name="releaseDC" id="QPaintDevice::releaseDC" ref="qpaintdevice.html#releaseDC"></keyword>
             <keyword name="width" id="QPaintDevice::width" ref="qpaintdevice.html#width"></keyword>
             <keyword name="widthMM" id="QPaintDevice::widthMM" ref="qpaintdevice.html#widthMM"></keyword>
             <keyword name="x11AppCells" id="QPaintDevice::x11AppCells" ref="qpaintdevice-qt3.html#x11AppCells"></keyword>
@@ -23721,15 +23690,6 @@
             <keyword name="QWidgetList" id="QWidgetList" ref="qwidget.html#QWidgetList-typedef"></keyword>
             <keyword name="QWindowStateChangeEvent" id="QWindowStateChangeEvent" ref="qwindowstatechangeevent.html"></keyword>
             <keyword name="oldState" id="QWindowStateChangeEvent::oldState" ref="qwindowstatechangeevent.html#oldState"></keyword>
-            <keyword name="QWindowsMime" id="QWindowsMime" ref="qwindowsmime.html"></keyword>
-            <keyword name="canConvertFromMime" id="QWindowsMime::canConvertFromMime" ref="qwindowsmime.html#canConvertFromMime"></keyword>
-            <keyword name="canConvertToMime" id="QWindowsMime::canConvertToMime" ref="qwindowsmime.html#canConvertToMime"></keyword>
-            <keyword name="convertFromMime" id="QWindowsMime::convertFromMime" ref="qwindowsmime.html#convertFromMime"></keyword>
-            <keyword name="convertToMime" id="QWindowsMime::convertToMime" ref="qwindowsmime.html#convertToMime"></keyword>
-            <keyword name="formatsForMime" id="QWindowsMime::formatsForMime" ref="qwindowsmime.html#formatsForMime"></keyword>
-            <keyword name="mimeForFormat" id="QWindowsMime::mimeForFormat" ref="qwindowsmime.html#mimeForFormat"></keyword>
-            <keyword name="registerMimeType" id="QWindowsMime::registerMimeType" ref="qwindowsmime.html#registerMimeType"></keyword>
-            <keyword name="~QWindowsMime" id="QWindowsMime::~QWindowsMime" ref="qwindowsmime.html#dtor.QWindowsMime"></keyword>
             <keyword name="QWindowsStyle" id="QWindowsStyle" ref="qwindowsstyle.html"></keyword>
             <keyword name="~QWindowsStyle" id="QWindowsStyle::~QWindowsStyle" ref="qwindowsstyle.html#dtor.QWindowsStyle"></keyword>
             <keyword name="QWindowsVistaStyle" id="QWindowsVistaStyle" ref="qwindowsvistastyle.html"></keyword>
@@ -25784,19 +25744,19 @@
             <keyword name="noforcesign" id="noforcesign" ref="qtextstream.html#noforcesign"></keyword>
             <keyword name="noshowbase" id="noshowbase" ref="qtextstream.html#noshowbase"></keyword>
             <keyword name="oct" id="oct" ref="qtextstream.html#oct"></keyword>
-            <keyword name="operator!=" id="operator!=" ref="qsize.html#operator!="></keyword>
+            <keyword name="operator!=" id="operator!=" ref="qrect.html#operator!="></keyword>
             <keyword name="operator&amp;" id="operator&amp;" ref="qbitarray.html#operator&amp;"></keyword>
             <keyword name="operator*" id="operator*" ref="qsize.html#operator*"></keyword>
-            <keyword name="operator+" id="operator+" ref="qstring.html#operator+"></keyword>
+            <keyword name="operator+" id="operator+" ref="qsize.html#operator+"></keyword>
             <keyword name="operator-" id="operator-" ref="qsize.html#operator-"></keyword>
             <keyword name="operator/" id="operator/" ref="qpoint.html#operator/"></keyword>
-            <keyword name="operator&lt;" id="operator&lt;" ref="qstringref.html#operator&lt;"></keyword>
-            <keyword name="operator&lt;&lt;" id="operator&lt;&lt;" ref="qstring.html#operator&lt;&lt;"></keyword>
-            <keyword name="operator&lt;=" id="operator&lt;=" ref="qstringref.html#operator&lt;="></keyword>
-            <keyword name="operator==" id="operator==" ref="qstringref.html#operator=="></keyword>
-            <keyword name="operator&gt;" id="operator&gt;" ref="qstringref.html#operator&gt;"></keyword>
-            <keyword name="operator&gt;=" id="operator&gt;=" ref="qstringref.html#operator&gt;="></keyword>
-            <keyword name="operator&gt;&gt;" id="operator&gt;&gt;" ref="qstring.html#operator&gt;&gt;"></keyword>
+            <keyword name="operator&lt;" id="operator&lt;" ref="qpair.html#operator&lt;"></keyword>
+            <keyword name="operator&lt;&lt;" id="operator&lt;&lt;" ref="qrect.html#operator&lt;&lt;"></keyword>
+            <keyword name="operator&lt;=" id="operator&lt;=" ref="qpair.html#operator&lt;="></keyword>
+            <keyword name="operator==" id="operator==" ref="qrect.html#operator=="></keyword>
+            <keyword name="operator&gt;" id="operator&gt;" ref="qpair.html#operator&gt;"></keyword>
+            <keyword name="operator&gt;=" id="operator&gt;=" ref="qpair.html#operator&gt;="></keyword>
+            <keyword name="operator&gt;&gt;" id="operator&gt;&gt;" ref="qrect.html#operator&gt;&gt;"></keyword>
             <keyword name="operator^" id="operator^" ref="qbitarray.html#operator^"></keyword>
             <keyword name="operator|" id="operator|" ref="qbitarray.html#operator|"></keyword>
             <keyword name="q3InitNetworkProtocols" id="q3InitNetworkProtocols" ref="q3urloperator.html#q3InitNetworkProtocols"></keyword>
@@ -26495,7 +26455,6 @@
             <file>dialogs-tabdialog-tabdialog-cpp.html</file>
             <file>mainwindows-dockwidgets-main-cpp.html</file>
             <file>qbuffer.html</file>
-            <file>qmacstyle-obsolete.html</file>
             <file>tutorials-tutorial-t3-t3-pro.html</file>
             <file>q3accel.html</file>
             <file>qset-const-iterator.html</file>
@@ -27040,7 +26999,6 @@
             <file>q3action-members.html</file>
             <file>qsize.html</file>
             <file>qfileopenevent.html</file>
-            <file>qdesktopwidget.html</file>
             <file>qwebpluginfactory-members.html</file>
             <file>qmdisubwindow-members.html</file>
             <file>itemviews-chart-pieview-h.html</file>
@@ -27534,7 +27492,6 @@
             <file>qatomicint.html</file>
             <file>images/cleanlooks-lineedit.png</file>
             <file>images/cleanlooks-treeview.png</file>
-            <file>qmacstyle-members.html</file>
             <file>network-broadcastsender-sender-h.html</file>
             <file>uitools-multipleinheritance-calculatorform-ui.html</file>
             <file>painting-transformations-window-h.html</file>
@@ -28615,7 +28572,6 @@
             <file>images/qpainter-pathstroking.png</file>
             <file>qresource-obsolete.html</file>
             <file>painting-fontsampler.html</file>
-            <file>qmacpasteboardmime.html</file>
             <file>images/qtextblock-sequence.png</file>
             <file>network-securesocketclient-sslerrors-ui.html</file>
             <file>painting-imagecomposition-imagecomposer-h.html</file>
@@ -28932,7 +28888,6 @@
             <file>images/qpen-bevel.png</file>
             <file>qundostack.html</file>
             <file>phonon-globalconfig.html</file>
-            <file>images/qdesktopwidget.png</file>
             <file>q3storeddrag.html</file>
             <file>graphicsview-diagramscene-arrow-h.html</file>
             <file>xml-xmlstreamlint.html</file>
@@ -29092,7 +29047,6 @@
             <file>images/orderform-example.png</file>
             <file>qnetworkproxy-members.html</file>
             <file>images/2dpainting-example.png</file>
-            <file>qdesktopwidget-members.html</file>
             <file>qt4-4-intro.html</file>
             <file>images/framebufferobject-example.png</file>
             <file>tools-completer-completer-qrc.html</file>
@@ -29229,7 +29183,6 @@
             <file>widgets-windowflags-controllerwindow-cpp.html</file>
             <file>qdesignercustomwidgetcollectioninterface.html</file>
             <file>qlistwidget.html</file>
-            <file>images/qmacstyle.png</file>
             <file>images/windows-horizontalscrollbar.png</file>
             <file>widgets-lineedits-window-cpp.html</file>
             <file>images/windowsvista-groupbox.png</file>
@@ -29734,8 +29687,8 @@
             <file>widgets-styles.html</file>
             <file>images/qpainter-pie.png</file>
             <file>images/stringlistmodel.png</file>
-            <file>tutorials-addressbook-part3.html</file>
             <file>qfocusframe-members.html</file>
+            <file>tutorials-addressbook-part3.html</file>
             <file>sql-masterdetail-albumdetails-xml.html</file>
             <file>images/designer-remove-custom-toolbar.png</file>
             <file>sql-driver.html</file>
@@ -29770,7 +29723,6 @@
             <file>itemviews-coloreditorfactory-colorlisteditor-h.html</file>
             <file>q3valuevector-members.html</file>
             <file>images/windowsxp-spinbox.png</file>
-            <file>qwindowsmime.html</file>
             <file>images/addressbook-tutorial-part2-stretch-effects.png</file>
             <file>qstyleoptiontoolbox.html</file>
             <file>console-edition-classes.html</file>
@@ -30037,7 +29989,6 @@
             <file>images/designer-preview-deviceskin-selection.png</file>
             <file>images/paintsystem-movie.png</file>
             <file>images/qpainter-rotation.png</file>
-            <file>qmacpasteboardmime-members.html</file>
             <file>qstyleoptionq3listviewitem-members.html</file>
             <file>qstyleoptionprogressbarv2-members.html</file>
             <file>ipc-sharedmemory-dialog-cpp.html</file>
@@ -30370,7 +30321,6 @@
             <file>q3socket.html</file>
             <file>qdbusconnectioninterface-members.html</file>
             <file>images/designer-set-layout2.png</file>
-            <file>qwindowsmime-members.html</file>
             <file>widgets-tablet.html</file>
             <file>tools-echoplugin-echoplugin-pro.html</file>
             <file>qgraphicsview-members.html</file>
@@ -30605,7 +30555,6 @@
             <file>widgets-shapedclock-shapedclock-pro.html</file>
             <file>qgraphicslayout.html</file>
             <file>qtextblockuserdata-members.html</file>
-            <file>qmacstyle.html</file>
             <file>tutorials-addressbook-part5-finddialog-cpp.html</file>
             <file>q3dockarea.html</file>
             <file>graphicsview-padnavigator-padnavigator-pro.html</file>

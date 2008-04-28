@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/tools/qmap.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-x11-opensource-src-4.4.0/src/corelib/tools/qmap.cpp -->
 <head>
   <title>Qt 4.4: QMap Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QMap" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -86,8 +85,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-lt-lt-23">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-gt-gt-16">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-lt-lt-133">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-gt-gt-79">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -189,27 +188,20 @@
 <p>See also <a href="qmapiterator.html">QMapIterator</a>, <a href="qmutablemapiterator.html">QMutableMapIterator</a>, <a href="qhash.html">QHash</a>, and <a href="qset.html">QSet</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QMap/ConstIterator" />
 <h3 class="fn"><a name="ConstIterator-typedef"></a>typedef QMap::ConstIterator</h3>
 <p>Qt-style synonym for <a href="qmap-const-iterator.html">QMap::const_iterator</a>.</p>
-<a name="//apple_ref/cpp/tdef/QMap/Iterator" />
 <h3 class="fn"><a name="Iterator-typedef"></a>typedef QMap::Iterator</h3>
 <p>Qt-style synonym for <a href="qmap-iterator.html">QMap::iterator</a>.</p>
-<a name="//apple_ref/cpp/tdef/QMap/difference_type" />
 <h3 class="fn"><a name="difference_type-typedef"></a>typedef QMap::difference_type</h3>
 <p>Typedef for ptrdiff_t. Provided for STL compatibility.</p>
-<a name="//apple_ref/cpp/tdef/QMap/key_type" />
 <h3 class="fn"><a name="key_type-typedef"></a>typedef QMap::key_type</h3>
 <p>Typedef for Key. Provided for STL compatibility.</p>
-<a name="//apple_ref/cpp/tdef/QMap/mapped_type" />
 <h3 class="fn"><a name="mapped_type-typedef"></a>typedef QMap::mapped_type</h3>
 <p>Typedef for T. Provided for STL compatibility.</p>
-<a name="//apple_ref/cpp/tdef/QMap/size_type" />
 <h3 class="fn"><a name="size_type-typedef"></a>typedef QMap::size_type</h3>
 <p>Typedef for int. Provided for STL compatibility.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QMap/QMap" />
 <h3 class="fn"><a name="QMap"></a>QMap::QMap ()</h3>
 <p>Constructs an empty map.</p>
 <p>See also <a href="qmap.html#clear">clear</a>().</p>
@@ -221,58 +213,46 @@
 <p>Constructs a copy of <i>other</i>.</p>
 <p>This function is only available if Qt is configured with STL compatibility enabled.</p>
 <p>See also <a href="qmap.html#toStdMap">toStdMap</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/~QMap" />
 <h3 class="fn"><a name="dtor.QMap"></a>QMap::~QMap ()</h3>
 <p>Destroys the map. References to the values in the map, and all iterators over this map, become invalid.</p>
-<a name="//apple_ref/cpp/instm/QMap/begin" />
 <h3 class="fn"><a name="begin"></a><a href="qmap-iterator.html">iterator</a> QMap::begin ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the map.</p>
 <p>See also <a href="qmap.html#constBegin">constBegin</a>() and <a href="qmap.html#end">end</a>().</p>
 <h3 class="fn"><a name="begin-2"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::begin () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QMap/clear" />
 <h3 class="fn"><a name="clear"></a>void QMap::clear ()</h3>
 <p>Removes all items from the map.</p>
 <p>See also <a href="qmap.html#remove">remove</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/constBegin" />
 <h3 class="fn"><a name="constBegin"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::constBegin () const</h3>
 <p>Returns a const <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the map.</p>
 <p>See also <a href="qmap.html#begin">begin</a>() and <a href="qmap.html#constEnd">constEnd</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/constEnd" />
 <h3 class="fn"><a name="constEnd"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::constEnd () const</h3>
 <p>Returns a const <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the map.</p>
 <p>See also <a href="qmap.html#constBegin">constBegin</a>() and <a href="qmap.html#end">end</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/constFind" />
 <h3 class="fn"><a name="constFind"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::constFind ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns an const iterator pointing to the item with key <i>key</i> in the map.</p>
 <p>If the map contains no item with key <i>key</i>, the function returns <a href="qmap.html#constEnd">constEnd</a>().</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qmap.html#find">find</a>() and <a href="qmultimap.html#constFind">QMultiMap::constFind</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/contains" />
 <h3 class="fn"><a name="contains"></a>bool QMap::contains ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns true if the map contains an item with key <i>key</i>; otherwise returns false.</p>
 <p>See also <a href="qmap.html#count">count</a>() and <a href="qmultimap.html#contains">QMultiMap::contains</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/count" />
 <h3 class="fn"><a name="count"></a>int QMap::count ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns the number of items associated with key <i>key</i>.</p>
 <p>See also <a href="qmap.html#contains">contains</a>(), <a href="qmap.html#insertMulti">insertMulti</a>(), and <a href="qmultimap.html#count">QMultiMap::count</a>().</p>
 <h3 class="fn"><a name="count-2"></a>int QMap::count () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qmap.html#size">size</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/empty" />
 <h3 class="fn"><a name="empty"></a>bool QMap::empty () const</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qmap.html#isEmpty">isEmpty</a>(), returning true if the map is empty; otherwise returning false.</p>
-<a name="//apple_ref/cpp/instm/QMap/end" />
 <h3 class="fn"><a name="end"></a><a href="qmap-iterator.html">iterator</a> QMap::end ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the map.</p>
 <p>See also <a href="qmap.html#begin">begin</a>() and <a href="qmap.html#constEnd">constEnd</a>().</p>
 <h3 class="fn"><a name="end-2"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::end () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QMap/erase" />
 <h3 class="fn"><a name="erase"></a><a href="qmap-iterator.html">iterator</a> QMap::erase ( <a href="qmap-iterator.html">iterator</a> <i>pos</i> )</h3>
 <p>Removes the (key, value) pair pointed to by the iterator <i>pos</i> from the map, and returns an iterator to the next item in the map.</p>
 <p>See also <a href="qmap.html#remove">remove</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/find" />
 <h3 class="fn"><a name="find"></a><a href="qmap-iterator.html">iterator</a> QMap::find ( const Key &amp; <i>key</i> )</h3>
 <p>Returns an iterator pointing to the item with key <i>key</i> in the map.</p>
 <p>If the map contains no item with key <i>key</i>, the function returns <a href="qmap.html#end">end</a>().</p>
@@ -287,22 +267,18 @@
 <p>See also <a href="qmap.html#constFind">constFind</a>(), <a href="qmap.html#value">value</a>(), <a href="qmap.html#values">values</a>(), <a href="qmap.html#lowerBound">lowerBound</a>(), <a href="qmap.html#upperBound">upperBound</a>(), and <a href="qmultimap.html#find">QMultiMap::find</a>().</p>
 <h3 class="fn"><a name="find-2"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::find ( const Key &amp; <i>key</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QMap/insert" />
 <h3 class="fn"><a name="insert"></a><a href="qmap-iterator.html">iterator</a> QMap::insert ( const Key &amp; <i>key</i>, const T &amp; <i>value</i> )</h3>
 <p>Inserts a new item with the key <i>key</i> and a value of <i>value</i>.</p>
 <p>If there is already an item with the key <i>key</i>, that item's value is replaced with <i>value</i>.</p>
 <p>If there are multiple items with the key <i>key</i>, the most recently inserted item's value is replaced with <i>value</i>.</p>
 <p>See also <a href="qmap.html#insertMulti">insertMulti</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/insertMulti" />
 <h3 class="fn"><a name="insertMulti"></a><a href="qmap-iterator.html">iterator</a> QMap::insertMulti ( const Key &amp; <i>key</i>, const T &amp; <i>value</i> )</h3>
 <p>Inserts a new item with the key <i>key</i> and a value of <i>value</i>.</p>
 <p>If there is already an item with the same key in the map, this function will simply create a new one. (This behavior is different from <a href="qmap.html#insert">insert</a>(), which overwrites the value of an existing item.)</p>
 <p>See also <a href="qmap.html#insert">insert</a>() and <a href="qmap.html#values">values</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/isEmpty" />
 <h3 class="fn"><a name="isEmpty"></a>bool QMap::isEmpty () const</h3>
 <p>Returns true if the map contains no items; otherwise returns false.</p>
 <p>See also <a href="qmap.html#size">size</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/key" />
 <h3 class="fn"><a name="key"></a>const Key QMap::key ( const T &amp; <i>value</i> ) const</h3>
 <p>Returns the first key with value <i>value</i>.</p>
 <p>If the map contains no item with value <i>value</i>, the function returns a <a href="containers.html#default-constructed-values">default-constructed key</a>.</p>
@@ -313,7 +289,6 @@
 <p>Returns the first key with value <i>value</i>, or <i>defaultKey</i> if the map contains no item with value <i>value</i>.</p>
 <p>This function can be slow (<a href="containers.html#linear-time">linear time</a>), because <a href="qmap.html">QMap</a>'s internal data structure is optimized for fast lookup by key, not by value.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/instm/QMap/keys" />
 <h3 class="fn"><a name="keys"></a><a href="qlist.html">QList</a>&lt;Key&gt; QMap::keys () const</h3>
 <p>Returns a list containing all the keys in the map in ascending order. Keys that occur multiple times in the map (because items were inserted with <a href="qmap.html#insertMulti">insertMulti</a>(), or <a href="qmap.html#unite">unite</a>() was used) also occur multiple times in the list.</p>
 <p>To obtain a list of unique keys, where each key from the map only occurs once, use <a href="qmap.html#uniqueKeys">uniqueKeys</a>().</p>
@@ -323,7 +298,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list containing all the keys associated with value <i>value</i> in ascending order.</p>
 <p>This function can be slow (<a href="containers.html#linear-time">linear time</a>), because <a href="qmap.html">QMap</a>'s internal data structure is optimized for fast lookup by key, not by value.</p>
-<a name="//apple_ref/cpp/instm/QMap/lowerBound" />
 <h3 class="fn"><a name="lowerBound"></a><a href="qmap-iterator.html">iterator</a> QMap::lowerBound ( const Key &amp; <i>key</i> )</h3>
 <p>Returns an iterator pointing to the first item with key <i>key</i> in the map. If the map contains no item with key <i>key</i>, the function returns an iterator to the nearest item with a greater key.</p>
 <p>Example:</p>
@@ -349,34 +323,27 @@
 <p>See also <a href="qtalgorithms.html#qLowerBound">qLowerBound</a>(), <a href="qmap.html#upperBound">upperBound</a>(), and <a href="qmap.html#find">find</a>().</p>
 <h3 class="fn"><a name="lowerBound-2"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::lowerBound ( const Key &amp; <i>key</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QMap/remove" />
 <h3 class="fn"><a name="remove"></a>int QMap::remove ( const Key &amp; <i>key</i> )</h3>
 <p>Removes all the items that have the key <i>key</i> from the map. Returns the number of items removed which is usually 1 but will be 0 if the key isn't in the map, or &gt; 1 if <a href="qmap.html#insertMulti">insertMulti</a>() has been used with the <i>key</i>.</p>
 <p>See also <a href="qmap.html#clear">clear</a>(), <a href="qmap.html#take">take</a>(), and <a href="qmultimap.html#remove">QMultiMap::remove</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/size" />
 <h3 class="fn"><a name="size"></a>int QMap::size () const</h3>
 <p>Returns the number of (key, value) pairs in the map.</p>
 <p>See also <a href="qmap.html#isEmpty">isEmpty</a>() and <a href="qmap.html#count">count</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/take" />
 <h3 class="fn"><a name="take"></a>T QMap::take ( const Key &amp; <i>key</i> )</h3>
 <p>Removes the item with the key <i>key</i> from the map and returns the value associated with it.</p>
 <p>If the item does not exist in the map, the function simply returns a <a href="containers.html#default-constructed-values">default-constructed value</a>. If there are multiple items for <i>key</i> in the map, only the most recently inserted one is removed and returned.</p>
 <p>If you don't use the return value, <a href="qmap.html#remove">remove</a>() is more efficient.</p>
 <p>See also <a href="qmap.html#remove">remove</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/toStdMap" />
 <h3 class="fn"><a name="toStdMap"></a>std::map&lt;Key, T&gt; QMap::toStdMap () const</h3>
 <p>Returns an STL map equivalent to this <a href="qmap.html">QMap</a>.</p>
 <p>This function is only available if Qt is configured with STL compatibility enabled.</p>
-<a name="//apple_ref/cpp/instm/QMap/uniqueKeys" />
 <h3 class="fn"><a name="uniqueKeys"></a><a href="qlist.html">QList</a>&lt;Key&gt; QMap::uniqueKeys () const</h3>
 <p>Returns a list containing all the keys in the map in ascending order. Keys that occur multiple times in the map (because items were inserted with <a href="qmap.html#insertMulti">insertMulti</a>(), or <a href="qmap.html#unite">unite</a>() was used) occur only once in the returned list.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qmap.html#keys">keys</a>() and <a href="qmap.html#values">values</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/unite" />
 <h3 class="fn"><a name="unite"></a>QMap&lt;Key, T&gt; &amp; QMap::unite ( const QMap&lt;Key, T&gt; &amp; <i>other</i> )</h3>
 <p>Inserts all the items in the <i>other</i> map into this map. If a key is common to both maps, the resulting map will contain the key multiple times.</p>
 <p>See also <a href="qmap.html#insertMulti">insertMulti</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/upperBound" />
 <h3 class="fn"><a name="upperBound"></a><a href="qmap-iterator.html">iterator</a> QMap::upperBound ( const Key &amp; <i>key</i> )</h3>
 <p>Returns an iterator pointing to the item that immediately follows the last item with key <i>key</i> in the map. If the map contains no item with key <i>key</i>, the function returns an iterator to the nearest item with a greater key.</p>
 <p>Example:</p>
@@ -393,7 +360,6 @@
 <p>See also <a href="qtalgorithms.html#qUpperBound">qUpperBound</a>(), <a href="qmap.html#lowerBound">lowerBound</a>(), and <a href="qmap.html#find">find</a>().</p>
 <h3 class="fn"><a name="upperBound-2"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::upperBound ( const Key &amp; <i>key</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QMap/value" />
 <h3 class="fn"><a name="value"></a>const T QMap::value ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns the value associated with the key <i>key</i>.</p>
 <p>If the map contains no item with key <i>key</i>, the function returns a <a href="containers.html#default-constructed-values">default-constructed value</a>. If there are multiple items for <i>key</i> in the map, the value of the most recently inserted one is returned.</p>
@@ -401,7 +367,6 @@
 <h3 class="fn"><a name="value-2"></a>const T QMap::value ( const Key &amp; <i>key</i>, const T &amp; <i>defaultValue</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>If the map contains no item with key <i>key</i>, the function returns <i>defaultValue</i>.</p>
-<a name="//apple_ref/cpp/instm/QMap/values" />
 <h3 class="fn"><a name="values"></a><a href="qlist.html">QList</a>&lt;T&gt; QMap::values () const</h3>
 <p>Returns a list containing all the values in the map, in ascending order of their keys. If a key is associated with multiple values, all of its values will be in the list, and not just the most recently inserted one.</p>
 <p>See also <a href="qmap.html#keys">keys</a>() and <a href="qmap.html#value">value</a>().</p>
@@ -409,22 +374,18 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list containing all the values associated with key <i>key</i>, from the most recently inserted to the least recently inserted one.</p>
 <p>See also <a href="qmap.html#count">count</a>() and <a href="qmap.html#insertMulti">insertMulti</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/operator!=" />
 <h3 class="fn"><a name="operator-not-eq"></a>bool QMap::operator!= ( const QMap&lt;Key, T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is not equal to this map; otherwise returns false.</p>
 <p>Two maps are considered equal if they contain the same (key, value) pairs.</p>
 <p>This function requires the value type to implement <tt>operator==()</tt>.</p>
 <p>See also <a href="qmap.html#operator-eq-eq">operator==</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QMap&lt;Key, T&gt; &amp; QMap::operator= ( const QMap&lt;Key, T&gt; &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this map and returns a reference to this map.</p>
-<a name="//apple_ref/cpp/instm/QMap/operator==" />
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QMap::operator== ( const QMap&lt;Key, T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is equal to this map; otherwise returns false.</p>
 <p>Two maps are considered equal if they contain the same (key, value) pairs.</p>
 <p>This function requires the value type to implement <tt>operator==()</tt>.</p>
 <p>See also <a href="qmap.html#operator-not-eq">operator!=</a>().</p>
-<a name="//apple_ref/cpp/instm/QMap/operator[]" />
 <h3 class="fn"><a name="operator-5b-5d"></a>T &amp; QMap::operator[] ( const Key &amp; <i>key</i> )</h3>
 <p>Returns the value associated with the key <i>key</i> as a modifiable reference.</p>
 <p>If the map contains no item with key <i>key</i>, the function inserts a <a href="containers.html#default-constructed-values">default-constructed value</a> into the map with key <i>key</i>, and returns a reference to it. If the map contains multiple items with key <i>key</i>, this function returns a reference to the most recently inserted value.</p>
@@ -434,12 +395,12 @@
 <p>Same as <a href="qmap.html#value">value</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-23"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-133"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the map <i>map</i> to stream <i>out</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-16"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-79"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a map from stream <i>in</i> into <i>map</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&gt;&gt;()</tt>.</p>
