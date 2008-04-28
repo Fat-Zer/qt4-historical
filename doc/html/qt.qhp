@@ -529,6 +529,13 @@
                     <section ref="qabstractfileengineiterator.html" title="QAbstractFileEngineIterator Class Reference">
                         <section ref="qabstractfileengineiterator-members.html" title="List of all members"></section>
                     </section>
+                    <section ref="qabstractfontengine.html" title="QAbstractFontEngine Class Reference">
+                        <section ref="qabstractfontengine-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qabstractfontengine-fixedpoint.html" title="QAbstractFontEngine::FixedPoint Class Reference"></section>
+                    <section ref="qabstractfontengine-glyphmetrics.html" title="QAbstractFontEngine::GlyphMetrics Class Reference">
+                        <section ref="qabstractfontengine-glyphmetrics-members.html" title="List of all members"></section>
+                    </section>
                     <section ref="qabstractformbuilder.html" title="QAbstractFormBuilder Class Reference">
                         <section ref="qabstractformbuilder-members.html" title="List of all members"></section>
                     </section>
@@ -747,6 +754,9 @@
                         <section ref="qcontextmenuevent-members.html" title="List of all members"></section>
                         <section ref="qcontextmenuevent-qt3.html" title="Qt 3 support members"></section>
                     </section>
+                    <section ref="qcopchannel.html" title="QCopChannel Class Reference">
+                        <section ref="qcopchannel-members.html" title="List of all members"></section>
+                    </section>
                     <section ref="qcoreapplication.html" title="QCoreApplication Class Reference">
                         <section ref="qcoreapplication-members.html" title="List of all members"></section>
                         <section ref="qcoreapplication-qt3.html" title="Qt 3 support members"></section>
@@ -828,6 +838,18 @@
                     <section ref="qdatetimeedit.html" title="QDateTimeEdit Class Reference">
                         <section ref="qdatetimeedit-members.html" title="List of all members"></section>
                     </section>
+                    <section ref="qdecoration.html" title="QDecoration Class Reference">
+                        <section ref="qdecoration-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qdecorationdefault.html" title="QDecorationDefault Class Reference">
+                        <section ref="qdecorationdefault-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qdecorationfactory.html" title="QDecorationFactory Class Reference">
+                        <section ref="qdecorationfactory-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qdecorationplugin.html" title="QDecorationPlugin Class Reference">
+                        <section ref="qdecorationplugin-members.html" title="List of all members"></section>
+                    </section>
                     <section ref="qdesigneractioneditorinterface.html" title="QDesignerActionEditorInterface Class Reference">
                         <section ref="qdesigneractioneditorinterface-members.html" title="List of all members"></section>
                     </section>
@@ -876,9 +898,6 @@
                     <section ref="qdesktopservices.html" title="QDesktopServices Class Reference">
                         <section ref="qdesktopservices-members.html" title="List of all members"></section>
                     </section>
-                    <section ref="qdesktopwidget.html" title="QDesktopWidget Class Reference">
-                        <section ref="qdesktopwidget-members.html" title="List of all members"></section>
-                    </section>
                     <section ref="qdial.html" title="QDial Class Reference">
                         <section ref="qdial-members.html" title="List of all members"></section>
                         <section ref="qdial-qt3.html" title="Qt 3 support members"></section>
@@ -900,6 +919,10 @@
                     </section>
                     <section ref="qdirmodel.html" title="QDirModel Class Reference">
                         <section ref="qdirmodel-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qdirectpainter.html" title="QDirectPainter Class Reference">
+                        <section ref="qdirectpainter-members.html" title="List of all members"></section>
+                        <section ref="qdirectpainter-obsolete.html" title="Obsolete members"></section>
                     </section>
                     <section ref="qdockwidget.html" title="QDockWidget Class Reference">
                         <section ref="qdockwidget-members.html" title="List of all members"></section>
@@ -1053,6 +1076,12 @@
                     </section>
                     <section ref="qfontdialog.html" title="QFontDialog Class Reference">
                         <section ref="qfontdialog-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qfontengineinfo.html" title="QFontEngineInfo Class Reference">
+                        <section ref="qfontengineinfo-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qfontengineplugin.html" title="QFontEnginePlugin Class Reference">
+                        <section ref="qfontengineplugin-members.html" title="List of all members"></section>
                     </section>
                     <section ref="qfontinfo.html" title="QFontInfo Class Reference">
                         <section ref="qfontinfo-members.html" title="List of all members"></section>
@@ -1388,6 +1417,12 @@
                         <section ref="qitemselectionrange-members.html" title="List of all members"></section>
                         <section ref="qitemselectionrange-obsolete.html" title="Obsolete members"></section>
                     </section>
+                    <section ref="qkbddriverfactory.html" title="QKbdDriverFactory Class Reference">
+                        <section ref="qkbddriverfactory-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qkbddriverplugin.html" title="QKbdDriverPlugin Class Reference">
+                        <section ref="qkbddriverplugin-members.html" title="List of all members"></section>
+                    </section>
                     <section ref="qkeyevent.html" title="QKeyEvent Class Reference">
                         <section ref="qkeyevent-members.html" title="List of all members"></section>
                         <section ref="qkeyevent-qt3.html" title="Qt 3 support members"></section>
@@ -1484,13 +1519,6 @@
                         <section ref="qlocale-members.html" title="List of all members"></section>
                     </section>
                     <section ref="qlocale-data.html" title="QLocale::Data Class Reference"></section>
-                    <section ref="qmacpasteboardmime.html" title="QMacPasteboardMime Class Reference">
-                        <section ref="qmacpasteboardmime-members.html" title="List of all members"></section>
-                    </section>
-                    <section ref="qmacstyle.html" title="QMacStyle Class Reference">
-                        <section ref="qmacstyle-members.html" title="List of all members"></section>
-                        <section ref="qmacstyle-obsolete.html" title="Obsolete members"></section>
-                    </section>
                     <section ref="qmainwindow.html" title="QMainWindow Class Reference">
                         <section ref="qmainwindow-members.html" title="List of all members"></section>
                     </section>
@@ -1566,6 +1594,12 @@
                     </section>
                     <section ref="qmotifstyle.html" title="QMotifStyle Class Reference">
                         <section ref="qmotifstyle-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qmousedriverfactory.html" title="QMouseDriverFactory Class Reference">
+                        <section ref="qmousedriverfactory-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qmousedriverplugin.html" title="QMouseDriverPlugin Class Reference">
+                        <section ref="qmousedriverplugin-members.html" title="List of all members"></section>
                     </section>
                     <section ref="qmouseevent.html" title="QMouseEvent Class Reference">
                         <section ref="qmouseevent-members.html" title="List of all members"></section>
@@ -1765,6 +1799,9 @@
                     <section ref="qproxymodel.html" title="QProxyModel Class Reference">
                         <section ref="qproxymodel-members.html" title="List of all members"></section>
                     </section>
+                    <section ref="qproxyscreen.html" title="QProxyScreen Class Reference">
+                        <section ref="qproxyscreen-members.html" title="List of all members"></section>
+                    </section>
                     <section ref="qpushbutton.html" title="QPushButton Class Reference">
                         <section ref="qpushbutton-members.html" title="List of all members"></section>
                         <section ref="qpushbutton-qt3.html" title="Qt 3 support members"></section>
@@ -1820,6 +1857,18 @@
                     </section>
                     <section ref="qrunnable.html" title="QRunnable Class Reference">
                         <section ref="qrunnable-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qscreen.html" title="QScreen Class Reference">
+                        <section ref="qscreen-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qscreencursor.html" title="QScreenCursor Class Reference">
+                        <section ref="qscreencursor-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qscreendriverfactory.html" title="QScreenDriverFactory Class Reference">
+                        <section ref="qscreendriverfactory-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qscreendriverplugin.html" title="QScreenDriverPlugin Class Reference">
+                        <section ref="qscreendriverplugin-members.html" title="List of all members"></section>
                     </section>
                     <section ref="qscriptclass.html" title="QScriptClass Class Reference">
                         <section ref="qscriptclass-members.html" title="List of all members"></section>
@@ -2494,6 +2543,43 @@
                     <section ref="qvectoriterator.html" title="QVectorIterator Class Reference">
                         <section ref="qvectoriterator-members.html" title="List of all members"></section>
                     </section>
+                    <section ref="qwscalibratedmousehandler.html" title="QWSCalibratedMouseHandler Class Reference">
+                        <section ref="qwscalibratedmousehandler-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwsclient.html" title="QWSClient Class Reference">
+                        <section ref="qwsclient-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwsembedwidget.html" title="QWSEmbedWidget Class Reference">
+                        <section ref="qwsembedwidget-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwsevent.html" title="QWSEvent Class Reference"></section>
+                    <section ref="qwsglwindowsurface.html" title="QWSGLWindowSurface Class Reference">
+                        <section ref="qwsglwindowsurface-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwsinputmethod.html" title="QWSInputMethod Class Reference">
+                        <section ref="qwsinputmethod-members.html" title="List of all members"></section>
+                        <section ref="qwsinputmethod-obsolete.html" title="Obsolete members"></section>
+                    </section>
+                    <section ref="qwskeyboardhandler.html" title="QWSKeyboardHandler Class Reference">
+                        <section ref="qwskeyboardhandler-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwsmousehandler.html" title="QWSMouseHandler Class Reference">
+                        <section ref="qwsmousehandler-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwspointercalibrationdata.html" title="QWSPointerCalibrationData Class Reference"></section>
+                    <section ref="qwsscreensaver.html" title="QWSScreenSaver Class Reference">
+                        <section ref="qwsscreensaver-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwsserver.html" title="QWSServer Class Reference">
+                        <section ref="qwsserver-members.html" title="List of all members"></section>
+                        <section ref="qwsserver-qt3.html" title="Qt 3 support members"></section>
+                    </section>
+                    <section ref="qwsserver-keyboardfilter.html" title="QWSServer::KeyboardFilter Class Reference">
+                        <section ref="qwsserver-keyboardfilter-members.html" title="List of all members"></section>
+                    </section>
+                    <section ref="qwswindow.html" title="QWSWindow Class Reference">
+                        <section ref="qwswindow-members.html" title="List of all members"></section>
+                    </section>
                     <section ref="qwaitcondition.html" title="QWaitCondition Class Reference">
                         <section ref="qwaitcondition-members.html" title="List of all members"></section>
                     </section>
@@ -2554,9 +2640,6 @@
                     </section>
                     <section ref="qwindowstatechangeevent.html" title="QWindowStateChangeEvent Class Reference">
                         <section ref="qwindowstatechangeevent-members.html" title="List of all members"></section>
-                    </section>
-                    <section ref="qwindowsmime.html" title="QWindowsMime Class Reference">
-                        <section ref="qwindowsmime-members.html" title="List of all members"></section>
                     </section>
                     <section ref="qwindowsstyle.html" title="QWindowsStyle Class Reference">
                         <section ref="qwindowsstyle-members.html" title="List of all members"></section>
@@ -2906,7 +2989,6 @@
                     <section ref="accessible.html" title="Accessibility"></section>
                     <section ref="accessibility.html" title="Accessibility Classes"></section>
                     <section ref="activeqt.html" title="ActiveQt Framework"></section>
-                    <section ref="licenses-gpl-exceptions-addendum.html" title="Addendum to the Trolltech GPL Exception Version 1.2"></section>
                     <section ref="qt-embedded-accel.html" title="Adding an Accelerated Graphics Driver to Qt for Embedded Linux"></section>
                     <section ref="tutorials-addressbook.html" title="Address Book Tutorial"></section>
                     <section ref="richtext-advanced-processing.html" title="Advanced Rich Text Processing"></section>
@@ -3075,7 +3157,6 @@
                     <section ref="linguist-translators.html" title="Qt Linguist Manual: Translators"></section>
                     <section ref="object.html" title="Qt Object Model"></section>
                     <section ref="opensourceedition.html" title="Qt Open Source Edition"></section>
-                    <section ref="index.html" title="Qt Reference Documentation (Open Source Edition)"></section>
                     <section ref="stylesheet.html" title="Qt Style Sheets"></section>
                     <section ref="stylesheet-examples.html" title="Qt Style Sheets Examples"></section>
                     <section ref="stylesheet-reference.html" title="Qt Style Sheets Reference"></section>
@@ -3090,6 +3171,7 @@
                     <section ref="qt-embedded-fonts.html" title="Qt for Embedded Linux Fonts"></section>
                     <section ref="qt-embedded-performance.html" title="Qt for Embedded Linux Performance Tuning"></section>
                     <section ref="qt-embedded-pointer.html" title="Qt for Embedded Linux Pointer Handling"></section>
+                    <section ref="index.html" title="Qt for Embedded Linux Reference Documentation"></section>
                     <section ref="requirements-x11.html" title="Qt for Embedded Linux Requirements"></section>
                     <section ref="qt-embedded-opengl.html" title="Qt for Embedded Linux and OpenGL"></section>
                     <section ref="requirements-wince.html" title="Qt for Windows CE Requirements"></section>
@@ -3174,7 +3256,6 @@
                     <section ref="activeqt-tools.html" title="Tools for ActiveQt"></section>
                     <section ref="topics.html" title="Topics"></section>
                     <section ref="trademarks.html" title="Trademarks"></section>
-                    <section ref="license-gpl-exceptions.html" title="Trolltech GPL Exception Version 1.2"></section>
                     <section ref="tutorials.html" title="Tutorials"></section>
                     <section ref="unicode.html" title="Unicode"></section>
                     <section ref="uic.html" title="User Interface Compiler (uic)"></section>
@@ -3238,7 +3319,6 @@
             <keyword name="Accessibility Classes" id="Accessibility Classes" ref="accessibility.html"></keyword>
             <keyword name="ActiveQt" id="ActiveQt" ref="activeqt.html#activeqt"></keyword>
             <keyword name="ActiveQt Framework" id="ActiveQt Framework" ref="activeqt.html"></keyword>
-            <keyword name="Addendum to the Trolltech GPL Exception Version 1.2" id="Addendum to the Trolltech GPL Exception Version 1.2" ref="licenses-gpl-exceptions-addendum.html"></keyword>
             <keyword name="Adding an Accelerated Graphics Driver to Qt for Embedded Linux" id="Adding an Accelerated Graphics Driver to Qt for Embedded Linux" ref="qt-embedded-accel.html"></keyword>
             <keyword name="Address Book 1 - Designing the User Interface" id="Address Book 1 - Designing the User Interface" ref="tutorials-addressbook-part1.html"></keyword>
             <keyword name="Address Book 2 - Adding Addresses" id="Address Book 2 - Adding Addresses" ref="tutorials-addressbook-part2.html"></keyword>
@@ -7344,6 +7424,42 @@
             <keyword name="next" id="QAbstractFileEngineIterator::next" ref="qabstractfileengineiterator.html#next"></keyword>
             <keyword name="path" id="QAbstractFileEngineIterator::path" ref="qabstractfileengineiterator.html#path"></keyword>
             <keyword name="~QAbstractFileEngineIterator" id="QAbstractFileEngineIterator::~QAbstractFileEngineIterator" ref="qabstractfileengineiterator.html#dtor.QAbstractFileEngineIterator"></keyword>
+            <keyword name="QAbstractFontEngine" id="QAbstractFontEngine" ref="qabstractfontengine.html"></keyword>
+            <keyword name="QAbstractFontEngine::Capabilities" id="QAbstractFontEngine::Capabilities" ref="qabstractfontengine.html#Capability-enum"></keyword>
+            <keyword name="QAbstractFontEngine::Capability" id="QAbstractFontEngine::Capability" ref="qabstractfontengine.html#Capability-enum"></keyword>
+            <keyword name="QAbstractFontEngine::CanOutlineGlyphs" id="QAbstractFontEngine::CanOutlineGlyphs" ref="qabstractfontengine.html#Capability-enum"></keyword>
+            <keyword name="QAbstractFontEngine::CanRenderGlyphs_Mono" id="QAbstractFontEngine::CanRenderGlyphs_Mono" ref="qabstractfontengine.html#Capability-enum"></keyword>
+            <keyword name="QAbstractFontEngine::CanRenderGlyphs_Gray" id="QAbstractFontEngine::CanRenderGlyphs_Gray" ref="qabstractfontengine.html#Capability-enum"></keyword>
+            <keyword name="QAbstractFontEngine::CanRenderGlyphs" id="QAbstractFontEngine::CanRenderGlyphs" ref="qabstractfontengine.html#Capability-enum"></keyword>
+            <keyword name="QAbstractFontEngine::Fixed" id="QAbstractFontEngine::Fixed" ref="qabstractfontengine.html#Fixed-typedef"></keyword>
+            <keyword name="FixedPoint" id="QAbstractFontEngine::FixedPoint" ref="qabstractfontengine-fixedpoint.html"></keyword>
+            <keyword name="QAbstractFontEngine::FontProperty" id="QAbstractFontEngine::FontProperty" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::Ascent" id="QAbstractFontEngine::Ascent" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::Descent" id="QAbstractFontEngine::Descent" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::Leading" id="QAbstractFontEngine::Leading" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::XHeight" id="QAbstractFontEngine::XHeight" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::AverageCharWidth" id="QAbstractFontEngine::AverageCharWidth" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::LineThickness" id="QAbstractFontEngine::LineThickness" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::UnderlinePosition" id="QAbstractFontEngine::UnderlinePosition" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::MaxCharWidth" id="QAbstractFontEngine::MaxCharWidth" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::MinLeftBearing" id="QAbstractFontEngine::MinLeftBearing" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::MinRightBearing" id="QAbstractFontEngine::MinRightBearing" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::GlyphCount" id="QAbstractFontEngine::GlyphCount" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::CacheGlyphsHint" id="QAbstractFontEngine::CacheGlyphsHint" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="QAbstractFontEngine::OutlineGlyphsHint" id="QAbstractFontEngine::OutlineGlyphsHint" ref="qabstractfontengine.html#FontProperty-enum"></keyword>
+            <keyword name="GlyphMetrics" id="QAbstractFontEngine::GlyphMetrics" ref="qabstractfontengine-glyphmetrics.html"></keyword>
+            <keyword name="QAbstractFontEngine::TextShapingFlag" id="QAbstractFontEngine::TextShapingFlag" ref="qabstractfontengine.html#TextShapingFlag-enum"></keyword>
+            <keyword name="QAbstractFontEngine::RightToLeft" id="QAbstractFontEngine::RightToLeft" ref="qabstractfontengine.html#TextShapingFlag-enum"></keyword>
+            <keyword name="QAbstractFontEngine::ReturnDesignMetrics" id="QAbstractFontEngine::ReturnDesignMetrics" ref="qabstractfontengine.html#TextShapingFlag-enum"></keyword>
+            <keyword name="QAbstractFontEngine::TextShapingFlags" id="QAbstractFontEngine::TextShapingFlags" ref="qabstractfontengine.html#TextShapingFlag-enum"></keyword>
+            <keyword name="addGlyphOutlinesToPath" id="QAbstractFontEngine::addGlyphOutlinesToPath" ref="qabstractfontengine.html#addGlyphOutlinesToPath"></keyword>
+            <keyword name="capabilities" id="QAbstractFontEngine::capabilities" ref="qabstractfontengine.html#capabilities"></keyword>
+            <keyword name="convertStringToGlyphIndices" id="QAbstractFontEngine::convertStringToGlyphIndices" ref="qabstractfontengine.html#convertStringToGlyphIndices"></keyword>
+            <keyword name="fontProperty" id="QAbstractFontEngine::fontProperty" ref="qabstractfontengine.html#fontProperty"></keyword>
+            <keyword name="getGlyphAdvances" id="QAbstractFontEngine::getGlyphAdvances" ref="qabstractfontengine.html#getGlyphAdvances"></keyword>
+            <keyword name="glyphMetrics" id="QAbstractFontEngine::glyphMetrics" ref="qabstractfontengine.html#glyphMetrics"></keyword>
+            <keyword name="renderGlyph" id="QAbstractFontEngine::renderGlyph" ref="qabstractfontengine.html#renderGlyph"></keyword>
+            <keyword name="~QAbstractFontEngine" id="QAbstractFontEngine::~QAbstractFontEngine" ref="qabstractfontengine.html#dtor.QAbstractFontEngine"></keyword>
             <keyword name="QAbstractFormBuilder" id="QAbstractFormBuilder" ref="qabstractformbuilder.html"></keyword>
             <keyword name="load" id="QAbstractFormBuilder::load" ref="qabstractformbuilder.html#load"></keyword>
             <keyword name="save" id="QAbstractFormBuilder::save" ref="qabstractformbuilder.html#save"></keyword>
@@ -8369,7 +8485,6 @@
             <keyword name="quitOnLastWindowClosed" id="QApplication::quitOnLastWindowClosed" ref="qapplication.html#quitOnLastWindowClosed-prop"></keyword>
             <keyword name="qwsDecoration" id="QApplication::qwsDecoration" ref="qapplication.html#qwsDecoration"></keyword>
             <keyword name="qwsEventFilter" id="QApplication::qwsEventFilter" ref="qapplication.html#qwsEventFilter"></keyword>
-            <keyword name="qwsProcessEvent" id="QApplication::qwsProcessEvent" ref="qapplication.html#qwsProcessEvent"></keyword>
             <keyword name="qwsSetCustomColors" id="QApplication::qwsSetCustomColors" ref="qapplication.html#qwsSetCustomColors"></keyword>
             <keyword name="qwsSetDecoration" id="QApplication::qwsSetDecoration" ref="qapplication.html#qwsSetDecoration"></keyword>
             <keyword name="restoreOverrideCursor" id="QApplication::restoreOverrideCursor" ref="qapplication.html#restoreOverrideCursor"></keyword>
@@ -8415,6 +8530,8 @@
             <keyword name="type" id="QApplication::type" ref="qapplication.html#type"></keyword>
             <keyword name="wheelScrollLines" id="QApplication::wheelScrollLines" ref="qapplication.html#wheelScrollLines-prop"></keyword>
             <keyword name="widgetAt" id="QApplication::widgetAt" ref="qapplication.html#widgetAt"></keyword>
+            <keyword name="winFocus" id="QApplication::winFocus" ref="qapplication.html#winFocus"></keyword>
+            <keyword name="winMouseButtonUp" id="QApplication::winMouseButtonUp" ref="qapplication.html#winMouseButtonUp"></keyword>
             <keyword name="winStyleHighlightColor" id="QApplication::winStyleHighlightColor" ref="qapplication-qt3.html#winStyleHighlightColor"></keyword>
             <keyword name="winVersion" id="QApplication::winVersion" ref="qapplication-qt3.html#winVersion"></keyword>
             <keyword name="windowIcon" id="QApplication::windowIcon" ref="qapplication.html#windowIcon-prop"></keyword>
@@ -9281,6 +9398,14 @@
             <keyword name="state" id="QContextMenuEvent::state" ref="qcontextmenuevent-qt3.html#state"></keyword>
             <keyword name="x" id="QContextMenuEvent::x" ref="qcontextmenuevent.html#x"></keyword>
             <keyword name="y" id="QContextMenuEvent::y" ref="qcontextmenuevent.html#y"></keyword>
+            <keyword name="QCopChannel" id="QCopChannel" ref="qcopchannel.html"></keyword>
+            <keyword name="channel" id="QCopChannel::channel" ref="qcopchannel.html#channel"></keyword>
+            <keyword name="flush" id="QCopChannel::flush" ref="qcopchannel.html#flush"></keyword>
+            <keyword name="isRegistered" id="QCopChannel::isRegistered" ref="qcopchannel.html#isRegistered"></keyword>
+            <keyword name="receive" id="QCopChannel::receive" ref="qcopchannel.html#receive"></keyword>
+            <keyword name="received" id="QCopChannel::received" ref="qcopchannel.html#received"></keyword>
+            <keyword name="send" id="QCopChannel::send" ref="qcopchannel.html#send"></keyword>
+            <keyword name="~QCopChannel" id="QCopChannel::~QCopChannel" ref="qcopchannel.html#dtor.QCopChannel"></keyword>
             <keyword name="QCoreApplication" id="QCoreApplication" ref="qcoreapplication.html"></keyword>
             <keyword name="QCoreApplication::Encoding" id="QCoreApplication::Encoding" ref="qcoreapplication.html#Encoding-enum"></keyword>
             <keyword name="QCoreApplication::CodecForTr" id="QCoreApplication::CodecForTr" ref="qcoreapplication.html#Encoding-enum"></keyword>
@@ -9771,6 +9896,59 @@
             <keyword name="time" id="QDateTimeEdit::time" ref="qdatetimeedit.html#time-prop"></keyword>
             <keyword name="timeChanged" id="QDateTimeEdit::timeChanged" ref="qdatetimeedit.html#timeChanged"></keyword>
             <keyword name="timeSpec" id="QDateTimeEdit::timeSpec" ref="qdatetimeedit.html#timeSpec-prop"></keyword>
+            <keyword name="QDecoration" id="QDecoration" ref="qdecoration.html"></keyword>
+            <keyword name="QDecoration::DecorationRegion" id="QDecoration::DecorationRegion" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::None" id="QDecoration::None" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::All" id="QDecoration::All" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::TopLeft" id="QDecoration::TopLeft" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Top" id="QDecoration::Top" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::TopRight" id="QDecoration::TopRight" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Left" id="QDecoration::Left" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Right" id="QDecoration::Right" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::BottomLeft" id="QDecoration::BottomLeft" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Bottom" id="QDecoration::Bottom" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::BottomRight" id="QDecoration::BottomRight" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Borders" id="QDecoration::Borders" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Menu" id="QDecoration::Menu" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Title" id="QDecoration::Title" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Help" id="QDecoration::Help" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Minimize" id="QDecoration::Minimize" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Maximize" id="QDecoration::Maximize" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Normalize" id="QDecoration::Normalize" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Close" id="QDecoration::Close" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Move" id="QDecoration::Move" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::Resize" id="QDecoration::Resize" ref="qdecoration.html#DecorationRegion-enum"></keyword>
+            <keyword name="QDecoration::DecorationState" id="QDecoration::DecorationState" ref="qdecoration.html#DecorationState-enum"></keyword>
+            <keyword name="QDecoration::Normal" id="QDecoration::Normal" ref="qdecoration.html#DecorationState-enum"></keyword>
+            <keyword name="QDecoration::Disabled" id="QDecoration::Disabled" ref="qdecoration.html#DecorationState-enum"></keyword>
+            <keyword name="QDecoration::Hover" id="QDecoration::Hover" ref="qdecoration.html#DecorationState-enum"></keyword>
+            <keyword name="QDecoration::Pressed" id="QDecoration::Pressed" ref="qdecoration.html#DecorationState-enum"></keyword>
+            <keyword name="buildSysMenu" id="QDecoration::buildSysMenu" ref="qdecoration.html#buildSysMenu"></keyword>
+            <keyword name="menuTriggered" id="QDecoration::menuTriggered" ref="qdecoration.html#menuTriggered"></keyword>
+            <keyword name="paint" id="QDecoration::paint" ref="qdecoration.html#paint"></keyword>
+            <keyword name="region" id="QDecoration::region" ref="qdecoration.html#region"></keyword>
+            <keyword name="regionAt" id="QDecoration::regionAt" ref="qdecoration.html#regionAt"></keyword>
+            <keyword name="regionClicked" id="QDecoration::regionClicked" ref="qdecoration.html#regionClicked"></keyword>
+            <keyword name="regionDoubleClicked" id="QDecoration::regionDoubleClicked" ref="qdecoration.html#regionDoubleClicked"></keyword>
+            <keyword name="startMove" id="QDecoration::startMove" ref="qdecoration.html#startMove"></keyword>
+            <keyword name="startResize" id="QDecoration::startResize" ref="qdecoration.html#startResize"></keyword>
+            <keyword name="~QDecoration" id="QDecoration::~QDecoration" ref="qdecoration.html#dtor.QDecoration"></keyword>
+            <keyword name="QDecorationDefault" id="QDecorationDefault" ref="qdecorationdefault.html"></keyword>
+            <keyword name="paint" id="QDecorationDefault::paint" ref="qdecorationdefault.html#paint"></keyword>
+            <keyword name="paintButton" id="QDecorationDefault::paintButton" ref="qdecorationdefault.html#paintButton"></keyword>
+            <keyword name="pixmapFor" id="QDecorationDefault::pixmapFor" ref="qdecorationdefault.html#pixmapFor"></keyword>
+            <keyword name="region" id="QDecorationDefault::region" ref="qdecorationdefault.html#region"></keyword>
+            <keyword name="titleBarHeight" id="QDecorationDefault::titleBarHeight" ref="qdecorationdefault.html#titleBarHeight"></keyword>
+            <keyword name="windowTitleFor" id="QDecorationDefault::windowTitleFor" ref="qdecorationdefault.html#windowTitleFor"></keyword>
+            <keyword name="xpmForRegion" id="QDecorationDefault::xpmForRegion" ref="qdecorationdefault.html#xpmForRegion"></keyword>
+            <keyword name="~QDecorationDefault" id="QDecorationDefault::~QDecorationDefault" ref="qdecorationdefault.html#dtor.QDecorationDefault"></keyword>
+            <keyword name="QDecorationFactory" id="QDecorationFactory" ref="qdecorationfactory.html"></keyword>
+            <keyword name="create" id="QDecorationFactory::create" ref="qdecorationfactory.html#create"></keyword>
+            <keyword name="keys" id="QDecorationFactory::keys" ref="qdecorationfactory.html#keys"></keyword>
+            <keyword name="QDecorationPlugin" id="QDecorationPlugin" ref="qdecorationplugin.html"></keyword>
+            <keyword name="create" id="QDecorationPlugin::create" ref="qdecorationplugin.html#create"></keyword>
+            <keyword name="keys" id="QDecorationPlugin::keys" ref="qdecorationplugin.html#keys"></keyword>
+            <keyword name="~QDecorationPlugin" id="QDecorationPlugin::~QDecorationPlugin" ref="qdecorationplugin.html#dtor.QDecorationPlugin"></keyword>
             <keyword name="QDesignerActionEditorInterface" id="QDesignerActionEditorInterface" ref="qdesigneractioneditorinterface.html"></keyword>
             <keyword name="core" id="QDesignerActionEditorInterface::core" ref="qdesigneractioneditorinterface.html#core"></keyword>
             <keyword name="manageAction" id="QDesignerActionEditorInterface::manageAction" ref="qdesigneractioneditorinterface.html#manageAction"></keyword>
@@ -10017,17 +10195,6 @@
             <keyword name="setUrlHandler" id="QDesktopServices::setUrlHandler" ref="qdesktopservices.html#setUrlHandler"></keyword>
             <keyword name="storageLocation" id="QDesktopServices::storageLocation" ref="qdesktopservices.html#storageLocation"></keyword>
             <keyword name="unsetUrlHandler" id="QDesktopServices::unsetUrlHandler" ref="qdesktopservices.html#unsetUrlHandler"></keyword>
-            <keyword name="QDesktopWidget" id="QDesktopWidget" ref="qdesktopwidget.html"></keyword>
-            <keyword name="availableGeometry" id="QDesktopWidget::availableGeometry" ref="qdesktopwidget.html#availableGeometry"></keyword>
-            <keyword name="isVirtualDesktop" id="QDesktopWidget::isVirtualDesktop" ref="qdesktopwidget.html#isVirtualDesktop"></keyword>
-            <keyword name="numScreens" id="QDesktopWidget::numScreens" ref="qdesktopwidget.html#numScreens"></keyword>
-            <keyword name="primaryScreen" id="QDesktopWidget::primaryScreen" ref="qdesktopwidget.html#primaryScreen"></keyword>
-            <keyword name="resized" id="QDesktopWidget::resized" ref="qdesktopwidget.html#resized"></keyword>
-            <keyword name="screen" id="QDesktopWidget::screen" ref="qdesktopwidget.html#screen"></keyword>
-            <keyword name="screenGeometry" id="QDesktopWidget::screenGeometry" ref="qdesktopwidget.html#screenGeometry"></keyword>
-            <keyword name="screenNumber" id="QDesktopWidget::screenNumber" ref="qdesktopwidget.html#screenNumber"></keyword>
-            <keyword name="workAreaResized" id="QDesktopWidget::workAreaResized" ref="qdesktopwidget.html#workAreaResized"></keyword>
-            <keyword name="~QDesktopWidget" id="QDesktopWidget::~QDesktopWidget" ref="qdesktopwidget.html#dtor.QDesktopWidget"></keyword>
             <keyword name="QDial" id="QDial" ref="qdial.html"></keyword>
             <keyword name="dialMoved" id="QDial::dialMoved" ref="qdial-qt3.html#dialMoved"></keyword>
             <keyword name="dialPressed" id="QDial::dialPressed" ref="qdial-qt3.html#dialPressed"></keyword>
@@ -10292,6 +10459,34 @@
             <keyword name="sorting" id="QDirModel::sorting" ref="qdirmodel.html#sorting"></keyword>
             <keyword name="supportedDropActions" id="QDirModel::supportedDropActions" ref="qdirmodel.html#supportedDropActions"></keyword>
             <keyword name="~QDirModel" id="QDirModel::~QDirModel" ref="qdirmodel.html#dtor.QDirModel"></keyword>
+            <keyword name="QDirectPainter" id="QDirectPainter" ref="qdirectpainter.html"></keyword>
+            <keyword name="QDirectPainter::SurfaceFlag" id="QDirectPainter::SurfaceFlag" ref="qdirectpainter.html#SurfaceFlag-enum"></keyword>
+            <keyword name="QDirectPainter::NonReserved" id="QDirectPainter::NonReserved" ref="qdirectpainter.html#SurfaceFlag-enum"></keyword>
+            <keyword name="QDirectPainter::Reserved" id="QDirectPainter::Reserved" ref="qdirectpainter.html#SurfaceFlag-enum"></keyword>
+            <keyword name="QDirectPainter::ReservedSynchronous" id="QDirectPainter::ReservedSynchronous" ref="qdirectpainter.html#SurfaceFlag-enum"></keyword>
+            <keyword name="allocatedRegion" id="QDirectPainter::allocatedRegion" ref="qdirectpainter.html#allocatedRegion"></keyword>
+            <keyword name="endPainting" id="QDirectPainter::endPainting" ref="qdirectpainter.html#endPainting"></keyword>
+            <keyword name="flush" id="QDirectPainter::flush" ref="qdirectpainter.html#flush"></keyword>
+            <keyword name="frameBuffer" id="QDirectPainter::frameBuffer" ref="qdirectpainter.html#frameBuffer"></keyword>
+            <keyword name="geometry" id="QDirectPainter::geometry" ref="qdirectpainter.html#geometry"></keyword>
+            <keyword name="linestep" id="QDirectPainter::linestep" ref="qdirectpainter.html#linestep"></keyword>
+            <keyword name="lock" id="QDirectPainter::lock" ref="qdirectpainter.html#lock"></keyword>
+            <keyword name="lower" id="QDirectPainter::lower" ref="qdirectpainter.html#lower"></keyword>
+            <keyword name="raise" id="QDirectPainter::raise" ref="qdirectpainter.html#raise"></keyword>
+            <keyword name="region" id="QDirectPainter::region" ref="qdirectpainter-obsolete.html#region"></keyword>
+            <keyword name="regionChanged" id="QDirectPainter::regionChanged" ref="qdirectpainter.html#regionChanged"></keyword>
+            <keyword name="requestedRegion" id="QDirectPainter::requestedRegion" ref="qdirectpainter.html#requestedRegion"></keyword>
+            <keyword name="reserveRegion" id="QDirectPainter::reserveRegion" ref="qdirectpainter-obsolete.html#reserveRegion"></keyword>
+            <keyword name="reservedRegion" id="QDirectPainter::reservedRegion" ref="qdirectpainter-obsolete.html#reservedRegion"></keyword>
+            <keyword name="screenDepth" id="QDirectPainter::screenDepth" ref="qdirectpainter.html#screenDepth"></keyword>
+            <keyword name="screenHeight" id="QDirectPainter::screenHeight" ref="qdirectpainter.html#screenHeight"></keyword>
+            <keyword name="screenWidth" id="QDirectPainter::screenWidth" ref="qdirectpainter.html#screenWidth"></keyword>
+            <keyword name="setGeometry" id="QDirectPainter::setGeometry" ref="qdirectpainter.html#setGeometry"></keyword>
+            <keyword name="setRegion" id="QDirectPainter::setRegion" ref="qdirectpainter.html#setRegion"></keyword>
+            <keyword name="startPainting" id="QDirectPainter::startPainting" ref="qdirectpainter.html#startPainting"></keyword>
+            <keyword name="unlock" id="QDirectPainter::unlock" ref="qdirectpainter.html#unlock"></keyword>
+            <keyword name="winId" id="QDirectPainter::winId" ref="qdirectpainter.html#winId"></keyword>
+            <keyword name="~QDirectPainter" id="QDirectPainter::~QDirectPainter" ref="qdirectpainter.html#dtor.QDirectPainter"></keyword>
             <keyword name="QDockWidget" id="QDockWidget" ref="qdockwidget.html"></keyword>
             <keyword name="QDockWidget::DockWidgetFeature" id="QDockWidget::DockWidgetFeature" ref="qdockwidget.html#DockWidgetFeature-enum"></keyword>
             <keyword name="QDockWidget::DockWidgetClosable" id="QDockWidget::DockWidgetClosable" ref="qdockwidget.html#DockWidgetFeature-enum"></keyword>
@@ -10859,12 +11054,26 @@
             <keyword name="QFAIL" id="QFAIL" ref="qtest.html#QFAIL"></keyword>
             <keyword name="QFETCH" id="QFETCH" ref="qtest.html#QFETCH"></keyword>
             <keyword name="QFSFileEngine" id="QFSFileEngine" ref="qfsfileengine.html"></keyword>
+            <keyword name="caseSensitive" id="QFSFileEngine::caseSensitive" ref="qfsfileengine.html#caseSensitive"></keyword>
+            <keyword name="copy" id="QFSFileEngine::copy" ref="qfsfileengine.html#copy"></keyword>
             <keyword name="currentPath" id="QFSFileEngine::currentPath" ref="qfsfileengine.html#currentPath"></keyword>
             <keyword name="drives" id="QFSFileEngine::drives" ref="qfsfileengine.html#drives"></keyword>
+            <keyword name="fileName" id="QFSFileEngine::fileName" ref="qfsfileengine.html#fileName"></keyword>
+            <keyword name="fileTime" id="QFSFileEngine::fileTime" ref="qfsfileengine.html#fileTime"></keyword>
             <keyword name="homePath" id="QFSFileEngine::homePath" ref="qfsfileengine.html#homePath"></keyword>
+            <keyword name="isRelativePath" id="QFSFileEngine::isRelativePath" ref="qfsfileengine.html#isRelativePath"></keyword>
+            <keyword name="link" id="QFSFileEngine::link" ref="qfsfileengine.html#link"></keyword>
+            <keyword name="mkdir" id="QFSFileEngine::mkdir" ref="qfsfileengine.html#mkdir"></keyword>
             <keyword name="open" id="QFSFileEngine::open" ref="qfsfileengine.html#open"></keyword>
+            <keyword name="owner" id="QFSFileEngine::owner" ref="qfsfileengine.html#owner"></keyword>
+            <keyword name="ownerId" id="QFSFileEngine::ownerId" ref="qfsfileengine.html#ownerId"></keyword>
+            <keyword name="remove" id="QFSFileEngine::remove" ref="qfsfileengine.html#remove"></keyword>
+            <keyword name="rename" id="QFSFileEngine::rename" ref="qfsfileengine.html#rename"></keyword>
+            <keyword name="rmdir" id="QFSFileEngine::rmdir" ref="qfsfileengine.html#rmdir"></keyword>
             <keyword name="rootPath" id="QFSFileEngine::rootPath" ref="qfsfileengine.html#rootPath"></keyword>
             <keyword name="setCurrentPath" id="QFSFileEngine::setCurrentPath" ref="qfsfileengine.html#setCurrentPath"></keyword>
+            <keyword name="setPermissions" id="QFSFileEngine::setPermissions" ref="qfsfileengine.html#setPermissions"></keyword>
+            <keyword name="setSize" id="QFSFileEngine::setSize" ref="qfsfileengine.html#setSize"></keyword>
             <keyword name="tempPath" id="QFSFileEngine::tempPath" ref="qfsfileengine.html#tempPath"></keyword>
             <keyword name="~QFSFileEngine" id="QFSFileEngine::~QFSFileEngine" ref="qfsfileengine.html#dtor.QFSFileEngine"></keyword>
             <keyword name="QFile" id="QFile" ref="qfile.html"></keyword>
@@ -11389,6 +11598,24 @@
             <keyword name="writingSystems" id="QFontDatabase::writingSystems" ref="qfontdatabase.html#writingSystems"></keyword>
             <keyword name="QFontDialog" id="QFontDialog" ref="qfontdialog.html"></keyword>
             <keyword name="getFont" id="QFontDialog::getFont" ref="qfontdialog.html#getFont"></keyword>
+            <keyword name="QFontEngineInfo" id="QFontEngineInfo" ref="qfontengineinfo.html"></keyword>
+            <keyword name="family" id="QFontEngineInfo::family" ref="qfontengineinfo.html#family-prop"></keyword>
+            <keyword name="operator=" id="QFontEngineInfo::operator=" ref="qfontengineinfo.html#operator="></keyword>
+            <keyword name="pixelSize" id="QFontEngineInfo::pixelSize" ref="qfontengineinfo.html#pixelSize-prop"></keyword>
+            <keyword name="setFamily" id="QFontEngineInfo::setFamily" ref="qfontengineinfo.html#family-prop"></keyword>
+            <keyword name="setPixelSize" id="QFontEngineInfo::setPixelSize" ref="qfontengineinfo.html#pixelSize-prop"></keyword>
+            <keyword name="setStyle" id="QFontEngineInfo::setStyle" ref="qfontengineinfo.html#style-prop"></keyword>
+            <keyword name="setWeight" id="QFontEngineInfo::setWeight" ref="qfontengineinfo.html#weight-prop"></keyword>
+            <keyword name="setWritingSystems" id="QFontEngineInfo::setWritingSystems" ref="qfontengineinfo.html#writingSystems-prop"></keyword>
+            <keyword name="style" id="QFontEngineInfo::style" ref="qfontengineinfo.html#style-prop"></keyword>
+            <keyword name="weight" id="QFontEngineInfo::weight" ref="qfontengineinfo.html#weight-prop"></keyword>
+            <keyword name="writingSystems" id="QFontEngineInfo::writingSystems" ref="qfontengineinfo.html#writingSystems-prop"></keyword>
+            <keyword name="~QFontEngineInfo" id="QFontEngineInfo::~QFontEngineInfo" ref="qfontengineinfo.html#dtor.QFontEngineInfo"></keyword>
+            <keyword name="QFontEnginePlugin" id="QFontEnginePlugin" ref="qfontengineplugin.html"></keyword>
+            <keyword name="availableFontEngines" id="QFontEnginePlugin::availableFontEngines" ref="qfontengineplugin.html#availableFontEngines"></keyword>
+            <keyword name="create" id="QFontEnginePlugin::create" ref="qfontengineplugin.html#create"></keyword>
+            <keyword name="keys" id="QFontEnginePlugin::keys" ref="qfontengineplugin.html#keys"></keyword>
+            <keyword name="~QFontEnginePlugin" id="QFontEnginePlugin::~QFontEnginePlugin" ref="qfontengineplugin.html#dtor.QFontEnginePlugin"></keyword>
             <keyword name="QFontInfo" id="QFontInfo" ref="qfontinfo.html"></keyword>
             <keyword name="bold" id="QFontInfo::bold" ref="qfontinfo.html#bold"></keyword>
             <keyword name="exactMatch" id="QFontInfo::exactMatch" ref="qfontinfo.html#exactMatch"></keyword>
@@ -13616,6 +13843,13 @@
             <keyword name="top" id="QItemSelectionRange::top" ref="qitemselectionrange.html#top"></keyword>
             <keyword name="topLeft" id="QItemSelectionRange::topLeft" ref="qitemselectionrange.html#topLeft"></keyword>
             <keyword name="width" id="QItemSelectionRange::width" ref="qitemselectionrange.html#width"></keyword>
+            <keyword name="QKbdDriverFactory" id="QKbdDriverFactory" ref="qkbddriverfactory.html"></keyword>
+            <keyword name="create" id="QKbdDriverFactory::create" ref="qkbddriverfactory.html#create"></keyword>
+            <keyword name="keys" id="QKbdDriverFactory::keys" ref="qkbddriverfactory.html#keys"></keyword>
+            <keyword name="QKbdDriverPlugin" id="QKbdDriverPlugin" ref="qkbddriverplugin.html"></keyword>
+            <keyword name="create" id="QKbdDriverPlugin::create" ref="qkbddriverplugin.html#create"></keyword>
+            <keyword name="keys" id="QKbdDriverPlugin::keys" ref="qkbddriverplugin.html#keys"></keyword>
+            <keyword name="~QKbdDriverPlugin" id="QKbdDriverPlugin::~QKbdDriverPlugin" ref="qkbddriverplugin.html#dtor.QKbdDriverPlugin"></keyword>
             <keyword name="QKeyEvent" id="QKeyEvent" ref="qkeyevent.html"></keyword>
             <keyword name="ascii" id="QKeyEvent::ascii" ref="qkeyevent-qt3.html#ascii"></keyword>
             <keyword name="count" id="QKeyEvent::count" ref="qkeyevent.html#count"></keyword>
@@ -14918,33 +15152,6 @@
             <keyword name="zeroDigit" id="QLocale::zeroDigit" ref="qlocale.html#zeroDigit"></keyword>
             <keyword name="QMAX" id="QMAX" ref="qtglobal-obsolete.html#QMAX"></keyword>
             <keyword name="QMIN" id="QMIN" ref="qtglobal-obsolete.html#QMIN"></keyword>
-            <keyword name="QMacPasteboardMime" id="QMacPasteboardMime" ref="qmacpasteboardmime.html"></keyword>
-            <keyword name="all" id="QMacPasteboardMime::all" ref="qmacpasteboardmime.html#all"></keyword>
-            <keyword name="canConvert" id="QMacPasteboardMime::canConvert" ref="qmacpasteboardmime.html#canConvert"></keyword>
-            <keyword name="convertFromMime" id="QMacPasteboardMime::convertFromMime" ref="qmacpasteboardmime.html#convertFromMime"></keyword>
-            <keyword name="convertToMime" id="QMacPasteboardMime::convertToMime" ref="qmacpasteboardmime.html#convertToMime"></keyword>
-            <keyword name="convertor" id="QMacPasteboardMime::convertor" ref="qmacpasteboardmime.html#convertor"></keyword>
-            <keyword name="convertorName" id="QMacPasteboardMime::convertorName" ref="qmacpasteboardmime.html#convertorName"></keyword>
-            <keyword name="flavorFor" id="QMacPasteboardMime::flavorFor" ref="qmacpasteboardmime.html#flavorFor"></keyword>
-            <keyword name="flavorToMime" id="QMacPasteboardMime::flavorToMime" ref="qmacpasteboardmime.html#flavorToMime"></keyword>
-            <keyword name="mimeFor" id="QMacPasteboardMime::mimeFor" ref="qmacpasteboardmime.html#mimeFor"></keyword>
-            <keyword name="~QMacPasteboardMime" id="QMacPasteboardMime::~QMacPasteboardMime" ref="qmacpasteboardmime.html#dtor.QMacPasteboardMime"></keyword>
-            <keyword name="QMacStyle" id="QMacStyle" ref="qmacstyle.html"></keyword>
-            <keyword name="QMacStyle::FocusRectPolicy" id="QMacStyle::FocusRectPolicy" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::FocusEnabled" id="QMacStyle::FocusEnabled" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::FocusDisabled" id="QMacStyle::FocusDisabled" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::FocusDefault" id="QMacStyle::FocusDefault" ref="qmacstyle.html#FocusRectPolicy-enum"></keyword>
-            <keyword name="QMacStyle::WidgetSizePolicy" id="QMacStyle::WidgetSizePolicy" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeSmall" id="QMacStyle::SizeSmall" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeLarge" id="QMacStyle::SizeLarge" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeMini" id="QMacStyle::SizeMini" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeDefault" id="QMacStyle::SizeDefault" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="QMacStyle::SizeNone" id="QMacStyle::SizeNone" ref="qmacstyle.html#WidgetSizePolicy-enum"></keyword>
-            <keyword name="focusRectPolicy" id="QMacStyle::focusRectPolicy" ref="qmacstyle-obsolete.html#focusRectPolicy"></keyword>
-            <keyword name="setFocusRectPolicy" id="QMacStyle::setFocusRectPolicy" ref="qmacstyle-obsolete.html#setFocusRectPolicy"></keyword>
-            <keyword name="setWidgetSizePolicy" id="QMacStyle::setWidgetSizePolicy" ref="qmacstyle-obsolete.html#setWidgetSizePolicy"></keyword>
-            <keyword name="widgetSizePolicy" id="QMacStyle::widgetSizePolicy" ref="qmacstyle-obsolete.html#widgetSizePolicy"></keyword>
-            <keyword name="~QMacStyle" id="QMacStyle::~QMacStyle" ref="qmacstyle.html#dtor.QMacStyle"></keyword>
             <keyword name="QMainWindow" id="QMainWindow" ref="qmainwindow.html"></keyword>
             <keyword name="QMainWindow::DockOption" id="QMainWindow::DockOption" ref="qmainwindow.html#DockOption-enum"></keyword>
             <keyword name="QMainWindow::AnimatedDocks" id="QMainWindow::AnimatedDocks" ref="qmainwindow.html#DockOption-enum"></keyword>
@@ -15217,6 +15424,7 @@
             <keyword name="itemGeometry" id="QMenu::itemGeometry" ref="qmenu-qt3.html#itemGeometry"></keyword>
             <keyword name="itemHeight" id="QMenu::itemHeight" ref="qmenu-qt3.html#itemHeight"></keyword>
             <keyword name="itemParameter" id="QMenu::itemParameter" ref="qmenu-qt3.html#itemParameter"></keyword>
+            <keyword name="macMenu" id="QMenu::macMenu" ref="qmenu.html#macMenu"></keyword>
             <keyword name="menuAction" id="QMenu::menuAction" ref="qmenu.html#menuAction"></keyword>
             <keyword name="pixmap" id="QMenu::pixmap" ref="qmenu-qt3.html#pixmap"></keyword>
             <keyword name="popup" id="QMenu::popup" ref="qmenu.html#popup"></keyword>
@@ -15285,6 +15493,7 @@
             <keyword name="itemAtPos" id="QMenuBar::itemAtPos" ref="qmenubar-qt3.html#itemAtPos"></keyword>
             <keyword name="itemParameter" id="QMenuBar::itemParameter" ref="qmenubar-qt3.html#itemParameter"></keyword>
             <keyword name="itemRect" id="QMenuBar::itemRect" ref="qmenubar-qt3.html#itemRect"></keyword>
+            <keyword name="macMenu" id="QMenuBar::macMenu" ref="qmenubar.html#macMenu"></keyword>
             <keyword name="margin" id="QMenuBar::margin" ref="qmenubar-qt3.html#margin"></keyword>
             <keyword name="pixmap" id="QMenuBar::pixmap" ref="qmenubar-qt3.html#pixmap"></keyword>
             <keyword name="removeItem" id="QMenuBar::removeItem" ref="qmenubar-qt3.html#removeItem"></keyword>
@@ -15599,6 +15808,13 @@
             <keyword name="setUseHighlightColors" id="QMotifStyle::setUseHighlightColors" ref="qmotifstyle.html#setUseHighlightColors"></keyword>
             <keyword name="useHighlightColors" id="QMotifStyle::useHighlightColors" ref="qmotifstyle.html#useHighlightColors"></keyword>
             <keyword name="~QMotifStyle" id="QMotifStyle::~QMotifStyle" ref="qmotifstyle.html#dtor.QMotifStyle"></keyword>
+            <keyword name="QMouseDriverFactory" id="QMouseDriverFactory" ref="qmousedriverfactory.html"></keyword>
+            <keyword name="create" id="QMouseDriverFactory::create" ref="qmousedriverfactory.html#create"></keyword>
+            <keyword name="keys" id="QMouseDriverFactory::keys" ref="qmousedriverfactory.html#keys"></keyword>
+            <keyword name="QMouseDriverPlugin" id="QMouseDriverPlugin" ref="qmousedriverplugin.html"></keyword>
+            <keyword name="create" id="QMouseDriverPlugin::create" ref="qmousedriverplugin.html#create"></keyword>
+            <keyword name="keys" id="QMouseDriverPlugin::keys" ref="qmousedriverplugin.html#keys"></keyword>
+            <keyword name="~QMouseDriverPlugin" id="QMouseDriverPlugin::~QMouseDriverPlugin" ref="qmousedriverplugin.html#dtor.QMouseDriverPlugin"></keyword>
             <keyword name="QMouseEvent" id="QMouseEvent" ref="qmouseevent.html"></keyword>
             <keyword name="button" id="QMouseEvent::button" ref="qmouseevent.html#button"></keyword>
             <keyword name="buttons" id="QMouseEvent::buttons" ref="qmouseevent.html#buttons"></keyword>
@@ -16082,6 +16298,7 @@
             <keyword name="QPaintDevice::PdmPhysicalDpiX" id="QPaintDevice::PdmPhysicalDpiX" ref="qpaintdevice.html#PaintDeviceMetric-enum"></keyword>
             <keyword name="QPaintDevice::PdmPhysicalDpiY" id="QPaintDevice::PdmPhysicalDpiY" ref="qpaintdevice.html#PaintDeviceMetric-enum"></keyword>
             <keyword name="depth" id="QPaintDevice::depth" ref="qpaintdevice.html#depth"></keyword>
+            <keyword name="getDC" id="QPaintDevice::getDC" ref="qpaintdevice.html#getDC"></keyword>
             <keyword name="height" id="QPaintDevice::height" ref="qpaintdevice.html#height"></keyword>
             <keyword name="heightMM" id="QPaintDevice::heightMM" ref="qpaintdevice.html#heightMM"></keyword>
             <keyword name="logicalDpiX" id="QPaintDevice::logicalDpiX" ref="qpaintdevice.html#logicalDpiX"></keyword>
@@ -16092,7 +16309,7 @@
             <keyword name="paintingActive" id="QPaintDevice::paintingActive" ref="qpaintdevice.html#paintingActive"></keyword>
             <keyword name="physicalDpiX" id="QPaintDevice::physicalDpiX" ref="qpaintdevice.html#physicalDpiX"></keyword>
             <keyword name="physicalDpiY" id="QPaintDevice::physicalDpiY" ref="qpaintdevice.html#physicalDpiY"></keyword>
-            <keyword name="qwsDisplay" id="QPaintDevice::qwsDisplay" ref="qpaintdevice.html#qwsDisplay"></keyword>
+            <keyword name="releaseDC" id="QPaintDevice::releaseDC" ref="qpaintdevice.html#releaseDC"></keyword>
             <keyword name="width" id="QPaintDevice::width" ref="qpaintdevice.html#width"></keyword>
             <keyword name="widthMM" id="QPaintDevice::widthMM" ref="qpaintdevice.html#widthMM"></keyword>
             <keyword name="x11AppCells" id="QPaintDevice::x11AppCells" ref="qpaintdevice-qt3.html#x11AppCells"></keyword>
@@ -16629,7 +16846,6 @@
             <keyword name="QPixmap::PremultipliedAlpha" id="QPixmap::PremultipliedAlpha" ref="qpixmap.html#HBitmapFormat-enum"></keyword>
             <keyword name="alphaChannel" id="QPixmap::alphaChannel" ref="qpixmap.html#alphaChannel"></keyword>
             <keyword name="cacheKey" id="QPixmap::cacheKey" ref="qpixmap.html#cacheKey"></keyword>
-            <keyword name="clut" id="QPixmap::clut" ref="qpixmap.html#clut"></keyword>
             <keyword name="convertFromImage" id="QPixmap::convertFromImage" ref="qpixmap-qt3.html#convertFromImage"></keyword>
             <keyword name="convertToImage" id="QPixmap::convertToImage" ref="qpixmap-qt3.html#convertToImage"></keyword>
             <keyword name="copy" id="QPixmap::copy" ref="qpixmap.html#copy"></keyword>
@@ -16653,13 +16869,10 @@
             <keyword name="load" id="QPixmap::load" ref="qpixmap.html#load"></keyword>
             <keyword name="loadFromData" id="QPixmap::loadFromData" ref="qpixmap.html#loadFromData"></keyword>
             <keyword name="mask" id="QPixmap::mask" ref="qpixmap.html#mask"></keyword>
-            <keyword name="numCols" id="QPixmap::numCols" ref="qpixmap.html#numCols"></keyword>
             <keyword name="operator QImage" id="QPixmap::operator QImage" ref="qpixmap-qt3.html#operator QImage"></keyword>
             <keyword name="operator QVariant" id="QPixmap::operator QVariant" ref="qpixmap.html#operator QVariant"></keyword>
             <keyword name="operator!" id="QPixmap::operator!" ref="qpixmap.html#operator!"></keyword>
             <keyword name="operator=" id="QPixmap::operator=" ref="qpixmap.html#operator="></keyword>
-            <keyword name="qwsBits" id="QPixmap::qwsBits" ref="qpixmap.html#qwsBits"></keyword>
-            <keyword name="qwsBytesPerLine" id="QPixmap::qwsBytesPerLine" ref="qpixmap.html#qwsBytesPerLine"></keyword>
             <keyword name="rect" id="QPixmap::rect" ref="qpixmap.html#rect"></keyword>
             <keyword name="resize" id="QPixmap::resize" ref="qpixmap-qt3.html#resize"></keyword>
             <keyword name="save" id="QPixmap::save" ref="qpixmap.html#save"></keyword>
@@ -17280,6 +17493,11 @@
             <keyword name="submit" id="QProxyModel::submit" ref="qproxymodel.html#submit"></keyword>
             <keyword name="supportedDropActions" id="QProxyModel::supportedDropActions" ref="qproxymodel.html#supportedDropActions"></keyword>
             <keyword name="~QProxyModel" id="QProxyModel::~QProxyModel" ref="qproxymodel.html#dtor.QProxyModel"></keyword>
+            <keyword name="QProxyScreen" id="QProxyScreen" ref="qproxyscreen.html"></keyword>
+            <keyword name="initDevice" id="QProxyScreen::initDevice" ref="qproxyscreen.html#initDevice"></keyword>
+            <keyword name="screen" id="QProxyScreen::screen" ref="qproxyscreen.html#screen"></keyword>
+            <keyword name="setScreen" id="QProxyScreen::setScreen" ref="qproxyscreen.html#setScreen"></keyword>
+            <keyword name="~QProxyScreen" id="QProxyScreen::~QProxyScreen" ref="qproxyscreen.html#dtor.QProxyScreen"></keyword>
             <keyword name="QPushButton" id="QPushButton" ref="qpushbutton.html"></keyword>
             <keyword name="autoDefault" id="QPushButton::autoDefault" ref="qpushbutton.html#autoDefault-prop"></keyword>
             <keyword name="default" id="QPushButton::default" ref="qpushbutton.html#default-prop"></keyword>
@@ -17586,6 +17804,86 @@
             <keyword name="setAutoDelete" id="QRunnable::setAutoDelete" ref="qrunnable.html#setAutoDelete"></keyword>
             <keyword name="~QRunnable" id="QRunnable::~QRunnable" ref="qrunnable.html#dtor.QRunnable"></keyword>
             <keyword name="QSKIP" id="QSKIP" ref="qtest.html#QSKIP"></keyword>
+            <keyword name="QScreen" id="QScreen" ref="qscreen.html"></keyword>
+            <keyword name="QScreen::ClassId" id="QScreen::ClassId" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::LinuxFBClass" id="QScreen::LinuxFBClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::TransformedClass" id="QScreen::TransformedClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::VNCClass" id="QScreen::VNCClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::MultiClass" id="QScreen::MultiClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::VFbClass" id="QScreen::VFbClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::DirectFBClass" id="QScreen::DirectFBClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::SvgalibClass" id="QScreen::SvgalibClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::ProxyClass" id="QScreen::ProxyClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::CustomClass" id="QScreen::CustomClass" ref="qscreen.html#ClassId-enum"></keyword>
+            <keyword name="QScreen::PixelType" id="QScreen::PixelType" ref="qscreen.html#PixelType-enum"></keyword>
+            <keyword name="QScreen::NormalPixel" id="QScreen::NormalPixel" ref="qscreen.html#PixelType-enum"></keyword>
+            <keyword name="QScreen::BGRPixel" id="QScreen::BGRPixel" ref="qscreen.html#PixelType-enum"></keyword>
+            <keyword name="alloc" id="QScreen::alloc" ref="qscreen.html#alloc"></keyword>
+            <keyword name="base" id="QScreen::base" ref="qscreen.html#base"></keyword>
+            <keyword name="blank" id="QScreen::blank" ref="qscreen.html#blank"></keyword>
+            <keyword name="blit" id="QScreen::blit" ref="qscreen.html#blit"></keyword>
+            <keyword name="classId" id="QScreen::classId" ref="qscreen.html#classId"></keyword>
+            <keyword name="clut" id="QScreen::clut" ref="qscreen.html#clut"></keyword>
+            <keyword name="connect" id="QScreen::connect" ref="qscreen.html#connect"></keyword>
+            <keyword name="createSurface" id="QScreen::createSurface" ref="qscreen.html#createSurface"></keyword>
+            <keyword name="depth" id="QScreen::depth" ref="qscreen.html#depth"></keyword>
+            <keyword name="deviceHeight" id="QScreen::deviceHeight" ref="qscreen.html#deviceHeight"></keyword>
+            <keyword name="deviceWidth" id="QScreen::deviceWidth" ref="qscreen.html#deviceWidth"></keyword>
+            <keyword name="disconnect" id="QScreen::disconnect" ref="qscreen.html#disconnect"></keyword>
+            <keyword name="exposeRegion" id="QScreen::exposeRegion" ref="qscreen.html#exposeRegion"></keyword>
+            <keyword name="height" id="QScreen::height" ref="qscreen.html#height"></keyword>
+            <keyword name="initDevice" id="QScreen::initDevice" ref="qscreen.html#initDevice"></keyword>
+            <keyword name="instance" id="QScreen::instance" ref="qscreen.html#instance"></keyword>
+            <keyword name="isInterlaced" id="QScreen::isInterlaced" ref="qscreen.html#isInterlaced"></keyword>
+            <keyword name="isTransformed" id="QScreen::isTransformed" ref="qscreen.html#isTransformed"></keyword>
+            <keyword name="linestep" id="QScreen::linestep" ref="qscreen.html#linestep"></keyword>
+            <keyword name="mapFromDevice" id="QScreen::mapFromDevice" ref="qscreen.html#mapFromDevice"></keyword>
+            <keyword name="mapToDevice" id="QScreen::mapToDevice" ref="qscreen.html#mapToDevice"></keyword>
+            <keyword name="numCols" id="QScreen::numCols" ref="qscreen.html#numCols"></keyword>
+            <keyword name="offset" id="QScreen::offset" ref="qscreen.html#offset"></keyword>
+            <keyword name="onCard" id="QScreen::onCard" ref="qscreen.html#onCard"></keyword>
+            <keyword name="physicalHeight" id="QScreen::physicalHeight" ref="qscreen.html#physicalHeight"></keyword>
+            <keyword name="physicalWidth" id="QScreen::physicalWidth" ref="qscreen.html#physicalWidth"></keyword>
+            <keyword name="pixelFormat" id="QScreen::pixelFormat" ref="qscreen.html#pixelFormat"></keyword>
+            <keyword name="pixelType" id="QScreen::pixelType" ref="qscreen.html#pixelType"></keyword>
+            <keyword name="pixmapDepth" id="QScreen::pixmapDepth" ref="qscreen.html#pixmapDepth"></keyword>
+            <keyword name="pixmapLinestepAlignment" id="QScreen::pixmapLinestepAlignment" ref="qscreen.html#pixmapLinestepAlignment"></keyword>
+            <keyword name="pixmapOffsetAlignment" id="QScreen::pixmapOffsetAlignment" ref="qscreen.html#pixmapOffsetAlignment"></keyword>
+            <keyword name="region" id="QScreen::region" ref="qscreen.html#region"></keyword>
+            <keyword name="restore" id="QScreen::restore" ref="qscreen.html#restore"></keyword>
+            <keyword name="save" id="QScreen::save" ref="qscreen.html#save"></keyword>
+            <keyword name="screenSize" id="QScreen::screenSize" ref="qscreen.html#screenSize"></keyword>
+            <keyword name="setDirty" id="QScreen::setDirty" ref="qscreen.html#setDirty"></keyword>
+            <keyword name="setMode" id="QScreen::setMode" ref="qscreen.html#setMode"></keyword>
+            <keyword name="setPixelFormat" id="QScreen::setPixelFormat" ref="qscreen.html#setPixelFormat"></keyword>
+            <keyword name="shutdownDevice" id="QScreen::shutdownDevice" ref="qscreen.html#shutdownDevice"></keyword>
+            <keyword name="solidFill" id="QScreen::solidFill" ref="qscreen.html#solidFill"></keyword>
+            <keyword name="subScreenIndexAt" id="QScreen::subScreenIndexAt" ref="qscreen.html#subScreenIndexAt"></keyword>
+            <keyword name="subScreens" id="QScreen::subScreens" ref="qscreen.html#subScreens"></keyword>
+            <keyword name="supportsDepth" id="QScreen::supportsDepth" ref="qscreen.html#supportsDepth"></keyword>
+            <keyword name="totalSize" id="QScreen::totalSize" ref="qscreen.html#totalSize"></keyword>
+            <keyword name="transformOrientation" id="QScreen::transformOrientation" ref="qscreen.html#transformOrientation"></keyword>
+            <keyword name="width" id="QScreen::width" ref="qscreen.html#width"></keyword>
+            <keyword name="~QScreen" id="QScreen::~QScreen" ref="qscreen.html#dtor.QScreen"></keyword>
+            <keyword name="QScreenCursor" id="QScreenCursor" ref="qscreencursor.html"></keyword>
+            <keyword name="boundingRect" id="QScreenCursor::boundingRect" ref="qscreencursor.html#boundingRect"></keyword>
+            <keyword name="hide" id="QScreenCursor::hide" ref="qscreencursor.html#hide"></keyword>
+            <keyword name="image" id="QScreenCursor::image" ref="qscreencursor.html#image"></keyword>
+            <keyword name="initSoftwareCursor" id="QScreenCursor::initSoftwareCursor" ref="qscreencursor.html#initSoftwareCursor"></keyword>
+            <keyword name="instance" id="QScreenCursor::instance" ref="qscreencursor.html#instance"></keyword>
+            <keyword name="isAccelerated" id="QScreenCursor::isAccelerated" ref="qscreencursor.html#isAccelerated"></keyword>
+            <keyword name="isVisible" id="QScreenCursor::isVisible" ref="qscreencursor.html#isVisible"></keyword>
+            <keyword name="move" id="QScreenCursor::move" ref="qscreencursor.html#move"></keyword>
+            <keyword name="set" id="QScreenCursor::set" ref="qscreencursor.html#set"></keyword>
+            <keyword name="show" id="QScreenCursor::show" ref="qscreencursor.html#show"></keyword>
+            <keyword name="~QScreenCursor" id="QScreenCursor::~QScreenCursor" ref="qscreencursor.html#dtor.QScreenCursor"></keyword>
+            <keyword name="QScreenDriverFactory" id="QScreenDriverFactory" ref="qscreendriverfactory.html"></keyword>
+            <keyword name="create" id="QScreenDriverFactory::create" ref="qscreendriverfactory.html#create"></keyword>
+            <keyword name="keys" id="QScreenDriverFactory::keys" ref="qscreendriverfactory.html#keys"></keyword>
+            <keyword name="QScreenDriverPlugin" id="QScreenDriverPlugin" ref="qscreendriverplugin.html"></keyword>
+            <keyword name="create" id="QScreenDriverPlugin::create" ref="qscreendriverplugin.html#create"></keyword>
+            <keyword name="keys" id="QScreenDriverPlugin::keys" ref="qscreendriverplugin.html#keys"></keyword>
+            <keyword name="~QScreenDriverPlugin" id="QScreenDriverPlugin::~QScreenDriverPlugin" ref="qscreendriverplugin.html#dtor.QScreenDriverPlugin"></keyword>
             <keyword name="QScriptClass" id="QScriptClass" ref="qscriptclass.html"></keyword>
             <keyword name="QScriptClass::Extension" id="QScriptClass::Extension" ref="qscriptclass.html#Extension-enum"></keyword>
             <keyword name="QScriptClass::Callable" id="QScriptClass::Callable" ref="qscriptclass.html#Extension-enum"></keyword>
@@ -23045,6 +23343,184 @@
             <keyword name="toFront" id="QVectorIterator::toFront" ref="qvectoriterator.html#toFront"></keyword>
             <keyword name="QWARN" id="QWARN" ref="qtest.html#QWARN"></keyword>
             <keyword name="QWIDGETSIZE_MAX" id="QWIDGETSIZE_MAX" ref="qwidget.html#QWIDGETSIZE_MAX"></keyword>
+            <keyword name="QWSCalibratedMouseHandler" id="QWSCalibratedMouseHandler" ref="qwscalibratedmousehandler.html"></keyword>
+            <keyword name="calibrate" id="QWSCalibratedMouseHandler::calibrate" ref="qwscalibratedmousehandler.html#calibrate"></keyword>
+            <keyword name="clearCalibration" id="QWSCalibratedMouseHandler::clearCalibration" ref="qwscalibratedmousehandler.html#clearCalibration"></keyword>
+            <keyword name="readCalibration" id="QWSCalibratedMouseHandler::readCalibration" ref="qwscalibratedmousehandler.html#readCalibration"></keyword>
+            <keyword name="sendFiltered" id="QWSCalibratedMouseHandler::sendFiltered" ref="qwscalibratedmousehandler.html#sendFiltered"></keyword>
+            <keyword name="setFilterSize" id="QWSCalibratedMouseHandler::setFilterSize" ref="qwscalibratedmousehandler.html#setFilterSize"></keyword>
+            <keyword name="transform" id="QWSCalibratedMouseHandler::transform" ref="qwscalibratedmousehandler.html#transform"></keyword>
+            <keyword name="writeCalibration" id="QWSCalibratedMouseHandler::writeCalibration" ref="qwscalibratedmousehandler.html#writeCalibration"></keyword>
+            <keyword name="QWSClient" id="QWSClient" ref="qwsclient.html"></keyword>
+            <keyword name="clientId" id="QWSClient::clientId" ref="qwsclient.html#clientId"></keyword>
+            <keyword name="identity" id="QWSClient::identity" ref="qwsclient.html#identity"></keyword>
+            <keyword name="QWSEmbedWidget" id="QWSEmbedWidget" ref="qwsembedwidget.html"></keyword>
+            <keyword name="~QWSEmbedWidget" id="QWSEmbedWidget::~QWSEmbedWidget" ref="qwsembedwidget.html#dtor.QWSEmbedWidget"></keyword>
+            <keyword name="QWSEvent" id="QWSEvent" ref="qwsevent.html"></keyword>
+            <keyword name="QWSEvent::Type" id="QWSEvent::Type" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::NoEvent" id="QWSEvent::NoEvent" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Connected" id="QWSEvent::Connected" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Mouse" id="QWSEvent::Mouse" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Focus" id="QWSEvent::Focus" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Key" id="QWSEvent::Key" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Region" id="QWSEvent::Region" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Creation" id="QWSEvent::Creation" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::PropertyNotify" id="QWSEvent::PropertyNotify" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::PropertyReply" id="QWSEvent::PropertyReply" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::SelectionClear" id="QWSEvent::SelectionClear" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::SelectionRequest" id="QWSEvent::SelectionRequest" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::SelectionNotify" id="QWSEvent::SelectionNotify" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::MaxWindowRect" id="QWSEvent::MaxWindowRect" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::QCopMessage" id="QWSEvent::QCopMessage" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::WindowOperation" id="QWSEvent::WindowOperation" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::IMEvent" id="QWSEvent::IMEvent" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::IMQuery" id="QWSEvent::IMQuery" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::IMInit" id="QWSEvent::IMInit" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Embed" id="QWSEvent::Embed" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::Font" id="QWSEvent::Font" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::ScreenTransformation" id="QWSEvent::ScreenTransformation" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSEvent::NEvent" id="QWSEvent::NEvent" ref="qwsevent.html#Type-enum"></keyword>
+            <keyword name="QWSGLWindowSurface" id="QWSGLWindowSurface" ref="qwsglwindowsurface.html"></keyword>
+            <keyword name="context" id="QWSGLWindowSurface::context" ref="qwsglwindowsurface.html#context"></keyword>
+            <keyword name="setContext" id="QWSGLWindowSurface::setContext" ref="qwsglwindowsurface.html#setContext"></keyword>
+            <keyword name="~QWSGLWindowSurface" id="QWSGLWindowSurface::~QWSGLWindowSurface" ref="qwsglwindowsurface.html#dtor.QWSGLWindowSurface"></keyword>
+            <keyword name="QWSInputMethod" id="QWSInputMethod" ref="qwsinputmethod.html"></keyword>
+            <keyword name="QWSInputMethod::UpdateType" id="QWSInputMethod::UpdateType" ref="qwsinputmethod.html#UpdateType-enum"></keyword>
+            <keyword name="QWSInputMethod::Update" id="QWSInputMethod::Update" ref="qwsinputmethod.html#UpdateType-enum"></keyword>
+            <keyword name="QWSInputMethod::FocusIn" id="QWSInputMethod::FocusIn" ref="qwsinputmethod.html#UpdateType-enum"></keyword>
+            <keyword name="QWSInputMethod::FocusOut" id="QWSInputMethod::FocusOut" ref="qwsinputmethod.html#UpdateType-enum"></keyword>
+            <keyword name="QWSInputMethod::Reset" id="QWSInputMethod::Reset" ref="qwsinputmethod.html#UpdateType-enum"></keyword>
+            <keyword name="QWSInputMethod::Destroyed" id="QWSInputMethod::Destroyed" ref="qwsinputmethod.html#UpdateType-enum"></keyword>
+            <keyword name="filter" id="QWSInputMethod::filter" ref="qwsinputmethod.html#filter"></keyword>
+            <keyword name="inputResolutionShift" id="QWSInputMethod::inputResolutionShift" ref="qwsinputmethod.html#inputResolutionShift"></keyword>
+            <keyword name="mouseHandler" id="QWSInputMethod::mouseHandler" ref="qwsinputmethod.html#mouseHandler"></keyword>
+            <keyword name="queryResponse" id="QWSInputMethod::queryResponse" ref="qwsinputmethod.html#queryResponse"></keyword>
+            <keyword name="reset" id="QWSInputMethod::reset" ref="qwsinputmethod.html#reset"></keyword>
+            <keyword name="sendCommitString" id="QWSInputMethod::sendCommitString" ref="qwsinputmethod.html#sendCommitString"></keyword>
+            <keyword name="sendEvent" id="QWSInputMethod::sendEvent" ref="qwsinputmethod.html#sendEvent"></keyword>
+            <keyword name="sendIMEvent" id="QWSInputMethod::sendIMEvent" ref="qwsinputmethod-obsolete.html#sendIMEvent"></keyword>
+            <keyword name="sendMouseEvent" id="QWSInputMethod::sendMouseEvent" ref="qwsinputmethod.html#sendMouseEvent"></keyword>
+            <keyword name="sendPreeditString" id="QWSInputMethod::sendPreeditString" ref="qwsinputmethod.html#sendPreeditString"></keyword>
+            <keyword name="sendQuery" id="QWSInputMethod::sendQuery" ref="qwsinputmethod.html#sendQuery"></keyword>
+            <keyword name="setInputResolution" id="QWSInputMethod::setInputResolution" ref="qwsinputmethod.html#setInputResolution"></keyword>
+            <keyword name="updateHandler" id="QWSInputMethod::updateHandler" ref="qwsinputmethod.html#updateHandler"></keyword>
+            <keyword name="~QWSInputMethod" id="QWSInputMethod::~QWSInputMethod" ref="qwsinputmethod.html#dtor.QWSInputMethod"></keyword>
+            <keyword name="QWSKeyboardHandler" id="QWSKeyboardHandler" ref="qwskeyboardhandler.html"></keyword>
+            <keyword name="beginAutoRepeat" id="QWSKeyboardHandler::beginAutoRepeat" ref="qwskeyboardhandler.html#beginAutoRepeat"></keyword>
+            <keyword name="endAutoRepeat" id="QWSKeyboardHandler::endAutoRepeat" ref="qwskeyboardhandler.html#endAutoRepeat"></keyword>
+            <keyword name="processKeyEvent" id="QWSKeyboardHandler::processKeyEvent" ref="qwskeyboardhandler.html#processKeyEvent"></keyword>
+            <keyword name="transformDirKey" id="QWSKeyboardHandler::transformDirKey" ref="qwskeyboardhandler.html#transformDirKey"></keyword>
+            <keyword name="~QWSKeyboardHandler" id="QWSKeyboardHandler::~QWSKeyboardHandler" ref="qwskeyboardhandler.html#dtor.QWSKeyboardHandler"></keyword>
+            <keyword name="QWSMouseHandler" id="QWSMouseHandler" ref="qwsmousehandler.html"></keyword>
+            <keyword name="calibrate" id="QWSMouseHandler::calibrate" ref="qwsmousehandler.html#calibrate"></keyword>
+            <keyword name="clearCalibration" id="QWSMouseHandler::clearCalibration" ref="qwsmousehandler.html#clearCalibration"></keyword>
+            <keyword name="getCalibration" id="QWSMouseHandler::getCalibration" ref="qwsmousehandler.html#getCalibration"></keyword>
+            <keyword name="limitToScreen" id="QWSMouseHandler::limitToScreen" ref="qwsmousehandler.html#limitToScreen"></keyword>
+            <keyword name="mouseChanged" id="QWSMouseHandler::mouseChanged" ref="qwsmousehandler.html#mouseChanged"></keyword>
+            <keyword name="pos" id="QWSMouseHandler::pos" ref="qwsmousehandler.html#pos"></keyword>
+            <keyword name="resume" id="QWSMouseHandler::resume" ref="qwsmousehandler.html#resume"></keyword>
+            <keyword name="setScreen" id="QWSMouseHandler::setScreen" ref="qwsmousehandler.html#setScreen"></keyword>
+            <keyword name="suspend" id="QWSMouseHandler::suspend" ref="qwsmousehandler.html#suspend"></keyword>
+            <keyword name="~QWSMouseHandler" id="QWSMouseHandler::~QWSMouseHandler" ref="qwsmousehandler.html#dtor.QWSMouseHandler"></keyword>
+            <keyword name="QWSPointerCalibrationData" id="QWSPointerCalibrationData" ref="qwspointercalibrationdata.html"></keyword>
+            <keyword name="QWSPointerCalibrationData::Location" id="QWSPointerCalibrationData::Location" ref="qwspointercalibrationdata.html#Location-enum"></keyword>
+            <keyword name="QWSPointerCalibrationData::TopLeft" id="QWSPointerCalibrationData::TopLeft" ref="qwspointercalibrationdata.html#Location-enum"></keyword>
+            <keyword name="QWSPointerCalibrationData::BottomLeft" id="QWSPointerCalibrationData::BottomLeft" ref="qwspointercalibrationdata.html#Location-enum"></keyword>
+            <keyword name="QWSPointerCalibrationData::BottomRight" id="QWSPointerCalibrationData::BottomRight" ref="qwspointercalibrationdata.html#Location-enum"></keyword>
+            <keyword name="QWSPointerCalibrationData::TopRight" id="QWSPointerCalibrationData::TopRight" ref="qwspointercalibrationdata.html#Location-enum"></keyword>
+            <keyword name="QWSPointerCalibrationData::Center" id="QWSPointerCalibrationData::Center" ref="qwspointercalibrationdata.html#Location-enum"></keyword>
+            <keyword name="QWSPointerCalibrationData::LastLocation" id="QWSPointerCalibrationData::LastLocation" ref="qwspointercalibrationdata.html#Location-enum"></keyword>
+            <keyword name="QWSScreenSaver" id="QWSScreenSaver" ref="qwsscreensaver.html"></keyword>
+            <keyword name="restore" id="QWSScreenSaver::restore" ref="qwsscreensaver.html#restore"></keyword>
+            <keyword name="save" id="QWSScreenSaver::save" ref="qwsscreensaver.html#save"></keyword>
+            <keyword name="~QWSScreenSaver" id="QWSScreenSaver::~QWSScreenSaver" ref="qwsscreensaver.html#dtor.QWSScreenSaver"></keyword>
+            <keyword name="QWSServer" id="QWSServer" ref="qwsserver.html"></keyword>
+            <keyword name="QWSServer::IMMouse" id="QWSServer::IMMouse" ref="qwsserver.html#IMMouse-enum"></keyword>
+            <keyword name="QWSServer::MousePress" id="QWSServer::MousePress" ref="qwsserver.html#IMMouse-enum"></keyword>
+            <keyword name="QWSServer::MouseRelease" id="QWSServer::MouseRelease" ref="qwsserver.html#IMMouse-enum"></keyword>
+            <keyword name="QWSServer::MouseMove" id="QWSServer::MouseMove" ref="qwsserver.html#IMMouse-enum"></keyword>
+            <keyword name="QWSServer::MouseOutside" id="QWSServer::MouseOutside" ref="qwsserver.html#IMMouse-enum"></keyword>
+            <keyword name="QWSServer::IMState" id="QWSServer::IMState" ref="qwsserver.html#IMState-enum"></keyword>
+            <keyword name="QWSServer::IMCompose" id="QWSServer::IMCompose" ref="qwsserver.html#IMState-enum"></keyword>
+            <keyword name="QWSServer::IMEnd" id="QWSServer::IMEnd" ref="qwsserver.html#IMState-enum"></keyword>
+            <keyword name="QWSServer::IMStart" id="QWSServer::IMStart" ref="qwsserver.html#IMState-enum"></keyword>
+            <keyword name="KeyboardFilter" id="QWSServer::KeyboardFilter" ref="qwsserver-keyboardfilter.html"></keyword>
+            <keyword name="filter" id="KeyboardFilter::filter" ref="qwsserver-keyboardfilter.html#filter"></keyword>
+            <keyword name="~KeyboardFilter" id="KeyboardFilter::~KeyboardFilter" ref="qwsserver-keyboardfilter.html#dtor.KeyboardFilter"></keyword>
+            <keyword name="QWSServer::WindowEvent" id="QWSServer::WindowEvent" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Create" id="QWSServer::Create" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Destroy" id="QWSServer::Destroy" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Hide" id="QWSServer::Hide" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Show" id="QWSServer::Show" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Raise" id="QWSServer::Raise" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Lower" id="QWSServer::Lower" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Geometry" id="QWSServer::Geometry" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Active" id="QWSServer::Active" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="QWSServer::Name" id="QWSServer::Name" ref="qwsserver.html#WindowEvent-enum"></keyword>
+            <keyword name="addKeyboardFilter" id="QWSServer::addKeyboardFilter" ref="qwsserver.html#addKeyboardFilter"></keyword>
+            <keyword name="backgroundBrush" id="QWSServer::backgroundBrush" ref="qwsserver.html#backgroundBrush"></keyword>
+            <keyword name="clientWindows" id="QWSServer::clientWindows" ref="qwsserver.html#clientWindows"></keyword>
+            <keyword name="closeKeyboard" id="QWSServer::closeKeyboard" ref="qwsserver.html#closeKeyboard"></keyword>
+            <keyword name="closeMouse" id="QWSServer::closeMouse" ref="qwsserver.html#closeMouse"></keyword>
+            <keyword name="enablePainting" id="QWSServer::enablePainting" ref="qwsserver.html#enablePainting"></keyword>
+            <keyword name="instance" id="QWSServer::instance" ref="qwsserver.html#instance"></keyword>
+            <keyword name="isCursorVisible" id="QWSServer::isCursorVisible" ref="qwsserver.html#isCursorVisible"></keyword>
+            <keyword name="keyboardHandler" id="QWSServer::keyboardHandler" ref="qwsserver.html#keyboardHandler"></keyword>
+            <keyword name="markedText" id="QWSServer::markedText" ref="qwsserver.html#markedText"></keyword>
+            <keyword name="mouseHandler" id="QWSServer::mouseHandler" ref="qwsserver.html#mouseHandler"></keyword>
+            <keyword name="newChannel" id="QWSServer::newChannel" ref="qwsserver.html#newChannel"></keyword>
+            <keyword name="openKeyboard" id="QWSServer::openKeyboard" ref="qwsserver.html#openKeyboard"></keyword>
+            <keyword name="openMouse" id="QWSServer::openMouse" ref="qwsserver.html#openMouse"></keyword>
+            <keyword name="processKeyEvent" id="QWSServer::processKeyEvent" ref="qwsserver.html#processKeyEvent"></keyword>
+            <keyword name="refresh" id="QWSServer::refresh" ref="qwsserver.html#refresh"></keyword>
+            <keyword name="removeKeyboardFilter" id="QWSServer::removeKeyboardFilter" ref="qwsserver.html#removeKeyboardFilter"></keyword>
+            <keyword name="removedChannel" id="QWSServer::removedChannel" ref="qwsserver.html#removedChannel"></keyword>
+            <keyword name="resumeMouse" id="QWSServer::resumeMouse" ref="qwsserver.html#resumeMouse"></keyword>
+            <keyword name="screenSaverActivate" id="QWSServer::screenSaverActivate" ref="qwsserver.html#screenSaverActivate"></keyword>
+            <keyword name="screenSaverActive" id="QWSServer::screenSaverActive" ref="qwsserver.html#screenSaverActive"></keyword>
+            <keyword name="sendIMEvent" id="QWSServer::sendIMEvent" ref="qwsserver.html#sendIMEvent"></keyword>
+            <keyword name="sendIMQuery" id="QWSServer::sendIMQuery" ref="qwsserver.html#sendIMQuery"></keyword>
+            <keyword name="sendKeyEvent" id="QWSServer::sendKeyEvent" ref="qwsserver.html#sendKeyEvent"></keyword>
+            <keyword name="setBackground" id="QWSServer::setBackground" ref="qwsserver.html#setBackground"></keyword>
+            <keyword name="setCurrentInputMethod" id="QWSServer::setCurrentInputMethod" ref="qwsserver.html#setCurrentInputMethod"></keyword>
+            <keyword name="setCursorVisible" id="QWSServer::setCursorVisible" ref="qwsserver.html#setCursorVisible"></keyword>
+            <keyword name="setDefaultKeyboard" id="QWSServer::setDefaultKeyboard" ref="qwsserver.html#setDefaultKeyboard"></keyword>
+            <keyword name="setDefaultMouse" id="QWSServer::setDefaultMouse" ref="qwsserver.html#setDefaultMouse"></keyword>
+            <keyword name="setDesktopBackground" id="QWSServer::setDesktopBackground" ref="qwsserver-qt3.html#setDesktopBackground"></keyword>
+            <keyword name="setKeyboardHandler" id="QWSServer::setKeyboardHandler" ref="qwsserver.html#setKeyboardHandler"></keyword>
+            <keyword name="setMaxWindowRect" id="QWSServer::setMaxWindowRect" ref="qwsserver.html#setMaxWindowRect"></keyword>
+            <keyword name="setMouseHandler" id="QWSServer::setMouseHandler" ref="qwsserver.html#setMouseHandler"></keyword>
+            <keyword name="setScreenSaver" id="QWSServer::setScreenSaver" ref="qwsserver.html#setScreenSaver"></keyword>
+            <keyword name="setScreenSaverBlockLevel" id="QWSServer::setScreenSaverBlockLevel" ref="qwsserver.html#setScreenSaverBlockLevel"></keyword>
+            <keyword name="setScreenSaverInterval" id="QWSServer::setScreenSaverInterval" ref="qwsserver.html#setScreenSaverInterval"></keyword>
+            <keyword name="setScreenSaverIntervals" id="QWSServer::setScreenSaverIntervals" ref="qwsserver.html#setScreenSaverIntervals"></keyword>
+            <keyword name="suspendMouse" id="QWSServer::suspendMouse" ref="qwsserver.html#suspendMouse"></keyword>
+            <keyword name="windowAt" id="QWSServer::windowAt" ref="qwsserver.html#windowAt"></keyword>
+            <keyword name="windowEvent" id="QWSServer::windowEvent" ref="qwsserver.html#windowEvent"></keyword>
+            <keyword name="QWSWindow" id="QWSWindow" ref="qwswindow.html"></keyword>
+            <keyword name="QWSWindow::State" id="QWSWindow::State" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::NoState" id="QWSWindow::NoState" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Hidden" id="QWSWindow::Hidden" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Showing" id="QWSWindow::Showing" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Visible" id="QWSWindow::Visible" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Hiding" id="QWSWindow::Hiding" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Raising" id="QWSWindow::Raising" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Lowering" id="QWSWindow::Lowering" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Moving" id="QWSWindow::Moving" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::ChangingGeometry" id="QWSWindow::ChangingGeometry" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="QWSWindow::Destroyed" id="QWSWindow::Destroyed" ref="qwswindow.html#State-enum"></keyword>
+            <keyword name="caption" id="QWSWindow::caption" ref="qwswindow.html#caption"></keyword>
+            <keyword name="client" id="QWSWindow::client" ref="qwswindow.html#client"></keyword>
+            <keyword name="dirtyOnScreen" id="QWSWindow::dirtyOnScreen" ref="qwswindow.html#dirtyOnScreen"></keyword>
+            <keyword name="isFullyObscured" id="QWSWindow::isFullyObscured" ref="qwswindow.html#isFullyObscured"></keyword>
+            <keyword name="isOpaque" id="QWSWindow::isOpaque" ref="qwswindow.html#isOpaque"></keyword>
+            <keyword name="isVisible" id="QWSWindow::isVisible" ref="qwswindow.html#isVisible"></keyword>
+            <keyword name="name" id="QWSWindow::name" ref="qwswindow.html#name"></keyword>
+            <keyword name="opacity" id="QWSWindow::opacity" ref="qwswindow.html#opacity"></keyword>
+            <keyword name="requestedRegion" id="QWSWindow::requestedRegion" ref="qwswindow.html#requestedRegion"></keyword>
+            <keyword name="state" id="QWSWindow::state" ref="qwswindow.html#state"></keyword>
+            <keyword name="winId" id="QWSWindow::winId" ref="qwswindow.html#winId"></keyword>
+            <keyword name="windowFlags" id="QWSWindow::windowFlags" ref="qwswindow.html#windowFlags"></keyword>
             <keyword name="QWaitCondition" id="QWaitCondition" ref="qwaitcondition.html"></keyword>
             <keyword name="wait" id="QWaitCondition::wait" ref="qwaitcondition.html#wait"></keyword>
             <keyword name="wakeAll" id="QWaitCondition::wakeAll" ref="qwaitcondition.html#wakeAll"></keyword>
@@ -23721,15 +24197,6 @@
             <keyword name="QWidgetList" id="QWidgetList" ref="qwidget.html#QWidgetList-typedef"></keyword>
             <keyword name="QWindowStateChangeEvent" id="QWindowStateChangeEvent" ref="qwindowstatechangeevent.html"></keyword>
             <keyword name="oldState" id="QWindowStateChangeEvent::oldState" ref="qwindowstatechangeevent.html#oldState"></keyword>
-            <keyword name="QWindowsMime" id="QWindowsMime" ref="qwindowsmime.html"></keyword>
-            <keyword name="canConvertFromMime" id="QWindowsMime::canConvertFromMime" ref="qwindowsmime.html#canConvertFromMime"></keyword>
-            <keyword name="canConvertToMime" id="QWindowsMime::canConvertToMime" ref="qwindowsmime.html#canConvertToMime"></keyword>
-            <keyword name="convertFromMime" id="QWindowsMime::convertFromMime" ref="qwindowsmime.html#convertFromMime"></keyword>
-            <keyword name="convertToMime" id="QWindowsMime::convertToMime" ref="qwindowsmime.html#convertToMime"></keyword>
-            <keyword name="formatsForMime" id="QWindowsMime::formatsForMime" ref="qwindowsmime.html#formatsForMime"></keyword>
-            <keyword name="mimeForFormat" id="QWindowsMime::mimeForFormat" ref="qwindowsmime.html#mimeForFormat"></keyword>
-            <keyword name="registerMimeType" id="QWindowsMime::registerMimeType" ref="qwindowsmime.html#registerMimeType"></keyword>
-            <keyword name="~QWindowsMime" id="QWindowsMime::~QWindowsMime" ref="qwindowsmime.html#dtor.QWindowsMime"></keyword>
             <keyword name="QWindowsStyle" id="QWindowsStyle" ref="qwindowsstyle.html"></keyword>
             <keyword name="~QWindowsStyle" id="QWindowsStyle::~QWindowsStyle" ref="qwindowsstyle.html#dtor.QWindowsStyle"></keyword>
             <keyword name="QWindowsVistaStyle" id="QWindowsVistaStyle" ref="qwindowsvistastyle.html"></keyword>
@@ -25495,8 +25962,6 @@
             <keyword name="Qt Linguist Manual: Translators" id="Qt Linguist Manual: Translators" ref="linguist-translators.html"></keyword>
             <keyword name="Qt Object Model" id="Qt Object Model" ref="object.html"></keyword>
             <keyword name="Qt Open Source Edition" id="Qt Open Source Edition" ref="opensourceedition.html"></keyword>
-            <keyword name="Qt Reference Documentation" id="Qt Reference Documentation" ref="index.html#qt-reference-documentation"></keyword>
-            <keyword name="Qt Reference Documentation (Open Source Edition)" id="Qt Reference Documentation (Open Source Edition)" ref="index.html"></keyword>
             <keyword name="style sheet" id="style sheet" ref="stylesheet.html#style-sheet"></keyword>
             <keyword name="stylesheet" id="stylesheet" ref="stylesheet.html#stylesheet"></keyword>
             <keyword name="Qt Style Sheets" id="Qt Style Sheets" ref="stylesheet.html"></keyword>
@@ -25527,6 +25992,8 @@
             <keyword name="Qt for Embedded Linux Fonts" id="Qt for Embedded Linux Fonts" ref="qt-embedded-fonts.html"></keyword>
             <keyword name="Qt for Embedded Linux Performance Tuning" id="Qt for Embedded Linux Performance Tuning" ref="qt-embedded-performance.html"></keyword>
             <keyword name="Qt for Embedded Linux Pointer Handling" id="Qt for Embedded Linux Pointer Handling" ref="qt-embedded-pointer.html"></keyword>
+            <keyword name="Qt Reference Documentation" id="Qt Reference Documentation" ref="index.html#qt-reference-documentation"></keyword>
+            <keyword name="Qt for Embedded Linux Reference Documentation" id="Qt for Embedded Linux Reference Documentation" ref="index.html"></keyword>
             <keyword name="Qt for Embedded Linux Requirements" id="Qt for Embedded Linux Requirements" ref="requirements-x11.html"></keyword>
             <keyword name="Qt for Embedded Linux and OpenGL" id="Qt for Embedded Linux and OpenGL" ref="qt-embedded-opengl.html"></keyword>
             <keyword name="Qt for Windows CE Requirements" id="Qt for Windows CE Requirements" ref="requirements-wince.html"></keyword>
@@ -25721,7 +26188,6 @@
             <keyword name="Tree Model Completer Example" id="Tree Model Completer Example" ref="tools-treemodelcompleter.html"></keyword>
             <keyword name="Trivial Wizard Example" id="Trivial Wizard Example" ref="dialogs-trivialwizard.html"></keyword>
             <keyword name="Troll Print Example" id="Troll Print Example" ref="linguist-trollprint.html"></keyword>
-            <keyword name="Trolltech GPL Exception Version 1.2" id="Trolltech GPL Exception Version 1.2" ref="license-gpl-exceptions.html"></keyword>
             <keyword name="Tutorials" id="Tutorials" ref="tutorials.html"></keyword>
             <keyword name="Undo Framework" id="Undo Framework" ref="demos-undo.html"></keyword>
             <keyword name="Undo Framework Example" id="Undo Framework Example" ref="tools-undoframework.html"></keyword>
@@ -25784,19 +26250,19 @@
             <keyword name="noforcesign" id="noforcesign" ref="qtextstream.html#noforcesign"></keyword>
             <keyword name="noshowbase" id="noshowbase" ref="qtextstream.html#noshowbase"></keyword>
             <keyword name="oct" id="oct" ref="qtextstream.html#oct"></keyword>
-            <keyword name="operator!=" id="operator!=" ref="qsize.html#operator!="></keyword>
+            <keyword name="operator!=" id="operator!=" ref="qchar.html#operator!="></keyword>
             <keyword name="operator&amp;" id="operator&amp;" ref="qbitarray.html#operator&amp;"></keyword>
-            <keyword name="operator*" id="operator*" ref="qsize.html#operator*"></keyword>
-            <keyword name="operator+" id="operator+" ref="qstring.html#operator+"></keyword>
-            <keyword name="operator-" id="operator-" ref="qsize.html#operator-"></keyword>
+            <keyword name="operator*" id="operator*" ref="qmatrix.html#operator*"></keyword>
+            <keyword name="operator+" id="operator+" ref="qpoint.html#operator+"></keyword>
+            <keyword name="operator-" id="operator-" ref="qpoint.html#operator-"></keyword>
             <keyword name="operator/" id="operator/" ref="qpoint.html#operator/"></keyword>
-            <keyword name="operator&lt;" id="operator&lt;" ref="qstringref.html#operator&lt;"></keyword>
-            <keyword name="operator&lt;&lt;" id="operator&lt;&lt;" ref="qstring.html#operator&lt;&lt;"></keyword>
-            <keyword name="operator&lt;=" id="operator&lt;=" ref="qstringref.html#operator&lt;="></keyword>
-            <keyword name="operator==" id="operator==" ref="qstringref.html#operator=="></keyword>
-            <keyword name="operator&gt;" id="operator&gt;" ref="qstringref.html#operator&gt;"></keyword>
-            <keyword name="operator&gt;=" id="operator&gt;=" ref="qstringref.html#operator&gt;="></keyword>
-            <keyword name="operator&gt;&gt;" id="operator&gt;&gt;" ref="qstring.html#operator&gt;&gt;"></keyword>
+            <keyword name="operator&lt;" id="operator&lt;" ref="qchar.html#operator&lt;"></keyword>
+            <keyword name="operator&lt;&lt;" id="operator&lt;&lt;" ref="qchar.html#operator&lt;&lt;"></keyword>
+            <keyword name="operator&lt;=" id="operator&lt;=" ref="qchar.html#operator&lt;="></keyword>
+            <keyword name="operator==" id="operator==" ref="qchar.html#operator=="></keyword>
+            <keyword name="operator&gt;" id="operator&gt;" ref="qchar.html#operator&gt;"></keyword>
+            <keyword name="operator&gt;=" id="operator&gt;=" ref="qchar.html#operator&gt;="></keyword>
+            <keyword name="operator&gt;&gt;" id="operator&gt;&gt;" ref="qchar.html#operator&gt;&gt;"></keyword>
             <keyword name="operator^" id="operator^" ref="qbitarray.html#operator^"></keyword>
             <keyword name="operator|" id="operator|" ref="qbitarray.html#operator|"></keyword>
             <keyword name="q3InitNetworkProtocols" id="q3InitNetworkProtocols" ref="q3urloperator.html#q3InitNetworkProtocols"></keyword>
@@ -25834,7 +26300,7 @@
             <keyword name="qGray" id="qGray" ref="qcolor.html#qGray"></keyword>
             <keyword name="qGreater" id="qGreater" ref="qtalgorithms.html#qGreater"></keyword>
             <keyword name="qGreen" id="qGreen" ref="qcolor.html#qGreen"></keyword>
-            <keyword name="qHash" id="qHash" ref="qhash.html#qHash"></keyword>
+            <keyword name="qHash" id="qHash" ref="qxmlnodemodelindex.html#qHash"></keyword>
             <keyword name="qInstallMsgHandler" id="qInstallMsgHandler" ref="qtglobal.html#qInstallMsgHandler"></keyword>
             <keyword name="qIsForwardIteratorEnd" id="qIsForwardIteratorEnd" ref="qabstractxmlforwarditerator.html#qIsForwardIteratorEnd"></keyword>
             <keyword name="qLess" id="qLess" ref="qtalgorithms.html#qLess"></keyword>
@@ -25951,6 +26417,7 @@
             <file>q3ptrdict.html</file>
             <file>q3dockarea-members.html</file>
             <file>model-view-introduction.html</file>
+            <file>qdecoration-members.html</file>
             <file>qscriptstring.html</file>
             <file>helpsystem.html</file>
             <file>qtextistream-members.html</file>
@@ -25980,9 +26447,9 @@
             <file>images/qpen-custom.png</file>
             <file>qitemdelegate.html</file>
             <file>qsplitterhandle-members.html</file>
-            <file>qdesktopservices-members.html</file>
             <file>opengl-overpainting-bubble-h.html</file>
             <file>painting-concentriccircles-main-cpp.html</file>
+            <file>qdesktopservices-members.html</file>
             <file>qundo.html</file>
             <file>designer-worldtimeclockbuilder.html</file>
             <file>widgets-icons-icons-pro.html</file>
@@ -26020,9 +26487,9 @@
             <file>qfile-obsolete.html</file>
             <file>qcolormap-members.html</file>
             <file>qxmlstreamnotationdeclaration.html</file>
-            <file>qdomimplementation-members.html</file>
             <file>images/qurl-authority2.png</file>
             <file>qwindowsxpstyle.html</file>
+            <file>qdomimplementation-members.html</file>
             <file>qxmlnamespacesupport.html</file>
             <file>images/qt-embedded-pda.png</file>
             <file>images/buttonbox-mac-modeless-horizontal.png</file>
@@ -26030,6 +26497,7 @@
             <file>layouts-basiclayouts-dialog-h.html</file>
             <file>qrectf.html</file>
             <file>demos-sqlbrowser-browser-h.html</file>
+            <file>qws-mousecalibration-main-cpp.html</file>
             <file>images/javaiterators1.png</file>
             <file>q3textbrowser.html</file>
             <file>dialogs-configdialog-configdialog-cpp.html</file>
@@ -26039,6 +26507,7 @@
             <file>tools-treemodelcompleter-mainwindow-h.html</file>
             <file>images/taskmenuextension-dialog.png</file>
             <file>qsplitter.html</file>
+            <file>qwscalibratedmousehandler-members.html</file>
             <file>images/qtwizard-classic1.png</file>
             <file>qstack-members.html</file>
             <file>qcompleter-members.html</file>
@@ -26099,8 +26568,8 @@
             <file>dialogs-configdialog-configdialog-qrc.html</file>
             <file>demos-spreadsheet-spreadsheet-qrc.html</file>
             <file>itemviews-addressbook-mainwindow-h.html</file>
-            <file>qdir-members.html</file>
             <file>designer-taskmenuextension-taskmenuextension-pro.html</file>
+            <file>qdir-members.html</file>
             <file>webkit-previewer.html</file>
             <file>uic.html</file>
             <file>images/sipdialog-closed.png</file>
@@ -26141,6 +26610,7 @@
             <file>qdir-qt3.html</file>
             <file>widgets-stylesheet-mainwindow-cpp.html</file>
             <file>network-threadedfortuneserver.html</file>
+            <file>qdecorationplugin.html</file>
             <file>tutorials-tutorial-t1-t1-pro.html</file>
             <file>images/windowsvista-horizontalscrollbar.png</file>
             <file>qtestlib-tutorial1-tutorial1-pro.html</file>
@@ -26202,8 +26672,8 @@
             <file>widgets-sliders-window-cpp.html</file>
             <file>qstyleoptionsizegrip.html</file>
             <file>qinputcontextfactory.html</file>
-            <file>qfile-members.html</file>
             <file>qhash-const-iterator.html</file>
+            <file>qfile-members.html</file>
             <file>qglformat-members.html</file>
             <file>dialogs-standarddialogs-dialog-cpp.html</file>
             <file>tutorials-addressbook-part2-addressbook-h.html</file>
@@ -26220,6 +26690,7 @@
             <file>widgets-tetrix-tetrixpiece-h.html</file>
             <file>graphicsview-diagramscene-diagramtextitem-h.html</file>
             <file>opengl-samplebuffers-glwidget-cpp.html</file>
+            <file>qws-dbscreen-dbscreen-pro.html</file>
             <file>qsignalspy-members.html</file>
             <file>tutorials-tutorial-t12-lcdrange-h.html</file>
             <file>qhelpcontentmodel.html</file>
@@ -26258,6 +26729,7 @@
             <file>qxmlreader-members.html</file>
             <file>widgets-shapedclock.html</file>
             <file>qtconcurrent-progressdialog.html</file>
+            <file>qws-ahigl-ahigl-pro.html</file>
             <file>qregion-members.html</file>
             <file>phonon-mediasource.html</file>
             <file>images/stylesheet-redbutton2.png</file>
@@ -26307,6 +26779,7 @@
             <file>qmake-precompiledheaders.html</file>
             <file>qabstractitemmodel-members.html</file>
             <file>images/qpen-roundcap.png</file>
+            <file>qwskeyboardhandler-members.html</file>
             <file>tools-treemodelcompleter-main-cpp.html</file>
             <file>itemviews-pixelator-images-qrc.html</file>
             <file>gpl.html</file>
@@ -26342,6 +26815,7 @@
             <file>designer-calculatorbuilder-calculatorform-h.html</file>
             <file>images/windowsvista-toolbox.png</file>
             <file>dialogs-classwizard-classwizard-h.html</file>
+            <file>qfontengineplugin-members.html</file>
             <file>q3dns.html</file>
             <file>network-loopback-main-cpp.html</file>
             <file>qauthenticator-members.html</file>
@@ -26364,6 +26838,7 @@
             <file>images/cursor-forbidden.png</file>
             <file>qtextlistformat-members.html</file>
             <file>qstandarditemeditorcreator-members.html</file>
+            <file>qws-svgalib-svgalibpaintdevice-h.html</file>
             <file>images/cursor-sizeb.png</file>
             <file>images/qpainter-clock.png</file>
             <file>images/qurl-authority.png</file>
@@ -26377,23 +26852,28 @@
             <file>images/textures-example.png</file>
             <file>images/cde-checkbox.png</file>
             <file>images/sdi-example.png</file>
+            <file>qwsserver-keyboardfilter-members.html</file>
             <file>q3dict-members.html</file>
             <file>images/qlineargradient-reflect.png</file>
             <file>q3vbuttongroup.html</file>
             <file>widgets-icons-iconsizespinbox-h.html</file>
+            <file>qwswindow-members.html</file>
             <file>q3grid.html</file>
             <file>images/qscrollarea-twoscrollbars.png</file>
             <file>tools-settingseditor-mainwindow-h.html</file>
             <file>qtooltip-qt3.html</file>
             <file>images/cleanlooks-textedit.png</file>
+            <file>qws-svgalib-svgalibscreen-h.html</file>
             <file>qhelpindexwidget.html</file>
             <file>images/plastique-printdialog.png</file>
             <file>qabstractproxymodel.html</file>
             <file>qhideevent.html</file>
+            <file>qws-dbscreen-dbscreendriverplugin-cpp.html</file>
             <file>activeqt-idc.html</file>
             <file>images/macintosh-slider.png</file>
             <file>itemviews-puzzle-puzzle-pro.html</file>
             <file>qmetaobject.html</file>
+            <file>qkbddriverfactory-members.html</file>
             <file>tools-styleplugin.html</file>
             <file>qdoublespinbox.html</file>
             <file>images/rubberbandimage.png</file>
@@ -26495,7 +26975,6 @@
             <file>dialogs-tabdialog-tabdialog-cpp.html</file>
             <file>mainwindows-dockwidgets-main-cpp.html</file>
             <file>qbuffer.html</file>
-            <file>qmacstyle-obsolete.html</file>
             <file>tutorials-tutorial-t3-t3-pro.html</file>
             <file>q3accel.html</file>
             <file>qset-const-iterator.html</file>
@@ -26569,12 +27048,14 @@
             <file>graphicsview-portedcanvas-portedcanvas-pro.html</file>
             <file>tools-treemodelcompleter-mainwindow-cpp.html</file>
             <file>qlayout.html</file>
+            <file>qmousedriverfactory-members.html</file>
             <file>widgets-calendarwidget-calendarwidget-pro.html</file>
             <file>images/cleanlooks-spinbox.png</file>
             <file>qhboxlayout-members.html</file>
             <file>qbytearraymatcher.html</file>
             <file>opengl-framebufferobject-framebufferobject-pro.html</file>
             <file>tools-plugandpaintplugins-basictools.html</file>
+            <file>qdirectpainter.html</file>
             <file>graphicsview-diagramscene-mainwindow-h.html</file>
             <file>network-chat-client-h.html</file>
             <file>qtextstream-members.html</file>
@@ -26623,6 +27104,7 @@
             <file>qticohandler-members.html</file>
             <file>phonon-capabilities.html</file>
             <file>tools-customcompleter.html</file>
+            <file>qws-svgalib-svgalibsurface-cpp.html</file>
             <file>qmap-qt3.html</file>
             <file>images/modelindex-no-parent.png</file>
             <file>model-view-dnd.html</file>
@@ -26702,6 +27184,7 @@
             <file>widgets-tetrix-tetrixwindow-h.html</file>
             <file>images/qpen-dash.png</file>
             <file>graphicsview-padnavigator-roundrectitem-cpp.html</file>
+            <file>qfontengineinfo.html</file>
             <file>images/plastique-treeview.png</file>
             <file>qstyleoptionq3listview.html</file>
             <file>images/plastique-dial.png</file>
@@ -26747,6 +27230,7 @@
             <file>images/codecs-example.png</file>
             <file>mainwindows-menus.html</file>
             <file>images/icons_monkey.png</file>
+            <file>qwsclient-members.html</file>
             <file>images/coordinatesystem-line.png</file>
             <file>qdomnotation.html</file>
             <file>images/linguist-batchtranslation.png</file>
@@ -26791,6 +27275,7 @@
             <file>tools-plugandpaintplugins-extrafilters-extrafiltersplugin-h.html</file>
             <file>images/cleanlooks-pushbutton-menu.png</file>
             <file>accelerators.html</file>
+            <file>qscreendriverfactory.html</file>
             <file>itemviews-coloreditorfactory.html</file>
             <file>qplaintextedit.html</file>
             <file>q3colordrag.html</file>
@@ -26909,6 +27394,7 @@
             <file>qt-embedded-charinput.html</file>
             <file>qwindowsstyle.html</file>
             <file>images/gradientText.png</file>
+            <file>qwsembedwidget-members.html</file>
             <file>qstyleoptionbutton-members.html</file>
             <file>qurl.html</file>
             <file>qdbusabstractinterface.html</file>
@@ -26924,6 +27410,7 @@
             <file>widgets-calculator-button-h.html</file>
             <file>images/designer-stylesheet-usage.png</file>
             <file>qicondragevent-members.html</file>
+            <file>qws-svgalib-svgalibscreen-cpp.html</file>
             <file>graphicsview-diagramscene.html</file>
             <file>images/qpainter-ellipse.png</file>
             <file>network-broadcastsender-main-cpp.html</file>
@@ -26950,6 +27437,7 @@
             <file>qstyleoptiontab.html</file>
             <file>q3scrollview-members.html</file>
             <file>q3urloperator-members.html</file>
+            <file>qwsserver-members.html</file>
             <file>platform-notes-mac.html</file>
             <file>qt-embedded-porting-device.html</file>
             <file>q3canvastext-members.html</file>
@@ -26960,6 +27448,7 @@
             <file>demos-deform-deform-pro.html</file>
             <file>i18n.html</file>
             <file>mainwindows-mdi-mainwindow-h.html</file>
+            <file>qwsscreensaver-members.html</file>
             <file>qclipboard-members.html</file>
             <file>images/cleanlooks-horizontalscrollbar.png</file>
             <file>qpen.html</file>
@@ -26991,6 +27480,7 @@
             <file>qfuture.html</file>
             <file>images/modelview-models.png</file>
             <file>dialogs-findfiles-findfiles-pro.html</file>
+            <file>qws-ahigl-qscreenahigl-qws-h.html</file>
             <file>script-customclass.html</file>
             <file>images/sliderimage.png</file>
             <file>itemviews-addressbook.html</file>
@@ -27040,7 +27530,6 @@
             <file>q3action-members.html</file>
             <file>qsize.html</file>
             <file>qfileopenevent.html</file>
-            <file>qdesktopwidget.html</file>
             <file>qwebpluginfactory-members.html</file>
             <file>qmdisubwindow-members.html</file>
             <file>itemviews-chart-pieview-h.html</file>
@@ -27070,6 +27559,7 @@
             <file>tutorials-addressbook-part7.html</file>
             <file>images/undoframeworkexample.png</file>
             <file>images/worldtimeclockplugin-example.png</file>
+            <file>qproxyscreen.html</file>
             <file>images/scrollbar.png</file>
             <file>images/cde-toolbox.png</file>
             <file>qdesignercustomwidgetinterface.html</file>
@@ -27202,11 +27692,13 @@
             <file>qiconengine-members.html</file>
             <file>qws-mousecalibration.html</file>
             <file>qundogroup.html</file>
+            <file>qscreencursor.html</file>
             <file>images/windowsvista-label.png</file>
             <file>qtoolbar.html</file>
             <file>qtextframe.html</file>
             <file>graphicsview-portedasteroids-ledmeter-cpp.html</file>
             <file>designer-customwidgetplugin-customwidgetplugin-pro.html</file>
+            <file>qws-mousecalibration-scribblewidget-h.html</file>
             <file>itemviews-editabletreemodel-editabletreemodel-qrc.html</file>
             <file>qsettings-members.html</file>
             <file>painting-imagecomposition-imagecomposer-cpp.html</file>
@@ -27251,6 +27743,7 @@
             <file>images/headerimage.png</file>
             <file>painting-svgviewer-svgview-h.html</file>
             <file>tutorials-tutorial-t14-t14-pro.html</file>
+            <file>qwsclient.html</file>
             <file>tools-customcompleter-textedit-h.html</file>
             <file>images/qformlayout-win.png</file>
             <file>qkeysequence-obsolete.html</file>
@@ -27321,6 +27814,7 @@
             <file>images/assistant-search.png</file>
             <file>xquery-introduction.html</file>
             <file>network-securesocketclient-certificateinfo-h.html</file>
+            <file>qdirectpainter-members.html</file>
             <file>qdbusabstractinterface-members.html</file>
             <file>images/designer-widget-tool.png</file>
             <file>images/designer-connection-highlight.png</file>
@@ -27346,6 +27840,7 @@
             <file>painting-painterpaths-painterpaths-pro.html</file>
             <file>qplaintextdocumentlayout-members.html</file>
             <file>qsystemtrayicon-members.html</file>
+            <file>qwskeyboardhandler.html</file>
             <file>opengl-2dpainting-glwidget-h.html</file>
             <file>graphicsview-porting.html</file>
             <file>qgroupbox.html</file>
@@ -27437,6 +27932,7 @@
             <file>designer-stylesheet.html</file>
             <file>qtconcurrent-progressdialog-progressdialog-pro.html</file>
             <file>images/widgets-tutorial-nestedlayouts.png</file>
+            <file>qws-mousecalibration-mousecalibration-pro.html</file>
             <file>images/linguist-check-warning.png</file>
             <file>linguist-ts-file-format.html</file>
             <file>uitools-textfinder-textfinder-h.html</file>
@@ -27445,6 +27941,7 @@
             <file>images/draganddroppuzzle-example.png</file>
             <file>images/sharedmodel-tableviews.png</file>
             <file>script-context2d-context2d-h.html</file>
+            <file>qwsmousehandler-members.html</file>
             <file>demos-macmainwindow-macmainwindow-pro.html</file>
             <file>images/windows-combobox.png</file>
             <file>linguist-arrowpad-arrowpad-cpp.html</file>
@@ -27456,7 +27953,9 @@
             <file>qstyleoptiontab-members.html</file>
             <file>qstyleoptiontoolbox-members.html</file>
             <file>images/assistant-assistant.png</file>
+            <file>qscreen-members.html</file>
             <file>qset.html</file>
+            <file>qws-mousecalibration-scribblewidget-cpp.html</file>
             <file>sql-relationaltablemodel-relationaltablemodel-cpp.html</file>
             <file>images/recipes-example.png</file>
             <file>images/paintsystem-stylepainter.png</file>
@@ -27472,6 +27971,7 @@
             <file>qchildevent-qt3.html</file>
             <file>widgets-charactermap-main-cpp.html</file>
             <file>tools-customcompleter-mainwindow-h.html</file>
+            <file>qwsserver-keyboardfilter.html</file>
             <file>images/windowsxp-doublespinbox.png</file>
             <file>qstyleoptionsizegrip-members.html</file>
             <file>desktop-systray.html</file>
@@ -27486,6 +27986,7 @@
             <file>qitemselectionmodel.html</file>
             <file>tools-settingseditor-main-cpp.html</file>
             <file>qhash.html</file>
+            <file>qws-mousecalibration-calibration-cpp.html</file>
             <file>images/windowsxp-progressbar.png</file>
             <file>mainwindows-sdi-mainwindow-cpp.html</file>
             <file>designer-calculatorform-calculatorform-h.html</file>
@@ -27534,7 +28035,6 @@
             <file>qatomicint.html</file>
             <file>images/cleanlooks-lineedit.png</file>
             <file>images/cleanlooks-treeview.png</file>
-            <file>qmacstyle-members.html</file>
             <file>network-broadcastsender-sender-h.html</file>
             <file>uitools-multipleinheritance-calculatorform-ui.html</file>
             <file>painting-transformations-window-h.html</file>
@@ -27662,6 +28162,7 @@
             <file>demos-textedit-main-cpp.html</file>
             <file>qdomentityreference-members.html</file>
             <file>demos-embeddeddialogs-embeddeddialog-cpp.html</file>
+            <file>qws-ahigl-qscreenahigl-qws-cpp.html</file>
             <file>qdesignerobjectinspectorinterface.html</file>
             <file>images/shareddirmodel.png</file>
             <file>codecs-jis.html</file>
@@ -27728,6 +28229,7 @@
             <file>itemviews-addressbook-addresswidget-cpp.html</file>
             <file>qtextframeformat.html</file>
             <file>images/motif-lcdnumber.png</file>
+            <file>qwsmousehandler.html</file>
             <file>images/designer-creating-menu2.png</file>
             <file>q3asciidictiterator.html</file>
             <file>shadow-builds-wince.html</file>
@@ -27753,7 +28255,9 @@
             <file>qconicalgradient.html</file>
             <file>qmake-platform-notes.html</file>
             <file>itemviews-pixelator-imagemodel-h.html</file>
+            <file>images/qwsserver_keyboardfilter.png</file>
             <file>images/motif-dateedit.png</file>
+            <file>qwsserver.html</file>
             <file>images/affine-demo.png</file>
             <file>topics.html</file>
             <file>images/wiggly-example.png</file>
@@ -27765,6 +28269,7 @@
             <file>images/plastique-fontdialog.png</file>
             <file>tools-i18n-main-cpp.html</file>
             <file>itemviews-basicsortfiltermodel.html</file>
+            <file>qcopchannel.html</file>
             <file>qt-embedded-differences.html</file>
             <file>qitemselectionrange-obsolete.html</file>
             <file>demos-gradients-main-cpp.html</file>
@@ -27796,6 +28301,7 @@
             <file>qt4-sql.html</file>
             <file>qrect-obsolete.html</file>
             <file>model-view-selection.html</file>
+            <file>qfontengineinfo-members.html</file>
             <file>itemviews-editabletreemodel-main-cpp.html</file>
             <file>mainwindows-mdi-mdichild-cpp.html</file>
             <file>qgraphicspolygonitem-members.html</file>
@@ -27816,6 +28322,7 @@
             <file>desktop-integration.html</file>
             <file>dialogs-sipdialog.html</file>
             <file>itemviews-addressbook-adddialog-cpp.html</file>
+            <file>qcopchannel-members.html</file>
             <file>demos-mainwindow-toolbar-cpp.html</file>
             <file>qcontextmenuevent-members.html</file>
             <file>qxmldefaulthandler.html</file>
@@ -27844,6 +28351,7 @@
             <file>images/designer-layout-inserting.png</file>
             <file>images/simpledommodel-example.png</file>
             <file>images/linguist-doneandnext.png</file>
+            <file>qws-mousecalibration-calibration-h.html</file>
             <file>images/treemodelcompleter-example.png</file>
             <file>itemviews-stardelegate-stardelegate-cpp.html</file>
             <file>tutorials-addressbook-part5-part5-pro.html</file>
@@ -27875,6 +28383,7 @@
             <file>phonon-path.html</file>
             <file>images/cleanlooks-groupbox.png</file>
             <file>qplastiquestyle-members.html</file>
+            <file>qwsinputmethod-members.html</file>
             <file>images/qplastiquestyle.png</file>
             <file>network-torrent-torrent-pro.html</file>
             <file>images/qt-embedded-accelerateddriver.png</file>
@@ -27882,6 +28391,7 @@
             <file>qpictureformatplugin.html</file>
             <file>network-threadedfortuneserver-threadedfortuneserver-pro.html</file>
             <file>qtexttable.html</file>
+            <file>qwsinputmethod.html</file>
             <file>qtexttablecellformat.html</file>
             <file>images/addressbook-tutorial-part1-labeled-screenshot.png</file>
             <file>images/qmdiarea-arrange.png</file>
@@ -27892,12 +28402,14 @@
             <file>qstyleoptionviewitemv2.html</file>
             <file>qimagereader-members.html</file>
             <file>qtreewidgetitem-obsolete.html</file>
-            <file>qfileinfo-obsolete.html</file>
             <file>opengl-pbuffers2-bubbles-svg.html</file>
+            <file>qfileinfo-obsolete.html</file>
             <file>qdbustypesystem.html</file>
             <file>images/trivialwizard-example-flow.png</file>
             <file>images/cleanlooks-dial.png</file>
             <file>qabstractitemdelegate-obsolete.html</file>
+            <file>qkbddriverplugin.html</file>
+            <file>qdirectpainter-obsolete.html</file>
             <file>images/qpainter-translation.png</file>
             <file>images/comboboximage.png</file>
             <file>q3canvasrectangle-members.html</file>
@@ -28028,6 +28540,7 @@
             <file>qsql.html</file>
             <file>layouts-borderlayout-main-cpp.html</file>
             <file>qt-embedded-pointer.html</file>
+            <file>images/qtopiacore-client.png</file>
             <file>xml-streambookmarks-xbelwriter-h.html</file>
             <file>script-helloscript-helloscript-pro.html</file>
             <file>images/samplebuffers-example.png</file>
@@ -28066,8 +28579,8 @@
             <file>qdateedit.html</file>
             <file>demos-embeddeddialogs-embeddeddialogs-pro.html</file>
             <file>script-context2d-window-cpp.html</file>
-            <file>qdialog-members.html</file>
             <file>images/deployment-mac-bundlestructure.png</file>
+            <file>qdialog-members.html</file>
             <file>qmutex-members.html</file>
             <file>q3valuevector.html</file>
             <file>qstackedlayout-members.html</file>
@@ -28084,6 +28597,7 @@
             <file>images/graphicsview-view.png</file>
             <file>qscrollbar-qt3.html</file>
             <file>images/qurl-querystring.png</file>
+            <file>qws-svgalib-svgalibpaintdevice-cpp.html</file>
             <file>demos-books-bookwindow-h.html</file>
             <file>qobject.html</file>
             <file>qsimplexmlnodemodel.html</file>
@@ -28167,6 +28681,7 @@
             <file>network-securesocketclient-main-cpp.html</file>
             <file>designer-customwidgetplugin.html</file>
             <file>qwebpage-extensionoption.html</file>
+            <file>qwswindow.html</file>
             <file>richtext-syntaxhighlighter-syntaxhighlighter-pro.html</file>
             <file>demos-deform.html</file>
             <file>images/coordinatesystem-analogclock.png</file>
@@ -28178,6 +28693,7 @@
             <file>activeqt-dumpdoc.html</file>
             <file>images/macintosh-doublespinbox.png</file>
             <file>qabstractscrollarea-members.html</file>
+            <file>qws-dbscreen-dbscreen-h.html</file>
             <file>images/assistant-toolbar.png</file>
             <file>qsplashscreen-qt3.html</file>
             <file>phonon-musicplayer-mainwindow-cpp.html</file>
@@ -28187,6 +28703,7 @@
             <file>images/windowsvista-lineedit.png</file>
             <file>qtextline.html</file>
             <file>images/designer-resources-editing.png</file>
+            <file>qws-svgalib-svgalibpaintengine-cpp.html</file>
             <file>widgets-tablet-tabletapplication-h.html</file>
             <file>qglcolormap.html</file>
             <file>images/flowlayout-example.png</file>
@@ -28272,8 +28789,8 @@
             <file>images/icons_qtopia_32x32.png</file>
             <file>q3http-members.html</file>
             <file>qstatusbar-members.html</file>
-            <file>qdiriterator-members.html</file>
             <file>qmutex.html</file>
+            <file>qdiriterator-members.html</file>
             <file>qfileinfo-members.html</file>
             <file>qstyleoptionq3dockwindow.html</file>
             <file>qresource.html</file>
@@ -28319,6 +28836,7 @@
             <file>q3header.html</file>
             <file>qtestlib-tutorial.html</file>
             <file>qstyleoptiondockwidget.html</file>
+            <file>qws-svgalib-svgalib-pro.html</file>
             <file>qstack.html</file>
             <file>qconicalgradient-members.html</file>
             <file>gallery-macintosh.html</file>
@@ -28356,6 +28874,7 @@
             <file>tutorials-tutorial-t14-lcdrange-cpp.html</file>
             <file>images/designer-form-layout-macintosh.png</file>
             <file>images/windowsxp-datetimeedit.png</file>
+            <file>qscreen.html</file>
             <file>qmessagebox-obsolete.html</file>
             <file>images/linguist-editcut.png</file>
             <file>q3listbox-members.html</file>
@@ -28438,6 +28957,7 @@
             <file>qtreewidgetitemiterator.html</file>
             <file>qdbus.html</file>
             <file>qimagewriter-members.html</file>
+            <file>qws-svgalib-svgalibpaintengine-h.html</file>
             <file>model-view-model.html</file>
             <file>qvarlengtharray-members.html</file>
             <file>linguist-trollprint-trollprint-pro.html</file>
@@ -28508,6 +29028,7 @@
             <file>qcolormap.html</file>
             <file>itemviews-pixelator-pixeldelegate-cpp.html</file>
             <file>tools-echoplugin-echowindow-echowindow-pro.html</file>
+            <file>qabstractfontengine-glyphmetrics-members.html</file>
             <file>tutorials-tutorial-t13-lcdrange-cpp.html</file>
             <file>itemviews-puzzle-mainwindow-h.html</file>
             <file>images/qerrormessage.png</file>
@@ -28546,6 +29067,7 @@
             <file>network-chat-chat-pro.html</file>
             <file>qwritelocker.html</file>
             <file>q3dragobject.html</file>
+            <file>qscreendriverplugin.html</file>
             <file>graphicsview-padnavigator-backside-ui.html</file>
             <file>tutorials-tutorial-t11-lcdrange-cpp.html</file>
             <file>q3progressbar.html</file>
@@ -28559,9 +29081,9 @@
             <file>images/icons_find_normal.png</file>
             <file>demos-arthurplugin-plugin-cpp.html</file>
             <file>qrunnable-members.html</file>
-            <file>qdomentity-members.html</file>
             <file>desktop-screenshot-main-cpp.html</file>
             <file>images/t12.png</file>
+            <file>qdomentity-members.html</file>
             <file>images/designer-action-editor.png</file>
             <file>licenses-fonts.html</file>
             <file>sql-querymodel-querymodel-pro.html</file>
@@ -28615,7 +29137,6 @@
             <file>images/qpainter-pathstroking.png</file>
             <file>qresource-obsolete.html</file>
             <file>painting-fontsampler.html</file>
-            <file>qmacpasteboardmime.html</file>
             <file>images/qtextblock-sequence.png</file>
             <file>network-securesocketclient-sslerrors-ui.html</file>
             <file>painting-imagecomposition-imagecomposer-h.html</file>
@@ -28629,6 +29150,7 @@
             <file>q3storeddrag-members.html</file>
             <file>xml-streambookmarks-main-cpp.html</file>
             <file>layouts-basiclayouts.html</file>
+            <file>qwsglwindowsurface.html</file>
             <file>qprinterinfo.html</file>
             <file>qtconcurrent-wordcount-wordcount-pro.html</file>
             <file>qsizegrip.html</file>
@@ -28679,6 +29201,7 @@
             <file>images/draganddrop-examples.png</file>
             <file>qgraphicswidget.html</file>
             <file>painting-basicdrawing-window-cpp.html</file>
+            <file>qscreencursor-members.html</file>
             <file>graphicsview-diagramscene-main-cpp.html</file>
             <file>graphicsview-portedcanvas-main-cpp.html</file>
             <file>demos-textedit-textedit-h.html</file>
@@ -28698,6 +29221,7 @@
             <file>tutorials-tutorial-t3.html</file>
             <file>qlinkedlist-iterator-members.html</file>
             <file>tutorials-tutorial-t4-t4-pro.html</file>
+            <file>qdecorationfactory-members.html</file>
             <file>images/qtconfig-appearance.png</file>
             <file>porting4-virtual-functions.html</file>
             <file>q3listviewitemiterator-members.html</file>
@@ -28713,6 +29237,7 @@
             <file>opengl-textures.html</file>
             <file>images/cde-label.png</file>
             <file>images/plastique-fontcombobox.png</file>
+            <file>qabstractfontengine-glyphmetrics.html</file>
             <file>qinputcontextplugin.html</file>
             <file>qlist-members.html</file>
             <file>images/rubberband.png</file>
@@ -28816,7 +29341,6 @@
             <file>demos-mainwindow-colorswatch-h.html</file>
             <file>images/t10.png</file>
             <file>designer-worldtimeclockplugin-worldtimeclockplugin-h.html</file>
-            <file>license-gpl-exceptions.html</file>
             <file>qprogressdialog.html</file>
             <file>images/macintosh-datetimeedit.png</file>
             <file>images/qpainterpath-addrectangle.png</file>
@@ -28834,6 +29358,7 @@
             <file>qxmlattributes.html</file>
             <file>designer-customwidgetplugin-analogclock-h.html</file>
             <file>qpen-members.html</file>
+            <file>qmousedriverplugin.html</file>
             <file>focus.html</file>
             <file>qset-members.html</file>
             <file>images/itemviews-editabletreemodel.png</file>
@@ -28851,6 +29376,7 @@
             <file>layout.html</file>
             <file>qdbusinterface.html</file>
             <file>qsystemsemaphore-members.html</file>
+            <file>qabstractfontengine.html</file>
             <file>qpixmap-obsolete.html</file>
             <file>tools-undoframework-main-cpp.html</file>
             <file>images/qlistbox-m.png</file>
@@ -28875,8 +29401,8 @@
             <file>images/brush-styles.png</file>
             <file>qstyleoptiontoolbutton.html</file>
             <file>qfocusevent-members.html</file>
-            <file>qfileinfo-qt3.html</file>
             <file>qtextinlineobject.html</file>
+            <file>qfileinfo-qt3.html</file>
             <file>tools-settingseditor.html</file>
             <file>images/cleanlooks-combobox.png</file>
             <file>images/stylesheet-branch-closed.png</file>
@@ -28896,6 +29422,7 @@
             <file>qspaceritem.html</file>
             <file>q3tableselection.html</file>
             <file>images/paintsystem-icon.png</file>
+            <file>qwsinputmethod-obsolete.html</file>
             <file>q3intcache.html</file>
             <file>images/sharedmemory-example_2.png</file>
             <file>qtemporaryfile.html</file>
@@ -28932,7 +29459,6 @@
             <file>images/qpen-bevel.png</file>
             <file>qundostack.html</file>
             <file>phonon-globalconfig.html</file>
-            <file>images/qdesktopwidget.png</file>
             <file>q3storeddrag.html</file>
             <file>graphicsview-diagramscene-arrow-h.html</file>
             <file>xml-xmlstreamlint.html</file>
@@ -28973,6 +29499,7 @@
             <file>signalsandslots.html</file>
             <file>qinputcontextplugin-members.html</file>
             <file>qdatastream-obsolete.html</file>
+            <file>qwsembedwidget.html</file>
             <file>images/qtscript-calculator-example.png</file>
             <file>qcache.html</file>
             <file>qchildevent-members.html</file>
@@ -29003,6 +29530,7 @@
             <file>qtconcurrent-progressdialog-main-cpp.html</file>
             <file>images/printer-rects.png</file>
             <file>mainwindows-dockwidgets-mainwindow-h.html</file>
+            <file>qwsevent.html</file>
             <file>images/cleanlooks-slider.png</file>
             <file>sql-querymodel-customsqlmodel-h.html</file>
             <file>images/windowsxp-label.png</file>
@@ -29027,6 +29555,7 @@
             <file>images/hellogl-example.png</file>
             <file>widgets-calendarwidget-window-h.html</file>
             <file>ipc-localfortuneclient-client-cpp.html</file>
+            <file>qkbddriverfactory.html</file>
             <file>mainclasses.html</file>
             <file>images/fontsampler-example.png</file>
             <file>qstyleoptiontabv2-members.html</file>
@@ -29092,7 +29621,6 @@
             <file>images/orderform-example.png</file>
             <file>qnetworkproxy-members.html</file>
             <file>images/2dpainting-example.png</file>
-            <file>qdesktopwidget-members.html</file>
             <file>qt4-4-intro.html</file>
             <file>images/framebufferobject-example.png</file>
             <file>tools-completer-completer-qrc.html</file>
@@ -29113,6 +29641,7 @@
             <file>classlists.html</file>
             <file>images/inputdialogs.png</file>
             <file>qmouseevent-members.html</file>
+            <file>qws-ahigl-qwindowsurface-ahigl-cpp.html</file>
             <file>xmlpatterns-recipes-files-preparationtimes-xq.html</file>
             <file>qmake-reference.html</file>
             <file>qvboxlayout-members.html</file>
@@ -29148,6 +29677,7 @@
             <file>qbitarray-members.html</file>
             <file>graphicsview-dragdroprobot-robot-cpp.html</file>
             <file>qsqltablemodel-members.html</file>
+            <file>qwscalibratedmousehandler.html</file>
             <file>qdockwidget-members.html</file>
             <file>images/qrectf-diagram-two.png</file>
             <file>images/windows-spinbox.png</file>
@@ -29229,7 +29759,6 @@
             <file>widgets-windowflags-controllerwindow-cpp.html</file>
             <file>qdesignercustomwidgetcollectioninterface.html</file>
             <file>qlistwidget.html</file>
-            <file>images/qmacstyle.png</file>
             <file>images/windows-horizontalscrollbar.png</file>
             <file>widgets-lineedits-window-cpp.html</file>
             <file>images/windowsvista-groupbox.png</file>
@@ -29241,6 +29770,7 @@
             <file>opengl-2dpainting-widget-h.html</file>
             <file>sql-masterdetail-dialog-cpp.html</file>
             <file>qwhatsthisclickedevent-members.html</file>
+            <file>qws-ahigl-qscreenahiglplugin-cpp.html</file>
             <file>designer-taskmenuextension-tictactoe-cpp.html</file>
             <file>qabstractitemview-obsolete.html</file>
             <file>draganddrop-draggableicons-draggableicons-pro.html</file>
@@ -29339,6 +29869,7 @@
             <file>webkit-previewer-mainwindow-cpp.html</file>
             <file>qthelp.html</file>
             <file>qxmlnodemodelindex.html</file>
+            <file>qabstractfontengine-fixedpoint.html</file>
             <file>qitemselection-members.html</file>
             <file>qpaintevent-members.html</file>
             <file>q3strilist.html</file>
@@ -29399,6 +29930,7 @@
             <file>images/qobjectxmlmodel-example.png</file>
             <file>images/qradialgradient-repeat.png</file>
             <file>qflags.html</file>
+            <file>qdecoration.html</file>
             <file>desktop-systray-window-h.html</file>
             <file>qaxcontainer.html</file>
             <file>qatomicpointer-members.html</file>
@@ -29440,8 +29972,8 @@
             <file>supported-platforms.html</file>
             <file>images/motif-label.png</file>
             <file>images/qscrollview-vp.png</file>
-            <file>qdomcdatasection-members.html</file>
             <file>images/dirview-example.png</file>
+            <file>qdomcdatasection-members.html</file>
             <file>images/addressbook-tutorial-part3-labeled-layout.png</file>
             <file>images/designer-set-layout.png</file>
             <file>images/motif-groupbox.png</file>
@@ -29494,16 +30026,19 @@
             <file>opengl-overpainting-glwidget-cpp.html</file>
             <file>images/books-demo.png</file>
             <file>images/effectwidget.png</file>
+            <file>qdecorationdefault.html</file>
             <file>qabstractfileengineiterator-members.html</file>
             <file>qgraphicsitem-obsolete.html</file>
             <file>images/pbuffers-example.png</file>
             <file>q3sqlform-members.html</file>
+            <file>qws-svgalib-svgalibplugin-cpp.html</file>
             <file>qabstractlistmodel.html</file>
             <file>widgets-shapedclock-shapedclock-h.html</file>
             <file>xml-rsslisting-rsslisting-cpp.html</file>
             <file>demos-spreadsheet.html</file>
             <file>images/linguist-fileprint.png</file>
             <file>images/qpen-square.png</file>
+            <file>qwsglwindowsurface-members.html</file>
             <file>qsqldriver.html</file>
             <file>tools-undoframework-mainwindow-cpp.html</file>
             <file>qtextdocument.html</file>
@@ -29519,6 +30054,7 @@
             <file>mainwindows-sdi-mainwindow-h.html</file>
             <file>images/t9.png</file>
             <file>demos-sqlbrowser-qsqlconnectiondialog-cpp.html</file>
+            <file>qproxyscreen-members.html</file>
             <file>q3canvaspolygon.html</file>
             <file>qmutablevectoriterator-members.html</file>
             <file>tools-echoplugin-echowindow-echowindow-cpp.html</file>
@@ -29530,6 +30066,7 @@
             <file>q3dropsite.html</file>
             <file>tools-plugandpaint-paintarea-h.html</file>
             <file>images/selection-extended.png</file>
+            <file>qdecorationplugin-members.html</file>
             <file>tutorials-tutorial-t12-cannonfield-cpp.html</file>
             <file>graphicsview-padnavigator-padnavigator-qrc.html</file>
             <file>qstyleoptionframev2-members.html</file>
@@ -29733,6 +30270,7 @@
             <file>qbasictimer-members.html</file>
             <file>widgets-styles.html</file>
             <file>images/qpainter-pie.png</file>
+            <file>qfontengineplugin.html</file>
             <file>images/stringlistmodel.png</file>
             <file>tutorials-addressbook-part3.html</file>
             <file>qfocusframe-members.html</file>
@@ -29770,7 +30308,6 @@
             <file>itemviews-coloreditorfactory-colorlisteditor-h.html</file>
             <file>q3valuevector-members.html</file>
             <file>images/windowsxp-spinbox.png</file>
-            <file>qwindowsmime.html</file>
             <file>images/addressbook-tutorial-part2-stretch-effects.png</file>
             <file>qstyleoptiontoolbox.html</file>
             <file>console-edition-classes.html</file>
@@ -29906,14 +30443,17 @@
             <file>itemviews-simpletreemodel-treemodel-h.html</file>
             <file>images/shapedclock-dragging.png</file>
             <file>q3httpresponseheader.html</file>
+            <file>qwsscreensaver.html</file>
             <file>qprintpreviewdialog-members.html</file>
             <file>script-defaultprototypes-defaultprototypes-qrc.html</file>
             <file>tools-codecs-main-cpp.html</file>
             <file>richtext-advanced-processing.html</file>
+            <file>qdecorationdefault-members.html</file>
             <file>layouts-flowlayout-main-cpp.html</file>
             <file>qvariant-qt3.html</file>
             <file>images/qt-embedded-opengl2.png</file>
             <file>q3wizard-members.html</file>
+            <file>qws-ahigl-qwindowsurface-ahigl-p-h.html</file>
             <file>phonon-musicplayer-mainwindow-h.html</file>
             <file>qabstracteventdispatcher.html</file>
             <file>qtextlist-members.html</file>
@@ -30037,18 +30577,16 @@
             <file>images/designer-preview-deviceskin-selection.png</file>
             <file>images/paintsystem-movie.png</file>
             <file>images/qpainter-rotation.png</file>
-            <file>qmacpasteboardmime-members.html</file>
             <file>qstyleoptionq3listviewitem-members.html</file>
             <file>qstyleoptionprogressbarv2-members.html</file>
             <file>ipc-sharedmemory-dialog-cpp.html</file>
             <file>images/plugandpaint-plugindialog.png</file>
-            <file>licenses-gpl-exceptions-addendum.html</file>
             <file>images/qtscript-examples.png</file>
             <file>phonon-effectwidget.html</file>
             <file>images/windowsvista-radiobutton.png</file>
             <file>qdomattr.html</file>
-            <file>qdomnamednodemap-members.html</file>
             <file>qtconcurrentfilter.html</file>
+            <file>qdomnamednodemap-members.html</file>
             <file>qobject-members.html</file>
             <file>qxmlstreamentityresolver.html</file>
             <file>qlayout-obsolete.html</file>
@@ -30067,6 +30605,7 @@
             <file>qtoolbar-members.html</file>
             <file>appearance.html</file>
             <file>qmutablemapiterator-members.html</file>
+            <file>qws-svgalib-svgalibsurface-h.html</file>
             <file>images/plastique-slider.png</file>
             <file>backendcapabilities.html</file>
             <file>demos-undo-mainwindow-h.html</file>
@@ -30074,6 +30613,7 @@
             <file>overviews.html</file>
             <file>images/plastique-horizontalscrollbar.png</file>
             <file>images/analogclock-viewport.png</file>
+            <file>qwsserver-qt3.html</file>
             <file>qpluginloader-members.html</file>
             <file>qt-embedded-install.html</file>
             <file>images/completer-example.png</file>
@@ -30117,6 +30657,7 @@
             <file>images/motif-tableview.png</file>
             <file>network-torrent-torrentserver-h.html</file>
             <file>script-customclass-main-cpp.html</file>
+            <file>qscreendriverplugin-members.html</file>
             <file>images/windowsxp-tabwidget.png</file>
             <file>q3syntaxhighlighter-members.html</file>
             <file>q3textedit-members.html</file>
@@ -30190,6 +30731,7 @@
             <file>images/dependencies.png</file>
             <file>sql-masterdetail.html</file>
             <file>qtooltip.html</file>
+            <file>qkbddriverplugin-members.html</file>
             <file>widgets-stylesheet-main-cpp.html</file>
             <file>images/sizegripimage.png</file>
             <file>images/mandelbrot_scroll3.png</file>
@@ -30210,9 +30752,11 @@
             <file>q3combotableitem-members.html</file>
             <file>images/stylesheet-treeview.png</file>
             <file>qitemeditorfactory-members.html</file>
+            <file>qwspointercalibrationdata.html</file>
             <file>qt-embedded-crosscompiling.html</file>
             <file>qcloseevent-members.html</file>
             <file>phonon-mediaobject.html</file>
+            <file>qmousedriverplugin-members.html</file>
             <file>paintsystem.html</file>
             <file>qundoview-members.html</file>
             <file>qrasterpaintengine.html</file>
@@ -30226,6 +30770,7 @@
             <file>qtime-members.html</file>
             <file>qlineargradient.html</file>
             <file>windowsce-opengl.html</file>
+            <file>qabstractfontengine-members.html</file>
             <file>images/localfortuneserver-example.png</file>
             <file>qtcpsocket-members.html</file>
             <file>q3icondrag.html</file>
@@ -30286,6 +30831,7 @@
             <file>sql-querymodel-editablesqlmodel-cpp.html</file>
             <file>network-chat-peermanager-cpp.html</file>
             <file>itemviews-stardelegate-stardelegate-h.html</file>
+            <file>qscreendriverfactory-members.html</file>
             <file>qconststring.html</file>
             <file>images/designer-add-files-button.png</file>
             <file>images/fortuneserver-example.png</file>
@@ -30327,6 +30873,7 @@
             <file>demos-sqlbrowser-connectionwidget-cpp.html</file>
             <file>images/mandelbrot_scroll2.png</file>
             <file>q3canvaspixmaparray-obsolete.html</file>
+            <file>qws-dbscreen-dbscreen-cpp.html</file>
             <file>designer-calculatorbuilder.html</file>
             <file>images/cleanlooks-label.png</file>
             <file>webkit-previewer-previewer-pro.html</file>
@@ -30370,7 +30917,6 @@
             <file>q3socket.html</file>
             <file>qdbusconnectioninterface-members.html</file>
             <file>images/designer-set-layout2.png</file>
-            <file>qwindowsmime-members.html</file>
             <file>widgets-tablet.html</file>
             <file>tools-echoplugin-echoplugin-pro.html</file>
             <file>qgraphicsview-members.html</file>
@@ -30411,6 +30957,7 @@
             <file>xmlpatterns-filetree-forms-mainwindow-ui.html</file>
             <file>qstringref-members.html</file>
             <file>qdir-obsolete.html</file>
+            <file>qdecorationfactory.html</file>
             <file>q3intcacheiterator.html</file>
             <file>q3httpheader-members.html</file>
             <file>opengl-textures-glwidget-h.html</file>
@@ -30605,7 +31152,6 @@
             <file>widgets-shapedclock-shapedclock-pro.html</file>
             <file>qgraphicslayout.html</file>
             <file>qtextblockuserdata-members.html</file>
-            <file>qmacstyle.html</file>
             <file>tutorials-addressbook-part5-finddialog-cpp.html</file>
             <file>q3dockarea.html</file>
             <file>graphicsview-padnavigator-padnavigator-pro.html</file>
@@ -30620,6 +31166,7 @@
             <file>xmlpatterns-filetree-main-cpp.html</file>
             <file>qmenubar-qt3.html</file>
             <file>network-fortuneserver.html</file>
+            <file>qmousedriverfactory.html</file>
             <file>q3whatsthis.html</file>
             <file>tutorials-tutorial-t10-lcdrange-h.html</file>
             <file>desktop-systray-systray-qrc.html</file>

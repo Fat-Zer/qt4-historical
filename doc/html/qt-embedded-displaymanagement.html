@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtopiacore-displaymanagement.qdoc -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-linux-opensource-src-4.4.0/doc/src/qtopiacore-displaymanagement.qdoc -->
 <head>
   <title>Qt 4.4: Qt for Embedded Linux Display Management</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -26,13 +26,13 @@
 <pre>         ./configure -help</pre>
 <p>In the default Qt configuration, only an unaccelerated Linux framebuffer driver (<tt>/dev/fb0</tt>) is enabled. The various drivers can be enabled and disabled using the <tt>configure</tt> script. For example:</p>
 <pre>         ./configure -qt-gfx-transformed</pre>
-<p>Custom screen drivers can be implemented by subclassing the QScreen class and creating a screen driver plugin (derived from the QScreenDriverPlugin class). The default implementation of the QScreenDriverFactory class will automatically detect the plugin, loading the driver into the server application at run-time.</p>
+<p>Custom screen drivers can be implemented by subclassing the <a href="qscreen.html">QScreen</a> class and creating a screen driver plugin (derived from the <a href="qscreendriverplugin.html">QScreenDriverPlugin</a> class). The default implementation of the <a href="qscreendriverfactory.html">QScreenDriverFactory</a> class will automatically detect the plugin, loading the driver into the server application at run-time.</p>
 <a name="specifying-a-driver"></a>
 <h2>Specifying a Driver</h2>
 <p>To specify which driver to use, set the <a href="qt-embedded-envvars.html#qws-display">QWS_DISPLAY</a> environment variable. For example (if the current shell is bash, ksh, zsh or sh):</p>
 <pre>         export QWS_DISPLAY=&quot;&lt;driver&gt;[:&lt;driver specific options&gt;]...
                   [:&lt;display num&gt;]&quot;</pre>
-<p>The valid values for the <tt>&lt;driver&gt;</tt> argument are <tt>LinuxFb</tt>, <tt>QVFb</tt>, <tt>VNC</tt>, <tt>Transformed</tt>, <tt>Multi</tt> and keys identifying custom drivers, and the <tt>&lt;display num&gt;</tt> argument is used to separate screens that are using the same screen driver and to enable multiple displays (see the <a href="qt-embedded-running.html">Running Qt for Embedded Linux Applications</a> documentation for more details). The driver specific options are described in the table below.</p>
+<p>The valid values for the <tt>&lt;driver&gt;</tt> argument are <tt>LinuxFb</tt>, <tt>QVFb</tt>, <tt>VNC</tt>, <tt>Transformed</tt>, <tt>Multi</tt> and <a href="qscreendriverplugin.html#keys">keys</a> identifying custom drivers, and the <tt>&lt;display num&gt;</tt> argument is used to separate screens that are using the same screen driver and to enable multiple displays (see the <a href="qt-embedded-running.html">Running Qt for Embedded Linux Applications</a> documentation for more details). The driver specific options are described in the table below.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Driver Specific Option</th><th>Available For</th><th>Description</th></tr></thead>
 <tr valign="top" class="odd"><td><tt>tty=&lt;device&gt;</tt></td><td>LinuxFb</td><td>Passes the device file to the console the application is running on.</td></tr>

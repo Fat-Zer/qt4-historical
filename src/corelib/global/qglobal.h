@@ -10,12 +10,7 @@
 ** included in the packaging of this file.  Alternatively you may (at
 ** your option) use any later version of the GNU General Public
 ** License if such license has been publicly approved by Trolltech ASA
-** (or its successors, if any) and the KDE Free Qt Foundation. In
-** addition, as a special exception, Trolltech gives you certain
-** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.2, which can be found at
-** http://www.trolltech.com/products/qt/gplexception/ and in the file
-** GPL_EXCEPTION.txt in this package.
+** (or its successors, if any) and the KDE Free Qt Foundation. 
 **
 ** Please review the following information to ensure GNU General
 ** Public Licensing requirements will be met:
@@ -58,7 +53,7 @@
 
 #define QT_PACKAGEDATE_STR "2008-04-28"
 
-#define QT_PACKAGE_TAG "g62dcb32f1893c32adcb3f1cb40656449b45d8d56"
+#define QT_PACKAGE_TAG "gf3144590647101e67663aaa8d15b439e4162eb4f"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>

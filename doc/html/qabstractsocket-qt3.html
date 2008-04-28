@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/socket/qabstractsocket.cpp -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-linux-opensource-src-4.4.0/src/network/socket/qabstractsocket.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QAbstractSocket</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -37,10 +37,6 @@
 </ul>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QAbstractSocket/Error" />
-<a name="//apple_ref/cpp/econst/QAbstractSocket/ErrConnectionRefused" />
-<a name="//apple_ref/cpp/econst/QAbstractSocket/ErrHostNotFound" />
-<a name="//apple_ref/cpp/econst/QAbstractSocket/ErrSocketRead" />
 <h3 class="fn"><a name="Error-enum"></a>enum QAbstractSocket::Error</h3>
 <p>Use <a href="qabstractsocket.html#SocketError-enum">QAbstractSocket::SocketError</a> instead.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -49,7 +45,6 @@
 <tr><td valign="top"><tt>QAbstractSocket::ErrHostNotFound</tt></td><td align="center" valign="top"><tt>HostNotFoundError</tt></td><td valign="top">Use <a href="qabstractsocket.html#SocketError-enum">QAbstractSocket::HostNotFoundError</a> instead.</td></tr>
 <tr><td valign="top"><tt>QAbstractSocket::ErrSocketRead</tt></td><td align="center" valign="top"><tt>UnknownSocketError</tt></td><td valign="top">Use <a href="qabstractsocket.html#SocketError-enum">QAbstractSocket::UnknownSocketError</a> instead.</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tdef/QAbstractSocket/State" />
 <h3 class="fn"><a name="State-typedef"></a>typedef QAbstractSocket::State</h3>
 <p>Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::SocketState</a> instead.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -63,21 +58,16 @@
 </table></p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QAbstractSocket/connectionClosed" />
 <h3 class="fn"><a name="connectionClosed"></a>void QAbstractSocket::connectionClosed ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>Use closed() instead.</p>
-<a name="//apple_ref/cpp/instm/QAbstractSocket/delayedCloseFinished" />
 <h3 class="fn"><a name="delayedCloseFinished"></a>void QAbstractSocket::delayedCloseFinished ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>Use closed() instead.</p>
-<a name="//apple_ref/cpp/instm/QAbstractSocket/setSocket" />
 <h3 class="fn"><a name="setSocket"></a>void QAbstractSocket::setSocket ( int <i>socket</i> )</h3>
 <p>Use <a href="qabstractsocket.html#setSocketDescriptor">setSocketDescriptor</a>() instead.</p>
 <p>See also <a href="qabstractsocket-qt3.html#socket">socket</a>().</p>
-<a name="//apple_ref/cpp/instm/QAbstractSocket/socket" />
 <h3 class="fn"><a name="socket"></a>int QAbstractSocket::socket () const</h3>
 <p>Use <a href="qabstractsocket.html#socketDescriptor">socketDescriptor</a>() instead.</p>
 <p>See also <a href="qabstractsocket-qt3.html#setSocket">setSocket</a>().</p>
-<a name="//apple_ref/cpp/instm/QAbstractSocket/waitForMore" />
 <h3 class="fn"><a name="waitForMore"></a><a href="qtglobal.html#qulonglong-typedef">qulonglong</a> QAbstractSocket::waitForMore ( int <i>msecs</i>, bool * <i>timeout</i> = 0 ) const</h3>
 <p>Use <a href="qabstractsocket.html#waitForReadyRead">waitForReadyRead</a>() instead.</p>
 <p>For example, if you have code like</p>

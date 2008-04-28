@@ -1,0 +1,8 @@
+TEMPLATE = subdirs
+contains(gfx-plugins, ahi)          :SUBDIRS += ahi
+contains(gfx-plugins, directfb)     :SUBDIRS += directfb
+contains(gfx-plugins, qvfb)	    :SUBDIRS += qvfb
+contains(gfx-plugins, vnc)	    :SUBDIRS += vnc
+contains(gfx-plugins, transformed)  :SUBDIRS += transformed
+contains(gfx-plugins, hybrid)       :SUBDIRS += hybrid
+contains(gfx-plugins, svgalib)      :SUBDIRS += svgalib
