@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/paintsystem.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/paintsystem.qdoc -->
 <head>
   <title>Qt 4.4: The Paint System</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,8 +14,8 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">The Paint System<br /><span class="subtitle"></span>
 </h1>
-<p>Qt's paint system enables painting on screen and print devices using the same API, and is primarily based on the <a href="qpainter.html">QPainter</a>, <a href="qpaintdevice.html">QPaintDevice</a>, and <a href="qpaintengine.html">QPaintEngine</a> classes.</p>
-<p><a href="qpainter.html">QPainter</a> is used to perform drawing operations, <a href="qpaintdevice.html">QPaintDevice</a> is an abstraction of a two-dimensional space that can be painted on using a <a href="qpainter.html">QPainter</a>, and <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices. The <a href="qpaintengine.html">QPaintEngine</a> class is used internally by <a href="qpainter.html">QPainter</a> and <a href="qpaintdevice.html">QPaintDevice</a>, and is hidden from application programmers unless they create their own device type.</p>
+<p>Qt's paint system enables painting on screen and print devices using the same API, and is primarily based on the <a href="qpainter.html">QPainter</a>, QPaintDevice, and <a href="qpaintengine.html">QPaintEngine</a> classes.</p>
+<p><a href="qpainter.html">QPainter</a> is used to perform drawing operations, QPaintDevice is an abstraction of a two-dimensional space that can be painted on using a <a href="qpainter.html">QPainter</a>, and <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices. The <a href="qpaintengine.html">QPaintEngine</a> class is used internally by <a href="qpainter.html">QPainter</a> and QPaintDevice, and is hidden from application programmers unless they create their own device type.</p>
 <p align="center"><img src="images/paintsystem-core.png" /></p><p>The main benefit of this approach is that all painting follows the same painting pipeline making it easy to add support for new features and providing default implementations for unsupported ones.</p>
 <p>Alternatively, Qt provides the <a href="qtopengl.html">QtOpenGL</a> module, offering classes that makes it easy to use OpenGL in Qt applications. Among others, the module provides an OpenGL widget class that can be used just like any other Qt widget, except that it opens an OpenGL display buffer where the OpenGL API can be used to render the contents.</p>
 <ul><li><a href="#drawing">Drawing</a></li>
@@ -45,7 +45,7 @@
 <a name="filling"></a>
 <h2>Filling</h2>
 <p>Shapes are filled using the <a href="qbrush.html">QBrush</a> class. A brush is defined by its color and its style (i.e&#x2e; its fill pattern).</p>
-<p>Any color in Qt is represented by the <a href="qcolor.html">QColor</a> class which supports the RGB, HSV and CMYK color models. <a href="qcolor.html">QColor</a> also support alpha-blended outlining and filling (specifying the transparency effect), and the class is platform and device independent (the colors are mapped to hardware using the <a href="qcolormap.html">QColormap</a> class). For more information, see the <a href="qcolor.html">QColor</a> class documentation.</p>
+<p>Any color in Qt is represented by the <a href="qcolor.html">QColor</a> class which supports the RGB, HSV and CMYK color models. <a href="qcolor.html">QColor</a> also support alpha-blended outlining and filling (specifying the transparency effect), and the class is platform and device independent (the colors are mapped to hardware using the QColormap class). For more information, see the <a href="qcolor.html">QColor</a> class documentation.</p>
 <p>When creating a new widget, it is recommend to use the colors in the widget's palette rather than hard-coding specific colors. All widgets in Qt contain a palette and use their palette to draw themselves. A widget's palette is represented by the <a href="qpalette.html">QPalette</a> class which contains color groups for each widget state.</p>
 <p>The available fill patterns are described by the <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a> enum. These include basic patterns spanning from uniform color to very sparse pattern, various line combinations, gradient fills and textures. Qt provides the <a href="qgradient.html">QGradient</a> class to define custom gradient fills, while texture patterns are specified using the <a href="qpixmap.html">QPixmap</a> class.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
@@ -55,9 +55,9 @@
 </table></p>
 <a name="creating-a-paint-device"></a>
 <h2>Creating a Paint Device</h2>
-<p>The <a href="qpaintdevice.html">QPaintDevice</a> class is the base class of objects that can be painted, i.e&#x2e; <a href="qpainter.html">QPainter</a> can draw on any <a href="qpaintdevice.html">QPaintDevice</a> subclass. <a href="qpaintdevice.html">QPaintDevice</a>'s drawing capabilities are currently implemented by the <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qglwidget.html">QGLWidget</a>, <a href="qglpixelbuffer.html">QGLPixelBuffer</a>, <a href="qpicture.html">QPicture</a> and <a href="qprinter.html">QPrinter</a> subclasses.</p>
+<p>The QPaintDevice class is the base class of objects that can be painted, i.e&#x2e; <a href="qpainter.html">QPainter</a> can draw on any QPaintDevice subclass. QPaintDevice's drawing capabilities are currently implemented by the <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qglwidget.html">QGLWidget</a>, <a href="qglpixelbuffer.html">QGLPixelBuffer</a>, <a href="qpicture.html">QPicture</a> and <a href="qprinter.html">QPrinter</a> subclasses.</p>
 <p align="center"><img src="images/paintsystem-devices.png" /></p><p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><b>Custom Backends</b><p>Support for a new backend can be implemented by deriving from the <a href="qpaintdevice.html">QPaintDevice</a> class and reimplementing the virtual <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() function to tell <a href="qpainter.html">QPainter</a> which paint engine should be used to draw on this particular device. To actually be able to draw on the device, this paint engine must be a custom paint engine created by deriving from the <a href="qpaintengine.html">QPaintEngine</a> class.</p>
+<tr valign="top" class="odd"><td><b>Custom Backends</b><p>Support for a new backend can be implemented by deriving from the QPaintDevice class and reimplementing the virtual <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() function to tell <a href="qpainter.html">QPainter</a> which paint engine should be used to draw on this particular device. To actually be able to draw on the device, this paint engine must be a custom paint engine created by deriving from the <a href="qpaintengine.html">QPaintEngine</a> class.</p>
 </td></tr>
 </table></p>
 <a name="widget"></a>
@@ -78,11 +78,11 @@
 <p>But <a href="qglwidget.html">QGLWidget</a> is also a <a href="qwidget.html">QWidget</a> subclass, and can be used by <a href="qpainter.html">QPainter</a> as any other paint device. One huge benefit from this is that it enables Qt to utilize the high performance of OpenGL for most drawing operations, such as transformations and pixmap drawing.</p>
 <a name="pixel-buffer"></a>
 <h3>Pixel Buffer</h3>
-<p>The <a href="qtopengl.html">QtOpenGL</a> module also provides the <a href="qglpixelbuffer.html">QGLPixelBuffer</a> class which inherits <a href="qpaintdevice.html">QPaintDevice</a> directly.</p>
+<p>The <a href="qtopengl.html">QtOpenGL</a> module also provides the <a href="qglpixelbuffer.html">QGLPixelBuffer</a> class which inherits QPaintDevice directly.</p>
 <p><a href="qglpixelbuffer.html">QGLPixelBuffer</a> encapsulates an OpenGL pbuffer. Rendering into a pbuffer is normally done using full hardware acceleration which can be significantly faster than rendering into a <a href="qpixmap.html">QPixmap</a>.</p>
 <a name="framebuffer-object"></a>
 <h3>Framebuffer Object</h3>
-<p>The <a href="qtopengl.html">QtOpenGL</a> module also provides the <a href="qglframebufferobject.html">QGLFramebufferObject</a> class which inherits <a href="qpaintdevice.html">QPaintDevice</a> directly.</p>
+<p>The <a href="qtopengl.html">QtOpenGL</a> module also provides the <a href="qglframebufferobject.html">QGLFramebufferObject</a> class which inherits QPaintDevice directly.</p>
 <p><a href="qglframebufferobject.html">QGLFramebufferObject</a> encapsulates an OpenGL framebuffer object. Framebuffer objects can also be used for off-screen rendering, and offer several advantages over pixel buffers for this purpose. These are described in the <a href="qglframebufferobject.html">QGLFramebufferObject</a> class documentation.</p>
 <a name="picture"></a>
 <h3>Picture</h3>
@@ -106,7 +106,7 @@
 <p>Qt's plugin mechanism can also be used to write a custom image format handler. This is done by deriving from the <a href="qimageiohandler.html">QImageIOHandler</a> class, and creating a <a href="qimageioplugin.html">QImageIOPlugin</a> object which is a factory for creating <a href="qimageiohandler.html">QImageIOHandler</a> objects. When the plugin is installed, <a href="qimagereader.html">QImageReader</a> and <a href="qimagewriter.html">QImageWriter</a> will automatically load the plugin and start using it.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><p align="center"><img src="images/paintsystem-svg.png" /></p></td><td><b>SVG Rendering</b><p>Scalable Vector Graphics (SVG) is an language for describing both static and animated two-dimensional vector graphics. Qt includes support for the static features of SVG 1.2 Tiny.</p>
-<p>SVG drawings can be rendered onto any <a href="qpaintdevice.html">QPaintDevice</a> subclass. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
+<p>SVG drawings can be rendered onto any QPaintDevice subclass. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
 <p>The easiest way to render SVG files is to construct a <a href="qsvgwidget.html">QSvgWidget</a> and load an SVG file using one of the <a href="qsvgwidget.html#load">QSvgWidget::load</a>() functions. The rendering is performed by the <a href="qsvgrenderer.html">QSvgRenderer</a> class which also can be used directly to provide SVG support for custom widgets.</p>
 <p>For more information, see the <a href="qtsvg.html">QtSvg</a> module documentation.</p>
 </td></tr>

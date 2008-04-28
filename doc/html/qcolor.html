@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qcolor.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/painting/qcolor.cpp -->
 <head>
   <title>Qt 4.4: QColor Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -125,8 +125,8 @@
 <li><div class="fn"/>int <b><a href="qcolor.html#qRed">qRed</a></b> ( QRgb <i>rgb</i> )</li>
 <li><div class="fn"/>QRgb <b><a href="qcolor.html#qRgb">qRgb</a></b> ( int <i>r</i>, int <i>g</i>, int <i>b</i> )</li>
 <li><div class="fn"/>QRgb <b><a href="qcolor.html#qRgba">qRgba</a></b> ( int <i>r</i>, int <i>g</i>, int <i>b</i>, int <i>a</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-lt-lt-83">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-gt-gt-51">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QColor &amp; <i>color</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-lt-lt-84">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-gt-gt-43">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QColor &amp; <i>color</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -142,7 +142,7 @@
 <p>The <a href="qcolor.html#isValid">isValid</a>() function indicates whether a QColor is legal at all. For example, a RGB color with RGB values out of range is illegal. For performance reasons, QColor mostly disregards illegal colors, and for that reason, the result of using an invalid color is undefined.</p>
 <p>The color components can be retrieved individually, e.g with <a href="qcolor.html#red">red</a>(), <a href="qcolor.html#hue">hue</a>() and <a href="qcolor.html#cyan">cyan</a>(). The values of the color components can also be retrieved in one go using the <a href="qcolor.html#getRgb">getRgb</a>(), <a href="qcolor.html#getHsv">getHsv</a>() and <a href="qcolor.html#getCmyk">getCmyk</a>() functions. Using the RGB color model, the color components can in addition be accessed with <a href="qcolor.html#rgb">rgb</a>().</p>
 <p>There are several related non-members: <a href="qcolor.html#QRgb-typedef">QRgb</a> is a typdef for an unsigned int representing the RGB value triplet (r, g, b). Note that it also can hold a value for the alpha-channel (for more information, see the <a href="#alpha-blended-drawing">Alpha-Blended Drawing</a> section). The <a href="qcolor.html#qRed">qRed</a>(), <a href="qcolor.html#qBlue">qBlue</a>() and <a href="qcolor.html#qGreen">qGreen</a>() functions return the respective component of the given <a href="qcolor.html#QRgb-typedef">QRgb</a> value, while the <a href="qcolor.html#qRgb">qRgb</a>() and <a href="qcolor.html#qRgba">qRgba</a>() functions create and return the <a href="qcolor.html#QRgb-typedef">QRgb</a> triplet based on the given component values. Finally, the <a href="qcolor.html#qAlpha">qAlpha</a>() function returns the alpha component of the provided <a href="qcolor.html#QRgb-typedef">QRgb</a>, and the <a href="qcolor.html#qGray">qGray</a>() function calculates and return a gray value based on the given value.</p>
-<p>QColor is platform and device independent. The <a href="qcolormap.html">QColormap</a> class maps the color to the hardware.</p>
+<p>QColor is platform and device independent. The QColormap class maps the color to the hardware.</p>
 <p>For more information about painting in general, see <a href="paintsystem.html">The Paint System</a> documentation.</p>
 <ul><li><a href="#integer-vs-floating-point-precision">Integer vs. Floating Point Precision</a></li>
 <li><a href="#alpha-blended-drawing">Alpha-Blended Drawing</a></li>
@@ -598,11 +598,11 @@
 <h3 class="fn"><a name="qRgba"></a><a href="qcolor.html#QRgb-typedef">QRgb</a> qRgba ( int <i>r</i>, int <i>g</i>, int <i>b</i>, int <i>a</i> )</h3>
 <p>Returns the ARGB quadruplet (<i>a</i>, <i>r</i>, <i>g</i>, <i>b</i>).</p>
 <p>See also <a href="qcolor.html#qRgb">qRgb</a>(), <a href="qcolor.html#qRed">qRed</a>(), <a href="qcolor.html#qGreen">qGreen</a>(), and <a href="qcolor.html#qBlue">qBlue</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-83"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-84"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the <i>color</i> to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-51"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QColor &amp; <i>color</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-43"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QColor &amp; <i>color</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the <i>color</i> from the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>

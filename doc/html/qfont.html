@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/text/qfont.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/text/qfont.cpp -->
 <head>
   <title>Qt 4.4: QFont Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -77,7 +77,7 @@
 <li><div class="fn"/>void <b><a href="qfont.html#setPointSize">setPointSize</a></b> ( int <i>pointSize</i> )</li>
 <li><div class="fn"/>void <b><a href="qfont.html#setPointSizeF">setPointSizeF</a></b> ( qreal <i>pointSize</i> )</li>
 <li><div class="fn"/>void <b><a href="qfont.html#setRawMode">setRawMode</a></b> ( bool <i>enable</i> )</li>
-<li><div class="fn"/>void <b><a href="qfont.html#setRawName">setRawName</a></b> ( const QString &amp; <i>name</i> )</li>
+<li><div class="fn"/>void <b><a href="qfont.html#setRawName">setRawName</a></b> ( const QString &amp; )</li>
 <li><div class="fn"/>void <b><a href="qfont.html#setStretch">setStretch</a></b> ( int <i>factor</i> )</li>
 <li><div class="fn"/>void <b><a href="qfont.html#setStrikeOut">setStrikeOut</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>void <b><a href="qfont.html#setStyle">setStyle</a></b> ( Style <i>style</i> )</li>
@@ -104,6 +104,8 @@
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
 <ul>
+<li><div class="fn"/>void <b><a href="qfont.html#cleanup">cleanup</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qfont.html#initialize">initialize</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qfont.html#insertSubstitution">insertSubstitution</a></b> ( const QString &amp; <i>familyName</i>, const QString &amp; <i>substituteName</i> )</li>
 <li><div class="fn"/>void <b><a href="qfont.html#insertSubstitutions">insertSubstitutions</a></b> ( const QString &amp; <i>familyName</i>, const QStringList &amp; <i>substituteNames</i> )</li>
 <li><div class="fn"/>void <b><a href="qfont.html#removeSubstitution">removeSubstitution</a></b> ( const QString &amp; <i>familyName</i> )</li>
@@ -114,8 +116,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-lt-lt-79">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QFont &amp; <i>font</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-gt-gt-49">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QFont &amp; <i>font</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-lt-lt-47">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QFont &amp; <i>font</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-gt-gt-24">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QFont &amp; <i>font</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -323,7 +325,7 @@
 <p>If <i>pointSize</i> is &lt;= 0, it is set to 12.</p>
 <p>The <i>family</i> name may optionally also include a foundry name, e.g&#x2e; &quot;Helvetica [Cronyx]&quot;. If the <i>family</i> is available from more than one foundry and the foundry isn't specified, an arbitrary foundry is chosen. If the family isn't available a family will be set using the <a href="qfont.html">font matching</a> algorithm.</p>
 <p>See also <a href="qfont.html#Weight-enum">Weight</a>, <a href="qfont.html#setFamily">setFamily</a>(), <a href="qfont.html#setPointSize">setPointSize</a>(), <a href="qfont.html#setWeight">setWeight</a>(), <a href="qfont.html#setItalic">setItalic</a>(), <a href="qfont.html#setStyleHint">setStyleHint</a>(), and <a href="qapplication.html#font">QApplication::font</a>().</p>
-<h3 class="fn"><a name="QFont-3"></a>QFont::QFont ( const QFont &amp; <i>font</i>, <a href="qpaintdevice.html">QPaintDevice</a> * <i>pd</i> )</h3>
+<h3 class="fn"><a name="QFont-3"></a>QFont::QFont ( const QFont &amp; <i>font</i>, QPaintDevice * <i>pd</i> )</h3>
 <p>Constructs a font from <i>font</i> for use on the paint device <i>pd</i>.</p>
 <h3 class="fn"><a name="QFont-4"></a>QFont::QFont ( const QFont &amp; <i>font</i> )</h3>
 <p>Constructs a font that is a copy of <i>font</i>.</p>
@@ -339,10 +341,10 @@
 <p>Returns the current capitalization type of the font.</p>
 <p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qfont.html#setCapitalization">setCapitalization</a>().</p>
+<a name="//apple_ref/cpp/clm/QFont/cleanup" />
+<h3 class="fn"><a name="cleanup"></a>void QFont::cleanup ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <a name="//apple_ref/cpp/instm/QFont/defaultFamily" />
 <h3 class="fn"><a name="defaultFamily"></a><a href="qstring.html">QString</a> QFont::defaultFamily () const</h3>
-<p>Returns the family name that corresponds to the current style hint.</p>
-<p>See also <a href="qfont.html#StyleHint-enum">StyleHint</a>, <a href="qfont.html#styleHint">styleHint</a>(), and <a href="qfont.html#setStyleHint">setStyleHint</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/exactMatch" />
 <h3 class="fn"><a name="exactMatch"></a>bool QFont::exactMatch () const</h3>
 <p>Returns true if a window system font exactly matching the settings of this font is available.</p>
@@ -357,15 +359,14 @@
 <p>See also <a href="qfont.html#setFixedPitch">setFixedPitch</a>() and <a href="qfontinfo.html#fixedPitch">QFontInfo::fixedPitch</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/freetypeFace" />
 <h3 class="fn"><a name="freetypeFace"></a>FT_Face QFont::freetypeFace () const</h3>
-<p>Returns the handle to the primary freetype face of the font. I font merging is not disabled a <a href="qfont.html">QFont</a> can contain several physical fonts.</p>
-<p>Returns 0 if the font does not contains a freetype face.</p>
 <a name="//apple_ref/cpp/instm/QFont/fromString" />
 <h3 class="fn"><a name="fromString"></a>bool QFont::fromString ( const <a href="qstring.html">QString</a> &amp; <i>descrip</i> )</h3>
 <p>Sets this font to match the description <i>descrip</i>. The description is a comma-separated list of the font attributes, as returned by <a href="qfont.html#toString">toString</a>().</p>
 <p>See also <a href="qfont.html#toString">toString</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/handle" />
 <h3 class="fn"><a name="handle"></a>HFONT QFont::handle () const</h3>
-<p>Returns the window system handle to the font, for low-level access. Using this function is <i>not</i> portable.</p>
+<a name="//apple_ref/cpp/clm/QFont/initialize" />
+<h3 class="fn"><a name="initialize"></a>void QFont::initialize ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <a name="//apple_ref/cpp/clm/QFont/insertSubstitution" />
 <h3 class="fn"><a name="insertSubstitution"></a>void QFont::insertSubstitution ( const <a href="qstring.html">QString</a> &amp; <i>familyName</i>, const <a href="qstring.html">QString</a> &amp; <i>substituteName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Inserts <i>substituteName</i> into the substitution table for the family <i>familyName</i>.</p>
@@ -392,15 +393,8 @@
 <p>See also <a href="qmap.html">QMap</a>.</p>
 <a name="//apple_ref/cpp/instm/QFont/lastResortFamily" />
 <h3 class="fn"><a name="lastResortFamily"></a><a href="qstring.html">QString</a> QFont::lastResortFamily () const</h3>
-<p>Returns the &quot;last resort&quot; font family name.</p>
-<p>The current implementation tries a wide variety of common fonts, returning the first one it finds. Is is possible that no family is found in which case an empty string is returned.</p>
-<p>See also <a href="qfont.html#lastResortFont">lastResortFont</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/lastResortFont" />
 <h3 class="fn"><a name="lastResortFont"></a><a href="qstring.html">QString</a> QFont::lastResortFont () const</h3>
-<p>Returns a &quot;last resort&quot; font name for the font matching algorithm. This is used if the last resort family is not available. It will always return a name, if necessary returning something like &quot;fixed&quot; or &quot;system&quot;.</p>
-<p>The current implementation tries a wide variety of common fonts, returning the first one it finds. The implementation may change at any time, but this function will always return a string containing something.</p>
-<p>It is theoretically possible that there really isn't a lastResortFont() in which case Qt will abort with an error message. We have not been able to identify a case where this happens. Please <a href="bughowto.html">report it as a bug</a> if it does, preferably with a list of the fonts you have installed.</p>
-<p>See also <a href="qfont.html#lastResortFamily">lastResortFamily</a>() and <a href="qfont.html#rawName">rawName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/letterSpacing" />
 <h3 class="fn"><a name="letterSpacing"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QFont::letterSpacing () const</h3>
 <p>Returns the letter spacing for the font.</p>
@@ -436,9 +430,6 @@
 <p>See also <a href="qfont.html#setRawMode">setRawMode</a>() and <a href="qfont.html#rawName">rawName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/rawName" />
 <h3 class="fn"><a name="rawName"></a><a href="qstring.html">QString</a> QFont::rawName () const</h3>
-<p>Returns the name of the font within the underlying window system.</p>
-<p>Only on X11 when Qt was built without FontConfig support the XLFD (X Logical Font Description) is returned; otherwise an empty string.</p>
-<p>Using the return value of this function is usually <i>not</i> <i>portable</i>.</p>
 <p>See also <a href="qfont.html#setRawName">setRawName</a>().</p>
 <a name="//apple_ref/cpp/clm/QFont/removeSubstitution" />
 <h3 class="fn"><a name="removeSubstitution"></a>void QFont::removeSubstitution ( const <a href="qstring.html">QString</a> &amp; <i>familyName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -506,12 +497,8 @@
 <p><b>Warning:</b> Do not use raw mode unless you really, really need it! In most (if not all) cases, <a href="qfont.html#setRawName">setRawName</a>() is a much better choice.</p>
 <p>See also <a href="qfont.html#rawMode">rawMode</a>() and <a href="qfont.html#setRawName">setRawName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/setRawName" />
-<h3 class="fn"><a name="setRawName"></a>void QFont::setRawName ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
-<p>Sets a font by its system specific name. The function is particularly useful under X, where system font settings (for example X resources) are usually available in XLFD (X Logical Font Description) form only. You can pass an XLFD as <i>name</i> to this function.</p>
-<p>A font set with setRawName() is still a full-featured <a href="qfont.html">QFont</a>. It can be queried (for example with <a href="qfont.html#italic">italic</a>()) or modified (for example with <a href="qfont.html#setItalic">setItalic</a>()) and is therefore also suitable for rendering rich text.</p>
-<p>If Qt's internal font database cannot resolve the raw name, the font becomes a raw font with <i>name</i> as its family.</p>
-<p>Note that the present implementation does not handle wildcards in XLFDs well, and that font aliases (file <tt>fonts.alias</tt> in the font directory on X11) are not supported.</p>
-<p>See also <a href="qfont.html#rawName">rawName</a>(), <a href="qfont.html#setRawMode">setRawMode</a>(), and <a href="qfont.html#setFamily">setFamily</a>().</p>
+<h3 class="fn"><a name="setRawName"></a>void QFont::setRawName ( const <a href="qstring.html">QString</a> &amp; )</h3>
+<p>See also <a href="qfont.html#rawName">rawName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFont/setStretch" />
 <h3 class="fn"><a name="setStretch"></a>void QFont::setStretch ( int <i>factor</i> )</h3>
 <p>Sets the stretch factor for the font.</p>
@@ -629,11 +616,11 @@
 <p>See also <a href="qfont.html#operator-not-eq">operator!=</a>() and <a href="qfont.html#isCopyOf">isCopyOf</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-79"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QFont &amp; <i>font</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-47"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QFont &amp; <i>font</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the font <i>font</i> to the data stream <i>s</i>. (toString() writes to a text stream.)</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-49"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QFont &amp; <i>font</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-24"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QFont &amp; <i>font</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the font <i>font</i> from the data stream <i>s</i>. (fromString() reads from a text stream.)</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>

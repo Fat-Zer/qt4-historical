@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qstylepainter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/painting/qstylepainter.cpp -->
 <head>
   <title>Qt 4.4: QStylePainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -77,16 +77,16 @@
 <p>Constructs a <a href="qstylepainter.html">QStylePainter</a>.</p>
 <h3 class="fn"><a name="QStylePainter-2"></a>QStylePainter::QStylePainter ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Construct a <a href="qstylepainter.html">QStylePainter</a> using widget <i>widget</i> for its paint device.</p>
-<h3 class="fn"><a name="QStylePainter-3"></a>QStylePainter::QStylePainter ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pd</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
+<h3 class="fn"><a name="QStylePainter-3"></a>QStylePainter::QStylePainter ( QPaintDevice * <i>pd</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Construct a <a href="qstylepainter.html">QStylePainter</a> using <i>pd</i> for its paint device, and attributes from <i>widget</i>.</p>
 <a name="//apple_ref/cpp/instm/QStylePainter/begin" />
 <h3 class="fn"><a name="begin"></a>bool QStylePainter::begin ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Begin painting operations on the specified <i>widget</i>. Returns true if the painter is ready to use; otherwise returns false.</p>
 <p>This is automatically called by the constructor that takes a <a href="qwidget.html">QWidget</a>.</p>
-<h3 class="fn"><a name="begin-2"></a>bool QStylePainter::begin ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pd</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
+<h3 class="fn"><a name="begin-2"></a>bool QStylePainter::begin ( QPaintDevice * <i>pd</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Begin painting operations on paint device <i>pd</i> as if it was <i>widget</i>.</p>
-<p>This is automatically called by the constructor that takes a <a href="qpaintdevice.html">QPaintDevice</a> and a <a href="qwidget.html">QWidget</a>.</p>
+<p>This is automatically called by the constructor that takes a QPaintDevice and a <a href="qwidget.html">QWidget</a>.</p>
 <a name="//apple_ref/cpp/instm/QStylePainter/drawComplexControl" />
 <h3 class="fn"><a name="drawComplexControl"></a>void QStylePainter::drawComplexControl ( <a href="qstyle.html#ComplexControl-enum">QStyle::ComplexControl</a> <i>cc</i>, const <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> &amp; <i>option</i> )</h3>
 <p>Use the widget's style to draw a complex control <i>cc</i> specified by the <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> <i>option</i>.</p>

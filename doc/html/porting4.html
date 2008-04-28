@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/porting4.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Qt 4</title>
   <link rel="prev" href="porting.html" />
@@ -877,7 +877,7 @@
 <p><a href="graphicsview.html">The Graphics View Framework</a> replaces <a href="#qcanvas">QCanvas</a>. For more on porting to Graphics View, see <a href="graphicsview-porting.html">Porting to Graphics View</a>.</p>
 <a name="qcolor"></a>
 <h3>QColor</h3>
-<p>In Qt 4, <a href="qcolor.html">QColor</a> is a value type like <a href="qpoint.html">QPoint</a> or <a href="qrect.html">QRect</a>. Graphics system-specific code has been implemented in <a href="qcolormap.html">QColormap</a>.</p>
+<p>In Qt 4, <a href="qcolor.html">QColor</a> is a value type like <a href="qpoint.html">QPoint</a> or <a href="qrect.html">QRect</a>. Graphics system-specific code has been implemented in QColormap.</p>
 <p>The <tt>QColor::maxColors()</tt> function has been replaced by <a href="qcolormap.html#size">QColormap::size</a>().</p>
 <p>The <tt>QColor::numBitPlanes()</tt> function has been replaced by <a href="qcolormap.html#depth">QColormap::depth</a>().</p>
 <p>The <tt>QColor::setNamedColor()</tt> function no longer supports the named color in the same way as Qt 3. Qt 4's <a href="qcolor.html#setNamedColor">setNamedColor()</a> uses the new W3C convention as stated <a href="http://www.w3.org/TR/SVG/types.html#ColorKeywords">here</a>.</p>
@@ -1621,10 +1621,10 @@
 <a name="qpaintdevice"></a>
 <h3>QPaintDevice</h3>
 <p>To reimplement painter backends one previously needed to reimplement the virtual function QPaintDevice::cmd(). This function is taken out and should is replaced with the function <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() and the abstract class <a href="qpaintengine.html">QPaintEngine</a>. <a href="qpaintengine.html">QPaintEngine</a> provides virtual functions for all drawing operations that can be performed on a painter backend.</p>
-<p>bitBlt() and copyBlt() are now only compatibility functions. Use <a href="qpainter.html#drawPixmap">QPainter::drawPixmap</a>() instead.</p>
+<p><a href="qimage-qt3.html#bitBlt">bitBlt</a>() and copyBlt() are now only compatibility functions. Use <a href="qpainter.html#drawPixmap">QPainter::drawPixmap</a>() instead.</p>
 <a name="qpaintdevicemetrics"></a>
 <h3>QPaintDeviceMetrics</h3>
-<p>All functions that used to be provided by the <tt>QPaintDeviceMetrics</tt> class have now been moved to <a href="qpaintdevice.html">QPaintDevice</a>.</p>
+<p>All functions that used to be provided by the <tt>QPaintDeviceMetrics</tt> class have now been moved to QPaintDevice.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">     QPaintDeviceMetrics metrics(widget);
      int deviceDepth = metrics.depth();</font></pre>

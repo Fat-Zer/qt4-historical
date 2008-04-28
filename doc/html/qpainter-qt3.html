@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qpainter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/painting/qpainter.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QPainter</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -68,7 +68,7 @@
 <pre> QColor myColor = background().color();</pre>
 <p>Note that the background can be a complex brush such as a texture or a gradient.</p>
 <p>See also <a href="qpainter-qt3.html#setBackgroundColor">setBackgroundColor</a>().</p>
-<h3 class="fn"><a name="begin-2"></a>bool QPainter::begin ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i>, const <a href="qwidget.html">QWidget</a> * <i>init</i> )</h3>
+<h3 class="fn"><a name="begin-2"></a>bool QPainter::begin ( QPaintDevice * <i>device</i>, const <a href="qwidget.html">QWidget</a> * <i>init</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qpainter.html#begin">begin</a>() instead.</p>
 <p>If the paint <i>device</i> is a <a href="qwidget.html">QWidget</a>, <a href="qpainter.html">QPainter</a> is initialized after the widget's settings automatically. Otherwise, you must call the <a href="qpainter.html#initFrom">initFrom</a>() function to initialize the painters pen, background and font to the same as any given widget.</p>
@@ -254,9 +254,9 @@
 <h3 class="fn"><a name="hasWorldXForm"></a>bool QPainter::hasWorldXForm () const</h3>
 <p>Use <a href="qpainter.html#worldMatrixEnabled">worldMatrixEnabled</a>() instead.</p>
 <a name="//apple_ref/cpp/clm/QPainter/redirect" />
-<h3 class="fn"><a name="redirect"></a>void QPainter::redirect ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pdev</i>, <a href="qpaintdevice.html">QPaintDevice</a> * <i>replacement</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="redirect"></a>void QPainter::redirect ( QPaintDevice * <i>pdev</i>, QPaintDevice * <i>replacement</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qpainter.html#setRedirected">setRedirected</a>() instead.</p>
-<h3 class="fn"><a name="redirect-2"></a><a href="qpaintdevice.html">QPaintDevice</a> * QPainter::redirect ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pdev</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="redirect-2"></a>QPaintDevice * QPainter::redirect ( QPaintDevice * <i>pdev</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qpainter.html#redirected">redirected</a>() instead.</p>
 <a name="//apple_ref/cpp/instm/QPainter/resetXForm" />

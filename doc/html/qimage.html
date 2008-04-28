@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/image/qimage.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/image/qimage.cpp -->
 <head>
   <title>Qt 4.4: QImage Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,8 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QImage Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QImage class provides a hardware-independent image representation that allows direct access to the pixel data, and can be used as a paint device. <a href="#details">More...</a></p>
-<pre> #include &lt;QImage&gt;</pre><p>Inherits <a href="qpaintdevice.html">QPaintDevice</a>.</p>
-<p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre> #include &lt;QImage&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qimage-members.html">List of all members, including inherited members</a></li>
 <li><a href="qimage-obsolete.html">Obsolete members</a></li>
@@ -114,9 +113,6 @@
 <li><div class="fn"/>QImage &amp; <b><a href="qimage.html#operator-eq">operator=</a></b> ( const QImage &amp; <i>image</i> )</li>
 <li><div class="fn"/>bool <b><a href="qimage.html#operator-eq-eq">operator==</a></b> ( const QImage &amp; <i>image</i> ) const</li>
 </ul>
-<ul>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
-</ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
 <ul>
@@ -125,25 +121,18 @@
 <li><div class="fn"/>QMatrix <b><a href="qimage.html#trueMatrix">trueMatrix</a></b> ( const QMatrix &amp; <i>matrix</i>, int <i>width</i>, int <i>height</i> )</li>
 <li><div class="fn"/>QTransform <b><a href="qimage.html#trueMatrix-2">trueMatrix</a></b> ( const QTransform &amp; <i>matrix</i>, int <i>width</i>, int <i>height</i> )</li>
 </ul>
-<ul>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
-</ul>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-lt-lt-102">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-gt-gt-61">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QImage &amp; <i>image</i> )</li>
-</ul>
-<h3>Additional Inherited Members</h3>
-<ul>
-<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-lt-lt-22">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-gt-gt-15">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QImage &amp; <i>image</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QImage class provides a hardware-independent image representation that allows direct access to the pixel data, and can be used as a paint device.</p>
 <p>Qt provides four classes for handling image data: QImage, <a href="qpixmap.html">QPixmap</a>, <a href="qbitmap.html">QBitmap</a> and <a href="qpicture.html">QPicture</a>. QImage is designed and optimized for I/O, and for direct pixel access and manipulation, while <a href="qpixmap.html">QPixmap</a> is designed and optimized for showing images on screen. <a href="qbitmap.html">QBitmap</a> is only a convenience class that inherits <a href="qpixmap.html">QPixmap</a>, ensuring a depth of 1. Finally, the <a href="qpicture.html">QPicture</a> class is a paint device that records and replays <a href="qpainter.html">QPainter</a> commands.</p>
-<p>Because QImage is a <a href="qpaintdevice.html">QPaintDevice</a> subclass, <a href="qpainter.html">QPainter</a> can be used to draw directly onto images. When using <a href="qpainter.html">QPainter</a> on a QImage, the painting can be performed in another thread than the current GUI thread, that is except rendering text (because <a href="qfont.html">QFont</a> is GUI dependent). To render text in another thread, the text must first be derived as a <a href="qpainterpath.html">QPainterPath</a> in the GUI thread.</p>
+<p>Because QImage is a QPaintDevice subclass, <a href="qpainter.html">QPainter</a> can be used to draw directly onto images. When using <a href="qpainter.html">QPainter</a> on a QImage, the painting can be performed in another thread than the current GUI thread, that is except rendering text (because <a href="qfont.html">QFont</a> is GUI dependent). To render text in another thread, the text must first be derived as a <a href="qpainterpath.html">QPainterPath</a> in the GUI thread.</p>
 <p>The QImage class supports several image formats described by the <a href="qimage.html#Format-enum">Format</a> enum. These include monochrome, 8-bit, 32-bit and alpha-blended images which are available in all versions of Qt 4.x&#x2e;</p>
 <p>QImage provides a collection of functions that can be used to obtain a variety of information about the image. There are also several functions that enables transformation of the image.</p>
 <p>QImage objects can be passed around by value since the QImage class uses <a href="shared.html#implicit-data-sharing">implicit data sharing</a>. QImage objects can also be streamed and compared.</p>
@@ -734,11 +723,11 @@
 <p>See also <a href="qimage.html#operator-eq">operator=</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-102"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-22"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>image</i> to the given <i>stream</i> as a PNG image, or as a BMP image if the stream's version is 1. Note that writing the stream to a file will not produce a valid image file.</p>
 <p>See also <a href="qimage.html#save">QImage::save</a>() and <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-61"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QImage &amp; <i>image</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-15"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QImage &amp; <i>image</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an image from the given <i>stream</i> and stores it in the given <i>image</i>.</p>
 <p>See also <a href="qimage.html#load">QImage::load</a>() and <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>

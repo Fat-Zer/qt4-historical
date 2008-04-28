@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/tutorials/tutorial.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/tutorials/tutorial.qdoc -->
 <head>
   <title>Qt 4.4: Qt Tutorial 5 - Building Blocks</title>
   <link rel="prev" href="tutorials-tutorial-t4.html" />
@@ -97,8 +97,8 @@
 <p>The user can use the <a href="qslider.html">QSlider</a> widget to adjust an integer value in a range. Here we create a horizontal one, set its minimum value to 0, its maximum value to 99, and its initial value to 0.</p>
 <pre>     connect(slider, SIGNAL(valueChanged(int)),
              lcd, SLOT(display(int)));</pre>
-<p>Here we use the <a href="signalsandslots.html">signals and slots</a> mechanism to connect the slider's <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal to the LCD number's <a href="qlcdnumber.html#intValue-prop">display()</a> slot.</p>
-<p>Whenever the slider's value changes it broadcasts the new value by emitting the <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal. Because that signal is connected to the LCD number's <a href="qlcdnumber.html#intValue-prop">display()</a> slot, the slot is called when the signal is broadcast. Neither of the objects knows about the other. This is essential in component programming.</p>
+<p>Here we use the <a href="signalsandslots.html">signals and slots</a> mechanism to connect the slider's <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal to the LCD number's <a href="qlcdnumber.html#value-prop">display()</a> slot.</p>
+<p>Whenever the slider's value changes it broadcasts the new value by emitting the <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal. Because that signal is connected to the LCD number's <a href="qlcdnumber.html#value-prop">display()</a> slot, the slot is called when the signal is broadcast. Neither of the objects knows about the other. This is essential in component programming.</p>
 <p>Slots are otherwise normal C++ member functions and follow the normal C++ access rules.</p>
 <pre>     QVBoxLayout *layout = new QVBoxLayout;
      layout-&gt;addWidget(quit);

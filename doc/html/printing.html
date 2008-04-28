@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/printing.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/printing.qdoc -->
 <head>
   <title>Qt 4.4: Printing with Qt</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -64,7 +64,7 @@
 <p>The rectangle returned by <a href="qprinter.html#pageRect">pageRect()</a> usually lies inside the rectangle returned by <a href="qprinter.html#paperRect">paperRect()</a>. You do not need to take the positions and sizes of these area into account when using a <a href="qpainter.html">QPainter</a> with a <a href="qprinter.html">QPrinter</a> as the underlying paint device; the origin of the painter's coordinate system will coincide with the top-left corner of the page rectangle, and painting operations will be clipped to the bounds of the drawable part of the page.</p>
 </td><td><img src="images/printer-rects.png" /></td></tr>
 </table></p>
-<p>The paint system automatically uses the correct device metrics when painting text but, if you need to position text using information obtained from font metrics, you need to ensure that the print device is specified when you construct <a href="qfontmetrics.html">QFontMetrics</a> and <a href="qfontmetricsf.html">QFontMetricsF</a> objects, or ensure that each <a href="qfont.html">QFont</a> used is constructed using the form of the constructor that accepts a <a href="qpaintdevice.html">QPaintDevice</a> argument.</p>
+<p>The paint system automatically uses the correct device metrics when painting text but, if you need to position text using information obtained from font metrics, you need to ensure that the print device is specified when you construct <a href="qfontmetrics.html">QFontMetrics</a> and <a href="qfontmetricsf.html">QFontMetricsF</a> objects, or ensure that each <a href="qfont.html">QFont</a> used is constructed using the form of the constructor that accepts a QPaintDevice argument.</p>
 <a name="printing-from-complex-widgets"></a>
 <h3>Printing from Complex Widgets</h3>
 <p>Certain widgets, such as <a href="qtextedit.html">QTextEdit</a> and <a href="qgraphicsview.html">QGraphicsView</a>, display rich content that is typically managed by instances of other classes, such as <a href="qtextdocument.html">QTextDocument</a> and <a href="qgraphicsscene.html">QGraphicsScene</a>. As a result, it is these content handling classes that usually provide printing functionality, either via a function that can be used to perform the complete task, or via a function that accepts an existing <a href="qpainter.html">QPainter</a> object. Some widgets provide convenience functions to expose underlying printing features, avoiding the need to obtain the content handler just to call a single function.</p>

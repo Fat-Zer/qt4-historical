@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/porting4.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Qt 4 - Virtual Functions</title>
   <link rel="prev" href="porting4.html" />
@@ -390,8 +390,8 @@
 <tr valign="top" class="odd"><td>void QObject::setName(const char *)</td><td>Setter.</td></tr>
 <tr valign="top" class="even"><td>bool QObject::setProperty(const char *, const <a href="qvariant.html">QVariant</a> &amp;)</td><td>Setter.</td></tr>
 <tr valign="top" class="odd"><td>bool QPaintDevice::cmd(int , <a href="qpainter.html">QPainter</a> * , QPDevCmdParam *)</td><td>Port to the new <a href="qpaintengine.html">QPaintEngine</a> API.</td></tr>
-<tr valign="top" class="even"><td><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QPaintDevice::handle() const</td><td>Port to the new <a href="qpaintdevice.html">QPaintDevice</a> API.</td></tr>
-<tr valign="top" class="odd"><td>HDC QPaintDevice::handle() const</td><td>Port to the new <a href="qpaintdevice.html">QPaintDevice</a> API.</td></tr>
+<tr valign="top" class="even"><td><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QPaintDevice::handle() const</td><td>Port to the new QPaintDevice API.</td></tr>
+<tr valign="top" class="odd"><td>HDC QPaintDevice::handle() const</td><td>Port to the new QPaintDevice API.</td></tr>
 <tr valign="top" class="even"><td>void QPopupMenu::activateItemAt(int)</td><td>Port to the new <a href="qmenu.html">QMenu</a> API.</td></tr>
 <tr valign="top" class="odd"><td>void QPopupMenu::menuContentsChanged()</td><td>Port to the new <a href="qmenu.html">QMenu</a> API.</td></tr>
 <tr valign="top" class="even"><td>void QPopupMenu::menuDelPopup(<a href="porting4.html#qpopupmenu">QPopupMenu</a> *)</td><td>Port to the new <a href="qmenu.html">QMenu</a> API.</td></tr>

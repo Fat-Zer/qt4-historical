@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/svgalib.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/examples/svgalib.qdoc -->
 <head>
   <title>Qt 4.4: Accelerated Graphics Driver Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -83,9 +83,9 @@
 </ul>
 <a name="implementing-a-custom-paint-device"></a>
 <h3>Implementing a Custom Paint Device</h3>
-<p>The custom paint device can be derived from the <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> class. Reimplement its <a href="qpaintdevice.html#paintEngine">paintEngine()</a> and <a href="qcustomrasterpaintdevice.html#memory">memory()</a> functions to activate the accelerated paint engine:</p>
+<p>The custom paint device can be derived from the <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> class. Reimplement its paintEngine() and <a href="qcustomrasterpaintdevice.html#memory">memory()</a> functions to activate the accelerated paint engine:</p>
 <pre></pre>
-<p>The <a href="qpaintdevice.html#paintEngine">paintEngine()</a> function should return an instance of the <tt>SvgalibPaintEngine</tt> class. The <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function should return a pointer to the buffer which should be used when drawing the widget.</p>
+<p>The paintEngine() function should return an instance of the <tt>SvgalibPaintEngine</tt> class. The <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function should return a pointer to the buffer which should be used when drawing the widget.</p>
 <p>Our example driver is rendering directly to the screen without any buffering, i.e&#x2e;, our custom pain device's <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function returns a pointer to the framebuffer. For this reason, we must also reimplement the <a href="qpaintdevice.html#metric">metric()</a> function to reflect the metrics of framebuffer.</p>
 <a name="implementing-a-custom-window-surface"></a>
 <h3>Implementing a Custom Window Surface</h3>

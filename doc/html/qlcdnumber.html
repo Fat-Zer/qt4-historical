@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qlcdnumber.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/widgets/qlcdnumber.cpp -->
 <head>
   <title>Qt 4.4: QLCDNumber Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -68,14 +68,13 @@
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
 <ul>
-<li><div class="fn"/>void <b><a href="qlcdnumber.html#intValue-prop">display</a></b> ( const QString &amp; <i>s</i> )</li>
-<li><div class="fn"/>void <b><a href="qlcdnumber.html#intValue-prop">display</a></b> ( double <i>num</i> )</li>
-<li><div class="fn"/>void <b><a href="qlcdnumber.html#intValue-prop">display</a></b> ( int <i>num</i> )</li>
+<li><div class="fn"/>void <b><a href="qlcdnumber.html#value-prop">display</a></b> ( const QString &amp; <i>s</i> )</li>
+<li><div class="fn"/>void <b><a href="qlcdnumber.html#value-prop">display</a></b> ( double <i>num</i> )</li>
+<li><div class="fn"/>void <b><a href="qlcdnumber.html#value-prop">display</a></b> ( int <i>num</i> )</li>
 <li><div class="fn"/>void <b><a href="qlcdnumber.html#setBinMode">setBinMode</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qlcdnumber.html#setDecMode">setDecMode</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qlcdnumber.html#setHexMode">setHexMode</a></b> ()</li>
@@ -99,21 +98,19 @@
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 <li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
-<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 <li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QLCDNumber widget displays a number with LCD-like digits.</p>
-<p>It can display a number in just about any size. It can display decimal, hexadecimal, octal or binary numbers. It is easy to connect to data sources using the <a href="qlcdnumber.html#intValue-prop">display</a>() slot, which is overloaded to take any of five argument types.</p>
+<p>It can display a number in just about any size. It can display decimal, hexadecimal, octal or binary numbers. It is easy to connect to data sources using the <a href="qlcdnumber.html#value-prop">display</a>() slot, which is overloaded to take any of five argument types.</p>
 <p>There are also slots to change the base with <a href="qlcdnumber.html#mode-prop">setMode</a>() and the decimal point with <a href="qlcdnumber.html#smallDecimalPoint-prop">setSmallDecimalPoint</a>().</p>
 <p>QLCDNumber emits the <a href="qlcdnumber.html#overflow">overflow</a>() signal when it is asked to display something beyond its range. The range is set by <a href="qlcdnumber.html#numDigits-prop">setNumDigits</a>(), but <a href="qlcdnumber.html#smallDecimalPoint-prop">setSmallDecimalPoint</a>() also influences it. If the display is set to hexadecimal, octal or binary, the integer equivalent of the value is displayed.</p>
 <p>These digits and other symbols can be shown: 0/O, 1, 2, 3, 4, 5/S, 6, 7, 8, 9/g, minus, decimal point, A, B, C, D, E, F, h, H, L, o, P, r, u, U, Y, colon, degree sign (which is specified as single quote in the string) and space. QLCDNumber substitutes spaces for illegal characters.</p>
-<p>It is not possible to retrieve the contents of a QLCDNumber object, although you can retrieve the numeric value with <a href="qlcdnumber.html#value-prop">value</a>(). If you really need the text, we recommend that you connect the signals that feed the <a href="qlcdnumber.html#intValue-prop">display</a>() slot to another slot as well and store the value there.</p>
+<p>It is not possible to retrieve the contents of a QLCDNumber object, although you can retrieve the numeric value with <a href="qlcdnumber.html#value-prop">value</a>(). If you really need the text, we recommend that you connect the signals that feed the <a href="qlcdnumber.html#value-prop">display</a>() slot to another slot as well and store the value there.</p>
 <p>Incidentally, QLCDNumber is the very oldest part of Qt, tracing its roots back to a BASIC program on the <a href="http://www.nvg.ntnu.no/sinclair/computers/zxspectrum/zxspectrum.htm">Sinclair Spectrum</a>.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/motif-lcdnumber.png" alt="Screenshot of a Motif style LCD number widget" /> <img src="images/cde-lcdnumber.png" alt="Screenshot of a CDE style LCD number widget" /> <img src="images/windows-lcdnumber.png" alt="Screenshot of a Windows style LCD number widget" /> <img src="images/windowsxp-lcdnumber.png" alt="Screenshot of a Windows XP style LCD number widget" /> <img src="images/macintosh-lcdnumber.png" alt="Screenshot of a Macintosh style LCD number widget" /> <img src="images/plastique-lcdnumber.png" alt="Screenshot of a Plastique style LCD number widget" /></td></tr>
@@ -164,9 +161,9 @@
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int intValue () const</b></li>
-<li><div class="fn"/><b>void display ( const QString &amp; <i>s</i> )</b></li>
-<li><div class="fn"/><b>void display ( int <i>num</i> )</b></li>
-<li><div class="fn"/><b>void display ( double <i>num</i> )</b></li>
+<li><div class="fn"/><b>void <a href="qlcdnumber.html#value-prop">display</a> ( const QString &amp; <i>s</i> )</b></li>
+<li><div class="fn"/><b>void <a href="qlcdnumber.html#value-prop">display</a> ( int <i>num</i> )</b></li>
+<li><div class="fn"/><b>void <a href="qlcdnumber.html#value-prop">display</a> ( double <i>num</i> )</b></li>
 </ul>
 <a name="//apple_ref/cpp/instm/QLCDNumber/mode" />
 <a name="//apple_ref/cpp/instm/QLCDNumber/setMode" />
@@ -227,9 +224,9 @@
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>double value () const</b></li>
-<li><div class="fn"/><b>void <a href="qlcdnumber.html#intValue-prop">display</a> ( const QString &amp; <i>s</i> )</b></li>
-<li><div class="fn"/><b>void <a href="qlcdnumber.html#intValue-prop">display</a> ( int <i>num</i> )</b></li>
-<li><div class="fn"/><b>void <a href="qlcdnumber.html#intValue-prop">display</a> ( double <i>num</i> )</b></li>
+<li><div class="fn"/><b>void display ( const QString &amp; <i>s</i> )</b></li>
+<li><div class="fn"/><b>void display ( int <i>num</i> )</b></li>
+<li><div class="fn"/><b>void display ( double <i>num</i> )</b></li>
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -248,11 +245,11 @@
 <a name="//apple_ref/cpp/instm/QLCDNumber/checkOverflow" />
 <h3 class="fn"><a name="checkOverflow"></a>bool QLCDNumber::checkOverflow ( double <i>num</i> ) const</h3>
 <p>Returns true if <i>num</i> is too big to be displayed in its entirety; otherwise returns false.</p>
-<p>See also <a href="qlcdnumber.html#intValue-prop">display</a>(), <a href="qlcdnumber.html#numDigits-prop">numDigits</a>(), and <a href="qlcdnumber.html#smallDecimalPoint-prop">smallDecimalPoint</a>().</p>
+<p>See also <a href="qlcdnumber.html#value-prop">display</a>(), <a href="qlcdnumber.html#numDigits-prop">numDigits</a>(), and <a href="qlcdnumber.html#smallDecimalPoint-prop">smallDecimalPoint</a>().</p>
 <h3 class="fn"><a name="checkOverflow-2"></a>bool QLCDNumber::checkOverflow ( int <i>num</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>num</i> is too big to be displayed in its entirety; otherwise returns false.</p>
-<p>See also <a href="qlcdnumber.html#intValue-prop">display</a>(), <a href="qlcdnumber.html#numDigits-prop">numDigits</a>(), and <a href="qlcdnumber.html#smallDecimalPoint-prop">smallDecimalPoint</a>().</p>
+<p>See also <a href="qlcdnumber.html#value-prop">display</a>(), <a href="qlcdnumber.html#numDigits-prop">numDigits</a>(), and <a href="qlcdnumber.html#smallDecimalPoint-prop">smallDecimalPoint</a>().</p>
 <a name="//apple_ref/cpp/instm/QLCDNumber/overflow" />
 <h3 class="fn"><a name="overflow"></a>void QLCDNumber::overflow ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the <a href="qlcdnumber.html">QLCDNumber</a> is asked to display a too-large number or a too-long string.</p>

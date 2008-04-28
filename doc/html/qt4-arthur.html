@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qt4-arthur.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/qt4-arthur.qdoc -->
 <head>
   <title>Qt 4.4: The Arthur Paint System</title>
   <link rel="prev" href="qt4-interview.html" />
@@ -43,15 +43,15 @@
 </ul>
 <a name="architecture"></a>
 <h2>Architecture</h2>
-<p>The Qt 4 Paint System is primarily based on the classes <a href="qpainter.html">QPainter</a>, <a href="qpaintdevice.html">QPaintDevice</a>, and <a href="qpaintengine.html">QPaintEngine</a>. <a href="qpainter.html">QPainter</a> is the class used to perform drawing operations, such as drawLine() and drawRect(). <a href="qpaintdevice.html">QPaintDevice</a> represents a device that can be painted on using a <a href="qpainter.html">QPainter</a>; both <a href="qwidget.html">QWidget</a> and <a href="qpixmap.html">QPixmap</a> are QPaintDevices. <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices.</p>
+<p>The Qt 4 Paint System is primarily based on the classes <a href="qpainter.html">QPainter</a>, QPaintDevice, and <a href="qpaintengine.html">QPaintEngine</a>. <a href="qpainter.html">QPainter</a> is the class used to perform drawing operations, such as drawLine() and drawRect(). QPaintDevice represents a device that can be painted on using a <a href="qpainter.html">QPainter</a>; both <a href="qwidget.html">QWidget</a> and <a href="qpixmap.html">QPixmap</a> are QPaintDevices. <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices.</p>
 <a name="a-look-back-at-qt-3"></a>
 <h3>A Look Back at Qt 3</h3>
-<p>In Qt 3, <a href="qpainter.html">QPainter</a> could be used to draw on widgets and pixmaps. (It could also be used to draw to printers on Windows and Mac OS X.) When other paint devices needed to be supported, such as <a href="qprinter.html">QPrinter</a> on X11, this was done by deriving from <a href="qpaintdevice.html">QPaintDevice</a> and reimplementing the virtual function QPaintDevice::cmd(). A reimplemented paint device was treated as an external device.</p>
+<p>In Qt 3, <a href="qpainter.html">QPainter</a> could be used to draw on widgets and pixmaps. (It could also be used to draw to printers on Windows and Mac OS X.) When other paint devices needed to be supported, such as <a href="qprinter.html">QPrinter</a> on X11, this was done by deriving from QPaintDevice and reimplementing the virtual function QPaintDevice::cmd(). A reimplemented paint device was treated as an external device.</p>
 <p><a href="qpainter.html">QPainter</a> was capable of recognizing external devices and could serialize each paint operation to the reimplemented cmd() function. This allowed reimplementation of arbitrary devices, but the approach has some disadvantages which we have addressed in Qt 4. One of these is that an external device could not reuse any functionality implemented in <a href="qpainter.html">QPainter</a> since <a href="qpainter.html">QPainter</a> was tied to widget/pixmap painting on that platform. Supporting multiple device backends, such as OpenGL, was therefore inconvenient and not very efficient.</p>
 <p>This has led us to devise a more convenient and intuitive API for Qt 4.</p>
 <a name="how-painting-is-done-in-qt-4"></a>
 <h3>How Painting is Done in Qt 4</h3>
-<p>In Qt 4 we have introduced the <a href="qpaintengine.html">QPaintEngine</a> abstract class. Implementations of this class provide the concrete functionality needed to draw to specific device types. The <a href="qpaintengine.html">QPaintEngine</a> class is only used internally by <a href="qpainter.html">QPainter</a> and <a href="qpaintdevice.html">QPaintDevice</a>, and it is hidden from application programmers unless they reimplement their own device types for their own <a href="qpaintengine.html">QPaintEngine</a> subclasses. Qt currently provides paint engines for the following platforms and APIs:</p>
+<p>In Qt 4 we have introduced the <a href="qpaintengine.html">QPaintEngine</a> abstract class. Implementations of this class provide the concrete functionality needed to draw to specific device types. The <a href="qpaintengine.html">QPaintEngine</a> class is only used internally by <a href="qpainter.html">QPainter</a> and QPaintDevice, and it is hidden from application programmers unless they reimplement their own device types for their own <a href="qpaintengine.html">QPaintEngine</a> subclasses. Qt currently provides paint engines for the following platforms and APIs:</p>
 <ul>
 <li>A pixel-based engine for the Windows platform that is also used to draw onto QImages on all platforms</li>
 <li>OpenGL on all platforms</li>
@@ -59,7 +59,7 @@
 <li>QuickDraw and CoreGraphics on Mac OS X</li>
 <li>X11 and the X Render Extension on Linux and Unix systems</li>
 </ul>
-<p>To implement support for a new backend, you must derive from <a href="qpaintengine.html">QPaintEngine</a> and reimplement its virtual functions. You also need to derive from <a href="qpaintdevice.html">QPaintDevice</a> and reimplement the virtual function <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() to tell <a href="qpainter.html">QPainter</a> which paint engine should be used to draw on this particular device.</p>
+<p>To implement support for a new backend, you must derive from <a href="qpaintengine.html">QPaintEngine</a> and reimplement its virtual functions. You also need to derive from QPaintDevice and reimplement the virtual function <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() to tell <a href="qpainter.html">QPainter</a> which paint engine should be used to draw on this particular device.</p>
 <p>The main benefit of this approach is that all painting follows the same painting pipeline. This means that adding support for new features and providing default implementations for unsupported ones has become much simpler.</p>
 <a name="new-features-in-the-qt-4-paint-system"></a>
 <h2>New Features in the Qt 4 Paint System</h2>
@@ -179,7 +179,7 @@
      painter.end();</pre>
 <a name="svg-rendering-support"></a>
 <h3>SVG Rendering Support</h3>
-<p><a href="http://www.w3.org/Graphics/SVG/About.html#scalable-vector-graphics">Scalable Vector Graphics</a> (SVG) is an language for describing both static and animated two-dimensional vector graphics. Qt includes support for the <a href="http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static">static features</a> of <a href="http://www.w3.org/TR/SVGMobile12/">SVG 1.2 Tiny</a>, taking advantage of the improved paint system in Qt 4. SVG drawings can be rendered onto any <a href="qpaintdevice.html">QPaintDevice</a> subclass, such as <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>, to take advantage of specific advantages of each device. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
+<p><a href="http://www.w3.org/Graphics/SVG/About.html#scalable-vector-graphics">Scalable Vector Graphics</a> (SVG) is an language for describing both static and animated two-dimensional vector graphics. Qt includes support for the <a href="http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static">static features</a> of <a href="http://www.w3.org/TR/SVGMobile12/">SVG 1.2 Tiny</a>, taking advantage of the improved paint system in Qt 4. SVG drawings can be rendered onto any QPaintDevice subclass, such as <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>, to take advantage of specific advantages of each device. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
 <p align="center"><img src="images/svg-image.png" /></p><p>Since SVG is an XML-based format, the <a href="qtxml.html">QtXml</a> module is required to read SVG files. For this reason, classes for SVG handling are provided separately in the <a href="qtsvg.html">QtSvg</a> module.</p>
 <p>Displaying an SVG drawing in an application is as simple as displaying a bitmap image. <a href="qsvgwidget.html">QSvgWidget</a> is a display widget that can be placed in an appropriate place in a user interface, and new content can be loaded as required. For example, a predetermined file can be loaded and displayed in a widget with little effort:</p>
 <pre>     QSvgWidget window(&quot;:/files/spheres.svg&quot;);

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/emb-accel.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/emb-accel.qdoc -->
 <head>
   <title>Qt 4.4: Adding an Accelerated Graphics Driver to Qt for Embedded Linux</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -34,7 +34,7 @@
 <p>To accelerate a graphics primitive, simply reimplement the corresponding function in your custom paint engine. If there is functionality you do not want to reimplement (such as certain pens, brushes, modes, etc.), you can just call the corresponding base class implementation.</p>
 <a name="step-3-make-the-paint-device-aware-of-your-paint-engine"></a>
 <h2>Step 3: Make the Paint Device Aware of Your Paint Engine</h2>
-<p>To activate your paint engine you must create a subclass of the <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> class and reimplement its <a href="qpaintdevice.html#paintEngine">paintEngine()</a> function. Let this function return a pointer to your paint engine. In addition, the <a href="qcustomrasterpaintdevice.html#memory">QCustomRasterPaintDevice::memory</a>() function must be reimplemented to return a pointer to the buffer where the painting should be done.</p>
+<p>To activate your paint engine you must create a subclass of the <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> class and reimplement its paintEngine() function. Let this function return a pointer to your paint engine. In addition, the <a href="qcustomrasterpaintdevice.html#memory">QCustomRasterPaintDevice::memory</a>() function must be reimplemented to return a pointer to the buffer where the painting should be done.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Acceleration Without a Memory Buffer</th></tr></thead>
 <tr valign="top" class="odd"><td>By default the <a href="qrasterpaintengine.html">QRasterPaintEngine</a> draws into a memory buffer (this can be local memory, shared memory or graphics memory mapped into application memory). In some cases you might want to avoid using a memory buffer directly, e.g if you want to use an accelerated graphic controller to handle all the buffer manipulation. This can be implemented by reimplementing the <a href="qcustomrasterpaintdevice.html#memory">QCustomRasterPaintDevice::memory</a>() function to return 0 (meaning no buffer available). Then, whenever a color or image buffer normally would be written into paint engine buffer, the paint engine will call the <a href="qrasterpaintengine.html#drawColorSpans">QRasterPaintEngine::drawColorSpans</a>() and <a href="qrasterpaintengine.html#drawBufferSpan">QRasterPaintEngine::drawBufferSpan</a>() functions instead.<p>Note that the default implementations of these functions only calls <a href="qtglobal.html#qFatal">qFatal</a>() with an error message; reimplement the functions and let them do the appropriate communication with the accelerated graphics controller.</p>

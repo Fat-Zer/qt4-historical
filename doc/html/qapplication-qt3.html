@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/kernel/qapplication.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QApplication</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -33,7 +33,7 @@
 <li><div class="fn"/>void <b><a href="qapplication-qt3.html#setColorMode">setColorMode</a></b> ( ColorMode <i>mode</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication-qt3.html#setFont-2">setFont</a></b> ( const QFont &amp; <i>font</i>, bool <i>b</i>, const char * <i>className</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qapplication-qt3.html#setGlobalMouseTracking">setGlobalMouseTracking</a></b> ( bool <i>dummy</i> )</li>
-<li><div class="fn"/>void <b><a href="qapplication-qt3.html#setMainWidget">setMainWidget</a></b> ( QWidget * <i>mainWidget</i> )</li>
+<li><div class="fn"/>void <b><a href="qapplication-qt3.html#setMainWidget">setMainWidget</a></b> ( QWidget * )</li>
 <li><div class="fn"/>void <b><a href="qapplication-qt3.html#setOverrideCursor-2">setOverrideCursor</a></b> ( const QCursor &amp; <i>cursor</i>, bool <i>replace</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication-qt3.html#setPalette-2">setPalette</a></b> ( const QPalette &amp; <i>pal</i>, bool <i>b</i>, const char * <i>className</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qapplication-qt3.html#setReverseLayout">setReverseLayout</a></b> ( bool <i>reverse</i> )</li>
@@ -71,7 +71,6 @@
 <p>Use <a href="qsysinfo.html#MacintoshVersion-var">QSysInfo::MacintoshVersion</a> instead.</p>
 <a name="//apple_ref/cpp/clm/QApplication/mainWidget" />
 <h3 class="fn"><a name="mainWidget"></a><a href="qwidget.html">QWidget</a> * QApplication::mainWidget ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the main application widget, or 0 if there is no main widget.</p>
 <p>See also <a href="qapplication-qt3.html#setMainWidget">setMainWidget</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/reverseLayout" />
 <h3 class="fn"><a name="reverseLayout"></a>bool QApplication::reverseLayout ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -89,12 +88,8 @@
 <p>This function does nothing in Qt 4. The <i>dummy</i> parameter is ignored.</p>
 <p>See also <a href="qapplication-qt3.html#hasGlobalMouseTracking">hasGlobalMouseTracking</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/setMainWidget" />
-<h3 class="fn"><a name="setMainWidget"></a>void QApplication::setMainWidget ( <a href="qwidget.html">QWidget</a> * <i>mainWidget</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the application's main widget to <i>mainWidget</i>.</p>
-<p>In most respects the main widget is like any other widget, except that if it is closed, the application exits. Note that <a href="qapplication.html">QApplication</a> does <i>not</i> take ownership of the <i>mainWidget</i>, so if you create your main widget on the heap you must delete it yourself.</p>
-<p>You need not have a main widget; connecting <a href="qapplication.html#lastWindowClosed">lastWindowClosed</a>() to <a href="qcoreapplication.html#quit">quit</a>() is an alternative.</p>
-<p>For X11, this function also resizes and moves the main widget according to the <i>-geometry</i> command-line option, so you should set the default geometry (using <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>()) before calling setMainWidget().</p>
-<p>See also <a href="qapplication-qt3.html#mainWidget">mainWidget</a>(), <a href="qapplication.html#exec">exec</a>(), and <a href="qcoreapplication.html#quit">quit</a>().</p>
+<h3 class="fn"><a name="setMainWidget"></a>void QApplication::setMainWidget ( <a href="qwidget.html">QWidget</a> * )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>See also <a href="qapplication-qt3.html#mainWidget">mainWidget</a>().</p>
 <h3 class="fn"><a name="setOverrideCursor-2"></a>void QApplication::setOverrideCursor ( const <a href="qcursor.html">QCursor</a> &amp; <i>cursor</i>, bool <i>replace</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use changeOverrideCursor(<i>cursor</i>) (if <i>replace</i> is true) or setOverrideCursor(<i>cursor</i>) (if <i>replace</i> is false).</p>

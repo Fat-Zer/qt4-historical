@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/svg/qsvgrenderer.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/svg/qsvgrenderer.cpp -->
 <head>
   <title>Qt 4.4: QSvgRenderer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -83,8 +83,8 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QSvgRenderer class is used to draw the contents of SVG files onto paint devices.</p>
-<p>Using QSvgRenderer, Scalable Vector Graphics (SVG) can be rendered onto any <a href="qpaintdevice.html">QPaintDevice</a> subclass, including <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>.</p>
-<p>QSvgRenderer provides an API that supports basic features of SVG rendering, such as loading and rendering of static drawings, and more interactive features like animation. Since the rendering is performed using <a href="qpainter.html">QPainter</a>, SVG drawings can be rendered on any subclass of <a href="qpaintdevice.html">QPaintDevice</a>.</p>
+<p>Using QSvgRenderer, Scalable Vector Graphics (SVG) can be rendered onto any QPaintDevice subclass, including <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>.</p>
+<p>QSvgRenderer provides an API that supports basic features of SVG rendering, such as loading and rendering of static drawings, and more interactive features like animation. Since the rendering is performed using <a href="qpainter.html">QPainter</a>, SVG drawings can be rendered on any subclass of QPaintDevice.</p>
 <p>SVG drawings are either loaded when an QSvgRenderer is constructed, or loaded later using the <a href="qsvgrenderer.html#load">load</a>() functions. Data is either supplied directly as serialized XML, or indirectly using a file name. If a valid file has been loaded, either when the renderer is constructed or at some later time, <a href="qsvgrenderer.html#isValid">isValid</a>() returns true; otherwise it returns false. QSvgRenderer provides the <a href="qsvgrenderer.html#render">render</a>() slot to render the current document, or the current frame of an animated document, using a given painter.</p>
 <p>The <a href="qsvgrenderer.html#defaultSize">defaultSize</a>() function provides information about the amount of space that is required to render the currently loaded SVG file. This is useful for paint devices, such as <a href="qwidget.html">QWidget</a>, that often need to supply a size hint to their parent layout. The default size of a drawing may differ from its visible area, found using the <a href="qsvgrenderer.html#viewBox-prop">viewBox</a> property.</p>
 <p>Animated SVG drawings are supported, and can be controlled with a simple collection of functions and properties:</p>

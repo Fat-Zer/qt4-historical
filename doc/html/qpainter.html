@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qpainter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/painting/qpainter.cpp -->
 <head>
   <title>Qt 4.4: QPainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -239,7 +239,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QPainter class performs low-level painting on widgets and other paint devices.</p>
-<p>QPainter provides highly optimized functions to do most of the drawing GUI programs require. It can draw everything from simple lines to complex shapes like pies and chords. It can also draw aligned text and pixmaps. Normally, it draws in a &quot;natural&quot; coordinate system, but it can also do view and world transformation. QPainter can operate on any object that inherits the <a href="qpaintdevice.html">QPaintDevice</a> class.</p>
+<p>QPainter provides highly optimized functions to do most of the drawing GUI programs require. It can draw everything from simple lines to complex shapes like pies and chords. It can also draw aligned text and pixmaps. Normally, it draws in a &quot;natural&quot; coordinate system, but it can also do view and world transformation. QPainter can operate on any object that inherits the QPaintDevice class.</p>
 <p>The common use of QPainter is inside a widget's paint event: Construct and customize (e.g&#x2e; set the pen or the brush) the painter. Then draw. Remember to destroy the QPainter object after drawing. For example:</p>
 <pre>     void SimpleExampleWidget::paintEvent(QPaintEvent *)
      {
@@ -249,9 +249,9 @@
          painter.drawText(rect(), Qt::AlignCenter, &quot;Qt&quot;);
      }</pre>
 <p>The core functionality of QPainter is drawing, but the class also provide several functions that allows you to customize QPainter's settings and its rendering quality, and others that enable clipping. In addition you can control how different shapes are merged together by specifying the painter's composition mode.</p>
-<p>The <a href="qpainter.html#isActive">isActive</a>() function indicates whether the painter is active. A painter is activated by the <a href="qpainter.html#begin">begin</a>() function and the constructor that takes a <a href="qpaintdevice.html">QPaintDevice</a> argument. The <a href="qpainter.html#end">end</a>() function, and the destructor, deactivates it.</p>
-<p>Together with the <a href="qpaintdevice.html">QPaintDevice</a> and <a href="qpaintengine.html">QPaintEngine</a> classes, QPainter form the basis for Qt's paint system. QPainter is the class used to perform drawing operations. <a href="qpaintdevice.html">QPaintDevice</a> represents a device that can be painted on using a QPainter. <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices. If the painter is active, <a href="qpainter.html#device">device</a>() returns the paint device on which the painter paints, and <a href="qpainter.html#paintEngine">paintEngine</a>() returns the paint engine that the painter is currently operating on. For more information, see <a href="paintsystem.html">The Paint System</a> documentation.</p>
-<p>Sometimes it is desirable to make someone else paint on an unusual <a href="qpaintdevice.html">QPaintDevice</a>. QPainter supports a static function to do this, <a href="qpainter.html#setRedirected">setRedirected</a>().</p>
+<p>The <a href="qpainter.html#isActive">isActive</a>() function indicates whether the painter is active. A painter is activated by the <a href="qpainter.html#begin">begin</a>() function and the constructor that takes a QPaintDevice argument. The <a href="qpainter.html#end">end</a>() function, and the destructor, deactivates it.</p>
+<p>Together with the QPaintDevice and <a href="qpaintengine.html">QPaintEngine</a> classes, QPainter form the basis for Qt's paint system. QPainter is the class used to perform drawing operations. QPaintDevice represents a device that can be painted on using a QPainter. <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices. If the painter is active, <a href="qpainter.html#device">device</a>() returns the paint device on which the painter paints, and <a href="qpainter.html#paintEngine">paintEngine</a>() returns the paint engine that the painter is currently operating on. For more information, see <a href="paintsystem.html">The Paint System</a> documentation.</p>
+<p>Sometimes it is desirable to make someone else paint on an unusual QPaintDevice. QPainter supports a static function to do this, <a href="qpainter.html#setRedirected">setRedirected</a>().</p>
 <p><b>Warning:</b> When the paintdevice is a widget, QPainter can only be used inside a paintEvent() function or in a function called by paintEvent(); that is unless the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOutsidePaintEvent</a> widget attribute is set. On Mac OS X and Windows, you can only paint in a paintEvent() function regardless of this attribute's setting.</p>
 <ul><li><a href="#settings">Settings</a></li>
 <li><a href="#drawing">Drawing</a></li>
@@ -347,7 +347,7 @@
 <a name="limitations"></a>
 <h3>Limitations</h3>
 <a name="limitations"></a><p>If you are using coordinates with Qt's raster-based paint engine, it is important to note that coordinates greater than +/- 2<sup>15</sup> are not valid due to the use of <tt>short int</tt> in the implementation.</p>
-<p>See also <a href="qpaintdevice.html">QPaintDevice</a>, <a href="qpaintengine.html">QPaintEngine</a>, <a href="qtsvg.html">QtSvg Module</a>, and <a href="painting-basicdrawing.html">Basic Drawing Example</a>.</p>
+<p>See also QPaintDevice, <a href="qpaintengine.html">QPaintEngine</a>, <a href="qtsvg.html">QtSvg Module</a>, and <a href="painting-basicdrawing.html">Basic Drawing Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QPainter/CompositionMode" />
@@ -433,7 +433,7 @@
 <h3 class="fn"><a name="QPainter"></a>QPainter::QPainter ()</h3>
 <p>Constructs a painter.</p>
 <p>See also <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#end">end</a>().</p>
-<h3 class="fn"><a name="QPainter-2"></a>QPainter::QPainter ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i> )</h3>
+<h3 class="fn"><a name="QPainter-2"></a>QPainter::QPainter ( QPaintDevice * <i>device</i> )</h3>
 <p>Constructs a painter that begins painting the paint <i>device</i> immediately.</p>
 <p>This constructor is convenient for short-lived painters, e.g&#x2e; in a <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>() and should be used only once. The constructor calls <a href="qpainter.html#begin">begin</a>() for you and the <a href="qpainter.html">QPainter</a> destructor automatically calls <a href="qpainter.html#end">end</a>().</p>
 <p>Here's an example using <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#end">end</a>():</p>
@@ -464,7 +464,7 @@
 <p>Returns the current background mode.</p>
 <p>See also <a href="qpainter.html#setBackgroundMode">setBackgroundMode</a>() and <a href="qpainter.html#settings">Settings</a>.</p>
 <a name="//apple_ref/cpp/instm/QPainter/begin" />
-<h3 class="fn"><a name="begin"></a>bool QPainter::begin ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i> )</h3>
+<h3 class="fn"><a name="begin"></a>bool QPainter::begin ( QPaintDevice * <i>device</i> )</h3>
 <p>Begins painting the paint <i>device</i> and returns true if successful; otherwise returns false.</p>
 <p>Notice that all painter settings (<a href="qpainter.html#setPen">setPen</a>(), <a href="qpainter.html#setBrush">setBrush</a>() etc.) are reset to default values when begin() is called.</p>
 <p>The errors that can occur are serious problems, such as these:</p>
@@ -539,7 +539,7 @@
 <p>Returns the current composition mode.</p>
 <p>See also <a href="qpainter.html#CompositionMode-enum">CompositionMode</a> and <a href="qpainter.html#setCompositionMode">setCompositionMode</a>().</p>
 <a name="//apple_ref/cpp/instm/QPainter/device" />
-<h3 class="fn"><a name="device"></a><a href="qpaintdevice.html">QPaintDevice</a> * QPainter::device () const</h3>
+<h3 class="fn"><a name="device"></a>QPaintDevice * QPainter::device () const</h3>
 <p>Returns the paint device on which this painter is currently painting, or 0 if the painter is not active.</p>
 <p>See also <a href="qpainter.html#isActive">isActive</a>().</p>
 <a name="//apple_ref/cpp/instm/QPainter/deviceMatrix" />
@@ -1133,7 +1133,7 @@
 <p>Returns the painter's current pen.</p>
 <p>See also <a href="qpainter.html#setPen">setPen</a>() and <a href="qpainter.html#settings">Settings</a>.</p>
 <a name="//apple_ref/cpp/clm/QPainter/redirected" />
-<h3 class="fn"><a name="redirected"></a><a href="qpaintdevice.html">QPaintDevice</a> * QPainter::redirected ( const <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i>, <a href="qpoint.html">QPoint</a> * <i>offset</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="redirected"></a>QPaintDevice * QPainter::redirected ( const QPaintDevice * <i>device</i>, <a href="qpoint.html">QPoint</a> * <i>offset</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the replacement for given <i>device</i>. The optional out parameter <i>offset</i> returns the offset within the replaced device.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qpainter.html#setRedirected">setRedirected</a>() and <a href="qpainter.html#restoreRedirected">restoreRedirected</a>().</p>
@@ -1155,7 +1155,7 @@
 <p>Restores the current painter state (pops a saved state off the stack).</p>
 <p>See also <a href="qpainter.html#save">save</a>().</p>
 <a name="//apple_ref/cpp/clm/QPainter/restoreRedirected" />
-<h3 class="fn"><a name="restoreRedirected"></a>void QPainter::restoreRedirected ( const <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="restoreRedirected"></a>void QPainter::restoreRedirected ( const QPaintDevice * <i>device</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Restores the previous redirection for the given <i>device</i> after a call to <a href="qpainter.html#setRedirected">setRedirected</a>().</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qpainter.html#redirected">redirected</a>().</p>
@@ -1260,7 +1260,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the painter's pen to have the given <i>style</i>, width 0 and black color.</p>
 <a name="//apple_ref/cpp/clm/QPainter/setRedirected" />
-<h3 class="fn"><a name="setRedirected"></a>void QPainter::setRedirected ( const <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i>, <a href="qpaintdevice.html">QPaintDevice</a> * <i>replacement</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>offset</i> = QPoint() )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="setRedirected"></a>void QPainter::setRedirected ( const QPaintDevice * <i>device</i>, QPaintDevice * <i>replacement</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>offset</i> = QPoint() )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Redirects all paint commands for the given paint <i>device</i>, to the <i>replacement</i> device. The optional point <i>offset</i> defines an offset within the source device.</p>
 <p>The redirection will not be effective until the <a href="qpainter.html#begin">begin</a>() function has been called; make sure to call <a href="qpainter.html#end">end</a>() for the given <i>device</i>'s painter (if any) before redirecting. Call <a href="qpainter.html#restoreRedirected">restoreRedirected</a>() to restore the previous redirection.</p>
 <p>In general, you'll probably find that calling <a href="qpixmap.html#grabWidget">QPixmap::grabWidget</a>() or <a href="qpixmap.html#grabWindow">QPixmap::grabWindow</a>() is an easier solution.</p>

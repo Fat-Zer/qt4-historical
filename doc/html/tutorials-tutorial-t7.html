@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/tutorials/tutorial.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/doc/src/tutorials/tutorial.qdoc -->
 <head>
   <title>Qt 4.4: Qt Tutorial 7 - One Thing Leads to Another</title>
   <link rel="prev" href="tutorials-tutorial-t6.html" />
@@ -70,9 +70,9 @@
              this, SIGNAL(valueChanged(int)));</pre>
 <p>This code is from the <tt>LCDRange</tt> constructor.</p>
 <p>The first <a href="qobject.html#connect">connect()</a> call is the same that you have seen in the previous chapter. The second is new; it connects slider's <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal to this object's <tt>valueChanged()</tt> signal. Yes, that's right. Signals can be connected to other signals. When the first is emitted, the second signal is also emitted.</p>
-<p>Let's look at what happens when the user operates the slider. The slider sees that its value has changed and emits the <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal. That signal is connected both to the <a href="qlcdnumber.html#intValue-prop">display()</a> slot of the <a href="qlcdnumber.html">QLCDNumber</a> and to the <tt>valueChanged()</tt> signal of the <tt>LCDRange</tt>.</p>
-<p>Thus, when the signal is emitted, <tt>LCDRange</tt> emits its own <tt>valueChanged()</tt> signal. In addition, <a href="qlcdnumber.html#intValue-prop">QLCDNumber::display</a>() is called and shows the new number.</p>
-<p>Note that you're not guaranteed any particular order of execution; <tt>LCDRange::valueChanged()</tt> may be emitted before or after <a href="qlcdnumber.html#intValue-prop">QLCDNumber::display</a>() is called.</p>
+<p>Let's look at what happens when the user operates the slider. The slider sees that its value has changed and emits the <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal. That signal is connected both to the <a href="qlcdnumber.html#value-prop">display()</a> slot of the <a href="qlcdnumber.html">QLCDNumber</a> and to the <tt>valueChanged()</tt> signal of the <tt>LCDRange</tt>.</p>
+<p>Thus, when the signal is emitted, <tt>LCDRange</tt> emits its own <tt>valueChanged()</tt> signal. In addition, <a href="qlcdnumber.html#value-prop">QLCDNumber::display</a>() is called and shows the new number.</p>
+<p>Note that you're not guaranteed any particular order of execution; <tt>LCDRange::valueChanged()</tt> may be emitted before or after <a href="qlcdnumber.html#value-prop">QLCDNumber::display</a>() is called.</p>
 <pre> int LCDRange::value() const
  {
      return slider-&gt;value();

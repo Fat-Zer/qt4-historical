@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/kernel/qapplication.cpp -->
 <head>
   <title>Qt 4.4: QApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -72,8 +72,10 @@
 <li><div class="fn"/>QString <b><a href="qapplication.html#sessionKey">sessionKey</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#setInputContext">setInputContext</a></b> ( QInputContext * <i>inputContext</i> )</li>
 <li><div class="fn"/>QString <b><a href="qapplication.html#styleSheet-prop">styleSheet</a></b> () const</li>
-<li><div class="fn"/>virtual bool <b><a href="qapplication.html#x11EventFilter">x11EventFilter</a></b> ( XEvent * <i>event</i> )</li>
-<li><div class="fn"/>int <b><a href="qapplication.html#x11ProcessEvent">x11ProcessEvent</a></b> ( XEvent * <i>event</i> )</li>
+<li><div class="fn"/>void <b><a href="qapplication.html#winFocus">winFocus</a></b> ( QWidget *, bool )</li>
+<li><div class="fn"/>virtual int <b><a href="qapplication.html#x11ClientMessage">x11ClientMessage</a></b> ( QWidget *, XEvent *, bool <i>passive_only</i> )</li>
+<li><div class="fn"/>virtual bool <b><a href="qapplication.html#x11EventFilter">x11EventFilter</a></b> ( XEvent * )</li>
+<li><div class="fn"/>int <b><a href="qapplication.html#x11ProcessEvent">x11ProcessEvent</a></b> ( XEvent * )</li>
 </ul>
 <ul>
 <li><div class="fn"/>4 public functions inherited from <a href="qcoreapplication.html#public-functions">QCoreApplication</a></li>
@@ -110,7 +112,7 @@
 <li><div class="fn"/>QWidget * <b><a href="qapplication.html#activeModalWidget">activeModalWidget</a></b> ()</li>
 <li><div class="fn"/>QWidget * <b><a href="qapplication.html#activePopupWidget">activePopupWidget</a></b> ()</li>
 <li><div class="fn"/>QWidget * <b><a href="qapplication.html#activeWindow">activeWindow</a></b> ()</li>
-<li><div class="fn"/>void <b><a href="qapplication.html#alert">alert</a></b> ( QWidget * <i>widget</i>, int <i>msec</i> = 0 )</li>
+<li><div class="fn"/>void <b><a href="qapplication.html#alert">alert</a></b> ( QWidget * <i>widget</i>, int <i>duration</i> = 0 )</li>
 <li><div class="fn"/>QWidgetList <b><a href="qapplication.html#allWidgets">allWidgets</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#beep">beep</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#changeOverrideCursor">changeOverrideCursor</a></b> ( const QCursor &amp; <i>cursor</i> )</li>
@@ -127,7 +129,7 @@
 <li><div class="fn"/>QFont <b><a href="qapplication.html#font-3">font</a></b> ( const char * <i>className</i> )</li>
 <li><div class="fn"/>QFontMetrics <b><a href="qapplication.html#fontMetrics">fontMetrics</a></b> ()</li>
 <li><div class="fn"/>QSize <b><a href="qapplication.html#globalStrut-prop">globalStrut</a></b> ()</li>
-<li><div class="fn"/>bool <b><a href="qapplication.html#isEffectEnabled">isEffectEnabled</a></b> ( Qt::UIEffect <i>effect</i> )</li>
+<li><div class="fn"/>bool <b><a href="qapplication.html#isEffectEnabled">isEffectEnabled</a></b> ( Qt::UIEffect )</li>
 <li><div class="fn"/>bool <b><a href="qapplication.html#isLeftToRight">isLeftToRight</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qapplication.html#isRightToLeft">isRightToLeft</a></b> ()</li>
 <li><div class="fn"/>Qt::LayoutDirection <b><a href="qapplication.html#keyboardInputDirection">keyboardInputDirection</a></b> ()</li>
@@ -151,13 +153,13 @@
 <li><div class="fn"/>void <b><a href="qapplication.html#cursorFlashTime-prop">setCursorFlashTime</a></b> ( int )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#setDesktopSettingsAware">setDesktopSettingsAware</a></b> ( bool <i>on</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#doubleClickInterval-prop">setDoubleClickInterval</a></b> ( int )</li>
-<li><div class="fn"/>void <b><a href="qapplication.html#setEffectEnabled">setEffectEnabled</a></b> ( Qt::UIEffect <i>effect</i>, bool <i>enable</i> = true )</li>
+<li><div class="fn"/>void <b><a href="qapplication.html#setEffectEnabled">setEffectEnabled</a></b> ( Qt::UIEffect, bool <i>enable</i> = true )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#setFont">setFont</a></b> ( const QFont &amp; <i>font</i>, const char * <i>className</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#globalStrut-prop">setGlobalStrut</a></b> ( const QSize &amp; )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#keyboardInputInterval-prop">setKeyboardInputInterval</a></b> ( int )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#setKeypadNavigationEnabled">setKeypadNavigationEnabled</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#layoutDirection-prop">setLayoutDirection</a></b> ( Qt::LayoutDirection <i>direction</i> )</li>
-<li><div class="fn"/>void <b><a href="qapplication.html#setOverrideCursor">setOverrideCursor</a></b> ( const QCursor &amp; <i>cursor</i> )</li>
+<li><div class="fn"/>void <b><a href="qapplication.html#setOverrideCursor">setOverrideCursor</a></b> ( const QCursor &amp; )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#setPalette">setPalette</a></b> ( const QPalette &amp; <i>palette</i>, const char * <i>className</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#quitOnLastWindowClosed-prop">setQuitOnLastWindowClosed</a></b> ( bool <i>quit</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#startDragDistance-prop">setStartDragDistance</a></b> ( int <i>l</i> )</li>
@@ -177,6 +179,7 @@
 <li><div class="fn"/>int <b><a href="qapplication.html#wheelScrollLines-prop">wheelScrollLines</a></b> ()</li>
 <li><div class="fn"/>QWidget * <b><a href="qapplication.html#widgetAt">widgetAt</a></b> ( const QPoint &amp; <i>point</i> )</li>
 <li><div class="fn"/>QWidget * <b><a href="qapplication.html#widgetAt-4">widgetAt</a></b> ( int <i>x</i>, int <i>y</i> )</li>
+<li><div class="fn"/>void <b><a href="qapplication.html#winMouseButtonUp">winMouseButtonUp</a></b> ()</li>
 <li><div class="fn"/>QIcon <b><a href="qapplication.html#windowIcon-prop">windowIcon</a></b> ()</li>
 </ul>
 <ul>
@@ -222,7 +225,7 @@
 <tr valign="top" class="odd"><td>GUI Styles</td><td><a href="qapplication.html#style">style</a>(), <a href="qapplication.html#setStyle">setStyle</a>().</td></tr>
 <tr valign="top" class="even"><td>Color usage</td><td><a href="qapplication.html#colorSpec">colorSpec</a>(), <a href="qapplication.html#setColorSpec">setColorSpec</a>(), <a href="qapplication.html#qwsSetCustomColors">qwsSetCustomColors</a>().</td></tr>
 <tr valign="top" class="odd"><td>Text handling</td><td><a href="qcoreapplication.html#installTranslator">installTranslator</a>(), <a href="qcoreapplication.html#removeTranslator">removeTranslator</a>() <a href="qcoreapplication.html#translate">translate</a>().</td></tr>
-<tr valign="top" class="even"><td>Widgets</td><td><a href="qapplication.html#allWidgets">allWidgets</a>(), <a href="qapplication.html#topLevelWidgets">topLevelWidgets</a>(), <a href="qapplication.html#desktop">desktop</a>(), <a href="qapplication.html#activePopupWidget">activePopupWidget</a>(), <a href="qapplication.html#activeModalWidget">activeModalWidget</a>(), <a href="qapplication.html#clipboard">clipboard</a>(), <a href="qapplication.html#focusWidget">focusWidget</a>(), winFocus(), <a href="qapplication.html#activeWindow">activeWindow</a>(), <a href="qapplication.html#widgetAt">widgetAt</a>().</td></tr>
+<tr valign="top" class="even"><td>Widgets</td><td><a href="qapplication.html#allWidgets">allWidgets</a>(), <a href="qapplication.html#topLevelWidgets">topLevelWidgets</a>(), <a href="qapplication.html#desktop">desktop</a>(), <a href="qapplication.html#activePopupWidget">activePopupWidget</a>(), <a href="qapplication.html#activeModalWidget">activeModalWidget</a>(), <a href="qapplication.html#clipboard">clipboard</a>(), <a href="qapplication.html#focusWidget">focusWidget</a>(), <a href="qapplication.html#winFocus">winFocus</a>(), <a href="qapplication.html#activeWindow">activeWindow</a>(), <a href="qapplication.html#widgetAt">widgetAt</a>().</td></tr>
 <tr valign="top" class="odd"><td>Advanced cursor handling</td><td><a href="qapplication.html#overrideCursor">overrideCursor</a>(), <a href="qapplication.html#setOverrideCursor">setOverrideCursor</a>(), <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>().</td></tr>
 <tr valign="top" class="even"><td>X Window System synchronization</td><td><a href="qapplication-qt3.html#flushX">flushX</a>(), <a href="qapplication.html#syncX">syncX</a>().</td></tr>
 <tr valign="top" class="odd"><td>Session management</td><td><a href="qapplication.html#isSessionRestored">isSessionRestored</a>(), <a href="qapplication.html#sessionId">sessionId</a>(), <a href="qapplication.html#commitData">commitData</a>(), <a href="qapplication.html#saveState">saveState</a>().</td></tr>
@@ -274,10 +277,6 @@
 <a name="//apple_ref/cpp/clm/QApplication/cursorFlashTime" />
 <a name="//apple_ref/cpp/clm/QApplication/setCursorFlashTime" />
 <h3 class="fn"><a name="cursorFlashTime-prop"></a>cursorFlashTime : int</h3>
-<p>This property holds the text cursor's flash (blink) time in milliseconds.</p>
-<p>The flash time is the time required to display, invert and restore the caret display. Usually the text cursor is displayed for half the cursor flash time, then hidden for the same amount of time, but this may vary.</p>
-<p>The default value on X11 is 1000 milliseconds. On Windows, the control panel value is used. Widgets should not cache this value since it may be changed at any time by the user changing the global desktop settings.</p>
-<p>Note that on Microsoft Windows, setting this property sets the cursor flash time for all applications.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int cursorFlashTime ()</b></li>
@@ -286,9 +285,6 @@
 <a name="//apple_ref/cpp/clm/QApplication/doubleClickInterval" />
 <a name="//apple_ref/cpp/clm/QApplication/setDoubleClickInterval" />
 <h3 class="fn"><a name="doubleClickInterval-prop"></a>doubleClickInterval : int</h3>
-<p>This property holds the time limit in milliseconds that distinguishes a double click from two consecutive mouse clicks.</p>
-<p>The default value on X11 is 400 milliseconds. On Windows and Mac OS X, the operating system's value is used.</p>
-<p>On Microsoft Windows, calling this function sets the double click interval for all applications.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int doubleClickInterval ()</b></li>
@@ -312,9 +308,6 @@
 <a name="//apple_ref/cpp/clm/QApplication/keyboardInputInterval" />
 <a name="//apple_ref/cpp/clm/QApplication/setKeyboardInputInterval" />
 <h3 class="fn"><a name="keyboardInputInterval-prop"></a>keyboardInputInterval : int</h3>
-<p>This property holds the time limit in milliseconds that distinguishes a key press from two consecutive key presses.</p>
-<p>The default value on X11 is 400 milliseconds. On Windows and Mac OS X, the operating system's value is used.</p>
-<p>This property was introduced in Qt 4.2.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int keyboardInputInterval ()</b></li>
@@ -386,8 +379,6 @@
 <a name="//apple_ref/cpp/clm/QApplication/wheelScrollLines" />
 <a name="//apple_ref/cpp/clm/QApplication/setWheelScrollLines" />
 <h3 class="fn"><a name="wheelScrollLines-prop"></a>wheelScrollLines : int</h3>
-<p>This property holds the number of lines to scroll when the mouse wheel is rotated.</p>
-<p>If this number exceeds the number of visible lines in a certain widget, the widget should interpret the scroll operation as a single &quot;page up&quot; or &quot;page down&quot; operation instead.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int wheelScrollLines ()</b></li>
@@ -410,7 +401,7 @@
 <p>Initializes the window system and constructs an application object with <i>argc</i> command line arguments in <i>argv</i>.</p>
 <p><b>Warning:</b> The data pointed to by <i>argc</i> and <i>argv</i> must stay valid for the entire lifetime of the <a href="qapplication.html">QApplication</a> object.</p>
 <p>The global <tt>qApp</tt> pointer refers to this application object. Only one application object should be created.</p>
-<p>This application object must be constructed before any <a href="qpaintdevice.html">paint devices</a> (including widgets, pixmaps, bitmaps etc.)&#x2e;</p>
+<p>This application object must be constructed before any paint devices (including widgets, pixmaps, bitmaps etc.)&#x2e;</p>
 <p>Note that <i>argc</i> and <i>argv</i> might be changed. Qt removes command line arguments that it recognizes. The original <i>argc</i> and <i>argv</i> can be accessed later with <a href="qcoreapplication.html#arguments">arguments</a>().</p>
 <p>Qt debugging options (not available if Qt was compiled without the QT_DEBUG flag defined):</p>
 <ul>
@@ -511,13 +502,7 @@
 <p>Returns the application top-level window that has the keyboard input focus, or 0 if no application window has the focus. Note that there might be an activeWindow() even if there is no <a href="qapplication.html#focusWidget">focusWidget</a>(), for example if no widget in that window accepts key events.</p>
 <p>See also <a href="qapplication.html#setActiveWindow">setActiveWindow</a>(), <a href="qwidget.html#setFocus">QWidget::setFocus</a>(), <a href="qwidget.html#focus-prop">QWidget::hasFocus</a>(), and <a href="qapplication.html#focusWidget">focusWidget</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/alert" />
-<h3 class="fn"><a name="alert"></a>void QApplication::alert ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>msec</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Causes an alert to be shown for <i>widget</i> if the window is not the active window. The alert is shown for <i>msec</i> miliseconds. If <i>msec</i> is zero (the default), then the alert is shown indefinitely until the window becomes active again.</p>
-<p>Currently this function does nothing on Qt for Embedded Linux.</p>
-<p>On Mac OS X, this works more at the application level and will cause the application icon to bounce in the dock.</p>
-<p>On Windows this causes the window's taskbar entry to flash for a time. If <i>msec</i> is zero, the flashing will stop and the taskbar entry will turn a different color (currently orange).</p>
-<p>On X11, this will cause the window to be marked as &quot;demands attention&quot;, the window must not be hidden (i.e&#x2e; not have hide() called on it, but be visible in some sort of way) in order for this to work.</p>
-<p>This function was introduced in Qt 4.3.</p>
+<h3 class="fn"><a name="alert"></a>void QApplication::alert ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>duration</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <a name="//apple_ref/cpp/clm/QApplication/allWidgets" />
 <h3 class="fn"><a name="allWidgets"></a><a href="qwidget.html#QWidgetList-typedef">QWidgetList</a> QApplication::allWidgets ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of all the widgets in the application.</p>
@@ -532,7 +517,6 @@
 <p>See also <a href="qapplication.html#topLevelWidgets">topLevelWidgets</a>() and <a href="qwidget.html#visible-prop">QWidget::isVisible</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/beep" />
 <h3 class="fn"><a name="beep"></a>void QApplication::beep ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sounds the bell, using the default volume and sound. The function is <i>not</i> available in Qt for Embedded Linux.</p>
 <a name="//apple_ref/cpp/clm/QApplication/changeOverrideCursor" />
 <h3 class="fn"><a name="changeOverrideCursor"></a>void QApplication::changeOverrideCursor ( const <a href="qcursor.html">QCursor</a> &amp; <i>cursor</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Changes the currently active application override cursor to <i>cursor</i>.</p>
@@ -573,9 +557,9 @@
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qapplication.html#isSessionRestored">isSessionRestored</a>(), <a href="qapplication.html#sessionId">sessionId</a>(), <a href="qapplication.html#saveState">saveState</a>(), and <a href="session.html">Session Management</a>.</p>
 <a name="//apple_ref/cpp/clm/QApplication/desktop" />
-<h3 class="fn"><a name="desktop"></a><a href="qdesktopwidget.html">QDesktopWidget</a> * QApplication::desktop ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="desktop"></a>QDesktopWidget * QApplication::desktop ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the desktop widget (also called the root window).</p>
-<p>Note that the desktop may be composed of multiple screens, so it would be incorrect, for example, to attempt to <i>center</i> some widget in the desktop's geometry. <a href="qdesktopwidget.html">QDesktopWidget</a> has various functions for obtaining useful geometries upon the desktop, such as <a href="qdesktopwidget.html#screenGeometry">QDesktopWidget::screenGeometry</a>() and <a href="qdesktopwidget.html#availableGeometry">QDesktopWidget::availableGeometry</a>().</p>
+<p>Note that the desktop may be composed of multiple screens, so it would be incorrect, for example, to attempt to <i>center</i> some widget in the desktop's geometry. QDesktopWidget has various functions for obtaining useful geometries upon the desktop, such as <a href="qdesktopwidget.html#screenGeometry">QDesktopWidget::screenGeometry</a>() and <a href="qdesktopwidget.html#availableGeometry">QDesktopWidget::availableGeometry</a>().</p>
 <p>On X11, it is also possible to draw on the desktop.</p>
 <a name="//apple_ref/cpp/clm/QApplication/desktopSettingsAware" />
 <h3 class="fn"><a name="desktopSettingsAware"></a>bool QApplication::desktopSettingsAware ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -619,11 +603,7 @@
 <p>Returns the <a href="qinputcontext.html">QInputContext</a> instance used by the application.</p>
 <p>See also <a href="qapplication.html#setInputContext">setInputContext</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/isEffectEnabled" />
-<h3 class="fn"><a name="isEffectEnabled"></a>bool QApplication::isEffectEnabled ( <a href="qt.html#UIEffect-enum">Qt::UIEffect</a> <i>effect</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns true if <i>effect</i> is enabled; otherwise returns false.</p>
-<p>By default, Qt will try to use the desktop settings. Call setDesktopSettingsAware(false) to prevent this.</p>
-<p>Note: All effects are disabled on screens running at less than 16-bit color depth.</p>
-<p>See also <a href="qapplication.html#setEffectEnabled">setEffectEnabled</a>() and <a href="qt.html#UIEffect-enum">Qt::UIEffect</a>.</p>
+<h3 class="fn"><a name="isEffectEnabled"></a>bool QApplication::isEffectEnabled ( <a href="qt.html#UIEffect-enum">Qt::UIEffect</a> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <a name="//apple_ref/cpp/clm/QApplication/isLeftToRight" />
 <h3 class="fn"><a name="isLeftToRight"></a>bool QApplication::isLeftToRight ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns true if the application's layout direction is <a href="qt.html#LayoutDirection-enum">Qt::LeftToRight</a>; otherwise returns false.</p>
@@ -705,9 +685,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <a name="//apple_ref/cpp/clm/QApplication/restoreOverrideCursor" />
 <h3 class="fn"><a name="restoreOverrideCursor"></a>void QApplication::restoreOverrideCursor ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Undoes the last <a href="qapplication.html#setOverrideCursor">setOverrideCursor</a>().</p>
-<p>If <a href="qapplication.html#setOverrideCursor">setOverrideCursor</a>() has been called twice, calling restoreOverrideCursor() will activate the first cursor set. Calling this function a second time restores the original widgets' cursors.</p>
-<p>See also <a href="qapplication.html#setOverrideCursor">setOverrideCursor</a>() and <a href="qapplication.html#overrideCursor">overrideCursor</a>().</p>
 <a name="//apple_ref/cpp/instm/QApplication/saveState" />
 <h3 class="fn"><a name="saveState"></a>void QApplication::saveState ( <a href="qsessionmanager.html">QSessionManager</a> &amp; <i>manager</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This function deals with <a href="session.html">session management</a>. It is invoked when the <a href="qsessionmanager.html">session manager</a> wants the application to preserve its state for a future session.</p>
@@ -781,10 +758,8 @@
          }</pre>
 <p>See also <a href="qapplication.html#desktopSettingsAware">desktopSettingsAware</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/setEffectEnabled" />
-<h3 class="fn"><a name="setEffectEnabled"></a>void QApplication::setEffectEnabled ( <a href="qt.html#UIEffect-enum">Qt::UIEffect</a> <i>effect</i>, bool <i>enable</i> = true )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Enables the UI effect <i>effect</i> if <i>enable</i> is true, otherwise the effect will not be used.</p>
-<p>Note: All effects are disabled on screens running at less than 16-bit color depth.</p>
-<p>See also <a href="qapplication.html#isEffectEnabled">isEffectEnabled</a>(), <a href="qt.html#UIEffect-enum">Qt::UIEffect</a>, and <a href="qapplication.html#setDesktopSettingsAware">setDesktopSettingsAware</a>().</p>
+<h3 class="fn"><a name="setEffectEnabled"></a>void QApplication::setEffectEnabled ( <a href="qt.html#UIEffect-enum">Qt::UIEffect</a>, bool <i>enable</i> = true )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>See also <a href="qapplication.html#isEffectEnabled">isEffectEnabled</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/setFont" />
 <h3 class="fn"><a name="setFont"></a>void QApplication::setFont ( const <a href="qfont.html">QFont</a> &amp; <i>font</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Changes the default application font to <i>font</i>. If <i>className</i> is passed, the change applies only to classes that inherit <i>className</i> (as reported by <a href="qobject.html#inherits">QObject::inherits</a>()).</p>
@@ -802,16 +777,8 @@
 <p>This feature is only available in Qt for Embedded Linux.</p>
 <p>See also <a href="qapplication.html#keypadNavigationEnabled">keypadNavigationEnabled</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/setOverrideCursor" />
-<h3 class="fn"><a name="setOverrideCursor"></a>void QApplication::setOverrideCursor ( const <a href="qcursor.html">QCursor</a> &amp; <i>cursor</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the application override cursor to <i>cursor</i>.</p>
-<p>Application override cursors are intended for showing the user that the application is in a special state, for example during an operation that might take some time.</p>
-<p>This cursor will be displayed in all the application's widgets until <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>() or another setOverrideCursor() is called.</p>
-<p>Application cursors are stored on an internal stack. setOverrideCursor() pushes the cursor onto the stack, and <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>() pops the active cursor off the stack. <a href="qapplication.html#changeOverrideCursor">changeOverrideCursor</a>() changes the curently active application override cursor. Every setOverrideCursor() must eventually be followed by a corresponding <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>(), otherwise the stack will never be emptied.</p>
-<p>Example:</p>
-<pre>         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-         calculateHugeMandelbrot();              // lunch time...
-         QApplication::restoreOverrideCursor();</pre>
-<p>See also <a href="qapplication.html#overrideCursor">overrideCursor</a>(), <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>(), <a href="qapplication.html#changeOverrideCursor">changeOverrideCursor</a>(), and <a href="qwidget.html#cursor-prop">QWidget::setCursor</a>().</p>
+<h3 class="fn"><a name="setOverrideCursor"></a>void QApplication::setOverrideCursor ( const <a href="qcursor.html">QCursor</a> &amp; )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>See also <a href="qapplication.html#overrideCursor">overrideCursor</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/setPalette" />
 <h3 class="fn"><a name="setPalette"></a>void QApplication::setPalette ( const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Changes the default application palette to <i>palette</i>.</p>
@@ -839,7 +806,6 @@
 <p>See also <a href="qapplication.html#setStyle">setStyle</a>() and <a href="qstyle.html">QStyle</a>.</p>
 <a name="//apple_ref/cpp/clm/QApplication/syncX" />
 <h3 class="fn"><a name="syncX"></a>void QApplication::syncX ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Synchronizes with the X server in the X11 implementation. This normally takes some time. Does nothing on other platforms.</p>
 <a name="//apple_ref/cpp/clm/QApplication/topLevelAt" />
 <h3 class="fn"><a name="topLevelAt"></a><a href="qwidget.html">QWidget</a> * QApplication::topLevelAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the top-level widget at the given <i>point</i>; returns 0 if there is no such widget.</p>
@@ -870,18 +836,16 @@
 <h3 class="fn"><a name="widgetAt-4"></a><a href="qwidget.html">QWidget</a> * QApplication::widgetAt ( int <i>x</i>, int <i>y</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the widget at global screen position (<i>x</i>, <i>y</i>), or 0 if there is no Qt widget there.</p>
+<a name="//apple_ref/cpp/instm/QApplication/winFocus" />
+<h3 class="fn"><a name="winFocus"></a>void QApplication::winFocus ( <a href="qwidget.html">QWidget</a> *, bool )</h3>
+<a name="//apple_ref/cpp/clm/QApplication/winMouseButtonUp" />
+<h3 class="fn"><a name="winMouseButtonUp"></a>void QApplication::winMouseButtonUp ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<a name="//apple_ref/cpp/instm/QApplication/x11ClientMessage" />
+<h3 class="fn"><a name="x11ClientMessage"></a>int QApplication::x11ClientMessage ( <a href="qwidget.html">QWidget</a> *, XEvent *, bool <i>passive_only</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <a name="//apple_ref/cpp/instm/QApplication/x11EventFilter" />
-<h3 class="fn"><a name="x11EventFilter"></a>bool QApplication::x11EventFilter ( XEvent * <i>event</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p><b>Warning:</b> This virtual function is only implemented under X11.</p>
-<p>If you create an application that inherits <a href="qapplication.html">QApplication</a> and reimplement this function, you get direct access to all X events that the are received from the X server. The events are passed in the <i>event</i> parameter.</p>
-<p>Return true if you want to stop the event from being processed. Return false for normal event dispatching. The default implementation returns false.</p>
-<p>It is only the directly addressed messages that are filtered. You must install an event filter directly on the event dispatcher, which is returned by <a href="qabstracteventdispatcher.html#instance">QAbstractEventDispatcher::instance</a>(), to handle system wide messages.</p>
-<p>See also <a href="qapplication.html#x11ProcessEvent">x11ProcessEvent</a>().</p>
+<h3 class="fn"><a name="x11EventFilter"></a>bool QApplication::x11EventFilter ( XEvent * )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <a name="//apple_ref/cpp/instm/QApplication/x11ProcessEvent" />
-<h3 class="fn"><a name="x11ProcessEvent"></a>int QApplication::x11ProcessEvent ( XEvent * <i>event</i> )</h3>
-<p>This function does the core processing of individual X <i>event</i>s, normally by dispatching Qt events to the right destination.</p>
-<p>It returns 1 if the event was consumed by special handling, 0 if the <i>event</i> was consumed by normal handling, and -1 if the <i>event</i> was for an unrecognized widget.</p>
-<p>See also <a href="qapplication.html#x11EventFilter">x11EventFilter</a>().</p>
+<h3 class="fn"><a name="x11ProcessEvent"></a>int QApplication::x11ProcessEvent ( XEvent * )</h3>
 <hr />
 <h2>Macro Documentation</h2>
 <a name="//apple_ref/cpp/macro//qApp" />

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/kernel/qcoreapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/corelib/kernel/qcoreapplication.cpp -->
 <head>
   <title>Qt 4.4: QCoreApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -47,7 +47,7 @@
 <li><div class="fn"/>bool <b><a href="qcoreapplication.html#filterEvent">filterEvent</a></b> ( void * <i>message</i>, long * <i>result</i> )</li>
 <li><div class="fn"/>virtual bool <b><a href="qcoreapplication.html#notify">notify</a></b> ( QObject * <i>receiver</i>, QEvent * <i>event</i> )</li>
 <li><div class="fn"/>EventFilter <b><a href="qcoreapplication.html#setEventFilter">setEventFilter</a></b> ( EventFilter <i>filter</i> )</li>
-<li><div class="fn"/>virtual bool <b><a href="qcoreapplication.html#winEventFilter">winEventFilter</a></b> ( MSG * <i>msg</i>, long * <i>result</i> )</li>
+<li><div class="fn"/>virtual bool <b><a href="qcoreapplication.html#winEventFilter">winEventFilter</a></b> ( MSG * <i>message</i>, long * <i>result</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
@@ -427,9 +427,7 @@
 <h3 class="fn"><a name="translate-2"></a><a href="qstring.html">QString</a> QCoreApplication::translate ( const char * <i>context</i>, const char * <i>sourceText</i>, const char * <i>comment</i> = 0, <a href="qcoreapplication.html#Encoding-enum">Encoding</a> <i>encoding</i> = CodecForTr )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <a name="//apple_ref/cpp/instm/QCoreApplication/winEventFilter" />
-<h3 class="fn"><a name="winEventFilter"></a>bool QCoreApplication::winEventFilter ( MSG * <i>msg</i>, long * <i>result</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>The message procedure calls this function for every message received. Reimplement this function if you want to process window messages <i>msg</i> that are not processed by Qt. If you don't want the event to be processed by Qt, then return true and set <i>result</i> to the value that the window procedure should return. Otherwise return false.</p>
-<p>It is only directly addressed messages that are filtered. To handle system wide messages, such as messages from a registered hot key, you need to install an event filter on the event dispatcher, which is returned from <a href="qabstracteventdispatcher.html#instance">QAbstractEventDispatcher::instance</a>().</p>
+<h3 class="fn"><a name="winEventFilter"></a>bool QCoreApplication::winEventFilter ( MSG * <i>message</i>, long * <i>result</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <hr />
 <h2>Related Non-Members</h2>
 <a name="//apple_ref/cpp/func//qAddPostRoutine" />

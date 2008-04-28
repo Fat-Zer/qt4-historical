@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qprinter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/painting/qprinter.cpp -->
 <head>
   <title>Qt 4.4: QPrinter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,8 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QPrinter Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QPrinter class is a paint device that paints on a printer. <a href="#details">More...</a></p>
-<pre> #include &lt;QPrinter&gt;</pre><p>Inherits <a href="qpaintdevice.html">QPaintDevice</a>.</p>
-<p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre> #include &lt;QPrinter&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qprinter-members.html">List of all members, including inherited members</a></li>
 <li><a href="qprinter-obsolete.html">Obsolete members</a></li>
@@ -106,20 +105,10 @@
 <li><div class="fn"/>int <b><a href="qprinter.html#toPage">toPage</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qprinter.html#winPageSize">winPageSize</a></b> () const</li>
 </ul>
-<ul>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
-</ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
 <ul>
 <li><div class="fn"/>void <b><a href="qprinter.html#setEngines">setEngines</a></b> ( QPrintEngine * <i>printEngine</i>, QPaintEngine * <i>paintEngine</i> )</li>
-</ul>
-<ul>
-<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
-</ul>
-<h3>Additional Inherited Members</h3>
-<ul>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -493,7 +482,6 @@
 <a name="//apple_ref/cpp/instm/QPrinter/paintEngine" />
 <h3 class="fn"><a name="paintEngine"></a><a href="qpaintengine.html">QPaintEngine</a> * QPrinter::paintEngine () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the paint engine used by the printer.</p>
-<p>Reimplemented from <a href="qpaintdevice.html#paintEngine">QPaintDevice</a>.</p>
 <a name="//apple_ref/cpp/instm/QPrinter/paperRect" />
 <h3 class="fn"><a name="paperRect"></a><a href="qrect.html">QRect</a> QPrinter::paperRect () const</h3>
 <p>Returns the paper's rectangle; this is usually larger than the <a href="qprinter.html#pageRect">pageRect</a>().</p>
@@ -606,7 +594,7 @@
 <p>If <i>fp</i> is true, enables support for painting over the entire page; otherwise restricts painting to the printable area reported by the device.</p>
 <p>By default, full page printing is disabled. In this case, the origin of the <a href="qprinter.html">QPrinter</a>'s coordinate system coincides with the top-left corner of the printable area.</p>
 <p>If full page printing is enabled, the origin of the <a href="qprinter.html">QPrinter</a>'s coordinate system coincides with the top-left corner of the paper itself. In this case, the <a href="qpaintdevice.html#PaintDeviceMetric-enum">device metrics</a> will report the exact same dimensions as indicated by <a href="qprinter.html#PaperSize-enum">PaperSize</a>. It may not be possible to print on the entire physical page because of the printer's margins, so the application must account for the margins itself.</p>
-<p>See also <a href="qprinter.html#fullPage">fullPage</a>(), <a href="qprinter.html#setPaperSize">setPaperSize</a>(), <a href="qpaintdevice.html#width">width</a>(), <a href="qpaintdevice.html#height">height</a>(), and <a href="printing.html">Printing with Qt</a>.</p>
+<p>See also <a href="qprinter.html#fullPage">fullPage</a>(), <a href="qprinter.html#setPaperSize">setPaperSize</a>(), width(), height(), and <a href="printing.html">Printing with Qt</a>.</p>
 <a name="//apple_ref/cpp/instm/QPrinter/setNumCopies" />
 <h3 class="fn"><a name="setNumCopies"></a>void QPrinter::setNumCopies ( int <i>numCopies</i> )</h3>
 <p>Sets the number of copies to be printed to <i>numCopies</i>.</p>

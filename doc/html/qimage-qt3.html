@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/image/qimage.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/gui/image/qimage.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QImage</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -48,20 +48,14 @@
 <li><div class="fn"/>QImage <b><a href="qimage-qt3.html#swapRGB">swapRGB</a></b> () const</li>
 <li><div class="fn"/>QImage <b><a href="qimage-qt3.html#xForm">xForm</a></b> ( const QMatrix &amp; <i>matrix</i> ) const</li>
 </ul>
-<ul>
-<li><div class="fn"/>8 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
-</ul>
 <h3>Static Public Members</h3>
 <ul>
 <li><div class="fn"/>Endian <b><a href="qimage-qt3.html#systemBitOrder">systemBitOrder</a></b> ()</li>
 <li><div class="fn"/>Endian <b><a href="qimage-qt3.html#systemByteOrder">systemByteOrder</a></b> ()</li>
 </ul>
-<ul>
-<li><div class="fn"/>13 static public members inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
-</ul>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>void <b><a href="qimage-qt3.html#bitBlt-4">bitBlt</a></b> ( QImage * <i>dst</i>, int <i>dx</i>, int <i>dy</i>, const QImage * <i>src</i>, int <i>sx</i> = 0, int <i>sy</i> = 0, int <i>sw</i> = -1, int <i>sh</i> = -1, Qt::ImageConversionFlags <i>flags</i> = Qt::AutoColor )</li>
+<li><div class="fn"/>void <b><a href="qimage-qt3.html#bitBlt">bitBlt</a></b> ( QImage * <i>dst</i>, int <i>dx</i>, int <i>dy</i>, const QImage * <i>src</i>, int <i>sx</i> = 0, int <i>sy</i> = 0, int <i>sw</i> = -1, int <i>sh</i> = -1, Qt::ImageConversionFlags <i>flags</i> = Qt::AutoColor )</li>
 </ul>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -249,8 +243,8 @@
  image.transformed(matrix);</pre>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="bitBlt-4"></a>void bitBlt ( QImage * <i>dst</i>, int <i>dx</i>, int <i>dy</i>, const QImage * <i>src</i>, int <i>sx</i> = 0, int <i>sy</i> = 0, int <i>sw</i> = -1, int <i>sh</i> = -1, <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<a name="//apple_ref/cpp/func//bitBlt" />
+<h3 class="fn"><a name="bitBlt"></a>void bitBlt ( QImage * <i>dst</i>, int <i>dx</i>, int <i>dy</i>, const QImage * <i>src</i>, int <i>sx</i> = 0, int <i>sy</i> = 0, int <i>sw</i> = -1, int <i>sh</i> = -1, <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor )</h3>
 <p>Copies a block of pixels from <i>src</i> to <i>dst</i>. The pixels copied from source (src) are converted according to <i>flags</i> if it is incompatible with the destination (<i>dst</i>).</p>
 <p><i>sx</i>, <i>sy</i> is the top-left pixel in <i>src</i>, <i>dx</i>, <i>dy</i> is the top-left position in <i>dst</i> and <i>sw</i>, <i>sh</i> is the size of the copied block. The copying is clipped if areas outside <i>src</i> or <i>dst</i> are specified. If <i>sw</i> is -1, it is adjusted to src-&gt;width(). Similarly, if <i>sh</i> is -1, it is adjusted to src-&gt;height().</p>
 <p>Currently inefficient for non 32-bit images.</p>

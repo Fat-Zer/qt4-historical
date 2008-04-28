@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/tools/qstring.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-mac-opensource-src-4.4.0/src/corelib/tools/qstring.cpp -->
 <head>
   <title>Qt 4.4: QString Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -259,18 +259,18 @@
 <h3>Related Non-Members</h3>
 <ul>
 <li><div class="fn"/>bool <b><a href="qstring.html#operator-not-eq-45">operator!=</a></b> ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</li>
-<li><div class="fn"/>const QString <b><a href="qstring.html#operator-2b">operator+</a></b> ( const QString &amp; <i>s1</i>, const QString &amp; <i>s2</i> )</li>
 <li><div class="fn"/>const QString <b><a href="qstring.html#operator-2b-36">operator+</a></b> ( const QString &amp; <i>s</i>, char <i>ch</i> )</li>
 <li><div class="fn"/>const QString <b><a href="qstring.html#operator-2b-37">operator+</a></b> ( char <i>ch</i>, const QString &amp; <i>s</i> )</li>
+<li><div class="fn"/>const QString <b><a href="qstring.html#operator-2b-6">operator+</a></b> ( const QString &amp; <i>s1</i>, const QString &amp; <i>s2</i> )</li>
 <li><div class="fn"/>const QString <b><a href="qstring.html#operator-2b-34">operator+</a></b> ( const QString &amp; <i>s1</i>, const char * <i>s2</i> )</li>
 <li><div class="fn"/>const QString <b><a href="qstring.html#operator-2b-35">operator+</a></b> ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qstring.html#operator-lt-18">operator&lt;</a></b> ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qstring.html#operator-lt-lt">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QString &amp; <i>string</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qstring.html#operator-lt-lt-38">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QString &amp; <i>string</i> )</li>
 <li><div class="fn"/>bool <b><a href="qstring.html#operator-lt-eq-15">operator&lt;=</a></b> ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qstring.html#operator-eq-eq-67">operator==</a></b> ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qstring.html#operator-gt-15">operator&gt;</a></b> ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qstring.html#operator-gt-eq-15">operator&gt;=</a></b> ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qstring.html#operator-gt-gt">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QString &amp; <i>string</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qstring.html#operator-gt-gt-20">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QString &amp; <i>string</i> )</li>
 </ul>
 <a name="macros"></a>
 <h3>Macros</h3>
@@ -1710,15 +1710,15 @@
 <p>Returns true if <i>s1</i> is not equal to <i>s2</i>; otherwise returns false.</p>
 <p>For <i>s1</i> != 0, this is equivalent to <tt>compare(</tt> <i>s1</i>, <i>s2</i> <tt>) != 0</tt>. Note that no string is equal to <i>s1</i> being 0.</p>
 <p>See also <a href="qstring.html#compare">QString::compare</a>().</p>
-<a name="//apple_ref/cpp/func//operator+" />
-<h3 class="fn"><a name="operator-2b"></a>const QString operator+ ( const QString &amp; <i>s1</i>, const QString &amp; <i>s2</i> )</h3>
-<p>Returns a string which is the result of concatenating <i>s1</i> and <i>s2</i>.</p>
 <h3 class="fn"><a name="operator-2b-36"></a>const QString operator+ ( const QString &amp; <i>s</i>, char <i>ch</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which is the result of concatenating the string <i>s</i> and the character <i>ch</i>.</p>
 <h3 class="fn"><a name="operator-2b-37"></a>const QString operator+ ( char <i>ch</i>, const QString &amp; <i>s</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which is the result of concatenating the character <i>ch</i> and the string <i>s</i>.</p>
+<h3 class="fn"><a name="operator-2b-6"></a>const QString operator+ ( const QString &amp; <i>s1</i>, const QString &amp; <i>s2</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a string which is the result of concatenating <i>s1</i> and <i>s2</i>.</p>
 <h3 class="fn"><a name="operator-2b-34"></a>const QString operator+ ( const QString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which is the result of concatenating <i>s1</i> and <i>s2</i> (<i>s2</i> is converted to Unicode using the <a href="qstring.html#fromAscii">QString::fromAscii</a>() function).</p>
@@ -1732,8 +1732,8 @@
 <p>Returns true if <i>s1</i> is lexically less than <i>s2</i>; otherwise returns false. For <i>s1</i> != 0, this is equivalent to <tt>compare(s1, s2) &lt; 0</tt>.</p>
 <p>The comparison is based exclusively on the numeric Unicode values of the characters and is very fast, but is not what a human would expect. Consider sorting user-interface strings using the <a href="qstring.html#localeAwareCompare">QString::localeAwareCompare</a>() function.</p>
 <p>See also <a href="qstring.html#compare">QString::compare</a>().</p>
-<a name="//apple_ref/cpp/func//operator<<" />
-<h3 class="fn"><a name="operator-lt-lt"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QString &amp; <i>string</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-38"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QString &amp; <i>string</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>string</i> to the specified <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <h3 class="fn"><a name="operator-lt-eq-15"></a>bool operator&lt;= ( const char * <i>s1</i>, const QString &amp; <i>s2</i> )</h3>
@@ -1755,8 +1755,8 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is lexically greater than or equal to <i>s2</i>; otherwise returns false. For <i>s1</i> != 0, this is equivalent to <tt>compare(s1, s2) &gt;= 0</tt>.</p>
 <p>The comparison is based exclusively on the numeric Unicode values of the characters and is very fast, but is not what a human would expect. Consider sorting user-interface strings using the <a href="qstring.html#localeAwareCompare">QString::localeAwareCompare</a>() function.</p>
-<a name="//apple_ref/cpp/func//operator>>" />
-<h3 class="fn"><a name="operator-gt-gt"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QString &amp; <i>string</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-20"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QString &amp; <i>string</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a string from the specified <i>stream</i> into the given <i>string</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <hr />
