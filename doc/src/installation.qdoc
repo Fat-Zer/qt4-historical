@@ -39,16 +39,16 @@ Please follow the instructions for your platform from the following list.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-x11-opensource-desktop-4.3.4.tar.gz}
+    if you have the \c{qt-x11-opensource-desktop-4.3.5.tar.gz}
     package, type the following commands at a command line prompt:
 
 \code
     cd /tmp
-    gunzip qt-x11-opensource-desktop-4.3.4.tar.gz        # uncompress the archive
-    tar xvf qt-x11-opensource-desktop-4.3.4.tar          # unpack it
+    gunzip qt-x11-opensource-desktop-4.3.5.tar.gz        # uncompress the archive
+    tar xvf qt-x11-opensource-desktop-4.3.5.tar          # unpack it
 \endcode
 
-    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.3.4}
+    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.3.5}
     containing the files from the archive. We only support the GNU version of
     the tar archiving utility. Note that on some systems it is called gtar.
 
@@ -58,13 +58,13 @@ Please follow the instructions for your platform from the following list.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.3.4} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.3.5} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
 
 \code
-    cd /tmp/qt-x11-opensource-desktop-4.3.4
+    cd /tmp/qt-x11-opensource-desktop-4.3.5
     ./configure
 \endcode
 
@@ -111,14 +111,14 @@ Please follow the instructions for your platform from the following list.
     following lines:
 
 \code
-    PATH=/usr/local/Trolltech/Qt-4.3.4/bin:$PATH
+    PATH=/usr/local/Trolltech/Qt-4.3.5/bin:$PATH
     export PATH
 \endcode
 
     In \c{.login} (in case your shell is csh or tcsh), add the following line:
 
 \code
-    setenv PATH /usr/local/Trolltech/Qt-4.3.4/bin:$PATH
+    setenv PATH /usr/local/Trolltech/Qt-4.3.5/bin:$PATH
 \endcode
 
     If you use a different shell, please modify your environment
@@ -126,7 +126,7 @@ Please follow the instructions for your platform from the following list.
 
     For compilers that do not support rpath you must also extended the
     \c LD_LIBRARY_PATH environment variable to include
-    \c{/usr/local/Trolltech/Qt-4.3.4/lib}. On Linux with GCC this step
+    \c{/usr/local/Trolltech/Qt-4.3.5/lib}. On Linux with GCC this step
     is not needed.
 
 \o  That's all. Qt is now installed.
@@ -182,7 +182,7 @@ as part of the \l{Qt Commercial Editions}.
     For the open source version you do not need a license file.
 
 \o  Uncompress the files into the directory you want Qt installed;
-    e.g. \c{C:\Qt\4.3.4}.
+    e.g. \c{C:\Qt\4.3.5}.
 
     \bold{Note:} The install path must not contain any spaces.
 
@@ -195,7 +195,7 @@ as part of the \l{Qt Commercial Editions}.
     PATH               - to locate qmake, moc and other Qt tools
 \endcode
 
-    This is done by adding \c{c:\Qt\4.3.4\bin} to the \c PATH variable.
+    This is done by adding \c{c:\Qt\4.3.5\bin} to the \c PATH variable.
 
     For newer versions of Windows, \c PATH can be extended through
     the \menu{Control Panel|System|Advanced|Environment variables} menu
@@ -216,7 +216,7 @@ as part of the \l{Qt Commercial Editions}.
 
 \code
     C:
-    cd \Qt\4.3.4
+    cd \Qt\4.3.5
     configure
 \endcode
 
@@ -294,16 +294,16 @@ What follows is how to install Qt/Mac from the source package.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-mac-opensource-desktop-4.3.4.tar.gz}
+    if you have the \c{qt-mac-opensource-desktop-4.3.5.tar.gz}
     package, type the following commands at a command line prompt:
 
 \code
     cd /tmp
-    gunzip qt-mac-opensource-desktop-4.3.4.tar.gz        # uncompress the archive
-    tar xvf qt-mac-opensource-desktop-4.3.4.tar          # unpack it
+    gunzip qt-mac-opensource-desktop-4.3.5.tar.gz        # uncompress the archive
+    tar xvf qt-mac-opensource-desktop-4.3.5.tar          # unpack it
 \endcode
 
-    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.3.4}
+    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.3.5}
     containing the files from the archive.
 
 \o  Building
@@ -312,13 +312,13 @@ What follows is how to install Qt/Mac from the source package.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.3.4} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.3.5} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
 
 \code
-    cd /tmp/qt-mac-opensource-desktop-4.3.4
+    cd /tmp/qt-mac-opensource-desktop-4.3.5
     ./configure
 \endcode
 
@@ -372,14 +372,14 @@ What follows is how to install Qt/Mac from the source package.
     In \c{.profile} (if your shell is bash), add the following lines:
 
 \code
-    PATH=/usr/local/Trolltech/Qt-4.3.4/bin:$PATH
+    PATH=/usr/local/Trolltech/Qt-4.3.5/bin:$PATH
     export PATH
 \endcode
 
     In \c{.login} (in case your shell is csh or tcsh), add the following line:
 
 \code
-    setenv PATH /usr/local/Trolltech/Qt-4.3.4/bin:$PATH
+    setenv PATH /usr/local/Trolltech/Qt-4.3.5/bin:$PATH
 \endcode
 
     If you use a different shell, please modify your environment

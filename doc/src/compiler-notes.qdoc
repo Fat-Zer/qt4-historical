@@ -80,14 +80,13 @@
     Trolltech currently tests the following compilers:
 
     \list
+
     \o Intel(R) C++ Compiler for applications running on IA-32,
-       Version 10.0 Build 20070809 Package ID: l_cc_c_10.0.026
-    \o Intel(R) C++ Compiler for applications running on IA-32,
-        Version 10.1 Build 20070913 Package ID: l_cc_p_10.1.008
+    Version 10.1 Build 20080112 Package ID: l_cc_p_10.1.012
+
     \o Intel(R) C++ Compiler for applications running on Intel(R) 64,
-       Version 10.0 Build 20070809 Package ID: l_cc_c_10.0.026
-    \o Intel(R) C++ Compiler for applications running on Intel(R) 64,
-        Version 10.1 Build 20070913 Package ID: l_cc_p_10.1.008
+    Version 10.1 Build 20080112 Package ID: l_cc_p_10.1.012
+
     \endlist
 
     \section2 Known issues with Intel C++ Compiler for Linux
@@ -98,12 +97,14 @@
        with -no-pch. Precompiled header support works properly in version
        10.0.026.
     \o Version 10.0.026 for Intel 64 is known to miscompile qmake when
-       building in release mode. For now, configure Qt with -debug. This
-       issue has been reported to Intel and is awaiting resolution.
-    \o Version 10.1.008 for both IA-32 and Intel 64 is known crash
-       with "(0): internal error: 0_47021" when compiling Designer in
-       release mode. For now, configure Qt with -debug. This issue has
-       been reported to Intel and is awaiting resolution.
+       building in release mode. For now, configure Qt with
+       -debug. Version 10.1.008 and later can compile qmake in release
+       mode.
+    \o Versions 10.1.008, 10.1.011, and 10.1.012 for both IA-32 and
+       Intel 64 is known crash with "(0): internal error: 0_47021"
+       when compiling Designer in release mode. For now, configure Qt
+       with -debug. This issue has been reported to Intel and is
+       awaiting resolution.
     \endlist
 
     \section2 Intel C++ Compiler (Windows, Altix)

@@ -1,4 +1,4 @@
-                  INSTALLING Qt/All Source Version 4.3.4.
+                  INSTALLING Qt/All Source Version 4.3.5.
 
 1.  If you have the commercial edition of Qt, install your license
     file as $HOME/.qt-license if you are on Unix. If you are on
@@ -14,15 +14,15 @@
 
     On Unix (X11 and Mac):
         cd /tmp
-        gunzip qt-all-opensource-src-4.3.4.tar.gz        # uncompress the archive
-        tar xvf qt-all-opensource-src-4.3.4.tar          # unpack it
+        gunzip qt-all-opensource-src-4.3.5.tar.gz        # uncompress the archive
+        tar xvf qt-all-opensource-src-4.3.5.tar          # unpack it
 
-    This creates the directory /tmp/qt-all-opensource-src-4.3.4 containing the files
+    This creates the directory /tmp/qt-all-opensource-src-4.3.5 containing the files
     from the archive. We only support the GNU version of the tar
     archiving utility. Note that on some systems it is called gtar.
 
     On Windows, uncompress the files into the directory you want Qt
-    installed, e.g. C:\Qt\4.3.4.
+    installed, e.g. C:\Qt\4.3.5.
 
     NOTE: The install path must not contain any spaces.
 
@@ -33,9 +33,9 @@
 
         PATH               - to locate qmake, moc and other Qt tools
 
-   On Windows, this is done by adding c:\Qt\4.3.4\bin
+   On Windows, this is done by adding c:\Qt\4.3.5\bin
    to the PATH variable. On Unix, this is done by adding
-   /tmp/qt-all-opensource-src-4.3.4.
+   /tmp/qt-all-opensource-src-4.3.5.
 
    For newer versions of Windows, PATH can be extended through
    "Control Panel->System->Advanced->Environment variables" and for
@@ -43,19 +43,19 @@
 
    In .profile (if your Unix shell is bash), add the following lines:
 
-        PATH=/usr/local/Trolltech/Qt-4.3.4/bin:$PATH
+        PATH=/usr/local/Trolltech/Qt-4.3.5/bin:$PATH
         export PATH
 
    In .login (in case your Unix shell is csh or tcsh), add the following line:
 
-        setenv PATH /usr/local/Trolltech/Qt-4.3.4/bin:$PATH
+        setenv PATH /usr/local/Trolltech/Qt-4.3.5/bin:$PATH
 
    If you use a different Unix shell, please modify your environment
    variables accordingly.
 
    For some X11 compilers that do not support rpath you must also
    extended the LD_LIBRARY_PATH environment variable to include
-   /usr/local/Trolltech/Qt-4.3.4/lib. On Linux or Mac with GCC
+   /usr/local/Trolltech/Qt-4.3.5/lib. On Linux or Mac with GCC
    this step is not needed.
 
 4.  Building
@@ -66,12 +66,12 @@
     ./configure script in the package directory.
 
     By default, Qt is configured for installation in the
-    /usr/local/Trolltech/Qt-4.3.4 directory, but this can be
+    /usr/local/Trolltech/Qt-4.3.5 directory, but this can be
     changed by using the -prefix option. Alternatively, the
     -prefix-install option can be used to specify a "local"
     installation within the source directory.
 
-        cd /tmp/qt-all-opensource-src-4.3.4
+        cd /tmp/qt-all-opensource-src-4.3.5
         ./configure
 
     Type "./configure -help" to get a list of all available options.
@@ -112,7 +112,7 @@
     To configure the Qt library for your machine type:
 
         C:
-        cd \Qt\4.3.4
+        cd \Qt\4.3.5
         configure
 
     Type "configure -help" to get a list of all available options.
@@ -145,8 +145,8 @@
 
     You might also want to try the following links:
 
-        http://doc.trolltech.com/4.3.4/how-to-learn-qt.html
-        http://doc.trolltech.com/4.3.4/tutorial.html
+        http://doc.trolltech.com/4.3.5/how-to-learn-qt.html
+        http://doc.trolltech.com/4.3.5/tutorial.html
         http://www.trolltech.com/developer
 
     We hope you will enjoy using Qt. Good luck!

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/doc/src/qdbusadaptors.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/doc/src/qdbusadaptors.qdoc -->
 <head>
   <title>Qt 4.3: Declaring Slots in D-Bus Adaptors</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -24,7 +24,7 @@
 <a name="asynchronous-slots"></a>
 <h2>Asynchronous Slots</h2>
 <p>Asynchronous slots are those that do not normally return any reply to the caller. For that reason, they cannot take any output parameters. In most cases, by the time the first line of the slot is run, the caller function has already resumed working.</p>
-<p>However, slots must rely on that behavior. Scheduling and message-dispatching issues could change the order in which the slot is run. Code intending to synchronize with the caller should provide its own method of synchronization.</p>
+<p>However, slots must not rely on that behavior. Scheduling and message-dispatching issues could change the order in which the slot is run. Code intending to synchronize with the caller should provide its own method of synchronization.</p>
 <p>Asynchronous slots are marked by the keyword <a href="qdbusabstractadaptor.html#Q_NOREPLY">Q_NOREPLY</a> in the method signature, before the <tt>void</tt> return type and the slot name. (See the <tt>quit()</tt> slot in the <a href="qdbusadaptorexample.html">D-Bus Adaptor Example</a>).</p>
 <a name="input-only-slots"></a>
 <h2>Input-Only Slots</h2>
@@ -83,6 +83,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.4</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.5</div></td>
 </tr></table></div></address></body>
 </html>

@@ -13,7 +13,7 @@
 -- (or its successors, if any) and the KDE Free Qt Foundation. In
 -- addition, as a special exception, Trolltech gives you certain
 -- additional rights. These rights are described in the Trolltech GPL
--- Exception version 1.1, which can be found at
+-- Exception version 1.2, which can be found at
 -- http://www.trolltech.com/products/qt/gplexception/ and in the file
 -- GPL_EXCEPTION.txt in this package.
 --
@@ -84,7 +84,7 @@
 **
 ** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
 **
-** This file is part of the $MODULE$ of the Qt Toolkit.
+** This file is part of the QtScript module of the Qt Toolkit.
 **
 ** This file may be used under the terms of the GNU General Public
 ** License versions 2.0 or 3.0 as published by the Free Software
@@ -95,7 +95,7 @@
 ** (or its successors, if any) and the KDE Free Qt Foundation. In
 ** addition, as a special exception, Trolltech gives you certain
 ** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.1, which can be found at
+** Exception version 1.2, which can be found at
 ** http://www.trolltech.com/products/qt/gplexception/ and in the file
 ** GPL_EXCEPTION.txt in this package.
 **
@@ -151,7 +151,7 @@
 **
 ** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
 **
-** This file is part of the $MODULE$ of the Qt Toolkit.
+** This file is part of the QtScript module of the Qt Toolkit.
 **
 ** This file may be used under the terms of the GNU General Public
 ** License versions 2.0 or 3.0 as published by the Free Software
@@ -162,7 +162,7 @@
 ** (or its successors, if any) and the KDE Free Qt Foundation. In
 ** addition, as a special exception, Trolltech gives you certain
 ** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.1, which can be found at
+** Exception version 1.2, which can be found at
 ** http://www.trolltech.com/products/qt/gplexception/ and in the file
 ** GPL_EXCEPTION.txt in this package.
 **

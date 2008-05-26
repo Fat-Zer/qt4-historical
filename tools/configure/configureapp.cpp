@@ -13,7 +13,7 @@
 ** (or its successors, if any) and the KDE Free Qt Foundation. In
 ** addition, as a special exception, Trolltech gives you certain
 ** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.1, which can be found at
+** Exception version 1.2, which can be found at
 ** http://www.trolltech.com/products/qt/gplexception/ and in the file
 ** GPL_EXCEPTION.txt in this package.
 **
@@ -2625,14 +2625,13 @@ Configure::ProjectType Configure::projectType( const QString& proFileName )
 
 #if !defined(EVAL)
 
-bool Configure::showLicense(QString orgLicenseFile)
+bool Configure::showLicense(QString licenseFile)
 {
     if (dictionary["LICENSE_CONFIRMED"] == "yes") {
         cout << "You have already accepted the terms of the license." << endl << endl;
         return true;
     }
 
-    QString licenseFile = orgLicenseFile;
     QString theLicense;
     if (dictionary["EDITION"] == "OpenSource") {
         theLicense = "GNU General Public License (GPL) version 2 or 3";
@@ -2640,7 +2639,7 @@ bool Configure::showLicense(QString orgLicenseFile)
         // the first line of the license file tells us which license it is
         QFile file(licenseFile);
         if (!file.open(QFile::ReadOnly)) {
-            cout << "Failed to load LICENSE file" << endl;
+            cout << "Failed to load LICENSE file";
             return false;
         }
         theLicense = file.readLine().trimmed();
@@ -2671,9 +2670,9 @@ bool Configure::showLicense(QString orgLicenseFile)
         } else {
             if (dictionary["EDITION"] == "OpenSource") {
                 if (accept == '3')
-                    licenseFile = orgLicenseFile + "3";
+                    licenseFile += "3";
                 else
-                    licenseFile = orgLicenseFile + "2";
+                    licenseFile += "2";
             }
             // Get console line height, to fill the screen properly
             int i = 0, screenHeight = 25; // default
@@ -2687,7 +2686,7 @@ bool Configure::showLicense(QString orgLicenseFile)
             // Prompt the license content to the user
             QFile file(licenseFile);
             if (!file.open(QFile::ReadOnly)) {
-                cout << "Failed to load LICENSE file" << endl;
+                cout << "Failed to load LICENSE file";
                 return false;
             }
             QStringList licenseContent = QString(file.readAll()).split('\n');
