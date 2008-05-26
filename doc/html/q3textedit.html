@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/qt3support/text/q3textedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-x11-opensource-src-4.3.5/src/qt3support/text/q3textedit.cpp -->
 <head>
   <title>Qt 4.3: Q3TextEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//Q3TextEdit" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -396,11 +395,6 @@
 <p>By default the text edit widget operates in insert mode so all text that the user enters is inserted into the text edit and any text to the right of the cursor is moved out of the way. The mode can be changed to overwrite, where new text overwrites any text to the right of the cursor, using <a href="q3textedit.html#overwriteMode-prop">setOverwriteMode</a>().</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/Q3TextEdit/AutoFormattingFlag" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AutoNone" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AutoBulletList" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AutoAll" />
-<a name="//apple_ref/cpp/tdef/Q3TextEdit/AutoFormatting" />
 <h3 class="flags"><a name="AutoFormattingFlag-enum"></a>enum Q3TextEdit::AutoFormattingFlag<br />flags Q3TextEdit::AutoFormatting</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
@@ -409,19 +403,6 @@
 <tr><td valign="top"><tt>Q3TextEdit::AutoAll</tt></td><td align="center" valign="top"><tt>0xffffffff</tt></td><td valign="top">Apply all available autoformatting</td></tr>
 </table></p>
 <p>The AutoFormatting type is a typedef for <a href="qflags.html">QFlags</a>&lt;AutoFormattingFlag&gt;. It stores an OR combination of AutoFormattingFlag values.</p>
-<a name="//apple_ref/cpp/tag/Q3TextEdit/CursorAction" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveBackward" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveWordBackward" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveForward" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveWordForward" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveUp" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveDown" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveLineStart" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveLineEnd" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveHome" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MoveEnd" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MovePgUp" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/MovePgDown" />
 <h3 class="fn"><a name="CursorAction-enum"></a>enum Q3TextEdit::CursorAction</h3>
 <p>This enum is used by <a href="q3textedit.html#moveCursor">moveCursor</a>() to specify in which direction the cursor should be moved:</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -439,13 +420,6 @@
 <tr><td valign="top"><tt>Q3TextEdit::MovePgUp</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">Moves the cursor one viewport page up</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::MovePgDown</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">Moves the cursor one viewport page down</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/Q3TextEdit/KeyboardAction" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/ActionBackspace" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/ActionDelete" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/ActionReturn" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/ActionKill" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/ActionWordBackspace" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/ActionWordDelete" />
 <h3 class="fn"><a name="KeyboardAction-enum"></a>enum Q3TextEdit::KeyboardAction</h3>
 <p>This enum is used by <a href="q3textedit.html#doKeyboardAction">doKeyboardAction</a>() to specify which action should be executed:</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -457,10 +431,6 @@
 <tr><td valign="top"><tt>Q3TextEdit::ActionWordBackspace</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Delete the word to the left of the cursor position.</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::ActionWordDelete</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Delete the word to the right of the cursor position</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/Q3TextEdit/VerticalAlignment" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AlignNormal" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AlignSuperScript" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AlignSubScript" />
 <h3 class="fn"><a name="VerticalAlignment-enum"></a>enum Q3TextEdit::VerticalAlignment</h3>
 <p>This enum is used to set the vertical alignment of the text.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -469,11 +439,6 @@
 <tr><td valign="top"><tt>Q3TextEdit::AlignSuperScript</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Superscript</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AlignSubScript</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Subscript</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/Q3TextEdit/WordWrap" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/NoWrap" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/WidgetWidth" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/FixedPixelWidth" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/FixedColumnWidth" />
 <h3 class="fn"><a name="WordWrap-enum"></a>enum Q3TextEdit::WordWrap</h3>
 <p>This enum defines the <a href="q3textedit.html">Q3TextEdit</a>'s word wrap modes.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -484,11 +449,6 @@
 <tr><td valign="top"><tt>Q3TextEdit::FixedColumnWidth</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Wrap the text at a fixed number of character columns from the widget's left side. The number of characters is set with <a href="q3textedit.html#wrapColumnOrWidth-prop">wrapColumnOrWidth</a>(). This is useful if you need formatted text that can also be displayed gracefully on devices with monospaced fonts, for example a standard VT100 terminal, where you might set <a href="q3textedit.html#wrapColumnOrWidth-prop">wrapColumnOrWidth</a>() to 80.</td></tr>
 </table></p>
 <p>See also <a href="q3textedit.html#wordWrap-prop">setWordWrap</a>() and <a href="q3textedit.html#wordWrap-prop">wordWrap</a>().</p>
-<a name="//apple_ref/cpp/tag/Q3TextEdit/WrapPolicy" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AtWhiteSpace" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/Anywhere" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AtWordBoundary" />
-<a name="//apple_ref/cpp/econst/Q3TextEdit/AtWordOrDocumentBoundary" />
 <h3 class="fn"><a name="WrapPolicy-enum"></a>enum Q3TextEdit::WrapPolicy</h3>
 <p>This enum defines where text can be wrapped in word wrap mode.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -501,8 +461,6 @@
 <p>See also <a href="q3textedit.html#wrapPolicy-prop">setWrapPolicy</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/autoFormatting" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setAutoFormatting" />
 <h3 class="fn"><a name="autoFormatting-prop"></a>autoFormatting : <a href="q3textedit.html#AutoFormattingFlag-enum">AutoFormattingFlag</a></h3>
 <p>This property holds the enabled set of auto formatting features.</p>
 <p>The value can be any combination of the values in the <tt>AutoFormattingFlag</tt> enum. The default is <tt>AutoAll</tt>. Choose <tt>AutoNone</tt> to disable all automatic formatting.</p>
@@ -512,7 +470,6 @@
 <li><div class="fn"/><b>AutoFormatting autoFormatting () const</b></li>
 <li><div class="fn"/><b>void setAutoFormatting ( AutoFormatting )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/documentTitle" />
 <h3 class="fn"><a name="documentTitle-prop"></a>documentTitle : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the title of the document parsed from the text.</p>
 <p>For <a href="qt.html#TextFormat-enum">Qt::PlainText</a> the title will be an empty string. For <tt>Qt::RichText</tt> the title will be the text between the <tt>&lt;title&gt;</tt> tags, if present, otherwise an empty string.</p>
@@ -520,22 +477,18 @@
 <ul>
 <li><div class="fn"/><b>QString documentTitle () const</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/hasSelectedText" />
 <h3 class="fn"><a name="hasSelectedText-prop"></a>hasSelectedText : const bool</h3>
 <p>This property holds whether some text is selected in selection 0.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool hasSelectedText () const</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/length" />
 <h3 class="fn"><a name="length-prop"></a>length : const int</h3>
 <p>This property holds the number of characters in the text.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int length () const</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/linkUnderline" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setLinkUnderline" />
 <h3 class="fn"><a name="linkUnderline-prop"></a>linkUnderline : bool</h3>
 <p>This property holds whether hypertext links will be underlined.</p>
 <p>If true (the default) hypertext links will be displayed underlined. If false links will not be displayed underlined.</p>
@@ -544,8 +497,6 @@
 <li><div class="fn"/><b>bool linkUnderline () const</b></li>
 <li><div class="fn"/><b>virtual void setLinkUnderline ( bool )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/isModified" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setModified" />
 <h3 class="fn"><a name="modified-prop"></a>modified : bool</h3>
 <p>This property holds whether the document has been modified by the user.</p>
 <p>Access functions:</p>
@@ -553,8 +504,6 @@
 <li><div class="fn"/><b>bool isModified () const</b></li>
 <li><div class="fn"/><b>virtual void setModified ( bool <i>m</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/isOverwriteMode" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setOverwriteMode" />
 <h3 class="fn"><a name="overwriteMode-prop"></a>overwriteMode : bool</h3>
 <p>This property holds the text edit's overwrite mode.</p>
 <p>If false (the default) characters entered by the user are inserted with any characters to the right being moved out of the way. If true, the editor is in overwrite mode, i.e&#x2e; characters entered by the user overwrite any characters to the right of the cursor position.</p>
@@ -563,8 +512,6 @@
 <li><div class="fn"/><b>bool isOverwriteMode () const</b></li>
 <li><div class="fn"/><b>virtual void setOverwriteMode ( bool <i>b</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/paper" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setPaper" />
 <h3 class="fn"><a name="paper-prop"></a>paper : <a href="qbrush.html">QBrush</a></h3>
 <p>This property holds the background (paper) brush.</p>
 <p>The brush that is currently used to draw the background of the text edit. The initial setting is an empty brush.</p>
@@ -573,8 +520,6 @@
 <li><div class="fn"/><b>QBrush paper () const</b></li>
 <li><div class="fn"/><b>virtual void setPaper ( const QBrush &amp; <i>pap</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/isReadOnly" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setReadOnly" />
 <h3 class="fn"><a name="readOnly-prop"></a>readOnly : bool</h3>
 <p>This property holds whether the text edit is read-only.</p>
 <p>In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible.</p>
@@ -584,7 +529,6 @@
 <li><div class="fn"/><b>bool isReadOnly () const</b></li>
 <li><div class="fn"/><b>virtual void setReadOnly ( bool <i>b</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/selectedText" />
 <h3 class="fn"><a name="selectedText-prop"></a>selectedText : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the selected text (from selection 0) or an empty string if there is no currently selected text (in selection 0).</p>
 <p>The text is always returned as <a href="qt.html#TextFormat-enum">Qt::PlainText</a> if the <a href="q3textedit.html#textFormat-prop">textFormat</a>() is <a href="qt.html#TextFormat-enum">Qt::PlainText</a> or <a href="qt.html#TextFormat-enum">Qt::AutoText</a>, otherwise it is returned as HTML.</p>
@@ -593,8 +537,6 @@
 <li><div class="fn"/><b>QString selectedText () const</b></li>
 </ul>
 <p>See also <a href="q3textedit.html#hasSelectedText-prop">hasSelectedText</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/tabChangesFocus" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setTabChangesFocus" />
 <h3 class="fn"><a name="tabChangesFocus-prop"></a>tabChangesFocus : bool</h3>
 <p>This property holds whether TAB changes focus or is accepted as input.</p>
 <p>In some occasions text edits should not allow the user to input tabulators or change indentation using the TAB key, as this breaks the focus chain. The default is false.</p>
@@ -603,8 +545,6 @@
 <li><div class="fn"/><b>bool tabChangesFocus () const</b></li>
 <li><div class="fn"/><b>virtual void setTabChangesFocus ( bool <i>b</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/tabStopWidth" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setTabStopWidth" />
 <h3 class="fn"><a name="tabStopWidth-prop"></a>tabStopWidth : int</h3>
 <p>This property holds the tab stop width in pixels.</p>
 <p>Access functions:</p>
@@ -612,8 +552,6 @@
 <li><div class="fn"/><b>int tabStopWidth () const</b></li>
 <li><div class="fn"/><b>virtual void setTabStopWidth ( int <i>ts</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/text" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setText" />
 <h3 class="fn"><a name="text-prop"></a>text : <a href="qstring.html">QString</a></h3>
 <p>This property holds the text edit's text.</p>
 <p>There is no default text.</p>
@@ -628,8 +566,6 @@
 <li><div class="fn"/><b>virtual void setText ( const QString &amp; <i>text</i>, const QString &amp; <i>context</i> )</b></li>
 </ul>
 <p>See also <a href="q3textedit.html#textFormat-prop">textFormat</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/textFormat" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setTextFormat" />
 <h3 class="fn"><a name="textFormat-prop"></a>textFormat : <a href="qt.html#TextFormat-enum">Qt::TextFormat</a></h3>
 <p>This property holds the text format: rich text, plain text, log text or auto text.</p>
 <p>The text format is one of the following:</p>
@@ -644,8 +580,6 @@
 <li><div class="fn"/><b>Qt::TextFormat textFormat () const</b></li>
 <li><div class="fn"/><b>virtual void setTextFormat ( Qt::TextFormat <i>f</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/undoDepth" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setUndoDepth" />
 <h3 class="fn"><a name="undoDepth-prop"></a>undoDepth : int</h3>
 <p>This property holds the depth of the undo history.</p>
 <p>The maximum number of steps in the undo/redo history. The default is 100.</p>
@@ -655,8 +589,6 @@
 <li><div class="fn"/><b>virtual void setUndoDepth ( int <i>d</i> )</b></li>
 </ul>
 <p>See also <a href="q3textedit.html#undo">undo</a>() and <a href="q3textedit.html#redo">redo</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/isUndoRedoEnabled" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setUndoRedoEnabled" />
 <h3 class="fn"><a name="undoRedoEnabled-prop"></a>undoRedoEnabled : bool</h3>
 <p>This property holds whether undo/redo is enabled.</p>
 <p>When changing this property, the undo/redo history is cleared.</p>
@@ -666,8 +598,6 @@
 <li><div class="fn"/><b>bool isUndoRedoEnabled () const</b></li>
 <li><div class="fn"/><b>virtual void setUndoRedoEnabled ( bool <i>b</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/wordWrap" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setWordWrap" />
 <h3 class="fn"><a name="wordWrap-prop"></a>wordWrap : <a href="q3textedit.html#WordWrap-enum">WordWrap</a></h3>
 <p>This property holds the word wrap mode.</p>
 <p>The default mode is <tt>WidgetWidth</tt> which causes words to be wrapped at the right edge of the text edit. Wrapping occurs at whitespace, keeping whole words intact. If you want wrapping to occur within words use <a href="q3textedit.html#wrapPolicy-prop">setWrapPolicy</a>(). If you set a wrap mode of <tt>FixedPixelWidth</tt> or <tt>FixedColumnWidth</tt> you should also call <a href="q3textedit.html#wrapColumnOrWidth-prop">setWrapColumnOrWidth</a>() with the width you want.</p>
@@ -677,8 +607,6 @@
 <li><div class="fn"/><b>virtual void setWordWrap ( Q3TextEdit::WordWrap <i>mode</i> )</b></li>
 </ul>
 <p>See also <a href="q3textedit.html#WordWrap-enum">WordWrap</a>, <a href="q3textedit.html#wrapColumnOrWidth-prop">wrapColumnOrWidth</a>, and <a href="q3textedit.html#wrapPolicy-prop">wrapPolicy</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/wrapColumnOrWidth" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setWrapColumnOrWidth" />
 <h3 class="fn"><a name="wrapColumnOrWidth-prop"></a>wrapColumnOrWidth : int</h3>
 <p>This property holds the position (in pixels or columns depending on the wrap mode) where text will be wrapped.</p>
 <p>If the wrap mode is <tt>FixedPixelWidth</tt>, the value is the number of pixels from the left edge of the text edit at which text should be wrapped. If the wrap mode is <tt>FixedColumnWidth</tt>, the value is the column number (in character columns) from the left edge of the text edit at which text should be wrapped.</p>
@@ -688,8 +616,6 @@
 <li><div class="fn"/><b>virtual void setWrapColumnOrWidth ( int )</b></li>
 </ul>
 <p>See also <a href="q3textedit.html#wordWrap-prop">wordWrap</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/wrapPolicy" />
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setWrapPolicy" />
 <h3 class="fn"><a name="wrapPolicy-prop"></a>wrapPolicy : <a href="q3textedit.html#WrapPolicy-enum">WrapPolicy</a></h3>
 <p>This property holds the word wrap policy, at whitespace or anywhere.</p>
 <p>Defines where text can be wrapped when word wrap mode is not <tt>NoWrap</tt>. The choices are <tt>AtWordBoundary</tt> (the default), <tt>Anywhere</tt> and <tt>AtWordOrDocumentBoundary</tt></p>
@@ -701,63 +627,48 @@
 <p>See also <a href="q3textedit.html#wordWrap-prop">wordWrap</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/Q3TextEdit" />
 <h3 class="fn"><a name="Q3TextEdit"></a>Q3TextEdit::Q3TextEdit ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qstring.html">QString</a> &amp; <i>context</i> = QString(), <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, const char * <i>name</i> = 0 )</h3>
 <p>Constructs a <a href="q3textedit.html">Q3TextEdit</a> called <i>name</i>, with parent <i>parent</i>. The text edit will display the text <i>text</i> using context <i>context</i>.</p>
 <p>The <i>context</i> is a path which the text edit's <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> uses to resolve the locations of files and images. It is passed to the <a href="q3textedit.html#mimeSourceFactory">mimeSourceFactory</a>() when quering data.</p>
 <p>For example if the text contains an image tag, <tt>&lt;img src=&quot;image.png&quot;&gt;</tt>, and the context is &quot;path/to/look/in&quot;, the <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> will try to load the image from &quot;path/to/look/in/image.png&quot;. If the tag was <tt>&lt;img src=&quot;/image.png&quot;&gt;</tt>, the context will not be used (because <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> recognizes that we have used an absolute path) and will try to load &quot;/image.png&quot;. The context is applied in exactly the same way to <i>hrefs</i>, for example, <tt>&lt;a href=&quot;target.html&quot;&gt;Target&lt;/a&gt;</tt>, would resolve to &quot;path/to/look/in/target.html&quot;.</p>
 <h3 class="fn"><a name="Q3TextEdit-2"></a>Q3TextEdit::Q3TextEdit ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, const char * <i>name</i> = 0 )</h3>
 <p>Constructs an empty <a href="q3textedit.html">Q3TextEdit</a> called <i>name</i>, with parent <i>parent</i>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/~Q3TextEdit" />
 <h3 class="fn"><a name="dtor.Q3TextEdit"></a>Q3TextEdit::~Q3TextEdit ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destructor.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/alignment" />
 <h3 class="fn"><a name="alignment"></a>int Q3TextEdit::alignment () const</h3>
 <p>Returns the alignment of the current paragraph.</p>
 <p>See also <a href="q3textedit.html#setAlignment">setAlignment</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/anchorAt" />
 <h3 class="fn"><a name="anchorAt"></a><a href="qstring.html">QString</a> Q3TextEdit::anchorAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, <a href="qt.html#AnchorAttribute-enum">Qt::AnchorAttribute</a> <i>attr</i> = Qt::AnchorHref )</h3>
 <p>Returns the text for the attribute <i>attr</i> (<a href="qt.html#AnchorAttribute-enum">Qt::AnchorHref</a> by default) if there is an anchor at position <i>pos</i> (in contents coordinates); otherwise returns an empty string.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/append" />
 <h3 class="fn"><a name="append"></a>void Q3TextEdit::append ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Appends a new paragraph with <i>text</i> to the end of the text edit. Note that the undo/redo history is cleared by this function, and no undo history is kept for appends which makes them faster than <a href="q3textedit.html#insert">insert</a>()s. If you want to append text which is added to the undo/redo history as well, use <a href="q3textedit.html#insertParagraph">insertParagraph</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/bold" />
 <h3 class="fn"><a name="bold"></a>bool Q3TextEdit::bold () const</h3>
 <p>Returns true if the current format is bold; otherwise returns false.</p>
 <p>See also <a href="q3textedit.html#setBold">setBold</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/charAt" />
 <h3 class="fn"><a name="charAt"></a>int Q3TextEdit::charAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, int * <i>para</i> ) const</h3>
 <p>Returns the index of the character (relative to its paragraph) at position <i>pos</i> (in contents coordinates). If <i>para</i> is not 0, <tt>*</tt><i>para</i> is set to the character's paragraph.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/clear" />
 <h3 class="fn"><a name="clear"></a>void Q3TextEdit::clear ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Deletes all the text in the text edit.</p>
 <p>See also <a href="q3textedit.html#cut">cut</a>(), <a href="q3textedit.html#removeSelectedText">removeSelectedText</a>(), and <a href="q3textedit.html#text-prop">setText</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/clearParagraphBackground" />
 <h3 class="fn"><a name="clearParagraphBackground"></a>void Q3TextEdit::clearParagraphBackground ( int <i>para</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Clears the background color of the paragraph <i>para</i>, so that the default color is used again.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/clicked" />
 <h3 class="fn"><a name="clicked"></a>void Q3TextEdit::clicked ( int <i>para</i>, int <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the mouse is clicked on the paragraph <i>para</i> at character position <i>pos</i>.</p>
 <p>See also <a href="q3textedit.html#doubleClicked">doubleClicked</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/color" />
 <h3 class="fn"><a name="color"></a><a href="qcolor.html">QColor</a> Q3TextEdit::color () const</h3>
 <p>Returns the color of the current format.</p>
 <p>See also <a href="q3textedit.html#setColor">setColor</a>() and <a href="q3textedit.html#paper-prop">setPaper</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/context" />
 <h3 class="fn"><a name="context"></a><a href="qstring.html">QString</a> Q3TextEdit::context () const</h3>
 <p>Returns the context of the text edit. The context is a path which the text edit's <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> uses to resolve the locations of files and images.</p>
 <p>See also <a href="q3textedit.html#text-prop">text</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/copy" />
 <h3 class="fn"><a name="copy"></a>void Q3TextEdit::copy ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Copies any selected text (from selection 0) to the clipboard.</p>
 <p>See also <a href="q3textedit.html#hasSelectedText-prop">hasSelectedText</a>() and <a href="q3textedit.html#copyAvailable">copyAvailable</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/copyAvailable" />
 <h3 class="fn"><a name="copyAvailable"></a>void Q3TextEdit::copyAvailable ( bool <i>yes</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when text is selected or de-selected in the text edit.</p>
 <p>When text is selected this signal will be emitted with <i>yes</i> set to true. If no text has been selected or if the selected text is de-selected this signal is emitted with <i>yes</i> set to false.</p>
 <p>If <i>yes</i> is true then <a href="q3textedit.html#copy">copy</a>() can be used to copy the selection to the clipboard. If <i>yes</i> is false then <a href="q3textedit.html#copy">copy</a>() does nothing.</p>
 <p>See also <a href="q3textedit.html#selectionChanged">selectionChanged</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/createPopupMenu" />
 <h3 class="fn"><a name="createPopupMenu"></a><a href="q3popupmenu.html">Q3PopupMenu</a> * Q3TextEdit::createPopupMenu ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function is called to create a right mouse button popup menu at the document position <i>pos</i>. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
 <p><b>Warning:</b> The <a href="porting4.html#qpopupmenu">QPopupMenu</a> ID values 0-7 are reserved, and they map to the standard operations. When inserting items into your custom popup menu, be sure to specify ID values larger than 7.</p>
@@ -765,58 +676,45 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function is called to create a right mouse button popup menu. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
 <p>This function is only called if createPopupMenu(const <a href="qpoint.html">QPoint</a> &amp;) returns 0.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/currentAlignmentChanged" />
 <h3 class="fn"><a name="currentAlignmentChanged"></a>void Q3TextEdit::currentAlignmentChanged ( int <i>a</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the alignment of the current paragraph has changed.</p>
 <p>The new alignment is <i>a</i>.</p>
 <p>See also <a href="q3textedit.html#setAlignment">setAlignment</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/currentColorChanged" />
 <h3 class="fn"><a name="currentColorChanged"></a>void Q3TextEdit::currentColorChanged ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the color of the current format has changed.</p>
 <p>The new color is <i>c</i>.</p>
 <p>See also <a href="q3textedit.html#setColor">setColor</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/currentFont" />
 <h3 class="fn"><a name="currentFont"></a><a href="qfont.html">QFont</a> Q3TextEdit::currentFont () const</h3>
 <p>Returns the font of the current format.</p>
 <p>See also <a href="q3textedit.html#setCurrentFont">setCurrentFont</a>(), <a href="q3textedit.html#setFamily">setFamily</a>(), and <a href="q3textedit.html#setPointSize">setPointSize</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/currentFontChanged" />
 <h3 class="fn"><a name="currentFontChanged"></a>void Q3TextEdit::currentFontChanged ( const <a href="qfont.html">QFont</a> &amp; <i>f</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the font of the current format has changed.</p>
 <p>The new font is <i>f</i>.</p>
 <p>See also <a href="q3textedit.html#setCurrentFont">setCurrentFont</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/currentVerticalAlignmentChanged" />
 <h3 class="fn"><a name="currentVerticalAlignmentChanged"></a>void Q3TextEdit::currentVerticalAlignmentChanged ( <a href="q3textedit.html#VerticalAlignment-enum">Q3TextEdit::VerticalAlignment</a> <i>a</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the vertical alignment of the current format has changed.</p>
 <p>The new vertical alignment is <i>a</i>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/cursorPositionChanged" />
 <h3 class="fn"><a name="cursorPositionChanged"></a>void Q3TextEdit::cursorPositionChanged ( int <i>para</i>, int <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the position of the cursor has changed. <i>para</i> contains the paragraph index and <i>pos</i> contains the character position within the paragraph.</p>
 <p>See also <a href="q3textedit.html#setCursorPosition">setCursorPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/cut" />
 <h3 class="fn"><a name="cut"></a>void Q3TextEdit::cut ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Copies the selected text (from selection 0) to the clipboard and deletes it from the text edit.</p>
 <p>If there is no selected text (in selection 0) nothing happens.</p>
 <p>See also <a href="q3textedit.html#copy">Q3TextEdit::copy</a>(), <a href="q3textedit.html#paste">paste</a>(), and <a href="q3textedit.html#pasteSubType">pasteSubType</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/del" />
 <h3 class="fn"><a name="del"></a>void Q3TextEdit::del ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>If there is some selected text (in selection 0) it is deleted. If there is no selected text (in selection 0) the character to the right of the text cursor is deleted.</p>
 <p>See also <a href="q3textedit.html#removeSelectedText">removeSelectedText</a>() and <a href="q3textedit.html#cut">cut</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/doKeyboardAction" />
 <h3 class="fn"><a name="doKeyboardAction"></a>void Q3TextEdit::doKeyboardAction ( <a href="q3textedit.html#KeyboardAction-enum">Q3TextEdit::KeyboardAction</a> <i>action</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Executes keyboard action <i>action</i>. This is normally called by a key event handler.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/doubleClicked" />
 <h3 class="fn"><a name="doubleClicked"></a>void Q3TextEdit::doubleClicked ( int <i>para</i>, int <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the mouse is double-clicked on the paragraph <i>para</i> at character position <i>pos</i>.</p>
 <p>See also <a href="q3textedit.html#clicked">clicked</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/ensureCursorVisible" />
 <h3 class="fn"><a name="ensureCursorVisible"></a>void Q3TextEdit::ensureCursorVisible ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Ensures that the cursor is visible by scrolling the text edit if necessary.</p>
 <p>See also <a href="q3textedit.html#setCursorPosition">setCursorPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/family" />
 <h3 class="fn"><a name="family"></a><a href="qstring.html">QString</a> Q3TextEdit::family () const</h3>
 <p>Returns the font family of the current format.</p>
 <p>See also <a href="q3textedit.html#setFamily">setFamily</a>(), <a href="q3textedit.html#setCurrentFont">setCurrentFont</a>(), and <a href="q3textedit.html#setPointSize">setPointSize</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/find" />
 <h3 class="fn"><a name="find"></a>bool Q3TextEdit::find ( const <a href="qstring.html">QString</a> &amp; <i>expr</i>, bool <i>cs</i>, bool <i>wo</i>, bool <i>forward</i> = true, int * <i>para</i> = 0, int * <i>index</i> = 0 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Finds the next occurrence of the string, <i>expr</i>. Returns true if <i>expr</i> was found; otherwise returns false.</p>
 <p>If <i>para</i> and <i>index</i> are both 0 the search begins from the current cursor position. If <i>para</i> and <i>index</i> are both not 0, the search begins from the <tt>*</tt><i>index</i> character position in the <tt>*</tt><i>para</i> paragraph.</p>
@@ -825,30 +723,24 @@
 <p>If <i>expr</i> is not found the function returns false. If <i>index</i> and <i>para</i> are not 0 and <i>expr</i> is not found, <tt>*</tt><i>index</i> and <tt>*</tt><i>para</i> are undefined.</p>
 <p>Please note that this function will make the next occurrence of the string (if found) the current selection, and will thus modify the cursor position.</p>
 <p>Using the <i>para</i> and <i>index</i> parameters will not work correctly in case the document contains tables.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/focusNextPrevChild" />
 <h3 class="fn"><a name="focusNextPrevChild"></a>bool Q3TextEdit::focusNextPrevChild ( bool <i>n</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Reimplemented to allow tabbing through links. If <i>n</i> is true the tab moves the focus to the next child; if <i>n</i> is false the tab moves the focus to the previous child. Returns true if the focus was moved; otherwise returns false.</p>
 <p>Reimplemented from <a href="qwidget.html#focusNextPrevChild">QWidget</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/font" />
 <h3 class="fn"><a name="font"></a><a href="qfont.html">QFont</a> Q3TextEdit::font () const</h3>
 <p>Returns <a href="qwidget.html#font-prop">Q3ScrollView::font</a>()</p>
 <p><b>Warning:</b> In previous versions this function returned the font of the current format. This lead to confusion. Please use <a href="q3textedit.html#currentFont">currentFont</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/getCursorPosition" />
 <h3 class="fn"><a name="getCursorPosition"></a>void Q3TextEdit::getCursorPosition ( int * <i>para</i>, int * <i>index</i> ) const</h3>
 <p>This function sets the <tt>*</tt><i>para</i> and <tt>*</tt><i>index</i> parameters to the current cursor position. <i>para</i> and <i>index</i> must not be 0.</p>
 <p>See also <a href="q3textedit.html#setCursorPosition">setCursorPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/getSelection" />
 <h3 class="fn"><a name="getSelection"></a>void Q3TextEdit::getSelection ( int * <i>paraFrom</i>, int * <i>indexFrom</i>, int * <i>paraTo</i>, int * <i>indexTo</i>, int <i>selNum</i> = 0 ) const</h3>
 <p>If there is a selection, <tt>*</tt><i>paraFrom</i> is set to the number of the paragraph in which the selection begins and <tt>*</tt><i>paraTo</i> is set to the number of the paragraph in which the selection ends. (They could be the same.) <tt>*</tt><i>indexFrom</i> is set to the index at which the selection begins within <tt>*</tt><i>paraFrom</i>, and <tt>*</tt><i>indexTo</i> is set to the index at which the selection ends within <tt>*</tt><i>paraTo</i>.</p>
 <p>If there is no selection, <tt>*</tt><i>paraFrom</i>, <tt>*</tt><i>indexFrom</i>, <tt>*</tt><i>paraTo</i> and <tt>*</tt><i>indexTo</i> are all set to -1.</p>
 <p>If <i>paraFrom</i>, <i>indexFrom</i>, <i>paraTo</i> or <i>indexTo</i> is 0 this function does nothing.</p>
 <p>The <i>selNum</i> is the number of the selection (multiple selections are supported). It defaults to 0 (the default selection).</p>
 <p>See also <a href="q3textedit.html#setSelection">setSelection</a>() and <a href="q3textedit.html#selectedText-prop">selectedText</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/heightForWidth" />
 <h3 class="fn"><a name="heightForWidth"></a>int Q3TextEdit::heightForWidth ( int <i>w</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns how many pixels high the text edit needs to be to display all the text if the text edit is <i>w</i> pixels wide.</p>
 <p>Reimplemented from <a href="qwidget.html#heightForWidth">QWidget</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/insert" />
 <h3 class="fn"><a name="insert"></a>void Q3TextEdit::insert ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qtglobal.html#uint-typedef">uint</a> <i>insertionFlags</i> = CheckNewLines | RemoveSelected )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Inserts <i>text</i> at the current cursor position.</p>
 <p>The <i>insertionFlags</i> define how the text is inserted. If <tt>RedoIndentation</tt> is set, the paragraph is re-indented. If <tt>CheckNewLines</tt> is set, newline characters in <i>text</i> result in hard line breaks (i.e&#x2e; new paragraphs). If <tt>checkNewLine</tt> is not set, the behavior of the editor is undefined if the <i>text</i> contains newlines. (It is not possible to change <a href="q3textedit.html">Q3TextEdit</a>'s newline handling behavior, but you can use <a href="qstring.html#replace">QString::replace</a>() to preprocess text before inserting it.) If <tt>RemoveSelected</tt> is set, any selected text (in selection 0) is removed before the text is inserted.</p>
@@ -858,225 +750,168 @@
 <h3 class="fn"><a name="insert-2"></a>void Q3TextEdit::insert ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, bool <i>indent</i>, bool <i>checkNewLine</i> = true, bool <i>removeSelected</i> = true )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts the given <i>text</i>. If <i>indent</i> is true the paragraph that contains the text is reindented; if <i>checkNewLine</i> is true the <i>text</i> is checked for newlines and relaid out. If <i>removeSelected</i> is true and there is a selection, the insertion replaces the selected text.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/insertAt" />
 <h3 class="fn"><a name="insertAt"></a>void Q3TextEdit::insertAt ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>para</i>, int <i>index</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Inserts <i>text</i> in the paragraph <i>para</i> at position <i>index</i>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/insertParagraph" />
 <h3 class="fn"><a name="insertParagraph"></a>void Q3TextEdit::insertParagraph ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>para</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Inserts <i>text</i> as a new paragraph at position <i>para</i>. If <i>para</i> is -1, the text is appended. Use <a href="q3textedit.html#append">append</a>() if the append operation is performance critical.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/isRedoAvailable" />
 <h3 class="fn"><a name="isRedoAvailable"></a>bool Q3TextEdit::isRedoAvailable () const</h3>
 <p>Returns true if redo is available; otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/isUndoAvailable" />
 <h3 class="fn"><a name="isUndoAvailable"></a>bool Q3TextEdit::isUndoAvailable () const</h3>
 <p>Returns true if undo is available; otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/italic" />
 <h3 class="fn"><a name="italic"></a>bool Q3TextEdit::italic () const</h3>
 <p>Returns true if the current format is italic; otherwise returns false.</p>
 <p>See also <a href="q3textedit.html#setItalic">setItalic</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/keyPressEvent" />
 <h3 class="fn"><a name="keyPressEvent"></a>void Q3TextEdit::keyPressEvent ( <a href="qkeyevent.html">QKeyEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Processes the key event, <i>e</i>. By default key events are used to provide keyboard navigation and text editing.</p>
 <p>Reimplemented from <a href="qwidget.html#keyPressEvent">QWidget</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/lineOfChar" />
 <h3 class="fn"><a name="lineOfChar"></a>int Q3TextEdit::lineOfChar ( int <i>para</i>, int <i>index</i> )</h3>
 <p>Returns the line number of the line in paragraph <i>para</i> in which the character at position <i>index</i> appears. The <i>index</i> position is relative to the beginning of the paragraph. If there is no such paragraph or no such character at the <i>index</i> position (e.g&#x2e; the index is out of range) -1 is returned.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/lines" />
 <h3 class="fn"><a name="lines"></a>int Q3TextEdit::lines () const</h3>
 <p>Returns the number of lines in the text edit; this could be 0.</p>
 <p><b>Warning:</b> This function may be slow. Lines change all the time during word wrapping, so this function has to iterate over all the paragraphs and get the number of lines from each one individually.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/linesOfParagraph" />
 <h3 class="fn"><a name="linesOfParagraph"></a>int Q3TextEdit::linesOfParagraph ( int <i>para</i> ) const</h3>
 <p>Returns the number of lines in paragraph <i>para</i>, or -1 if there is no paragraph with index <i>para</i>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/mimeSourceFactory" />
 <h3 class="fn"><a name="mimeSourceFactory"></a><a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> * Q3TextEdit::mimeSourceFactory () const</h3>
 <p>Returns the <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> which is being used by this text edit.</p>
 <p>See also <a href="q3textedit.html#setMimeSourceFactory">setMimeSourceFactory</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/modificationChanged" />
 <h3 class="fn"><a name="modificationChanged"></a>void Q3TextEdit::modificationChanged ( bool <i>m</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the modification status of the document has changed. If <i>m</i> is true, the document was modified, otherwise the modification state has been reset to unmodified.</p>
 <p>See also <a href="q3textedit.html#modified-prop">modified</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/moveCursor" />
 <h3 class="fn"><a name="moveCursor"></a>void Q3TextEdit::moveCursor ( <a href="q3textedit.html#CursorAction-enum">Q3TextEdit::CursorAction</a> <i>action</i>, bool <i>select</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Moves the text cursor according to <i>action</i>. This is normally used by some key event handler. <i>select</i> specifies whether the text between the current cursor position and the new position should be selected.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/paragraphAt" />
 <h3 class="fn"><a name="paragraphAt"></a>int Q3TextEdit::paragraphAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> ) const</h3>
 <p>Returns the paragraph which is at position <i>pos</i> (in contents coordinates).</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/paragraphBackgroundColor" />
 <h3 class="fn"><a name="paragraphBackgroundColor"></a><a href="qcolor.html">QColor</a> Q3TextEdit::paragraphBackgroundColor ( int <i>para</i> ) const</h3>
 <p>Returns the background color of the paragraph <i>para</i> or an invalid color if <i>para</i> is out of range or the paragraph has no background set</p>
 <p>See also <a href="q3textedit.html#setParagraphBackgroundColor">setParagraphBackgroundColor</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/paragraphLength" />
 <h3 class="fn"><a name="paragraphLength"></a>int Q3TextEdit::paragraphLength ( int <i>para</i> ) const</h3>
 <p>Returns the length of the paragraph <i>para</i> (i.e&#x2e; the number of characters), or -1 if there is no paragraph with index <i>para</i>.</p>
 <p>This function ignores newlines.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/paragraphRect" />
 <h3 class="fn"><a name="paragraphRect"></a><a href="qrect.html">QRect</a> Q3TextEdit::paragraphRect ( int <i>para</i> ) const</h3>
 <p>Returns the rectangle of the paragraph <i>para</i> in contents coordinates, or an invalid rectangle if <i>para</i> is out of range.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/paragraphs" />
 <h3 class="fn"><a name="paragraphs"></a>int Q3TextEdit::paragraphs () const</h3>
 <p>Returns the number of paragraphs in the text; an empty textedit is always considered to have one paragraph, so 1 is returned in this case.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/paste" />
 <h3 class="fn"><a name="paste"></a>void Q3TextEdit::paste ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Pastes the text from the clipboard into the text edit at the current cursor position. Only plain text is pasted.</p>
 <p>If there is no text in the clipboard nothing happens.</p>
 <p>See also <a href="q3textedit.html#pasteSubType">pasteSubType</a>(), <a href="q3textedit.html#cut">cut</a>(), and <a href="q3textedit.html#copy">Q3TextEdit::copy</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/pasteSubType" />
 <h3 class="fn"><a name="pasteSubType"></a>void Q3TextEdit::pasteSubType ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>subtype</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Pastes the text with format <i>subtype</i> from the clipboard into the text edit at the current cursor position. The <i>subtype</i> can be &quot;plain&quot; or &quot;html&quot;.</p>
 <p>If there is no text with format <i>subtype</i> in the clipboard nothing happens.</p>
 <p>See also <a href="q3textedit.html#paste">paste</a>(), <a href="q3textedit.html#cut">cut</a>(), and <a href="q3textedit.html#copy">Q3TextEdit::copy</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/placeCursor" />
 <h3 class="fn"><a name="placeCursor"></a>void Q3TextEdit::placeCursor ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, Q3TextCursor * <i>c</i> = 0 )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Places the cursor <i>c</i> at the character which is closest to position <i>pos</i> (in contents coordinates). If <i>c</i> is 0, the default text cursor is used.</p>
 <p>See also <a href="q3textedit.html#setCursorPosition">setCursorPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/pointSize" />
 <h3 class="fn"><a name="pointSize"></a>int Q3TextEdit::pointSize () const</h3>
 <p>Returns the point size of the font of the current format.</p>
 <p>See also <a href="q3textedit.html#setFamily">setFamily</a>(), <a href="q3textedit.html#setCurrentFont">setCurrentFont</a>(), and <a href="q3textedit.html#setPointSize">setPointSize</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/redo" />
 <h3 class="fn"><a name="redo"></a>void Q3TextEdit::redo ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Redoes the last operation.</p>
 <p>If there is no operation to redo, i.e&#x2e; there is no redo step in the undo/redo history, nothing happens.</p>
 <p>See also <a href="q3textedit.html#redoAvailable">redoAvailable</a>(), <a href="q3textedit.html#undo">undo</a>(), and <a href="q3textedit.html#undoDepth-prop">undoDepth</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/redoAvailable" />
 <h3 class="fn"><a name="redoAvailable"></a>void Q3TextEdit::redoAvailable ( bool <i>yes</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the availability of redo changes. If <i>yes</i> is true, then <a href="q3textedit.html#redo">redo</a>() will work until redoAvailable(false) is next emitted.</p>
 <p>See also <a href="q3textedit.html#redo">redo</a>() and <a href="q3textedit.html#undoDepth-prop">undoDepth</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/removeParagraph" />
 <h3 class="fn"><a name="removeParagraph"></a>void Q3TextEdit::removeParagraph ( int <i>para</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Removes the paragraph <i>para</i>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/removeSelectedText" />
 <h3 class="fn"><a name="removeSelectedText"></a>void Q3TextEdit::removeSelectedText ( int <i>selNum</i> = 0 )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Deletes the text of selection <i>selNum</i> (by default, the default selection, 0). If there is no selected text nothing happens.</p>
 <p>See also <a href="q3textedit.html#selectedText-prop">selectedText</a> and <a href="q3textedit.html#removeSelection">removeSelection</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/removeSelection" />
 <h3 class="fn"><a name="removeSelection"></a>void Q3TextEdit::removeSelection ( int <i>selNum</i> = 0 )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Removes the selection <i>selNum</i> (by default 0). This does not remove the selected text.</p>
 <p>See also <a href="q3textedit.html#removeSelectedText">removeSelectedText</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/repaintChanged" />
 <h3 class="fn"><a name="repaintChanged"></a>void Q3TextEdit::repaintChanged ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Repaints any paragraphs that have changed.</p>
 <p>Although used extensively internally you shouldn't need to call this yourself.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/returnPressed" />
 <h3 class="fn"><a name="returnPressed"></a>void Q3TextEdit::returnPressed ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the user pressed the Return or the Enter key.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/scrollToAnchor" />
 <h3 class="fn"><a name="scrollToAnchor"></a>void Q3TextEdit::scrollToAnchor ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Scrolls the text edit to make the text at the anchor called <i>name</i> visible, if it can be found in the document. If the anchor isn't found no scrolling will occur. An anchor is defined using the HTML anchor tag, e.g&#x2e; <tt>&lt;a name=&quot;target&quot;&gt;</tt>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/scrollToBottom" />
 <h3 class="fn"><a name="scrollToBottom"></a>void Q3TextEdit::scrollToBottom ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Scrolls to the bottom of the document and does formatting if required.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/selectAll" />
 <h3 class="fn"><a name="selectAll"></a>void Q3TextEdit::selectAll ( bool <i>select</i> = true )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>If <i>select</i> is true (the default), all the text is selected as selection 0. If <i>select</i> is false any selected text is unselected, i.e&#x2e; the default selection (selection 0) is cleared.</p>
 <p>See also <a href="q3textedit.html#selectedText-prop">selectedText</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/selectionChanged" />
 <h3 class="fn"><a name="selectionChanged"></a>void Q3TextEdit::selectionChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the selection changes.</p>
 <p>See also <a href="q3textedit.html#setSelection">setSelection</a>() and <a href="q3textedit.html#copyAvailable">copyAvailable</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setAlignment" />
 <h3 class="fn"><a name="setAlignment"></a>void Q3TextEdit::setAlignment ( int <i>a</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the alignment of the current paragraph to <i>a</i>. Valid alignments are <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a> and <a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a> (which centers horizontally).</p>
 <p>See also <a href="q3textedit.html#alignment">alignment</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setBold" />
 <h3 class="fn"><a name="setBold"></a>void Q3TextEdit::setBold ( bool <i>b</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>If <i>b</i> is true sets the current format to bold; otherwise sets the current format to non-bold.</p>
 <p>See also <a href="q3textedit.html#bold">bold</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setColor" />
 <h3 class="fn"><a name="setColor"></a>void Q3TextEdit::setColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the color of the current format, i.e&#x2e; of the text, to <i>c</i>.</p>
 <p>See also <a href="q3textedit.html#color">color</a>() and <a href="q3textedit.html#paper-prop">setPaper</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setCurrentFont" />
 <h3 class="fn"><a name="setCurrentFont"></a>void Q3TextEdit::setCurrentFont ( const <a href="qfont.html">QFont</a> &amp; <i>f</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the font of the current format to <i>f</i>.</p>
 <p>If the widget is in <a href="qt.html#TextFormat-enum">Qt::LogText</a> mode this function will do nothing. Use <a href="qwidget.html#font-prop">setFont</a>() instead.</p>
 <p>See also <a href="q3textedit.html#currentFont">currentFont</a>(), <a href="q3textedit.html#setPointSize">setPointSize</a>(), and <a href="q3textedit.html#setFamily">setFamily</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setCursorPosition" />
 <h3 class="fn"><a name="setCursorPosition"></a>void Q3TextEdit::setCursorPosition ( int <i>para</i>, int <i>index</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the cursor to position <i>index</i> in paragraph <i>para</i>.</p>
 <p>See also <a href="q3textedit.html#getCursorPosition">getCursorPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setFamily" />
 <h3 class="fn"><a name="setFamily"></a>void Q3TextEdit::setFamily ( const <a href="qstring.html">QString</a> &amp; <i>fontFamily</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the font family of the current format to <i>fontFamily</i>.</p>
 <p>See also <a href="q3textedit.html#family">family</a>() and <a href="q3textedit.html#setCurrentFont">setCurrentFont</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setItalic" />
 <h3 class="fn"><a name="setItalic"></a>void Q3TextEdit::setItalic ( bool <i>b</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>If <i>b</i> is true sets the current format to italic; otherwise sets the current format to non-italic.</p>
 <p>See also <a href="q3textedit.html#italic">italic</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setMimeSourceFactory" />
 <h3 class="fn"><a name="setMimeSourceFactory"></a>void Q3TextEdit::setMimeSourceFactory ( <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> * <i>factory</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the text edit's mimesource factory to <i>factory</i>. See <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> for further details.</p>
 <p>See also <a href="q3textedit.html#mimeSourceFactory">mimeSourceFactory</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setParagraphBackgroundColor" />
 <h3 class="fn"><a name="setParagraphBackgroundColor"></a>void Q3TextEdit::setParagraphBackgroundColor ( int <i>para</i>, const <a href="qcolor.html">QColor</a> &amp; <i>bg</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the background color of the paragraph <i>para</i> to <i>bg</i>.</p>
 <p>See also <a href="q3textedit.html#paragraphBackgroundColor">paragraphBackgroundColor</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setPointSize" />
 <h3 class="fn"><a name="setPointSize"></a>void Q3TextEdit::setPointSize ( int <i>s</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the point size of the current format to <i>s</i>.</p>
 <p>Note that if <i>s</i> is zero or negative, the behavior of this function is not defined.</p>
 <p>See also <a href="q3textedit.html#pointSize">pointSize</a>(), <a href="q3textedit.html#setCurrentFont">setCurrentFont</a>(), and <a href="q3textedit.html#setFamily">setFamily</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setSelection" />
 <h3 class="fn"><a name="setSelection"></a>void Q3TextEdit::setSelection ( int <i>paraFrom</i>, int <i>indexFrom</i>, int <i>paraTo</i>, int <i>indexTo</i>, int <i>selNum</i> = 0 )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets a selection which starts at position <i>indexFrom</i> in paragraph <i>paraFrom</i> and ends at position <i>indexTo</i> in paragraph <i>paraTo</i>.</p>
 <p>Any existing selections which have a different id (<i>selNum</i>) are left alone, but if an existing selection has the same id as <i>selNum</i> it is removed and replaced by this selection.</p>
 <p>Uses the selection settings of selection <i>selNum</i>. If <i>selNum</i> is 0, this is the default selection.</p>
 <p>The cursor is moved to the end of the selection if <i>selNum</i> is 0, otherwise the cursor position remains unchanged.</p>
 <p>See also <a href="q3textedit.html#getSelection">getSelection</a>() and <a href="q3textedit.html#selectedText-prop">selectedText</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setSelectionAttributes" />
 <h3 class="fn"><a name="setSelectionAttributes"></a>void Q3TextEdit::setSelectionAttributes ( int <i>selNum</i>, const <a href="qcolor.html">QColor</a> &amp; <i>back</i>, bool <i>invertText</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the background color of selection number <i>selNum</i> to <i>back</i> and specifies whether the text of this selection should be inverted with <i>invertText</i>.</p>
 <p>This only works for <i>selNum</i> &gt; 0. The default selection (<i>selNum</i> == 0) gets its attributes from the text edit's <a href="qwidget.html#palette-prop">palette</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setStyleSheet" />
 <h3 class="fn"><a name="setStyleSheet"></a>void Q3TextEdit::setStyleSheet ( <a href="q3stylesheet.html">Q3StyleSheet</a> * <i>styleSheet</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the stylesheet to use with this text edit to <i>styleSheet</i>. Changes will only take effect for new text added with <a href="q3textedit.html#text-prop">setText</a>() or <a href="q3textedit.html#append">append</a>().</p>
 <p>See also <a href="q3textedit.html#styleSheet">styleSheet</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setUnderline" />
 <h3 class="fn"><a name="setUnderline"></a>void Q3TextEdit::setUnderline ( bool <i>b</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>If <i>b</i> is true sets the current format to underline; otherwise sets the current format to non-underline.</p>
 <p>See also <a href="q3textedit.html#underline">underline</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/setVerticalAlignment" />
 <h3 class="fn"><a name="setVerticalAlignment"></a>void Q3TextEdit::setVerticalAlignment ( <a href="q3textedit.html#VerticalAlignment-enum">Q3TextEdit::VerticalAlignment</a> <i>a</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the vertical alignment of the current format, i.e&#x2e; of the text, to <i>a</i>.</p>
 <p>See also <a href="q3textedit.html#verticalAlignment">verticalAlignment</a>(), <a href="q3textedit.html#color">color</a>(), and <a href="q3textedit.html#paper-prop">setPaper</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/styleSheet" />
 <h3 class="fn"><a name="styleSheet"></a><a href="q3stylesheet.html">Q3StyleSheet</a> * Q3TextEdit::styleSheet () const</h3>
 <p>Returns the <a href="q3stylesheet.html">Q3StyleSheet</a> which is being used by this text edit.</p>
 <p>See also <a href="q3textedit.html#setStyleSheet">setStyleSheet</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/sync" />
 <h3 class="fn"><a name="sync"></a>void Q3TextEdit::sync ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p><a href="q3textedit.html">Q3TextEdit</a> is optimized for large amounts text. One of its optimizations is to format only the visible text, formatting the rest on demand, e.g&#x2e; as the user scrolls, so you don't usually need to call this function.</p>
 <p>In some situations you may want to force the whole text to be formatted. For example, if after calling <a href="q3textedit.html#text-prop">setText</a>(), you wanted to know the height of the document (using <a href="q3scrollview.html#contentsHeight-prop">contentsHeight</a>()), you would call this function first.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/syntaxHighlighter" />
 <h3 class="fn"><a name="syntaxHighlighter"></a><a href="q3syntaxhighlighter.html">Q3SyntaxHighlighter</a> * Q3TextEdit::syntaxHighlighter () const</h3>
 <p>Returns the <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> set on this <a href="q3textedit.html">Q3TextEdit</a>. 0 is returned if no syntax highlighter is set.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/textChanged" />
 <h3 class="fn"><a name="textChanged"></a>void Q3TextEdit::textChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the text in the text edit changes.</p>
 <p>See also <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#append">append</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/textCursor" />
 <h3 class="fn"><a name="textCursor"></a>Q3TextCursor * Q3TextEdit::textCursor () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the text edit's text cursor.</p>
 <p><b>Warning:</b> Q3TextCursor is not in the public API, but in special circumstances you might wish to use it.</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/underline" />
 <h3 class="fn"><a name="underline"></a>bool Q3TextEdit::underline () const</h3>
 <p>Returns true if the current format is underlined; otherwise returns false.</p>
 <p>See also <a href="q3textedit.html#setUnderline">setUnderline</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/undo" />
 <h3 class="fn"><a name="undo"></a>void Q3TextEdit::undo ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Undoes the last operation.</p>
 <p>If there is no operation to undo, i.e&#x2e; there is no undo step in the undo/redo history, nothing happens.</p>
 <p>See also <a href="q3textedit.html#undoAvailable">undoAvailable</a>(), <a href="q3textedit.html#redo">redo</a>(), and <a href="q3textedit.html#undoDepth-prop">undoDepth</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/undoAvailable" />
 <h3 class="fn"><a name="undoAvailable"></a>void Q3TextEdit::undoAvailable ( bool <i>yes</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the availability of undo changes. If <i>yes</i> is true, then <a href="q3textedit.html#undo">undo</a>() will work until undoAvailable(false) is next emitted.</p>
 <p>See also <a href="q3textedit.html#undo">undo</a>() and <a href="q3textedit.html#undoDepth-prop">undoDepth</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/verticalAlignment" />
 <h3 class="fn"><a name="verticalAlignment"></a><a href="q3textedit.html#VerticalAlignment-enum">VerticalAlignment</a> Q3TextEdit::verticalAlignment () const</h3>
 <p>Returns the vertical alignment of the current format.</p>
 <p>See also <a href="q3textedit.html#setVerticalAlignment">setVerticalAlignment</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/zoomIn" />
 <h3 class="fn"><a name="zoomIn"></a>void Q3TextEdit::zoomIn ( int <i>range</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Zooms in on the text by making the base font size <i>range</i> points larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomOut">zoomOut</a>().</p>
@@ -1084,7 +919,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Zooms in on the text by making the base font size one point larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomOut">zoomOut</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/zoomOut" />
 <h3 class="fn"><a name="zoomOut"></a>void Q3TextEdit::zoomOut ( int <i>range</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Zooms out on the text by making the base font size <i>range</i> points smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomIn">zoomIn</a>().</p>
@@ -1092,7 +926,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Zooms out on the text by making the base font size one point smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomIn">zoomIn</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3TextEdit/zoomTo" />
 <h3 class="fn"><a name="zoomTo"></a>void Q3TextEdit::zoomTo ( int <i>size</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Zooms the text by making the base font size <i>size</i> points and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p /><address><hr /><div align="center">

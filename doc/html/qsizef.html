@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/corelib/tools/qsize.cpp -->
+<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-x11-opensource-src-4.3.5/src/corelib/tools/qsize.cpp -->
 <head>
   <title>Qt 4.3: QSizeF Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSizeF" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -69,7 +68,6 @@
 <p>See also <a href="qsize.html">QSize</a>, <a href="qpointf.html">QPointF</a>, and <a href="qrectf.html">QRectF</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSizeF/QSizeF" />
 <h3 class="fn"><a name="QSizeF"></a>QSizeF::QSizeF ()</h3>
 <p>Constructs an invalid size.</p>
 <p>See also <a href="qsizef.html#isValid">isValid</a>().</p>
@@ -78,31 +76,24 @@
 <p>See also <a href="qsizef.html#toSize">toSize</a>().</p>
 <h3 class="fn"><a name="QSizeF-3"></a>QSizeF::QSizeF ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>width</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>height</i> )</h3>
 <p>Constructs a size with the given <i>width</i> and <i>height</i>.</p>
-<a name="//apple_ref/cpp/instm/QSizeF/boundedTo" />
 <h3 class="fn"><a name="boundedTo"></a>QSizeF QSizeF::boundedTo ( const QSizeF &amp; <i>otherSize</i> ) const</h3>
 <p>Returns a size holding the minimum width and height of this size and the given <i>otherSize</i>.</p>
 <p>See also <a href="qsizef.html#expandedTo">expandedTo</a>() and <a href="qsizef.html#scale">scale</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/expandedTo" />
 <h3 class="fn"><a name="expandedTo"></a>QSizeF QSizeF::expandedTo ( const QSizeF &amp; <i>otherSize</i> ) const</h3>
 <p>Returns a size holding the maximum width and height of this size and the given <i>otherSize</i>.</p>
 <p>See also <a href="qsizef.html#boundedTo">boundedTo</a>() and <a href="qsizef.html#scale">scale</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/height" />
 <h3 class="fn"><a name="height"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QSizeF::height () const</h3>
 <p>Returns the height.</p>
 <p>See also <a href="qsizef.html#width">width</a>() and <a href="qsizef.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/isEmpty" />
 <h3 class="fn"><a name="isEmpty"></a>bool QSizeF::isEmpty () const</h3>
 <p>Returns true if either of the width and height is less than or equal to 0; otherwise returns false.</p>
 <p>See also <a href="qsizef.html#isNull">isNull</a>() and <a href="qsizef.html#isValid">isValid</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/isNull" />
 <h3 class="fn"><a name="isNull"></a>bool QSizeF::isNull () const</h3>
 <p>Returns true if both the width and height is 0; otherwise returns false.</p>
 <p>See also <a href="qsizef.html#isValid">isValid</a>() and <a href="qsizef.html#isEmpty">isEmpty</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/isValid" />
 <h3 class="fn"><a name="isValid"></a>bool QSizeF::isValid () const</h3>
 <p>Returns true if both the width and height is equal to or greater than 0; otherwise returns false.</p>
 <p>See also <a href="qsizef.html#isNull">isNull</a>() and <a href="qsizef.html#isEmpty">isEmpty</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/rheight" />
 <h3 class="fn"><a name="rheight"></a><a href="qtglobal.html#qreal-typedef">qreal</a> &amp; QSizeF::rheight ()</h3>
 <p>Returns a reference to the height.</p>
 <p>Using a reference makes it possible to manipulate the height directly. For example:</p>
@@ -111,7 +102,6 @@
 
 <span class="comment"> //</span> size becomes (100,15.7)</pre>
 <p>See also <a href="qsizef.html#rwidth">rwidth</a>() and <a href="qsizef.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/rwidth" />
 <h3 class="fn"><a name="rwidth"></a><a href="qtglobal.html#qreal-typedef">qreal</a> &amp; QSizeF::rwidth ()</h3>
 <p>Returns a reference to the width.</p>
 <p>Using a reference makes it possible to manipulate the width directly. For example:</p>
@@ -120,7 +110,6 @@
 
   <span class="comment">//</span> size becomes (120.8,10)</pre>
 <p>See also <a href="qsizef.html#rheight">rheight</a>() and <a href="qsizef.html#setWidth">setWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/scale" />
 <h3 class="fn"><a name="scale"></a>void QSizeF::scale ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>width</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>height</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> )</h3>
 <p>Scales the size to a rectangle with the given <i>width</i> and <i>height</i>, according to the specified <i>mode</i>.</p>
 <ul>
@@ -144,32 +133,25 @@
 <h3 class="fn"><a name="scale-2"></a>void QSizeF::scale ( const QSizeF &amp; <i>size</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Scales the size to a rectangle with the given <i>size</i>, according to the specified <i>mode</i>.</p>
-<a name="//apple_ref/cpp/instm/QSizeF/setHeight" />
 <h3 class="fn"><a name="setHeight"></a>void QSizeF::setHeight ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>height</i> )</h3>
 <p>Sets the height to the given <i>height</i>.</p>
 <p>See also <a href="qsizef.html#height">height</a>(), <a href="qsizef.html#rheight">rheight</a>(), and <a href="qsizef.html#setWidth">setWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/setWidth" />
 <h3 class="fn"><a name="setWidth"></a>void QSizeF::setWidth ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>width</i> )</h3>
 <p>Sets the width to the given <i>width</i>.</p>
 <p>See also <a href="qsizef.html#width">width</a>(), <a href="qsizef.html#rwidth">rwidth</a>(), and <a href="qsizef.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/toSize" />
 <h3 class="fn"><a name="toSize"></a><a href="qsize.html">QSize</a> QSizeF::toSize () const</h3>
 <p>Returns an integer based copy of this size.</p>
 <p>Note that the coordinates in the returned size will be rounded to the nearest integer.</p>
 <p>See also <a href="qsizef.html#QSizeF">QSizeF</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/transpose" />
 <h3 class="fn"><a name="transpose"></a>void QSizeF::transpose ()</h3>
 <p>Swaps the width and height values.</p>
 <p>See also <a href="qsizef.html#setWidth">setWidth</a>() and <a href="qsizef.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/width" />
 <h3 class="fn"><a name="width"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QSizeF::width () const</h3>
 <p>Returns the width.</p>
 <p>See also <a href="qsizef.html#height">height</a>() and <a href="qsizef.html#setWidth">setWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/operator*=" />
 <h3 class="fn"><a name="operator-2a-eq"></a>QSizeF &amp; QSizeF::operator*= ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>factor</i> )</h3>
 <p>Multiplies both the width and height by the given <i>factor</i> and returns a reference to the size.</p>
 <p>See also <a href="qsizef.html#scale">scale</a>().</p>
-<a name="//apple_ref/cpp/instm/QSizeF/operator+=" />
 <h3 class="fn"><a name="operator-2b-eq"></a>QSizeF &amp; QSizeF::operator+= ( const QSizeF &amp; <i>size</i> )</h3>
 <p>Adds the given <i>size</i> to this size and returns a reference to this size. For example:</p>
 <pre> QSizeF s( 3, 7);
@@ -177,7 +159,6 @@
  s += r;
 
 <span class="comment"> //</span> s becomes (2,11)</pre>
-<a name="//apple_ref/cpp/instm/QSizeF/operator-=" />
 <h3 class="fn"><a name="operator--eq"></a>QSizeF &amp; QSizeF::operator-= ( const QSizeF &amp; <i>size</i> )</h3>
 <p>Subtracts the given <i>size</i> from this size and returns a reference to this size. For example:</p>
 <pre> QSizeF s( 3, 7);
@@ -185,7 +166,6 @@
  s -= r;
 
 <span class="comment"> //</span> s becomes (4,3)</pre>
-<a name="//apple_ref/cpp/instm/QSizeF/operator/=" />
 <h3 class="fn"><a name="operator-2f-eq"></a>QSizeF &amp; QSizeF::operator/= ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>divisor</i> )</h3>
 <p>Divides both the width and height by the given <i>divisor</i> and returns a reference to the size.</p>
 <p>See also <a href="qsizef.html#scale">scale</a>().</p>
