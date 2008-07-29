@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qmenu.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qmenu.cpp -->
 <head>
   <title>Qt 4.4: QMenu Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -310,7 +310,7 @@
 <p>The function returns the triggered <a href="qaction.html">QAction</a> in either the popup menu or one of its submenus, or 0 if no item was triggered (normally because the user pressed Esc).</p>
 <p>This is equivalent to:</p>
 <pre>        QMenu menu;
-        QAction *at = actions[0]; // Assumes actions is not empty
+        QAction *at = actions[0]; <span class="comment">// Assumes actions is not empty</span>
         foreach (QAction *a, actions)
            menu.addAction(a);
         menu.exec(pos, at);</pre>
@@ -374,6 +374,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -198,7 +198,7 @@ void QAbstractItemViewPrivate::init()
 
     \value SingleSelection  When the user selects an item, any
     already-selected item becomes unselected, and the user cannot
-    unselect the selected item.
+    unselect the selected item by clicking on it.
 
     \value ContiguousSelection When the user selects an item in the
     usual way, the selection is cleared and the new item selected.
@@ -892,7 +892,13 @@ QModelIndex QAbstractItemView::currentIndex() const
 
 
 /*!
-  Reset the internal state of the view.
+    Reset the internal state of the view.
+
+    \warning This function will reset open editors, scroll bar positions,
+    selections, etc. Existing changes will not be committed. If you would like
+    to save your changes when resetting the view, you can reimplement this
+    function, commit your changes, and then call the superclass'
+    implementation.
 */
 void QAbstractItemView::reset()
 {
@@ -946,7 +952,7 @@ void QAbstractItemView::selectAll()
     if (mode == MultiSelection || mode == ExtendedSelection)
         d->selectAll(QItemSelectionModel::ClearAndSelect
                      |d->selectionBehaviorFlags());
-    else
+    else if (mode != SingleSelection)
         d->selectAll(selectionCommand(d->model->index(0, 0, d->root)));
 }
 
@@ -1310,7 +1316,10 @@ QSize QAbstractItemView::iconSize() const
 
 /*!
     \property QAbstractItemView::textElideMode
+
     \brief the the position of the "..." in elided text.
+
+    The default value for all item views is Qt::ElideRight.
 */
 void QAbstractItemView::setTextElideMode(Qt::TextElideMode mode)
 {
@@ -1467,13 +1476,10 @@ void QAbstractItemView::mousePressEvent(QMouseEvent *event)
         d->selectionModel->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
         d->viewport->setUpdatesEnabled(updates);
         d->autoScroll = autoScroll;
-    }
+        QRect rect(d->pressedPosition - offset, pos);
+        setSelection(rect, command);
 
-    QRect rect(d->pressedPosition - offset, pos);
-    setSelection(rect, command);
-
-    // signal handlers may change the model
-    if (index.isValid()) {
+        // signal handlers may change the model
         emit pressed(index);
         if (d->autoScroll) {
             //we delay the autoscrolling to filter out double click event
@@ -1481,6 +1487,9 @@ void QAbstractItemView::mousePressEvent(QMouseEvent *event)
             d->delayedAutoScroll.start(QApplication::doubleClickInterval()+100, this);
         }
 
+    } else {
+        // Forces a finalize() even if mouse is pressed, but not on a item
+        d->selectionModel->select(QModelIndex(), QItemSelectionModel::Select);
     }
 }
 
@@ -1512,7 +1521,7 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
 
     QModelIndex index = indexAt(bottomRight);
     QModelIndex buddy = d->model->buddy(d->pressedIndex);
-    if (state() == EditingState && d->hasEditor(buddy)
+    if ((state() == EditingState && d->hasEditor(buddy))
         || edit(index, NoEditTriggers, event))
         return;
 
@@ -2156,6 +2165,9 @@ void QAbstractItemView::timerEvent(QTimerEvent *event)
     } else if (event->timerId() == d->delayedLayout.timerId()) {
         d->delayedLayout.stop();
         doItemsLayout();
+        const QModelIndex current = currentIndex();
+        if (current.isValid() && d->state == QAbstractItemView::EditingState)
+            scrollTo(current);
     } else if (event->timerId() == d->delayedAutoScroll.timerId()) {
         d->delayedAutoScroll.stop();
         //end of the timer: if the current item is still the same as the one when the mouse press occurred
@@ -2323,6 +2335,8 @@ void QAbstractItemView::updateEditorGeometries()
 }
 
 /*!
+    \since 4.4
+
     Updates the geometry of the child widgets of the view.
 */
 void QAbstractItemView::updateGeometries()
@@ -2976,15 +2990,7 @@ void QAbstractItemViewPrivate::_q_modelDestroyed()
 */
 void QAbstractItemViewPrivate::_q_layoutChanged()
 {
-    Q_Q(QAbstractItemView);
-    if (q->isVisible()) {
-        q->doItemsLayout();
-        const QModelIndex current = q->currentIndex();
-        if (current.isValid())
-            q->scrollTo(current);
-    } else {
-        doDelayedItemsLayout();
-    }
+    doDelayedItemsLayout();
 }
 
 /*!
@@ -3542,14 +3548,17 @@ QWidget *QAbstractItemViewPrivate::editor(const QModelIndex &index,
                 QWidget::setTabOrder(q, w);
 
             // Special cases for some editors containing QLineEdit
+            QWidget *focusWidget = w;
+            while (QWidget *fp = focusWidget->focusProxy())
+                focusWidget = fp;
 #ifndef QT_NO_LINEEDIT
-            if (QLineEdit *le = qobject_cast<QLineEdit*>(w))
+            if (QLineEdit *le = qobject_cast<QLineEdit*>(focusWidget))
                 le->selectAll();
 #endif
 #ifndef QT_NO_SPINBOX
-            if (QSpinBox *sb = qobject_cast<QSpinBox*>(w))
+            if (QSpinBox *sb = qobject_cast<QSpinBox*>(focusWidget))
                 sb->selectAll();
-            else if (QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox*>(w))
+            else if (QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox*>(focusWidget))
                 dsb->selectAll();
 #endif
         }

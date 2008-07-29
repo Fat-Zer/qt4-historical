@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qaction.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qaction.cpp -->
 <head>
   <title>Qt 4.4: QAction Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -282,12 +282,12 @@
 <p>The default is to follow whether the <a href="qt.html#ApplicationAttribute-enum">Qt::AA_DontShowIconsInMenus</a> attribute is set for the application. Explicitly settings this property overrides the presence (or abscence) of the attribute.</p>
 <p>For example:</p>
 <pre>     QApplication app(argc, argv);
-     app.setAttribute(Qt::AA_DontShowIconsInMenus);  // Icons are *no longer shown* in menus
-     // ...
+     app.setAttribute(Qt::AA_DontShowIconsInMenus);  <span class="comment">// Icons are *no longer shown* in menus</span>
+     <span class="comment">// ...</span>
      QAction *myAction = new QAction();
-     // ...
+     <span class="comment">// ...</span>
      myAction-&gt;setIcon(SomeIcon);
-     myAction-&gt;setIconVisibleInMenu(true);   // Icon *will* be shown in menus for *this* action.</pre>
+     myAction-&gt;setIconVisibleInMenu(true);   <span class="comment">// Icon *will* be shown in menus for *this* action.</span></pre>
 <p>This property was introduced in Qt 4.4.</p>
 <p>Access functions:</p>
 <ul>
@@ -496,6 +496,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

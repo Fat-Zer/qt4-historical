@@ -61,6 +61,7 @@
 
     \reentrant
     \ingroup io
+    \ingroup ssl
     \module network
 
     QSslCertificate stores an X509 certificate, and is commonly used
@@ -682,8 +683,8 @@ QSslCertificate QSslCertificatePrivate::QSslCertificate_from_X509(X509 *x509)
 
     ASN1_TIME *nbef = q_X509_get_notBefore(x509);
     ASN1_TIME *naft = q_X509_get_notAfter(x509);
-    certificate.d->notValidBefore.setTime_t(q_getTimeFromASN1(nbef));
-    certificate.d->notValidAfter.setTime_t(q_getTimeFromASN1(naft));
+    certificate.d->notValidBefore = q_getTimeFromASN1(nbef);
+    certificate.d->notValidAfter = q_getTimeFromASN1(naft);
     certificate.d->null = false;
     certificate.d->x509 = q_X509_dup(x509);
 

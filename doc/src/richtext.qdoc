@@ -1038,6 +1038,12 @@ Ideas for other sections:
     \row    \o float
             \o [ left | right | none ]
             \o Specifies where an image or a text will be placed in another element.
+    \row    \o \c text-transform
+            \o [ uppercase | lowercase | smallcaps ]
+            \o Select the transformation that will be performed on the text prior to displaying it.
+    \row    \o \c word-spacing
+            \o <width>px
+            \o Specifies an alternate spacing between each word.
     \endtable
 
     \section1 Supported CSS Selectors

@@ -845,7 +845,7 @@ void MediaObject::setSource(const MediaSource &source)
 
     switch (source.type()) {
     case MediaSource::Url: {
-            QString urlString = source.url().toString();
+            QString urlString = source.url().toEncoded();
             if (!createPipefromURL(urlString)) {
                 setError(tr("Could not open media source."));
                 return;
@@ -1122,6 +1122,7 @@ void MediaObject::handleBusMessage(const Message &message)
     switch (GST_MESSAGE_TYPE (gstMessage)) {
 
     case GST_MESSAGE_EOS: 
+        m_backend->logMessage("EOS recieved", Backend::Info, this);
         handleEndOfStream();
         break;
 
@@ -1309,7 +1310,9 @@ void MediaObject::handleBusMessage(const Message &message)
 
 void MediaObject::handleEndOfStream()
 {
-    if (m_atEndOfStream)
+    // If the stream is not seekable ignore
+    // otherwise chained radio broadcasts would stop
+    if (m_atEndOfStream || !isSeekable())
         return;
 
     m_atEndOfStream = true;

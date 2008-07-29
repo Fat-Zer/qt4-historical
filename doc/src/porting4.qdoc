@@ -1616,6 +1616,10 @@
     event loop, you must subclass QAbstractEventDispatcher instead. See
     the class documentation for details.
 
+    Developers using \c{QEventLoop::loopLevel()} in Qt 3 should use
+    QCoreApplication::loopLevel() instead. Note that this function is
+    marked as obsolete, but it is expected to be available for the
+    lifetime of Qt 4.
     \omit ### mention virtual functions that aren't virtual anymore \endomit
 
     \omit
@@ -1707,9 +1711,10 @@
         \endcode
     \endlist
 
-    See \l{Porting to Qt 4 - Virtual Functions}{Virtual Functions} for
-    a list of QFileDialog virtual member functions in Qt 3 that are no
-    longer virtual in Qt 4.
+    There are no equivalent virtual functions to the two
+    Q3FileDialog::setSelectedFilter() virtual functions in the QFileDialog
+    API. In addition, these functions have been renamed or removed, as
+    described above.
 
     \section1 QFocusData
 
@@ -2157,6 +2162,9 @@
     See \l{#properties}{Properties} for a list of QLineEdit
     properties in Qt 3 that have changed in Qt 4.
 
+    The default value of QLineEdit's \l{QLineEdit::dragEnabled()}{dragEnabled}
+    property was \c true in Qt 3. In Qt 4, the default value is \c false.
+
     Note that QLineEdit in Qt 4 is no longer a subclass of QFrame.
     If you need to visually style a line edit with a frame, we recommend
     either using a QFrame as a container for a QLineEdit or customizing
@@ -2417,10 +2425,11 @@
     \section1 QPicture
 
     In Qt 3, a QPicture could be saved in the SVG file format. In Qt
-    4, the SVG support is separated into the QtSvg module, which
-    provides classes for \e displaying the contents of SVG files. Qt 4
-    does not currently support saving of pictures in this format, but
-    it can be achieved using the Q3Picture compatibility class.
+    4, the SVG support is provided by the QtSvg module, which
+    includes classes for \e displaying the contents of SVG files.
+
+    If you would like to generate SVG files, you can use the Q3Picture
+    compatibility class or the QSvgGenerator class introduced in Qt 4.3.
 
     \section1 QPixmap
 
@@ -2642,7 +2651,7 @@
         qCopy(list.begin(), list.end(), vector.begin());
         \endcode
 
-    \o  QPtrList::sort() relied on the virtual comparedItems() to
+    \o  QPtrList::sort() relied on the virtual compareItems() to
         sort items. In Qt 4, you can use \l qSort() instead and pass
         your "compare item" function as an argument.
 
@@ -3816,8 +3825,11 @@
     The \c QUrlOperator class is no longer part of the public Qt API.
     It has been renamed Q3UrlOperator and moved to Qt3Support.
 
-    In Qt 4 applications, you can use classes like QFtp and QHttp
-    directly to perform file-related actions on a remote host.
+    From Qt 4.4, the Network Access API provides a subset of the features
+    provided by \c QUrlOperator that are mostly intended for use with
+    applications that use the HTTP and FTP protocols. See the
+    QNetworkRequest, QNetworkReply, and QNetworkAccessManager documentation
+    for further details.
 
     \target qvaluelist.section
     \section1 QValueList<T>
@@ -4079,7 +4091,7 @@
     \endlist
 
     The internal clearWState() function was removed. Use
-    QWidget::setWindowState() instead.
+    QWidget::setAttribute() instead.
 
     setWFlags() was renamed QWidget::setWindowFlags().
 
@@ -4094,7 +4106,7 @@
 
     The QWidgetIntDict class was a synonym for QIntDict<QWidget>. It
     is no longer available in Qt 4. If you link against Qt3Support,
-    you can use QIntDict<QWidget> instead; otherwise, see the
+    you can use Q3IntDict<QWidget> instead; otherwise, see the
     \l{#qdict.section}{section on QDict<T>}.
 
     \target qwidgetlist.section

@@ -98,7 +98,7 @@ win32 {
 }
 
 wince* {
-        SOURCES += painting/qregion_wince.cpp
+        SOURCES -= painting/qregion_win.cpp
 }
 
 unix:x11 {
@@ -122,11 +122,6 @@ unix:x11 {
                 painting/qpaintengine_mac.cpp \
                 painting/qprintengine_mac.cpp \
                 painting/qprinterinfo_mac.cpp
-}
-
-unix {
-        SOURCES += \
-                painting/qregion_unix.cpp
 }
 
 unix:!mac {

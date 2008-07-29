@@ -51,6 +51,7 @@ class QVFbHeader;
 class QTimer;
 class QShMemViewProtocol : public QVFbViewProtocol
 {
+    Q_OBJECT
 public:
     QShMemViewProtocol(int display_id, const QSize &size, int depth, QObject *parent = 0);
     ~QShMemViewProtocol();

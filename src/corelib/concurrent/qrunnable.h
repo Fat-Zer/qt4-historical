@@ -55,6 +55,7 @@ class QRunnable
 {
     int ref;
 
+    friend class QThreadPool;
     friend class QThreadPoolPrivate;
     friend class QThreadPoolThread;
 

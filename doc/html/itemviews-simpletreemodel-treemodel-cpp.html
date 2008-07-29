@@ -188,15 +188,15 @@
          QString lineData = lines[number].mid(position).trimmed();
 
          if (!lineData.isEmpty()) {
-             <span class="comment">//</span> Read the column data from the rest of the line.
+             <span class="comment">// Read the column data from the rest of the line.</span>
              QStringList columnStrings = lineData.split(&quot;\t&quot;, QString::SkipEmptyParts);
              QList&lt;QVariant&gt; columnData;
              for (int column = 0; column &lt; columnStrings.count(); ++column)
                  columnData &lt;&lt; columnStrings[column];
 
              if (position &gt; indentations.last()) {
-                 <span class="comment">//</span> The last child of the current parent is now the new parent
-                 <span class="comment">//</span> unless the current parent has no children.
+                 <span class="comment">// The last child of the current parent is now the new parent</span>
+                 <span class="comment">// unless the current parent has no children.</span>
 
                  if (parents.last()-&gt;childCount() &gt; 0) {
                      parents &lt;&lt; parents.last()-&gt;child(parents.last()-&gt;childCount()-1);
@@ -209,7 +209,7 @@
                  }
              }
 
-             <span class="comment">//</span> Append a new item to the current parent's list of children.
+             <span class="comment">// Append a new item to the current parent's list of children.</span>
              parents.last()-&gt;appendChild(new TreeItem(columnData, parents.last()));
          }
 
@@ -220,6 +220,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

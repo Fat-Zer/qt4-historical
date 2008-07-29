@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/coordsys.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/coordsys.qdoc -->
 <head>
   <title>Qt 4.4: The Coordinate System</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -41,14 +41,14 @@
 <p>But by default the painter is <i>aliased</i> and other rules apply: When rendering with a one pixel wide pen the pixels will be rendered to the <i>right and below the mathematically defined points</i>. For example:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/coordinatesystem-rect-raster.png" /></td><td><img src="images/coordinatesystem-line-raster.png" /></td></tr>
-<tr valign="top" class="even"><td><pre>     QPainter painter(this);
+<tr valign="top" class="even"><td><pre> QPainter painter(this);
 
-     painter.setPen(Qt::darkGreen);
-     painter.drawRect(1, 2, 6, 4);</pre>
-</td><td><pre>     QPainter painter(this);
+ painter.setPen(Qt::darkGreen);
+ painter.drawRect(1, 2, 6, 4);</pre>
+</td><td><pre> QPainter painter(this);
 
-     painter.setPen(Qt::darkGreen);
-     painter.drawLine(2, 7, 6, 1);</pre>
+ painter.setPen(Qt::darkGreen);
+ painter.drawLine(2, 7, 6, 1);</pre>
 </td></tr>
 </table></p>
 <p>When rendering with a pen with an even number of pixels, the pixels will be rendered symetrically around the mathematical defined points, while rendering with a pen with an odd number of pixels, the spare pixel will be rendered to the right and below the mathematical point as in the one pixel case. See the <a href="qrectf.html">QRectF</a> diagrams below for concrete examples.</p>
@@ -68,16 +68,16 @@
 <p>If you set <a href="qpainter.html">QPainter</a>'s <a href="qpainter.html#RenderHint-enum">anti-aliasing</a> render hint, the pixels will be rendered symetrically on both sides of the mathematically defined points:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/coordinatesystem-rect-antialias.png" /></td><td><img src="images/coordinatesystem-line-antialias.png" /></td></tr>
-<tr valign="top" class="even"><td><pre>     QPainter painter(this);
-     painter.setRenderHint(
-         QPainter::Antialiasing);
-     painter.setPen(Qt::darkGreen);
-     painter.drawRect(1, 2, 6, 4);</pre>
-</td><td><pre>     QPainter painter(this);
-     painter.setRenderHint(
-         QPainter::Antialiasing);
-     painter.setPen(Qt::darkGreen);
-     painter.drawLine(2, 7, 6, 1);</pre>
+<tr valign="top" class="even"><td><pre> QPainter painter(this);
+ painter.setRenderHint(
+     QPainter::Antialiasing);
+ painter.setPen(Qt::darkGreen);
+ painter.drawRect(1, 2, 6, 4);</pre>
+</td><td><pre> QPainter painter(this);
+ painter.setRenderHint(
+     QPainter::Antialiasing);
+ painter.setPen(Qt::darkGreen);
+ painter.drawLine(2, 7, 6, 1);</pre>
 </td></tr>
 </table></p>
 <a name="transformations"></a>
@@ -149,15 +149,15 @@
 <p>When drawing with <a href="qpainter.html">QPainter</a>, we specify points using logical coordinates which then are converted into the physical coordinates of the paint device.</p>
 <p>The mapping of the logical coordinates to the physical coordinates are handled by <a href="qpainter.html">QPainter</a>'s world transformation <a href="qpainter.html#worldMatrix">worldMatrix()</a> (described in the <a href="#transformations">Transformations</a> section), and <a href="qpainter.html">QPainter</a>'s <a href="qpainter.html#viewport">viewport()</a> and <a href="qpainter.html#window">window()</a>. The viewport represents the physical coordinates specifying an arbitrary rectangle. The &quot;window&quot; describes the same rectangle in logical coordinates. By default the logical and physical coordinate systems coincide, and are equivalent to the paint device's rectangle.</p>
 <p>Using window-viewport conversion you can make the logical coordinate system fit your preferences. The mechanism can also be used to make the drawing code independent of the paint device. You can, for example, make the logical coordinates extend from (-50, -50) to (50, 50) with (0, 0) in the center by calling the <a href="qpainter.html#setWindow">QPainter::setWindow</a>() function:</p>
-<pre>         QPainter painter(this);
-         painter.setWindow(QRect(-50, -50, 100, 100));</pre>
+<pre> QPainter painter(this);
+ painter.setWindow(QRect(-50, -50, 100, 100));</pre>
 <p>Now, the logical coordinates (-50,-50) correspond to the paint device's physical coordinates (0, 0). Independent of the paint device, your painting code will always operate on the specified logical coordinates.</p>
 <p>By setting the &quot;window&quot; or viewport rectangle, you perform a linear transformation of the coordinates. Note that each corner of the &quot;window&quot; maps to the corresponding corner of the viewport, and vice versa. For that reason it normally is a good idea to let the viewport and &quot;window&quot; maintain the same aspect ratio to prevent deformation:</p>
-<pre>         int side = qMin(width(), height())
-         int x = (width() - side / 2);
-         int y = (height() - side / 2);
+<pre> int side = qMin(width(), height())
+ int x = (width() - side / 2);
+ int y = (height() - side / 2);
 
-         painter.setViewport(x, y, side, side);</pre>
+ painter.setViewport(x, y, side, side);</pre>
 <p>If we make the logical coordinate system a square, we should also make the viewport a square using the <a href="qpainter.html#setViewport">QPainter::setViewport</a>() function. In the example above we make it equivalent to the largest square that fit into the paint device's rectangle. By taking the paint device's size into consideration when setting the window or viewport, it is possible to keep the drawing code independent of the paint device.</p>
 <p>Note that the window-viewport conversion is only a linear transformation, i.e&#x2e; it does not perform clipping. This means that if you paint outside the currently set &quot;window&quot;, your painting is still transformed to the viewport using the same linear algebraic approach.</p>
 <p align="center"><img src="images/coordinatesystem-transformations.png" /></p><p>The viewport, &quot;window&quot; and transformation matrix determine how logical <a href="qpainter.html">QPainter</a> coordinates map to the paint device's physical coordinates. By default the world transformation matrix is the identity matrix, and the &quot;window&quot; and viewport settings are equivalent to the paint device's settings, i.e&#x2e; the world, &quot;window&quot; and device coordinate systems are equivalent, but as we have seen, the systems can be manipulated using transformation operations and window-viewport conversion. The illustration above describes the process.</p>
@@ -166,6 +166,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

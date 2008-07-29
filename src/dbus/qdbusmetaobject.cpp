@@ -70,6 +70,7 @@ private:
         QByteArray parameters;
         QByteArray typeName;
         QByteArray tag;
+        QByteArray name;
         QByteArray inputSignature;
         QByteArray outputSignature;
         QVarLengthArray<int, 4> inputTypes;
@@ -140,7 +141,7 @@ private:
 };
 
 static const int intsPerProperty = 2;
-static const int intsPerMethod = 4;
+static const int intsPerMethod = 5;
 
 // ### from kernel/qmetaobject.cpp (Qt 4.1.2):
 struct QDBusMetaObjectPrivate
@@ -221,7 +222,8 @@ void QDBusMetaObjectGenerator::parseMethods()
         const QDBusIntrospection::Method &m = *method_it;
         Method mm;
 
-        QByteArray prototype = m.name.toLatin1();
+        mm.name = m.name.toLatin1();
+        QByteArray prototype = mm.name;
         prototype += '(';
 
         bool ok = true;
@@ -302,7 +304,8 @@ void QDBusMetaObjectGenerator::parseSignals()
         const QDBusIntrospection::Signal &s = *signal_it;
         Method mm;
 
-        QByteArray prototype = s.name.toLatin1();
+        mm.name = s.name.toLatin1();
+        QByteArray prototype = mm.name;
         prototype += '(';
 
         bool ok = true;
@@ -425,7 +428,7 @@ void QDBusMetaObjectGenerator::write(QDBusMetaObject *obj)
     // add each method:
     for (QMap<QByteArray, Method>::ConstIterator it = methods.constBegin();
          it != methods.constEnd(); ++it) {
-        // form "prototype\0parameters\0typeName\0tag\0inputSignature\0outputSignature"
+        // form "prototype\0parameters\0typeName\0tag\0methodname\0inputSignature\0outputSignature"
         const Method &mm = it.value();
 
         idata[offset++] = stringdata.length();
@@ -442,6 +445,9 @@ void QDBusMetaObjectGenerator::write(QDBusMetaObject *obj)
         stringdata += null;
         idata[offset++] = mm.flags;
 
+        idata[signatureOffset++] = stringdata.length();
+        stringdata += mm.name;
+        stringdata += null;
         idata[signatureOffset++] = stringdata.length();
         stringdata += mm.inputSignature;
         stringdata += null;

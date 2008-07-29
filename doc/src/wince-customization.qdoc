@@ -122,14 +122,14 @@
     \o The original Qt source package is untouched (configure has never been run in the source tree directory).
     \o The shadow build directory is on the same level as the Qt source package. 
 
-     If the Qt package is in \c{C:\Qt\4.4.0} the shadow build
+     If the Qt package is in \c{C:\Qt\4.4.1} the shadow build
      directory could be \c{C:\Qt\shadowbuild}. A shadow build from a
      directory like \c{C:\shadowbuild} will not compile.
 
     \o Add the \c{\bin} directory of the shadow build directory to the \c PATH environment variable.
     \endlist
 
-    So lets assume you have installed Qt in \c{C:\Qt\4.4.0} and
+    So lets assume you have installed Qt in \c{C:\Qt\4.4.1} and
     you want to create a shadow build in
     \c{C:\Qt\mobile5-release-shared}:
 

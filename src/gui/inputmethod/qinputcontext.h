@@ -118,9 +118,9 @@ public:
     QTextFormat standardFormat(StandardFormat s) const;
 private:
     friend class QWidget;
+    friend class QWidgetPrivate;
     friend class QInputContextFactory;
     friend class QApplication;
-
 private:   // Disabled copy constructor and operator=
     QInputContext( const QInputContext & );
     QInputContext &operator=( const QInputContext & );

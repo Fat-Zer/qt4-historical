@@ -106,6 +106,10 @@ void QStackedWidgetPreviewEventFilter::updateButtons()
 
 void QStackedWidgetPreviewEventFilter::prevPage()
 {
+    if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(stackedWidget())) {
+        fw->clearSelection();
+        fw->selectWidget(stackedWidget(), true);
+    }
     const int count = m_stackedWidget->count();
     if (count > 1) {
         int newIndex = m_stackedWidget->currentIndex() - 1;
@@ -117,6 +121,10 @@ void QStackedWidgetPreviewEventFilter::prevPage()
 
 void QStackedWidgetPreviewEventFilter::nextPage()
 {
+    if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(stackedWidget())) {
+        fw->clearSelection();
+        fw->selectWidget(stackedWidget(), true);
+    }
     const int count = m_stackedWidget->count();
     if (count > 1)
         gotoPage((m_stackedWidget->currentIndex() + 1) % count);
@@ -200,8 +208,6 @@ QStackedWidgetEventFilter::QStackedWidgetEventFilter(QStackedWidget *parent) :
     connect(m_actionInsertPage, SIGNAL(triggered()), this, SLOT(addPage()));
     connect(m_actionInsertPageAfter, SIGNAL(triggered()), this, SLOT(addPageAfter()));
     connect(m_actionChangePageOrder, SIGNAL(triggered()), this, SLOT(changeOrder()));
-
-    connect(stackedWidget(), SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 }
 
 void QStackedWidgetEventFilter::install(QStackedWidget *stackedWidget)
@@ -211,10 +217,16 @@ void QStackedWidgetEventFilter::install(QStackedWidget *stackedWidget)
 
 QStackedWidgetEventFilter *QStackedWidgetEventFilter::eventFilterOf(const QStackedWidget *stackedWidget)
 {
-    QList<QStackedWidgetEventFilter*> filters = qFindChildren<QStackedWidgetEventFilter*>(stackedWidget);
-    if (filters.empty())
-        return 0;
-    return filters.front();
+    // Look for 1st order children only..otherwise, we might get filters of nested widgets
+    const QObjectList children = stackedWidget->children();
+    const QObjectList::const_iterator cend = children.constEnd();
+    for (QObjectList::const_iterator it = children.constBegin(); it != cend; ++it) {
+        QObject *o = *it;
+        if (!o->isWidgetType())
+            if (QStackedWidgetEventFilter *ef = qobject_cast<QStackedWidgetEventFilter *>(o))
+                return ef;
+    }
+    return 0;
 }
 
 QMenu *QStackedWidgetEventFilter::addStackedWidgetContextMenuActions(const QStackedWidget *stackedWidget, QMenu *popup)
@@ -284,16 +296,6 @@ void QStackedWidgetEventFilter::addPageAfter()
         qdesigner_internal::AddStackedWidgetPageCommand *cmd = new qdesigner_internal::AddStackedWidgetPageCommand(fw);
         cmd->init(stackedWidget(), qdesigner_internal::AddStackedWidgetPageCommand::InsertAfter);
         fw->commandHistory()->push(cmd);
-    }
-}
-
-void QStackedWidgetEventFilter::slotCurrentChanged(int index)
-{
-    if (stackedWidget()->widget(index)) {
-        if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(stackedWidget())) {
-            fw->clearSelection();
-            fw->selectWidget(stackedWidget(), true);
-        }
     }
 }
 

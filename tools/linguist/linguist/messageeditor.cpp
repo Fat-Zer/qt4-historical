@@ -65,6 +65,7 @@
 QT_BEGIN_NAMESPACE
 
 
+#ifdef NEVER_TRUE
 // Allow translators to provide localized names for QLocale::languageToString
 // At least the own language should be translated ... This is a "hack" until
 // functionality is provided within Qt (see task 196275).
@@ -76,6 +77,7 @@ static const char * language_strings[] =
     QT_TRANSLATE_NOOP("EditorPage", "Polish"),
     QT_TRANSLATE_NOOP("EditorPage", "Chinese")
 };
+#endif
 
 
 /*

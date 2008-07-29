@@ -75,10 +75,10 @@ public:
     QString reference() const;
     QList<QHelpDataContentItem*> children() const;
 
-private:    
+private:
     QString m_title;
     QString m_reference;
-    QList<QHelpDataContentItem*> m_children;    
+    QList<QHelpDataContentItem*> m_children;
 };
 
 struct QHELP_EXPORT QHelpDataIndexItem {
@@ -89,6 +89,8 @@ struct QHELP_EXPORT QHelpDataIndexItem {
     QString name;
     QString identifier;
     QString reference;
+    
+    bool operator==(const QHelpDataIndexItem & other) const;
 };
 
 class QHelpDataFilterSectionData : public QSharedData

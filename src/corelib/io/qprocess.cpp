@@ -1098,7 +1098,7 @@ void QProcess::close()
         ;
     kill();
     waitForFinished(-1);
-    setOpenMode(QIODevice::NotOpen);
+    QIODevice::close();
 }
 
 /*! \reimp
@@ -1498,7 +1498,7 @@ void QProcess::start(const QString &program, const QStringList &arguments, OpenM
         mode &= ~ReadOnly;      // not open for reading
     if (mode == 0)
         mode = Unbuffered;
-    setOpenMode(mode);
+    QIODevice::open(mode);
 
     d->stdinChannel.closed = false;
     d->stdoutChannel.closed = false;

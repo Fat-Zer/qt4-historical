@@ -73,12 +73,12 @@ in the \l{Qt/X11 Requirements} document.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-x11-opensource-desktop-4.4.0.tar.gz}
+    if you have the \c{qt-x11-opensource-desktop-4.4.1.tar.gz}
     package, type the following commands at a command line prompt:
 
 \snippet doc/src/snippets/code/doc.src.installation.qdoc 0
 
-    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.4.0}
+    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.4.1}
     containing the files from the archive. We only support the GNU version of
     the tar archiving utility. Note that on some systems it is called gtar.
 
@@ -88,7 +88,7 @@ in the \l{Qt/X11 Requirements} document.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.0} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.4.1} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
@@ -142,7 +142,7 @@ in the \l{Qt/X11 Requirements} document.
 
     For compilers that do not support rpath you must also extended the
     \c LD_LIBRARY_PATH environment variable to include
-    \c{/usr/local/Trolltech/Qt-4.4.0/lib}. On Linux with GCC this step
+    \c{/usr/local/Trolltech/Qt-4.4.1/lib}. On Linux with GCC this step
     is not needed.
 
 \o  That's all. Qt is now installed.
@@ -202,7 +202,7 @@ as part of the \l{Qt Commercial Editions}.
     For the open source version you do not need a license file.
 
 \o  Uncompress the files into the directory you want Qt installed;
-    e.g. \c{C:\Qt\4.4.0}.
+    e.g. \c{C:\Qt\4.4.1}.
 
     \note The install path must not contain any spaces or Windows specific
     file system characters.
@@ -214,11 +214,10 @@ as part of the \l{Qt Commercial Editions}.
 
 \snippet doc/src/snippets/code/doc.src.installation.qdoc 7
 
-    This is done by adding \c{c:\Qt\4.4.0\bin} to the \c PATH variable.
+    This is done by adding \c{c:\Qt\4.4.1\bin} to the \c PATH variable.
 
     For newer versions of Windows, \c PATH can be extended through
-    the \menu{Control Panel|System|Advanced|Environment variables} menu
-    and for older versions by editing \c{c:\autoexec.bat}.
+    the \menu{Control Panel|System|Advanced|Environment variables} menu.
 
     You may also need to ensure that the locations of your compiler and
     other build tools are listed in the \c PATH variable. This will depend
@@ -229,9 +228,10 @@ as part of the \l{Qt Commercial Editions}.
     Edition}, \c configure requires that \c sh.exe is not in the path
     or that it is run from \c msys. This also goes for mingw32-make.
 
-\o  Building
+\o Building
 
-    To configure the Qt library for your machine type:
+    To configure the Qt library for your machine, type the following command
+    in a \bold{Visual Studio} command prompt:
 
 \snippet doc/src/snippets/code/doc.src.installation.qdoc 8
 
@@ -308,12 +308,12 @@ What follows is how to install Qt/Mac from the source package.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-mac-opensource-desktop-4.4.0.tar.gz}
+    if you have the \c{qt-mac-opensource-desktop-4.4.1.tar.gz}
     package, type the following commands at a command line prompt:
 
 \snippet doc/src/snippets/code/doc.src.installation.qdoc 11
 
-    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.4.0}
+    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.4.1}
     containing the files from the archive.
 
 \o  Building
@@ -322,7 +322,7 @@ What follows is how to install Qt/Mac from the source package.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.0} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.4.1} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
@@ -414,7 +414,7 @@ in the \l{Qt for Windows CE Requirements} document.
 
 \list 1
     \o  Uncompress the files into the directory you want to install Qt into;
-        e.g., \c{C:\Qt\4.4.0}.
+        e.g., \c{C:\Qt\4.4.1}.
 
         \note The install path must not contain any spaces.
 
@@ -425,7 +425,7 @@ in the \l{Qt for Windows CE Requirements} document.
 
         \snippet doc/src/snippets/code/doc.src.installation.qdoc 18
 
-        This is done by adding \c{c:\Qt\4.4.0\bin} to the \c PATH variable.
+        This is done by adding \c{c:\Qt\4.4.1\bin} to the \c PATH variable.
 
         For newer versions of Windows, \c PATH can be extended through
         "Control Panel->System->Advanced->Environment variables" and for
@@ -496,59 +496,160 @@ in the \l{Qt for Windows CE Requirements} document.
 */
 
 /*!
-\page requirements-win.html
+    \page requirements.html
+    \title General Qt Requirements
+    \ingroup installation
+    \brief Outlines the general requirements and dependencies required to install Qt.
 
-\title Qt/Windows Requirements
-\ingroup installation
-\brief Setting up the Windows environment for Qt.
+    \section1 OpenSSL (version 0.9.7 or later)
 
-To build Qt with Phonon on Windows, you require Microsoft's
-DirectX Software Development Kit which can be downloaded
-\l{http://msdn2.microsoft.com/en-us/directx/aa937788.aspx}{here}.
+    Support for \l{SSL}{Secure Sockets Layer (SSL)} communication is provided by the
+    \l{OpenSSL Toolkit}, which must be obtained separately.
 */
 
 /*!
-\page requirements-mac.html
+    \page requirements-win.html
 
-\title Qt/Mac Requirements
-\ingroup installation
-\brief Setting up the Mac OS X environment for Qt.
+    \title Qt/Windows Requirements
+    \ingroup installation
+    \brief Setting up the Windows environment for Qt.
+
+    If you are using a binary version of Qt with Visual Studio 2005, you must
+    first install the Visual Studio Service Pack 1 available
+    \l{http://www.microsoft.com/downloads/details.aspx?FamilyId=BB4A75AB-E2D4-4C96-B39D-37BAF6B5B1DC&displaylang=en}{here}
+    to avoid runtime conflicts.
+
+    To build Qt with Phonon on Windows, you require:
+
+    \list
+        \o Microsoft's DirectX Software Development Kit which can be
+        downloaded
+        \l{http://msdn2.microsoft.com/en-us/directx/aa937788.aspx}{here}, and
+        \o Microsoft's Windows Server 2003 R2 Platform SDK which is available
+        \l{http://www.microsoft.com/downloads/details.aspx?FamilyID=0baf2b35-c656-4969-ace8-e4c0c0716adb&DisplayLang=en}{here}.
+    \endlist
+
+    \sa {Known Issues in 4.4.1}
 */
 
 /*!
-\page requirements-x11.html
+    \page requirements-mac.html
 
-\title Qt/X11 Requirements
-\ingroup installation
-\brief Setting up the X11 environment for Qt.
-*/
+    \title Qt/Mac Requirements
+    \ingroup installation
+    \brief Setting up the Mac OS X environment for Qt.
 
-/*!
-\page requirements-wince.html
-
-\title Qt for Windows CE Requirements
-\ingroup installation
-\brief Setting up the Windows CE environment for Qt.
-
-Qt is known to work with the following SDKs for Windows CE development:
-
-\list
-\o Windows CE 5.0 Standard SDK for ARM, X86, SH-4 and MIPS
-\o Windows CE 6.0 SDKs for ARM generated using the defaults found in Platform Builder
-\o Windows Mobile 5.0 (\e{Pocket PC}, \e{Smartphone} and \e{Pocket PC with Phone} editions)
-\o Windows Mobile 6.0 (\e{Standard}, \e{Classic} and \e{Professional} editions)
-\endlist
-
-\note There is currently no "out of the box" support for the Windows CE
-Automotive or Portable Media SDKs from Microsoft.
-
-Device manufacturers may prefer to make their own customized version of Windows CE
-using Platform Builder. In order for Qt for Windows CE to support a custom SDK, a
-build specification needs to be created.
+    \sa {Known Issues in 4.4.1}
 */
 
 /*!
     \page requirements-x11.html
+
+    \title Qt/X11 Requirements
+    \ingroup installation
+    \brief Setting up the X11 environment for Qt.
+
+    \image x11_dependencies.png Qt/X11 Dependencies
+
+    \raw HTML
+    <style type="text/css" id="colorstyles">
+     #QtGuiColor { background-color: #98fd00; color: black }
+     #QtCoreColor { background-color: #9c9cff; color: black }
+     #DefaultColor { background-color: #f6f6dc; color: black }
+     #FreetypeColor { background-color: #e6e6fa; color: black }
+     #GLColor { background-color: #ffc0cb; color: black }
+     #PthreadColor { background-color: #bdb76b; color: black }
+     #OptionalColor { background-color: #cae1ff; color: black }
+     #SMColor { background-color: #c2fafa; color: black }
+     #MiscColor { background-color: #f0f9ff; color: black }
+     #GlibColor { background-color: #b3b3b3; color: black }
+    </style>
+    \endraw
+
+    The QtGui module and the QtCore module, which provides the non-GUI features required
+    by QtGui, depend on the libraries described in the following table.
+
+    \table 90%
+    \header \o Name \o Library \o Notes \o Configuration options \o Minimum working version
+    \raw HTML
+    <tr id="OptionalColor">
+    <td> XRender </td><td> libXrender </td><td> X Rendering Extension; used for anti-aliasing</td>
+    <td><tt>-xrender</tt> or auto-detected</td><td>0.9.0</td>
+    </tr><tr id="OptionalColor">
+    <td> Xrandr </td><td> libXrandr </td><td> X Resize and Rotate Extension</td>
+    <td><tt>-xrandr</tt> or auto-detected</td><td>1.0.2</td>
+    </tr><tr id="OptionalColor">
+    <td> Xcursor </td><td> libXcursor </td><td> X Cursor Extension</td>
+    <td><tt>-xcursor</tt> or auto-detected</td><td>1.1.4</td>
+    </tr><tr id="OptionalColor">
+    <td> Xfixes </td><td> libXfixes </td><td> X Fixes Extension</td>
+    <td><tt>-xfixes</tt> or auto-detected</td><td>3.0.0</td>
+    </tr><tr id="OptionalColor">
+    <td> Xinerama </td><td> libXinerama </td><td> Multi-head support</td>
+    <td><tt>-xinerama</tt> or auto-detected</td><td>1.1.0</td>
+    </tr><tr id="DefaultColor">
+    <td> Xi </td><td> libXi </td><td> X11 Input Extensions</td>
+    <td>auto-detected</td><td>1.3.0</td>
+    </tr><tr id="DefaultColor">
+    <td> Xt </td><td> libXt </td><td> Xt Intrinsics</td><td></td><td>0.99</td>
+    </tr><tr id="DefaultColor">
+    <td> Xext </td><td> libXext </td><td> X Extensions</td><td></td><td>6.4.3</td>
+    </tr><tr id="DefaultColor">
+    <td> X11 </td><td> libX11 </td><td> X11 Client-Side Library</td><td></td><td>6.2.1</td>
+    </tr><tr id="SMColor">
+    <td> SM </td><td> libSM </td><td> X Session Management</td>
+    <td><tt>-sm</tt> or auto-detected</td><td>6.0.4</td>
+    </tr><tr id="SMColor">
+    <td> ICE </td><td> libICE </td><td> Inter-Client Exchange</td>
+    <td><tt>-sm</tt> or auto-detected</td><td>6.3.5</td>
+    </tr><tr id="GlibColor">
+    <td> glib </td><td> libglib-2.0 </td><td> Common event loop handling</td>
+    <td><tt>-glib</tt> or auto-detected</td><td>2.8.3</td>
+    </tr><tr id="PthreadColor">
+    <td> pthread </td><td> libpthread </td><td> Multithreading</td>
+    <td></td><td>2.3.5</td>
+    </tr>
+    \endraw
+    \endtable
+
+    \note You must compile with XRender support to get alpha transparency
+    support for pixmaps and images.
+
+    \sa {Known Issues in 4.4.1}
+*/
+
+/*!
+    \page requirements-wince.html
+
+    \title Qt for Windows CE Requirements
+    \ingroup installation
+    \brief Setting up the Windows CE environment for Qt.
+
+    Qt is known to work with Visual Studio 2005 and the following SDKs for
+    Windows CE development on Windows XP and Windows Vista:
+
+    \list
+    \o Windows CE 5.0 Standard SDK for ARM, X86, SH-4 and MIPS
+    \o Windows CE 6.0 SDKs for ARM generated using the defaults found in
+       Platform Builder
+    \o Windows Mobile 5.0 (\e{Pocket PC}, \e{Smartphone} and
+       \e{Pocket PC with Phone} editions)
+    \o Windows Mobile 6.0 (\e{Standard}, \e{Classic} and
+       \e{Professional} editions)
+    \endlist
+
+    \note There is currently no "out of the box" support for the Windows CE
+    Automotive or Portable Media SDKs from Microsoft.
+
+    Device manufacturers may prefer to make their own customized version of
+    Windows CE using Platform Builder. In order for Qt for Windows CE to
+    support a custom SDK, a build specification needs to be created.
+
+    \sa {Known Issues in 4.4.1}
+*/
+
+/*!
+    \page requirements-embedded-linux.html
 
     \title Qt for Embedded Linux Requirements
     \ingroup installation
@@ -557,5 +658,7 @@ build specification needs to be created.
     \section1 Building Qt for Embedded Linux with uclibc
 
     If you intend to use WebKit then you should use at least version 0.9.29
-    of uclibc as that is the earliest version with sufficient pthread support.
+    of uclibc as that is the earliest version with sufficient pthread support.
+
+    \sa {Known Issues in 4.4.1}
 */

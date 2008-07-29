@@ -166,6 +166,10 @@
 	#define _rename rename
 #endif
 
-#if defined(__GNUC__) && defined(__sgi)
+#if defined(__GNUC__) && (defined(__sgi) || (defined(Q_OS_SOLARIS) && Q_SOLARIS_VERSION < 10))
     #undef _CL_HAVE_FLOAT_T
+#endif
+
+#if defined(__GNUC__) && defined(Q_OS_SOLARIS) && Q_SOLARIS_VERSION < 10
+    #undef _CL_HAVE_WCSTOLL
 #endif

@@ -118,6 +118,7 @@ public:
     void setSecondaryView( QWidget *v );
 
     void setZoom( double );
+    void setTransform( const QMatrix& );
 
     bool hasCursor() const;
 
@@ -159,7 +160,7 @@ private:
     QPoint clickPos;
     bool buttonPressed;
     int buttonIndex;
-    double zoom;
+    QMatrix transform;
     qvfb_internal::CursorWindow *cursorw;
 
     bool joydown;

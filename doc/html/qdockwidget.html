@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qdockwidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qdockwidget.cpp -->
 <head>
   <title>Qt 4.4: QDockWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -200,9 +200,9 @@
 <li>Mouse events that are not explicitly handled by the title bar widget must be ignored by calling <a href="qevent.html#ignore">QMouseEvent::ignore</a>(). These events then propagate to the <a href="qdockwidget.html">QDockWidget</a> parent, which handles them in the usual manner, moving when the title bar is dragged, docking and undocking when it is double-clicked, etc.</li>
 <li>When <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetVerticalTitleBar</a> is set on <a href="qdockwidget.html">QDockWidget</a>, the title bar widget is repositioned accordingly. In <a href="qwidget.html#resizeEvent">resizeEvent</a>(), the title bar should check what orientation it should assume:<pre>        QDockWidget *dockWidget = qobject_cast&lt;QDockWidget*&gt;(parentWidget());
         if (dockWidget-&gt;features() &amp; QDockWidget::DockWidgetVerticalTitleBar) {
-            // I need to be vertical
+            <span class="comment">// I need to be vertical</span>
         } else {
-            // I need to be horizontal
+            <span class="comment">// I need to be horizontal</span>
         }</pre>
 </li>
 <li>The title bar widget must have a valid <a href="qwidget.html#sizeHint-prop">QWidget::sizeHint</a>() and <a href="qwidget.html#minimumSizeHint-prop">QWidget::minimumSizeHint</a>(). These functions should take into account the current orientation of the title bar.</li>
@@ -213,6 +213,8 @@
 <a name="//apple_ref/cpp/instm/QDockWidget/setWidget" />
 <h3 class="fn"><a name="setWidget"></a>void QDockWidget::setWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Sets the widget for the dock widget to <i>widget</i>.</p>
+<p>If the dock widget is visible when <i>widget</i> is added, you must <a href="qwidget.html#show">show()</a> it explicitly.</p>
+<p>Note that you must add the layout of the <i>widget</i> before you call this function; if not, the <i>widget</i> will not be visible.</p>
 <p>See also <a href="qdockwidget.html#widget">widget</a>().</p>
 <a name="//apple_ref/cpp/instm/QDockWidget/titleBarWidget" />
 <h3 class="fn"><a name="titleBarWidget"></a><a href="qwidget.html">QWidget</a> * QDockWidget::titleBarWidget () const</h3>
@@ -240,6 +242,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

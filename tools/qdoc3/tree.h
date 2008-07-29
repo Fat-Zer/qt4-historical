@@ -73,10 +73,12 @@ public:
     FunctionNode *findFunctionNode(const QStringList &parentPath, const FunctionNode *clone,
                                    Node *relative = 0, int findFlags = 0);
     void addBaseClass(ClassNode *subclass, Node::Access access, const QStringList &basePath,
-		      const QString &dataTypeWithTemplateArgs);
+		      const QString &dataTypeWithTemplateArgs,
+                      InnerNode *parent = 0);
     void addPropertyFunction(PropertyNode *property, const QString &funcName,
 			     PropertyNode::FunctionRole funcRole);
     void addToGroup(Node *node, const QString &group);
+    QMultiMap<QString, Node *> groups() const;
     void resolveInheritance(NamespaceNode *rootNode = 0);
     void resolveProperties();
     void resolveGroups();

@@ -1,15 +1,13 @@
 //! [0]
-        QT += phonon
+QT += phonon
 //! [0]
 
 
 //! [1]
-        QT += phonon
+QT += phonon
 //! [1]
 
 
 //! [2]
-        #include <phonon>
+#include <phonon>
 //! [2]
-
-

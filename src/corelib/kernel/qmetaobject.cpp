@@ -343,8 +343,14 @@ int QMetaObject::classInfoOffset() const
 }
 
 /*!
-    Returns the number of methods in this class. These include
-    signals and slots.
+    Returns the number of methods in this class, including the number of
+    properties provided by each base class. These include signals and slots
+    as well as normal member functions.
+
+    Use code like the following to obtain a QStringList containing the methods
+    specific to a given class:
+
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmetaobject.cpp methodCount
 
     \sa method(), methodOffset(), indexOfMethod()
 */
@@ -376,7 +382,13 @@ int QMetaObject::enumeratorCount() const
 }
 
 /*!
-    Returns the number of properties in this class.
+    Returns the number of properties in this class, including the number of
+    properties provided by each base class.
+
+    Use code like the following to obtain a QStringList containing the properties
+    specific to a given class:
+
+    \snippet doc/src/snippets/code/src.corelib.kernel.qmetaobject.cpp propertyCount
 
     \sa property(), propertyOffset(), indexOfProperty()
 */

@@ -330,6 +330,7 @@ private:
 
 /*!
     \class QHelpSearchResultWidget
+    \since 4.4
     \inmodule QtHelp
     \brief The QHelpSearchResultWidget class provides either a tree 
     widget or a text browser depending on the used search engine to display

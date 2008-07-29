@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/xml/dom/qdom.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/xml/dom/qdom.cpp -->
 <head>
   <title>Qt 4.4: QDomDocument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -84,20 +84,20 @@
      }
      file.close();
 
-     // print out the element names of all elements that are direct children
-     // of the outermost element.
+     <span class="comment">// print out the element names of all elements that are direct children</span>
+     <span class="comment">// of the outermost element.</span>
      QDomElement docElem = doc.documentElement();
 
      QDomNode n = docElem.firstChild();
      while(!n.isNull()) {
-         QDomElement e = n.toElement(); // try to convert the node to an element.
+         QDomElement e = n.toElement(); <span class="comment">// try to convert the node to an element.</span>
          if(!e.isNull()) {
-             cout &lt;&lt; e.tagName() &lt;&lt; endl; // the node really is an element.
+             cout &lt;&lt; qPrintable(e.tagName()) &lt;&lt; endl; <span class="comment">// the node really is an element.</span>
          }
          n = n.nextSibling();
      }
 
-     // Here we append a new element to the end of the document
+     <span class="comment">// Here we append a new element to the end of the document</span>
      QDomElement elem = doc.createElement(&quot;img&quot;);
      elem.setAttribute(&quot;src&quot;, &quot;myimage.png&quot;);
      docElem.appendChild(elem);</pre>
@@ -164,7 +164,7 @@
 <a name="//apple_ref/cpp/instm/QDomDocument/createElementNS" />
 <h3 class="fn"><a name="createElementNS"></a><a href="qdomelement.html">QDomElement</a> QDomDocument::createElementNS ( const <a href="qstring.html">QString</a> &amp; <i>nsURI</i>, const <a href="qstring.html">QString</a> &amp; <i>qName</i> )</h3>
 <p>Creates a new element with namespace support that can be inserted into the DOM tree. The name of the element is <i>qName</i> and the namespace URI is <i>nsURI</i>. This function also sets <a href="qdomnode.html#prefix">QDomNode::prefix</a>() and <a href="qdomnode.html#localName">QDomNode::localName</a>() to appropriate values (depending on <i>qName</i>).</p>
-<p>If <i>qName</i> is an empty string, returns a null element.</p>
+<p>If <i>qName</i> is an empty string, returns a null element regardless of whether the invalid data policy is set.</p>
 <p>See also <a href="qdomdocument.html#createElement">createElement</a>().</p>
 <a name="//apple_ref/cpp/instm/QDomDocument/createEntityReference" />
 <h3 class="fn"><a name="createEntityReference"></a><a href="qdomentityreference.html">QDomEntityReference</a> QDomDocument::createEntityReference ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
@@ -206,7 +206,7 @@
 <h3 class="fn"><a name="importNode"></a><a href="qdomnode.html">QDomNode</a> QDomDocument::importNode ( const <a href="qdomnode.html">QDomNode</a> &amp; <i>importedNode</i>, bool <i>deep</i> )</h3>
 <p>Imports the node <i>importedNode</i> from another document to this document. <i>importedNode</i> remains in the original document; this function creates a copy that can be used within this document.</p>
 <p>This function returns the imported node that belongs to this document. The returned node has no parent. It is not possible to import <a href="qdomdocument.html">QDomDocument</a> and <a href="qdomdocumenttype.html">QDomDocumentType</a> nodes. In those cases this function returns a <a href="qdomnode.html#isNull">null node</a>.</p>
-<p>If <i>deep</i> is true, this function imports not only the node <i>importedNode</i> but its whole subtree; if it is false, only the <i>importedNode</i> is imported. The argument <i>deep</i> has no effect on <a href="qdomattr.html">QDomAttr</a> and <a href="qdomentityreference.html">QDomEntityReference</a> nodes, since the descendents of <a href="qdomattr.html">QDomAttr</a> nodes are always imported and those of <a href="qdomentityreference.html">QDomEntityReference</a> nodes are never imported.</p>
+<p>If <i>deep</i> is true, this function imports not only the node <i>importedNode</i> but its whole subtree; if it is false, only the <i>importedNode</i> is imported. The argument <i>deep</i> has no effect on <a href="qdomattr.html">QDomAttr</a> and <a href="qdomentityreference.html">QDomEntityReference</a> nodes, since the descendants of <a href="qdomattr.html">QDomAttr</a> nodes are always imported and those of <a href="qdomentityreference.html">QDomEntityReference</a> nodes are never imported.</p>
 <p>The behavior of this function is slightly different depending on the node types:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Node Type</th><th>Behavior</th></tr></thead>
@@ -216,7 +216,7 @@
 <tr valign="top" class="even"><td><a href="qdomdocumenttype.html">QDomDocumentType</a></td><td>Document type nodes cannot be imported.</td></tr>
 <tr valign="top" class="odd"><td><a href="qdomelement.html">QDomElement</a></td><td>Attributes for which <a href="qdomattr.html#specified">QDomAttr::specified</a>() is true are also imported, other attributes are not imported. If <i>deep</i> is true, this function also imports the subtree of <i>importedNode</i>; otherwise it imports only the element node (and some attributes, see above).</td></tr>
 <tr valign="top" class="even"><td><a href="qdomentity.html">QDomEntity</a></td><td>Entity nodes can be imported, but at the moment there is no way to use them since the document type is read-only in DOM level 2.</td></tr>
-<tr valign="top" class="odd"><td><a href="qdomentityreference.html">QDomEntityReference</a></td><td>Descendents of entity reference nodes are never imported: <i>deep</i> has no effect.</td></tr>
+<tr valign="top" class="odd"><td><a href="qdomentityreference.html">QDomEntityReference</a></td><td>Descendants of entity reference nodes are never imported: <i>deep</i> has no effect.</td></tr>
 <tr valign="top" class="even"><td><a href="qdomnotation.html">QDomNotation</a></td><td>Notation nodes can be imported, but at the moment there is no way to use them since the document type is read-only in DOM level 2.</td></tr>
 <tr valign="top" class="odd"><td><a href="qdomprocessinginstruction.html">QDomProcessingInstruction</a></td><td>The target and value of the processing instruction is copied to the new node.</td></tr>
 <tr valign="top" class="even"><td><a href="qdomtext.html">QDomText</a></td><td>The text is copied to the new node.</td></tr>
@@ -235,7 +235,7 @@
 <p>If a parse error occurs, this function returns false and the error message is placed in <tt>*</tt><i>errorMsg</i>, the line number in <tt>*</tt><i>errorLine</i> and the column number in <tt>*</tt><i>errorColumn</i> (unless the associated pointer is set to 0); otherwise this function returns true. The various error messages are described in the <a href="qxmlparseexception.html">QXmlParseException</a> class documentation. Note that, if you want to display these error messages to your application's users, they will be displayed in English unless they are explicitly translated.</p>
 <p>If <i>namespaceProcessing</i> is true, the function <a href="qdomnode.html#prefix">QDomNode::prefix</a>() returns a string for all elements and attributes. It returns an empty string if the element or attribute has no prefix.</p>
 <p>Text nodes consisting only of whitespace are stripped and won't appear in the <a href="qdomdocument.html">QDomDocument</a>. If this behavior is not desired, one can use the setContent() overload that allows a <a href="qxmlreader.html">QXmlReader</a> to be supplied.</p>
-<p>If <i>namespaceProcessing</i> is false, the functions <a href="qdomnode.html#prefix">QDomNode::prefix</a>(), <a href="qdomnode.html#localName">QDomNode::localName</a>() and <a href="qdomnode.html#namespaceURIx">QDomNode::namespaceURI</a>() return an empty string.</p>
+<p>If <i>namespaceProcessing</i> is false, the functions <a href="qdomnode.html#prefix">QDomNode::prefix</a>(), <a href="qdomnode.html#localName">QDomNode::localName</a>() and <a href="qdomnode.html#namespaceURI">QDomNode::namespaceURI</a>() return an empty string.</p>
 <p>Entity references are handled as follows:</p>
 <ul>
 <li>References to internal general entities and character entities occurring in the content are included. The result is a <a href="qdomtext.html">QDomText</a> node with the references replaced by their corresponding entity values.</li>
@@ -246,7 +246,7 @@
 </ul>
 <p><a href="qdomnode.html#prefix">QDomNode::prefix</a>() <a href="qstring.html#isNull">QString::isNull</a>() <a href="qstring.html#isEmpty">QString::isEmpty</a>()</p>
 <p><b>Warning:</b> This function is not <a href="threads.html#reentrant">reentrant</a>.</p>
-<p>See also <a href="qdomnode.html#namespaceURIx">QDomNode::namespaceURI</a>() and <a href="qdomnode.html#localName">QDomNode::localName</a>().</p>
+<p>See also <a href="qdomnode.html#namespaceURI">QDomNode::namespaceURI</a>() and <a href="qdomnode.html#localName">QDomNode::localName</a>().</p>
 <h3 class="fn"><a name="setContent-2"></a>bool QDomDocument::setContent ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, bool <i>namespaceProcessing</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function reads the XML document from the string <i>text</i>, returning true if the content was successfully parsed; otherwise returns false. Since <i>text</i> is already a Unicode string, no encoding detection is done.</p>
@@ -287,6 +287,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

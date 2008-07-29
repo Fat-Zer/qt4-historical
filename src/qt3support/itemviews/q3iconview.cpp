@@ -3699,8 +3699,8 @@ void Q3IconView::ensureItemVisible(Q3IconViewItem *item)
     if (!item)
         return;
 
-    if (d->updateTimer && d->updateTimer->isActive() ||
-         d->fullRedrawTimer && d->fullRedrawTimer->isActive())
+    if ((d->updateTimer && d->updateTimer->isActive())
+        || (d->fullRedrawTimer && d->fullRedrawTimer->isActive()))
         slotUpdate();
 
     int w = item->width();

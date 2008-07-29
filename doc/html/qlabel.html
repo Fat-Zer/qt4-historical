@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qlabel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qlabel.cpp -->
 <head>
   <title>Qt 4.4: QLabel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -135,7 +135,7 @@
      label-&gt;setFrameStyle(QFrame::Panel | QFrame::Sunken);
      label-&gt;setText(&quot;first line\nsecond line&quot;);
      label-&gt;setAlignment(Qt::AlignBottom | Qt::AlignRight);</pre>
-<p>A QLabel is often used as a label for an interactive widget. For this use QLabel provides a useful mechanism for adding an mnemonic (see QKeysequence) that will set the keyboard focus to the other widget (called the QLabel's &quot;buddy&quot;). For example:</p>
+<p>A QLabel is often used as a label for an interactive widget. For this use QLabel provides a useful mechanism for adding an mnemonic (see <a href="qkeysequence.html">QKeySequence</a>) that will set the keyboard focus to the other widget (called the QLabel's &quot;buddy&quot;). For example:</p>
 <pre>     QLineEdit* phoneEdit = new QLineEdit(this);
      QLabel* phoneLabel = new QLabel(&quot;&amp;Phone:&quot;, this);
      phoneLabel-&gt;setBuddy(phoneEdit);</pre>
@@ -185,7 +185,7 @@
 <a name="//apple_ref/cpp/instm/QLabel/openExternalLinks" />
 <a name="//apple_ref/cpp/instm/QLabel/setOpenExternalLinks" />
 <h3 class="fn"><a name="openExternalLinks-prop"></a>openExternalLinks : bool</h3>
-<p>Specifies whether <a href="qlabel.html">QLabel</a> should automatically open links using <a href="qdesktopservices.html#openUrl">QDesktopServices::openUrl</a>() instead of emitting the anchorClicked() signal.</p>
+<p>Specifies whether <a href="qlabel.html">QLabel</a> should automatically open links using <a href="qdesktopservices.html#openUrl">QDesktopServices::openUrl</a>() instead of emitting the <a href="qlabel.html#linkActivated">linkActivated</a>() signal.</p>
 <p><b>Note:</b> The <a href="qlabel.html#textInteractionFlags-prop">textInteractionFlags</a> set on the label need to include either LinksAccessibleByMouse or LinksAccessibleByKeyboard.</p>
 <p>The default value is false.</p>
 <p>This property was introduced in Qt 4.2.</p>
@@ -309,7 +309,7 @@
 <h3 class="fn"><a name="setBuddy"></a>void QLabel::setBuddy ( <a href="qwidget.html">QWidget</a> * <i>buddy</i> )</h3>
 <p>Sets this label's buddy to <i>buddy</i>.</p>
 <p>When the user presses the shortcut key indicated by this label, the keyboard focus is transferred to the label's buddy widget.</p>
-<p>The buddy mechanism is only available for QLabels that contain text in which one character is prefixed with an ampersand, '&amp;'. This character is set as the shortcut key. See the <a href="qshortcut.html#mnemonic">QShortcut</a> documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
+<p>The buddy mechanism is only available for QLabels that contain text in which one character is prefixed with an ampersand, '&amp;'. This character is set as the shortcut key. See the QKeySequence::mnemonic documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
 <p>In a dialog, you might create two data entry widgets and a label for each, and set up the geometry layout so each label is just to the left of its data entry widget (its &quot;buddy&quot;), for example:</p>
 <pre>     QLineEdit *nameEd  = new QLineEdit(this);
      QLabel    *nameLb  = new QLabel(&quot;&amp;Name:&quot;, this);
@@ -317,7 +317,7 @@
      QLineEdit *phoneEd = new QLineEdit(this);
      QLabel    *phoneLb = new QLabel(&quot;&amp;Phone:&quot;, this);
      phoneLb-&gt;setBuddy(phoneEd);
-     // (layout setup not shown)</pre>
+     <span class="comment">// (layout setup not shown)</span></pre>
 <p>With the code above, the focus jumps to the Name field when the user presses Alt+N, and to the Phone field when the user presses Alt+P.</p>
 <p>To unset a previously set buddy, call this function with <i>buddy</i> set to 0.</p>
 <p>See also <a href="qlabel.html#buddy">buddy</a>(), <a href="qlabel.html#text-prop">setText</a>(), <a href="qshortcut.html">QShortcut</a>, and <a href="qlabel.html#alignment-prop">setAlignment</a>().</p>
@@ -345,6 +345,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -182,10 +182,10 @@
     \list
     \o \c ArrowPad
          \list
-         \o \&Up - \&Boven
+         \o \&Up - \&Omhoog
          \o \&Left - \&Links
          \o \&Right - \&Rechts
-         \o \&Down - \&Onder
+         \o \&Down - Omlaa\&g
          \endlist
     \o \c MainWindow
          \list

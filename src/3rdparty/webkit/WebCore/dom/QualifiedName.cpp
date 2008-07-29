@@ -154,7 +154,7 @@ String QualifiedName::toString() const
 {
     String local = localName();
     if (hasPrefix())
-        return prefix() + ":" + local;
+        return prefix() + String(":") + local;
     return local;
 }
 

@@ -1543,9 +1543,11 @@ bool QDesignerResource::checkProperty(QObject *obj, const QString &prop) const
 
     QWidget *check_widget = 0;
     if (obj->isWidgetType())
-        check_widget = qobject_cast<QWidget*>(obj);
+        check_widget = static_cast<QWidget*>(obj);
 
     if (check_widget && prop == QLatin1String("geometry")) {
+        if (check_widget == m_formWindow->mainContainer())
+            return true; // Save although maincontainer is technically laid-out by embedding container
          if (m_selected && m_selected == check_widget)
              return true;
 
@@ -1870,6 +1872,10 @@ QList<DomProperty*> QDesignerResource::computeProperties(QObject *object)
                 continue;
 
             const QString propertyName = sheet->propertyName(index);
+            // Suppress windowModality in legacy forms that have it set on child widgets
+            if (propertyName == QLatin1String("windowModality") && !sheet->isVisible(index))
+                continue;
+
             const QVariant value = sheet->property(index);
             if (DomProperty *p = createProperty(object, propertyName, value)) {
                 if (p->kind() == DomProperty::String) {

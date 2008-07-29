@@ -98,9 +98,9 @@
 
     \snippet doc/src/snippets/code/doc.src.modules.qdoc 0
 
-    On Windows, if you do not use \l qmake or the \l{Visual Studio Integration}
-    available to \l{Qt Commercial Editions}{commercial licensees}, you also
-    need to link against the \c qtmain library.
+    On Windows, if you do not use \l qmake, the \l{Visual Studio Integration}
+    available to \l{Qt Commercial Editions}{commercial licensees}, or other
+    build tools such as CMake, you also need to link against the \c qtmain library.
 
     \sa {Qt's Classes}
 */

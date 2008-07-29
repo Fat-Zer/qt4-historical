@@ -883,9 +883,12 @@ void Generator::appendSortedNames(Text& text, const ClassNode *classe,
 
     r = classes.begin();
     while ( r != classes.end() ) {
-        Text className;
-	appendFullName( className, (*r).node, classe, marker );
-        classMap[className.toString().toLower()] = className;
+        if ((*r).node->access() == Node::Public && (*r).node->status() != Node::Internal
+            && !(*r).node->doc().isEmpty()) {
+            Text className;
+	    appendFullName( className, (*r).node, classe, marker );
+            classMap[className.toString().toLower()] = className;
+	}
         ++r;
     }
 
@@ -894,7 +897,7 @@ void Generator::appendSortedNames(Text& text, const ClassNode *classe,
 
     foreach (className, classNames) {
         text << classMap[className];
-	text << separator( index++, classes.count() );
+	text << separator( index++, classNames.count() );
     }
 }
 

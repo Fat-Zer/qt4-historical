@@ -608,8 +608,8 @@ int QProgressDialog::value() const
 void QProgressDialog::setValue(int progress)
 {
     Q_D(QProgressDialog);
-    if (progress == d->bar->value() ||
-         d->bar->value() == -1 && progress == d->bar->maximum())
+    if (progress == d->bar->value()
+        || (d->bar->value() == -1 && progress == d->bar->maximum()))
         return;
 
     d->bar->setValue(progress);

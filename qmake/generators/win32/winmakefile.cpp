@@ -132,6 +132,8 @@ Win32MakefileGenerator::findLibraries(const QString &where)
                     quote = QChar();
                 }
                 (*it) = "/LIBPATH:" + libpath;
+            } else {
+                remove = true;
             }
         } else if(opt.startsWith("-l") || opt.startsWith("/l")) {
             QString lib = opt.right(opt.length() - 2), out;
@@ -671,6 +673,7 @@ void Win32MakefileGenerator::writeLibsPart(QTextStream &t)
 {
     if(project->isActiveConfig("staticlib") && project->first("TEMPLATE") == "lib") {
         t << "LIB           = " << var("QMAKE_LIB") << endl;
+        t << "LIBFLAGS      = " << var("QMAKE_LIBFLAGS") << endl;
     } else {
         t << "LINK          = " << var("QMAKE_LINK") << endl;
         t << "LFLAGS        = ";

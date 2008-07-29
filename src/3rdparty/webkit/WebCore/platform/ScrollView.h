@@ -187,7 +187,7 @@ namespace WebCore {
         virtual IntPoint convertChildToSelf(const Widget*, const IntPoint&) const;
         virtual IntPoint convertSelfToChild(const Widget*, const IntPoint&) const;
 
-        virtual void geometryChanged() const;
+        virtual void geometryChanged();
         virtual void setFrameGeometry(const IntRect&);
 
         IntRect windowResizerRect();
@@ -206,7 +206,11 @@ namespace WebCore {
         HashSet<Widget*>* children();
 
     private:
+        void incrementNativeWidgetCount();
+        void decrementNativeWidgetCount();
+        bool hasNativeWidgets() const;
         void updateScrollbars(const IntSize& desiredOffset);
+        void invalidateScrollbars();
         IntSize maximumScroll() const;
         class ScrollViewPrivate;
         ScrollViewPrivate* m_data;

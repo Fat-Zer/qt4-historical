@@ -131,7 +131,8 @@
     to our \c EchoInterface and return true. In the case that the
     plugin loaded does not implement the \c EchoInterface, \c
     instance() will return null, but this cannot happen in our
-    example.
+    example. Notice that the location of the plugin is not the same
+    for all platforms.
 
 
     \section1 EchoInterface Class Definition

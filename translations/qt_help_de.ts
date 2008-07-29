@@ -16,7 +16,7 @@
     <message>
         <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="91"/>
         <source>The search results may not be complete since the documentation is still being indexed!</source>
-        <translation>Es können nicht alle möglichen Ergibnisse angezeigt werden, da die Dokumentation noch indiziert wird!</translation>
+        <translation type="unfinished">Es können nicht alle möglichen Ergebnisse angezeigt werden, da die Dokumentation noch indiziert wird!</translation>
     </message>
     <message>
         <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="102"/>

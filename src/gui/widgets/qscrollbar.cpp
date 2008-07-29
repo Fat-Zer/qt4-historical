@@ -49,6 +49,7 @@
 #include "qstyle.h"
 #include "qstyleoption.h"
 #include "qmenu.h"
+#include <QtCore/qdatetime.h>
 
 #ifndef QT_NO_SCROLLBAR
 
@@ -582,16 +583,27 @@ void QScrollBar::mousePressEvent(QMouseEvent *e)
           || d->pressedControl == QStyle::SC_ScrollBarSubPage
           || d->pressedControl == QStyle::SC_ScrollBarSlider)
         && ((midButtonAbsPos && e->button() == Qt::MidButton)
-            || style()->styleHint(QStyle::SH_ScrollBar_LeftClickAbsolutePosition, &opt, this)
-            && e->button() == Qt::LeftButton)) {
+            || (style()->styleHint(QStyle::SH_ScrollBar_LeftClickAbsolutePosition, &opt, this)
+                && e->button() == Qt::LeftButton))) {
         int sliderLength = HORIZONTAL ? sr.width() : sr.height();
         setSliderPosition(d->pixelPosToRangeValue((HORIZONTAL ? e->pos().x()
                                                               : e->pos().y()) - sliderLength / 2));
         d->pressedControl = QStyle::SC_ScrollBarSlider;
         d->clickOffset = sliderLength / 2;
     }
-    d->activateControl(d->pressedControl);
+    const int initialDelay = 500; // default threshold
+    d->activateControl(d->pressedControl, initialDelay);
+    QTime time;
+    time.start();
     repaint(style()->subControlRect(QStyle::CC_ScrollBar, &opt, d->pressedControl, this));
+    if (time.elapsed() >= initialDelay && d->repeatActionTimer.isActive()) {
+        // It took more than 500ms (the initial timer delay) to process the repaint(), we
+        // therefore need to restart the timer in case we have a pending mouse release event;
+        // otherwise we'll get a timer event right before the release event,
+        // causing the repeat action to be invoked twice on a single mouse click.
+        // 50ms is the default repeat time (see activateControl/setRepeatAction).
+        d->repeatActionTimer.start(50, this);
+    }
     if (d->pressedControl == QStyle::SC_ScrollBarSlider)
         setSliderDown(true);
 }

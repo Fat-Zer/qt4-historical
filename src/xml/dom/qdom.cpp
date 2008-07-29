@@ -4890,12 +4890,13 @@ QDomAttr QDomElement::removeAttributeNode(const QDomAttr& oldAttr)
 }
 
 /*!
-    Returns a QDomNodeList containing all descendent elements of this
-    element that are called \a tagname. The order they are in the node
-    list is the order they are encountered in a preorder traversal of
-    the element tree.
+  Returns a QDomNodeList containing all descendants of this element
+  named \a tagname encountered during a preorder traversal of the
+  element subtree with this element as its root. The order of the
+  elements in the returned list is the order they are encountered
+  during the preorder traversal.
 
-    \sa elementsByTagNameNS() QDomDocument::elementsByTagName()
+  \sa elementsByTagNameNS() QDomDocument::elementsByTagName()
 */
 QDomNodeList QDomElement::elementsByTagName(const QString& tagname) const
 {
@@ -4903,15 +4904,16 @@ QDomNodeList QDomElement::elementsByTagName(const QString& tagname) const
 }
 
 /*!
-    Returns true if this element has an attribute called \a name;
-    otherwise returns false.
+  Returns true if this element has an attribute called \a name;
+  otherwise returns false.
 
-    \bold{Note:} This function does not take the presence of namespaces into account.
-    As a result, the specified name will be tested against fully-qualified attribute
-    names that include any namespace prefixes that may be present.
+  \bold{Note:} This function does not take the presence of namespaces
+  into account.  As a result, the specified name will be tested
+  against fully-qualified attribute names that include any namespace
+  prefixes that may be present.
 
-    Use hasAttributeNS() to explicitly test for attributes with specific namespaces
-    and names.
+  Use hasAttributeNS() to explicitly test for attributes with specific
+  namespaces and names.
 */
 bool QDomElement::hasAttribute(const QString& name) const
 {
@@ -5050,12 +5052,13 @@ QDomAttr QDomElement::setAttributeNodeNS(const QDomAttr& newAttr)
 }
 
 /*!
-    Returns a QDomNodeList containing all the descendent elements of
-    this element with the local name \a localName and the namespace
-    URI \a nsURI. The order they are in the node list is the order
-    they are encountered in a preorder traversal of the element tree.
+  Returns a QDomNodeList containing all descendants of this element
+  with local name \a localName and namespace URI \a nsURI encountered
+  during a preorder traversal of the element subtree with this element
+  as its root. The order of the elements in the returned list is the
+  order they are encountered during the preorder traversal.
 
-    \sa elementsByTagName() QDomDocument::elementsByTagNameNS()
+  \sa elementsByTagName() QDomDocument::elementsByTagNameNS()
 */
 QDomNodeList QDomElement::elementsByTagNameNS(const QString& nsURI, const QString& localName) const
 {
@@ -5712,7 +5715,7 @@ void QDomEntityPrivate::save(QTextStream& s, int, int) const
     changes to the contents of an entity, every related
     QDomEntityReference node must be replaced in the DOM tree by a
     clone of the entity's contents, and then the desired changes must
-    be made to each of the clones instead. All the descendents of an
+    be made to each of the clones instead. All the descendants of an
     entity node are read-only.
 
     An entity node does not have any parent.
@@ -5869,7 +5872,7 @@ void QDomEntityReferencePrivate::save(QTextStream& s, int, int) const
     node, it may be that there is no entity node representing the
     referenced entity; but if such an entity exists, then the child
     list of the entity reference node is the same as that of the
-    entity  node. As with the entity node, all descendents of the
+    entity  node. As with the entity node, all descendants of the
     entity reference are read-only.
 
     For further information about the Document Object Model see
@@ -6963,7 +6966,7 @@ QDomNodeList QDomDocument::elementsByTagName(const QString& tagname) const
     If \a deep is true, this function imports not only the node \a
     importedNode but its whole subtree; if it is false, only the \a
     importedNode is imported. The argument \a deep has no effect on
-    QDomAttr and QDomEntityReference nodes, since the descendents of
+    QDomAttr and QDomEntityReference nodes, since the descendants of
     QDomAttr nodes are always imported and those of
     QDomEntityReference nodes are never imported.
 
@@ -6995,7 +6998,7 @@ QDomNodeList QDomDocument::elementsByTagName(const QString& tagname) const
             no way to use them since the document type is read-only in
             DOM level 2.
     \row \i QDomEntityReference
-         \i Descendents of entity reference nodes are never imported:
+         \i Descendants of entity reference nodes are never imported:
             \a deep has no effect.
     \row \i QDomNotation
          \i Notation nodes can be imported, but at the moment there is
@@ -7030,7 +7033,8 @@ QDomNode QDomDocument::importNode(const QDomNode& importedNode, bool deep)
     QDomNode::prefix() and QDomNode::localName() to appropriate values
     (depending on \a qName).
 
-    If \a qName is an empty string, returns a null element.
+    If \a qName is an empty string, returns a null element regardless of
+    whether the invalid data policy is set.
 
     \sa createElement()
 */

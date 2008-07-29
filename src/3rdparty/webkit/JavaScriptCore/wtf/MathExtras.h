@@ -29,7 +29,7 @@
 #include <math.h>
 #include <time.h>
 
-#if PLATFORM(SOLARIS_OS) && COMPILER(GCC)
+#if PLATFORM(SOLARIS_OS)
 #include <ieeefp.h>
 #if !defined(isfinite)
 #define isfinite(x) (finite(x) && !isnand(x))

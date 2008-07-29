@@ -63,7 +63,14 @@ public:
             DisposePMSheetDoneUPP(upp);
             upp = 0;
         }
-        sheetCallbackMap.remove(ep->session);
+        QHash<PMPrintSession, QPrintDialogPrivate *>::iterator it = sheetCallbackMap.begin();
+        while (it != sheetCallbackMap.end()) {
+            if (it.value() == this) {
+                it = sheetCallbackMap.erase(it);
+            } else {
+                ++it;
+            }
+        }
     }
 
     inline void _q_printToFileChanged(int) {}

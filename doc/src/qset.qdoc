@@ -72,10 +72,9 @@
 
     If you want to navigate through all the values stored in a QSet,
     you can use an iterator. QSet supports both \l{Java-style
-    iterators} (QSetIterator and QMutableSetIterator) and
-    \l{STL-style iterators} (QSet::iterator and
-    QSet::const_iterator). Here's how to iterate over a QSet<QWidget
-    *> using a Java-style iterator:
+    iterators} (QSetIterator and QMutableSetIterator) and \l{STL-style
+    iterators} (QSet::iterator and QSet::const_iterator). Here's how
+    to iterate over a QSet<QWidget *> using a Java-style iterator:
 
     \snippet doc/src/snippets/code/doc.src.qset.qdoc 4
 
@@ -90,24 +89,23 @@
 
     \snippet doc/src/snippets/code/doc.src.qset.qdoc 6
 
-    Items can be removed from the set using remove(). There's also a
+    Items can be removed from the set using remove(). There is also a
     clear() function that removes all items.
 
-    QSet's value data type must be an \l{assignable data
-    type}. You cannot, for example, store a QWidget as a value;
-    instead, store a QWidget *. In addition, the type must
-    provide \c operator==(), and there must also be a global qHash()
-    function that returns a hash value for an argument of the key's
-    type. See the QHash documentation for a list of types supported
-    by qHash().
+    QSet's value data type must be an \l{assignable data type}. You
+    cannot, for example, store a QWidget as a value; instead, store a
+    QWidget *. In addition, the type must provide \c operator==(), and
+    there must also be a global qHash() function that returns a hash
+    value for an argument of the key's type. See the QHash
+    documentation for a list of types supported by qHash().
 
     Internally, QSet uses a hash table to perform lookups. The hash
     table automatically grows and shrinks to provide fast lookups
-    without wasting too much memory. You can still control the size
-    of the hash table by calling reserve() if you already know
-    approximately how many elements the QSet will contain, but this
-    isn't necessary to obtain good performance. You can also call
-    capacity() to retrieve the hash table's size.
+    without wasting memory. You can still control the size of the hash
+    table by calling reserve(), if you already know approximately how
+    many elements the QSet will contain, but this isn't necessary to
+    obtain good performance. You can also call capacity() to retrieve
+    the hash table's size.
 
     \sa QSetIterator, QMutableSetIterator, QHash, QMap
 */
@@ -136,14 +134,15 @@
 /*!
     \fn QSet<T> &QSet::operator=(const QSet<T> &other)
 
-    Assigns \a other to this set and returns a reference to this set.
+    Assigns the \a other set to this set and returns a reference to
+    this set.  
 */
 
 /*!
     \fn bool QSet::operator==(const QSet<T> &other) const
 
-    Returns true if \a other is equal to this set; otherwise returns
-    false.
+    Returns true if the \a other set is equal to this set; otherwise
+    returns false.
 
     Two sets are considered equal if they contain the same elements.
 
@@ -155,7 +154,7 @@
 /*!
     \fn bool QSet::operator!=(const QSet<T> &other) const
 
-    Returns true if \a other is not equal to this set; otherwise
+    Returns true if the \a other set is not equal to this set; otherwise
     returns false.
 
     Two sets are considered equal if they contain the same elements.
@@ -185,20 +184,21 @@
 /*!
     \fn int QSet::capacity() const
 
-    Returns the number of buckets in the QSet's internal hash table.
+    Returns the number of buckets in the set's internal hash
+    table.
 
     The sole purpose of this function is to provide a means of fine
-    tuning QSet's memory usage. In general, you will rarely ever
-    need to call this function. If you want to know how many items are
-    in the set, call size().
+    tuning QSet's memory usage. In general, you will rarely ever need
+    to call this function. If you want to know how many items are in
+    the set, call size().
 
     \sa reserve(), squeeze()
 */
 
 /*! \fn void QSet::reserve(int size)
 
-    Ensures that the QSet's internal hash table consists of at least
-    \a size buckets.
+    Ensures that the set's internal hash table consists of at
+    least \a size buckets.
 
     This function is useful for code that needs to build a huge set
     and wants to avoid repeated reallocation. For example:
@@ -221,7 +221,7 @@
 /*!
     \fn void QSet::squeeze()
 
-    Reduces the size of the QSet's internal hash table to save
+    Reduces the size of the set's internal hash table to save
     memory.
 
     The sole purpose of this function is to provide a means of fine
@@ -278,8 +278,8 @@
     \fn QSet::iterator QSet::erase(iterator pos)
     \since 4.2
 
-    Removes the item associated with the iterator \a pos from the
-    set, and returns an iterator to the next item in the set.
+    Removes the item at the iterator position \a pos from the set, and
+    returns an iterator positioned at the next item in the set.
 
     Unlike remove(), this function never causes QSet to rehash its
     internal data structure. This means that it can safely be called
@@ -291,9 +291,8 @@
 /*! \fn QSet::const_iterator QSet::find(const T &value) const
     \since 4.2
 
-    Returns a const iterator pointing to the item \a value in the set.
-
-    If the set contains no item \a value, the function returns
+    Returns a const iterator positioned at the item \a value in the
+    set. If the set contains no item \a value, the function returns
     constEnd().
 
     \sa constFind(), contains()
@@ -303,19 +302,16 @@
     \since 4.2
     \overload
 
-    Returns a non-const iterator pointing to the item \a value in the
-    set.
-
-    If the set contains no item \a value, the function returns end().
+    Returns a non-const iterator positioned at the item \a value in
+    the set. If the set contains no item \a value, the function
+    returns end(). 
 */
 
 /*! \fn QSet::const_iterator QSet::constFind(const T &value) const
     \since 4.2
 
-    Returns a const iterator pointing to the item \a value in the
-    set.
-
-    If the set contains no item \a value, the function returns
+    Returns a const iterator positioned at the item \a value in the
+    set. If the set contains no item \a value, the function returns
     constEnd().
 
     \sa find(), contains()
@@ -332,8 +328,8 @@
 
 /*! \fn QSet::const_iterator QSet::begin() const
 
-    Returns a const \l{STL-style iterator} pointing to the first item
-    in the set.
+    Returns a const \l{STL-style iterator} positioned at the first
+    item in the set.
 
     \sa constBegin(), end()
 */
@@ -342,21 +338,21 @@
     \since 4.2
     \overload
 
-    Returns a non-const \l{STL-style iterator} pointing to the first
-    item in the set.
+    Returns a non-const \l{STL-style iterator} positioned at the first
+    item in the set.  
 */
 
 /*! \fn QSet::const_iterator QSet::constBegin() const
 
-    Returns a const \l{STL-style iterator} pointing to the first item
-    in the set.
+    Returns a const \l{STL-style iterator} positioned at the first
+    item in the set.
 
     \sa begin(), constEnd()
 */
 
 /*! \fn QSet::const_iterator QSet::end() const
 
-    Returns a const \l{STL-style iterator} pointing to the imaginary
+    Returns a const \l{STL-style iterator} positioned at the imaginary
     item after the last item in the set.
 
     \sa constEnd(), begin()
@@ -442,8 +438,9 @@
 /*!
     \fn QSet::const_iterator QSet::insert(const T &value)
 
-    Inserts a new item \a value. If \a value already exists in the
-    set, nothing happens.
+    Inserts item \a value into the set, if \a value isn't already
+    in the set, and returns an iterator positioned at the inserted
+    item.
 
     \sa operator<<(), remove(), contains()
 */
@@ -451,7 +448,8 @@
 /*!
     \fn QSet<T> &QSet::unite(const QSet<T> &other)
 
-    Inserts all the items in the \a other set into this set.
+    Each item in the \a other set that isn't already in this set is
+    inserted into this set. A reference to this set is returned.
 
     \sa operator|=(), intersect(), subtract()
 */
@@ -459,8 +457,8 @@
 /*!
     \fn QSet<T> &QSet::intersect(const QSet<T> &other)
 
-    Removes any items in this set that don't exist in the \a other
-    set.
+    Removes all items from this set that are not contained in the
+    \a other set. A reference to this set is returned.
 
     \sa operator&=(), unite(), subtract()
 */
@@ -468,7 +466,8 @@
 /*!
     \fn QSet<T> &QSet::subtract(const QSet<T> &other)
 
-    Removes all the items in the \a other set from this set.
+    Removes all items from  this set that are contained in the 
+    \a other set. Returns a reference to this set.
 
     \sa operator-=(), unite(), intersect()
 */
@@ -476,9 +475,9 @@
 /*!
     \fn bool QSet::empty() const
 
-    Returns true if the set is empty. This function is provided for
-    STL compatibility. It is equivalent to isEmpty().
- */
+    Returns true if the set is empty. This function is provided
+    for STL compatibility. It is equivalent to isEmpty().  
+*/
 
 /*!
     \fn bool QSet::count() const
@@ -491,7 +490,7 @@
     \fn QSet<T> &QSet::operator+=(const T &value)
     \fn QSet<T> &QSet::operator|=(const T &value)
 
-    Inserts a new item \a value and returns a reference to this set.
+    Inserts a new item \a value and returns a reference to the set.
     If \a value already exists in the set, the set is left unchanged.
 
     \sa insert()
@@ -500,9 +499,9 @@
 /*!
     \fn QSet<T> &QSet::operator-=(const T &value)
 
-    Removes any occurrence of item \a value from the set and returns a
-    reference to this set. If \a value didn't exist in the set, the
-    set is left unchanged.
+    Removes the occurrence of item \a value from the set, if 
+    it is found, and returns a reference to the set. If the
+    \a value is not contained the set, nothing is removed.
 
     \sa remove()
 */
@@ -511,7 +510,7 @@
     \fn QSet<T> &QSet::operator|=(const QSet<T> &other)
     \fn QSet<T> &QSet::operator+=(const QSet<T> &other)
 
-    Syntactic sugar for unite(\a other).
+    Same as unite(\a other).
 
     \sa operator|(), operator&=(), operator-=()
 */
@@ -519,7 +518,7 @@
 /*!
     \fn QSet<T> &QSet::operator&=(const QSet<T> &other)
 
-    Syntactic sugar for intersect(\a other).
+    Same as intersect(\a other).
 
     \sa operator&(), operator|=(), operator-=()
 */
@@ -529,15 +528,15 @@
 
     \overload
 
-    Syntactic sugar for intersect(\e other), with \e other being a
-    set that only contains \a value.
+    Same as intersect(\e{other}), if we consider \e{other} to be a set
+    that contains the singleton \a value.  
 */
 
 
 /*!
     \fn QSet<T> &QSet::operator-=(const QSet<T> &other)
 
-    Syntactic sugar for subtract(\a other).
+    Same as subtract(\a{other}).
 
     \sa operator-(), operator|=(), operator&=()
 */
@@ -546,7 +545,8 @@
     \fn QSet<T> QSet::operator|(const QSet<T> &other) const
     \fn QSet<T> QSet::operator+(const QSet<T> &other) const
 
-    Returns the union of this set and \a other.
+    Returns a new QSet that is the union of this set and the 
+    \a other set.
 
     \sa unite(), operator|=(), operator&(), operator-()
 */
@@ -554,7 +554,8 @@
 /*!
     \fn QSet<T> QSet::operator&(const QSet<T> &other) const
 
-    Returns the intersection of this set and \a other.
+    Returns a new QSet that is the intersection of this set and the
+    \a other set.
 
     \sa intersect(), operator&=(), operator|(), operator-()
 */
@@ -562,7 +563,8 @@
 /*!
     \fn QSet<T> QSet::operator-(const QSet<T> &other) const
 
-    Returns the set difference of this set with \a other.
+    Returns a new QSet that is the set difference of this set and
+    the \a other set, i.e., this set - \a other set.
 
     \sa subtract(), operator-=(), operator|(), operator&()
 */
@@ -884,7 +886,7 @@
 
 /*! \fn QList<T> QSet<T>::toList() const
 
-    Returns a QList object with the data contained in this QSet. The
+    Returns a new QList containing the elements in the set. The
     order of the elements in the QList is undefined.
 
     Example:
@@ -896,7 +898,7 @@
 
 /*! \fn QList<T> QSet<T>::values() const
 
-    Returns a QList object with the data contained in this QSet. The
+    Returns a new QList containing the elements in the set. The
     order of the elements in the QList is undefined.
 
     This is the same as toList().
@@ -907,9 +909,10 @@
 
 /*! \fn QSet<T> QSet<T>::fromList(const QList<T> &list)
 
-    Returns a QSet object with the data contained in \a list.
-    Since QSet doesn't allow duplicates, the resulting QSet might
-    be smaller than the original \a list was.
+    Returns a new QSet object containing the data contained in \a
+    list. Since QSet doesn't allow duplicates, the resulting QSet
+    might be smaller than the \a list, because QList can contain
+    duplicates.
 
     Example:
 
@@ -922,7 +925,7 @@
     \fn QDataStream &operator<<(QDataStream &out, const QSet<T> &set)
     \relates QSet
 
-    Writes the set \a set to stream \a out.
+    Writes the \a set to stream \a out.
 
     This function requires the value type to implement \c operator<<().
 

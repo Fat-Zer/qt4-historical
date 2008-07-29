@@ -52,6 +52,7 @@ class QDir;
 class QLabel;
 class QPushButton;
 class QTableWidget;
+class QTableWidgetItem;
 QT_END_NAMESPACE
 
 //! [0]
@@ -65,6 +66,7 @@ public:
 private slots:
     void browse();
     void find();
+    void openFileOfItem(int row, int column);
 
 private:
     QStringList findFiles(const QDir &directory, const QStringList &files,

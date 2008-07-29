@@ -125,6 +125,8 @@
 
 #include <QtCore/QtDebug>
 
+#ifndef QT_NO_SCRIPT
+
 #include <string.h>
 
 #include "qscriptengine.h"
@@ -138,10 +140,10 @@
 #include "qscriptnodepool_p.h"
 
 #define Q_SCRIPT_UPDATE_POSITION(node, startloc, endloc) do { \
-    node->startLine = startloc.startLine;     \
+    node->startLine = startloc.startLine; \
     node->startColumn = startloc.startColumn; \
-    node->endLine = endloc.endLine;           \
-    node->endColumn = endloc.endColumn;       \
+    node->endLine = endloc.endLine; \
+    node->endColumn = endloc.endColumn; \
 } while (0)
 
 ./
@@ -210,6 +212,9 @@
 #define QSCRIPTPARSER_P_H
 
 #include "qscriptgrammar_p.h"
+
+#ifndef QT_NO_SCRIPT
+
 #include "qscriptastfwd_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -300,10 +305,6 @@ inline void QScriptParser::reallocateStack()
     state_stack = reinterpret_cast<int*> (qRealloc(state_stack, stack_size * sizeof(int)));
     location_stack = reinterpret_cast<Location*> (qRealloc(location_stack, stack_size * sizeof(Location)));
 }
-
-QT_END_NAMESPACE
-
-#endif // QSCRIPTPARSER_P_H
 
 :/
 
@@ -468,9 +469,28 @@ case $rule_number: {
 ./
 
 PrimaryExpression: T_DIVIDE_ ;
+/:
+#define Q_SCRIPT_REGEXPLITERAL_RULE1 $rule_number
+:/
 /.
 case $rule_number: {
-  bool rx = lexer->scanRegExp();
+  bool rx = lexer->scanRegExp(QScript::Lexer::NoPrefix);
+  if (!rx) {
+      error_message = lexer->errorMessage();
+      return false;
+  }
+  sym(1).Node = QScript::makeAstNode<QScript::AST::RegExpLiteral> (driver->nodePool(), lexer->pattern, lexer->flags);
+  Q_SCRIPT_UPDATE_POSITION(sym(1).Node, loc(1), loc(1));
+} break;
+./
+
+PrimaryExpression: T_DIVIDE_EQ ;
+/:
+#define Q_SCRIPT_REGEXPLITERAL_RULE2 $rule_number
+:/
+/.
+case $rule_number: {
+  bool rx = lexer->scanRegExp(QScript::Lexer::EqualPrefix);
   if (!rx) {
       error_message = lexer->errorMessage();
       return false;
@@ -1939,4 +1959,12 @@ PropertyNameAndValueListOpt: PropertyNameAndValueList ;
 
 QT_END_NAMESPACE
 
+#endif // QT_NO_SCRIPT
 ./
+/:
+QT_END_NAMESPACE
+
+#endif // QT_NO_SCRIPT
+
+#endif // QSCRIPTPARSER_P_H
+:/

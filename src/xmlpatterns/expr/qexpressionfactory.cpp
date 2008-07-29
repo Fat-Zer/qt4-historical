@@ -115,6 +115,10 @@ Expression::Ptr ExpressionFactory::createExpression(const QString &expr,
     {
         pDebug() << "-----      User Function Typecheck      -----";
         registerLastPath((*it)->body());
+
+        /* We will most likely call body()->typeCheck() again, once for each callsite. That is, it will
+         * be called from UserFunctionCallsite::typeCheck(), which will be called indirectly when
+         * we check the query body. */
         const Expression::Ptr typeCheck((*it)->body()->typeCheck(context, (*it)->signature()->returnType()));
         /* We don't have to call (*it)->setBody(typeCheck) here since it's only used directly below. */
         processTreePass(typeCheck, UserFunctionTypeCheck);

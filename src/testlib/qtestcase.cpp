@@ -615,6 +615,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \fn char *QTest::toString(const QUrl &url)
+    \since 4.4
     \overload
 
     Returns a textual representation of the given \a url.
@@ -1232,6 +1233,7 @@ int QTest::qExec(QObject *testObject, int argc, char **argv)
 
 /*!
   \overload
+  \since 4.4
 
   Behaves identically to qExec(QObject *, int, char**) but takes a
   QStringList of \a arguments instead of a \c char** list.

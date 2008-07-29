@@ -854,7 +854,7 @@ void QScriptValue::setProperty(const QString &name, const QScriptValue &value,
   occurred, property() returns the value that was thrown (typically
   an \c{Error} object).
 
-  \sa setProperty(), propertyFlags()
+  \sa setProperty(), propertyFlags(), QScriptValueIterator
 */
 QScriptValue QScriptValue::property(const QString &name,
                                     const ResolveFlags &mode) const
@@ -906,6 +906,8 @@ void QScriptValue::setProperty(quint32 arrayIndex, const QScriptValue &value,
 }
 
 /*! 
+  \since 4.4
+
   Returns the value of this QScriptValue's property with the given \a name,
   using the given \a mode to resolve the property.
 
@@ -925,6 +927,8 @@ QScriptValue QScriptValue::property(const QScriptString &name,
 }
 
 /*!
+  \since 4.4
+
   Sets the value of this QScriptValue's property with the given \a
   name to the given \a value. The given \a flags specify how this
   property may be accessed by script code.
@@ -964,6 +968,8 @@ QScriptValue::PropertyFlags QScriptValue::propertyFlags(const QString &name,
 }
 
 /*!
+  \since 4.4
+
   Returns the flags of the property with the given \a name, using the
   given \a mode to resolve the property.
 

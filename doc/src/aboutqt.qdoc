@@ -73,6 +73,7 @@
          IBM AIX, SGI IRIX and many others
      \o \bold{Mac OS X} -- Mac OS X 10.3+
      \o \bold{Embedded Linux} -- Linux platforms with framebuffer support
+     \o \bold{Windows CE} -- Windows CE 5.0+ and Windows Mobile 5.0+
     \endlist
 
     See \l{Qt 4 Platforms Overview}{Trolltech's web site} for the
@@ -92,8 +93,7 @@
     \list
     \i The \bold{\l{Qt Open Source Edition}} is for the development of
     Free and Open Source software only. It is provided free of charge
-    under the terms of both the
-    \l{qpl.html}{Q Public License} and the \link gpl.html GNU General
+    under the terms of both the the \link gpl.html GNU General
     Public License\endlink.
     \endlist
 

@@ -171,7 +171,10 @@ QString QXmlStreamReaderPrivate::resolveUndeclaredEntity(const QString &name)
 
 
 
-/*! Makes \a resolver the new entityResolver().
+/*! 
+   \since 4.4
+
+   Makes \a resolver the new entityResolver().
 
    The stream reader does \e not take ownership of the resolver. It's
    the callers responsibility to ensure that the resolver is valid
@@ -187,7 +190,7 @@ void QXmlStreamReader::setEntityResolver(QXmlStreamEntityResolver *resolver)
 }
 
 /*!
- \since 4.4
+  \since 4.4
 
   Returns the entity resolver, or 0 if there is no entity resolver.
 
@@ -1402,7 +1405,7 @@ ushort QXmlStreamReaderPrivate::getChar_helper()
             mib = 1019; // UTF-32LE
         else if (ch1 == 0x00 && ch2 == 0x00 && ch3 == 0x00 && ch4 == 0x3c)
             mib = 1018; // UTF-32BE
-        else if (ch1 == 0xfe && ch2 == 0xff || ch1 == 0xff && ch2 == 0xfe)
+        else if ((ch1 == 0xfe && ch2 == 0xff) || (ch1 == 0xff && ch2 == 0xfe))
             mib = 1015; // UTF-16 with byte order mark
         else if (ch1 == 0x3c && ch2 == 0x00)
             mib = 1014; // UTF-16LE
@@ -1486,8 +1489,8 @@ void QXmlStreamReaderPrivate::resolveTag()
                 NamespaceDeclaration &namespaceDeclaration = namespaceDeclarations.push();
                 QStringRef namespacePrefix = dtdAttribute.attributeName;
                 QStringRef namespaceUri = dtdAttribute.defaultValue;
-                if ((namespacePrefix == QLatin1String("xml")
-                     ^ namespaceUri == QLatin1String("http://www.w3.org/XML/1998/namespace"))
+                if (((namespacePrefix == QLatin1String("xml"))
+                     ^ (namespaceUri == QLatin1String("http://www.w3.org/XML/1998/namespace")))
                     || namespaceUri == QLatin1String("http://www.w3.org/2000/xmlns/")
                     || namespaceUri.isEmpty()
                     || namespacePrefix == QLatin1String("xmlns"))
@@ -1875,7 +1878,10 @@ QXmlStreamEntityDeclarations QXmlStreamReader::entityDeclarations() const
     return d->publicEntityDeclarations;
 }
 
-/*!  If the state() is \l DTD, this function returns the DTD's
+/*!  
+  \since 4.4
+
+  If the state() is \l DTD, this function returns the DTD's
   name. Otherwise an empty string is returned.
 
  */
@@ -1887,7 +1893,10 @@ QStringRef QXmlStreamReader::dtdName() const
    return QStringRef();
 }
 
-/*!  If the state() is \l DTD, this function returns the DTD's
+/*!  
+  \since 4.4
+
+  If the state() is \l DTD, this function returns the DTD's
   public identifier. Otherwise an empty string is returned.
 
  */
@@ -1899,7 +1908,10 @@ QStringRef QXmlStreamReader::dtdPublicId() const
    return QStringRef();
 }
 
-/*!  If the state() is \l DTD, this function returns the DTD's
+/*!  
+  \since 4.4
+
+  If the state() is \l DTD, this function returns the DTD's
   system identifier. Otherwise an empty string is returned.
 
  */
@@ -1930,6 +1942,8 @@ QXmlStreamNamespaceDeclarations QXmlStreamReader::namespaceDeclarations() const
 
 
 /*!
+  \since 4.4
+
   Adds an \a extraNamespaceDeclaration. The declaration will be
   valid for children of the current element, or - should the function
   be called before any elements are read - for the entire XML
@@ -1946,6 +1960,8 @@ void QXmlStreamReader::addExtraNamespaceDeclaration(const QXmlStreamNamespaceDec
 }
 
 /*!
+  \since 4.4
+
   Adds a vector of declarations specified by \a extraNamespaceDeclarations.
 
   \sa namespaceDeclarations(), addExtraNamespaceDeclaration()
@@ -2093,6 +2109,8 @@ QStringRef QXmlStreamReader::qualifiedName() const
 
 
 /*!
+  \since 4.4
+
   Returns the prefix of a StartElement or EndElement.
 
   \sa name(), qualifiedName()
@@ -2186,7 +2204,9 @@ QXmlStreamAttribute::QXmlStreamAttribute(const QString &qualifiedName, const QSt
    shouldn't use qualifiedName(), but the resolved namespaceUri() and
    the attribute's local name().
  */
-/*! \fn QStringRef QXmlStreamAttribute::prefix() const
+/*! 
+   \fn QStringRef QXmlStreamAttribute::prefix() const
+   \since 4.4
    Returns the attribute's namespace prefix.
 
    \sa name(), qualifiedName()
@@ -2378,7 +2398,7 @@ QXmlStreamNamespaceDeclaration::QXmlStreamNamespaceDeclaration()
 }
 
 /*!
- \since 4.4
+  \since 4.4
 
   Creates a namespace declaration with \a prefix and \a namespaceUri.
 */
@@ -2691,7 +2711,10 @@ bool QXmlStreamReader::isStandaloneDocument() const
 }
 
 
-/*!  If the state() is \l StartDocument, this function returns the
+/*!  
+     \since 4.4
+
+     If the state() is \l StartDocument, this function returns the
      version string as specified in the XML declaration.
      Otherwise an empty string is returned.
  */
@@ -2703,7 +2726,10 @@ QStringRef QXmlStreamReader::documentVersion() const
    return QStringRef();
 }
 
-/*!  If the state() is \l StartDocument, this function returns the
+/*!  
+     \since 4.4
+
+     If the state() is \l StartDocument, this function returns the
      encoding string as specified in the XML declaration.
      Otherwise an empty string is returned.
  */
@@ -2899,7 +2925,7 @@ void QXmlStreamWriterPrivate::writeEscaped(const QString &s, bool escapeWhitespa
             else if (c.unicode() == '\t')
                 escaped.append(QLatin1String("&#9;"));
             else
-                escaped += QLatin1Char(' ');
+                escaped += c;
         } else {
             escaped += QChar(c);
         }
@@ -3179,8 +3205,9 @@ bool QXmlStreamWriter::autoFormatting() const
 }
 
 /*!
-    \property  QXmlStreamWriter::autoFormattingIndent
-    the number of spaces used for indentation when auto-formatting is enabled
+    \property QXmlStreamWriter::autoFormattingIndent
+    \since 4.4
+    \brief the number of spaces used for indentation when auto-formatting is enabled
 
     The default indentation is 4.
 
@@ -3490,7 +3517,7 @@ void QXmlStreamWriter::writeNamespace(const QString &namespaceUri, const QString
     if (prefix.isEmpty()) {
         d->findNamespace(namespaceUri, d->inStartElement);
     } else {
-        Q_ASSERT(!(prefix == QLatin1String("xml") ^ namespaceUri == QLatin1String("http://www.w3.org/XML/1998/namespace")));
+        Q_ASSERT(!((prefix == QLatin1String("xml")) ^ (namespaceUri == QLatin1String("http://www.w3.org/XML/1998/namespace"))));
         Q_ASSERT(namespaceUri != QLatin1String("http://www.w3.org/2000/xmlns/"));
         QXmlStreamWriterPrivate::NamespaceDeclaration &namespaceDeclaration = d->namespaceDeclarations.push();
         namespaceDeclaration.prefix = d->addToStringStorage(prefix);

@@ -3,7 +3,7 @@ TEMPLATE = lib
 #! [0]
 TARGET   = $$qtLibraryTarget($$TARGET)
 #! [1]
-CONFIG  += designer plugin debug_and_release
+CONFIG  += designer plugin
 #! [1]
 QTDIR_build:DESTDIR  = $$QT_BUILD_TREE/plugins/designer
 

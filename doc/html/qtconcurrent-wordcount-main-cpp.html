@@ -63,6 +63,7 @@
  #include &lt;QStringList&gt;
  #include &lt;QDir&gt;
  #include &lt;QTime&gt;
+ #include &lt;QApplication&gt;
  #include &lt;QDebug&gt;
 
  #include &lt;qtconcurrentmap.h&gt;
@@ -107,9 +108,9 @@
      return wordCount;
  }
 
-<span class="comment"> //</span> countWords counts the words in a single file. This function is
-<span class="comment"> //</span> called in parallel by several threads and must be thread
-<span class="comment"> //</span> safe.
+<span class="comment"> // countWords counts the words in a single file. This function is</span>
+<span class="comment"> // called in parallel by several threads and must be thread</span>
+<span class="comment"> // safe.</span>
  WordCount countWords(const QString &amp;file)
  {
      QFile f(file);
@@ -124,9 +125,9 @@
      return wordCount;
  }
 
-<span class="comment"> //</span> reduce adds the results from map to the final
-<span class="comment"> //</span> result. This functor will only be called by one thread
-<span class="comment"> //</span> at a time.
+<span class="comment"> // reduce adds the results from map to the final</span>
+<span class="comment"> // result. This functor will only be called by one thread</span>
+<span class="comment"> // at a time.</span>
  void reduce(WordCount &amp;result, const WordCount &amp;w)
  {
      QMapIterator&lt;QString, int&gt; i(w);
@@ -136,8 +137,9 @@
      }
  }
 
- int main()
+ int main(int argc, char** argv)
  {
+     QApplication app(argc, argv);
      qDebug() &lt;&lt; &quot;finding files...&quot;;
      QStringList files = findFiles(&quot;../../&quot;, QStringList() &lt;&lt; &quot;*.cpp&quot; &lt;&lt; &quot;*.h&quot;);
      qDebug() &lt;&lt; files.count() &lt;&lt; &quot;files&quot;;
@@ -183,6 +185,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

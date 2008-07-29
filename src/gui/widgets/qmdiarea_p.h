@@ -211,6 +211,7 @@ public:
                                         int removed = -1, int fromIndex = -1) const;
     void highlightNextSubWindow(int increaseFactor);
     QList<QMdiSubWindow *> subWindowList(QMdiArea::WindowOrder, bool reversed = false) const;
+    void disconnectSubWindow(QObject *subWindow);
     void setViewMode(QMdiArea::ViewMode mode);
 #ifndef QT_NO_TABBAR
     void updateTabBarGeometry();
@@ -247,10 +248,10 @@ public:
         return subWindow->d_func()->isExplicitlyDeactivated;
     }
 
-    inline void setActive(QMdiSubWindow *subWindow, bool active = true) const
+    inline void setActive(QMdiSubWindow *subWindow, bool active = true, bool changeFocus = true) const
     {
         if (subWindow)
-            subWindow->d_func()->setActive(active);
+            subWindow->d_func()->setActive(active, changeFocus);
     }
 
 #ifndef QT_NO_RUBBERBAND

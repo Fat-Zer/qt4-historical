@@ -81,10 +81,6 @@ static void printUsage()
 static bool loadTsFile( MetaTranslator& tor, const QString& tsFileName,
                         bool /* verbose */ )
 {
-    QString qmFileName = tsFileName;
-    qmFileName.replace( QRegExp(QLatin1String("\\.ts$")), QLatin1String("") );
-    qmFileName += QLatin1String(".qm");
-
     bool ok = tor.load( tsFileName );
     if ( !ok )
         qWarning("lrelease warning: For some reason, I cannot load '%s'\n",
@@ -116,7 +112,7 @@ static void releaseTsFile( const QString& tsFileName, bool verbose,
     MetaTranslator tor;
     if ( loadTsFile(tor, tsFileName, verbose) ) {
         QString qmFileName = tsFileName;
-        qmFileName.replace( QRegExp(QLatin1String("\\.ts$")), QLatin1String("") );
+        qmFileName.remove( QRegExp(QLatin1String("\\.(ts|xlf)$")) );
         qmFileName += QLatin1String(".qm");
 
         releaseMetaTranslator( tor, qmFileName, verbose, ignoreUnfinished,

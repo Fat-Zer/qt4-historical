@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/xmlpatterns/api/qsourcelocation.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/xmlpatterns/api/qsourcelocation.cpp -->
 <head>
   <title>Qt 4.4: QSourceLocation Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -15,7 +15,7 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QSourceLocation Class Reference<br /><span class="small-subtitle">[<a href="qtxmlpatterns.html">QtXmlPatterns</a> module]</span>
 </h1>
-<p>The QSourceLocation class is used to identify a location in a resource, using a URI, line number and column number. <a href="#details">More...</a></p>
+<p>The QSourceLocation class identifies a location in a resource by URI, line, and column. <a href="#details">More...</a></p>
 <pre> #include &lt;QSourceLocation&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
@@ -42,15 +42,15 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>uint <b><a href="qsourcelocation.html#qHash-10">qHash</a></b> ( const QSourceLocation &amp; <i>location</i> )</li>
-<li><div class="fn"/>QDebug <b><a href="qsourcelocation.html#operator-lt-lt-106">operator&lt;&lt;</a></b> ( QDebug <i>debug</i>, const QSourceLocation &amp; <i>sourceLocation</i> )</li>
+<li><div class="fn"/>uint <b><a href="qsourcelocation.html#qHash">qHash</a></b> ( const QSourceLocation &amp; <i>location</i> )</li>
+<li><div class="fn"/>QDebug <b><a href="qsourcelocation.html#operator-lt-lt-32">operator&lt;&lt;</a></b> ( QDebug <i>debug</i>, const QSourceLocation &amp; <i>sourceLocation</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
-<p>The QSourceLocation class is used to identify a location in a resource, using a URI, line number and column number.</p>
-<p>QSourceLocation is a simple value based class that has three properties, <a href="qsourcelocation.html#uri">uri</a>(), <a href="qsourcelocation.html#line">line</a>(), and <a href="qsourcelocation.html#column">column</a>(), that together identifies a certain point in a resource, such as a file or an in-memory document.</p>
-<p><a href="qsourcelocation.html#line">line</a>() and <a href="qsourcelocation.html#column">column</a>() refer to character count(not for instance byte count) and they both starts from 1, as opposed to 0.</p>
+<p>The QSourceLocation class identifies a location in a resource by URI, line, and column.</p>
+<p>QSourceLocation is a simple value based class that has three properties, <a href="qsourcelocation.html#uri">uri</a>(), <a href="qsourcelocation.html#line">line</a>(), and <a href="qsourcelocation.html#column">column</a>(), that, taken together, identify a certain point in a resource, e.g&#x2e;, a file or an in-memory document.</p>
+<p><a href="qsourcelocation.html#line">line</a>() and <a href="qsourcelocation.html#column">column</a>() refer to character counts (not byte counts), and they both start from 1, as opposed to 0.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QSourceLocation/QSourceLocation" />
@@ -58,27 +58,23 @@
 <p>Construct a <a href="qsourcelocation.html">QSourceLocation</a> that doesn't identify anything at all.</p>
 <p>For a default constructed QSourceLocation(), <a href="qsourcelocation.html#isNull">isNull</a>() returns <tt>true</tt>.</p>
 <h3 class="fn"><a name="QSourceLocation-2"></a>QSourceLocation::QSourceLocation ( const QSourceLocation &amp; <i>other</i> )</h3>
-<p>Constructs a <a href="qsourcelocation.html">QSourceLocation</a> instance that is a copy of <i>other</i>.</p>
+<p>Constructs a <a href="qsourcelocation.html">QSourceLocation</a> that is a copy of <i>other</i>.</p>
 <h3 class="fn"><a name="QSourceLocation-3"></a>QSourceLocation::QSourceLocation ( const <a href="qurl.html">QUrl</a> &amp; <i>u</i>, int <i>l</i> = -1, int <i>c</i> = -1 )</h3>
 <p>Constructs a <a href="qsourcelocation.html">QSourceLocation</a> with URI <i>u</i>, line <i>l</i> and column <i>c</i>.</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/~QSourceLocation" />
 <h3 class="fn"><a name="dtor.QSourceLocation"></a>QSourceLocation::~QSourceLocation ()</h3>
-<p>Destructs this <a href="qsourcelocation.html">QSourceLocation</a> instance.</p>
+<p>Destructor.</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/column" />
 <h3 class="fn"><a name="column"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QSourceLocation::column () const</h3>
-<p>Returns the current column number. The column number refers to the count of characters, not bytes.</p>
-<p>The first column has number 1, not 0.</p>
-<p>The default value is -1, signalling that the column number is unknown.</p>
+<p>Returns the current column number. The column number refers to the count of characters, not bytes. The first column is column 1, not 0. The default value is -1, indicating the column number is unknown.</p>
 <p>See also <a href="qsourcelocation.html#setColumn">setColumn</a>().</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/isNull" />
 <h3 class="fn"><a name="isNull"></a>bool QSourceLocation::isNull () const</h3>
 <p>Returns <tt>true</tt> if this <a href="qsourcelocation.html">QSourceLocation</a> doesn't identify anything.</p>
-<p>For instance, for a default constructed <a href="qsourcelocation.html">QSourceLocation</a> this function returns <tt>true</tt>. The same applies for any other <a href="qsourcelocation.html">QSourceLocation</a> whose <a href="qsourcelocation.html#uri">uri</a>() is invalid.</p>
+<p>For a default constructed <a href="qsourcelocation.html">QSourceLocation</a>, this function returns <tt>true</tt>. The same applies for any other <a href="qsourcelocation.html">QSourceLocation</a> whose <a href="qsourcelocation.html#uri">uri</a>() is invalid.</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/line" />
 <h3 class="fn"><a name="line"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QSourceLocation::line () const</h3>
-<p>Returns the current line number.</p>
-<p>The first line number is 1, not 0.</p>
-<p>The default value is -1, signalling that the line number is unknown.</p>
+<p>Returns the current line number. The first line number is 1, not 0. The default value is -1, indicating the line number is unknown.</p>
 <p>See also <a href="qsourcelocation.html#setLine">setLine</a>().</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/setColumn" />
 <h3 class="fn"><a name="setColumn"></a>void QSourceLocation::setColumn ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>newColumn</i> )</h3>
@@ -86,7 +82,7 @@
 <p>See also <a href="qsourcelocation.html#column">column</a>().</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/setLine" />
 <h3 class="fn"><a name="setLine"></a>void QSourceLocation::setLine ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>newLine</i> )</h3>
-<p>Sets the line number to <i>newLine</i>.</p>
+<p>Sets the line number to <i>newLine</i>. 0 is an invalid line number. The first line number is 1.</p>
 <p>See also <a href="qsourcelocation.html#line">line</a>().</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/setUri" />
 <h3 class="fn"><a name="setUri"></a>void QSourceLocation::setUri ( const <a href="qurl.html">QUrl</a> &amp; <i>newUri</i> )</h3>
@@ -94,7 +90,7 @@
 <p>See also <a href="qsourcelocation.html#uri">uri</a>().</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/uri" />
 <h3 class="fn"><a name="uri"></a><a href="qurl.html">QUrl</a> QSourceLocation::uri () const</h3>
-<p>Returns the resource that this <a href="qsourcelocation.html">QSourceLocation</a> refers to. For instance, this could be a file on the local file system, if the URI scheme is <tt>file</tt>.</p>
+<p>Returns the resource that this <a href="qsourcelocation.html">QSourceLocation</a> refers to. For example, the resource could be a file in the local file system, if the URI scheme is <tt>file</tt>.</p>
 <p>See also <a href="qsourcelocation.html#setUri">setUri</a>().</p>
 <a name="//apple_ref/cpp/instm/QSourceLocation/operator!=" />
 <h3 class="fn"><a name="operator-not-eq"></a>bool QSourceLocation::operator!= ( const QSourceLocation &amp; <i>other</i> ) const</h3>
@@ -106,19 +102,21 @@
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QSourceLocation::operator== ( const QSourceLocation &amp; <i>other</i> ) const</h3>
 <p>Returns true if this <a href="qsourcelocation.html">QSourceLocation</a> is identical to <i>other</i>.</p>
 <p>Two <a href="qsourcelocation.html">QSourceLocation</a> instances are equal if their <a href="qsourcelocation.html#uri">uri</a>(), <a href="qsourcelocation.html#line">line</a>() and <a href="qsourcelocation.html#column">column</a>() are equal.</p>
-<p><a href="qsourcelocation.html">QSourceLocation</a> instances that <a href="qsourcelocation.html#isNull">isNull</a>() returns true for, are considered equal.</p>
+<p><a href="qsourcelocation.html">QSourceLocation</a> instances for which <a href="qsourcelocation.html#isNull">isNull</a>() returns true are considered equal.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="qHash-10"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const QSourceLocation &amp; <i>location</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<a name="//apple_ref/cpp/func//qHash" />
+<h3 class="fn"><a name="qHash"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const QSourceLocation &amp; <i>location</i> )</h3>
 <p>Computes a hash key for the <a href="qsourcelocation.html">QSourceLocation</a> <i>location</i>.</p>
-<h3 class="fn"><a name="operator-lt-lt-106"></a>QDebug operator&lt;&lt; ( QDebug <i>debug</i>, const QSourceLocation &amp; <i>sourceLocation</i> )</h3>
+<p>This function was introduced in Qt 4.4.</p>
+<h3 class="fn"><a name="operator-lt-lt-32"></a>QDebug operator&lt;&lt; ( QDebug <i>debug</i>, const QSourceLocation &amp; <i>sourceLocation</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Prints <i>sourceLocation</i> to the debug stream <i>debug</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

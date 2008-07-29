@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/sql/q3sqlform.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/sql/q3sqlform.cpp -->
 <head>
   <title>Qt 4.4: Q3SqlForm Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -88,26 +88,26 @@
      Q3SqlForm   myForm(this);
      Q3SqlCursor myCursor(&quot;mytable&quot;);
 
-     // Execute a query to make the cursor valid
+     <span class="comment">// Execute a query to make the cursor valid</span>
      myCursor.select();
-     // Move the cursor to a valid record (the first record)
+     <span class="comment">// Move the cursor to a valid record (the first record)</span>
      myCursor.next();
-     // Set the form's record pointer to the cursor's edit buffer (which
-     // contains the current record's values)
+     <span class="comment">// Set the form's record pointer to the cursor's edit buffer (which</span>
+     <span class="comment">// contains the current record's values)</span>
      myForm.setRecord(myCursor.primeUpdate());
 
-     // Insert a field into the form that uses myEditor to edit the
-     // field 'somefield' in 'mytable'
+     <span class="comment">// Insert a field into the form that uses myEditor to edit the</span>
+     <span class="comment">// field 'somefield' in 'mytable'</span>
      myForm.insert(&amp;myEditor, &quot;somefield&quot;);
 
-     // Update myEditor with the value from the mapped database field
+     <span class="comment">// Update myEditor with the value from the mapped database field</span>
      myForm.readFields();
      ...
-     // Let the user edit the form
+     <span class="comment">// Let the user edit the form</span>
      ...
-     // Update the database
-     myForm.writeFields();  // Update the cursor's edit buffer from the form
-     myCursor.update();        // Update the database from the cursor's buffer</pre>
+     <span class="comment">// Update the database</span>
+     myForm.writeFields();  <span class="comment">// Update the cursor's edit buffer from the form</span>
+     myCursor.update();        <span class="comment">// Update the database from the cursor's buffer</span></pre>
 <p>If you want to use custom editors for displaying and editing data fields, you must install a custom <a href="q3sqlpropertymap.html">Q3SqlPropertyMap</a>. The form uses this object to get or set the value of a widget.</p>
 <p>See also <a href="q3sqlform.html#installPropertyMap">installPropertyMap</a>() and <a href="q3sqlpropertymap.html">Q3SqlPropertyMap</a>.</p>
 <hr />
@@ -174,6 +174,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

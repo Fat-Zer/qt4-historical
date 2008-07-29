@@ -259,6 +259,8 @@ void QUndoCommand::setText(const QString &text)
 }
 
 /*!
+    \since 4.4
+
     Returns the number of child commands in this command.
 
     \sa child()
@@ -270,6 +272,8 @@ int QUndoCommand::childCount() const
 }
 
 /*!
+    \since 4.4
+
     Returns the child command at \a index.
 
     \sa childCount(), QUndoStack::command()
@@ -951,6 +955,8 @@ void QUndoStack::endMacro()
 }
 
 /*!
+  \since 4.4
+
   Returns a const pointer to the command at \a index.
 
   This function returns a const pointer, because modifying a command,

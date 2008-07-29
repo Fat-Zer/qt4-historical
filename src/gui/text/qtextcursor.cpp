@@ -127,6 +127,11 @@ QTextCursorPrivate::AdjustResult QTextCursorPrivate::adjustPosition(int position
 
 void QTextCursorPrivate::setX()
 {
+    if (priv && priv->isInEditBlock()) {
+        x = -1; // mark dirty
+        return;
+    }
+
     QTextBlock block = this->block();
     const QTextLayout *layout = blockLayout(block);
     int pos = position - block.position();
@@ -282,6 +287,67 @@ void QTextCursorPrivate::adjustCursor(QTextCursor::MoveOperation m)
             adjusted_anchor = c_anchor.firstPosition();
     }
     currentCharFormat = -1;
+}
+
+void QTextCursorPrivate::aboutToRemoveCell(int from, int to)
+{
+    Q_ASSERT(from <= to);
+    if (position == anchor)
+        return;
+
+    QTextTable *t = qobject_cast<QTextTable *>(priv->frameAt(position));
+    if (!t)
+        return;
+    QTextTableCell removedCellFrom = t->cellAt(from);
+    QTextTableCell removedCellEnd = t->cellAt(to);
+    if (! removedCellFrom.isValid() || !removedCellEnd.isValid())
+        return;
+
+    int curFrom = position;
+    int curTo = adjusted_anchor;
+    if (curTo < curFrom)
+        qSwap(curFrom, curTo);
+
+    QTextTableCell cellStart = t->cellAt(curFrom);
+    QTextTableCell cellEnd = t->cellAt(curTo);
+
+    if (cellStart.row() >= removedCellFrom.row() && cellEnd.row() <= removedCellEnd.row()
+            && cellStart.column() >= removedCellFrom.column()
+              && cellEnd.column() <= removedCellEnd.column()) { // selection is completely removed
+        // find a new position, as close as possible to where we were.
+        QTextTableCell cell;
+        if (removedCellFrom.row() == 0 && removedCellEnd.row() == t->rows()-1) // removed n columns
+            cell = t->cellAt(cellStart.row(), removedCellEnd.column()+1);
+        else if (removedCellFrom.column() == 0 && removedCellEnd.column() == t->columns()-1) // removed n rows
+            cell = t->cellAt(removedCellEnd.row() + 1, cellStart.column());
+
+        int newPosition;
+        if (cell.isValid())
+            newPosition = cell.firstPosition();
+        else
+            newPosition = t->lastPosition()+1;
+
+        setPosition(newPosition);
+        anchor = newPosition;
+        adjusted_anchor = newPosition;
+        x = 0;
+    }
+    else if (cellStart.row() >= removedCellFrom.row() && cellStart.row() <= removedCellEnd.row()
+        && cellEnd.row() > removedCellEnd.row()) {
+        int newPosition = t->cellAt(removedCellEnd.row() + 1, cellStart.column()).firstPosition();
+        if (position < anchor)
+            position = newPosition;
+        else
+            anchor = adjusted_anchor = newPosition;
+    }
+    else if (cellStart.column() >= removedCellFrom.column() && cellStart.column() <= removedCellEnd.column()
+        && cellEnd.column() > removedCellEnd.column()) {
+        int newPosition = t->cellAt(cellStart.row(), removedCellEnd.column()+1).firstPosition();
+        if (position < anchor)
+            position = newPosition;
+        else
+            anchor = adjusted_anchor = newPosition;
+    }
 }
 
 bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor::MoveMode mode)
@@ -1101,7 +1167,7 @@ bool QTextCursor::movePosition(MoveOperation op, MoveMode mode, int n)
   Visual navigation means skipping over hidden text pragraphs. The
   default is false.
 
-  /sa setVisualNavigation(), movePosition()
+  \sa setVisualNavigation(), movePosition()
  */
 bool QTextCursor::visualNavigation() const
 {
@@ -1201,8 +1267,7 @@ void QTextCursor::insertText(const QString &text, const QTextCharFormat &_format
             d->priv->insert(d->position, QString(text.unicode() + textStart, text.length() - textStart), formatIdx);
     }
     d->priv->endEditBlock();
-    if (!d->priv->isInEditBlock())
-        d->setX();
+    d->setX();
 }
 
 /*!
@@ -1764,8 +1829,7 @@ void QTextCursor::insertBlock(const QTextBlockFormat &format, const QTextCharFor
     d->remove();
     d->insertBlock(format, charFormat);
     d->priv->endEditBlock();
-    if (!d->priv->isInEditBlock())
-        d->setX();
+    d->setX();
 }
 
 /*!

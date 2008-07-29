@@ -51,6 +51,7 @@
 #include <QtCore/QLibrary>
 #include <QtCore/QPluginLoader>
 #include <QtCore/QFileInfo>
+#include <QtCore/QThread>
 #include <QtGui/QApplication>
 #include <QtSql/QSqlQuery>
 
@@ -82,6 +83,7 @@ void QHelpEngineCorePrivate::clearMaps()
     readerMap.clear();
     fileNameReaderMap.clear();
     virtualFolderMap.clear();
+    orderedFileNameList.clear();
 }
 
 bool QHelpEngineCorePrivate::setup()
@@ -119,6 +121,7 @@ bool QHelpEngineCorePrivate::setup()
         readerMap.insert(info.namespaceName, reader);
         fileNameReaderMap.insert(absFileName, reader);
         virtualFolderMap.insert(info.folderName, reader);
+        orderedFileNameList.append(absFileName);
     }
     q->currentFilter();
     emit q->setupFinished();
@@ -134,10 +137,11 @@ void QHelpEngineCorePrivate::errorReceived(const QString &msg)
 
 /*!
     \class QHelpEngineCore
+    \since 4.4
     \inmodule QtHelp
     \brief The QHelpEngineCore class provides the core functionality
     of the help system.
-    
+
     Before the help engine can be used, it must be initialized by
     calling setupData(). At the beginning of the setup process the
     signal setupStarted() is emitted. From this point on until
@@ -283,23 +287,24 @@ bool QHelpEngineCore::copyCollectionFile(const QString &fileName)
 }
 
 /*!
-    Returns the namespace name of a documentation set
-    specified by its file name. If the file is not valid,
-    an empty string is returned.
+    Returns the namespace name defined for the Qt compressed help file (.qch)
+    specified by its file name. If the file is not valid, an empty string is
+    returned.
 
     \sa documentationFileName()
 */
 QString QHelpEngineCore::namespaceName(const QString &documentationFileName)
 {
-    QHelpDBReader reader(documentationFileName, QLatin1String("GetNamespaceName"), 0);
+    QHelpDBReader reader(documentationFileName,
+        uniquifyConnectionName(QLatin1String("GetNamespaceName"), QThread::currentThread()), 0);
     if (reader.init())
         return reader.namespaceName();
     return QString();
 }
 
 /*!
-    Registers the documentation set contained in the file
-    \a documentationFileName. One documentation set, uniquely
+    Registers the Qt compressed help file (.qch) contained in the file
+    \a documentationFileName. One compressed help file, uniquely
     identified by its namespace can only be registered once.
     True is returned if the registration was successful, otherwise
     false.
@@ -314,7 +319,7 @@ bool QHelpEngineCore::registerDocumentation(const QString &documentationFileName
 }
 
 /*!
-    Unregisters the documentation set identified by its 
+    Unregisters the Qt compressed help file (.qch) identified by its 
     \a namespaceName from the help collection. Returns true 
     on success, otherwise false.
 
@@ -328,8 +333,8 @@ bool QHelpEngineCore::unregisterDocumentation(const QString &namespaceName)
 }
 
 /*!
-    Returns the absolute file name of the Qt documentation file (.qch)
-    identified by the \a namespaceName. If there is no documentation
+    Returns the absolute file name of the Qt compressed help file (.qch)
+    identified by the \a namespaceName. If there is no Qt compressed help file
     with the specified namespace registered, an empty string is returned.
 
     \sa namespaceName()
@@ -352,9 +357,8 @@ QString QHelpEngineCore::documentationFileName(const QString &namespaceName)
 }
 
 /*!
-    Returns a list of all documentations registered in the collection
-    file. The returned names are the namespaces of the documentation
-    sets.
+    Returns a list of all registered Qt compressed help files of the current collection file.
+    The returned names are the namespaces of the registered Qt compressed help files (.qch).
 */
 QStringList QHelpEngineCore::registeredDocumentations() const
 {
@@ -463,8 +467,8 @@ void QHelpEngineCore::setCurrentFilter(const QString &filterName)
 }
 
 /*!
-    Returns a list of filter attributes for the different filter
-    sections defined in the documentation set with the namespace
+    Returns a list of filter attributes for the different filter sections
+    defined in the Qt compressed help file with the given namespace
     \a namespaceName.
 */
 QList<QStringList> QHelpEngineCore::filterAttributeSets(const QString &namespaceName) const
@@ -478,7 +482,7 @@ QList<QStringList> QHelpEngineCore::filterAttributeSets(const QString &namespace
 }
 
 /*!
-    Returns a list of files contained in the documentation set \a
+    Returns a list of files contained in the Qt compressed help file \a
     namespaceName. The files can be filtered by \a filterAttributes as
     well as by their extension \a extensionFilter (e.g. 'html').
 */
@@ -656,10 +660,10 @@ bool QHelpEngineCore::setCustomValue(const QString &key, const QVariant &value)
 }
 
 /*!
-    Returns the meta data for the documentation file \a
+    Returns the meta data for the Qt compressed help file \a
     documentationFileName. If there is no data available for
     \a name, an invalid QVariant() is returned. The meta
-    data is defined when creating the documention file and
+    data is defined when creating the Qt compressed help file and
     cannot be modified later. Common meta data includes e.g.
     the author of the documentation.
 */

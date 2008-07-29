@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/graphicsview/qgraphicsscene.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/graphicsview/qgraphicsscene.cpp -->
 <head>
   <title>Qt 4.4: QGraphicsScene Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -112,7 +112,7 @@
 <li><div class="fn"/>void <b><a href="qgraphicsscene.html#setSelectionArea-2">setSelectionArea</a></b> ( const QPainterPath &amp; <i>path</i>, Qt::ItemSelectionMode <i>mode</i> )</li>
 <li><div class="fn"/>void <b><a href="qgraphicsscene.html#setStyle">setStyle</a></b> ( QStyle * <i>style</i> )</li>
 <li><div class="fn"/>QStyle * <b><a href="qgraphicsscene.html#style">style</a></b> () const</li>
-<li><div class="fn"/>void <b><a href="qgraphicsscene.html#update">update</a></b> ( qreal <i>x</i>, qreal <i>y</i>, qreal <i>w</i>, qreal <i>h</i> )</li>
+<li><div class="fn"/>void <b><a href="qgraphicsscene.html#update-2">update</a></b> ( qreal <i>x</i>, qreal <i>y</i>, qreal <i>w</i>, qreal <i>h</i> )</li>
 <li><div class="fn"/>QList&lt;QGraphicsView *&gt; <b><a href="qgraphicsscene.html#views">views</a></b> () const</li>
 <li><div class="fn"/>qreal <b><a href="qgraphicsscene.html#width">width</a></b> () const</li>
 </ul>
@@ -126,7 +126,7 @@
 <li><div class="fn"/>void <b><a href="qgraphicsscene.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qgraphicsscene.html#clearSelection">clearSelection</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qgraphicsscene.html#invalidate">invalidate</a></b> ( const QRectF &amp; <i>rect</i> = QRectF(), SceneLayers <i>layers</i> = AllLayers )</li>
-<li><div class="fn"/>void <b><a href="qgraphicsscene.html#update-2">update</a></b> ( const QRectF &amp; <i>rect</i> = QRectF() )</li>
+<li><div class="fn"/>void <b><a href="qgraphicsscene.html#update">update</a></b> ( const QRectF &amp; <i>rect</i> = QRectF() )</li>
 </ul>
 <ul>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
@@ -247,10 +247,10 @@
          QGraphicsView view(&amp;scene);
          view.show();
 
-         // a blue background
+         <span class="comment">// a blue background</span>
          scene.setBackgroundBrush(Qt::blue);
 
-         // a gradient background
+         <span class="comment">// a gradient background</span>
          QRadialGradient gradient(0, 0, 10);
          gradient.setSpread(QGradient::RepeatSpread);
          scene.setBackgroundBrush(gradient);</pre>
@@ -284,6 +284,7 @@
 <p>This property provides the scene's font. The scene font defaults to, and resolves all its entries from, QApplication::font.</p>
 <p>If the scene's font changes, either directly through setFont() or indirectly when the application font changes, <a href="qgraphicsscene.html">QGraphicsScene</a> first sends itself a <a href="qevent.html#Type-enum">FontChange</a> event, and it then sends <a href="qevent.html#Type-enum">FontChange</a> events to all top-level widget items in the scene. These items respond by resolving their own fonts to the scene, and they then notify their children, who again notify their children, and so on, until all widget items have updated their fonts.</p>
 <p>Changing the scene font, (directly or indirectly through <a href="qapplication.html#setFont">QApplication::setFont</a>(),) automatically schedules a redraw the entire scene.</p>
+<p>This property was introduced in Qt 4.4.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QFont font () const</b></li>
@@ -301,10 +302,10 @@
          QGraphicsView view(&amp;scene);
          view.show();
 
-         // a white semi-transparent foreground
+         <span class="comment">// a white semi-transparent foreground</span>
          scene.setForegroundBrush(QColor(255, 255, 255, 127));
 
-         // a grid foreground
+         <span class="comment">// a grid foreground</span>
          scene.setForegroundBrush(QBrush(Qt::lightGray, Qt::CrossPattern));</pre>
 <p><a href="qgraphicsscene.html#render">QGraphicsScene::render</a>() calls <a href="qgraphicsscene.html#drawForeground">drawForeground</a>() to draw the scene foreground. For more detailed control over how the foreground is drawn, you can reimplement the <a href="qgraphicsscene.html#drawForeground">drawForeground</a>() function in a <a href="qgraphicsscene.html">QGraphicsScene</a> subclass.</p>
 <p>Access functions:</p>
@@ -331,6 +332,7 @@
 <p>This property provides the scene's palette. The scene palette defaults to, and resolves all its entries from, QApplication::palette.</p>
 <p>If the scene's palette changes, either directly through setPalette() or indirectly when the application palette changes, <a href="qgraphicsscene.html">QGraphicsScene</a> first sends itself a <a href="qevent.html#Type-enum">PaletteChange</a> event, and it then sends <a href="qevent.html#Type-enum">PaletteChange</a> events to all top-level widget items in the scene. These items respond by resolving their own palettes to the scene, and they then notify their children, who again notify their children, and so on, until all widget items have updated their palettes.</p>
 <p>Changing the scene palette, (directly or indirectly through <a href="qapplication.html#setPalette">QApplication::setPalette</a>(),) automatically schedules a redraw the entire scene.</p>
+<p>This property was introduced in Qt 4.4.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QPalette palette () const</b></li>
@@ -367,6 +369,7 @@
 <a name="//apple_ref/cpp/instm/QGraphicsScene/activeWindow" />
 <h3 class="fn"><a name="activeWindow"></a><a href="qgraphicswidget.html">QGraphicsWidget</a> * QGraphicsScene::activeWindow () const</h3>
 <p>Returns the current active window, or 0 if there is no window is currently active.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qgraphicsscene.html#setActiveWindow">QGraphicsScene::setActiveWindow</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsScene/addEllipse" />
 <h3 class="fn"><a name="addEllipse"></a><a href="qgraphicsellipseitem.html">QGraphicsEllipseItem</a> * QGraphicsScene::addEllipse ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i>, const <a href="qpen.html">QPen</a> &amp; <i>pen</i> = QPen(), const <a href="qbrush.html">QBrush</a> &amp; <i>brush</i> = QBrush() )</h3>
@@ -518,7 +521,7 @@
                              QWidget *widget)
  {
      for (int i = 0; i &lt; numItems; ++i) {
-          <span class="comment">//</span> Draw the item
+          <span class="comment">// Draw the item</span>
           painter-&gt;save();
           painter-&gt;setMatrix(items[i]-&gt;sceneMatrix(), true);
           items[i]-&gt;paint(painter, &amp;options[i], widget);
@@ -550,6 +553,7 @@
 <h3 class="fn"><a name="focusNextPrevChild"></a>bool QGraphicsScene::focusNextPrevChild ( bool <i>next</i> )&nbsp;&nbsp;<tt> [protected slot]</tt></h3>
 <p>Finds a new widget to give the keyboard focus to, as appropriate for Tab and Shift+Tab, and returns true if it can find a new widget, or false if it cannot. If <i>next</i> is true, this function searches forward; if <i>next</i> is false, it searches backward.</p>
 <p>You can reimplement this function in a subclass of <a href="qgraphicsscene.html">QGraphicsScene</a> to provide fine-grained control over how tab focus passes inside your scene. The default implementation is based on the tab focus chain defined by <a href="qgraphicswidget.html#setTabOrder">QGraphicsWidget::setTabOrder</a>().</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QGraphicsScene/focusOutEvent" />
 <h3 class="fn"><a name="focusOutEvent"></a>void QGraphicsScene::focusOutEvent ( <a href="qfocusevent.html">QFocusEvent</a> * <i>focusEvent</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler, for event <i>focusEvent</i>, can be reimplemented in a subclass to receive focus out events.</p>
@@ -585,13 +589,13 @@
 <p>Example:</p>
 <pre>       QRectF TileScene::rectForTile(int x, int y) const
        {
-           // Return the rectangle for the tile at position (x, y).
+           <span class="comment">// Return the rectangle for the tile at position (x, y).</span>
            return QRectF(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
        }
 
        void TileScene::setTile(int x, int y, const QPixmap &amp;pixmap)
        {
-           // Sets or replaces the tile at position (x, y) with pixmap.
+           <span class="comment">// Sets or replaces the tile at position (x, y) with pixmap.</span>
            if (x &gt;= 0 &amp;&amp; x &lt; numTilesH &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; numTilesV) {
                tiles[y][x] = pixmap;
                invalidate(rectForTile(x, y), BackgroundLayer);
@@ -600,7 +604,7 @@
 
        void TileScene::drawBackground(QPainter *painter, const QRectF &amp;exposed)
        {
-           // Draws all tiles that intersect the exposed area.
+           <span class="comment">// Draws all tiles that intersect the exposed area.</span>
            for (int y = 0; y &lt; numTilesV; ++y) {
                for (int x = 0; x &lt; numTilesH; ++x) {
                    QRectF rect = rectForTile(x, y);
@@ -618,11 +622,13 @@
 <a name="//apple_ref/cpp/instm/QGraphicsScene/itemAt" />
 <h3 class="fn"><a name="itemAt"></a><a href="qgraphicsitem.html">QGraphicsItem</a> * QGraphicsScene::itemAt ( const <a href="qpointf.html">QPointF</a> &amp; <i>position</i> ) const</h3>
 <p>Returns the topmost visible item at the specified <i>position</i>, or 0 if there are no items at this position.</p>
-<p>See also <a href="qgraphicsscene.html#items">items</a>() and <a href="qgraphicsscene.html#collidingItems">collidingItems</a>().</p>
+<p><b>Note:</b> The topmost item is the one with the highest Z-value.</p>
+<p>See also <a href="qgraphicsscene.html#items">items</a>(), <a href="qgraphicsscene.html#collidingItems">collidingItems</a>(), and <a href="qgraphicsitem.html#setZValue">QGraphicsItem::setZValue</a>().</p>
 <h3 class="fn"><a name="itemAt-2"></a><a href="qgraphicsitem.html">QGraphicsItem</a> * QGraphicsScene::itemAt ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the topmost item at the position specified by (<i>x</i>, <i>y</i>), or 0 if there are no items at this position.</p>
 <p>This convenience function is equivalent to calling <tt>itemAt(QPointF(x, y))</tt>.</p>
+<p><b>Note:</b> The topmost item is the one with the highest Z-value.</p>
 <a name="//apple_ref/cpp/instm/QGraphicsScene/items" />
 <h3 class="fn"><a name="items"></a><a href="qlist.html">QList</a>&lt;<a href="qgraphicsitem.html">QGraphicsItem</a> *&gt; QGraphicsScene::items () const</h3>
 <p>Returns a list of all items on the scene, in no particular order.</p>
@@ -681,7 +687,7 @@
 <a name="//apple_ref/cpp/instm/QGraphicsScene/mouseMoveEvent" />
 <h3 class="fn"><a name="mouseMoveEvent"></a>void QGraphicsScene::mouseMoveEvent ( <a href="qgraphicsscenemouseevent.html">QGraphicsSceneMouseEvent</a> * <i>mouseEvent</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler, for event <i>mouseEvent</i>, can be reimplemented in a subclass to receive mouse move events for the scene.</p>
-<p>The default implementation depends on the mouse grabber state. If there is a mouse grabber item, the event is sent to the mouse grabber; otherwise, the event is ignored.</p>
+<p>The default implementation depends on the mouse grabber state. If there is a mouse grabber item, the event is sent to the mouse grabber. If there are any items that accept hover events at the current position, the event is translated into a hover event and accepted; otherwise it's ignored.</p>
 <p>See also <a href="qgraphicsitem.html#mousePressEvent">QGraphicsItem::mousePressEvent</a>(), <a href="qgraphicsitem.html#mouseReleaseEvent">QGraphicsItem::mouseReleaseEvent</a>(), <a href="qgraphicsitem.html#mouseDoubleClickEvent">QGraphicsItem::mouseDoubleClickEvent</a>(), and <a href="qgraphicsitem.html#setAcceptedMouseButtons">QGraphicsItem::setAcceptedMouseButtons</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsScene/mousePressEvent" />
 <h3 class="fn"><a name="mousePressEvent"></a>void QGraphicsScene::mousePressEvent ( <a href="qgraphicsscenemouseevent.html">QGraphicsSceneMouseEvent</a> * <i>mouseEvent</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -705,7 +711,7 @@
          scene.addItem(...
          ...
          QPrinter printer(QPrinter::HighResolution);
-         printer.setPageSize(QPrinter::A4);
+         printer.setPaperSize(QPrinter::A4);
 
          QPainter painter(&amp;printer);
          scene.render(&amp;painter);</pre>
@@ -759,7 +765,7 @@
 <p>See also <a href="qgraphicsscene.html#clearSelection">clearSelection</a>() and <a href="qgraphicsscene.html#selectionArea">selectionArea</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsScene/setStyle" />
 <h3 class="fn"><a name="setStyle"></a>void QGraphicsScene::setStyle ( <a href="qstyle.html">QStyle</a> * <i>style</i> )</h3>
-<p>Sets the style of the scene to <i>style</i>. The scene's style defaults to <a href="qapplication.html#style">QApplication::style</a>(), and serves as the default for all <a href="qgraphicswidget.html">QGraphicsWidget</a> items in the scene.</p>
+<p>Sets or replaces the style of the scene to <i>style</i>, and reparents the style to this scene. Any previously assigned style is deleted. The scene's style defaults to <a href="qapplication.html#style">QApplication::style</a>(), and serves as the default for all <a href="qgraphicswidget.html">QGraphicsWidget</a> items in the scene.</p>
 <p>Changing the style, either directly by calling this function, or indirectly by calling <a href="qapplication.html#setStyle">QApplication::setStyle</a>(), will automatically update the style for all widgets in the scene that do not have a style explicitly assigned to them.</p>
 <p>If <i>style</i> is 0, <a href="qgraphicsscene.html">QGraphicsScene</a> will revert to <a href="qapplication.html#style">QApplication::style</a>().</p>
 <p>This function was introduced in Qt 4.4.</p>
@@ -767,15 +773,16 @@
 <a name="//apple_ref/cpp/instm/QGraphicsScene/style" />
 <h3 class="fn"><a name="style"></a><a href="qstyle.html">QStyle</a> * QGraphicsScene::style () const</h3>
 <p>Returns the scene's style, or the same as <a href="qapplication.html#style">QApplication::style</a>() if the scene has not been explicitly assigned a style.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qgraphicsscene.html#setStyle">setStyle</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsScene/update" />
-<h3 class="fn"><a name="update"></a>void QGraphicsScene::update ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>w</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>h</i> )</h3>
-<p>This convenience function is equivalent to calling update(<a href="qrectf.html">QRectF</a>(<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>));</p>
-<p>This function was introduced in Qt 4.3.</p>
-<h3 class="fn"><a name="update-2"></a>void QGraphicsScene::update ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i> = QRectF() )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="update"></a>void QGraphicsScene::update ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i> = QRectF() )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Schedules a redraw of the area <i>rect</i> on the scene.</p>
 <p>See also <a href="qgraphicsscene.html#sceneRect-prop">sceneRect</a>() and <a href="qgraphicsscene.html#changed">changed</a>().</p>
+<h3 class="fn"><a name="update-2"></a>void QGraphicsScene::update ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>w</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>h</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>This function is equivalent to calling update(<a href="qrectf.html">QRectF</a>(<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>));</p>
+<p>This function was introduced in Qt 4.3.</p>
 <a name="//apple_ref/cpp/instm/QGraphicsScene/views" />
 <h3 class="fn"><a name="views"></a><a href="qlist.html">QList</a>&lt;<a href="qgraphicsview.html">QGraphicsView</a> *&gt; QGraphicsScene::views () const</h3>
 <p>Returns a list of all the views that display this scene.</p>
@@ -793,6 +800,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

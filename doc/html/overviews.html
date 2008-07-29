@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/overviews.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/overviews.qdoc -->
 <head>
   <title>Qt 4.4: All Overviews and HOWTOs</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -31,6 +31,7 @@
 <li><a href="atomic-operations.html">Implementing Atomic Operations</a></li>
 <li><a href="style-reference.html">Implementing Styles and Style Aware Widgets</a></li>
 <li><a href="shared.html">Implicitly Shared Classes</a></li>
+<li><a href="ipc.html">Inter-Process Communication in Qt</a></li>
 <li><a href="intro-to-dbus.html">Introduction to D-Bus</a></li>
 <li><a href="focus.html">Keyboard Focus</a></li>
 <li><a href="layout.html">Layout Classes</a></li>
@@ -140,6 +141,7 @@
 <li><a href="qws.html">Qt for Embedded Linux Classes</a></li>
 <li><a href="qtce.html">Qt on Windows CE</a></li>
 <li><a href="script.html">Scripting Classes</a></li>
+<li><a href="ssl.html">Secure Sockets Layer (SSL) Classes</a></li>
 <li><a href="dialogs.html">Standard Dialog Classes</a></li>
 <li><a href="text.html">Text Processing Classes</a></li>
 <li><a href="thread.html">Threading Classes</a></li>
@@ -160,12 +162,13 @@
 </ul>
 <h3><a href="installation.html">Installation</a></h3>
 <ul>
+<li><a href="requirements.html">General Qt Requirements</a></li>
 <li><a href="qt-embedded-install.html">Installing Qt for Embedded Linux</a></li>
 <li><a href="install-mac.html">Installing Qt/Mac</a></li>
 <li><a href="install-win.html">Installing Qt/Windows</a></li>
 <li><a href="install-wince.html">Installing Qt/Windows CE</a></li>
 <li><a href="install-x11.html">Installing Qt/X11</a></li>
-<li><a href="requirements-x11.html">Qt for Embedded Linux Requirements</a></li>
+<li><a href="requirements-embedded-linux.html">Qt for Embedded Linux Requirements</a></li>
 <li><a href="requirements-wince.html">Qt for Windows CE Requirements</a></li>
 <li><a href="requirements-mac.html">Qt/Mac Requirements</a></li>
 <li><a href="requirements-win.html">Qt/Windows Requirements</a></li>
@@ -180,7 +183,6 @@
 <li><a href="licenses.html">Licenses for Code Used in Qt</a></li>
 <li><a href="licenses-fonts.html">Licenses for Fonts Used in Qt for Embedded Linux</a></li>
 <li><a href="pdf-licensing.html">Notes about PDF Licensing</a></li>
-<li><a href="qpl.html">Q Public License (QPL)</a></li>
 <li><a href="commercialeditions.html">Qt Commercial Editions</a></li>
 <li><a href="editions.html">Qt Editions</a></li>
 <li><a href="opensourceedition.html">Qt Open Source Edition</a></li>
@@ -201,6 +203,7 @@
 <li><a href="activeqt.html">ActiveQt Framework</a></li>
 <li><a href="unix-signals.html">Calling Qt Functions From Unix Signal Handlers</a></li>
 <li><a href="compiler-notes.html">Compiler Notes</a></li>
+<li><a href="known-issues.html">Known Issues in 4.4&#x2e;1</a></li>
 <li><a href="platform-notes-platforms.html">Platform Notes</a></li>
 <li><a href="qtmac-as-native.html">Qt/Mac is Mac OS X Native</a></li>
 <li><a href="mac-differences.html">Qt/Mac-Specific Issues</a></li>
@@ -301,6 +304,7 @@
 </ul>
 <h3><a href="scripting.html">Scripting with ECMAScript</a></h3>
 <ul>
+<li><a href="xquery-introduction.html">A Short Path to XQuery</a></li>
 <li><a href="qtscriptextensions.html">Creating QtScript Extensions</a></li>
 <li><a href="ecmascript.html">ECMAScript Reference</a></li>
 <li><a href="script-calculator.html">QtScript Calculator Example</a></li>
@@ -314,6 +318,11 @@
 <li><a href="richtext.html">Rich Text Processing</a></li>
 <li><a href="text.html">Text Processing Classes</a></li>
 <li><a href="unicode.html">Unicode</a></li>
+</ul>
+<h3><a href="threading.html">Threading and Concurrent Programming</a></h3>
+<ul>
+<li><a href="qtconcurrentfilter.html">&lt;QtConcurrentFilter&gt; - Concurrent Filter and Filter-Reduce</a></li>
+<li><a href="qtconcurrentmap.html">&lt;QtConcurrentMap&gt; - Concurrent Map and Map-Reduce</a></li>
 </ul>
 <h3><a href="activeqt-tools.html">Tools for ActiveQt</a></h3>
 <ul>
@@ -354,6 +363,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

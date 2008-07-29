@@ -125,6 +125,7 @@ void QHelpEnginePrivate::stopDataCollection()
 
 /*!
     \class QHelpEngine
+    \since 4.4
     \inmodule QtHelp
     \brief The QHelpEngine class provides access to contents and
     indices of the help engine.

@@ -129,7 +129,8 @@ void LupdateApplication::updateTsFiles( const MetaTranslator& fetchedTor,
 
         merge( &tor, &fetchedTor, &out, verbose, noObsolete );
         if ( onlyPlural) {
-            Console::out(tr("Stripping non plural forms in '%1'...\n").arg(fn));
+            if ( verbose )
+                Console::out(tr("Stripping non plural forms in '%1'...\n").arg(fn));
             out.stripNonPluralForms();
         }
         if ( noObsolete )
@@ -156,7 +157,7 @@ int LupdateApplication::start()
 {
     QStringList argv = arguments();
     int argc = argv.count();
-    QString defaultContext = QLatin1String("@default");
+    QString defaultContext; // This was QLatin1String("@default") before.
     MetaTranslator fetchedTor;
     QByteArray codecForTr;
     QByteArray codecForSource;

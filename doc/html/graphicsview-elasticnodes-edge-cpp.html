@@ -136,12 +136,12 @@
      if (!source || !dest)
          return;
 
-     <span class="comment">//</span> Draw the line itself
+     <span class="comment">// Draw the line itself</span>
      QLineF line(sourcePoint, destPoint);
      painter-&gt;setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
      painter-&gt;drawLine(line);
 
-     <span class="comment">//</span> Draw the arrows if there's enough room
+     <span class="comment">// Draw the arrows if there's enough room</span>
      double angle = ::acos(line.dx() / line.length());
      if (line.dy() &gt;= 0)
          angle = TwoPi - angle;
@@ -163,6 +163,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

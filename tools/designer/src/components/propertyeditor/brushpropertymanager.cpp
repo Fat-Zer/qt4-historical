@@ -66,10 +66,6 @@ QT_TRANSLATE_NOOP("BrushPropertyManager", "Cross"),
 QT_TRANSLATE_NOOP("BrushPropertyManager", "Backward diagonal"),
 QT_TRANSLATE_NOOP("BrushPropertyManager", "Forward diagonal"),
 QT_TRANSLATE_NOOP("BrushPropertyManager", "Crossing diagonal"),
-QT_TRANSLATE_NOOP("BrushPropertyManager", "Linear gradient"),
-QT_TRANSLATE_NOOP("BrushPropertyManager", "Conical gradient"),
-QT_TRANSLATE_NOOP("BrushPropertyManager", "Radial gradient"),
-QT_TRANSLATE_NOOP("BrushPropertyManager", "Texture")
 };
 
 QT_BEGIN_NAMESPACE
@@ -98,10 +94,7 @@ int BrushPropertyManager::brushStyleToIndex(Qt::BrushStyle st)
     case Qt::BDiagPattern:  return 12;
     case Qt::FDiagPattern:  return 13;
     case Qt::DiagCrossPattern:       return 14;
-    case Qt::LinearGradientPattern:  return 15;
-    case Qt::ConicalGradientPattern: return 16;
-    case Qt::RadialGradientPattern:  return 17;
-    case Qt::TexturePattern:         return 18;
+    default: break;
     }
     return 0;
 }
@@ -124,10 +117,6 @@ Qt::BrushStyle BrushPropertyManager::brushStyleIndexToStyle(int brushStyleIndex)
     case 12: return Qt::BDiagPattern;
     case 13: return Qt::FDiagPattern;
     case 14: return Qt::DiagCrossPattern;
-    case 15: return Qt::LinearGradientPattern;
-    case 16: return Qt::ConicalGradientPattern;
-    case 17: return Qt::RadialGradientPattern;
-    case 18: return Qt::TexturePattern;
     }
     return Qt::NoBrush;
 }
@@ -142,18 +131,8 @@ const BrushPropertyManager::EnumIndexIconMap &BrushPropertyManager::brushStyleIc
         const QIcon solidIcon = QtPropertyBrowserUtils::brushValueIcon(brush);
         for (int i = 0; i < brushStyleCount; i++) {
             const Qt::BrushStyle style = brushStyleIndexToStyle(i);
-            switch (style) {
-            case Qt::SolidPattern:
-            case Qt::LinearGradientPattern: // Requires parameter settings
-            case Qt::ConicalGradientPattern:
-            case Qt::RadialGradientPattern:
-            case Qt::TexturePattern:
-                rc.insert(i, solidIcon);
-                break;
-            default:
-                brush.setStyle(style);
-                rc.insert(i, QtPropertyBrowserUtils::brushValueIcon(brush));
-            }
+            brush.setStyle(style);
+            rc.insert(i, QtPropertyBrowserUtils::brushValueIcon(brush));
         }
     }
     return rc;

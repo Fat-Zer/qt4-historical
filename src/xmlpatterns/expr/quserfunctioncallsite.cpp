@@ -144,6 +144,14 @@ Expression::Ptr UserFunctionCallsite::typeCheck(const StaticContext::Ptr &contex
     }
 }
 
+Expression::Ptr UserFunctionCallsite::compress(const StaticContext::Ptr &context)
+{
+    if(!m_isRecursive)
+        rewrite(m_body, m_body->compress(context), context);
+
+    return UnlimitedContainer::compress(context);
+}
+
 Expression::Properties UserFunctionCallsite::properties() const
 {
     return DisableElimination;

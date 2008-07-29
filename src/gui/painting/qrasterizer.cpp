@@ -695,15 +695,42 @@ static inline bool q16Dot16Compare(qreal p1, qreal p2)
 
 void QRasterizer::rasterizeLine(const QPointF &a, const QPointF &b, qreal width, bool squareCap)
 {
+    if (a == b)
+        return;
+
     QPointF pa = a;
     QPointF pb = b;
 
     if (!d->antialiased) {
         pa.rx() += (COORD_OFFSET - COORD_ROUNDING)/64.;
         pa.ry() += (COORD_OFFSET - COORD_ROUNDING)/64.;
-
         pb.rx() += (COORD_OFFSET - COORD_ROUNDING)/64.;
         pb.ry() += (COORD_OFFSET - COORD_ROUNDING)/64.;
+    }
+
+    {
+        const qreal gridResolution = 64;
+        const qreal reciprocal = 1 / gridResolution;
+
+        // snap to grid to prevent large slopes
+        pa.rx() = qRound(pa.rx() * gridResolution) * reciprocal;
+        pa.ry() = qRound(pa.ry() * gridResolution) * reciprocal;
+        pb.rx() = qRound(pb.rx() * gridResolution) * reciprocal;
+        pb.ry() = qRound(pb.ry() * gridResolution) * reciprocal;
+
+        // old delta
+        const QPointF d0 = a - b;
+        const qreal w0 = d0.x() * d0.x() + d0.y() * d0.y();
+
+        // new delta
+        const QPointF d = pa - pb;
+        const qreal w = d.x() * d.x() + d.y() * d.y();
+
+        if (w == 0)
+            return;
+
+        // adjust width which is given relative to |b - a|
+        width *= sqrt(w0 / w);
     }
 
     QSpanBuffer buffer(d->blend, d->data, d->clipRect);

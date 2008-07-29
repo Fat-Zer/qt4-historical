@@ -143,6 +143,7 @@ private Q_SLOTS:
     void slotPropertyDestroyed(QtProperty *property);
 private:
     void createIconSubProperty(QtProperty *iconProperty, QIcon::Mode mode, QIcon::State state, const QString &subName);
+    void updateFontModifiedState(QtProperty *property, const QVariant &value);
 
     typedef QMap<QtProperty *, bool> PropertyBoolMap;
     PropertyBoolMap m_resetMap;
@@ -206,6 +207,7 @@ private:
     QMap<QtProperty *, qlonglong> m_longLongValues;
     QMap<QtProperty *, qulonglong> m_uLongLongValues;
     QMap<QtProperty *, QUrl> m_urlValues;
+    QMap<QtProperty *, QByteArray> m_byteArrayValues;
     QMap<QtProperty *, QStringList> m_stringListValues;
 
     typedef QMap<QtProperty *, int>  PropertyIntMap;
@@ -254,6 +256,7 @@ private slots:
     void slotLongLongChanged(const QString &value);
     void slotULongLongChanged(const QString &value);
     void slotUrlChanged(const QString &value);
+    void slotByteArrayChanged(const QString &value);
     void slotStringListChanged(const QStringList &value);
 private:
     TextEditor *createTextEditor(QWidget *parent, TextPropertyValidationMode vm, const QString &value);
@@ -281,6 +284,8 @@ private:
     QMap<QLineEdit *, QtProperty *>                         m_editorToULongLongProperty;
     QMap<QtProperty *, QList<TextEditor *> >                m_urlPropertyToEditors;
     QMap<TextEditor *, QtProperty *>                        m_editorToUrlProperty;
+    QMap<QtProperty *, QList<TextEditor *> >                m_byteArrayPropertyToEditors;
+    QMap<TextEditor *, QtProperty *>                        m_editorToByteArrayProperty;
     QMap<QtProperty *, QList<StringListEditorButton *> >    m_stringListPropertyToEditors;
     QMap<StringListEditorButton *, QtProperty *>            m_editorToStringListProperty;
 };

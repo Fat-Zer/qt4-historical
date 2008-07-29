@@ -2322,7 +2322,7 @@ void QWindowsCEStylePrivate::drawWinCEShadesSunken(QPainter *p,
     if (w > 4 && h > 4) {
         QPoint d[3] = { QPoint(x, y+h-2), QPoint(x+w-2, y+h-2), QPoint(x+w-2, y) };
         p->setPen(c4);
-        p->drawPolyline(d, 5);
+        p->drawPolyline(d, 3);
         QPoint c[3] = { QPoint(x, y+h-2), QPoint(x, y), QPoint(x+w-2, y) };
         p->setPen(c3);
         p->drawPolyline(c, 3);

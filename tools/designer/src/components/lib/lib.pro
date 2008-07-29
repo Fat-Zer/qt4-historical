@@ -70,5 +70,3 @@ win32 {
     dlltarget.path=$$[QT_INSTALL_BINS]
     INSTALLS += dlltarget
 }
-
-linux-icc*:QMAKE_CXXFLAGS_RELEASE ~= s/-O2/-O0/

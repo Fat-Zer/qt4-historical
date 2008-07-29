@@ -12,7 +12,7 @@ BUILD_PATH = ..
 #
 !if "$(QMAKESPEC)" == "win32-icc"
 CXX	    = icl
-LINK	    = xilink
+LINK	    = link
 CFLAGS      = /Zc:forScope
 !else
 CXX         = cl

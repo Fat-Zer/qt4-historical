@@ -42,6 +42,7 @@
 ****************************************************************************/
 
 #include "qabstractbutton.h"
+#include "qabstractitemview.h"
 #include "qbuttongroup.h"
 #include "qabstractbutton_p.h"
 #include "qevent.h"
@@ -544,7 +545,8 @@ void QAbstractButtonPrivate::emitClicked()
 #ifndef QT_NO_BUTTONGROUP
     if (guard && group) {
         emit group->buttonClicked(group->id(q));
-        emit group->buttonClicked(q);
+        if (guard && group)
+            emit group->buttonClicked(q);
     }
 #endif
 }
@@ -557,7 +559,8 @@ void QAbstractButtonPrivate::emitPressed()
 #ifndef QT_NO_BUTTONGROUP
     if (guard && group) {
         emit group->buttonPressed(group->id(q));
-        emit group->buttonPressed(q);
+        if (guard && group)
+            emit group->buttonPressed(q);
     }
 #endif
 }
@@ -570,7 +573,8 @@ void QAbstractButtonPrivate::emitReleased()
 #ifndef QT_NO_BUTTONGROUP
     if (guard && group) {
         emit group->buttonReleased(group->id(q));
-        emit group->buttonReleased(q);
+        if (guard && group)
+            emit group->buttonReleased(q);
     }
 #endif
 }
@@ -1171,9 +1175,25 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
             return;
         }
 #endif
-        d->moveFocus(e->key());
-        if (hasFocus()) // nothing happend, propagate
-            e->ignore();
+        QWidget *pw;
+        if (d->autoExclusive
+#ifndef QT_NO_BUTTONGROUP
+        || d->group
+#endif
+#ifndef QT_NO_ITEMVIEWS
+        || ((pw = parentWidget()) && qobject_cast<QAbstractItemView *>(pw->parentWidget()))
+#endif
+        ) {
+            // ### Using qobject_cast to check if the parent is a viewport of
+            // QAbstractItemView is a crude hack, and should be revisited and
+            // cleaned up when fixing task 194373. It's here to ensure that we
+            // keep compatibility outside QAbstractItemView.
+            d->moveFocus(e->key());
+            if (hasFocus()) // nothing happend, propagate
+                e->ignore();
+        } else {
+            focusNextPrevChild(next);
+        }
         break;
     case Qt::Key_Escape:
         if (d->down) {

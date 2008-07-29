@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qtextedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qtextedit.cpp -->
 <head>
   <title>Qt 4.4: QTextEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,7 +28,6 @@
 <li><div class="fn"/>class <b><a href="qtextedit-extraselection.html">ExtraSelection</a></b></li>
 <li><div class="fn"/>flags <b><a href="qtextedit.html#AutoFormattingFlag-enum">AutoFormatting</a></b></li>
 <li><div class="fn"/>enum <b><a href="qtextedit.html#AutoFormattingFlag-enum">AutoFormattingFlag</a></b> { AutoNone, AutoBulletList, AutoAll }</li>
-<li><div class="fn"/>enum <b><a href="qtextedit.html#CursorAction-enum">CursorAction</a></b> { MoveBackward, MoveForward, MoveWordBackward, MoveWordForward, ..., MovePageDown }</li>
 <li><div class="fn"/>enum <b><a href="qtextedit.html#LineWrapMode-enum">LineWrapMode</a></b> { NoWrap, WidgetWidth, FixedPixelWidth, FixedColumnWidth }</li>
 </ul>
 <a name="properties"></a>
@@ -253,7 +252,7 @@
 <h3>Using QTextEdit as an Editor</h3>
 <p>All the information about using QTextEdit as a display widget also applies here.</p>
 <p>The current char format's attributes are set with <a href="qtextedit.html#setFontItalic">setFontItalic</a>(), <a href="qtextedit.html#setFontWeight">setFontWeight</a>(), <a href="qtextedit.html#setFontUnderline">setFontUnderline</a>(), <a href="qtextedit.html#setFontFamily">setFontFamily</a>(), <a href="qtextedit.html#setFontPointSize">setFontPointSize</a>(), <a href="qtextedit.html#setTextColor">setTextColor</a>() and <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>(). The current paragraph's alignment is set with <a href="qtextedit.html#setAlignment">setAlignment</a>().</p>
-<p>Selection of text is handled by the <a href="qtextcursor.html">QTextCursor</a> class, which provides functionality for creating selections, retrieving the text contents or deleting selections. You can retrieve the object that corresponds with the user-visible cursor using the <a href="qtextedit.html#textCursor">textCursor</a>() method. If you want to set a selection in QTextEdit just create one on a <a href="qtextcursor.html">QTextCursor</a> object and then make that cursor the visible cursor using <a href="qwidget.html#cursor-prop">setCursor</a>(). The selection can be copied to the clipboard with <a href="qtextedit.html#copy">copy</a>(), or cut to the clipboard with <a href="qtextedit.html#cut">cut</a>(). The entire text can be selected using <a href="qtextedit.html#selectAll">selectAll</a>().</p>
+<p>Selection of text is handled by the <a href="qtextcursor.html">QTextCursor</a> class, which provides functionality for creating selections, retrieving the text contents or deleting selections. You can retrieve the object that corresponds with the user-visible cursor using the <a href="qtextedit.html#textCursor">textCursor</a>() method. If you want to set a selection in QTextEdit just create one on a <a href="qtextcursor.html">QTextCursor</a> object and then make that cursor the visible cursor using <a href="qtextedit.html#setTextCursor">setTextCursor</a>(). The selection can be copied to the clipboard with <a href="qtextedit.html#copy">copy</a>(), or cut to the clipboard with <a href="qtextedit.html#cut">cut</a>(). The entire text can be selected using <a href="qtextedit.html#selectAll">selectAll</a>().</p>
 <p>When the cursor is moved and the underlying formatting attributes change, the <a href="qtextedit.html#currentCharFormatChanged">currentCharFormatChanged</a>() signal is emitted to reflect the new attributes at the new cursor position.</p>
 <p>QTextEdit holds a <a href="qtextdocument.html">QTextDocument</a> object which can be retrieved using the <a href="qtextedit.html#document">document</a>() method. You can also set your own document object using <a href="qtextedit.html#setDocument">setDocument</a>(). <a href="qtextdocument.html">QTextDocument</a> emits a <a href="qtextedit.html#textChanged">textChanged</a>() signal if the text changes and it also provides a <a href="qtextedit-qt3.html#isModified">isModified</a>() function which will return true if the text has been modified since it was either loaded or since the last call to setModified with false as argument. In addition it provides methods for undo and redo.</p>
 <a name="drag-and-drop"></a>
@@ -327,37 +326,6 @@
 <tr><td valign="top"><tt>QTextEdit::AutoAll</tt></td><td align="center" valign="top"><tt>0xffffffff</tt></td><td valign="top">Apply all automatic formatting. Currently only automatic bullet lists are supported.</td></tr>
 </table></p>
 <p>The AutoFormatting type is a typedef for <a href="qflags.html">QFlags</a>&lt;AutoFormattingFlag&gt;. It stores an OR combination of AutoFormattingFlag values.</p>
-<a name="//apple_ref/cpp/tag/QTextEdit/CursorAction" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveBackward" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveForward" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveWordBackward" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveWordForward" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveUp" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveDown" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveLineStart" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveLineEnd" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveHome" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MoveEnd" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MovePageUp" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MovePageDown" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MovePgUp" />
-<a name="//apple_ref/cpp/econst/QTextEdit/MovePgDown" />
-<h3 class="fn"><a name="CursorAction-enum"></a>enum QTextEdit::CursorAction</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveBackward</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveForward</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveWordBackward</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveWordForward</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveUp</tt></td><td align="center" valign="top"><tt>4</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveDown</tt></td><td align="center" valign="top"><tt>5</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveLineStart</tt></td><td align="center" valign="top"><tt>6</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveLineEnd</tt></td><td align="center" valign="top"><tt>7</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveHome</tt></td><td align="center" valign="top"><tt>8</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MoveEnd</tt></td><td align="center" valign="top"><tt>9</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MovePageUp</tt></td><td align="center" valign="top"><tt>10</tt></td></tr>
-<tr><td valign="top"><tt>QTextEdit::MovePageDown</tt></td><td align="center" valign="top"><tt>11</tt></td></tr>
-</table></p>
 <a name="//apple_ref/cpp/tag/QTextEdit/LineWrapMode" />
 <a name="//apple_ref/cpp/econst/QTextEdit/NoWrap" />
 <a name="//apple_ref/cpp/econst/QTextEdit/WidgetWidth" />
@@ -576,7 +544,7 @@
    {
        QMenu *menu = createStandardContextMenu();
        menu-&gt;addAction(tr(&quot;My Menu Item&quot;));
-       //...
+       <span class="comment">//...</span>
        menu-&gt;exec(event-&gt;globalPos());
        delete menu;
    }</pre>
@@ -829,6 +797,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

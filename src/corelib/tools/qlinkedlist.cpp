@@ -251,7 +251,9 @@ QLinkedListData QLinkedListData::shared_null = {
     \sa insert()
 */
 
-/*! \fn bool QLinkedList::removeOne(const T &value)
+/*! 
+    \fn bool QLinkedList::removeOne(const T &value)
+    \since 4.4
 
     Removes the first occurrences of \a value in the list. Returns true on
     success; otherwise returns false.

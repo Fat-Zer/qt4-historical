@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/itemviews/qlistview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qlistview.cpp -->
 <head>
   <title>Qt 4.4: QListView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -258,7 +258,7 @@
 <a name="//apple_ref/cpp/instm/QListView/layoutMode" />
 <a name="//apple_ref/cpp/instm/QListView/setLayoutMode" />
 <h3 class="fn"><a name="layoutMode-prop"></a>layoutMode : <a href="qlistview.html#LayoutMode-enum">LayoutMode</a></h3>
-<p>This property holds whether the layout of items should happen immediately or be delayed.</p>
+<p>This property determines whether the layout of items should happen immediately or be delayed.</p>
 <p>This property holds the layout mode for the items. When the mode is <a href="qlistview.html#LayoutMode-enum">SinglePass</a> (the default), the items are laid out all in one go. When the mode is <a href="qlistview.html#LayoutMode-enum">Batched</a>, the items are laid out in batches of <a href="qlistview.html#batchSize-prop">batchSize</a> items, while processing events. This makes it possible to instantly view and interact with the visible items while the rest are being laid out.</p>
 <p>Access functions:</p>
 <ul>
@@ -349,6 +349,7 @@
 <h3 class="fn"><a name="wordWrap-prop"></a>wordWrap : bool</h3>
 <p>This property holds the item text word-wrapping policy.</p>
 <p>If this property is true then the item text is wrapped where necessary at word-breaks; otherwise it is not wrapped at all. This property is false by default.</p>
+<p>Please note that even if wrapping is enabled, the cell will not be expanded to make room for the text. It will print ellipsis for text that cannot be shown, according to the view's <a href="qabstractitemview.html#textElideMode-prop">textElideMode</a>.</p>
 <p>This property was introduced in Qt 4.2.</p>
 <p>Access functions:</p>
 <ul>
@@ -390,6 +391,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

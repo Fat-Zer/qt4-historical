@@ -84,7 +84,7 @@
 #include <QtCore/QTextStream>
 
 static const char *SettingsGroupC = "PropertyEditor";
-#if QT_VERSION > 0x040400
+#if QT_VERSION >= 0x040500
 static const char *ViewKeyC = "View";
 #endif
 static const char *ColorKeyC = "Colored";
@@ -106,11 +106,8 @@ typedef QPair<TextPropertyValidationMode, bool> StringPropertyParameters;
 // for textual properties.
 
 static StringPropertyParameters textPropertyValidationMode(const QObject *object,const QString &propertyName,
-                                                           QVariant::Type type, bool isMainContainer)
+                                                           bool isMainContainer)
 {
-    if (type == QVariant::ByteArray) {
-        return StringPropertyParameters(ValidationMultiLine, false);
-    }
     // object name - no comment
     if (propertyName == QLatin1String("objectName")) {
         const TextPropertyValidationMode vm =  isMainContainer ? ValidationObjectNameScope : ValidationObjectName;
@@ -206,10 +203,10 @@ void PropertyEditor::addCommentProperty(QtVariantProperty *property, const QStri
 void PropertyEditor::setupStringProperty(QtVariantProperty *property, const QString &propertyName,
                                          const QVariant &value, bool isMainContainer)
 {
-    const StringPropertyParameters params = textPropertyValidationMode(m_object, propertyName, value.type(), isMainContainer);
+    const StringPropertyParameters params = textPropertyValidationMode(m_object, propertyName, isMainContainer);
     // Does a meta DB entry exist - add comment
     const bool hasComment = params.second && metaDataBaseItem();
-    const QString stringValue = value.type() == QVariant::ByteArray ? QString::fromUtf8(value.toByteArray()) : value.toString();
+    const QString stringValue = value.toString();
     property->setAttribute(m_strings.m_validationModeAttribute, params.first);
     // assuming comment cannot appear or disappear for the same property in different object instance
     if (hasComment)
@@ -263,16 +260,27 @@ PropertyEditor::PropertyEditor(QDesignerFormEditorInterface *core, QWidget *pare
     m_classLabel(new QLabel),
     m_sorting(false),
     m_coloring(false),
-    m_dynamicColor(QColor(191, 207, 255)),
-    m_layoutColor(QColor(255, 191, 191))
+    m_brightness(false)
 {
-    m_colors.reserve(6);
-    m_colors.push_back(QColor(255, 230, 191));
-    m_colors.push_back(QColor(255, 255, 191));
-    m_colors.push_back(QColor(191, 255, 191));
-    m_colors.push_back(QColor(199, 255, 255));
-    m_colors.push_back(QColor(234, 191, 255));
-    m_colors.push_back(QColor(255, 191, 239));
+    QVector<QColor> colors;
+    colors.reserve(6);
+    colors.push_back(QColor(255, 230, 191));
+    colors.push_back(QColor(255, 255, 191));
+    colors.push_back(QColor(191, 255, 191));
+    colors.push_back(QColor(199, 255, 255));
+    colors.push_back(QColor(234, 191, 255));
+    colors.push_back(QColor(255, 191, 239));
+    m_colors.reserve(colors.count());
+    for (int i = 0; i < colors.count(); i++) {
+        QColor c = colors.at(i);
+        m_colors.push_back(qMakePair(c, c.darker(150)));
+    }
+    QColor dynamicColor(191, 207, 255);
+    QColor layoutColor(255, 191, 191);
+    m_dynamicColor = qMakePair(dynamicColor, dynamicColor.darker(150));
+    m_layoutColor = qMakePair(layoutColor, layoutColor.darker(150));
+
+    updateForegroundBrightness();
 
     QToolBar *toolBar = new QToolBar;
 
@@ -329,7 +337,7 @@ PropertyEditor::PropertyEditor(QDesignerFormEditorInterface *core, QWidget *pare
 
     configureMenu->addAction(m_sortingAction);
     configureMenu->addAction(m_coloringAction);
-#if QT_VERSION > 0x040400
+#if QT_VERSION >= 0x040500
     configureMenu->addSeparator();
     configureMenu->addAction(m_treeAction);
     configureMenu->addAction(m_buttonAction);
@@ -379,7 +387,7 @@ PropertyEditor::PropertyEditor(QDesignerFormEditorInterface *core, QWidget *pare
     // retrieve initial settings
     QSettings settings;
     settings.beginGroup(QLatin1String(SettingsGroupC));
-#if QT_VERSION > 0x040400
+#if QT_VERSION >= 0x040500
     const SettingsView view = settings.value(QLatin1String(ViewKeyC), TreeView).toInt() == TreeView ? TreeView :  ButtonView;
 #endif
     // Coloring not available unless treeview and not sorted
@@ -390,7 +398,7 @@ PropertyEditor::PropertyEditor(QDesignerFormEditorInterface *core, QWidget *pare
     // Apply settings
     m_sortingAction->setChecked(m_sorting);
     m_coloringAction->setChecked(m_coloring);
-#if QT_VERSION > 0x040400
+#if QT_VERSION >= 0x040500
     switch (view) {
     case TreeView:
         m_currentBrowser = m_treeBrowser;
@@ -423,7 +431,7 @@ void PropertyEditor::saveSettings() const
 {
     QSettings settings;
     settings.beginGroup(QLatin1String(SettingsGroupC));
-#if QT_VERSION > 0x040400
+#if QT_VERSION >= 0x040500
     settings.setValue(QLatin1String(ViewKeyC), QVariant(m_treeAction->isChecked() ? TreeView : ButtonView));
 #endif
     settings.setValue(QLatin1String(ColorKeyC), QVariant(m_coloring));
@@ -559,6 +567,27 @@ void PropertyEditor::clearView()
     m_currentBrowser->clear();
 }
 
+bool PropertyEditor::event(QEvent *event)
+{
+    if (event->type() == QEvent::PaletteChange)
+        updateForegroundBrightness();
+
+    return QDesignerPropertyEditor::event(event);
+}
+
+void PropertyEditor::updateForegroundBrightness()
+{
+    QColor c = palette().color(QPalette::Text);
+    bool newBrightness = qRound(0.3 * c.redF() + 0.59 * c.greenF() + 0.11 * c.blueF());
+
+    if (m_brightness == newBrightness)
+        return;
+
+    m_brightness = newBrightness;
+
+    updateColors();
+}
+
 QColor PropertyEditor::propertyColor(QtProperty *property) const
 {
     if (!m_coloring)
@@ -571,14 +600,18 @@ QColor PropertyEditor::propertyColor(QtProperty *property) const
         groupProperty = m_nameToGroup.value(itProp.value());
 
     const int groupIdx = m_groups.indexOf(groupProperty);
+    QPair<QColor, QColor> pair;
     if (groupIdx != -1) {
         if (groupProperty == m_dynamicGroup)
-            return m_dynamicColor;
-        if (isLayoutGroup(groupProperty))
-            return m_layoutColor;
-        return m_colors[groupIdx % m_colors.count()];
+            pair = m_dynamicColor;
+        else if (isLayoutGroup(groupProperty))
+            pair = m_layoutColor;
+        else
+            pair = m_colors[groupIdx % m_colors.count()];
     }
-    return QColor();
+    if (!m_brightness)
+        return pair.first;
+    return pair.second;
 }
 
 void PropertyEditor::fillView()
@@ -615,21 +648,21 @@ void PropertyEditor::slotViewTriggered(QAction *action)
 {
     storeExpansionState();
     collapseAll();
-    const bool wasEnabled = updatesEnabled();
-    setUpdatesEnabled(false);
-    clearView();
-    int idx = 0;
-    if (action == m_treeAction) {
-        m_currentBrowser = m_treeBrowser;
-        idx = m_treeIndex;
-    } else if (action == m_buttonAction) {
-        m_currentBrowser = m_buttonBrowser;
-        idx = m_buttonIndex;
+    {
+        UpdateBlocker ub(this);
+        clearView();
+        int idx = 0;
+        if (action == m_treeAction) {
+            m_currentBrowser = m_treeBrowser;
+            idx = m_treeIndex;
+        } else if (action == m_buttonAction) {
+            m_currentBrowser = m_buttonBrowser;
+            idx = m_buttonIndex;
+        }
+        fillView();
+        m_stackedWidget->setCurrentIndex(idx);
+        applyExpansionState();
     }
-    fillView();
-    m_stackedWidget->setCurrentIndex(idx);
-    applyExpansionState();
-    setUpdatesEnabled(wasEnabled);
     updateActionsState();
 }
 
@@ -641,22 +674,18 @@ void PropertyEditor::slotSorting(bool sort)
     storeExpansionState();
     m_sorting = sort;
     collapseAll();
-    const bool wasEnabled = updatesEnabled();
-    setUpdatesEnabled(false);
-    clearView();
-    m_treeBrowser->setRootIsDecorated(sort);
-    fillView();
-    applyExpansionState();
-    setUpdatesEnabled(wasEnabled);
+    {
+        UpdateBlocker ub(this);
+        clearView();
+        m_treeBrowser->setRootIsDecorated(sort);
+        fillView();
+        applyExpansionState();
+    }
     updateActionsState();
 }
 
-void PropertyEditor::slotColoring(bool coloring)
+void PropertyEditor::updateColors()
 {
-    if (coloring == m_coloring)
-        return;
-
-    m_coloring = coloring;
     if (m_currentBrowser == m_treeBrowser) {
         QList<QtBrowserItem *> items = m_treeBrowser->topLevelItems();
         QListIterator<QtBrowserItem *> itItem(items);
@@ -665,6 +694,16 @@ void PropertyEditor::slotColoring(bool coloring)
             m_treeBrowser->setBackgroundColor(item, propertyColor(item->property()));
         }
     }
+}
+
+void PropertyEditor::slotColoring(bool coloring)
+{
+    if (coloring == m_coloring)
+        return;
+
+    m_coloring = coloring;
+
+    updateColors();
 }
 
 void PropertyEditor::slotAddDynamicProperty(QAction *action)
@@ -830,8 +869,6 @@ int PropertyEditor::toBrowserType(const QVariant &value, const QString &property
     if (qVariantCanConvert<PropertySheetEnumValue>(value))
         return DesignerPropertyManager::enumTypeId();
 
-    if (value.type() == QVariant::ByteArray)
-        return QVariant::String;
     return value.userType();
 }
 
@@ -890,8 +927,7 @@ void PropertyEditor::setObject(QObject *object)
 
     storeExpansionState();
 
-    const bool wasEnabled = updatesEnabled();
-    setUpdatesEnabled(false);
+    UpdateBlocker ub(this);
 
     updateToolBarLabel();
 
@@ -1094,7 +1130,6 @@ void PropertyEditor::setObject(QObject *object)
     m_addDynamicAction->setEnabled(addEnabled);
     m_removeDynamicAction->setEnabled(false);
     applyExpansionState();
-    setUpdatesEnabled(wasEnabled);
     // In the first setObject() call following the addition of a dynamic property, focus and edit it.
     if (editNewDynamicProperty) {
         // Have QApplication process the events related to completely closing the modal 'add' dialog,

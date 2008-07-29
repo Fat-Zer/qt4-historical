@@ -110,6 +110,8 @@ QSqlDriver::~QSqlDriver()
 }
 
 /*!
+    \since 4.4
+
     \fn QSqlDriver::notification(const QString &name)
 
     This signal is emitted when the database posts an event notification

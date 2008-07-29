@@ -603,6 +603,8 @@ QTextBlockUserData *QSyntaxHighlighter::currentBlockUserData() const
 }
 
 /*!
+    \since 4.4
+
     Returns the current text block.
  */
 QTextBlock QSyntaxHighlighter::currentBlock() const

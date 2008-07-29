@@ -1488,6 +1488,8 @@ QString QTextDecoder::toUnicode(const QByteArray &ba)
 */
 
 /*!
+    \since 4.4
+
     Tries to detect the encoding of the provided snippet of html in the given byte array, \a ba,
     and returns a QTextCodec instance that is capable of decoding the html to unicode.
     If the codec cannot be detected from the content provided, \a defaultCodec is returned.

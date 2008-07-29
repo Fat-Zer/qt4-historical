@@ -388,7 +388,7 @@ void QXIMInputContext::create_xim()
 #ifdef USE_X11R6_XIM
         XIMCallback destroy;
         destroy.callback = (XIMProc) xim_destroy_callback;
-        destroy.client_data = 0;
+        destroy.client_data = XPointer(this);
         if (XSetIMValues(xim, XNDestroyCallback, &destroy, (char *) 0) != 0)
             qWarning("Xlib dosn't support destroy callback");
 #endif // USE_X11R6_XIM

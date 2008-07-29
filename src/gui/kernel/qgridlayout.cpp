@@ -517,7 +517,7 @@ void QGridLayoutPrivate::setSize(int r, int c)
 void QGridLayoutPrivate::setNextPosAfter(int row, int col)
 {
     if (addVertical) {
-        if (col > nextC || col == nextC && row >= nextR) {
+        if (col > nextC || (col == nextC && row >= nextR)) {
             nextR = row + 1;
             nextC = col;
             if (nextR >= rr) {
@@ -526,7 +526,7 @@ void QGridLayoutPrivate::setNextPosAfter(int row, int col)
             }
         }
     } else {
-        if (row > nextR || row == nextR && col >= nextC) {
+        if (row > nextR || (row == nextR && col >= nextC)) {
             nextR = row;
             nextC = col + 1;
             if (nextC >= cc) {
@@ -1005,7 +1005,7 @@ QRect QGridLayoutPrivate::cellRect(int row, int col) const
     how to distribute the size over the columns/rows (based on the
     stretch factors).
 
-    To remove a widget from a layout, call remove(). Calling
+    To remove a widget from a layout, call removeWidget(). Calling
     QWidget::hide() on a widget also effectively removes the widget
     from the layout until QWidget::show() is called.
 
@@ -1400,6 +1400,8 @@ QLayoutItem *QGridLayout::itemAt(int index) const
 }
 
 /*!
+    \since 4.4
+
     Returns the layout item that occupies cell (\a row, \a column), or 0 if
     the cell is empty.
 

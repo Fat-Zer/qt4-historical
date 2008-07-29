@@ -73,7 +73,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace {
-    HelpViewer* helpViewerFromTabPosition(const QTabWidget *widget, const QPoint &point) 
+    HelpViewer* helpViewerFromTabPosition(const QTabWidget *widget, const QPoint &point)
     {
         QTabBar *tabBar = qFindChild<QTabBar*>(widget);
         for (int i = 0; i < tabBar->count(); ++i) {
@@ -97,7 +97,7 @@ FindWidget::FindWidget(QWidget *parent)
     hboxLayout->setMargin(0);
 #endif
 
-    toolClose = new QToolButton(this);    
+    toolClose = new QToolButton(this);
     toolClose->setIcon(QIcon(QString::fromUtf8(":/trolltech/assistant/images/%1/closetab.png").arg(system)));
     toolClose->setAutoRaise(true);
     hboxLayout->addWidget(toolClose);
@@ -135,10 +135,10 @@ FindWidget::FindWidget(QWidget *parent)
     labelWrapped->setMinimumSize(QSize(0, 20));
     labelWrapped->setMaximumSize(QSize(105, 20));
     labelWrapped->setTextFormat(Qt::RichText);
-    labelWrapped->setScaledContents(true);    
+    labelWrapped->setScaledContents(true);
     labelWrapped->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
     labelWrapped->setText(tr("<img src=\":/trolltech/assistant/images/wrap.png\">&nbsp;Search wrapped"));
-    hboxLayout->addWidget(labelWrapped);    
+    hboxLayout->addWidget(labelWrapped);
 
     QSpacerItem *spacerItem = new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     hboxLayout->addItem(spacerItem);
@@ -175,10 +175,11 @@ CentralWidget::CentralWidget(QHelpEngine *engine, MainWindow *parent)
     lastTabPage = 0;
     globalActionList.clear();
     collectionFile = helpEngine->collectionFile();
-    
+    usesDefaultCollection = parent->usesDefaultCollection();
+
     QString system = QLatin1String("win");
     QVBoxLayout *vboxLayout = new QVBoxLayout(this);
-    
+
 #ifdef Q_OS_MAC
     system = QLatin1String("mac");
 #else
@@ -215,7 +216,7 @@ CentralWidget::CentralWidget(QHelpEngine *engine, MainWindow *parent)
     findBar->hide();
     findWidget->editFind->installEventFilter(this);
     connect(findWidget->toolClose, SIGNAL(clicked()), findBar, SLOT(hide()));
-    
+
     connect(findWidget->toolNext, SIGNAL(clicked()), this, SLOT(findNext()));
     connect(findWidget->editFind, SIGNAL(returnPressed()), this, SLOT(findNext()));
     connect(findWidget->editFind, SIGNAL(textChanged(const QString&)), this, SLOT(findCurrentText(const QString&)));
@@ -225,28 +226,47 @@ CentralWidget::CentralWidget(QHelpEngine *engine, MainWindow *parent)
     if (tabBar) {
         tabBar->installEventFilter(this);
         tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
-        connect(tabBar, SIGNAL(customContextMenuRequested(const QPoint&)), 
+        connect(tabBar, SIGNAL(customContextMenuRequested(const QPoint&)),
                 this, SLOT(showTabBarContextMenu(const QPoint&)));
     }
 
     staticCentralWidget = this;
+    QPalette p = palette();
+    p.setColor(QPalette::Inactive, QPalette::Highlight,
+        p.color(QPalette::Active, QPalette::Highlight));
+    p.setColor(QPalette::Inactive, QPalette::HighlightedText,
+        p.color(QPalette::Active, QPalette::HighlightedText));
+    setPalette(p);    
 }
 
 CentralWidget::~CentralWidget()
 {
-    QDir dir;
-    QString currentPages;
     QHelpEngineCore engine(collectionFile, 0);
+    if (!engine.setupData())
+        return;
 
-    if (engine.setupData()) {
-        for (int i = 1; i < tabWidget->count(); ++i) {
-            HelpViewer *viewer = qobject_cast<HelpViewer*>(tabWidget->widget(i));
-            if (viewer && viewer->source().isValid())
-                currentPages.append(viewer->source().toString()).append(QLatin1Char('|'));
+    QString zoomCount;
+    QString currentPages;
+    QLatin1Char sep('|');
+    for (int i = 1; i < tabWidget->count(); ++i) {
+        HelpViewer *viewer = qobject_cast<HelpViewer*>(tabWidget->widget(i));
+        if (viewer && viewer->source().isValid()) {
+            currentPages.append(viewer->source().toString()).append(sep);
+#if defined(USE_WEBKIT)
+            zoomCount.append(QString::number(viewer->textSizeMultiplier())).
+                append(sep);
+#else
+            zoomCount.append(QString::number(viewer->zoom())).append(sep);
+#endif
         }
-        engine.setCustomValue(QLatin1String("LastTabPage"), lastTabPage);
-        engine.setCustomValue(QLatin1String("LastShownPages"), currentPages);
     }
+    engine.setCustomValue(QLatin1String("LastTabPage"), lastTabPage);
+    engine.setCustomValue(QLatin1String("LastShownPages"), currentPages);
+#if defined(USE_WEBKIT)
+    engine.setCustomValue(QLatin1String("LastPagesZoomWebView"), zoomCount);
+#else
+    engine.setCustomValue(QLatin1String("LastPagesZoomTextBrowser"), zoomCount);
+#endif
 }
 
 CentralWidget *CentralWidget::instance()
@@ -351,19 +371,33 @@ void CentralWidget::setSource(const QUrl &url)
 
 void CentralWidget::setLastShownPages()
 {
-    const QStringList lastShownPageList = helpEngine->customValue(QLatin1String("LastShownPages")).
-        toString().split(QLatin1Char('|'), QString::SkipEmptyParts);
+#if defined(USE_WEBKIT)
+    QLatin1String zoom("LastPagesZoomWebView");
+#else
+    QLatin1String zoom("LastPagesZoomTextBrowser");
+#endif
+
+    const QStringList lastShownPageList =
+        helpEngine->customValue(QLatin1String("LastShownPages")).toString().
+        split(QLatin1Char('|'), QString::SkipEmptyParts);
 
     if (!lastShownPageList.isEmpty()) {
-        foreach (const QString page, lastShownPageList)
-            setSourceInNewTab(page);
+        QVector<QString>zoomList = helpEngine->customValue(zoom).toString().
+            split(QLatin1Char('|'), QString::SkipEmptyParts).toVector();
+        if (zoomList.isEmpty())
+            zoomList.fill(QLatin1String("0.0"), lastShownPageList.size());
         
-        tabWidget->setCurrentIndex(helpEngine->customValue(QLatin1String("LastTabPage"), 1).toInt());
-    } else {
-        setSource(QUrl(QLatin1String("help")));
-    }
+        QVector<QString>::const_iterator zIt = zoomList.constBegin();
+        QStringList::const_iterator it = lastShownPageList.constBegin();
+        for (; it != lastShownPageList.constEnd(); ++it, ++zIt)
+            setSourceInNewTab((*it), (*zIt).toFloat());
 
-    updateBrowserFont();
+        tabWidget->setCurrentIndex(helpEngine->customValue(
+            QLatin1String("LastTabPage"), 1).toInt());
+    } else {
+        if (usesDefaultCollection)
+            setSource(QUrl(QLatin1String("help")));
+    }
 }
 
 bool CentralWidget::hasSelection() const
@@ -442,7 +476,7 @@ void CentralWidget::printPreview()
     initPrinter();
     QPrintPreviewDialog preview(printer, this);
     connect(&preview, SIGNAL(paintRequested(QPrinter *)), SLOT(printPreview(QPrinter *)));
-    preview.exec();    
+    preview.exec();
 #endif
 }
 
@@ -458,7 +492,7 @@ void CentralWidget::printPreview(QPrinter *p)
 void CentralWidget::pageSetup()
 {
 #ifndef QT_NO_PRINTER
-    initPrinter();    
+    initPrinter();
     QPageSetupDialog dlg(printer);
     dlg.exec();
 #endif
@@ -518,7 +552,8 @@ void CentralWidget::setGlobalActions(const QList<QAction*> &actions)
 {
     globalActionList = actions;
 }
-void CentralWidget::setSourceInNewTab(const QUrl &url)
+
+void CentralWidget::setSourceInNewTab(const QUrl &url, qreal zoom)
 {
     HelpViewer* viewer = new HelpViewer(helpEngine, this);
     viewer->installEventFilter(this);
@@ -527,10 +562,19 @@ void CentralWidget::setSourceInNewTab(const QUrl &url)
     tabWidget->setCurrentIndex(tabWidget->addTab(viewer, viewer->documentTitle()));
 
     QFont font = qApp->font();
-    if (helpEngine->customValue(QLatin1String("useBrowserFont")).toBool())
-        font = qVariantValue<QFont>(helpEngine->customValue(QLatin1String("browserFont")));
+    if (helpEngine->customValue(QLatin1String("useBrowserFont")).toBool()) {
+        font = qVariantValue<QFont>(helpEngine->customValue(
+            QLatin1String("browserFont")));
+    }
 
+#if defined(USE_WEBKIT)
     viewer->setFont(font);
+    viewer->setTextSizeMultiplier(zoom == 0.0 ? 1.0 : zoom);
+#else
+    font.setPointSize(font.pointSize() + zoom);
+    viewer->setFont(font);
+    viewer->setZoom(zoom);
+#endif
 
     connectSignals();
 }
@@ -549,7 +593,7 @@ HelpViewer *CentralWidget::newEmptyTab()
     viewer->setDocumentTitle(tr("unknown"));
 #endif
     tabWidget->setCurrentIndex(tabWidget->addTab(viewer, tr("unknown")));
-    
+
     connectSignals();
     return viewer;
 }
@@ -570,7 +614,7 @@ void CentralWidget::connectSignals()
 
 HelpViewer *CentralWidget::currentHelpViewer() const
 {
-    return qobject_cast<HelpViewer*>(tabWidget->currentWidget());    
+    return qobject_cast<HelpViewer*>(tabWidget->currentWidget());
 }
 
 void CentralWidget::activateTab(bool onlyHelpViewer)
@@ -580,9 +624,9 @@ void CentralWidget::activateTab(bool onlyHelpViewer)
     } else {
         int idx = 0;
         if (onlyHelpViewer)
-            idx = lastTabPage;        
+            idx = lastTabPage;
         tabWidget->setCurrentIndex(idx);
-        tabWidget->currentWidget()->setFocus();        
+        tabWidget->currentWidget()->setFocus();
     }
 }
 
@@ -630,7 +674,7 @@ void CentralWidget::showTabBarContextMenu(const QPoint &point)
     QAction *newBookmark = menu.addAction(tr("Add Bookmark for this Page..."));
 
     if (tabBar->count() == 1) {
-        close_page->setEnabled(false); 
+        close_page->setEnabled(false);
         close_pages->setEnabled(false);
     } else if (m_searchWidget && tabBar->count() == 2) {
         close_pages->setEnabled(false);
@@ -700,7 +744,7 @@ bool CentralWidget::eventFilter(QObject *object, QEvent *e)
             findBar->hide();
             HelpViewer *hv = currentHelpViewer();
             if (hv)
-                hv->setFocus();            
+                hv->setFocus();
         }
     }
     return QWidget::eventFilter(object, e);
@@ -732,6 +776,10 @@ void CentralWidget::find(QString ttf, bool forward, bool backward)
     p.setColor(QPalette::Active, QPalette::Base, Qt::white);
 
 #if defined(USE_WEBKIT)
+    Q_UNUSED(backward)
+    Q_UNUSED(doc)
+    Q_UNUSED(browser)
+
     if (viewer) {
         QWebPage::FindFlags options;
         if (!forward)
@@ -821,7 +869,7 @@ void CentralWidget::activateSearch()
 {
     if (tabWidget->widget(0) != m_searchWidget)
         createSearchWidget(helpEngine->searchEngine());
-    
+
     tabWidget->setCurrentWidget(m_searchWidget);
     m_searchWidget->setFocus();
 }
@@ -844,9 +892,9 @@ void CentralWidget::createSearchWidget(QHelpSearchEngine *searchEngine)
 {
     if (!m_searchWidget) {
         m_searchWidget = new SearchWidget(searchEngine, this);
-        connect(m_searchWidget, SIGNAL(requestShowLink(const QUrl&)), this, 
+        connect(m_searchWidget, SIGNAL(requestShowLink(const QUrl&)), this,
             SLOT(setSource(const QUrl&)));
-        connect(m_searchWidget, SIGNAL(requestShowLinkInNewTab(const QUrl&)), this, 
+        connect(m_searchWidget, SIGNAL(requestShowLinkInNewTab(const QUrl&)), this,
             SLOT(setSourceInNewTab(const QUrl&)));
     }
     tabWidget->insertTab(0, m_searchWidget, tr("Search"));
@@ -854,7 +902,7 @@ void CentralWidget::createSearchWidget(QHelpSearchEngine *searchEngine)
 
 void CentralWidget::removeSearchWidget()
 {
-    tabWidget->removeTab(0);    
+    tabWidget->removeTab(0);
 }
 
 QT_END_NAMESPACE

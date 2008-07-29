@@ -56,11 +56,13 @@
 #include "assistant.h"
 #include "textedit.h"
 
+//! [0]
 FindFileDialog::FindFileDialog(TextEdit *editor, Assistant *assistant)
     : QDialog(editor)
 {
     currentAssistant = assistant;
     currentEditor = editor;
+//! [0]
 
     createButtons();
     createComboBoxes();
@@ -73,7 +75,9 @@ FindFileDialog::FindFileDialog(TextEdit *editor, Assistant *assistant)
     findFiles();
 
     setWindowTitle(tr("Find File"));
+//! [1]
 }
+//! [1]
 
 void FindFileDialog::browse()
 {
@@ -87,10 +91,12 @@ void FindFileDialog::browse()
     }
 }
 
+//! [2]
 void FindFileDialog::help()
 {
     currentAssistant->showDocumentation("filedialog.html");    
 }
+//! [2]
 
 void FindFileDialog::openFile(QTreeWidgetItem *item)
 {

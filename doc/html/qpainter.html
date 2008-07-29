@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qpainter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/painting/qpainter.cpp -->
 <head>
   <title>Qt 4.4: QPainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -441,14 +441,14 @@
          {
              QPainter p;
              p.begin(this);
-             p.drawLine(...);        // drawing code
+             p.drawLine(...);        <span class="comment">// drawing code</span>
              p.end();
          }</pre>
 <p>The same example using this constructor:</p>
 <pre>         void MyWidget::paintEvent(QPaintEvent *)
          {
              QPainter p(this);
-             p.drawLine(...);        // drawing code
+             p.drawLine(...);        <span class="comment">// drawing code</span>
          }</pre>
 <p>Since the constructor cannot provide feedback when the initialization of the painter failed you should rather use <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#end">end</a>() to paint on external devices, e.g&#x2e; printers.</p>
 <p>See also <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#end">end</a>().</p>
@@ -468,13 +468,13 @@
 <p>Begins painting the paint <i>device</i> and returns true if successful; otherwise returns false.</p>
 <p>Notice that all painter settings (<a href="qpainter.html#setPen">setPen</a>(), <a href="qpainter.html#setBrush">setBrush</a>() etc.) are reset to default values when begin() is called.</p>
 <p>The errors that can occur are serious problems, such as these:</p>
-<pre>         painter-&gt;begin(0); // impossible - paint device cannot be 0
+<pre>         painter-&gt;begin(0); <span class="comment">// impossible - paint device cannot be 0</span>
 
          QPixmap image(0, 0);
-         painter-&gt;begin(&amp;image); // impossible - image.isNull() == true;
+         painter-&gt;begin(&amp;image); <span class="comment">// impossible - image.isNull() == true;</span>
 
          painter-&gt;begin(myWidget);
-         painter2-&gt;begin(myWidget); // impossible - only one painter at a time</pre>
+         painter2-&gt;begin(myWidget); <span class="comment">// impossible - only one painter at a time</span></pre>
 <p>Note that most of the time, you can use one of the constructors instead of begin(), and that <a href="qpainter.html#end">end</a>() is automatically done at destruction.</p>
 <p><b>Warning:</b> A paint device can only be painted by one painter at a time.</p>
 <p>See also <a href="qpainter.html#end">end</a>() and <a href="qpainter.html#QPainter">QPainter</a>().</p>
@@ -1495,6 +1495,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

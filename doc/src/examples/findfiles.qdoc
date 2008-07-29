@@ -50,7 +50,8 @@
     shows how to use QFileDialog to facilitate browsing, how to use
     QTextStream's streaming operators to read a file, and how to use
     QTableWidget to provide standard table display facilities for
-    applications.
+    applications. In addition, files can be opened using the
+    QDesktopServices class.
 
     \image findfiles-example.png Screenshot of the Find Files example
 
@@ -240,7 +241,7 @@
     \snippet examples/dialogs/findfiles/window.cpp 11
 
     The private \c createFilesTable() function is called from the
-    constructor.  In this function we create the QTableWidget that
+    constructor. In this function we create the QTableWidget that
     will display the search results. We set its horizontal headers and
     their resize mode.
 
@@ -255,4 +256,11 @@
     Finally, we hide the QTableWidget's vertical headers using the
     QWidget::hide() function, and remove the default grid drawn for
     the table using the QTableView::setShowGrid() function.
+
+    \snippet examples/dialogs/findfiles/window.cpp 12
+
+    The \c openFileOfItem() slot is invoked when the user double
+    clicks on a cell in the table. The QDesktopServices::openUrl()
+    knows how to open a file given the file name.
 */
+

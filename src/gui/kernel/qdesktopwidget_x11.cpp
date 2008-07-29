@@ -128,12 +128,15 @@ QDesktopWidgetPrivate::~QDesktopWidgetPrivate()
 void QDesktopWidgetPrivate::init()
 {
     // get the screen count
-    int newScreenCount;
+    int newScreenCount = ScreenCount(X11->display);
 #ifndef QT_NO_XINERAMA
 
     XineramaScreenInfo *xinerama_screeninfo = 0;
 
-    if (X11->ptrXineramaQueryExtension
+    // we ignore the Xinerama extension when using the display is
+    // using traditional multi-screen (with multiple root windows)
+    if (newScreenCount == 1
+        && X11->ptrXineramaQueryExtension
         && X11->ptrXineramaIsActive
         && X11->ptrXineramaQueryScreens) {
         int unused;

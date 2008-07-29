@@ -639,6 +639,7 @@ static QPSQLDriver::Protocol getPSQLVersion(PGconn* connection)
                     serverVersion = QPSQLDriver::Version81;
                     break;
                 case 2:
+                default:
                     serverVersion = QPSQLDriver::Version82;
                     break;
                 }

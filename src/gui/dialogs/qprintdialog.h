@@ -89,7 +89,7 @@ public:
     ~QPrintDialog();
 
     int exec();
-#if defined (Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined (Q_OS_UNIX) && !defined(QTOPIA_PRINTDIALOG) && !defined(Q_WS_MAC)
     virtual void accept();
 #endif
 

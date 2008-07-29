@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/socket/qlocalsocket.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/socket/qlocalsocket.cpp -->
 <head>
   <title>Qt 4.4: QLocalSocket Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -80,7 +80,7 @@
 <p>On Windows this is a named pipe and on Unix this this is a local domain socket.</p>
 <p>If an error occurs, socketError() returns the type of error, and <a href="qiodevice.html#errorString">errorString</a>() can be called to get a human readable description of what happened.</p>
 <p>Although QLocalSocket is designed for use with an event loop, it's possible to use it without one. In that case, you must use <a href="qlocalsocket.html#waitForConnected">waitForConnected</a>(), <a href="qlocalsocket.html#waitForReadyRead">waitForReadyRead</a>(), <a href="qiodevice.html#waitForBytesWritten">waitForBytesWritten</a>(), and <a href="qlocalsocket.html#waitForDisconnected">waitForDisconnected</a>() which blocks until the operation is complete or the timeout expires.</p>
-<p>Note that this feature is not supported on Windows CE.</p>
+<p>Note that this feature is not supported on Window 9x or Windows CE.</p>
 <p>See also <a href="qlocalserver.html">QLocalServer</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -240,6 +240,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

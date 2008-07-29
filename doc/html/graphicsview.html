@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/graphicsview.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/graphicsview.qdoc -->
 <head>
   <title>Qt 4.4: The Graphics View Framework</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -58,22 +58,22 @@
 <li>Providing untransformed rendering functionality; mainly for printing</li>
 </ul>
 <p>The scene serves as a container for <a href="qgraphicsitem.html">QGraphicsItem</a> objects. Items are added to the scene by calling <a href="qgraphicsscene.html#addItem">QGraphicsScene::addItem</a>(), and then retrieved by calling one of the many item discovery functions. <a href="qgraphicsscene.html#items">QGraphicsScene::items</a>() and its overloads return all items contained by or intersecting with a point, a rectangle, a polygon or a general vector path. <a href="qgraphicsscene.html#itemAt">QGraphicsScene::itemAt</a>() returns the topmost item at a particular point. All item discovery functions return the items in descending stacking order (i.e&#x2e;, the first returned item is topmost, and the last item is bottom-most).</p>
-<pre>             QGraphicsScene scene;
-             QGraphicsRectItem *rect = scene.addRect(QRectF(0, 0, 100, 100));
+<pre> QGraphicsScene scene;
+ QGraphicsRectItem *rect = scene.addRect(QRectF(0, 0, 100, 100));
 
-             QGraphicsItem *item = scene.itemAt(50, 50);
-             // item == rect</pre>
+ QGraphicsItem *item = scene.itemAt(50, 50);
+ // item == rect</pre>
 <p><a href="qgraphicsscene.html">QGraphicsScene</a>'s event propagation architecture schedules scene events for delivery to items, and also manages propagation between items. If the scene receives a mouse press event at a certain position, the scene passes the event on to whichever item is at that position.</p>
 <p><a href="qgraphicsscene.html">QGraphicsScene</a> also manages certain item states, such as item selection and focus. You can select items on the scene by calling <a href="qgraphicsscene.html#setSelectionArea">QGraphicsScene::setSelectionArea</a>(), passing an arbitrary shape. This functionality is also used as a basis for rubberband selection in <a href="qgraphicsview.html">QGraphicsView</a>. To get the list of all currently selected items, call <a href="qgraphicsscene.html#selectedItems">QGraphicsScene::selectedItems</a>(). Another state handled by <a href="qgraphicsscene.html">QGraphicsScene</a> is whether or not an item has keyboard input focus. You can set focus on an item by calling <a href="qgraphicsscene.html#setFocusItem">QGraphicsScene::setFocusItem</a>() or <a href="qgraphicsitem.html#setFocus">QGraphicsItem::setFocus</a>(), or get the current focus item by calling <a href="qgraphicsscene.html#focusItem">QGraphicsScene::focusItem</a>().</p>
 <p>Finally, <a href="qgraphicsscene.html">QGraphicsScene</a> allows you to render parts of the scene into a paint device through the <a href="qgraphicsscene.html#render">QGraphicsScene::render</a>() function. You can read more about this in the Printing section later in this document.</p>
 <a name="the-view"></a>
 <h4>The View</h4>
 <p><a href="qgraphicsview.html">QGraphicsView</a> provides the view widget, which visualizes the contents of a scene. You can attach several views to the same scene, to provide several viewports into the same data set. The view widget is a scroll area, and provides scroll bars for navigating through large scenes. To enable OpenGL support, you can set a <a href="qglwidget.html">QGLWidget</a> as the viewport by calling <a href="qabstractscrollarea.html#setViewport">QGraphicsView::setViewport</a>().</p>
-<pre>             QGraphicsScene scene;
-             myPopulateScene(&amp;scene);
+<pre> QGraphicsScene scene;
+ myPopulateScene(&amp;scene);
 
-             QGraphicsView view(&amp;scene);
-             view.show();</pre>
+ QGraphicsView view(&amp;scene);
+ view.show();</pre>
 <p>The view receives input events from the keyboard and mouse, and translates these to scene events (converting the coordinates used to scene coordinates where appropriate), before sending the events to the visualized scene.</p>
 <p>Using its transformation matrix, <a href="qgraphicsview.html#matrix">QGraphicsView::matrix</a>(), the view can <i>transform</i> the scene's coordinate system. This allows advanced navigation features such as zooming and rotation. For convenience, <a href="qgraphicsview.html">QGraphicsView</a> also provides functions for translating between view and scene coordinates: <a href="qgraphicsview.html#mapToScene">QGraphicsView::mapToScene</a>() and <a href="qgraphicsview.html#mapFromScene">QGraphicsView::mapFromScene</a>().</p>
 <p align="center"><img src="images/graphicsview-view.png" /></p><a name="the-item"></a>
@@ -119,57 +119,57 @@
 <h4>Zooming and rotating</h4>
 <p><a href="qgraphicsview.html">QGraphicsView</a> supports the same affine transformations as <a href="qpainter.html">QPainter</a> does through <a href="qgraphicsview.html#setMatrix">QGraphicsView::setMatrix</a>(). By applying a transformation to the view, you can easily add support for common navigation features such as zooming and rotating.</p>
 <p>Here is an example of how to implement zoom and rotate slots in a subclass of <a href="qgraphicsview.html">QGraphicsView</a>:</p>
-<pre>             class View : public QGraphicsView
-             {
-             Q_OBJECT
-                 ...
-             public slots:
-                 void zoomIn() { scale(1.2, 1.2); }
-                 void zoomOut() { scale(1 / 1.2, 1 / 1.2); }
-                 void rotateLeft() { rotate(-10); }
-                 void rotateRight() { rotate(10); }
-                 ...
-             };</pre>
+<pre> class View : public QGraphicsView
+ {
+ Q_OBJECT
+     ...
+ public slots:
+     void zoomIn() { scale(1.2, 1.2); }
+     void zoomOut() { scale(1 / 1.2, 1 / 1.2); }
+     void rotateLeft() { rotate(-10); }
+     void rotateRight() { rotate(10); }
+     ...
+ };</pre>
 <p>The slots could be connected to <a href="qtoolbutton.html">QToolButtons</a> with <a href="qabstractbutton.html#autoRepeat-prop">autoRepeat</a> enabled.</p>
 <p><a href="qgraphicsview.html">QGraphicsView</a> keeps the center of the view aligned when you transform the view.</p>
 <p>See also the <a href="graphicsview-elasticnodes.html">Elastic Nodes</a> example for code that shows how to implement basic zooming features.</p>
 <a name="printing"></a>
 <h4>Printing</h4>
 <p>Graphics View provides single-line printing through its rendering functions, <a href="qgraphicsscene.html#render">QGraphicsScene::render</a>() and <a href="qgraphicsview.html#render">QGraphicsView::render</a>(). The functions provide the same API: You can have the scene or the view render all or parts of their contents into any paint device by passing a <a href="qpainter.html">QPainter</a> to either of the rendering functions. This example shows how to print the whole scene into a full page, using <a href="qprinter.html">QPrinter</a>.</p>
-<pre>             QGraphicsScene scene;
-             scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
+<pre> QGraphicsScene scene;
+ scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
 
-             QPrinter printer;
-             if (QPrintDialog(&amp;printer).exec() == QDialog::Accepted) {
-                 QPainter painter(&amp;printer);
-                 painter.setRenderHint(QPainter::Antialiasing);
-                 scene.render(&amp;painter);
-             }</pre>
+ QPrinter printer;
+ if (QPrintDialog(&amp;printer).exec() == QDialog::Accepted) {
+     QPainter painter(&amp;printer);
+     painter.setRenderHint(QPainter::Antialiasing);
+     scene.render(&amp;painter);
+ }</pre>
 <p>The difference between the scene and view rendering functions is that one operates in scene coordinates, and the other in view coordinates. <a href="qgraphicsscene.html#render">QGraphicsScene::render</a>() is often preferred for printing whole segments of a scene untransformed, such as for plotting geometrical data, or for printing a text document. <a href="qgraphicsview.html#render">QGraphicsView::render</a>(), on the other hand, is suitable for taking screenshots; its default behavior is to render the exact contents of the viewport using the provided painter.</p>
-<pre>             QGraphicsScene scene;
-             scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
+<pre> QGraphicsScene scene;
+ scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
 
-             QPixmap pixmap;
-             QPainter painter(&amp;pixmap);
-             painter.setRenderHint(QPainter::Antialiasing);
-             scene.render(&amp;painter);
-             painter.end();
+ QPixmap pixmap;
+ QPainter painter(&amp;pixmap);
+ painter.setRenderHint(QPainter::Antialiasing);
+ scene.render(&amp;painter);
+ painter.end();
 
-             pixmap.save(&quot;scene.png&quot;);</pre>
+ pixmap.save(&quot;scene.png&quot;);</pre>
 <p>When the source and target areas' sizes do not match, the source contents are stretched to fit into the target area. By passing a <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> to the rendering function you are using, you can choose to maintain or ignore the aspect ratio of the scene when the contents are stretched.</p>
 <a name="drag-and-drop"></a>
 <h4>Drag and Drop</h4>
 <p>Because <a href="qgraphicsview.html">QGraphicsView</a> inherits <a href="qwidget.html">QWidget</a> indirectly, it already provides the same drag and drop functionality that <a href="qwidget.html">QWidget</a> provides. In addition, as a convenience, the Graphics View framework provides drag and drop support for the scene, and for each and every item. As the view receives a drag, it translates the drag and drop events into a <a href="qgraphicsscenedragdropevent.html">QGraphicsSceneDragDropEvent</a>, which is then forwarded to the scene. The scene takes over scheduling of this event, and sends it to the first item under the mouse cursor that accepts drops.</p>
 <p>To start a drag from an item, create a <a href="qdrag.html">QDrag</a> object, passing a pointer to the widget that starts the drag. Items can be observed by many views at the same time, but only one view can start the drag. Drags are in most cases started as a result of pressing or moving the mouse, so in mousePressEvent() or mouseMoveEvent(), you can get the originating widget pointer from the event. For example:</p>
-<pre>             void CustomItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-             {
-                 QMimeData *data = new QMimeData;
-                 data-&gt;setColor(Qt::green);
+<pre> void CustomItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+ {
+     QMimeData *data = new QMimeData;
+     data-&gt;setColor(Qt::green);
 
-                 QDrag *drag = new QDrag(event-&gt;widget());
-                 drag-&gt;setMimeData(data);
-                 drag-&gt;start();
-             }</pre>
+     QDrag *drag = new QDrag(event-&gt;widget());
+     drag-&gt;setMimeData(data);
+     drag-&gt;start();
+ }</pre>
 <p>To intercept drag and drop events for the scene, you reimplement <a href="qgraphicsscene.html#dragEnterEvent">QGraphicsScene::dragEnterEvent</a>() and whichever event handlers your particular scene needs, in a <a href="qgraphicsitem.html">QGraphicsItem</a> subclass. You can read more about drag and drop in Graphics View in the documentation for each of <a href="qgraphicsscene.html">QGraphicsScene</a>'s event handlers.</p>
 <p>Items can enable drag and drop support by calling <a href="qgraphicsitem.html#setAcceptDrops">QGraphicsItem::setAcceptDrops</a>(). To handle the incoming drag, reimplement <a href="qgraphicsitem.html#dragEnterEvent">QGraphicsItem::dragEnterEvent</a>(), <a href="qgraphicsitem.html#dragMoveEvent">QGraphicsItem::dragMoveEvent</a>(), <a href="qgraphicsitem.html#dragLeaveEvent">QGraphicsItem::dragLeaveEvent</a>(), and <a href="qgraphicsitem.html#dropEvent">QGraphicsItem::dropEvent</a>().</p>
 <p>See also the <a href="graphicsview-dragdroprobot.html">Drag and Drop Robot</a> example for a demonstration of Graphics View's support for drag and drop operations.</p>
@@ -188,8 +188,8 @@
 <h4>OpenGL Rendering</h4>
 <p>To enable OpenGL rendering, you simply set a new <a href="qglwidget.html">QGLWidget</a> as the viewport of <a href="qgraphicsview.html">QGraphicsView</a> by calling <a href="qabstractscrollarea.html#setViewport">QGraphicsView::setViewport</a>(). If you want OpenGL with antialiasing, you need OpenGL sample buffer support (see <a href="qglformat.html#sampleBuffers">QGLFormat::sampleBuffers</a>()).</p>
 <p>Example:</p>
-<pre>             QGraphicsView view(&amp;scene);
-             view.setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));</pre>
+<pre> QGraphicsView view(&amp;scene);
+ view.setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));</pre>
 <a name="item-groups"></a>
 <h4>Item Groups</h4>
 <p>By making an item a child of another, you can achieve the most essential feature of item grouping: the items will move together, and all transformations are propagated from parent to child. <a href="qgraphicsitem.html">QGraphicsItem</a> can also handle all events for its children (see <a href="qgraphicsitem.html#setHandlesChildEvents">QGraphicsItem::setHandlesChildEvents</a>()). This allows the parent item to act on behalf of its children, effectively treating all items as one.</p>
@@ -214,6 +214,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

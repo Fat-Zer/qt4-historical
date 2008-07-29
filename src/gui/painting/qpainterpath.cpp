@@ -157,6 +157,7 @@ static void qt_debug_path(const QPainterPath &path)
 /*!
     \class QPainterPath
     \ingroup multimedia
+    \ingroup shared
 
     \brief The QPainterPath class provides a container for painting operations,
     enabling graphical shapes to be constructed and reused.

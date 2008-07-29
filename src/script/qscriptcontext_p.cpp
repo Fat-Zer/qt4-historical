@@ -626,6 +626,7 @@ Ltop:
         QScriptObject *instance = m_scopeChain.m_object_value;
         if (instance->findMember(memberName, &member)) {
             instance->get(member, ++stackPtr);
+            base = m_scopeChain;
         } else {
             if (m_scopeChain.resolve_helper(memberName, &member, &base, QScriptValue::ResolveFull)) {
                 base.get(member, ++stackPtr);
@@ -639,7 +640,7 @@ Ltop:
             }
         }
         if (member.isGetterOrSetter()) {
-            // call the getter function
+            // locate the getter function
             QScriptValueImpl getter;
             if (member.isGetter()) {
                 getter = *stackPtr;
@@ -651,10 +652,15 @@ Ltop:
                 }
                 base.get(member, &getter);
             }
-            if (m_scopeChain.classInfo() == eng->m_class_with)
-                *stackPtr = getter.call(m_scopeChain.prototype());
-            else
-                *stackPtr = getter.call(m_scopeChain);
+            // decide the this-object. This is the object that actually
+            // has the getter (in its prototype chain).
+            QScriptValueImpl object = m_scopeChain;
+            while (!object.resolve(memberName, &member, &base, QScriptValue::ResolvePrototype))
+                object = object.scope();
+            if (object.classInfo() == eng->m_class_with)
+                object = object.prototype();
+
+            *stackPtr = getter.call(object);
             if (hasUncaughtException()) {
                 stackPtr -= 1;
                 Done();
@@ -1163,8 +1169,7 @@ Ltop:
 
             if (value.isString() && ! value.m_string_value->unique)
                 eng->newNameId(&value, value.m_string_value->s);
-            if (object.classInfo() == eng->m_class_with)
-                object = object.prototype();
+
             if (member.isGetterOrSetter()) {
                 // find and call setter(value)
                 QScriptValueImpl setter;
@@ -1176,12 +1181,24 @@ Ltop:
                     }
                 }
                 base.get(member, &setter);
+
+                if (!isMemberAssignment) {
+                    // decide the this-object. This is the object that actually
+                    // has the setter (in its prototype chain).
+                    while (!object.resolve(memberName, &member, &base, QScriptValue::ResolvePrototype))
+                        object = object.scope();
+                    if (object.classInfo() == eng->m_class_with)
+                        object = object.prototype();
+                }
+
                 value = setter.call(object, QScriptValueImplList() << value);
                 if (hasUncaughtException()) {
                     stackPtr -= 1;
                     Done();
                 }
             } else {
+                if (object.classInfo() == eng->m_class_with)
+                    object = object.prototype();
                 if (isMemberAssignment && (base.m_object_value != object.m_object_value)) {
                     base = object;
                     CREATE_MEMBER(base, memberName, &member, /*flags=*/0);

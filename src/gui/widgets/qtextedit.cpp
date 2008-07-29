@@ -440,7 +440,7 @@ void QTextEditPrivate::_q_ensureVisible(const QRectF &_rect)
     deleting selections. You can retrieve the object that corresponds with
     the user-visible cursor using the textCursor() method. If you want to set
     a selection in QTextEdit just create one on a QTextCursor object and
-    then make that cursor the visible cursor using setCursor(). The selection
+    then make that cursor the visible cursor using setTextCursor(). The selection
     can be copied to the clipboard with copy(), or cut to the clipboard with
     cut(). The entire text can be selected using selectAll().
 
@@ -560,6 +560,7 @@ void QTextEditPrivate::_q_ensureVisible(const QRectF &_rect)
 #ifdef QT3_SUPPORT
 /*!
     \enum QTextEdit::CursorAction
+    \compat
 
     \value MoveBackward
     \value MoveForward

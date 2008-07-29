@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/dialogs/qmessagebox.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/dialogs/qmessagebox.cpp -->
 <head>
   <title>Qt 4.4: QMessageBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -167,13 +167,13 @@
          msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
          switch (msgBox.exec()) {
          case QMessageBox::Yes:
-             // yes was clicked
+             <span class="comment">// yes was clicked</span>
              break;
          case QMessageBox::No:
-             // no was clicked
+             <span class="comment">// no was clicked</span>
              break;
          default:
-             // should never be reached
+             <span class="comment">// should never be reached</span>
              break;
          }</pre>
 <p>When using an instance of QMessageBox with custom buttons, you can test the value of <a href="qmessagebox.html#clickedButton">clickedButton</a>() after calling <a href="qmessagebox.html#exec">exec</a>(). For example,</p>
@@ -184,9 +184,9 @@
          msgBox.exec();
 
          if (msgBox.clickedButton() == connectButton) {
-             // connect
+             <span class="comment">// connect</span>
          } else if (msgBox.clickedButton() == abortButton) {
-             // abort
+             <span class="comment">// abort</span>
          }</pre>
 <p>In the example above, the <b>Connect</b> button is created using the <a href="qmessagebox.html#addButton">addButton</a>() overload that takes a text and a <a href="qmessagebox.html#ButtonRole-enum">ButtonRole</a>. The <a href="qmessagebox.html#ButtonRole-enum">ButtonRole</a> is used by QMessageBox to determine the ordering of the buttons on screen (which varies according to the platform).</p>
 <p>The <a href="qmessagebox.html#text-prop">text</a>(), <a href="qmessagebox.html#icon-prop">icon</a>() and <a href="qmessagebox.html#iconPixmap-prop">iconPixmap</a>() functions provide access to the current text and pixmap of the message box. The <a href="qmessagebox.html#text-prop">setText</a>(), <a href="qmessagebox.html#icon-prop">setIcon</a>() and <a href="qmessagebox.html#iconPixmap-prop">setIconPixmap</a>() let you change it. The difference between <a href="qmessagebox.html#icon-prop">setIcon</a>() and <a href="qmessagebox.html#iconPixmap-prop">setIconPixmap</a>() is that the former accepts a <a href="qmessagebox.html#Icon-enum">QMessageBox::Icon</a> and can be used to set standard icons, whereas the latter accepts a <a href="qpixmap.html">QPixmap</a> and can be used to set custom icons.</p>
@@ -201,6 +201,9 @@
 <li>If there is exactly one button with the role <a href="qmessagebox.html#ButtonRole-enum">QMessageBox::RejectRole</a> or <a href="qmessagebox.html#ButtonRole-enum">QMessageBox::NoRole</a>, it is made the escape button.</li>
 </ol>
 <p>When an escape button could not be automatically detected, pressing <b>Esc</b> has no effect.</p>
+<a name="notes-for-x11-and-mac"></a>
+<h3>Notes for X11 and Mac</h3>
+<p>The message dialogs will show a close button on X11 and Mac. However, clicking it will not close the dialog. This is because there is no mechanism on these platforms to disable the close button.</p>
 <p>See also <a href="qdialogbuttonbox.html">QDialogButtonBox</a>, <a href="guibooks.html#fowler">GUI Design Handbook: Message Box</a>, <a href="dialogs-standarddialogs.html">Standard Dialogs Example</a>, and <a href="mainwindows-application.html">Application Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -224,7 +227,7 @@
 <tr><td valign="top"><tt>QMessageBox::AcceptRole</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Clicking the button causes the dialog to be accepted (e.g&#x2e; OK).</td></tr>
 <tr><td valign="top"><tt>QMessageBox::RejectRole</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Clicking the button causes the dialog to be rejected (e.g&#x2e; Cancel).</td></tr>
 <tr><td valign="top"><tt>QMessageBox::DestructiveRole</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Clicking the button causes a destructive change (e.g&#x2e; for Discarding Changes) and closes the dialog.</td></tr>
-<tr><td valign="top"><tt>QMessageBox::ActionRole</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Clicking the button causes changes to the elements within the dialog, without closing the dialog.</td></tr>
+<tr><td valign="top"><tt>QMessageBox::ActionRole</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Clicking the button causes changes to the elements within the dialog.</td></tr>
 <tr><td valign="top"><tt>QMessageBox::HelpRole</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The button can be clicked to request help.</td></tr>
 <tr><td valign="top"><tt>QMessageBox::YesRole</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The button is a &quot;Yes&quot;-like button.</td></tr>
 <tr><td valign="top"><tt>QMessageBox::NoRole</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The button is a &quot;No&quot;-like button.</td></tr>
@@ -585,6 +588,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

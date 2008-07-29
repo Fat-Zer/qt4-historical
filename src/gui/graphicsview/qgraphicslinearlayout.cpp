@@ -47,6 +47,7 @@
     layout for managing widgets in Graphics View.
     \since 4.4
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     The default orientation for a linear layout is Qt::Horizontal. You can
     choose a vertical orientation either by calling setOrientation(), or by
@@ -244,13 +245,6 @@ Qt::Orientation QGraphicsLinearLayout::orientation() const
 
     This convenience function is equivalent to calling
     insertStretch(-1, \a stretch).
-*/
-
-/*!
-    \fn void QGraphicsLinearLayout::addGap(qreal spacing)
-
-    This convenience function is equivalent to calling
-    setItemSpacing(-1, \a spacing).
 */
 
 /*!

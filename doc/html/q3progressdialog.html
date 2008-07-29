@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/dialogs/q3progressdialog.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/dialogs/q3progressdialog.cpp -->
 <head>
   <title>Qt 4.4: Q3ProgressDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -134,7 +134,7 @@
 
      if (progress.wasCanceled())
          break;
-     //... copy one file
+     <span class="comment">//... copy one file</span>
  }
  progress.setProgress(numFiles);</pre>
 <p>A modeless progress dialog is suitable for operations that take place in the background, where the user is able to interact with the application. Such operations are typically based on <a href="qtimer.html">QTimer</a> (or <a href="qobject.html#timerEvent">QObject::timerEvent</a>()), <a href="qsocketnotifier.html">QSocketNotifier</a>, or <a href="porting4.html#qurloperator">QUrlOperator</a>; or performed in a separate thread. A <a href="q3progressbar.html">Q3ProgressBar</a> in the status bar of your main window is often an alternative to a modeless progress dialog.</p>
@@ -152,7 +152,7 @@
  void Operation::perform()
  {
      pd-&gt;setProgress(steps);
-     //... perform one percent of the operation
+     <span class="comment">//... perform one percent of the operation</span>
      steps++;
      if (steps &gt; pd-&gt;totalSteps())
          t-&gt;stop();
@@ -161,7 +161,7 @@
  void Operation::cancel()
  {
      t-&gt;stop();
-     //... cleanup
+     <span class="comment">//... cleanup</span>
  }</pre>
 <p>In both modes the progress dialog may be customized by replacing the child widgets with custom widgets by using <a href="q3progressdialog.html#setLabel">setLabel</a>(), <a href="q3progressdialog.html#setBar">setBar</a>(), and <a href="q3progressdialog.html#setCancelButton">setCancelButton</a>(). The functions <a href="q3progressdialog.html#labelText-prop">setLabelText</a>() and <a href="q3progressdialog.html#setCancelButtonText">setCancelButtonText</a>() set the texts shown.</p>
 <p><img src="images/qprogdlg-m.png" alt="Screenshot in Motif style" /> <img src="images/qprogdlg-w.png" alt="Screenshot in Windows style" /></p>
@@ -332,6 +332,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

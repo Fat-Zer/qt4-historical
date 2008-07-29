@@ -68,7 +68,7 @@
     See \c src/3rdparty/freetype/docs/FTL.txt and \c
     src/3rdparty/freetype/docs/GPL.txt for license details.
 
-    See also the files in \c src/3rdparty/opentype, which are used by
+    See also the files in \c src/3rdparty/harfbuzz, which are used by
     FreeType.
 
     Parts of the FreeType projects have been modified and put into Qt
@@ -140,7 +140,7 @@
 
     See \c src/3rdparty/libmng/LICENSE for license details.
 
-    \section1 PNG Reference Library (\c libpng) version 1.2.25
+    \section1 PNG Reference Library (\c libpng) version 1.2.29
 
     \e{Libpng was written as a companion to the PNG specification, as a way
     of reducing the amount of time and effort it takes to support the PNG

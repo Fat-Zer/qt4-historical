@@ -132,7 +132,7 @@ int runQVfb( int argc, char *argv[] )
     }
     QRegExp rotRegExp( "Rot[0-9]+" );
     m = rotRegExp.indexIn( displaySpec, 0 );
-    len = r.matchedLength();
+    len = rotRegExp.matchedLength();
     if ( m >= 0 ) {
 	rotation = displaySpec.mid( m+3, len-3 ).toInt();
     }

@@ -955,13 +955,14 @@ void QDialog::showExtension(bool showIt)
 QSize QDialog::sizeHint() const
 {
     Q_D(const QDialog);
-    if (d->extension)
+    if (d->extension) {
         if (d->orientation == Qt::Horizontal)
             return QSize(QWidget::sizeHint().width(),
                         qMax(QWidget::sizeHint().height(),d->extension->sizeHint().height()));
         else
             return QSize(qMax(QWidget::sizeHint().width(), d->extension->sizeHint().width()),
                         QWidget::sizeHint().height());
+    }
 
     return QWidget::sizeHint();
 }
@@ -971,13 +972,14 @@ QSize QDialog::sizeHint() const
 QSize QDialog::minimumSizeHint() const
 {
     Q_D(const QDialog);
-    if (d->extension)
+    if (d->extension) {
         if (d->orientation == Qt::Horizontal)
             return QSize(QWidget::minimumSizeHint().width(),
                         qMax(QWidget::minimumSizeHint().height(), d->extension->minimumSizeHint().height()));
         else
             return QSize(qMax(QWidget::minimumSizeHint().width(), d->extension->minimumSizeHint().width()),
                         QWidget::minimumSizeHint().height());
+    }
 
     return QWidget::minimumSizeHint();
 }

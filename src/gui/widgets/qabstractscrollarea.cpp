@@ -265,6 +265,10 @@ void QAbstractScrollAreaPrivate::replaceScrollBar(QScrollBar *scrollBar,
 void QAbstractScrollAreaPrivate::init()
 {
     Q_Q(QAbstractScrollArea);
+    viewport = new QWidget(q);
+    viewport->setObjectName(QLatin1String("qt_scrollarea_viewport"));
+    viewport->setBackgroundRole(QPalette::Base);
+    viewport->setAutoFillBackground(true);
     scrollBarContainers[Qt::Horizontal] = new QAbstractScrollAreaScrollBarContainer(Qt::Horizontal, q);
     scrollBarContainers[Qt::Horizontal]->setObjectName(QLatin1String("qt_scrollarea_hcontainer"));
     hbar = scrollBarContainers[Qt::Horizontal]->scrollBar;
@@ -280,10 +284,6 @@ void QAbstractScrollAreaPrivate::init()
     QObject::connect(vbar, SIGNAL(valueChanged(int)), q, SLOT(_q_vslide(int)));
     QObject::connect(vbar, SIGNAL(rangeChanged(int,int)), q, SLOT(_q_showOrHideScrollBars()), Qt::QueuedConnection);
     viewportFilter = new QAbstractScrollAreaFilter(this);
-    viewport = new QWidget(q);
-    viewport->setObjectName(QLatin1String("qt_scrollarea_viewport"));
-    viewport->setBackgroundRole(QPalette::Base);
-    viewport->setAutoFillBackground(true);
     viewport->installEventFilter(viewportFilter);
     viewport->setFocusProxy(q);
     q->setFocusPolicy(Qt::WheelFocus);
@@ -846,7 +846,13 @@ bool QAbstractScrollArea::event(QEvent *e)
     Q_D(QAbstractScrollArea);
     switch (e->type()) {
     case QEvent::AcceptDropsChange:
-        d->viewport->setAcceptDrops(acceptDrops());
+        // There was a chance that with accessibility client we get an
+        // event before the viewport was created.
+        // Also, in some cases we might get here from QWidget::event() virtual function which is (indirectly) called
+        // from the viewport constructor at the time when the d->viewport is not yet initialized even without any
+        // accessibility client. See qabstractscrollarea autotest for a test case.
+        if (d->viewport)
+            d->viewport->setAcceptDrops(acceptDrops());
         break;
     case QEvent::MouseTrackingChange:
         d->viewport->setMouseTracking(hasMouseTracking());

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/3rdparty/webkit/WebKit/qt/Api/qwebpluginfactory.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/3rdparty/webkit/WebKit/qt/Api/qwebpluginfactory.cpp -->
 <head>
   <title>Qt 4.4: QWebPluginFactory Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -57,8 +57,9 @@
 <h2>Detailed Description</h2>
 <p>The QWebPluginFactory class creates plugins to be embedded into web pages.</p>
 <p>QWebPluginFactory is a factory for creating plugins for <a href="qwebpage.html">QWebPage</a>. A plugin factory can be installed on a <a href="qwebpage.html">QWebPage</a> using <a href="qwebpage.html#setPluginFactory">QWebPage::setPluginFactory</a>().</p>
-<p>You can provide a QWebPluginFactory by implementing the <a href="qwebpluginfactory.html#plugins">plugins</a>() and the <a href="qwebpluginfactory.html#create">create</a>() method. For <a href="qwebpluginfactory.html#plugins">plugins</a>() it is necessary to describe the plugins the factory can create, including a description and the supported mime types. The mime types are matched with the mime type specified in the HTML object tag. The <a href="qwebpluginfactory.html#create">create</a>() method is called if the requested mime type is supported. The implementation has to return a new instance of the plugin requested for the given mime type and the specified url.</p>
 <p><b>Note:</b> The plugin factory is only used if plugins are enabled through <a href="qwebsettings.html">QWebSettings</a>.</p>
+<p>You can provide a QWebPluginFactory by implementing the <a href="qwebpluginfactory.html#plugins">plugins</a>() and the <a href="qwebpluginfactory.html#create">create</a>() method. For <a href="qwebpluginfactory.html#plugins">plugins</a>() it is necessary to describe the plugins the factory can create, including a description and the supported MIME types. The MIME types each plugin can handle should match the ones specified in in the HTML <tt>&lt;object&gt;</tt> tag.</p>
+<p>The <a href="qwebpluginfactory.html#create">create</a>() method is called if the requested MIME type is supported. The implementation has to return a new instance of the plugin requested for the given MIME type and the specified URL.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QWebPluginFactory/Extension" />
@@ -75,10 +76,10 @@
 <p>Destructor.</p>
 <a name="//apple_ref/cpp/instm/QWebPluginFactory/create" />
 <h3 class="fn"><a name="create"></a><a href="qobject.html">QObject</a> * QWebPluginFactory::create ( const <a href="qstring.html">QString</a> &amp; <i>mimeType</i>, const <a href="qurl.html">QUrl</a> &amp; <i>url</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>argumentNames</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>argumentValues</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Implemented in subclasses to create a new plugin that can display content of type <i>mimeType</i>. The url of the content is provided in <i>url</i>.</p>
-<p>The HTML object element can provide parameters through the param tag. The name and the value attributes of these tags are provided in the <i>argumentNames</i> and <i>argumentValues</i> string lists.</p>
+<p>Implemented in subclasses to create a new plugin that can display content of the MIME type given by <i>mimeType</i>. The URL of the content is provided in <i>url</i>. The returned object should be a <a href="qwidget.html">QWidget</a>.</p>
+<p>The HTML object element can provide parameters through the <tt>&lt;param&gt;</tt> tag. The name and the value attributes of these tags are specified by the <i>argumentNames</i> and <i>argumentValues</i> string lists.</p>
 <p>For example:</p>
-<pre> &lt;object type=&quot;application/x-pdf&quot; data=&quot;http:<span class="comment">//</span>www.trolltech.com/document.pdf&quot; width=&quot;500&quot; height=&quot;400&quot;&gt;
+<pre> &lt;object type=&quot;application/x-pdf&quot; data=&quot;http:<span class="comment">//www.trolltech.com/document.pdf&quot; width=&quot;500&quot; height=&quot;400&quot;&gt;</span>
      &lt;param name=&quot;showTableOfContents&quot; value=&quot;true&quot; /&gt;
      &lt;param name=&quot;hideThumbnails&quot; value=&quot;false&quot; /&gt;
  &lt;/object&gt;</pre>
@@ -90,7 +91,6 @@
 <tr valign="top" class="odd"><td>argumentNames</td><td>&quot;showTableOfContents&quot; &quot;hideThumbnails&quot;</td></tr>
 <tr valign="top" class="even"><td>argumentVaues</td><td>&quot;true&quot; &quot;false&quot;</td></tr>
 </table></p>
-<p>The returned object should be a <a href="qwidget.html">QWidget</a>.</p>
 <p><b>Note:</b> Ownership of the returned object will be transferred to the caller.</p>
 <a name="//apple_ref/cpp/instm/QWebPluginFactory/extension" />
 <h3 class="fn"><a name="extension"></a>bool QWebPluginFactory::extension ( <a href="qwebpluginfactory.html#Extension-enum">Extension</a> <i>extension</i>, const <a href="qwebpluginfactory-extensionoption.html">ExtensionOption</a> * <i>option</i> = 0, <a href="qwebpluginfactory-extensionreturn.html">ExtensionReturn</a> * <i>output</i> = 0 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -114,6 +114,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

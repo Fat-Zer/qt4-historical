@@ -578,7 +578,7 @@ void QSettingsPrivate::iniEscapedKey(const QString &key, QByteArray &result)
 
         if (ch == '/') {
             result += '\\';
-        } else if (ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9'
+        } else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')
                 || ch == '_' || ch == '-' || ch == '.') {
             result += (char)ch;
         } else if (ch <= 0xFF) {
@@ -2356,9 +2356,11 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
 
     \section2 Accessing the Windows Registry Directly
 
-    On Windows, QSettings also lets you access arbitrary entries in
-    the system registry. This is done by constructing a QSettings
+    On Windows, QSettings lets you access settings that have been
+    written with QSettings (or settings in a supported format, e.g., string
+    data) in the system registry. This is done by constructing a QSettings
     object with a path in the registry and QSettings::NativeFormat.
+
     For example:
 
     \snippet doc/src/snippets/code/src.corelib.io.qsettings.cpp 4

@@ -1251,8 +1251,8 @@ NamespaceDecl: DECLARE NAMESPACE NCNAME G_EQ URILiteral Separator               
                                                .arg(formatKeyword(QLatin1String("xmlns"))),
                                             ReportContext::XQST0070, fromYYLTYPE(@$, parseInfo));
         }
-        else if($5 == CommonNamespaces::XML && $3 != QLatin1String("xml") ||
-                $3 == QLatin1String("xml") && $5 != CommonNamespaces::XML)
+        else if (($5 == CommonNamespaces::XML && $3 != QLatin1String("xml"))
+                 || ($3 == QLatin1String("xml") && $5 != CommonNamespaces::XML))
         {
              parseInfo->staticContext->error(QtXmlPatterns::tr(
                                             "Only the prefix %1 can be declared to bind the "
@@ -1597,7 +1597,7 @@ FunctionDecl: DECLARE FUNCTION FunctionName LPAREN ParamList RPAREN
             if(ns == StandardNamespaces::empty)
             {
                 parseInfo->staticContext->error(QtXmlPatterns::tr("The namespace for a user defined function "
-                                                   "cannot be empty(try the predefined "
+                                                   "cannot be empty (try the predefined "
                                                    "prefix %1 which exists for cases "
                                                    "like this)")
                                                    .arg(formatKeyword("local")),

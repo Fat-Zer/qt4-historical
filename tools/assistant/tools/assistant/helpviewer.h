@@ -106,6 +106,7 @@ Q_SIGNALS:
 
 protected:
     virtual void wheelEvent(QWheelEvent *);
+    void mouseReleaseEvent(QMouseEvent *e);
 
 private Q_SLOTS:
     void actionChanged();
@@ -129,6 +130,8 @@ public:
     void resetZoom();
     void zoomIn(int range = 1);
     void zoomOut(int range = 1);
+    int zoom() const { return zoomCount; }
+    void setZoom(int zoom) { zoomCount = zoom; }
 
     inline bool hasSelection() const
     { return textCursor().hasSelection(); }

@@ -58,6 +58,7 @@
 #include "qfileinfo.h"
 #include "qhash.h"
 #include "qtcpserver.h"
+#include "qlocale.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -520,7 +521,7 @@ static void _q_parseUnixDir(const QStringList &tokens, const QString &userName, 
     int n = 0;
 #ifndef QT_NO_DATESTRING
     do {
-        dateTime = QDateTime::fromString(dateString, formats.at(n++));
+        dateTime = QLocale::c().toDateTime(dateString, formats.at(n++));
     }  while (n < formats.size() && (!dateTime.isValid()));
 #endif
 
@@ -594,7 +595,7 @@ static void _q_parseDosDir(const QStringList &tokens, const QString &userName, Q
 
     QDateTime dateTime;
 #ifndef QT_NO_DATESTRING
-    dateTime = QDateTime::fromString(tokens.at(1), QLatin1String("MM-dd-yy  hh:mmAP"));
+    dateTime = QLocale::c().toDateTime(tokens.at(1), QLatin1String("MM-dd-yy  hh:mmAP"));
     if (dateTime.date().year() < 1971) {
         dateTime.setDate(QDate(dateTime.date().year() + 100,
                                dateTime.date().month(),

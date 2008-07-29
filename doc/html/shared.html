@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/groups.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/groups.qdoc -->
 <head>
   <title>Qt 4.4: Implicitly Shared Classes</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -33,30 +33,30 @@
 <p>An implicitly shared class has total control of its internal data. In any member functions that modify its data, it automatically detaches before modifying the data.</p>
 <p>The <a href="qpen.html">QPen</a> class, which uses implicit sharing, detaches from the shared data in all member functions that change the internal data.</p>
 <p>Code fragment:</p>
-<pre>         void QPen::setStyle(Qt::PenStyle style)
-         {
-             detach();           // detach from common data
-             d-&gt;style = style;   // set the style member
-         }
+<pre> void QPen::setStyle(Qt::PenStyle style)
+ {
+     detach();           // detach from common data
+     d-&gt;style = style;   // set the style member
+ }
 
-         void QPen::detach()
-         {
-             if (d-&gt;ref != 1) {
-                 ...             // perform a deep copy
-             }
-         }</pre>
+ void QPen::detach()
+ {
+     if (d-&gt;ref != 1) {
+         ...             // perform a deep copy
+     }
+ }</pre>
 <a name="list-of-classes"></a>
 <h3>List of Classes</h3>
 <p>The classes listed below automatically detach from common data if an object is about to be changed. The programmer will not even notice that the objects are shared. Thus you should treat separate instances of them as separate objects. They will always behave as separate objects but with the added benefit of sharing data whenever possible. For this reason, you can pass instances of these classes as arguments to functions by value without concern for the copying overhead.</p>
 <p>Example:</p>
-<pre>         QPixmap p1, p2;
-         p1.load(&quot;image.bmp&quot;);
-         p2 = p1;                        // p1 and p2 share data
+<pre> QPixmap p1, p2;
+ p1.load(&quot;image.bmp&quot;);
+ p2 = p1;                        // p1 and p2 share data
 
-         QPainter paint;
-         paint.begin(&amp;p2);               // cuts p2 loose from p1
-         paint.drawText(0,50, &quot;Hi&quot;);
-         paint.end();</pre>
+ QPainter paint;
+ paint.begin(&amp;p2);               // cuts p2 loose from p1
+ paint.drawText(0,50, &quot;Hi&quot;);
+ paint.end();</pre>
 <p>In this example, <tt>p1</tt> and <tt>p2</tt> share data until <a href="qpainter.html#begin">QPainter::begin</a>() is called for <tt>p2</tt>, because painting a pixmap will modify it.</p>
 <p><b>Warning:</b> Do not copy an implicitly shared container (<a href="qmap.html">QMap</a>, <a href="qvector.html">QVector</a>, etc.) while you are iterating over it using an non-const <a href="containers.html#stl-style-iterators">STL-style iterator</a>.</p>
 <p><table width="100%" class="annotated" cellpadding="2" cellspacing="1" border="0">
@@ -84,35 +84,36 @@
 <tr valign="top" class="even"><th><a href="qmap.html">QMap</a></th><td>Template class that provides a skip-list-based dictionary</td></tr>
 <tr valign="top" class="odd"><th><a href="qmultihash.html">QMultiHash</a></th><td>Convenience QHash subclass that provides multi-valued hashes</td></tr>
 <tr valign="top" class="even"><th><a href="qmultimap.html">QMultiMap</a></th><td>Convenience QMap subclass that provides multi-valued maps</td></tr>
-<tr valign="top" class="odd"><th><a href="qpalette.html">QPalette</a></th><td>Contains color groups for each widget state</td></tr>
-<tr valign="top" class="even"><th><a href="qpen.html">QPen</a></th><td>Defines how a QPainter should draw lines and outlines of shapes</td></tr>
-<tr valign="top" class="odd"><th><a href="qpicture.html">QPicture</a></th><td>Paint device that records and replays QPainter commands</td></tr>
-<tr valign="top" class="even"><th><a href="qpixmap.html">QPixmap</a></th><td>Off-screen image representation that can be used as a paint device</td></tr>
-<tr valign="top" class="odd"><th><a href="qpolygon.html">QPolygon</a></th><td>Vector of points using integer precision</td></tr>
-<tr valign="top" class="even"><th><a href="qpolygonf.html">QPolygonF</a></th><td>Vector of points using floating point precision</td></tr>
-<tr valign="top" class="odd"><th><a href="qqueue.html">QQueue</a></th><td>Generic container that provides a queue</td></tr>
-<tr valign="top" class="even"><th><a href="qregexp.html">QRegExp</a></th><td>Pattern matching using regular expressions</td></tr>
-<tr valign="top" class="odd"><th><a href="qregion.html">QRegion</a></th><td>Specifies a clip region for a painter</td></tr>
-<tr valign="top" class="even"><th><a href="qset.html">QSet</a></th><td>Template class that provides a hash-table-based set</td></tr>
-<tr valign="top" class="odd"><th><a href="qsqlfield.html">QSqlField</a></th><td>Manipulates the fields in SQL database tables and views</td></tr>
-<tr valign="top" class="even"><th><a href="qsqlquery.html">QSqlQuery</a></th><td>Means of executing and manipulating SQL statements</td></tr>
-<tr valign="top" class="odd"><th><a href="qsqlrecord.html">QSqlRecord</a></th><td>Encapsulates a database record</td></tr>
-<tr valign="top" class="even"><th><a href="qstack.html">QStack</a></th><td>Template class that provides a stack</td></tr>
-<tr valign="top" class="odd"><th><a href="qstring.html">QString</a></th><td>Unicode character string</td></tr>
-<tr valign="top" class="even"><th><a href="qstringlist.html">QStringList</a></th><td>List of strings</td></tr>
-<tr valign="top" class="odd"><th><a href="qtextboundaryfinder.html">QTextBoundaryFinder</a></th><td>Way of finding Unicode text boundaries in a string</td></tr>
-<tr valign="top" class="even"><th><a href="qtextcursor.html">QTextCursor</a></th><td>Offers an API to access and modify QTextDocuments</td></tr>
-<tr valign="top" class="odd"><th><a href="qtextdocumentfragment.html">QTextDocumentFragment</a></th><td>Represents a piece of formatted text from a QTextDocument</td></tr>
-<tr valign="top" class="even"><th><a href="qtextformat.html">QTextFormat</a></th><td>Formatting information for a QTextDocument</td></tr>
-<tr valign="top" class="odd"><th><a href="qurl.html">QUrl</a></th><td>Convenient interface for working with URLs</td></tr>
-<tr valign="top" class="even"><th><a href="qvariant.html">QVariant</a></th><td>Acts like a union for the most common Qt data types</td></tr>
-<tr valign="top" class="odd"><th><a href="qvector.html">QVector</a></th><td>Template class that provides a dynamic array</td></tr>
-<tr valign="top" class="even"><th><a href="qx11info.html">QX11Info</a></th><td>Information about the X display configuration</td></tr>
+<tr valign="top" class="odd"><th><a href="qpainterpath.html">QPainterPath</a></th><td>Container for painting operations, enabling graphical shapes to be constructed and reused</td></tr>
+<tr valign="top" class="even"><th><a href="qpalette.html">QPalette</a></th><td>Contains color groups for each widget state</td></tr>
+<tr valign="top" class="odd"><th><a href="qpen.html">QPen</a></th><td>Defines how a QPainter should draw lines and outlines of shapes</td></tr>
+<tr valign="top" class="even"><th><a href="qpicture.html">QPicture</a></th><td>Paint device that records and replays QPainter commands</td></tr>
+<tr valign="top" class="odd"><th><a href="qpixmap.html">QPixmap</a></th><td>Off-screen image representation that can be used as a paint device</td></tr>
+<tr valign="top" class="even"><th><a href="qpolygon.html">QPolygon</a></th><td>Vector of points using integer precision</td></tr>
+<tr valign="top" class="odd"><th><a href="qpolygonf.html">QPolygonF</a></th><td>Vector of points using floating point precision</td></tr>
+<tr valign="top" class="even"><th><a href="qqueue.html">QQueue</a></th><td>Generic container that provides a queue</td></tr>
+<tr valign="top" class="odd"><th><a href="qregexp.html">QRegExp</a></th><td>Pattern matching using regular expressions</td></tr>
+<tr valign="top" class="even"><th><a href="qregion.html">QRegion</a></th><td>Specifies a clip region for a painter</td></tr>
+<tr valign="top" class="odd"><th><a href="qset.html">QSet</a></th><td>Template class that provides a hash-table-based set</td></tr>
+<tr valign="top" class="even"><th><a href="qsqlfield.html">QSqlField</a></th><td>Manipulates the fields in SQL database tables and views</td></tr>
+<tr valign="top" class="odd"><th><a href="qsqlquery.html">QSqlQuery</a></th><td>Means of executing and manipulating SQL statements</td></tr>
+<tr valign="top" class="even"><th><a href="qsqlrecord.html">QSqlRecord</a></th><td>Encapsulates a database record</td></tr>
+<tr valign="top" class="odd"><th><a href="qstack.html">QStack</a></th><td>Template class that provides a stack</td></tr>
+<tr valign="top" class="even"><th><a href="qstring.html">QString</a></th><td>Unicode character string</td></tr>
+<tr valign="top" class="odd"><th><a href="qstringlist.html">QStringList</a></th><td>List of strings</td></tr>
+<tr valign="top" class="even"><th><a href="qtextboundaryfinder.html">QTextBoundaryFinder</a></th><td>Way of finding Unicode text boundaries in a string</td></tr>
+<tr valign="top" class="odd"><th><a href="qtextcursor.html">QTextCursor</a></th><td>Offers an API to access and modify QTextDocuments</td></tr>
+<tr valign="top" class="even"><th><a href="qtextdocumentfragment.html">QTextDocumentFragment</a></th><td>Represents a piece of formatted text from a QTextDocument</td></tr>
+<tr valign="top" class="odd"><th><a href="qtextformat.html">QTextFormat</a></th><td>Formatting information for a QTextDocument</td></tr>
+<tr valign="top" class="even"><th><a href="qurl.html">QUrl</a></th><td>Convenient interface for working with URLs</td></tr>
+<tr valign="top" class="odd"><th><a href="qvariant.html">QVariant</a></th><td>Acts like a union for the most common Qt data types</td></tr>
+<tr valign="top" class="even"><th><a href="qvector.html">QVector</a></th><td>Template class that provides a dynamic array</td></tr>
+<tr valign="top" class="odd"><th><a href="qx11info.html">QX11Info</a></th><td>Information about the X display configuration</td></tr>
 </table></p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -965,7 +965,7 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
                 key = item.left(i).trimmed().mid(1).toLower();
                 value = item.right(item.length() - i - 1).trimmed();
                 mine = true;
-            } else if (apnl && res.at(l) == apn.at(0) || (appClass && apcl && res.at(l) == apc.at(0))) {
+            } else if ((apnl && res.at(l) == apn.at(0)) || (appClass && apcl && res.at(l) == apc.at(0))) {
                 if (res.mid(l,apnl) == apn && (res.at(l+apnl) == QLatin1Char('.')
                                                || res.at(l+apnl) == QLatin1Char('*'))) {
                     QString item = res.mid(l, r - l).simplified();
@@ -2429,33 +2429,6 @@ bool qt_nograb()                                // application no-grab option
   Platform specific QApplication members
  *****************************************************************************/
 
-/*!
-    \fn QWidget *QApplication::mainWidget()
-
-    Returns the main application widget, or 0 if there is no main
-    widget.
-*/
-
-/*!
-    Sets the application's main widget to \a mainWidget.
-
-    In most respects the main widget is like any other widget, except
-    that if it is closed, the application exits. Note that
-    QApplication does \e not take ownership of the \a mainWidget, so
-    if you create your main widget on the heap you must delete it
-    yourself.
-
-    You need not have a main widget; connecting lastWindowClosed() to
-    quit() is an alternative.
-
-    For X11, this function also resizes and moves the main widget
-    according to the \e -geometry command-line option, so you should
-    set the default geometry (using \l QWidget::setGeometry()) before
-    calling setMainWidget().
-
-    \sa mainWidget(), exec(), quit()
-*/
-
 #ifdef QT3_SUPPORT
 void QApplication::setMainWidget(QWidget *mainWidget)
 {
@@ -2523,31 +2496,6 @@ void QApplicationPrivate::applyX11SpecificCommandLineArguments(QWidget *main_wid
 
 extern void qt_x11_enforce_cursor(QWidget * w);
 
-/*!
-    Sets the application override cursor to \a cursor.
-
-    Application override cursors are intended for showing the user
-    that the application is in a special state, for example during an
-    operation that might take some time.
-
-    This cursor will be displayed in all the application's widgets
-    until restoreOverrideCursor() or another setOverrideCursor() is
-    called.
-
-    Application cursors are stored on an internal stack.
-    setOverrideCursor() pushes the cursor onto the stack, and
-    restoreOverrideCursor() pops the active cursor off the
-    stack. changeOverrideCursor() changes the curently active
-    application override cursor. Every setOverrideCursor() must
-    eventually be followed by a corresponding restoreOverrideCursor(),
-    otherwise the stack will never be emptied.
-
-    Example:
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication_x11.cpp 0
-
-    \sa overrideCursor() restoreOverrideCursor() changeOverrideCursor() QWidget::setCursor()
-*/
-
 void QApplication::setOverrideCursor(const QCursor &cursor)
 {
     qApp->d_func()->cursor_list.prepend(cursor);
@@ -2560,17 +2508,6 @@ void QApplication::setOverrideCursor(const QCursor &cursor)
     }
     XFlush(X11->display);                                // make X execute it NOW
 }
-
-/*!
-    Undoes the last setOverrideCursor().
-
-    If setOverrideCursor() has been called twice, calling
-    restoreOverrideCursor() will activate the first cursor set.
-    Calling this function a second time restores the original widgets'
-    cursors.
-
-    \sa setOverrideCursor(), overrideCursor()
-*/
 
 void QApplication::restoreOverrideCursor()
 {
@@ -2689,11 +2626,6 @@ void QApplication::syncX()
 }
 
 
-/*!
-    Sounds the bell, using the default volume and sound. The function
-    is \e not available in Qt for Embedded Linux.
-*/
-
 void QApplication::beep()
 {
     if (X11->display)
@@ -2702,27 +2634,6 @@ void QApplication::beep()
         printf("\7");
 }
 
-/*!
-      \since 4.3
-
-      Causes an alert to be shown for \a widget if the window is not the active
-      window. The alert is shown for \a msec miliseconds. If \a msec is zero (the
-      default), then the alert is shown indefinitely until the window becomes
-      active again.
-
-      Currently this function does nothing on Qt for Embedded Linux.
-
-      On Mac OS X, this works more at the application level and will cause the
-      application icon to bounce in the dock.
-
-      On Windows this causes the window's taskbar entry to flash for a time. If \a
-      msec is zero, the flashing will stop and the taskbar entry will turn a
-      different color (currently orange).
-
-      On X11, this will cause the window to be marked as "demands attention",
-      the window must not be hidden (i.e. not have hide() called on it, but be
-      visible in some sort of way) in order for this to work.
-*/
 void QApplication::alert(QWidget *widget, int msec)
 {
     if (!QApplicationPrivate::checkInstance("alert"))
@@ -3452,7 +3363,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
     case SelectionClear: {
         XSelectionClearEvent *req = &event->xselectionclear;
         // don't deliver dnd events to the clipboard, it gets confused
-        if (! req || ATOM(XdndSelection) && req->selection == ATOM(XdndSelection))
+        if (! req || (ATOM(XdndSelection) && req->selection == ATOM(XdndSelection)))
             break;
 
         if (qt_clipboard) {
@@ -3465,7 +3376,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
     case SelectionNotify: {
         XSelectionEvent *req = &event->xselection;
         // don't deliver dnd events to the clipboard, it gets confused
-        if (! req || ATOM(XdndSelection) && req->selection == ATOM(XdndSelection))
+        if (! req || (ATOM(XdndSelection) && req->selection == ATOM(XdndSelection)))
             break;
 
         if (qt_clipboard) {
@@ -3480,11 +3391,15 @@ int QApplication::x11ProcessEvent(XEvent* event)
         if (event->xproperty.window == QX11Info::appRootWindow(0)) {
             // root properties for the first screen
             if (event->xproperty.atom == ATOM(_QT_CLIPBOARD_SENTINEL)) {
-                if (qt_check_clipboard_sentinel())
+                if (qt_check_clipboard_sentinel()) {
+                    emit clipboard()->changed(QClipboard::Clipboard);
                     emit clipboard()->dataChanged();
+                }
             } else if (event->xproperty.atom == ATOM(_QT_SELECTION_SENTINEL)) {
-                if (qt_check_selection_sentinel())
+                if (qt_check_selection_sentinel()) {
+                    emit clipboard()->changed(QClipboard::Selection);
                     emit clipboard()->selectionChanged();
+                }
             } else if (QApplicationPrivate::obey_desktop_settings) {
                 if (event->xproperty.atom == ATOM(RESOURCE_MANAGER))
                     qt_set_x11_resources();
@@ -3942,7 +3857,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
                 // backward rotation respectively.
                 int btn = event->xbutton.button;
                 delta *= 120 * ((btn == Button4 || btn == 6) ? 1 : -1);
-                bool hor = ((btn == Button4 || btn == Button5) && (modifiers & Qt::AltModifier) ||
+                bool hor = (((btn == Button4 || btn == Button5) && (modifiers & Qt::AltModifier)) ||
                             (btn == 6 || btn == 7));
                 translateWheelEvent(globalPos.x(), globalPos.y(), delta, buttons,
                                     modifiers, (hor) ? Qt::Horizontal: Qt::Vertical);
@@ -4638,8 +4553,7 @@ static Bool isPaintOrScrollDoneEvent(Display *, XEvent *ev, XPointer a)
 {
     PaintEventInfo *info = (PaintEventInfo *)a;
     if (ev->type == Expose || ev->type == GraphicsExpose
-      ||    ev->type == ClientMessage
-         && ev->xclient.message_type == ATOM(_QT_SCROLL_DONE))
+        || (ev->type == ClientMessage && ev->xclient.message_type == ATOM(_QT_SCROLL_DONE)))
     {
         if (ev->xexpose.window == info->window)
             return True;
@@ -4901,24 +4815,6 @@ bool QETWidget::translateCloseEvent(const XEvent *)
 }
 
 
-/*!
-    \property QApplication::cursorFlashTime
-    \brief the text cursor's flash (blink) time in milliseconds
-
-    The flash time is the time required to display, invert and
-    restore the caret display. Usually the text cursor is displayed
-    for half the cursor flash time, then hidden for the same amount
-    of time, but this may vary.
-
-    The default value on X11 is 1000 milliseconds. On Windows, the
-    control panel value is used. Widgets should not cache this value
-    since it may be changed at any time by the user changing the
-    global desktop settings.
-
-    Note that on Microsoft Windows, setting this property sets the
-    cursor flash time for all applications.
-*/
-
 void QApplication::setCursorFlashTime(int msecs)
 {
     QApplicationPrivate::cursor_flash_time = msecs;
@@ -4928,18 +4824,6 @@ int QApplication::cursorFlashTime()
 {
     return QApplicationPrivate::cursor_flash_time;
 }
-
-/*!
-    \property QApplication::doubleClickInterval
-    \brief the time limit in milliseconds that distinguishes a double click from two
-    consecutive mouse clicks
-
-    The default value on X11 is 400 milliseconds. On Windows and Mac
-    OS X, the operating system's value is used.
-
-    On Microsoft Windows, calling this function sets the
-    double click interval for all applications.
-*/
 
 void QApplication::setDoubleClickInterval(int ms)
 {
@@ -4951,16 +4835,6 @@ int QApplication::doubleClickInterval()
     return QApplicationPrivate::mouse_double_click_time;
 }
 
-/*!
-    \property QApplication::keyboardInputInterval
-    \brief the time limit in milliseconds that distinguishes a key press
-    from two consecutive key presses
-    \since 4.2
-
-    The default value on X11 is 400 milliseconds. On Windows and Mac OS X, the
-    operating system's value is used.
-*/
-
 void QApplication::setKeyboardInputInterval(int ms)
 {
     QApplicationPrivate::keyboard_input_time = ms;
@@ -4971,15 +4845,6 @@ int QApplication::keyboardInputInterval()
     return QApplicationPrivate::keyboard_input_time;
 }
 
-
-/*!
-    \property QApplication::wheelScrollLines
-    \brief the number of lines to scroll when the mouse wheel is rotated
-
-    If this number exceeds the number of visible lines in a certain
-    widget, the widget should interpret the scroll operation as a
-    single "page up" or "page down" operation instead.
-*/
 void QApplication::setWheelScrollLines(int n)
 {
     QApplicationPrivate::wheel_scroll_lines = n;
@@ -4990,15 +4855,6 @@ int QApplication::wheelScrollLines()
     return QApplicationPrivate::wheel_scroll_lines;
 }
 
-/*!
-    Enables the UI effect \a effect if \a enable is true, otherwise
-    the effect will not be used.
-
-    Note: All effects are disabled on screens running at less than
-    16-bit color depth.
-
-    \sa isEffectEnabled(), Qt::UIEffect, setDesktopSettingsAware()
-*/
 void QApplication::setEffectEnabled(Qt::UIEffect effect, bool enable)
 {
     switch (effect) {
@@ -5032,17 +4888,6 @@ void QApplication::setEffectEnabled(Qt::UIEffect effect, bool enable)
     }
 }
 
-/*!
-    Returns true if \a effect is enabled; otherwise returns false.
-
-    By default, Qt will try to use the desktop settings. Call
-    setDesktopSettingsAware(false) to prevent this.
-
-    Note: All effects are disabled on screens running at less than
-    16-bit color depth.
-
-    \sa setEffectEnabled(), Qt::UIEffect
-*/
 bool QApplication::isEffectEnabled(Qt::UIEffect effect)
 {
     if (QColormap::instance().depth() < 16 || !QApplicationPrivate::animate_ui)

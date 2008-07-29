@@ -1988,7 +1988,7 @@ void Q3ListBox::mouseReleaseEvent(QMouseEvent *e)
     }
 
     Q3ListBoxItem * i = itemAt(e->pos());
-    bool emitClicked = d->mousePressColumn != -1 && d->mousePressRow != -1 || !d->pressedItem;
+    bool emitClicked = (d->mousePressColumn != -1 && d->mousePressRow != -1) || !d->pressedItem;
     emitClicked = emitClicked && d->pressedItem == i;
     d->pressedItem = 0;
     d->mousePressRow = -1;
@@ -2058,8 +2058,8 @@ void Q3ListBox::mouseMoveEvent(QMouseEvent *e)
     // move outside the listbox without having seen a press, discard
     // it.
     if (!QRect(0, 0, visibleWidth(), visibleHeight()).contains(e->pos()) &&
-         (d->mousePressColumn < 0 && d->mousePressRow < 0 ||
-           (e->state() == Qt::NoButton && !d->pressedItem)))
+         ((d->mousePressColumn < 0 && d->mousePressRow < 0)
+          || (e->state() == Qt::NoButton && !d->pressedItem)))
         return;
 
     // figure out in what direction to drag-select and perhaps scroll
@@ -4416,7 +4416,7 @@ void Q3ListBox::selectRange(Q3ListBoxItem *from, Q3ListBoxItem *to, bool invert,
             }
         } else {
             bool sel = !i->s;
-            if ((bool)i->s != sel && sel && i->isSelectable() || !sel) {
+            if (((bool)i->s != sel && sel && i->isSelectable()) || !sel) {
                 i->s = sel;
                 changed = true;
                 updateItem(i);

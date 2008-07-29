@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/concurrent/qfuturewatcher.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/concurrent/qfuturewatcher.cpp -->
 <head>
   <title>Qt 4.4: QFutureWatcher Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -90,12 +90,12 @@
 <p>Status changes are reported via the <a href="qfuturewatcher.html#started">started</a>(), <a href="qfuturewatcher.html#finished">finished</a>(), <a href="qfuturewatcher.html#canceled">canceled</a>(), <a href="qfuturewatcher.html#paused">paused</a>(), <a href="qfuturewatcher.html#resumed">resumed</a>(), <a href="qfuturewatcher.html#resultReadyAt">resultReadyAt</a>(), and <a href="qfuturewatcher.html#resultsReadyAt">resultsReadyAt</a>() signals. Progress information is provided from the <a href="qfuturewatcher.html#progressRangeChanged">progressRangeChanged</a>(), void <a href="qfuturewatcher.html#progressValueChanged">progressValueChanged</a>(), and <a href="qfuturewatcher.html#progressTextChanged">progressTextChanged</a>() signals.</p>
 <p>Throttling control is provided by the <a href="qfuturewatcher.html#setPendingResultsLimit">setPendingResultsLimit</a>() function. When the number of pending <a href="qfuturewatcher.html#resultReadyAt">resultReadyAt</a>() or <a href="qfuturewatcher.html#resultsReadyAt">resultsReadyAt</a>() signals exceeds the limit, the computation represented by the future will be throttled automatically. The computation will resume once the number of pending signals drops below the limit.</p>
 <p>Example: Starting a computation and getting a slot callback when it's finished:</p>
-<pre>     // Instantiate the objects and connect to the finished signal.
+<pre>     <span class="comment">// Instantiate the objects and connect to the finished signal.</span>
      MyClass myObject;
      QFutureWatcher&lt;int&gt; watcher;
      connect(&amp;watcher, SIGNAL(finished()), &amp;myObject, SLOT(handleFinished()));
 
-     // Start the computation.
+     <span class="comment">// Start the computation.</span>
      QFuture&lt;int&gt; future = QtConcurrent::run(...);
      watcher.setFuture(future);</pre>
 <p>Be aware that not all asynchronous computations can be canceled or paused. For example, the future returned by <a href="qtconcurrentrun.html#run">QtConcurrent::run</a>() cannot be canceled; but the future returned by <a href="qtconcurrentmap.html#mappedReduced">QtConcurrent::mappedReduced</a>() can.</p>
@@ -223,6 +223,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

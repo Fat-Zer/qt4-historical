@@ -117,6 +117,7 @@ static const Keyword keywords[] = {
     { "]", "RBRACK" },
     { "<:", "LBRACK" },
     { ":>", "RBRACK" },
+    { "<::", "LANGLE_SCOPE" },
     { "{", "LBRACE" },
     { "<%", "LBRACE" },
     { "}", "RBRACE" },

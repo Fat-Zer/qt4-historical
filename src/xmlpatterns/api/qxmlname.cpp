@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
   \class QXmlName
-  \brief The QXmlName class represents a name for an XML node in a namespace-aware and efficient way.
+  \brief The QXmlName class represents the name of an XML node, in an efficient, namespace-aware way.
   \reentrant
   \since 4.4
   \ingroup xml-tools
@@ -220,8 +220,7 @@ bool QXmlName::isNull() const
 }
 
 /*!
-  Constructs an uninitialized QXmlName. This constructor is
-  typically used for resizing collections of QXmlName. To build
+  Constructs an uninitialized QXmlName. To build
   a valid QXmlName, you normally use the other constructor, which
   takes a \l {QXmlNamePool} {name pool}, namespace URI, local name,
   and prefix as parameters. But you can also use this constructor
@@ -313,6 +312,7 @@ bool QXmlName::operator!=(const QXmlName &other) const
 
 /*!
  \fn uint qHash(const QXmlName &name)
+ \since 4.4
  \relates QXmlName
 
  Computes a hash key from the the local name and the namespace
@@ -374,7 +374,6 @@ QString QXmlName::localName(const QXmlNamePool &namePool) const
 }
 
 /*!
-
   Returns this QXmlName formatted as a Clark Name. For example,
   if the local name is \c html, the prefix is \c x, and the
   namespace URI is \c {http://www.w3.org/1999/xhtml/},
@@ -391,14 +390,13 @@ QString QXmlName::localName(const QXmlNamePool &namePool) const
   MyWidget
   \endcode
 
-  This function is useful for debugging. Clark names lends themselves
-  poorly roundtrip parsing due to brackets being allowed in namespace URIs.
-
   Note that for efficiency, the namespace URI, local name, and
   prefix strings are not stored in the QXmlName but in the
   \l {QXmlNamePool} that was passed to the constructor. Hence,
   that same \a namePool must be passed to this function, so it
   can be used for looking up the three string components.
+
+  This function can be useful for debugging.
 
  \sa {http://www.jclark.com/xml/xmlns.htm} {XML Namespaces, James Clark}
  */
@@ -435,11 +433,10 @@ QXmlName &QXmlName::operator=(const QXmlName &other)
 }
 
 /*!
- Returns \c true if \a candidate is an \c NCName, otherwise \c false.
-
- An \c NCName is a string which can be used as a name in various context in XML and
- XQuery, such as the prefix or local name in a name for an element or attribute, or the name
- of a variable.
+ Returns true if \a candidate is an \c NCName. An \c NCName
+ is a string that can be used as a name in XML and XQuery,
+ e.g., the prefix or local name in an element or attribute,
+ or the name of a variable.
 
  \sa {http://www.w3.org/TR/REC-xml-names/#NT-NCName} {Namespaces in XML 1.0 (Second Edition), [4] NCName}
  */

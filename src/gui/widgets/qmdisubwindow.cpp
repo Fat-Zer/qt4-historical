@@ -92,6 +92,16 @@
     each keypress event. When shift is pressed down page step is used;
     otherwise single step is used.
 
+    You can also change the active window with the keyboard. By
+    pressing the control and tab keys at the same time, the next
+    (using the current \l{QMdiArea::}{WindowOrder}) subwindow will be
+    activated. By pressing control, shift, and tab, you will activate
+    the previous window. This is equivalent to calling
+    \l{QMdiArea::}{activateNextSubWindow()} and
+    \l{QMdiArea::}{activatePreviousSubWindow()}. Note that these
+    shortcuts overrides global shortcuts, but not the \l{QMdiArea}s
+    shortcuts.
+
     \sa QMdiArea
 */
 
@@ -1137,7 +1147,7 @@ void QMdiSubWindowPrivate::updateMask()
     if (!q->parent())
         return;
 
-    if (q->isMaximized() && !drawTitleBarWhenMaximized()
+    if ((q->isMaximized() && !drawTitleBarWhenMaximized())
         || q->windowFlags() & Qt::FramelessWindowHint)
         return;
 
@@ -1404,7 +1414,7 @@ void QMdiSubWindowPrivate::setMaximizeMode()
 /*!
     \internal
 */
-void QMdiSubWindowPrivate::setActive(bool activate)
+void QMdiSubWindowPrivate::setActive(bool activate, bool changeFocus)
 {
     Q_Q(QMdiSubWindow);
     if (!q->parent() || !activationEnabled)
@@ -1426,9 +1436,11 @@ void QMdiSubWindowPrivate::setActive(bool activate)
         isActive = false;
         Qt::WindowStates oldWindowState = q->windowState();
         q->overrideWindowState(q->windowState() & ~Qt::WindowActive);
-        QWidget *focusWidget = QApplication::focusWidget();
-        if (focusWidget && (focusWidget == q || q->isAncestorOf(focusWidget)))
-            focusWidget->clearFocus();
+        if (changeFocus) {
+            QWidget *focusWidget = QApplication::focusWidget();
+            if (focusWidget && (focusWidget == q || q->isAncestorOf(focusWidget)))
+                focusWidget->clearFocus();
+        }
         if (baseWidget)
             baseWidget->overrideWindowState(baseWidget->windowState() & ~Qt::WindowActive);
         Q_ASSERT(!isActive);
@@ -1437,7 +1449,8 @@ void QMdiSubWindowPrivate::setActive(bool activate)
 
     if (activate && isActive && q->isEnabled() && !q->hasFocus()
             && !q->isAncestorOf(QApplication::focusWidget())) {
-        setFocusWidget();
+        if (changeFocus)
+            setFocusWidget();
         ensureWindowState(Qt::WindowActive);
     }
 
@@ -2549,6 +2562,8 @@ void QMdiSubWindow::showSystemMenu()
 #endif // QT_NO_MENU
 
 /*!
+    \since 4.4
+
     Returns the area containing this sub-window, or 0 if there is none.
 
     \sa QMdiArea::addSubWindow()
@@ -3177,8 +3192,8 @@ void QMdiSubWindow::mousePressEvent(QMouseEvent *mouseEvent)
         if (d->resizeEnabled || d->moveEnabled)
             d->oldGeometry = geometry();
 #ifndef QT_NO_RUBBERBAND
-        if (testOption(QMdiSubWindow::RubberBandResize) && d->isResizeOperation()
-                || testOption(QMdiSubWindow::RubberBandMove) && d->isMoveOperation()) {
+        if ((testOption(QMdiSubWindow::RubberBandResize) && d->isResizeOperation())
+            || (testOption(QMdiSubWindow::RubberBandMove) && d->isMoveOperation())) {
             d->enterRubberBandMode();
         }
 #endif
@@ -3220,8 +3235,8 @@ void QMdiSubWindow::mouseDoubleClickEvent(QMouseEvent *mouseEvent)
 
     Qt::WindowFlags flags = windowFlags();
     if (isMinimized()) {
-        if (isShaded() && (flags & Qt::WindowShadeButtonHint)
-                || (flags & Qt::WindowMinimizeButtonHint)) {
+        if ((isShaded() && (flags & Qt::WindowShadeButtonHint))
+            || (flags & Qt::WindowMinimizeButtonHint)) {
             showNormal();
         }
         return;
@@ -3309,14 +3324,14 @@ void QMdiSubWindow::mouseMoveEvent(QMouseEvent *mouseEvent)
     }
 
     if ((mouseEvent->buttons() & Qt::LeftButton) || d->isInInteractiveMode) {
-        if (d->isResizeOperation() && d->resizeEnabled || d->isMoveOperation() && d->moveEnabled)
+        if ((d->isResizeOperation() && d->resizeEnabled) || (d->isMoveOperation() && d->moveEnabled))
             d->setNewGeometry(mapToParent(mouseEvent->pos()));
         return;
     }
 
     // Do not resize/move if not allowed.
     d->currentOperation = d->getOperation(mouseEvent->pos());
-    if (d->isResizeOperation() && !d->resizeEnabled || d->isMoveOperation() && !d->moveEnabled)
+    if ((d->isResizeOperation() && !d->resizeEnabled) || (d->isMoveOperation() && !d->moveEnabled))
         d->currentOperation = QMdiSubWindowPrivate::None;
     d->updateCursor();
 }

@@ -88,6 +88,7 @@ QT_BEGIN_NAMESPACE
 
 static HB_Error hb_getSFntTable(void *font, HB_Tag tableTag, HB_Byte *buffer, HB_UInt *length)
 {
+#if (FREETYPE_MAJOR*10000 + FREETYPE_MINOR*100 + FREETYPE_PATCH) > 20103
     FT_Face face = (FT_Face)font;
     FT_ULong ftlen = *length;
     FT_Error error = 0;
@@ -98,6 +99,9 @@ static HB_Error hb_getSFntTable(void *font, HB_Tag tableTag, HB_Byte *buffer, HB
     error = FT_Load_Sfnt_Table(face, tableTag, 0, buffer, &ftlen);
     *length = ftlen;
     return (HB_Error)error;
+#else
+    return HB_Err_Invalid_Argument;
+#endif
 }
 
 // -------------------------- Freetype support ------------------------------
@@ -1304,6 +1308,78 @@ void QFontEngineFT::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int
         QFreetypeFace::addGlyphToPath(face, g, positions[gl], path, xsize, ysize);
     }
     unlockFace();
+}
+
+bool QFontEngineFT::stringToCMap(const QChar *str, int len, HB_Glyph *glyphs, int *nglyphs,
+                                 QTextEngine::ShaperFlags flags) const
+{
+    if (*nglyphs < len) {
+        *nglyphs = len;
+        return false;
+    }
+
+    bool mirrored = flags & QTextEngine::RightToLeft;
+    int glyph_pos = 0;
+    if (freetype->symbol_map) {
+        FT_Face face = freetype->face;
+        for ( int i = 0; i < len; ++i ) {
+            unsigned int uc = getChar(str, i, len);
+            if (mirrored)
+                uc = QChar::mirroredChar(uc);
+            glyphs[glyph_pos] = uc < QFreetypeFace::cmapCacheSize ? freetype->cmapCache[uc] : 0;
+            if ( !glyphs[glyph_pos] ) {
+                glyph_t glyph;
+#if !defined(QT_NO_FONTCONFIG)
+                if (FcCharSetHasChar(freetype->charset, uc)) {
+#else
+                if (false) {
+#endif
+                redo0:
+                    glyph = FT_Get_Char_Index(face, uc);
+                    if (!glyph && (uc == 0xa0 || uc == 0x9)) {
+                        uc = 0x20;
+                        goto redo0;
+                    }
+                } else {
+                    FT_Set_Charmap(face, freetype->symbol_map);
+                    glyph = FT_Get_Char_Index(face, uc);
+                    FT_Set_Charmap(face, freetype->unicode_map);
+                }
+                glyphs[glyph_pos] = glyph;
+                if (uc < QFreetypeFace::cmapCacheSize)
+                    freetype->cmapCache[uc] = glyph;
+            }
+            ++glyph_pos;
+        }
+    } else {
+        FT_Face face = freetype->face;
+        for (int i = 0; i < len; ++i) {
+            unsigned int uc = getChar(str, i, len);
+            if (mirrored)
+                uc = QChar::mirroredChar(uc);
+            glyphs[glyph_pos] = uc < QFreetypeFace::cmapCacheSize ? freetype->cmapCache[uc] : 0;
+            if (!glyphs[glyph_pos]
+#if !defined(QT_NO_FONTCONFIG)
+                && FcCharSetHasChar(freetype->charset, uc)
+#endif
+                ) {
+            redo:
+                glyph_t glyph = FT_Get_Char_Index(face, uc);
+                if (!glyph && (uc == 0xa0 || uc == 0x9)) {
+                    uc = 0x20;
+                    goto redo;
+                }
+                glyphs[glyph_pos] = glyph;
+                if (uc < QFreetypeFace::cmapCacheSize)
+                    freetype->cmapCache[uc] = glyph;
+            }
+            ++glyph_pos;
+        }
+    }
+
+    *nglyphs = glyph_pos;
+
+    return true;
 }
 
 bool QFontEngineFT::stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs,

@@ -154,13 +154,13 @@ void QMenuPrivate::init()
     q->setAttribute(Qt::WA_CustomWhatsThis);
 #endif
     q->setAttribute(Qt::WA_X11NetWmWindowTypePopupMenu);
+    defaultMenuAction = menuAction = new QAction(q);
+    menuAction->d_func()->menu = q;
     q->setMouseTracking(q->style()->styleHint(QStyle::SH_Menu_MouseTracking, 0, q));
     if (q->style()->styleHint(QStyle::SH_Menu_Scrollable, 0, q)) {
         scroll = new QMenuPrivate::QMenuScroller;
         scroll->scrollFlags = QMenuPrivate::QMenuScroller::ScrollNone;
     }
-    defaultMenuAction = menuAction = new QAction(q);
-    menuAction->d_func()->menu = q;
 }
 
 //Windows and KDE allows menus to cover the taskbar, while GNOME and Mac don't
@@ -1309,6 +1309,15 @@ QMenu::QMenu(QMenuPrivate &dd, QWidget *parent)
 QMenu::~QMenu()
 {
     Q_D(QMenu);
+    for (QHash<QAction *, QWidget *>::ConstIterator item = d->widgetItems.constBegin(),
+         end = d->widgetItems.constEnd(); item != end; ++item) {
+        QWidgetAction *action = static_cast<QWidgetAction *>(item.key());
+        QWidget *widget = item.value();
+        if (action && widget)
+            action->releaseWidget(widget);
+    }
+    d->widgetItems.clear();
+
     if (d->eventLoop)
         d->eventLoop->exit();
     if (d->tornPopup)
@@ -2798,14 +2807,14 @@ void QMenu::internalDelayedPopup()
     const QRect availGeometry(d->popupGeometry(QApplication::desktop()->screenNumber(caused)));
     if (isRightToLeft()) {
         pos = leftPos;
-        if (caused && caused->x() < x() || pos.x() < availGeometry.left()) {
+        if ((caused && caused->x() < x()) || pos.x() < availGeometry.left()) {
             if(rightPos.x() + menuSize.width() < availGeometry.right())
                 pos = rightPos;
             else
                 pos.rx() = availGeometry.left();
         }
     } else {
-        if (caused && caused->x() > x() || pos.x() + menuSize.width() > availGeometry.right()) {
+        if ((caused && caused->x() > x()) || pos.x() + menuSize.width() > availGeometry.right()) {
             if(leftPos.x() < availGeometry.left())
                 pos.rx() = availGeometry.right() - menuSize.width();
             else

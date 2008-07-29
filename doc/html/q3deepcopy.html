@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/tools/q3deepcopy.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/tools/q3deepcopy.cpp -->
 <head>
   <title>Qt 4.4: Q3DeepCopy Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -34,36 +34,36 @@
 <h2>Detailed Description</h2>
 <p>The Q3DeepCopy class is a template class which ensures that implicitly shared and explicitly shared classes reference unique data.</p>
 <p>Normally, shared copies reference the same data to optimize memory use and for maximum speed. In the example below, <tt>s1</tt>, <tt>s2</tt>, <tt>s3</tt>, <tt>s4</tt> and <tt>s5</tt> share data.</p>
-<pre>     // all 5 strings share the same data
+<pre>     <span class="comment">// all 5 strings share the same data</span>
      QString s1 = &quot;abcd&quot;;
      QString s2 = s1;
      QString s3 = s2;
      QString s4 = s3;
      QString s5 = s2;</pre>
 <p>Q3DeepCopy can be used several ways to ensure that an object references unique, unshared data. In the example below, <tt>s1</tt>, <tt>s2</tt> and <tt>s5</tt> share data, while neither <tt>s3</tt> nor <tt>s4</tt> share data.</p>
-<pre>     // s1, s2 and s5 share the same data, neither s3 nor s4 are shared
+<pre>     <span class="comment">// s1, s2 and s5 share the same data, neither s3 nor s4 are shared</span>
      QString s1 = &quot;abcd&quot;;
      QString s2 = s1;
-     Q3DeepCopy&lt;QString&gt; s3 = s2;  // s3 is a deep copy of s2
-     QString s4 = s3;             // s4 is a deep copy of s3
+     Q3DeepCopy&lt;QString&gt; s3 = s2;  <span class="comment">// s3 is a deep copy of s2</span>
+     QString s4 = s3;             <span class="comment">// s4 is a deep copy of s3</span>
      QString s5 = s2;</pre>
 <p>In the example below, <tt>s1</tt>, <tt>s2</tt> and <tt>s5</tt> share data, and <tt>s3</tt> and <tt>s4</tt> share data.</p>
-<pre>     // s1, s2 and s5 share the same data, s3 and s4 share the same data
+<pre>     <span class="comment">// s1, s2 and s5 share the same data, s3 and s4 share the same data</span>
      QString s1 = &quot;abcd&quot;;
      QString s2 = s1;
-     QString s3 = Q3DeepCopy&lt;QString&gt;( s2 );  // s3 is a deep copy of s2
-     QString s4 = s3;                        // s4 is a shallow copy of s3
+     QString s3 = Q3DeepCopy&lt;QString&gt;( s2 );  <span class="comment">// s3 is a deep copy of s2</span>
+     QString s4 = s3;                        <span class="comment">// s4 is a shallow copy of s3</span>
      QString s5 = s2;</pre>
 <p>Q3DeepCopy can also provide safety in multithreaded applications that use shared classes. In the example below, the variable <tt>global_string</tt> is used safely since the data contained in <tt>global_string</tt> is always a deep copy. This ensures that all threads get a unique copy of the data, and that any assignments to <tt>global_string</tt> will result in a deep copy.</p>
-<pre>     Q3DeepCopy&lt;QString&gt; global_string;  // global string data
-     QMutex global_mutex;               // mutex to protext global_string
+<pre>     Q3DeepCopy&lt;QString&gt; global_string;  <span class="comment">// global string data</span>
+     QMutex global_mutex;               <span class="comment">// mutex to protext global_string</span>
 
      ...
 
      void setGlobalString( const QString &amp;str )
      {
          global_mutex.lock();
-         global_string = str;           // global_string is a deep copy of str
+         global_string = str;           <span class="comment">// global_string is a deep copy of str</span>
          global_mutex.unlock();
      }
 
@@ -72,13 +72,13 @@
      void MyThread::run()
      {
          global_mutex.lock();
-         QString str = global_string;          // str is a deep copy of global_string
+         QString str = global_string;          <span class="comment">// str is a deep copy of global_string</span>
          global_mutex.unlock();
 
-         // process the string data
+         <span class="comment">// process the string data</span>
          ...
 
-         // update global_string
+         <span class="comment">// update global_string</span>
          setGlobalString( str );
      }</pre>
 <p><b>Warning:</b> It is the application developer's responsibility to protect the object shared across multiple threads.</p>
@@ -109,6 +109,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

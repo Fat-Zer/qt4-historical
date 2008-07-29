@@ -113,6 +113,8 @@ public:
     QString formatValue(const QSqlField &field, bool trimStrings) const;
     QVariant handle() const;
 
+    QString escapeIdentifier(const QString &identifier, IdentifierType type) const;
+
 protected Q_SLOTS:
     bool subscribeToNotificationImplementation(const QString &name);
     bool unsubscribeFromNotificationImplementation(const QString &name);

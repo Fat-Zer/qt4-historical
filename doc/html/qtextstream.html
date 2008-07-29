@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/io/qtextstream.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qtextstream.cpp -->
 <head>
   <title>Qt 4.4: QTextStream Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -150,7 +150,7 @@
          if (data.open(QFile::WriteOnly | QFile::Truncate)) {
              QTextStream out(&amp;data);
              out &lt;&lt; &quot;Result: &quot; &lt;&lt; qSetFieldWidth(10) &lt;&lt; left &lt;&lt; 3.14 &lt;&lt; 2.7;
-             // writes &quot;Result: 3.14      2.7       &quot;
+             <span class="comment">// writes &quot;Result: 3.14      2.7       &quot;</span>
          }</pre>
 <p>It's also common to use QTextStream to read console input and write console output. QTextStream is locale aware, and will automatically decode standard input using the correct codec. Example:</p>
 <pre>         QTextStream stream(stdin);
@@ -172,11 +172,11 @@
 <pre>         QTextStream in(&quot;0x50 0x20&quot;);
          int firstNumber, secondNumber;
 
-         in &gt;&gt; firstNumber;             // firstNumber == 80
-         in &gt;&gt; dec &gt;&gt; secondNumber;     // secondNumber == 0
+         in &gt;&gt; firstNumber;             <span class="comment">// firstNumber == 80</span>
+         in &gt;&gt; dec &gt;&gt; secondNumber;     <span class="comment">// secondNumber == 0</span>
 
          char ch;
-         in &gt;&gt; ch;                      // ch == 'x'</pre>
+         in &gt;&gt; ch;                      <span class="comment">// ch == 'x'</span></pre>
 <p>QTextStream supports many formatting options for generating text. You can set the field width and pad character by calling <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>() and <a href="qtextstream.html#setPadChar">setPadChar</a>(). Use <a href="qtextstream.html#setFieldAlignment">setFieldAlignment</a>() to set the alignment within each field. For real numbers, call <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>() and <a href="qtextstream.html#setRealNumberPrecision">setRealNumberPrecision</a>() to set the notation (<a href="qtextstream.html#RealNumberNotation-enum">SmartNotation</a>, <a href="qtextstream.html#RealNumberNotation-enum">ScientificNotation</a>, <a href="qtextstream.html#RealNumberNotation-enum">FixedNotation</a>) and precision in digits of the generated number. Some extra number formatting options are also available through <a href="qtextstream.html#setNumberFlags">setNumberFlags</a>().</p>
 <a name="qtextstream-manipulators"></a><p>Like <tt>&lt;iostream&gt;</tt> in the standard C++ library, QTextStream also defines several global manipulator functions:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -293,7 +293,7 @@
 <p>This constructor is convenient for working on constant strings. Example:</p>
 <pre>         int main(int argc, char *argv[])
          {
-             // read numeric arguments (123, 0x20, 4.5...)
+             <span class="comment">// read numeric arguments (123, 0x20, 4.5...)</span>
              for (int i = 1; i &lt; argc; ++i) {
                    int number;
                    QTextStream in(argv[i]);
@@ -714,6 +714,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

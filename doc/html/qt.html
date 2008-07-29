@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qnamespace.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qnamespace.qdoc -->
 <head>
   <title>Qt 4.4: Qt Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -24,7 +24,7 @@
 <li><div class="fn"/>flags <b><a href="qt.html#AlignmentFlag-enum">Alignment</a></b></li>
 <li><div class="fn"/>enum <b><a href="qt.html#AlignmentFlag-enum">AlignmentFlag</a></b> { AlignLeft, AlignRight, AlignHCenter, AlignJustify, ..., AlignVertical_Mask }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#AnchorAttribute-enum">AnchorAttribute</a></b> { AnchorName, AnchorHref }</li>
-<li><div class="fn"/>enum <b><a href="qt.html#ApplicationAttribute-enum">ApplicationAttribute</a></b> { AA_ImmediateWidgetCreation, AA_MSWindowsUseDirect3DByDefault, AA_DontShowIconsInMenus, AA_NativeWindows }</li>
+<li><div class="fn"/>enum <b><a href="qt.html#ApplicationAttribute-enum">ApplicationAttribute</a></b> { AA_ImmediateWidgetCreation, AA_MSWindowsUseDirect3DByDefault, AA_DontShowIconsInMenus, AA_NativeWindows, AA_DontCreateNativeWidgetSiblings }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#ArrowType-enum">ArrowType</a></b> { NoArrow, UpArrow, DownArrow, LeftArrow, RightArrow }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#AspectRatioMode-enum">AspectRatioMode</a></b> { IgnoreAspectRatio, KeepAspectRatio, KeepAspectRatioByExpanding }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#Axis-enum">Axis</a></b> { XAxis, YAxis, ZAxis }</li>
@@ -181,6 +181,7 @@
 <a name="//apple_ref/cpp/econst/Qt/AA_MSWindowsUseDirect3DByDefault" />
 <a name="//apple_ref/cpp/econst/Qt/AA_DontShowIconsInMenus" />
 <a name="//apple_ref/cpp/econst/Qt/AA_NativeWindows" />
+<a name="//apple_ref/cpp/econst/Qt/AA_DontCreateNativeWidgetSiblings" />
 <a name="//apple_ref/cpp/econst/Qt/AA_AttributeCount" />
 <h3 class="fn"><a name="ApplicationAttribute-enum"></a>enum Qt::ApplicationAttribute</h3>
 <p>This enum describes attributes that change the behavior of application-wide features. These are enabled and disabled using <a href="qcoreapplication.html#setAttribute">QCoreApplication::setAttribute</a>(), and can be tested for with <a href="qcoreapplication.html#testAttribute">QCoreApplication::testAttribute</a>().</p>
@@ -194,6 +195,7 @@
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::AA_NativeWindows</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Ensures that widgets have native windows.</td></tr>
+<tr><td valign="top"><tt>Qt::AA_DontCreateNativeWidgetSiblings</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Ensures that siblings of native widgets stay non-native unless specifically set by the <a href="qt.html#WidgetAttribute-enum">Qt::WA_NativeWindow</a> attribute.</td></tr>
 </table></p>
 <a name="//apple_ref/cpp/tag/Qt/ArrowType" />
 <a name="//apple_ref/cpp/econst/Qt/NoArrow" />
@@ -1247,7 +1249,7 @@
 <tr><td valign="top"><tt>Qt::Key_Control</tt></td><td align="center" valign="top"><tt>0x01000021</tt></td><td valign="top">On Mac OS X, this corresponds to the Command keys.</td></tr>
 <tr><td valign="top"><tt>Qt::Key_Meta</tt></td><td align="center" valign="top"><tt>0x01000022</tt></td><td valign="top">On Mac OS X, this corresponds to the Control keys. On Windows keyboards, this key is mapped to the Windows key.</td></tr>
 <tr><td valign="top"><tt>Qt::Key_Alt</tt></td><td align="center" valign="top"><tt>0x01000023</tt></td><td valign="top">&nbsp;</td></tr>
-<tr><td valign="top"><tt>Qt::Key_AltGr</tt></td><td align="center" valign="top"><tt>0x01001103</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_AltGr</tt></td><td align="center" valign="top"><tt>0x01001103</tt></td><td valign="top">On Windows, when the KeyDown event for this key is sent, the Ctrl+Alt modifiers are also set.</td></tr>
 <tr><td valign="top"><tt>Qt::Key_CapsLock</tt></td><td align="center" valign="top"><tt>0x01000024</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Qt::Key_NumLock</tt></td><td align="center" valign="top"><tt>0x01000025</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Qt::Key_ScrollLock</tt></td><td align="center" valign="top"><tt>0x01000026</tt></td><td valign="top">&nbsp;</td></tr>
@@ -2126,7 +2128,7 @@
 <tr><td valign="top"><tt>Qt::WA_MacVariableSize</tt></td><td align="center" valign="top"><tt>102</tt></td><td valign="top">Indicates the widget can choose between alternative sizes for widgets to avoid clipping. This attribute is only applicable to Mac OS X.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_MacBrushedMetal</tt></td><td align="center" valign="top"><tt>46</tt></td><td valign="top">Indicates the widget should be drawn in the brushed metal style as supported by the windowing system. This attribute is only applicable to Mac OS X.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_Mapped</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">Indicates that the widget is mapped on screen. This is set/cleared by the Qt kernel.</td></tr>
-<tr><td valign="top"><tt>Qt::WA_MouseNoMask</tt></td><td align="center" valign="top"><tt>71</tt></td><td valign="top">Makes the widget receive mouse events for the entire widget regardless of the currently set mask, overriding <a href="qwidget.html#setMask">QWidget::setMask</a>().</td></tr>
+<tr><td valign="top"><tt>Qt::WA_MouseNoMask</tt></td><td align="center" valign="top"><tt>71</tt></td><td valign="top">Makes the widget receive mouse events for the entire widget regardless of the currently set mask, overriding <a href="qwidget.html#setMask">QWidget::setMask</a>(). This is not applicable for top-level windows.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_MouseTracking</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Indicates that the widget has mouse tracking enabled. See <a href="qwidget.html#mouseTracking-prop">QWidget::mouseTracking</a>.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_Moved</tt></td><td align="center" valign="top"><tt>43</tt></td><td valign="top">Indicates that the widget has an explicit position. This is set/cleared by <a href="qwidget.html#pos-prop">QWidget::move</a>() and by <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>().</td></tr>
 <tr><td valign="top"><tt>Qt::WA_MSWindowsUseDirect3D</tt></td><td align="center" valign="top"><tt>94</tt></td><td valign="top">Makes drawing to a widget with this attribute set use the Direct3D paint engine, if the Direct3D paint engine is available. <b>This functionality is experimental.</b></td></tr>
@@ -2311,7 +2313,7 @@
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::Widget</tt></td><td align="center" valign="top"><tt>0x00000000</tt></td><td valign="top">This is the default type for <a href="qwidget.html">QWidget</a>. Widgets of this type are child widgets if they have a parent, and independent windows if they have no parent. See also Qt::Window and Qt::SubWindow.</td></tr>
-<tr><td valign="top"><tt>Qt::Window</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Indicates that the widget is a window, usually with a window system frame and a title bar, irrespective of whether the widget has a parent or not.</td></tr>
+<tr><td valign="top"><tt>Qt::Window</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Indicates that the widget is a window, usually with a window system frame and a title bar, irrespective of whether the widget has a parent or not. Note that it is not possible to unset this flag if the widget does not have a parent.</td></tr>
 <tr><td valign="top"><tt>Qt::Dialog</tt></td><td align="center" valign="top"><tt>0x00000002 | Window</tt></td><td valign="top">Indicates that the widget is a window that should be decorated as a dialog (i.e&#x2e;, typically no maximize or minimize buttons in the title bar). This is the default type for <a href="qdialog.html">QDialog</a>. If you want to use it as a modal dialog, it should be launched from another window, or have a parent and used with the <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> property. If you make it modal, the dialog will prevent other top-level windows in the application from getting any input. We refer to a top-level window that has a parent as a <i>secondary</i> window.</td></tr>
 <tr><td valign="top"><tt>Qt::Sheet</tt></td><td align="center" valign="top"><tt>0x00000004 | Window</tt></td><td valign="top">Indicates that the widget is a Macintosh sheet.</td></tr>
 <tr><td valign="top"><tt>Qt::Drawer</tt></td><td align="center" valign="top"><tt>0x00000006 | Window</tt></td><td valign="top">Indicates that the widget is a Macintosh drawer.</td></tr>
@@ -2320,7 +2322,7 @@
 <tr><td valign="top"><tt>Qt::ToolTip</tt></td><td align="center" valign="top"><tt>0x0000000c | Window</tt></td><td valign="top">Indicates that the widget is a tooltip. This is used internally to implement <a href="qwidget.html#toolTip-prop">tooltips</a>.</td></tr>
 <tr><td valign="top"><tt>Qt::SplashScreen</tt></td><td align="center" valign="top"><tt>0x0000000e | Window</tt></td><td valign="top">Indicates that the window is a splash screen. This is the default type for <a href="qsplashscreen.html">QSplashScreen</a>.</td></tr>
 <tr><td valign="top"><tt>Qt::Desktop</tt></td><td align="center" valign="top"><tt>0x00000010 | Window</tt></td><td valign="top">Indicates that this widget is the desktop. This is the type for <a href="qdesktopwidget.html">QDesktopWidget</a>.</td></tr>
-<tr><td valign="top"><tt>Qt::SubWindow</tt></td><td align="center" valign="top"><tt>0x00000012</tt></td><td valign="top">Indicates that this widget is a child widget, irrespective of whether the widget has a parent or not.</td></tr>
+<tr><td valign="top"><tt>Qt::SubWindow</tt></td><td align="center" valign="top"><tt>0x00000012</tt></td><td valign="top">Indicates that this widget is a sub-window, such as a <a href="qmdisubwindow.html">QMdiSubWindow</a> widget.</td></tr>
 </table></p>
 <p>There are also a number of flags which you can use to customize the appearance of top-level windows. These have no effect on other windows:</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -2329,6 +2331,10 @@
 <tr><td valign="top"><tt>Qt::MSWindowsOwnDC</tt></td><td align="center" valign="top"><tt>0x00000200</tt></td><td valign="top">Gives the window its own display context on Windows.</td></tr>
 <tr><td valign="top"><tt>Qt::X11BypassWindowManagerHint</tt></td><td align="center" valign="top"><tt>0x00000400</tt></td><td valign="top">Bypass the window manager completely. This results in a borderless window that is not managed at all (i.e&#x2e;, no keyboard input unless you call <a href="qwidget.html#activateWindow">QWidget::activateWindow</a>() manually).</td></tr>
 <tr><td valign="top"><tt>Qt::FramelessWindowHint</tt></td><td align="center" valign="top"><tt>0x00000800</tt></td><td valign="top">Produces a borderless window. The user cannot move or resize a borderless window via the window system. On X11, the result of the flag is dependent on the window manager and its ability to understand Motif and/or NETWM hints. Most existing modern window managers can handle this.</td></tr>
+</table></p>
+<p>The <tt>CustomizeWindowHint</tt> flag is used to enable customization of the window controls. This flag must be set to allow the <tt>WindowTitleHint</tt>, <tt>WindowSystemMenuHint</tt>, <tt>WindowMinimizeButtonHint</tt> and <tt>WindowMaximizeButtonHint</tt> flags to be changed.</p>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::CustomizeWindowHint</tt></td><td align="center" valign="top"><tt>0x02000000</tt></td><td valign="top">Turns off the default window title hints.</td></tr>
 <tr><td valign="top"><tt>Qt::WindowTitleHint</tt></td><td align="center" valign="top"><tt>0x00001000</tt></td><td valign="top">Gives the window a title bar.</td></tr>
 <tr><td valign="top"><tt>Qt::WindowSystemMenuHint</tt></td><td align="center" valign="top"><tt>0x00002000</tt></td><td valign="top">Adds a window system menu, and possibly a close button.</td></tr>
@@ -2400,7 +2406,7 @@
 <p>Example:</p>
 <pre>         QString plain = &quot;#include &lt;QtCore&gt;&quot;
          QString html = Qt::escape(plain);
-         // html == &quot;#include &amp;lt;QtCore&amp;gt;&quot;</pre>
+         <span class="comment">// html == &quot;#include &amp;lt;QtCore&amp;gt;&quot;</span></pre>
 <p>This function is defined in the <tt>&lt;QTextDocument&gt;</tt> header file.</p>
 <p>See also <a href="qt.html#convertFromPlainText">convertFromPlainText</a>() and <a href="qt.html#mightBeRichText">mightBeRichText</a>().</p>
 <a name="//apple_ref/cpp/instm/Qt/mightBeRichText" />
@@ -2412,6 +2418,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

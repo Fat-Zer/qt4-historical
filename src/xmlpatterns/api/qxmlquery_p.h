@@ -116,7 +116,7 @@ private:
       Disabled, no implementation provided.
      */
     inline QReferenceCountedValue();
-    Q_DISABLE_COPY(QReferenceCountedValue);
+    Q_DISABLE_COPY(QReferenceCountedValue)
 };
 
 class QXmlQueryPrivate
@@ -166,10 +166,19 @@ public:
             messageHandler = new QPatternist::ColoringMessageHandler(ownerObject());
 
         const QPatternist::GenericStaticContext::Ptr genericStaticContext(new QPatternist::GenericStaticContext(namePool.d, messageHandler, queryURI));
-        const QPatternist::ResourceLoader::Ptr resourceLoader(new QPatternist::AccelTreeResourceLoader(namePool.d,
-                                                                                                       networkManager(),
-                                                                                                       QPatternist::ReportContext::Ptr(genericStaticContext)));
-        genericStaticContext->setResourceLoader(resourceLoader);
+
+        /* We use the same resource loader across invocations. However, if
+         * our device bindings has changed, we need to pick up that too.
+         * Unfortunately updateVariableValues also includes other types of
+         * variables. */
+        if(!m_resourceLoader || updateVariableValues)
+        {
+            m_resourceLoader = (new QPatternist::AccelTreeResourceLoader(namePool.d,
+                                                                         networkManager(),
+                                                                         QPatternist::ReportContext::Ptr(genericStaticContext)));
+        }
+
+        genericStaticContext->setResourceLoader(m_resourceLoader);
 
         genericStaticContext->setExternalVariableLoader(variableLoader());
 
@@ -205,7 +214,7 @@ public:
         else
         {
             QPatternist::DynamicContext::Ptr focus(new QPatternist::Focus(dynContext));
-            QPatternist::Item::Iterator::Ptr it(makeSingletonIterator(QPatternist::Item::fromPublic(contextItem)));
+            QPatternist::Item::Iterator::Ptr it(QPatternist::makeSingletonIterator(QPatternist::Item::fromPublic(contextItem)));
             it->next();
             focus->setFocusIterator(it);
             return focus;
@@ -335,6 +344,7 @@ private:
     QPatternist::ExpressionFactory::Ptr         m_expressionFactory;
     QPatternist::StaticContext::Ptr             m_staticContext;
     QPatternist::VariableLoader::Ptr            m_variableLoader;
+    QPatternist::ResourceLoader::Ptr            m_resourceLoader;
     /**
      * This is the AST for the query.
      */

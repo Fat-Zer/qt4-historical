@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/editabletreemodel.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/editabletreemodel.qdoc -->
 <head>
   <title>Qt 4.4: Editable Tree Model</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -49,9 +49,9 @@
 <p>We place an item at the root of the tree of items. This root item corresponds to the null model index, <a href="qmodelindex.html#QModelIndex">QModelIndex()</a>, that is used to represent the parent of a top-level item when handling model indexes. Although the root item does not have a visible representation in any of the standard views, we use its internal list of <a href="qvariant.html">QVariant</a> objects to store a list of strings that will be passed to views for use as horizontal header titles.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/itemviews-editabletreemodel-model.png" /></td><td><b>Accessing data via the model</b><p>In the case shown in the diagram, the piece of information represented by <b>a</b> can be obtained using the standard model/view API:</p>
-<pre>     QVariant a = model-&gt;index(0, 0, QModelIndex()).data();</pre>
+<pre> QVariant a = model-&gt;index(0, 0, QModelIndex()).data();</pre>
 <p>Since each items holds pieces of data for each column in a given row, there can be many model indexes that map to the same <tt>TreeItem</tt> object. For example, the information represented by <b>b</b> can be obtained using the following code:</p>
-<pre>     QVariant b = model-&gt;index(1, 0, QModelIndex()).data();</pre>
+<pre> QVariant b = model-&gt;index(1, 0, QModelIndex()).data();</pre>
 <p>The same underlying <tt>TreeItem</tt> would be accessed to obtain information for the other model indexes in the same row as <b>b</b>.</p>
 </td></tr>
 </table></p>
@@ -326,6 +326,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -68,6 +68,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QDrag>
 #include <QtCore/QMimeData>
+#include <QtCore/QSettings>
 #include <QtXml/QDomDocument>
 
 QT_BEGIN_NAMESPACE
@@ -78,6 +79,9 @@ static const char *typeImage = "image";
 static const char *typeStyleSheet = "stylesheet";
 static const char *typeOther = "other";
 static const char *fileAttribute = "file";
+static const char *SplitterPosition = "SplitterPosition";
+static const char *Geometry = "Geometry";
+static const char *ResourceViewDialogC = "ResourceDialog";
 
 // ---------------- ResourceListWidget: A list widget that has drag enabled
 class ResourceListWidget : public QListWidget {
@@ -147,6 +151,8 @@ public:
     void createResources(const QString &path);
     void storeExpansionState();
     void applyExpansionState();
+    void restoreSettings();
+    void saveSettings();
 
     QPixmap makeThumbnail(const QPixmap &pix) const;
 
@@ -155,6 +161,7 @@ public:
     QToolBar *m_toolBar;
     QTreeWidget *m_treeWidget;
     QListWidget *m_listWidget;
+    QSplitter *m_splitter;
     QMap<QString, QStringList>       m_pathToContents; // full path to contents file names
     QMap<QString, QTreeWidgetItem *> m_pathToItem;
     QMap<QTreeWidgetItem *, QString> m_itemToPath;
@@ -167,6 +174,7 @@ public:
     QMap<QString, bool> m_expansionState;
 
     bool m_ignoreGuiSignals;
+    QString m_settingsKey;
 };
 
 QtResourceViewPrivate::QtResourceViewPrivate(QDesignerFormEditorInterface *core) :
@@ -181,6 +189,30 @@ QtResourceViewPrivate::QtResourceViewPrivate(QDesignerFormEditorInterface *core)
     m_copyResourcePathAction(0),
     m_ignoreGuiSignals(false)
 {
+}
+
+void QtResourceViewPrivate::restoreSettings()
+{
+    if (m_settingsKey.isEmpty())
+        return;
+
+    QSettings settings;
+    settings.beginGroup(m_settingsKey);
+
+    m_splitter->restoreState(settings.value(QLatin1String(SplitterPosition)).toByteArray());
+    settings.endGroup();
+}
+
+void QtResourceViewPrivate::saveSettings()
+{
+    if (m_settingsKey.isEmpty())
+        return;
+
+    QSettings settings;
+    settings.beginGroup(m_settingsKey);
+
+    settings.setValue(QLatin1String(SplitterPosition), m_splitter->saveState());
+    settings.endGroup();
 }
 
 void QtResourceViewPrivate::slotEditResources()
@@ -417,16 +449,16 @@ QtResourceView::QtResourceView(QDesignerFormEditorInterface *core, QWidget *pare
     connect(d_ptr->m_copyResourcePathAction, SIGNAL(triggered()), this, SLOT(slotCopyResourcePath()));
     d_ptr->m_copyResourcePathAction->setEnabled(false);
 
-    QSplitter *splitter = new QSplitter;
-    splitter->setChildrenCollapsible(false);
-    splitter->addWidget(d_ptr->m_treeWidget);
-    splitter->addWidget(d_ptr->m_listWidget);
+    d_ptr->m_splitter = new QSplitter;
+    d_ptr->m_splitter->setChildrenCollapsible(false);
+    d_ptr->m_splitter->addWidget(d_ptr->m_treeWidget);
+    d_ptr->m_splitter->addWidget(d_ptr->m_listWidget);
 
     QLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(d_ptr->m_toolBar);
-    layout->addWidget(splitter);
+    layout->addWidget(d_ptr->m_splitter);
 
     d_ptr->m_treeWidget->setColumnCount(1);
     d_ptr->m_treeWidget->header()->hide();
@@ -450,6 +482,9 @@ QtResourceView::QtResourceView(QDesignerFormEditorInterface *core, QWidget *pare
 
 QtResourceView::~QtResourceView()
 {
+    if (!d_ptr->m_settingsKey.isEmpty())
+        d_ptr->saveSettings();
+
     delete d_ptr;
 }
 
@@ -498,6 +533,24 @@ void QtResourceView::selectResource(const QString &resource)
             d_ptr->m_listWidget->scrollToItem(item);
         }
     }
+}
+
+QString QtResourceView::settingsKey() const
+{
+    return d_ptr->m_settingsKey;
+}
+
+void QtResourceView::setSettingsKey(const QString &key)
+{
+    if (d_ptr->m_settingsKey == key)
+        return;
+
+    d_ptr->m_settingsKey = key;
+
+    if (key.isEmpty())
+        return;
+
+    d_ptr->restoreSettings();
 }
 
 void QtResourceView::setResourceModel(QtResourceModel *model)
@@ -618,6 +671,7 @@ QtResourceViewDialogPrivate::QtResourceViewDialogPrivate(QDesignerFormEditorInte
     m_view(new QtResourceView(core)),
     m_box(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel))
 {
+    m_view->setSettingsKey(QLatin1String(ResourceViewDialogC));
 }
 
 // ------------ QtResourceViewDialog
@@ -637,10 +691,25 @@ QtResourceViewDialog::QtResourceViewDialog(QDesignerFormEditorInterface *core, Q
     connect(d_ptr->m_view, SIGNAL(resourceSelected(QString)), this, SLOT(slotResourceSelected(QString)));
     d_ptr->setOkButtonEnabled(false);
     d_ptr->m_view->setResourceModel(core->resourceModel());
+
+    QSettings settings;
+    settings.beginGroup(QLatin1String(ResourceViewDialogC));
+
+    if (settings.contains(QLatin1String(Geometry)))
+        setGeometry(settings.value(QLatin1String(Geometry)).toRect());
+
+    settings.endGroup();
 }
 
 QtResourceViewDialog::~QtResourceViewDialog()
 {
+    QSettings settings;
+    settings.beginGroup(QLatin1String(ResourceViewDialogC));
+
+    settings.setValue(QLatin1String(Geometry), geometry());
+
+    settings.endGroup();
+
     delete d_ptr;
 }
 

@@ -75,8 +75,8 @@ QT_MODULE(Test)
 # define Q_TESTLIB_EXPORT
 #endif
 
-#define QTEST_VERSION     0x040400
-#define QTEST_VERSION_STR "4.4.0"
+#define QTEST_VERSION     QT_VERSION
+#define QTEST_VERSION_STR QT_VERSION_STR
 
 namespace QTest
 {

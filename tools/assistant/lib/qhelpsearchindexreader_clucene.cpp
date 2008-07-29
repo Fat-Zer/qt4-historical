@@ -231,13 +231,17 @@ bool QHelpSearchIndexReader::buildQuery(QCLuceneBooleanQuery &booleanQuery,
             case QHelpSearchQuery::FUZZY: {
                 const QLatin1String fuzzy("~");
                 foreach (const QString term, query.wordList) {
-                    if (term.isEmpty() || !defaultQuery(term + fuzzy, booleanQuery))
+                    if (term.isEmpty() || !defaultQuery(term.toLower() + fuzzy, booleanQuery))
                         return false;
                 }
             }   break;
 
             case QHelpSearchQuery::WITHOUT: {
+                QStringList stopWords = QCLuceneStopAnalyzer().englishStopWords();
                 foreach (const QString term, query.wordList) {
+                    if (stopWords.contains(term, Qt::CaseInsensitive))
+                        continue;
+
                     QCLuceneQuery *query = new QCLuceneTermQuery(QCLuceneTerm(
                         QLatin1String("content"), term.toLower()));
                     QCLuceneQuery *query2 = new QCLuceneTermQuery(QCLuceneTerm(
@@ -257,15 +261,17 @@ bool QHelpSearchIndexReader::buildQuery(QCLuceneBooleanQuery &booleanQuery,
                 if (term.contains(QLatin1Char(' '))) {
                     QStringList termList = term.split(QLatin1String(" "));
                     QCLucenePhraseQuery *q = new QCLucenePhraseQuery();
-                    foreach (const QString t, termList)
-                        q->addTerm(QCLuceneTerm(QLatin1String("content"), t));
-
+                    QStringList stopWords = QCLuceneStopAnalyzer().englishStopWords();
+                    foreach (const QString t, termList) {
+                        if (!stopWords.contains(t, Qt::CaseInsensitive))
+                            q->addTerm(QCLuceneTerm(QLatin1String("content"), t.toLower()));
+                    }
                     booleanQuery.add(q, true, true, false);
                 } else {
                     QCLuceneQuery *query = new QCLuceneTermQuery(QCLuceneTerm(
-                        QLatin1String("content"), term));
+                        QLatin1String("content"), term.toLower()));
                     QCLuceneQuery *query2 = new QCLuceneTermQuery(QCLuceneTerm(
-                        QLatin1String("titleTokenized"), term));
+                        QLatin1String("titleTokenized"), term.toLower()));
 
                     if (query && query2) {
                         booleanQuery.add(query, true, true, false);
@@ -277,9 +283,13 @@ bool QHelpSearchIndexReader::buildQuery(QCLuceneBooleanQuery &booleanQuery,
             }   break;
 
             case QHelpSearchQuery::ALL: {
+                QStringList stopWords = QCLuceneStopAnalyzer().englishStopWords();
                 foreach (const QString term, query.wordList) {
+                    if (stopWords.contains(term, Qt::CaseInsensitive))
+                        continue;
+
                     QCLuceneQuery *query = new QCLuceneTermQuery(QCLuceneTerm(
-                        QLatin1String("content"), term));
+                        QLatin1String("content"), term.toLower()));
 
                     if (query) {
                         booleanQuery.add(query, true, true, false);
@@ -292,7 +302,7 @@ bool QHelpSearchIndexReader::buildQuery(QCLuceneBooleanQuery &booleanQuery,
             case QHelpSearchQuery::DEFAULT: {
                 QCLuceneStandardAnalyzer analyzer;
                 foreach (const QString t, query.wordList) {
-                    QCLuceneQuery *query = QCLuceneQueryParser::parse(t,
+                    QCLuceneQuery *query = QCLuceneQueryParser::parse(t.toLower(),
                         QLatin1String("content"), analyzer);
             
                     if (query)
@@ -302,7 +312,7 @@ bool QHelpSearchIndexReader::buildQuery(QCLuceneBooleanQuery &booleanQuery,
 
             case QHelpSearchQuery::ATLEAST: {
                 foreach (const QString term, query.wordList) {
-                    if (term.isEmpty() || !defaultQuery(term, booleanQuery))
+                    if (term.isEmpty() || !defaultQuery(term.toLower(), booleanQuery))
                         return false;
                 }
             }

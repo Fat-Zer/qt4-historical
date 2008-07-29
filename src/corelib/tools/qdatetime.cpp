@@ -186,11 +186,13 @@ static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* d
     subtract days, months, and years to dates.
 
     A QDate object is typically created either by giving the year,
-    month, and day numbers explicitly, or by using the static function
-    currentDate() that creates a QDate object containing the system
-    clock's date. An explicit date can also be set using setDate(). The
-    fromString() function returns a QDate given a string and a date
-    format which is used to interpret the date within the string.
+    month, and day numbers explicitly. Note that QDate interprets two
+    digit years to be in the 1900s, e.g., 50 will equals 1950. A QDate
+    can also be constructed with the static function currentDate(),
+    which creates a QDate object containing the system clock's date.
+    An explicit date can also be set using setDate(). The fromString()
+    function returns a QDate given a string and a date format which is
+    used to interpret the date within the string.
 
     The year(), month(), and day() functions provide access to the
     year, month, and day numbers. Also, dayOfWeek() and dayOfYear()
@@ -233,8 +235,8 @@ static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* d
     isValid() returns false. Any date before 2 January 4713 B.C. is
     considered invalid.
 
-    \warning Years 0 to 99 are interpreted as is. If you want to
-    specify the year 2010, you must write 2010, not 10.
+    \warning Years 0 to 99 are interpreted as being in the 1900s. If
+    you want to specify the year 2010, you must write 2010, not 10.
 
     \sa isValid()
 */
@@ -250,6 +252,8 @@ QDate::QDate(int y, int m, int d)
 
     Returns true if the date is null; otherwise returns false. A null
     date is invalid.
+
+    \note The behavior of this function is identical to isValid().
 
     \sa isValid()
 */
@@ -484,7 +488,6 @@ int QDate::weekNumber(int *yearNumber) const
 QString QDate::shortMonthName(int month)
 {
     if (month < 1 || month > 12) {
-        qWarning("QDate::shortMonthName: Parameter out ouf range");
         month = 1;
     }
     return QLocale::system().monthName(month, QLocale::ShortFormat);
@@ -518,7 +521,6 @@ QString QDate::shortMonthName(int month)
 QString QDate::longMonthName(int month)
 {
     if (month < 1 || month > 12) {
-        qWarning("QDate::longMonthName: Parameter out ouf range");
         month = 1;
     }
     return QLocale::system().monthName(month, QLocale::LongFormat);
@@ -547,7 +549,6 @@ QString QDate::longMonthName(int month)
 QString QDate::shortDayName(int weekday)
 {
     if (weekday < 1 || weekday > 7) {
-        qWarning("QDate::shortDayName: Parameter out of range");
         weekday = 1;
     }
     return QLocale::system().dayName(weekday, QLocale::ShortFormat);
@@ -576,7 +577,6 @@ QString QDate::shortDayName(int weekday)
 QString QDate::longDayName(int weekday)
 {
     if (weekday < 1 || weekday > 7) {
-        qWarning("QDate::longDayName: Parameter out of range");
         weekday = 1;
     }
     return QLocale::system().dayName(weekday, QLocale::LongFormat);
@@ -941,7 +941,10 @@ QDate QDate::currentDate()
 
     Returns the QDate represented by the \a string, using the
     \a format given, or an invalid date if the string cannot be
-    parsed.
+    parsed. 
+
+    Note that years specified with two digits are interpreted to be
+    between 1900 and 1999.
 
     Note for Qt::TextDate: It is recommended that you use the
     English short month names (e.g. "Jan"). Although localized month
@@ -978,7 +981,6 @@ QDate QDate::fromString(const QString& s, Qt::DateFormat f)
         QStringList parts = s.split(QLatin1Char(' '), QString::SkipEmptyParts);
 
         if (parts.count() != 4) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDate();
         }
 
@@ -1001,20 +1003,17 @@ QDate QDate::fromString(const QString& s, Qt::DateFormat f)
             }
         }
         if (month < 1 || month > 12) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDate();
         }
 
         bool ok;
         int day = parts.at(2).toInt(&ok);
         if (!ok) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDate();
         }
 
         int year = parts.at(3).toInt(&ok);
         if (!ok) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDate();
         }
 
@@ -1122,8 +1121,10 @@ QDate QDate::fromString(const QString &string, const QString &format)
 bool QDate::isValid(int year, int month, int day)
 {
     if (year < FIRST_YEAR
-            || (year == FIRST_YEAR && (month < FIRST_MONTH || month == FIRST_MONTH && day < FIRST_DAY))
-            || year == 0) // there is no year 0 in the Julian calendar
+        || (year == FIRST_YEAR &&
+            (month < FIRST_MONTH
+             || (month == FIRST_MONTH && day < FIRST_DAY)))
+        || year == 0) // there is no year 0 in the Julian calendar
         return false;
 
     // passage from Julian to Gregorian calendar
@@ -1146,7 +1147,7 @@ bool QDate::isLeapYear(int y)
     if (y < 1582) {
         return qAbs(y) % 4 == 0;
     } else {
-        return y % 4 == 0 && y % 100 != 0 || y % 400 == 0;
+        return (y % 4 == 0 && y % 100 != 0) || y % 400 == 0;
     }
 }
 
@@ -1648,7 +1649,6 @@ QTime QTime::currentTime()
 QTime QTime::fromString(const QString& s, Qt::DateFormat f)
 {
     if (s.isEmpty()) {
-        qWarning("QTime::fromString: Parameter out of range");
         QTime t;
         t.mds = NullTime;
         return t;
@@ -2041,6 +2041,9 @@ void QDateTime::setDate(const QDate &date)
 {
     detach();
     d->date = date;
+    if (d->spec == QDateTimePrivate::LocalStandard
+        || d->spec == QDateTimePrivate::LocalDST)
+        d->spec = QDateTimePrivate::LocalUnknown;
     if (date.isValid() && !d->time.isValid())
         d->time = QTime(0, 0, 0);
 }
@@ -2054,6 +2057,9 @@ void QDateTime::setDate(const QDate &date)
 void QDateTime::setTime(const QTime &time)
 {
     detach();
+    if (d->spec == QDateTimePrivate::LocalStandard
+        || d->spec == QDateTimePrivate::LocalDST)
+        d->spec = QDateTimePrivate::LocalUnknown;
     d->time = time;
 }
 
@@ -2699,7 +2705,6 @@ static int fromShortMonthName(const QString &monthName)
 QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
 {
     if (s.isEmpty()) {
-        qWarning("QDateTime::fromString: Parameter out of range");
         return QDateTime();
     }
 
@@ -2733,7 +2738,6 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
         QStringList parts = s.split(QLatin1Char(' '), QString::SkipEmptyParts);
 
         if (parts.count() != 5) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
 
@@ -2766,13 +2770,11 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
 
         if (month == -1 || day == -1) {
             // both variants failed, give up
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
 
         int year = parts.at(4).toInt(&ok);
         if (!ok) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
 
@@ -2780,25 +2782,21 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
 
         QStringList timeParts = parts.at(3).split(QLatin1Char(':'));
         if (timeParts.count() != 3) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
 
         int hour = timeParts.at(0).toInt(&ok);
         if (!ok) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
 
         int minute = timeParts.at(1).toInt(&ok);
         if (!ok) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
 
         int second = timeParts.at(2).toInt(&ok);
         if (!ok) {
-            qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
 
@@ -3314,19 +3312,35 @@ static const int LowerYear = 1980;
 #else
 static const int LowerYear = 1970;
 #endif
+static const int UpperYear = 2037;
+
+static QDate adjustDate(QDate date)
+{
+    QDate lowerLimit(LowerYear, 1, 2);
+    QDate upperLimit(UpperYear, 12, 30);
+
+    if (date > lowerLimit && date < upperLimit)
+        return date;
+
+    int month = date.month();
+    int day = date.day();
+
+    // neither 1970 nor 2037 are leap years, so make sure date isn't Feb 29
+    if (month == 2 && day == 29)
+        --day;
+
+    if (date < lowerLimit)
+        date.setDate(LowerYear, month, day);
+    else
+        date.setDate(UpperYear, month, day);
+
+    return date;
+}
 
 static QDateTimePrivate::Spec utcToLocal(QDate &date, QTime &time)
 {
-    QDate lowerLimit(LowerYear, 1, 2);
-    QDate upperLimit(2037, 12, 30);
+    QDate fakeDate = adjustDate(date);
 
-    QDate fakeDate = date;
-
-    if (fakeDate < lowerLimit) {
-        fakeDate = lowerLimit;
-    } else if (fakeDate > upperLimit) {
-        fakeDate = upperLimit;
-    }
     time_t secsSince1Jan1970UTC = toTime_tHelper(fakeDate, time);
     tm *brokenDown = 0;
 
@@ -3379,18 +3393,7 @@ static void localToUtc(QDate &date, QTime &time, int isdst)
     if (!date.isValid())
         return;
 
-    QDate lowerLimit(LowerYear, 1, 2);
-    QDate upperLimit(2037, 12, 30);
-
-    QDate fakeDate = date;
-
-    if (fakeDate < lowerLimit) {
-        fakeDate = lowerLimit;
-        isdst = false;
-    } else if (fakeDate > upperLimit) {
-        fakeDate = upperLimit;
-        isdst = false;
-    }
+    QDate fakeDate = adjustDate(date);
 
     tm localTM;
     localTM.tm_sec = time.second();

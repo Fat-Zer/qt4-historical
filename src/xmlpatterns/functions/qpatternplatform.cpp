@@ -129,10 +129,10 @@ const QRegExp PatternPlatform::pattern(const DynamicContext::Ptr &context) const
     Flags flags;
 
     /* Compile the flags, if necessary. */
-    if((m_compiledParts & OnlyPattern) == 0)
+    if(m_compiledParts.testFlag(FlagsPrecompiled))
+        flags = m_flags;
+    else
     {
-        retvalPattern = m_pattern; /* Pattern is already compiled, so use it. */
-
         const Expression::Ptr flagsOp(m_operands.value(m_flagsPosition));
 
         if(flagsOp)
@@ -142,13 +142,13 @@ const QRegExp PatternPlatform::pattern(const DynamicContext::Ptr &context) const
     }
 
     /* Compile the pattern, if necessary. */
-    if((m_compiledParts & OnlyFlags) == 0)
+    if(m_compiledParts.testFlag(PatternPrecompiled))
+        retvalPattern = m_pattern;
+    else
     {
         retvalPattern = parsePattern(m_operands.at(1)->evaluateSingleton(context).stringValue(),
                                      context);
 
-        if((m_compiledParts & OnlyPattern) != 0)
-            flags = m_flags;
     }
 
     applyFlags(flags, retvalPattern);
@@ -173,7 +173,6 @@ void PatternPlatform::applyFlags(const Flags flags, QRegExp &patternP)
 QRegExp PatternPlatform::parsePattern(const QString &patternP,
                                       const DynamicContext::Ptr &context) const
 {
-
     if(patternP == QLatin1String("(.)\\3") ||
        patternP == QLatin1String("\\3")    ||
        patternP == QLatin1String("(.)\\2"))
@@ -261,7 +260,7 @@ Expression::Ptr PatternPlatform::compress(const StaticContext::Ptr &context)
 
         m_pattern = parsePattern(m_operands.at(1)->evaluateSingleton(dynContext).stringValue(),
                                  dynContext);
-        m_compiledParts |= OnlyPattern;
+        m_compiledParts |= PatternPrecompiled;
     }
 
     const Expression::Ptr flagOperand(m_operands.value(m_flagsPosition));
@@ -269,14 +268,14 @@ Expression::Ptr PatternPlatform::compress(const StaticContext::Ptr &context)
     if(!flagOperand)
     {
         m_flags = NoFlags;
-        m_compiledParts |= OnlyFlags;
+        m_compiledParts |= FlagsPrecompiled;
     }
     else if(flagOperand->is(IDStringValue))
     {
         const DynamicContext::Ptr dynContext(context->dynamicContext());
         m_flags = parseFlags(flagOperand->evaluateSingleton(dynContext).stringValue(),
                              dynContext);
-        m_compiledParts |= OnlyFlags;
+        m_compiledParts |= FlagsPrecompiled;
     }
 
     if(m_compiledParts == FlagsAndPattern)

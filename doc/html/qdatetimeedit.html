@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qdatetimeedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qdatetimeedit.cpp -->
 <head>
   <title>Qt 4.4: QDateTimeEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -166,6 +166,9 @@
    dateEdit-&gt;setDisplayFormat(&quot;yyyy.MM.dd&quot;);</pre>
 <p>Here we've created a new QDateTimeEdit object initialized with today's date, and restricted the valid date range to today plus or minus 365 days. We've set the order to month, day, year.</p>
 <p>The minimum value for QDateTimeEdit is 14 September 1752, and 2 January 4713BC for <a href="qdate.html">QDate</a>. You can change this by calling <a href="qdatetimeedit.html#minimumDate-prop">setMinimumDate</a>(), <a href="qdatetimeedit.html#maximumDate-prop">setMaximumDate</a>(), <a href="qdatetimeedit.html#minimumTime-prop">setMinimumTime</a>(), and <a href="qdatetimeedit.html#maximumTime-prop">setMaximumTime</a>().</p>
+<a name="using-a-pop-up-calendar-widget"></a>
+<h3>Using a Pop-up Calendar Widget</h3>
+<p>QDateTimeEdit can be configured to allow a <a href="qcalendarwidget.html">QCalendarWidget</a> to be used to select dates. This is enabled by setting the <a href="qdatetimeedit.html#calendarPopup-prop">calendarPopup</a> property. Additionally, you can supply a custom calendar widget for use as the calendar pop-up by calling the <a href="qdatetimeedit.html#setCalendarWidget">setCalendarWidget</a>() function. The existing calendar widget can be retrieved with <a href="qdatetimeedit.html#calendarWidget">calendarWidget</a>().</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/windowsxp-datetimeedit.png" alt="Screenshot of a Windows XP style date time editing widget" /></td><td>A date time editing widget shown in the <a href="gallery-windowsxp.html">Windows XP widget style</a>.</td></tr>
 <tr valign="top" class="even"><td><img src="images/macintosh-datetimeedit.png" alt="Screenshot of a Macintosh style date time editing widget" /></td><td>A date time editing widget shown in the <a href="gallery-macintosh.html">Macintosh widget style</a>.</td></tr>
@@ -206,8 +209,8 @@
 <a name="//apple_ref/cpp/instm/QDateTimeEdit/calendarPopup" />
 <a name="//apple_ref/cpp/instm/QDateTimeEdit/setCalendarPopup" />
 <h3 class="fn"><a name="calendarPopup-prop"></a>calendarPopup : bool</h3>
-<p>This property holds the current calender popup showing mode.</p>
-<p>The calendar popup will be shown upon clicking the arrow button. This property is valid only if there is a valid date display format.</p>
+<p>This property holds the current calender pop-up showing mode.</p>
+<p>The calendar pop-up will be shown upon clicking the arrow button. This property is valid only if there is a valid date display format.</p>
 <p>This property was introduced in Qt 4.2.</p>
 <p>Access functions:</p>
 <ul>
@@ -269,6 +272,7 @@
 <tr valign="top" class="even"><td>MMM d yy</td><td>Jul 2 69</td></tr>
 <tr valign="top" class="odd"><td>MMMM d yy</td><td>July 2 69</td></tr>
 </table></p>
+<p>Note that if you specify a two digit year, it will be interpreted to be in the century in which the date time edit was initialized. The default century is the 21 (2000-2099).</p>
 <p>If you specify an invalid format the format will not be set.</p>
 <p>Access functions:</p>
 <ul>
@@ -408,7 +412,7 @@
 <p>Constructs an empty date time editor with a <i>parent</i>. The value is set to <i>time</i>.</p>
 <a name="//apple_ref/cpp/instm/QDateTimeEdit/calendarWidget" />
 <h3 class="fn"><a name="calendarWidget"></a><a href="qcalendarwidget.html">QCalendarWidget</a> * QDateTimeEdit::calendarWidget () const</h3>
-<p>Returns the calendar widget for the edit if <a href="qdatetimeedit.html#calendarPopup-prop">calendarPopup</a> is set to true and (sections() &amp; <a href="qdatetimeedit.html#Section-enum">DateSections_Mask</a>) != 0.</p>
+<p>Returns the calendar widget for the editor if <a href="qdatetimeedit.html#calendarPopup-prop">calendarPopup</a> is set to true and (sections() &amp; <a href="qdatetimeedit.html#Section-enum">DateSections_Mask</a>) != 0.</p>
 <p>This function creates and returns a calendar widget if none has been set.</p>
 <p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qdatetimeedit.html#setCalendarWidget">setCalendarWidget</a>().</p>
@@ -438,7 +442,9 @@
 <p>See also <a href="qdatetimeedit.html#currentSection-prop">currentSection</a>().</p>
 <a name="//apple_ref/cpp/instm/QDateTimeEdit/setCalendarWidget" />
 <h3 class="fn"><a name="setCalendarWidget"></a>void QDateTimeEdit::setCalendarWidget ( <a href="qcalendarwidget.html">QCalendarWidget</a> * <i>calendarWidget</i> )</h3>
-<p>See also <a href="qdatetimeedit.html#calendarWidget">calendarWidget</a>().</p>
+<p>Sets the calendar widget to be used for the calendar pop-up. The editor does not automatically take ownership of the calendar widget.</p>
+<p>This function was introduced in Qt 4.4.</p>
+<p>See also <a href="qdatetimeedit.html#calendarWidget">calendarWidget</a>() and <a href="qdatetimeedit.html#calendarPopup-prop">calendarPopup</a>.</p>
 <a name="//apple_ref/cpp/instm/QDateTimeEdit/setDateRange" />
 <h3 class="fn"><a name="setDateRange"></a>void QDateTimeEdit::setDateRange ( const <a href="qdate.html">QDate</a> &amp; <i>min</i>, const <a href="qdate.html">QDate</a> &amp; <i>max</i> )</h3>
 <p>Convenience function to set minimum and maximum date with one function call.</p>
@@ -484,6 +490,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

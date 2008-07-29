@@ -371,7 +371,7 @@ void QMessageBoxPrivate::updateSize()
 #ifndef Q_OS_WINCE
     int softLimit = qMin(screenSize.width()/2, 500);
 #else
-    int softLimit = qMin(screenSize.width() * 4 / 3, 500);
+    int softLimit = qMin(screenSize.width() * 3 / 4, 500);
 #endif //Q_OS_WINCE
 #endif
 
@@ -617,6 +617,13 @@ void QMessageBoxPrivate::_q_buttonClicked(QAbstractButton *button)
 
     When an escape button could not be automatically detected, pressing
     \key Esc has no effect.
+
+    \section1 Notes for X11 and Mac
+
+    The message dialogs will show a close button on X11 and Mac.
+    However, clicking it will not close the dialog. This is because
+    there is no mechanism on these platforms to disable the close
+    button.
 
     \sa QDialogButtonBox, {fowler}{GUI Design Handbook: Message Box}, {Standard Dialogs Example}, {Application Example}
 */

@@ -915,12 +915,22 @@ QFileInfo::suffix() const
 
 
 /*!
-    Returns the path of the object's parent directory as a QDir object.
+  Returns the path of the object's parent directory as a QDir object.
 
-    \bold{Note:} The QDir returned always corresponds to the object's parent
-    directory, even if the QFileInfo represents a directory.
+  \bold{Note:} The QDir returned always corresponds to the object's
+  parent directory, even if the QFileInfo represents a directory.
+  
+  For each of the follwing, dir() returns a QDir for
+  \c{"~/examples/191697"}.
 
-    \sa dirPath(), filePath(), fileName(), isRelative(), absoluteDir()
+  \snippet doc/src/snippets/fileinfo/main.cpp 0
+
+  For each of the follwing, dir() returns a QDir for
+  \c{"."}.
+
+  \snippet doc/src/snippets/fileinfo/main.cpp 1
+
+  \sa dirPath(), filePath(), fileName(), isRelative(), absoluteDir()
 */
 
 QDir

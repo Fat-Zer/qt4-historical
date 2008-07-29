@@ -1644,5 +1644,3 @@ gtk-port {
     glib-genmarshal.name = GENMARSHALS
     QMAKE_EXTRA_UNIX_COMPILERS += glib-genmarshal
 }
-
-linux-icc*:QMAKE_CXXFLAGS_RELEASE ~= s/-O2/-O0/

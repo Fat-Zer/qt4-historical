@@ -457,7 +457,13 @@ QLayout *WidgetFactory::createLayout(QWidget *widget, QLayout *parentLayout, int
     if (metaDataBase->item(widget->layout()) == 0) {
         Q_ASSERT(layout->parent() == 0);
         QBoxLayout *box = qobject_cast<QBoxLayout*>(widget->layout());
-        Q_ASSERT(box != 0); // we support only unmanaged box layouts
+        if (!box) {  // we support only unmanaged box layouts
+            const QString msg = QObject::tr("Attempt to add a layout to a widget '%1' (%2) which already has an unmanaged layout of type %3.\n"
+                                            "This indicates an inconsistency in the ui-file.").
+                                 arg(widget->objectName()).arg(classNameOf(core(), widget)).arg(classNameOf(core(), widget->layout()));
+            designerWarning(msg);
+            return 0;
+        }
         box->addLayout(layout);
     }
 
@@ -501,7 +507,7 @@ QWidget* WidgetFactory::widgetOfContainer(QWidget *w) const
 
     while (w != 0) {
         if (core()->widgetDataBase()->isContainer(w) ||
-             w && qobject_cast<QDesignerFormWindowInterface*>(w->parentWidget()))
+             (w && qobject_cast<QDesignerFormWindowInterface*>(w->parentWidget())))
             return w;
 
         w = w->parentWidget();

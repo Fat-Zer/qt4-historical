@@ -59,4 +59,13 @@
             <step>5. Serve and enjoy!</step>
         </method>
     </recipe>
+    <recipe xml:id="HardBoiledEggs">
+        <title>Hard-Boiled Eggs</title>
+        <ingredient name="Eggs"
+                    quantity="3"
+                    unit="eggs"/>
+        <time quantity="3"
+              unit="minutes"/>
+        <method/>
+    </recipe>
 </cookbook>

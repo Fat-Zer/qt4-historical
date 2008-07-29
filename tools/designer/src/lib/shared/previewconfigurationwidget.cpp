@@ -77,7 +77,7 @@ QT_END_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 
-static const char *skinExtensionC = ".skin";
+static const char *skinExtensionC = "skin";
 static const char *enabledKey = "Enabled";
 static const char *userDeviceSkinsKey= "UserDeviceSkins";
 
@@ -101,8 +101,8 @@ static const Skins &defaultSkins() {
         skinPath += QDir::separator();
         skinPath += QLatin1String("qvfb");
 #endif
-        QString pattern = QLatin1String(skinExtensionC);
-        pattern.insert(0, QLatin1Char('*'));
+        QString pattern = QLatin1String("*.");
+        pattern += QLatin1String(skinExtensionC);
         const QDir dir(skinPath, pattern);
         const QFileInfoList list = dir.entryInfoList();
         if (list.empty())

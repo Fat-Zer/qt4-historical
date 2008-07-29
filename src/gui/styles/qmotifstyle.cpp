@@ -1078,7 +1078,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                     m.translate(rect.height(), 0.0);
                     m.rotate(90);
                 }
-                p->setTransform(m);
+                p->setTransform(m, true);
             }
             const int unit_width = pixelMetric(PM_ProgressBarChunkWidth, opt, widget);
             int u = rect.width() / unit_width;
@@ -1110,7 +1110,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                     p->drawText(rect, Qt::AlignCenter | Qt::TextSingleLine, pb->text);
                 }
             }
-            p->setTransform(oldMatrix);
+            p->setTransform(oldMatrix, false);
             break;
         }
 
@@ -1358,7 +1358,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                  if (x > w)
                      x = 2 * w - x;
                  x = reverse ? rect.right() - x : x + rect.x();
-                 p->setTransform(m);
+                 p->setTransform(m, true);
                  p->setPen(QPen(pal2.highlight().color(), 4));
                  p->drawLine(x, rect.y(), x, rect.height());
 
@@ -1974,11 +1974,12 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
                     rect.adjust(-dfw, dfw, dfw, -dfw);
                 else
                     rect.adjust(dfw, -dfw, -dfw, dfw);
-            } else if (sc != SC_ScrollBarGroove)
+            } else if (sc != SC_ScrollBarGroove) {
                 if (scrollbar->orientation == Qt::Horizontal)
                     rect.adjust(0, dfw, 0, -dfw);
                 else
                     rect.adjust(dfw, 0, -dfw, 0);
+            }
             return visualRect(scrollbar->direction, scrollbar->rect, rect);
         }
         break;

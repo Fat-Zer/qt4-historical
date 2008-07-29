@@ -246,6 +246,8 @@ Configure::Configure( int& argc, char** argv )
     dictionary[ "XMLPATTERNS" ]     = "auto";
     dictionary[ "PHONON" ]          = "auto";
     dictionary[ "WEBKIT" ]          = "auto";
+    dictionary[ "ASSISTANT_WEBKIT" ] = "no";
+    dictionary[ "PLUGIN_MANIFESTS" ] = "no";
 
     QString version;
     QFile qglobal_h(sourcePath + "/src/corelib/global/qglobal.h");
@@ -382,26 +384,12 @@ void Configure::parseCmdLine()
     int argCount = configCmdLine.size();
     int i = 0;
 
-    // Look first for XQMAKESPEC
-    for( ; i < argCount; ++i)
-    {
-        if( configCmdLine.at(i) == "-xplatform") {
-            ++i;
-            if (i == argCount)
-                break;
-            dictionary["XQMAKESPEC"] = configCmdLine.at(i);
-            if (!dictionary[ "XQMAKESPEC" ].isEmpty())
-                applySpecSpecifics();
-        }
-    }
-    i = 0;
-
 #if !defined(EVAL)
     if (argCount < 1) // skip rest if no arguments
         ;
     else if( configCmdLine.at(i) == "-redo" ) {
-        configCmdLine.clear();
         dictionary[ "REDO" ] = "yes";
+        configCmdLine.clear();
         reloadCmdLine();
     }
     else if( configCmdLine.at(i) == "-loadconfig" ) {
@@ -414,8 +402,23 @@ void Configure::parseCmdLine()
         } else {
             dictionary[ "HELP" ] = "yes";
         }
+        i = 0;
     }
+    argCount = configCmdLine.size();
 #endif
+
+    // Look first for XQMAKESPEC
+    for(int j = 0 ; j < argCount; ++j)
+    {
+        if( configCmdLine.at(j) == "-xplatform") {
+            ++j;
+            if (j == argCount)
+                break;
+            dictionary["XQMAKESPEC"] = configCmdLine.at(j);
+            if (!dictionary[ "XQMAKESPEC" ].isEmpty())
+                applySpecSpecifics();
+        }
+    }
 
     for( ; i<configCmdLine.size(); ++i ) {
         bool continueElse = false;
@@ -806,6 +809,14 @@ void Configure::parseCmdLine()
             dictionary[ "WEBKIT" ] = "no";
         } else if( configCmdLine.at(i) == "-webkit" ) {
             dictionary[ "WEBKIT" ] = "yes";
+        } else if( configCmdLine.at(i) == "-no-assistant-webkit" ) {
+            dictionary[ "ASSISTANT_WEBKIT" ] = "no";
+        } else if( configCmdLine.at(i) == "-assistant-webkit" ) {
+            dictionary[ "ASSISTANT_WEBKIT" ] = "yes";
+        } else if( configCmdLine.at(i) == "-no-plugin-manifests" ) {
+            dictionary[ "PLUGIN_MANIFESTS" ] = "no";
+        } else if( configCmdLine.at(i) == "-plugin-manifests" ) {
+            dictionary[ "PLUGIN_MANIFESTS" ] = "yes";
         }
 
         else if( configCmdLine.at(i) == "-internal" )
@@ -1247,6 +1258,7 @@ void Configure::applySpecSpecifics()
         dictionary[ "CE_CRT" ]              = "yes";
         dictionary[ "DIRECT3D" ]            = "no";
         dictionary[ "WEBKIT" ]              = "no";
+        dictionary[ "ASSISTANT_WEBKIT" ]    = "no";
         dictionary[ "PHONON" ]              = "no";
         // We only apply MMX/IWMMXT for mkspecs we know they work
         if (dictionary[ "XQMAKESPEC" ].startsWith("wincewm")) {
@@ -1345,7 +1357,7 @@ bool Configure::displayHelp()
                     "[-no-iwmmxt] [-iwmmxt] [-direct3d] [-openssl] [-openssl-linked]\n"
                     "[-no-openssl] [-no-dbus] [-dbus] [-dbus-linked] [-platform <spec>]\n"
                     "[-qtnamespace <namespace>] [-no-phonon] [-phonon]\n"
-                    "[-no-webkit] [-webkit]\n\n", 0, 7);
+                    "[-no-webkit] [-webkit] [-no-assistant-webkit] [-assistant-webkit]\n\n", 0, 7);
 
         desc("Installation options:\n\n");
 
@@ -1473,6 +1485,9 @@ bool Configure::displayHelp()
         desc("INCREDIBUILD_XGE", "no", "-no-incredibuild-xge", "Do not add IncrediBuild XGE distribution commands to custom build steps.");
         desc("INCREDIBUILD_XGE", "yes", "-incredibuild-xge",   "Add IncrediBuild XGE distribution commands to custom build steps. This will distribute MOC and UIC steps, and other custom buildsteps which are added to the INCREDIBUILD_XGE variable.\n(The IncrediBuild distribution commands are only added to Visual Studio projects)\n");
 
+        desc("PLUGIN_MANIFESTS", "no", "-no-plugin-manifest", "Do not embed manifests in plugins.");
+        desc("PLUGIN_MANIFESTS", "yes", "-plugin-manifest",   "Embed manifests in plugins.\n");
+
 #if !defined(EVAL)
         desc("BUILD_QMAKE", "no", "-no-qmake",          "Do not compile qmake.");
         desc("BUILD_QMAKE", "yes", "-qmake",            "Compile qmake.\n");
@@ -1498,6 +1513,8 @@ bool Configure::displayHelp()
         desc("PHONON", "yes",   "-phonon",              "Compile in the Phonon module (Phonon is built if a decent C++ compiler is used.)");
         desc("WEBKIT", "no",    "-no-webkit",           "Do not compile in the WebKit module");
         desc("WEBKIT", "yes",   "-webkit",              "Compile in the WebKit module (WebKit is built if a decent C++ compiler is used.)");
+        desc("ASSISTANT_WEBKIT", "no", "-no-assistant-webkit", "Do not use WebKit as html rendering engine in Assistant.");
+        desc("ASSISTANT_WEBKIT", "yes", "-assistant-webkit", "Use WebKit as html rendering engine in Assistant. (This is only available if WebKit is built.)");
 
         desc(                   "-arch <arch>",         "Specify an architecture.\n"
                                                         "Available values for <arch>:");
@@ -1773,6 +1790,8 @@ bool Configure::checkAvailability(const QString &part)
         }
     } else if (part == "WEBKIT") {
         available = (dictionary.value("QMAKESPEC") == "win32-msvc2005") || (dictionary.value("QMAKESPEC") == "win32-msvc2008") || (dictionary.value("QMAKESPEC") == "win32-g++");
+    } else if (part == "ASSISTANT_WEBKIT") {
+        available = dictionary.value("WEBKIT") == "yes";
     }
 
     return available;
@@ -1899,6 +1918,14 @@ bool Configure::verifyConfiguration()
         cout << "(Press any key to continue..)";
         if(_getch() == 3) // _Any_ keypress w/no echo(eat <Enter> for stdout)
             exit(0);      // Exit cleanly for Ctrl+C
+    }
+    if (dictionary["ASSISTANT_WEBKIT"] == "yes" && dictionary["WEBKIT"] == "no") {
+        cout << "WARNING: WebKit cannot be used in Qt Assistant, since the Qt WebKit module" << endl
+             << "won't be built with the current configuration." << endl;
+        cout << "(Press any key to continue..)";
+        if(_getch() == 3) // _Any_ keypress w/no echo(eat <Enter> for stdout)
+            exit(0);      // Exit cleanly for Ctrl+C
+        dictionary["ASSISTANT_WEBKIT"] = "no";
     }
 
     return true;
@@ -2198,6 +2225,9 @@ void Configure::generateOutputVars()
     if (dictionary["WEBKIT"] == "yes")
         qtConfig += "webkit";
 
+    if (dictionary["ASSISTANT_WEBKIT"] == "yes")
+        qtConfig += "assistant_webkit";
+
     // We currently have no switch for QtSvg, so add it unconditionally.
     qtConfig += "svg";
 
@@ -2312,7 +2342,7 @@ void Configure::generateCachefile()
             cacheStream << (*var) << endl;
         }
         cacheStream << "CONFIG         += " << qmakeConfig.join( " " ) << " incremental create_prl link_prl depend_includepath QTDIR_build" << endl;
-        cacheStream << "QT_BUILD_PARTS  = libs tools examples demos docs" << endl;
+        cacheStream << "QT_BUILD_PARTS  = libs tools examples demos docs translations" << endl;
         QString targetSpec = dictionary.contains("XQMAKESPEC") ? dictionary[ "XQMAKESPEC" ] : dictionary[ "QMAKESPEC" ];
         QString mkspec_path = fixSeparators(sourcePath + "/mkspecs/" + targetSpec);
         if(QFile::exists(mkspec_path))
@@ -2383,6 +2413,8 @@ void Configure::generateCachefile()
             configStream << " iwmmxt";
         if ( dictionary["INCREDIBUILD_XGE"] == "yes" )
             configStream << " incredibuild_xge";
+        if ( dictionary["PLUGIN_MANIFESTS"] == "no" )
+            configStream << " no_plugin_manifest";
 
         configStream << endl;
         configStream << "QT_ARCH = " << dictionary[ "ARCHITECTURE" ] << endl;
@@ -2838,6 +2870,9 @@ void Configure::displayConfig()
         cout << "Cetest support.............." << dictionary[ "CETEST" ] << endl;
         cout << "Signature..................." << dictionary[ "CE_SIGNATURE"] << endl << endl;
     }
+
+    if(dictionary["ASSISTANT_WEBKIT"] == "yes")
+        cout << "Using WebKit as html rendering engine in Qt Assistant." << endl;
 
     if(checkAvailability("INCREDIBUILD_XGE"))
         cout << "Using IncrediBuild XGE......" << dictionary["INCREDIBUILD_XGE"] << endl;

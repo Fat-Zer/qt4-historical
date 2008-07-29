@@ -122,10 +122,13 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
 */
 
 /*!
-    Creates a QStyle object that matches the given \a key. This is either a
-    built-in style, or a style from a style plugin.
+    Creates and returns a QStyle object that matches the given \a key, or
+    returns 0 if no matching style is found.
 
-    Note that keys are case insensitive.
+    Both built-in styles and styles from style plugins are queried for a
+    matching style.
+
+    \note The keys used are case insensitive.
 
     \sa keys()
 */

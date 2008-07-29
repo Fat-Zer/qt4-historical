@@ -823,7 +823,7 @@ Tokenizer::Token XQueryTokenizer::nextToken()
             const char pc = peekCurrent();
             const TokenMap* const t = lookupKeyword(nc.value);
 
-            if(pc == '\'' || pc == '"' && t)
+            if(pc == '\'' || (pc == '"' && t))
                 return tokenAndChangeState(t->token, Default, 0);
             else
                 return nc;
@@ -1048,7 +1048,7 @@ Tokenizer::Token XQueryTokenizer::nextToken()
                         {
                             if(keyword->token == TREAT && keyword2->token == AS)
                                 setState(ItemType);
-                            else if(keyword->token == CAST || keyword->token == CASTABLE && keyword2->token == AS || keyword2->token == BY)
+                            else if (keyword->token == CAST || (keyword->token == CASTABLE && keyword2->token == AS) || keyword2->token == BY)
                                 setState(Default);
 
                             m_tokenStack.push(Token(keyword2->token));

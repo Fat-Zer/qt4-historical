@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/dnd.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/dnd.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Qt 4 - Drag and Drop</title>
   <link rel="prev" href="porting4-virtual-functions.html" />
@@ -30,12 +30,12 @@
 <a name="dragging"></a>
 <h3>Dragging</h3>
 <p>In Qt 3, drag operations are encapsulated by <tt>QDragObject</tt> (see <a href="q3dragobject.html">Q3DragObject</a>) and its subclasses. These objects are typically constructed on the heap in response to mouse click or mouse move events, and ownership of them is transferred to Qt so that they can be deleted when the corresponding drag and drop operations have been completed. The drag source has no control over how the drag and drop operation is performed once the object's <a href="q3dragobject.html#drag">drag()</a> function is called, and it receives no information about how the operation ended.</p>
-<pre>     void MyQt3Widget::customStartDragFunction()
-     {
-         QDragObject *d = new QTextDrag( myHighlightedText(), this );
-         d-&gt;dragCopy();
-         // do NOT delete d.
-     }</pre>
+<pre> void MyQt3Widget::customStartDragFunction()
+ {
+     QDragObject *d = new QTextDrag( myHighlightedText(), this );
+     d-&gt;dragCopy();
+     // do NOT delete d.
+ }</pre>
 <p>Similarly, in Qt 4, drag operations are also initiated when a <a href="qdrag.html">QDrag</a> object is constructed and its <a href="qdrag.html#exec">exec()</a> function is called. In contrast, these objects are typically constructed on the stack rather than the heap since each drag and drop operation is performed synchronously as far as the drag source is concerned. One key benefit of this is that the drag source can receive information about how the operation ended from the value returned by <a href="qdrag.html#exec">exec()</a>.</p>
 <pre> void MyWidget::mousePressEvent(QMouseEvent *event)
  {
@@ -59,13 +59,13 @@
 <h3>Dropping</h3>
 <p>In both Qt 3 and Qt 4, it is possible to prepare a custom widget to accept dropped data by enabling the <a href="qwidget.html#acceptDrops-prop">acceptDrops</a> property of a widget, usually in the widget's constructor. As a result, the widget will receive drag enter events that can be handled by its <a href="qwidget.html#dragEnterEvent">dragEnterEvent()</a> function. As in Qt 3, custom widgets in Qt 4 handle these events by determining whether the data supplied by the drag and drop operation can be dropped onto the widget. Since the classes used to encapsulate MIME data are different in Qt 3 and Qt 4, the exact implementations differ.</p>
 <p>In Qt 3, the drag enter event is handled by checking whether each of the standard <tt>QDragObject</tt> subclasses can decode the data supplied, and indicating success or failure of these checks via the event's <a href="qdragmoveevent.html#accept">accept()</a> function, as shown in this simple example:</p>
-<pre>     void MyQt3Widget::dragEnterEvent(QDragEnterEvent* event)
-     {
-         event-&gt;accept(
-             QTextDrag::canDecode(event) ||
-             QImageDrag::canDecode(event)
-         );
-     }</pre>
+<pre> void MyQt3Widget::dragEnterEvent(QDragEnterEvent* event)
+ {
+     event-&gt;accept(
+         QTextDrag::canDecode(event) ||
+         QImageDrag::canDecode(event)
+     );
+ }</pre>
 <p>In Qt 4, you can examine the MIME type describing the data to determine whether the widget should accept the event or, for common data types, you can use convenience functions:</p>
 <pre> void MyWidget::dragEnterEvent(QDragEnterEvent *event)
  {
@@ -74,17 +74,17 @@
  }</pre>
 <p>The widget has some control over the type of drag and drop operation to be performed. In the above code, the action proposed by the drag source is accepted, but <a href="dnd.html#overriding-proposed-actions">this can be overridden</a> if required.</p>
 <p>In both Qt 3 and Qt 4, it is necessary to accept a given drag event in order to receive the corresponding drop event. A custom widget in Qt 3 that can accept dropped data in the form of text or images might provide an implementation of <a href="qwidget.html#dropEvent">dropEvent()</a> that looks like the following:</p>
-<pre>     void MyQt3Widget::dropEvent(QDropEvent* event)
-     {
-         QImage image;
-         QString text;
+<pre> void MyQt3Widget::dropEvent(QDropEvent* event)
+ {
+     QImage image;
+     QString text;
 
-         if ( QImageDrag::decode(event, image) ) {
-             insertImageAt(image, event-&gt;pos());
-         } else if ( QTextDrag::decode(event, text) ) {
-             insertTextAt(text, event-&gt;pos());
-         }
-     }</pre>
+     if ( QImageDrag::decode(event, image) ) {
+         insertImageAt(image, event-&gt;pos());
+     } else if ( QTextDrag::decode(event, text) ) {
+         insertTextAt(text, event-&gt;pos());
+     }
+ }</pre>
 <p>In Qt 4, the event is handled in a similar way:</p>
 <pre> void MyWidget::dropEvent(QDropEvent *event)
  {
@@ -110,6 +110,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

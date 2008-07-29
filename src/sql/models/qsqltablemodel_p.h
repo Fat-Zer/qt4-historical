@@ -103,9 +103,10 @@ public:
     struct ModifiedRow
     {
         ModifiedRow(Op o = None, const QSqlRecord &r = QSqlRecord()): op(o), rec(r) {}
-        ModifiedRow(const ModifiedRow &other): op(other.op), rec(other.rec) {}
+        ModifiedRow(const ModifiedRow &other): op(other.op), rec(other.rec), primaryValues(other.primaryValues) {}
         Op op;
         QSqlRecord rec;
+		QSqlRecord primaryValues;
     };
 
     QSqlRecord editBuffer;

@@ -1442,7 +1442,7 @@ return FALSE;
 
 #if PCRE_UTF16
 
-static __inline BOOL strequal(const pcre_uchar *str1, int len, const char *str2)
+static BOOL strequal(const pcre_uchar *str1, int len, const char *str2)
 {
   int i;
   for (i = 0; i < len; i++)

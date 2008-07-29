@@ -1934,8 +1934,7 @@ QDataStream &operator<<(QDataStream &out, const QStandardItem &item)
     custom views). For performance and flexibility, you may want to subclass
     QAbstractItemModel to provide support for different kinds of data
     repositories. For example, the QDirModel provides a model interface to the
-    underlying file system, and does not actually store file information
-    internally.
+    underlying file system.
 
     When you want a list or tree, you typically create an empty
     QStandardItemModel and use appendRow() to add items to the model, and

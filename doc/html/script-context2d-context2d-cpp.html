@@ -62,7 +62,7 @@
  #include &lt;QVariant&gt;
 
  #include &lt;math.h&gt;
- static const double Q_PI   = 3.14159265358979323846;   <span class="comment">//</span> pi
+ static const double Q_PI   = 3.14159265358979323846;   <span class="comment">// pi</span>
 
  #define DEGREES(t) ((t) * 180.0 / Q_PI)
 
@@ -92,7 +92,7 @@
          if ((*itr) == ',')
              ++itr;
          points.append(temp.toDouble());
-         <span class="comment">//</span>eat spaces
+         <span class="comment">//eat spaces</span>
          while ((*itr).isSpace())
              ++itr;
      }
@@ -110,7 +110,7 @@
          if (compo.size() != 4) {
              return QColor();
          }
-         <span class="comment">//</span>alpha seems to be always between 0-1
+         <span class="comment">//alpha seems to be always between 0-1</span>
          compo[3] *= 255;
          return QColor((int)compo[0], (int)compo[1],
                        (int)compo[2], (int)compo[3]);
@@ -124,8 +124,8 @@
                        (int)qClamp(compo[1], qreal(0), qreal(255)),
                        (int)qClamp(compo[2], qreal(0), qreal(255)));
      } else {
-         <span class="comment">//</span>QRgb color;
-         <span class="comment">//</span>CSSParser::parseColor(name, color);
+         <span class="comment">//QRgb color;</span>
+         <span class="comment">//CSSParser::parseColor(name, color);</span>
          return QColor(name);
      }
  }
@@ -470,7 +470,7 @@
 
  void Context2D::arcTo(qreal x1, qreal y1, qreal x2, qreal y2, qreal radius)
  {
-     <span class="comment">//</span>FIXME: this is surely busted
+     <span class="comment">//FIXME: this is surely busted</span>
      QPointF st  = m_state.matrix.map(QPointF(x1, y1));
      QPointF end = m_state.matrix.map(QPointF(x2, y2));
      m_path.arcTo(st.x(), st.y(),
@@ -489,14 +489,14 @@
                      qreal sar, qreal ear,
                      bool anticlockwise)
  {
-     <span class="comment">//</span>### HACK
-     <span class="comment">//</span> In Qt we don't switch the coordinate system for degrees
-     <span class="comment">//</span> and still use the 0,0 as bottom left for degrees so we need
-     <span class="comment">//</span> to switch
+     <span class="comment">//### HACK</span>
+     <span class="comment">// In Qt we don't switch the coordinate system for degrees</span>
+     <span class="comment">// and still use the 0,0 as bottom left for degrees so we need</span>
+     <span class="comment">// to switch</span>
      sar = -sar;
      ear = -ear;
      anticlockwise = !anticlockwise;
-     <span class="comment">//</span>end hack
+     <span class="comment">//end hack</span>
 
      float sa = DEGREES(sar);
      float ea = DEGREES(ear);
@@ -514,8 +514,8 @@
          span -= 360;
      }
 
-     <span class="comment">//</span>### this is also due to switched coordinate system
-     <span class="comment">//</span> we would end up with a 0 span instead of 360
+     <span class="comment">//### this is also due to switched coordinate system</span>
+     <span class="comment">// we would end up with a 0 span instead of 360</span>
      if (!(qFuzzyCompare(span + (ea - sa) + 1, 1) &amp;&amp;
            qFuzzyCompare(qAbs(span), 360))) {
          span   += ea - sa;
@@ -650,6 +650,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

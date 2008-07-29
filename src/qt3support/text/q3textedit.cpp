@@ -1354,11 +1354,11 @@ void Q3TextEdit::keyPressEvent(QKeyEvent *e)
     default: {
             unsigned char ascii = e->text().length() ? e->text().unicode()->latin1() : 0;
             if (e->text().length() &&
-                (!(e->state() & Qt::ControlButton) &&
+                ((!(e->state() & Qt::ControlButton) &&
 #ifndef Q_OS_MAC
                   !(e->state() & Qt::AltButton) &&
 #endif
-                  !(e->state() & Qt::MetaButton) ||
+                  !(e->state() & Qt::MetaButton)) ||
                  (((e->state() & (Qt::ControlButton | Qt::AltButton))) == (Qt::ControlButton|Qt::AltButton))) &&
                  (!ascii || ascii >= 32 || e->text() == QString(QLatin1Char('\t')))) {
                 clearUndoRedoInfo = false;
@@ -2663,7 +2663,7 @@ void Q3TextEdit::handleMouseMove(const QPoint& pos)
     if (!mousePressed)
         return;
 
-    if (!scrollTimer->isActive() && pos.y() < contentsY() || pos.y() > contentsY() + visibleHeight())
+    if ((!scrollTimer->isActive() && pos.y() < contentsY()) || pos.y() > contentsY() + visibleHeight())
         scrollTimer->start(100, false);
     else if (scrollTimer->isActive() && pos.y() >= contentsY() && pos.y() <= contentsY() + visibleHeight())
         scrollTimer->stop();
@@ -6956,7 +6956,7 @@ void Q3TextEdit::optimDoAutoScroll()
         repaintContents(contentsX(), y, width(), h);
     }
 
-    if (!scrollTimer->isActive() && pos.y() < 0 || pos.y() > height())
+    if ((!scrollTimer->isActive() && pos.y() < 0) || pos.y() > height())
         scrollTimer->start(100, false);
     else if (scrollTimer->isActive() && pos.y() >= 0 && pos.y() <= height())
         scrollTimer->stop();

@@ -113,8 +113,14 @@ protected slots:
 
     void setZoom();
 
+    void setRot0();
+    void setRot90();
+    void setRot180();
+    void setRot270();
+
 public slots:
     void setZoom(double);
+    void setRotation(QVFbView::Rotation);
 
 protected:
     template <typename T>

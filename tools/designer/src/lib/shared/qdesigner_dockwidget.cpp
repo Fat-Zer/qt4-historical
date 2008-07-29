@@ -48,6 +48,7 @@
 #include <QtDesigner/QDesignerFormEditorInterface>
 #include <QtDesigner/QDesignerContainerExtension>
 #include <QtDesigner/QExtensionManager>
+#include <QtDesigner/QDesignerFormWindowCursorInterface>
 
 #include <QtGui/QMainWindow>
 #include <QtGui/QLayout>
@@ -79,7 +80,7 @@ void QDesignerDockWidget::setDocked(bool b)
             // ### undo/redo stack
             setParent(0);
             c->addWidget(this);
-            formWindow()->emitSelectionChanged();
+            formWindow()->selectWidget(this, formWindow()->cursor()->isWidgetSelected(this));
         } else if (!b && docked()) {
             // Undock it
             for (int i = 0; i < c->count(); ++i) {
@@ -91,7 +92,7 @@ void QDesignerDockWidget::setDocked(bool b)
             // #### restore the position
             setParent(mainWindow->centralWidget());
             show();
-            formWindow()->emitSelectionChanged();
+            formWindow()->selectWidget(this, formWindow()->cursor()->isWidgetSelected(this));
         }
     }
 }

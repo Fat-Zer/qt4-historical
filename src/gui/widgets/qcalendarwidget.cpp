@@ -765,7 +765,7 @@ bool QCalendarTextNavigator::eventFilter(QObject *o, QEvent *e)
     if (m_widget) {
         if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
             QKeyEvent* ke = (QKeyEvent*)e;
-            if (ke->text().length() > 0 && ke->text()[0].isPrint() || m_dateFrame) {
+            if ((ke->text().length() > 0 && ke->text()[0].isPrint()) || m_dateFrame) {
                 if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Select) {
                     applyDate();
                     emit editingFinished();
@@ -1346,7 +1346,7 @@ void QCalendarView::keyPressEvent(QKeyEvent *event)
         }
     } else if (event->key() == Qt::Key_Back) {
         if (QApplication::keypadNavigationEnabled() && hasEditFocus()) {
-            if (QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model())) {
+            if (qobject_cast<QCalendarModel *>(model())) {
                 emit changeDate(origDate, true); //changes selection back to origDate, but doesn't activate
                 setEditFocus(false);
                 return;
@@ -2745,9 +2745,7 @@ QTextCharFormat QCalendarWidget::dateTextFormat(const QDate &date) const
 }
 
 /*!
-    Sets \a format to render \a date.
-
-    \internal
+    Sets the format used to render the given \a date to that specified by \a format.
 
     If \a date is null, all date formats are cleared.
 */
@@ -2822,6 +2820,8 @@ void QCalendarWidget::setDateEditAcceptDelay(int delay)
 }
 
 /*!
+    \since 4.4
+
     Updates the cell specified by the given \a date unless updates
     are disabled or the cell is hidden.
 
@@ -2851,6 +2851,8 @@ void QCalendarWidget::updateCell(const QDate &date)
 }
 
 /*!
+    \since 4.4
+
     Updates all visible cells unless updates are disabled.
 
     \sa updateCell()

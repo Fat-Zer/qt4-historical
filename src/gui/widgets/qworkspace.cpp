@@ -1247,27 +1247,6 @@ QWidget * QWorkspace::addWindow(QWidget *w, Qt::WindowFlags flags)
     child->setObjectName(QLatin1String("qt_workspacechild"));
     child->installEventFilter(this);
 
-    bool hasNativeChildWindows = false;
-    if (!isWindow()) {
-        hasNativeChildWindows = internalWinId() != 0;
-    } else {
-        foreach (QWorkspaceChild *childWindow, d->windows) {
-            if (childWindow->testAttribute(Qt::WA_NativeWindow)) {
-                hasNativeChildWindows = true;
-                break;
-            }
-        }
-    }
-
-    // Enforce native sub-window if other sub-windows are native.
-    if (hasNativeChildWindows) {
-        child->setAttribute(Qt::WA_NativeWindow);
-    // We just added a native sub-window, which means all other sub-windows must be native.
-    } else if (w->testAttribute(Qt::WA_NativeWindow)) {
-        foreach (QWorkspaceChild *childWindow, d->windows)
-            childWindow->setAttribute(Qt::WA_NativeWindow);
-    }
-
     connect(child, SIGNAL(popupOperationMenu(QPoint)),
             this, SLOT(_q_popupOperationMenu(QPoint)));
     connect(child, SIGNAL(showOperationMenu()),
@@ -2634,10 +2613,13 @@ QWorkspaceChild::QWorkspaceChild(QWidget* window, QWorkspace *parent, Qt::Window
 
 QWorkspaceChild::~QWorkspaceChild()
 {
-    if (iconw)
-        delete iconw->parentWidget();
-
     QWorkspace *workspace = qobject_cast<QWorkspace*>(parentWidget());
+    if (iconw) {
+        if (workspace)
+            workspace->d_func()->removeIcon(iconw->parentWidget());
+        delete iconw->parentWidget();
+    }
+
     if (workspace) {
         workspace->d_func()->focus.removeAll(this);
         if (workspace->d_func()->active == this)

@@ -1074,8 +1074,9 @@ void QDashStroker::processCurrentSubpath()
 
         estop = estart + elen;
 
+        bool done = pos >= estop;
         // Dash away...
-        while (pos < estop) {
+        while (!done) {
             QPointF p2;
 
             int idash_incr = 0;
@@ -1087,10 +1088,12 @@ void QDashStroker::processCurrentSubpath()
             if (dpos > elen) { // dash extends this line
                 doffset = dashes[idash] - (dpos - elen); // subtract the part already used
                 pos = estop; // move pos to next path element
+                done = true;
                 p2 = cline.p2();
             } else { // Dash is on this line
                 p2 = cline.pointAt(dpos/elen);
                 pos = dpos + estart;
+                done = pos >= estop;
                 idash_incr = 1;
                 doffset = 0; // full segment so no offset on next.
             }

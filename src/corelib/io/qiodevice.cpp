@@ -436,7 +436,8 @@ QIODevice::OpenMode QIODevice::openMode() const
 
 /*!
     Sets the OpenMode of the device to \a openMode. Call this
-    function to set the open mode when reimplementing open().
+    function to set the open mode if the flags change after the device
+    has been opened.
 
     \sa openMode() OpenMode
 */
@@ -518,7 +519,8 @@ bool QIODevice::isWritable() const
 
 /*!
     Opens the device and sets its OpenMode to \a mode. Returns true if successful;
-    otherwise returns false.
+    otherwise returns false. This function should be called from any
+    reimplementations of open() or other functions that open the device.
 
     \sa openMode() OpenMode
 */
@@ -527,6 +529,7 @@ bool QIODevice::open(OpenMode mode)
     Q_D(QIODevice);
     d->openMode = mode;
     d->pos = (mode & Append) ? size() : qint64(0);
+    d->buffer.clear();
     d->accessMode = QIODevicePrivate::Unset;
 #if defined QIODEVICE_DEBUG
     printf("%p QIODevice::open(0x%x)\n", this, quint32(mode));

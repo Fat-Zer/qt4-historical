@@ -109,6 +109,16 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
     friendly internationalized name of the QInputContext object
     specified by the key using displayName().
 
+    \legalese
+    Copyright (C) 2003-2004 immodule for Qt Project.  All rights reserved.
+
+    This file is written to contribute to Trolltech ASA under their own
+    license. You may use this file under your Qt license. Following
+    description is copied from their original file headers. Contact
+    immodule-qt@freedesktop.org if any conditions of this licensing are
+    not clear to you.
+    \endlegalese
+
     \sa QInputContext, QInputContextPlugin
 */
 

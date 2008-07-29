@@ -341,6 +341,35 @@
         <keyword ref="qabstractfileengine-mapextensionreturn.html">MapExtensionReturn</keyword>
         <section ref="qabstractfileengine-mapextensionreturn-members.html" title="List of all members"/>
     </section>
+    <section ref="phonon-mediacontroller.html" title="MediaController Class Reference">
+        <keyword ref="phonon-mediacontroller.html">MediaController</keyword>
+        <keyword ref="phonon-mediacontroller.html#Feature-enum">Feature</keyword>
+        <keyword ref="phonon-mediacontroller.html#Feature-enum">Features</keyword>
+        <keyword ref="phonon-mediacontroller.html#Feature-enum">Phonon::MediaController::Chapters</keyword>
+        <keyword ref="phonon-mediacontroller.html#Feature-enum">Phonon::MediaController::Titles</keyword>
+        <keyword ref="phonon-mediacontroller.html#Feature-enum">Phonon::MediaController::Angles</keyword>
+        <keyword ref="phonon-mediacontroller.html#angleChanged">angleChanged</keyword>
+        <keyword ref="phonon-mediacontroller.html#autoplayTitles">autoplayTitles</keyword>
+        <keyword ref="phonon-mediacontroller.html#availableAngles">availableAngles</keyword>
+        <keyword ref="phonon-mediacontroller.html#availableAnglesChanged">availableAnglesChanged</keyword>
+        <keyword ref="phonon-mediacontroller.html#availableChapters">availableChapters</keyword>
+        <keyword ref="phonon-mediacontroller.html#availableChaptersChanged">availableChaptersChanged</keyword>
+        <keyword ref="phonon-mediacontroller.html#availableTitles">availableTitles</keyword>
+        <keyword ref="phonon-mediacontroller.html#availableTitlesChanged">availableTitlesChanged</keyword>
+        <keyword ref="phonon-mediacontroller.html#chapterChanged">chapterChanged</keyword>
+        <keyword ref="phonon-mediacontroller.html#currentAngle">currentAngle</keyword>
+        <keyword ref="phonon-mediacontroller.html#currentChapter">currentChapter</keyword>
+        <keyword ref="phonon-mediacontroller.html#currentTitle">currentTitle</keyword>
+        <keyword ref="phonon-mediacontroller.html#nextTitle">nextTitle</keyword>
+        <keyword ref="phonon-mediacontroller.html#previousTitle">previousTitle</keyword>
+        <keyword ref="phonon-mediacontroller.html#setAutoplayTitles">setAutoplayTitles</keyword>
+        <keyword ref="phonon-mediacontroller.html#setCurrentAngle">setCurrentAngle</keyword>
+        <keyword ref="phonon-mediacontroller.html#setCurrentChapter">setCurrentChapter</keyword>
+        <keyword ref="phonon-mediacontroller.html#setCurrentTitle">setCurrentTitle</keyword>
+        <keyword ref="phonon-mediacontroller.html#supportedFeatures">supportedFeatures</keyword>
+        <keyword ref="phonon-mediacontroller.html#titleChanged">titleChanged</keyword>
+        <section ref="phonon-mediacontroller-members.html" title="List of all members"/>
+    </section>
     <section ref="phonon-medianode.html" title="MediaNode Class Reference">
         <keyword ref="phonon-medianode.html">MediaNode</keyword>
         <keyword ref="phonon-medianode.html#inputPaths">inputPaths</keyword>
@@ -470,6 +499,7 @@
         <keyword ref="phonon-effectparameter.html">EffectParameter</keyword>
         <keyword ref="phonon-effectwidget.html">EffectWidget</keyword>
         <keyword ref="phonon-globalconfig.html">GlobalConfig</keyword>
+        <keyword ref="phonon-mediacontroller.html">MediaController</keyword>
         <keyword ref="phonon-medianode.html">MediaNode</keyword>
         <keyword ref="phonon-mediaobject.html">MediaObject</keyword>
         <keyword ref="phonon-mediasource.html">MediaSource</keyword>
@@ -1300,6 +1330,7 @@
     </section>
     <section ref="qabstractxmlnodemodel.html" title="QAbstractXmlNodeModel Class Reference">
         <keyword ref="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</keyword>
+        <keyword ref="qabstractxmlnodemodel.html#List-typedef">List</keyword>
         <keyword ref="qabstractxmlnodemodel.html#Ptr-typedef">Ptr</keyword>
         <keyword ref="qabstractxmlnodemodel.html#SimpleAxis-enum">SimpleAxis</keyword>
         <keyword ref="qabstractxmlnodemodel.html#SimpleAxis-enum">QAbstractXmlNodeModel::FirstChild</keyword>
@@ -1325,7 +1356,7 @@
     <section ref="qabstractxmlreceiver.html" title="QAbstractXmlReceiver Class Reference">
         <keyword ref="qabstractxmlreceiver.html">QAbstractXmlReceiver</keyword>
         <keyword ref="qabstractxmlreceiver.html#atomicValue">atomicValue</keyword>
-        <keyword ref="qabstractxmlreceiver.html#attributex">attribute</keyword>
+        <keyword ref="qabstractxmlreceiver.html#attribute">attribute</keyword>
         <keyword ref="qabstractxmlreceiver.html#characters">characters</keyword>
         <keyword ref="qabstractxmlreceiver.html#comment">comment</keyword>
         <keyword ref="qabstractxmlreceiver.html#endDocument">endDocument</keyword>
@@ -2189,6 +2220,7 @@
         <keyword ref="qcalendarwidget.html#selectionChanged">selectionChanged</keyword>
         <keyword ref="qcalendarwidget.html#setCurrentPage">setCurrentPage</keyword>
         <keyword ref="qcalendarwidget.html#setDateRange">setDateRange</keyword>
+        <keyword ref="qcalendarwidget.html#setDateTextFormat">setDateTextFormat</keyword>
         <keyword ref="qcalendarwidget.html#setHeaderTextFormat">setHeaderTextFormat</keyword>
         <keyword ref="qcalendarwidget.html#setWeekdayTextFormat">setWeekdayTextFormat</keyword>
         <keyword ref="qcalendarwidget.html#showNextMonth">showNextMonth</keyword>
@@ -3666,6 +3698,7 @@
         <keyword ref="qdir.html#SortFlag-enum">QDir::Type</keyword>
         <keyword ref="qdir.html#SortFlag-enum">QDir::Name</keyword>
         <keyword ref="qdir.html#SortFlag-enum">QDir::Unsorted</keyword>
+        <keyword ref="qdir.html#SortFlag-enum">QDir::NoSort</keyword>
         <keyword ref="qdir.html#SortFlag-enum">QDir::Time</keyword>
         <keyword ref="qdir.html#SortFlag-enum">QDir::DirsFirst</keyword>
         <keyword ref="qdir.html#SortFlag-enum">QDir::Reversed</keyword>
@@ -3909,7 +3942,7 @@
     </section>
     <section ref="qdomelement.html" title="QDomElement Class Reference">
         <keyword ref="qdomelement.html">QDomElement</keyword>
-        <keyword ref="qdomelement.html#attributex">attribute</keyword>
+        <keyword ref="qdomelement.html#attribute">attribute</keyword>
         <keyword ref="qdomelement.html#attributeNS">attributeNS</keyword>
         <keyword ref="qdomelement.html#attributeNode">attributeNode</keyword>
         <keyword ref="qdomelement.html#attributeNodeNS">attributeNodeNS</keyword>
@@ -4035,7 +4068,7 @@
         <keyword ref="qdomnode.html#lineNumber">lineNumber</keyword>
         <keyword ref="qdomnode.html#localName">localName</keyword>
         <keyword ref="qdomnode.html#namedItem">namedItem</keyword>
-        <keyword ref="qdomnode.html#namespaceURIx">namespaceURI</keyword>
+        <keyword ref="qdomnode.html#namespaceURI">namespaceURI</keyword>
         <keyword ref="qdomnode.html#nextSibling">nextSibling</keyword>
         <keyword ref="qdomnode.html#nextSiblingElement">nextSiblingElement</keyword>
         <keyword ref="qdomnode.html#nodeName">nodeName</keyword>
@@ -6350,7 +6383,6 @@
         <keyword ref="qhash.html#operator-eq">operator=</keyword>
         <keyword ref="qhash.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qhash.html#operator-5b-5d">operator[]</keyword>
-        <keyword ref="qhash.html#qHashx">qHash</keyword>
         <section ref="qhash-members.html" title="List of all members"/>
     </section>
     <section ref="qhashiterator.html" title="QHashIterator Class Reference">
@@ -6783,6 +6815,8 @@
         <keyword ref="qicon.html#pixmap">pixmap</keyword>
         <keyword ref="qicon.html#operator-QVariant">operator QVariant</keyword>
         <keyword ref="qicon.html#operator-eq">operator=</keyword>
+        <keyword ref="qicon.html#operator-lt-lt">operator&lt;&lt;</keyword>
+        <keyword ref="qicon.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qicon-members.html" title="List of all members"/>
         <section ref="qicon-obsolete.html" title="Obsolete members"/>
         <section ref="qicon-qt3.html" title="Qt 3 support members"/>
@@ -9498,7 +9532,7 @@
         <keyword ref="qnetworkreply.html#NetworkError-enum">QNetworkReply::ProxyConnectionRefusedError</keyword>
         <keyword ref="qnetworkreply.html#NetworkError-enum">QNetworkReply::UnknownContentError</keyword>
         <keyword ref="qnetworkreply.html#abort">abort</keyword>
-        <keyword ref="qnetworkreply.html#attributex">attribute</keyword>
+        <keyword ref="qnetworkreply.html#attribute">attribute</keyword>
         <keyword ref="qnetworkreply.html#close">close</keyword>
         <keyword ref="qnetworkreply.html#downloadProgress">downloadProgress</keyword>
         <keyword ref="qnetworkreply.html#error">error</keyword>
@@ -9551,7 +9585,7 @@
         <keyword ref="qnetworkrequest.html#KnownHeaders-enum">QNetworkRequest::ContentLengthHeader</keyword>
         <keyword ref="qnetworkrequest.html#KnownHeaders-enum">QNetworkRequest::CookieHeader</keyword>
         <keyword ref="qnetworkrequest.html#KnownHeaders-enum">QNetworkRequest::SetCookieHeader</keyword>
-        <keyword ref="qnetworkrequest.html#attributex">attribute</keyword>
+        <keyword ref="qnetworkrequest.html#attribute">attribute</keyword>
         <keyword ref="qnetworkrequest.html#hasRawHeader">hasRawHeader</keyword>
         <keyword ref="qnetworkrequest.html#header">header</keyword>
         <keyword ref="qnetworkrequest.html#rawHeader">rawHeader</keyword>
@@ -9614,11 +9648,14 @@
         <keyword ref="qobject.html#qFindChildren">qFindChildren</keyword>
         <keyword ref="qobject.html#qobject_cast">qobject_cast</keyword>
         <keyword ref="qobject.html#Q_CLASSINFO">Q_CLASSINFO</keyword>
+        <keyword ref="qobject.html#Q_EMIT">Q_EMIT</keyword>
         <keyword ref="qobject.html#Q_ENUMS">Q_ENUMS</keyword>
         <keyword ref="qobject.html#Q_FLAGS">Q_FLAGS</keyword>
         <keyword ref="qobject.html#Q_INTERFACES">Q_INTERFACES</keyword>
         <keyword ref="qobject.html#Q_OBJECT">Q_OBJECT</keyword>
         <keyword ref="qobject.html#Q_PROPERTY">Q_PROPERTY</keyword>
+        <keyword ref="qobject.html#Q_SIGNALS">Q_SIGNALS</keyword>
+        <keyword ref="qobject.html#Q_SLOTS">Q_SLOTS</keyword>
         <section ref="qobject-members.html" title="List of all members"/>
         <section ref="qobject-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -9699,6 +9736,7 @@
         <keyword ref="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::ConicalGradientFill</keyword>
         <keyword ref="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::PixmapTransform</keyword>
         <keyword ref="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::Antialiasing</keyword>
+        <keyword ref="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::ObjectBoundingModeGradients</keyword>
         <keyword ref="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::PaintOutsidePaintEvent</keyword>
         <keyword ref="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::BrushStroke</keyword>
         <keyword ref="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::ConstantOpacity</keyword>
@@ -10363,6 +10401,7 @@
         <keyword ref="qpoint.html#operator-2b-eq">operator+=</keyword>
         <keyword ref="qpoint.html#operator--eq">operator-=</keyword>
         <keyword ref="qpoint.html#operator-2f-eq">operator/=</keyword>
+        <keyword ref="qpoint.html#operator-">operator-</keyword>
         <keyword ref="qpoint.html#operator-2f">operator/</keyword>
         <section ref="qpoint-members.html" title="List of all members"/>
     </section>
@@ -11066,7 +11105,6 @@
         <keyword ref="qregion.html#boundingRect">boundingRect</keyword>
         <keyword ref="qregion.html#contains">contains</keyword>
         <keyword ref="qregion.html#handle">handle</keyword>
-        <keyword ref="qregion.html#intersect">intersect</keyword>
         <keyword ref="qregion.html#intersected">intersected</keyword>
         <keyword ref="qregion.html#intersects">intersects</keyword>
         <keyword ref="qregion.html#isEmpty">isEmpty</keyword>
@@ -11076,7 +11114,6 @@
         <keyword ref="qregion.html#subtracted">subtracted</keyword>
         <keyword ref="qregion.html#translate">translate</keyword>
         <keyword ref="qregion.html#translated">translated</keyword>
-        <keyword ref="qregion.html#unite">unite</keyword>
         <keyword ref="qregion.html#united">united</keyword>
         <keyword ref="qregion.html#xored">xored</keyword>
         <keyword ref="qregion.html#operator-QVariant">operator QVariant</keyword>
@@ -11714,9 +11751,6 @@
         <keyword ref="qsize.html#operator-2b-eq">operator+=</keyword>
         <keyword ref="qsize.html#operator--eq">operator-=</keyword>
         <keyword ref="qsize.html#operator-2f-eq">operator/=</keyword>
-        <keyword ref="qsize.html#operator-not-eq">operator!=</keyword>
-        <keyword ref="qsize.html#operator-2a">operator*</keyword>
-        <keyword ref="qsize.html#operator-">operator-</keyword>
         <section ref="qsize-members.html" title="List of all members"/>
     </section>
     <section ref="qsizef.html" title="QSizeF Class Reference">
@@ -11887,6 +11921,7 @@
         <keyword ref="qsourcelocation.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq">operator=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq-eq">operator==</keyword>
+        <keyword ref="qsourcelocation.html#qHash">qHash</keyword>
         <section ref="qsourcelocation-members.html" title="List of all members"/>
     </section>
     <section ref="qspaceritem.html" title="QSpacerItem Class Reference">
@@ -12783,6 +12818,8 @@
     </section>
     <section ref="qstring.html" title="QString Class Reference">
         <keyword ref="qstring.html">QString</keyword>
+        <keyword ref="qstring.html#ConstIterator-typedef">ConstIterator</keyword>
+        <keyword ref="qstring.html#Iterator-typedef">Iterator</keyword>
         <keyword ref="qstring.html#NormalizationForm-enum">NormalizationForm</keyword>
         <keyword ref="qstring.html#NormalizationForm-enum">QString::NormalizationForm_D</keyword>
         <keyword ref="qstring.html#NormalizationForm-enum">QString::NormalizationForm_KC</keyword>
@@ -12798,17 +12835,23 @@
         <keyword ref="qstring.html#SplitBehavior-enum">SplitBehavior</keyword>
         <keyword ref="qstring.html#SplitBehavior-enum">QString::KeepEmptyParts</keyword>
         <keyword ref="qstring.html#SplitBehavior-enum">QString::SkipEmptyParts</keyword>
+        <keyword ref="qstring.html#const_iterator-typedef">const_iterator</keyword>
+        <keyword ref="qstring.html#iterator-typedefx">iterator</keyword>
         <keyword ref="qstring.html#append">append</keyword>
         <keyword ref="qstring.html#arg">arg</keyword>
         <keyword ref="qstring.html#at">at</keyword>
+        <keyword ref="qstring.html#begin">begin</keyword>
         <keyword ref="qstring.html#capacity">capacity</keyword>
         <keyword ref="qstring.html#chop">chop</keyword>
         <keyword ref="qstring.html#clear">clear</keyword>
         <keyword ref="qstring.html#compare">compare</keyword>
+        <keyword ref="qstring.html#constBegin">constBegin</keyword>
         <keyword ref="qstring.html#constData">constData</keyword>
+        <keyword ref="qstring.html#constEnd">constEnd</keyword>
         <keyword ref="qstring.html#contains">contains</keyword>
         <keyword ref="qstring.html#count">count</keyword>
         <keyword ref="qstring.html#data">data</keyword>
+        <keyword ref="qstring.html#end">end</keyword>
         <keyword ref="qstring.html#endsWith">endsWith</keyword>
         <keyword ref="qstring.html#fill">fill</keyword>
         <keyword ref="qstring.html#fromAscii">fromAscii</keyword>
@@ -12890,9 +12933,6 @@
         <keyword ref="qstring.html#operator-gt">operator&gt;</keyword>
         <keyword ref="qstring.html#operator-gt-eq">operator&gt;=</keyword>
         <keyword ref="qstring.html#operator-5b-5d">operator[]</keyword>
-        <keyword ref="qstring.html#operator-2b">operator+</keyword>
-        <keyword ref="qstring.html#operator-lt-lt">operator&lt;&lt;</keyword>
-        <keyword ref="qstring.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <keyword ref="qstring.html#QT_NO_CAST_FROM_ASCII">QT_NO_CAST_FROM_ASCII</keyword>
         <keyword ref="qstring.html#QT_NO_CAST_TO_ASCII">QT_NO_CAST_TO_ASCII</keyword>
         <section ref="qstring-members.html" title="List of all members"/>
@@ -12953,11 +12993,6 @@
         <keyword ref="qstringref.html#toString">toString</keyword>
         <keyword ref="qstringref.html#unicode">unicode</keyword>
         <keyword ref="qstringref.html#operator-eq">operator=</keyword>
-        <keyword ref="qstringref.html#operator-lt">operator&lt;</keyword>
-        <keyword ref="qstringref.html#operator-lt-eq">operator&lt;=</keyword>
-        <keyword ref="qstringref.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="qstringref.html#operator-gt">operator&gt;</keyword>
-        <keyword ref="qstringref.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="qstringref-members.html" title="List of all members"/>
     </section>
     <section ref="qstyle.html" title="QStyle Class Reference">
@@ -14335,6 +14370,7 @@
         <keyword ref="qt.html#ApplicationAttribute-enum">Qt::AA_DontShowIconsInMenus</keyword>
         <keyword ref="qt.html#ApplicationAttribute-enum">Qt::AA_NativeWindows</keyword>
         <keyword ref="qt.html#ApplicationAttribute-enum">Qt::AA_ImmediateWidgetCreation</keyword>
+        <keyword ref="qt.html#ApplicationAttribute-enum">Qt::AA_DontCreateNativeWidgetSiblings</keyword>
         <keyword ref="qt.html#ApplicationAttribute-enum">Qt::AA_MSWindowsUseDirect3DByDefault</keyword>
         <keyword ref="qt.html#ArrowType-enum">ArrowType</keyword>
         <keyword ref="qt.html#ArrowType-enum">Qt::RightArrow</keyword>
@@ -15527,7 +15563,7 @@
         <keyword ref="qtconcurrent.html#blockingFilteredReduced">blockingFilteredReduced</keyword>
         <keyword ref="qtconcurrent.html#blockingMap">blockingMap</keyword>
         <keyword ref="qtconcurrent.html#blockingMapped">blockingMapped</keyword>
-        <keyword ref="qtconcurrent.html#blockingMappedReduced">blockingMappedReduced</keyword>
+        <keyword ref="qtconcurrentmap.html#blockingMappedReduced">blockingMappedReduced</keyword>
         <keyword ref="qtconcurrentfilter.html#filter">filter</keyword>
         <keyword ref="qtconcurrentfilter.html#filtered">filtered</keyword>
         <keyword ref="qtconcurrentfilter.html#filteredReduced">filteredReduced</keyword>
@@ -16077,19 +16113,6 @@
         <keyword ref="qtextedit.html#AutoFormattingFlag-enum">QTextEdit::AutoBulletList</keyword>
         <keyword ref="qtextedit.html#AutoFormattingFlag-enum">QTextEdit::AutoAll</keyword>
         <keyword ref="qtextedit.html#AutoFormattingFlag-enum">QTextEdit::AutoNone</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">CursorAction</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveEnd</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveWordBackward</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveLineStart</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MovePageDown</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveWordForward</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveUp</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveBackward</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveDown</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveLineEnd</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveForward</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MoveHome</keyword>
-        <keyword ref="qtextedit.html#CursorAction-enum">QTextEdit::MovePageUp</keyword>
         <keyword ref="qtextedit.html#LineWrapMode-enum">LineWrapMode</keyword>
         <keyword ref="qtextedit.html#LineWrapMode-enum">QTextEdit::WidgetWidth</keyword>
         <keyword ref="qtextedit.html#LineWrapMode-enum">QTextEdit::NoWrap</keyword>
@@ -16269,7 +16292,6 @@
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::FontItalic</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::ImageHeight</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::TableCellColumnSpan</keyword>
-        <keyword ref="qtextformat.html#Property-enum">QTextFormat::FontSizeIncrement</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::FrameRightMargin</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::ListIndent</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::OutlinePen</keyword>
@@ -16280,6 +16302,7 @@
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::FontPointSize</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::BackgroundImageUrl</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::TableCellBottomPadding</keyword>
+        <keyword ref="qtextformat.html#Property-enum">QTextFormat::FontSizeAdjustment</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::AnchorHref</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::BlockBottomMargin</keyword>
         <keyword ref="qtextformat.html#Property-enum">QTextFormat::TextUnderlineColor</keyword>
@@ -16448,6 +16471,22 @@
     <section ref="qtextistream.html" title="QTextIStream Class Reference">
         <keyword ref="qtextistream.html">QTextIStream</keyword>
         <section ref="qtextistream-members.html" title="List of all members"/>
+    </section>
+    <section ref="qtextitem.html" title="QTextItem Class Reference">
+        <keyword ref="qtextitem.html">QTextItem</keyword>
+        <keyword ref="qtextitem.html#RenderFlag-enum">RenderFlag</keyword>
+        <keyword ref="qtextitem.html#RenderFlag-enum">RenderFlags</keyword>
+        <keyword ref="qtextitem.html#RenderFlag-enum">QTextItem::RightToLeft</keyword>
+        <keyword ref="qtextitem.html#RenderFlag-enum">QTextItem::StrikeOut</keyword>
+        <keyword ref="qtextitem.html#RenderFlag-enum">QTextItem::Overline</keyword>
+        <keyword ref="qtextitem.html#RenderFlag-enum">QTextItem::Underline</keyword>
+        <keyword ref="qtextitem.html#ascent">ascent</keyword>
+        <keyword ref="qtextitem.html#descent">descent</keyword>
+        <keyword ref="qtextitem.html#font">font</keyword>
+        <keyword ref="qtextitem.html#renderFlags">renderFlags</keyword>
+        <keyword ref="qtextitem.html#text">text</keyword>
+        <keyword ref="qtextitem.html#width">width</keyword>
+        <section ref="qtextitem-members.html" title="List of all members"/>
     </section>
     <section ref="qtextlayout.html" title="QTextLayout Class Reference">
         <keyword ref="qtextlayout.html">QTextLayout</keyword>
@@ -16825,12 +16864,6 @@
         <keyword ref="qthreadstorage.html#setLocalData">setLocalData</keyword>
         <section ref="qthreadstorage-members.html" title="List of all members"/>
     </section>
-    <section ref="qticohandler.html" title="QtIcoHandler Class Reference">
-        <keyword ref="qticohandler.html">QtIcoHandler</keyword>
-        <keyword ref="qticohandler.html#canRead">canRead</keyword>
-        <keyword ref="qticohandler.html#name">name</keyword>
-        <section ref="qticohandler-members.html" title="List of all members"/>
-    </section>
     <section ref="qtime.html" title="QTime Class Reference">
         <keyword ref="qtime.html">QTime</keyword>
         <keyword ref="qtime.html#addMSecs">addMSecs</keyword>
@@ -17092,6 +17125,7 @@
         <keyword ref="qtransform.html#operator-2f-eq">operator/=</keyword>
         <keyword ref="qtransform.html#operator-eq">operator=</keyword>
         <keyword ref="qtransform.html#operator-eq-eq">operator==</keyword>
+        <keyword ref="qtransform.html#operator-2a">operator*</keyword>
         <section ref="qtransform-members.html" title="List of all members"/>
     </section>
     <section ref="qtranslator.html" title="QTranslator Class Reference">
@@ -17163,7 +17197,6 @@
         <keyword ref="qtreeview.html#rowsRemoved">rowsRemoved</keyword>
         <keyword ref="qtreeview.html#scrollContentsBy">scrollContentsBy</keyword>
         <keyword ref="qtreeview.html#scrollTo">scrollTo</keyword>
-        <keyword ref="qtreeview.html#selectAll">selectAll</keyword>
         <keyword ref="qtreeview.html#setColumnHidden">setColumnHidden</keyword>
         <keyword ref="qtreeview.html#setColumnWidth">setColumnWidth</keyword>
         <keyword ref="qtreeview.html#setExpanded">setExpanded</keyword>
@@ -18830,7 +18863,7 @@
         <keyword ref="qxmlname.html#isNCName">isNCName</keyword>
         <keyword ref="qxmlname.html#isNull">isNull</keyword>
         <keyword ref="qxmlname.html#localName">localName</keyword>
-        <keyword ref="qxmlname.html#namespaceUri">namespaceUri</keyword>
+        <keyword ref="qxmlname.html#namespaceUrix">namespaceUri</keyword>
         <keyword ref="qxmlname.html#prefix">prefix</keyword>
         <keyword ref="qxmlname.html#toClarkName">toClarkName</keyword>
         <keyword ref="qxmlname.html#operator-not-eq">operator!=</keyword>
@@ -18953,7 +18986,7 @@
         <keyword ref="qxmlstreamattribute.html">QXmlStreamAttribute</keyword>
         <keyword ref="qxmlstreamattribute.html#isDefault">isDefault</keyword>
         <keyword ref="qxmlstreamattribute.html#name">name</keyword>
-        <keyword ref="qxmlstreamattribute.html#namespaceUri">namespaceUri</keyword>
+        <keyword ref="qxmlstreamattribute.html#namespaceUrix">namespaceUri</keyword>
         <keyword ref="qxmlstreamattribute.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamattribute.html#qualifiedName">qualifiedName</keyword>
         <keyword ref="qxmlstreamattribute.html#value">value</keyword>
@@ -18988,7 +19021,7 @@
     </section>
     <section ref="qxmlstreamnamespacedeclaration.html" title="QXmlStreamNamespaceDeclaration Class Reference">
         <keyword ref="qxmlstreamnamespacedeclaration.html">QXmlStreamNamespaceDeclaration</keyword>
-        <keyword ref="qxmlstreamnamespacedeclaration.html#namespaceUri">namespaceUri</keyword>
+        <keyword ref="qxmlstreamnamespacedeclaration.html#namespaceUrix">namespaceUri</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#operator-eq">operator=</keyword>
@@ -19063,7 +19096,7 @@
         <keyword ref="qxmlstreamreader.html#lineNumber">lineNumber</keyword>
         <keyword ref="qxmlstreamreader.html#name">name</keyword>
         <keyword ref="qxmlstreamreader.html#namespaceDeclarations">namespaceDeclarations</keyword>
-        <keyword ref="qxmlstreamreader.html#namespaceUri">namespaceUri</keyword>
+        <keyword ref="qxmlstreamreader.html#namespaceUrix">namespaceUri</keyword>
         <keyword ref="qxmlstreamreader.html#notationDeclarations">notationDeclarations</keyword>
         <keyword ref="qxmlstreamreader.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamreader.html#processingInstructionData">processingInstructionData</keyword>
@@ -19679,6 +19712,13 @@
         <keyword ref="q3cstring.html#toUShort">toUShort</keyword>
         <keyword ref="q3cstring.html#upper">upper</keyword>
         <keyword ref="q3cstring.html#operator-eq">operator=</keyword>
+        <keyword ref="q3cstring.html#operator-not-eq">operator!=</keyword>
+        <keyword ref="q3cstring.html#operator-2b">operator+</keyword>
+        <keyword ref="q3cstring.html#operator-lt">operator&lt;</keyword>
+        <keyword ref="q3cstring.html#operator-lt-eq">operator&lt;=</keyword>
+        <keyword ref="q3cstring.html#operator-eq-eq">operator==</keyword>
+        <keyword ref="q3cstring.html#operator-gt">operator&gt;</keyword>
+        <keyword ref="q3cstring.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="q3cstring-members.html" title="List of all members"/>
     </section>
     <section ref="q3databrowser.html" title="Q3DataBrowser Class Reference">
@@ -20259,6 +20299,10 @@
         <keyword ref="q3hbox.html#setSpacing">setSpacing</keyword>
         <keyword ref="q3hbox.html#setStretchFactor">setStretchFactor</keyword>
         <section ref="q3hbox-members.html" title="List of all members"/>
+    </section>
+    <section ref="q3hboxlayout.html" title="Q3HBoxLayout Class Reference">
+        <keyword ref="q3hboxlayout.html">Q3HBoxLayout</keyword>
+        <section ref="q3hboxlayout-members.html" title="List of all members"/>
     </section>
     <section ref="q3hbuttongroup.html" title="Q3HButtonGroup Class Reference">
         <keyword ref="q3hbuttongroup.html">Q3HButtonGroup</keyword>
@@ -22711,6 +22755,10 @@
         <keyword ref="q3vbox.html">Q3VBox</keyword>
         <section ref="q3vbox-members.html" title="List of all members"/>
     </section>
+    <section ref="q3vboxlayout.html" title="Q3VBoxLayout Class Reference">
+        <keyword ref="q3vboxlayout.html">Q3VBoxLayout</keyword>
+        <section ref="q3vboxlayout-members.html" title="List of all members"/>
+    </section>
     <section ref="q3vbuttongroup.html" title="Q3VButtonGroup Class Reference">
         <keyword ref="q3vbuttongroup.html">Q3VButtonGroup</keyword>
         <section ref="q3vbuttongroup-members.html" title="List of all members"/>
@@ -22816,6 +22864,7 @@
     </section>
     <section ref="qtconcurrent-unhandledexception.html" title="UnhandledException Class Reference">
         <keyword ref="qtconcurrent-unhandledexception.html">UnhandledException</keyword>
+        <section ref="qtconcurrent-unhandledexception-members.html" title="List of all members"/>
     </section>
     <section ref="qabstractfileengine-unmapextensionoption.html" title="UnMapExtensionOption Class Reference">
         <keyword ref="qabstractfileengine-unmapextensionoption.html">UnMapExtensionOption</keyword>
@@ -22937,6 +22986,8 @@
     </section>
     <section ref="qtconcurrentmap.html" title="&lt;QtConcurrentMap&gt; - Concurrent Map and Map-Reduce">
         <keyword ref="qtconcurrentmap.html">&lt;QtConcurrentMap&gt; - Concurrent Map and Map-Reduce</keyword>
+        <keyword ref="qtconcurrentmap.html#blockingMappedReduced">blockingMappedReduced</keyword>
+        <keyword ref="qtconcurrentmap.html#blockingMappedReduced-2">blockingMappedReduced</keyword>
         <keyword ref="qtconcurrentmap.html#map">map</keyword>
         <keyword ref="qtconcurrentmap.html#map-2">map</keyword>
         <keyword ref="qtconcurrentmap.html#mapped">mapped</keyword>
@@ -22978,6 +23029,8 @@
         <keyword ref="qtglobal.html#qFromBigEndian-2">qFromBigEndian</keyword>
         <keyword ref="qtglobal.html#qFromLittleEndian">qFromLittleEndian</keyword>
         <keyword ref="qtglobal.html#qFromLittleEndian-2">qFromLittleEndian</keyword>
+        <keyword ref="qtglobal.html#qFuzzyCompare">qFuzzyCompare</keyword>
+        <keyword ref="qtglobal.html#qFuzzyCompare-2">qFuzzyCompare</keyword>
         <keyword ref="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</keyword>
         <keyword ref="qtglobal.html#qMacVersion">qMacVersion</keyword>
         <keyword ref="qtglobal.html#qMax">qMax</keyword>
@@ -23068,12 +23121,15 @@
         <keyword ref="qtglobal.html#foreach">foreach</keyword>
         <keyword ref="qtglobal.html#forever">forever</keyword>
         <keyword ref="qtglobal.html#qPrintable">qPrintable</keyword>
+        <section ref="qtglobal-obsolete.html" title="Obsolete members"/>
+        <section ref="qtglobal-qt3.html" title="Qt 3 support members"/>
     </section>
     <section ref="qtplugin.html" title="&lt;QtPlugin&gt; - Macros for Defining Plugins">
         <keyword ref="qtplugin.html">&lt;QtPlugin&gt; - Macros for Defining Plugins</keyword>
         <keyword ref="qtplugin.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</keyword>
         <keyword ref="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</keyword>
         <keyword ref="qtplugin.html#Q_IMPORT_PLUGIN">Q_IMPORT_PLUGIN</keyword>
+        <section ref="qtplugin-obsolete.html" title="Obsolete members"/>
     </section>
     <section ref="xquery-introduction.html" title="A Short Path to XQuery">
         <keyword ref="xquery-introduction.html">A Short Path to XQuery</keyword>
@@ -23137,9 +23193,6 @@
     </section>
     <section ref="guibooks.html" title="Books about GUI Design">
         <keyword ref="guibooks.html">Books about GUI Design</keyword>
-    </section>
-    <section ref="demos-browser.html" title="Browser">
-        <keyword ref="demos-browser.html">Browser</keyword>
     </section>
     <section ref="buildsystem.html" title="Build System">
         <keyword ref="buildsystem.html">Build System</keyword>
@@ -23273,6 +23326,9 @@
     <section ref="codec-gbk.html" title="GBK Text Codec">
         <keyword ref="codec-gbk.html">GBK Text Codec</keyword>
     </section>
+    <section ref="requirements.html" title="General Qt Requirements">
+        <keyword ref="requirements.html">General Qt Requirements</keyword>
+    </section>
     <section ref="containers.html" title="Generic Containers">
         <keyword ref="containers.html">Generic Containers</keyword>
     </section>
@@ -23339,6 +23395,9 @@
     <section ref="install-x11.html" title="Installing Qt/X11">
         <keyword ref="install-x11.html">Installing Qt/X11</keyword>
     </section>
+    <section ref="ipc.html" title="Inter-Process Communication in Qt">
+        <keyword ref="ipc.html">Inter-Process Communication in Qt</keyword>
+    </section>
     <section ref="i18n.html" title="Internationalization with Qt">
         <keyword ref="i18n.html">Internationalization with Qt</keyword>
     </section>
@@ -23354,8 +23413,8 @@
     <section ref="focus.html" title="Keyboard Focus">
         <keyword ref="focus.html">Keyboard Focus</keyword>
     </section>
-    <section ref="known-issues.html" title="Known Issues in 4.4&#x2e;0">
-        <keyword ref="known-issues.html">Known Issues in 4.4&#x2e;0</keyword>
+    <section ref="known-issues.html" title="Known Issues in 4.4&#x2e;1">
+        <keyword ref="known-issues.html">Known Issues in 4.4&#x2e;1</keyword>
     </section>
     <section ref="layout.html" title="Layout Classes">
         <keyword ref="layout.html">Layout Classes</keyword>
@@ -23444,11 +23503,17 @@
     <section ref="platform-notes-platforms.html" title="Platform Notes">
         <keyword ref="platform-notes-platforms.html">Platform Notes</keyword>
     </section>
+    <section ref="platform-notes-embedded-linux.html" title="Platform Notes - Embedded Linux">
+        <keyword ref="platform-notes-embedded-linux.html">Platform Notes - Embedded Linux</keyword>
+    </section>
     <section ref="platform-notes-mac.html" title="Platform Notes - Mac OS X">
         <keyword ref="platform-notes-mac.html">Platform Notes - Mac OS X</keyword>
     </section>
     <section ref="platform-notes-windows.html" title="Platform Notes - Windows">
         <keyword ref="platform-notes-windows.html">Platform Notes - Windows</keyword>
+    </section>
+    <section ref="platform-notes-windows-ce.html" title="Platform Notes - Windows CE">
+        <keyword ref="platform-notes-windows-ce.html">Platform Notes - Windows CE</keyword>
     </section>
     <section ref="platform-notes-x11.html" title="Platform Notes - X11">
         <keyword ref="platform-notes-x11.html">Platform Notes - X11</keyword>
@@ -23491,9 +23556,6 @@
     </section>
     <section ref="model-view-proxy-models.html" title="Proxy Models">
         <keyword ref="model-view-proxy-models.html">Proxy Models</keyword>
-    </section>
-    <section ref="qpl.html" title="Q Public License (QPL)">
-        <keyword ref="qpl.html">Q Public License (QPL)</keyword>
     </section>
     <section ref="qaxcontainer.html" title="QAxContainer Module">
         <keyword ref="qaxcontainer.html">QAxContainer Module</keyword>
@@ -23567,8 +23629,8 @@
     <section ref="qt-embedded-pointer.html" title="Qt for Embedded Linux Pointer Handling">
         <keyword ref="qt-embedded-pointer.html">Qt for Embedded Linux Pointer Handling</keyword>
     </section>
-    <section ref="requirements-x11.html" title="Qt for Embedded Linux Requirements">
-        <keyword ref="requirements-x11.html">Qt for Embedded Linux Requirements</keyword>
+    <section ref="requirements-embedded-linux.html" title="Qt for Embedded Linux Requirements">
+        <keyword ref="requirements-embedded-linux.html">Qt for Embedded Linux Requirements</keyword>
     </section>
     <section ref="requirements-wince.html" title="Qt for Windows CE Requirements">
         <keyword ref="requirements-wince.html">Qt for Windows CE Requirements</keyword>
@@ -23719,6 +23781,9 @@
     </section>
     <section ref="scripting.html" title="Scripting with ECMAScript">
         <keyword ref="scripting.html">Scripting with ECMAScript</keyword>
+    </section>
+    <section ref="ssl.html" title="Secure Sockets Layer (SSL) Classes">
+        <keyword ref="ssl.html">Secure Sockets Layer (SSL) Classes</keyword>
     </section>
     <section ref="session.html" title="Session Management">
         <keyword ref="session.html">Session Management</keyword>
@@ -23884,6 +23949,9 @@
     </section>
     <section ref="model-view-view.html" title="View Classes">
         <keyword ref="model-view-view.html">View Classes</keyword>
+    </section>
+    <section ref="demos-browser.html" title="Web Browser">
+        <keyword ref="demos-browser.html">Web Browser</keyword>
     </section>
     <section ref="qt4-intro.html" title="What's New in Qt 4">
         <keyword ref="qt4-intro.html">What's New in Qt 4</keyword>
@@ -24361,6 +24429,9 @@
     <section ref="tutorials-tutorial-t9.html" title="Qt Tutorial 9 - With Cannon You Can">
         <keyword ref="tutorials-tutorial-t9.html">Qt Tutorial 9 - With Cannon You Can</keyword>
     </section>
+    <section ref="qtconcurrent-imagescaling.html" title="QtConcurrent Image Scaling Example">
+        <keyword ref="qtconcurrent-imagescaling.html">QtConcurrent Image Scaling Example</keyword>
+    </section>
     <section ref="qtconcurrent-map.html" title="QtConcurrent Map Example">
         <keyword ref="qtconcurrent-map.html">QtConcurrent Map Example</keyword>
     </section>
@@ -24436,8 +24507,8 @@
     <section ref="itemviews-simpledommodel.html" title="Simple DOM Model Example">
         <keyword ref="itemviews-simpledommodel.html">Simple DOM Model Example</keyword>
     </section>
-    <section ref="assistant-simpletextviewer.html" title="Simple Text Viewer Example">
-        <keyword ref="assistant-simpletextviewer.html">Simple Text Viewer Example</keyword>
+    <section ref="help-simpletextviewer.html" title="Simple Text Viewer Example">
+        <keyword ref="help-simpletextviewer.html">Simple Text Viewer Example</keyword>
     </section>
     <section ref="itemviews-simpletreemodel.html" title="Simple Tree Model Example">
         <keyword ref="itemviews-simpletreemodel.html">Simple Tree Model Example</keyword>

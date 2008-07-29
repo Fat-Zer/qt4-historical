@@ -177,26 +177,30 @@ void AccelTreeBuilder<FromDocument>::attribute(const QXmlName &name, const QStri
 
     m_document->basicData.append(AccelTree::BasicNodeData(currentDepth(), currentParent(), QXmlNodeModelIndex::Attribute, 0, name));
     ++m_preNumber;
-    m_document->data.insert(m_preNumber, *m_attributeCompress.insert(value.toString()));
     ++m_size.top();
 
     m_isPreviousAtomic = false;
 
     if(name.namespaceURI() == StandardNamespaces::xml && name.localName() == StandardLocalNames::id)
     {
-        if(QXmlUtils::isNCName(value))
+        const QString normalized(value.toString().simplified());
+
+        if(QXmlUtils::isNCName(normalized))
         {
-            const QXmlName::LocalNameCode id = m_namePool->allocateLocalName(value.toString());
+            const QXmlName::LocalNameCode id = m_namePool->allocateLocalName(normalized);
 
             const int oldSize = m_document->m_IDs.count();
             m_document->m_IDs.insert(id, currentParent());
+            /* We don't run the value through m_attributeCompress here, because
+             * the likelyhood of it deing identical to another attribute is
+             * very small. */
+            m_document->data.insert(m_preNumber, normalized);
 
             if(oldSize == m_document->m_IDs.count())
             {
                 m_context->error(QtXmlPatterns::tr("An %1-attribute with value %2 has already been declared.")
                                                    .arg(formatKeyword("xml:id"),
-                                                        formatType(m_namePool, BuiltinTypes::xsNCName),
-                                                        formatData(value.toString())),
+                                                        formatData(normalized)),
                                  FromDocument ? ReportContext::FODC0002 : ReportContext::XQDY0091,
                                  this);
             }
@@ -215,6 +219,8 @@ void AccelTreeBuilder<FromDocument>::attribute(const QXmlName &name, const QStri
                              this);
         }
     }
+    else
+        m_document->data.insert(m_preNumber, *m_attributeCompress.insert(value.toString()));
 }
 
 template <bool FromDocument>

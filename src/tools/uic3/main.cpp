@@ -76,7 +76,7 @@ int runUic3(int argc, char * argv[])
     const char* headerFile = 0;
     const char* convertedUiFile = 0;
     QByteArray outputFile;
-    QByteArray qrcOutputFile;
+    QString  qrcOutputFile;
     QByteArray image_tmpfile;
     const char* projectName = 0;
     const char* trmacro = 0;
@@ -128,7 +128,7 @@ int runUic3(int argc, char * argv[])
                     error = "Missing output qrc-file name";
                     break;
                 }
-                qrcOutputFile = argv[++n];
+                qrcOutputFile = QFile::decodeName(argv[++n]);
             } else if ( opt[0] == 'e' || opt == "embed" ) {
                 imagecollection = true;
                 if ( opt == "embed" || opt[1] == '\0' ) {
@@ -375,7 +375,7 @@ int runUic3(int argc, char * argv[])
     QString convertedUi;
     if (wrap) {
         convertedUi = QFile::decodeName(convertedUiFile);
-        int pos = convertedUi.lastIndexOf(".ui");
+        int pos = convertedUi.lastIndexOf(QLatin1String(".ui"));
         if (pos > 0) {
             convertedUi = convertedUi.mid(0, pos);
             convertedUi += QLatin1String(".h");

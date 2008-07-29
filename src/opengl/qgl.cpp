@@ -129,28 +129,29 @@ QGLSignalProxy *QGLSignalProxy::instance()
 /*!
     \enum QGL::FormatOption
 
-    This enum specifies the format options.
+    This enum specifies the format options that can be used to configure an OpenGL
+    context. These are set using QGLFormat::setOption().
 
-    \value DoubleBuffer
-    \value DepthBuffer
-    \value Rgba
-    \value AlphaChannel
-    \value AccumBuffer
-    \value StencilBuffer
-    \value StereoBuffers
-    \value DirectRendering
-    \value HasOverlay
-    \value SampleBuffers
-    \value SingleBuffer
-    \value NoDepthBuffer
-    \value ColorIndex
-    \value NoAlphaChannel
-    \value NoAccumBuffer
-    \value NoStencilBuffer
-    \value NoStereoBuffers
-    \value IndirectRendering
-    \value NoOverlay
-    \value NoSampleBuffers
+    \value DoubleBuffer      Specifies the use of double buffering.
+    \value DepthBuffer       Enables the use of a depth buffer.
+    \value Rgba              Specifies that the context should use RGBA as its pixel format.
+    \value AlphaChannel      Enables the use of an alpha channel.
+    \value AccumBuffer       Enables the use of an accumulation buffer.
+    \value StencilBuffer     Enables the use of a stencil buffer.
+    \value StereoBuffers     Enables the use of a stereo buffers for use with visualization hardware.
+    \value DirectRendering   Specifies that the context is used for direct rendering to a display.
+    \value HasOverlay        Enables the use of an overlay.
+    \value SampleBuffers     Enables the use of sample buffers.
+    \value SingleBuffer      Specifies the use of a single buffer, as opposed to double buffers.
+    \value NoDepthBuffer     Disables the use of a depth buffer.
+    \value ColorIndex        Specifies that the context should use a color index as its pixel format.
+    \value NoAlphaChannel    Disables the use of an alpha channel.
+    \value NoAccumBuffer     Disables the use of an accumulation buffer.
+    \value NoStencilBuffer   Disables the use of a stencil buffer.
+    \value NoStereoBuffers   Disables the use of stereo buffers.
+    \value IndirectRendering Specifies that the context is used for indirect rendering to a buffer.
+    \value NoOverlay         Disables the use of an overlay.
+    \value NoSampleBuffers   Disables the use of sample buffers.
 
     \sa {Sample Buffers Example}
 */
@@ -752,7 +753,7 @@ bool QGLFormat::testOption(QGL::FormatOptions opt) const
 }
 
 /*!
-    Set the preferred depth buffer size to \a size.
+    Set the minimum depth buffer size to \a size.
 
     \sa depthBufferSize(), setDepth(), depth()
 */
@@ -1262,6 +1263,7 @@ void QGLContextPrivate::init(QPaintDevice *dev, const QGLFormat &format)
     initDone = false;
     sharing = false;
     clear_on_painter_begin = true;
+    max_texture_size = -1;
 }
 
 QGLContext* QGLContext::currentCtx = 0;
@@ -1697,7 +1699,19 @@ GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint 
     glGenTextures(1, &tx_id);
     glBindTexture(target, tx_id);
     glTexParameterf(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    if (QGLExtensions::glExtensions & QGLExtensions::GenerateMipmap
+        && target == GL_TEXTURE_2D)
+    {
+        glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
+#ifndef QT_OPENGL_ES
+        glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+#else
+        glTexParameterf(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+#endif
+        glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    } else {
+        glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    }
 
     glTexImage2D(target, 0, format, tx.width(), tx.height(), 0, texture_format,
                  GL_UNSIGNED_BYTE, tx.bits());
@@ -1772,6 +1786,41 @@ GLuint QGLContextPrivate::bindTexture(const QPixmap &pixmap, GLenum target, GLin
     return bindTexture(pixmap.toImage(), target, format, key, pixmap.cacheKey(), clean);
 }
 
+/*! \internal */
+int QGLContextPrivate::maxTextureSize()
+{
+    if (max_texture_size != -1)
+        return max_texture_size;
+
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
+
+#if defined(QT_OPENGL_ES)
+    return max_texture_size;
+#else
+    GLenum proxy = GL_PROXY_TEXTURE_2D;
+
+    GLint size;
+    GLint next = 64;
+    glTexImage2D(proxy, 0, GL_RGBA, next, next, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glGetTexLevelParameteriv(proxy, 0, GL_TEXTURE_WIDTH, &size);
+    if (size == 0) {
+        return max_texture_size;
+    }
+    do {
+        size = next;
+        next = size * 2;
+
+        if (next > max_texture_size)
+            break;
+        glTexImage2D(proxy, 0, GL_RGBA, next, next, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glGetTexLevelParameteriv(proxy, 0, GL_TEXTURE_WIDTH, &next);
+    } while (next > size);
+
+    max_texture_size = size;
+    return max_texture_size;
+#endif
+}
+
 /*!
     Generates and binds a 2D GL texture to the current context, based
     on \a image. The generated texture id is returned and can be used
@@ -1791,6 +1840,9 @@ GLuint QGLContextPrivate::bindTexture(const QPixmap &pixmap, GLenum target, GLin
     The texture that is generated is cached, so multiple calls to
     bindTexture() with the same QImage will return the same texture
     id.
+
+    Note that we assume default values for the glPixelStore() and
+    glPixelTransfer() parameters.
 
     \sa deleteTexture()
 */
@@ -2423,7 +2475,7 @@ const QGLContext* QGLContext::currentContext()
     necessary due to limitations on the Windows platform. This will
     most likely cause problems for users that have subclassed and
     installed their own QGLContext on a QGLWidget. It is possible to
-    work around this issue but putting the QGLWidget inside a dummy
+    work around this issue by putting the QGLWidget inside a dummy
     widget and then reparenting the dummy widget, instead of the
     QGLWidget. This will side-step the issue altogether, and is what
     we recommend for users that need this kind of functionality.
@@ -2664,6 +2716,14 @@ QGLWidget::~QGLWidget()
     otherwise returns false.
 
     \sa setAutoBufferSwap()
+*/
+
+/*!
+    \fn void *QGLContext::getProcAddress(const QString &proc) const
+
+    Returns a function pointer to the GL extension function passed in
+    \a proc. 0 is returned if a pointer to the function could not be
+    obtained.
 */
 
 /*!
@@ -3554,6 +3614,8 @@ static void qt_gl_draw_text(QPainter *p, int x, int y, const QString &str,
 
    The \a listBase parameter is obsolete and will be removed in a
    future version of Qt.
+
+   \note This function clears the stencil buffer.
 */
 
 void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, int)

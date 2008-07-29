@@ -76,21 +76,13 @@
     </layout>
    </item>
    <item>
-    <widget class="BookmarkWidget" name="bookmarkWidget" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
+    <widget class="QTreeView" name="treeView" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Ignored" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <column>
-      <property name="text" >
-       <string>1</string>
-      </property>
-     </column>
     </widget>
    </item>
    <item>
@@ -116,13 +108,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>BookmarkWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>bookmarkwidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

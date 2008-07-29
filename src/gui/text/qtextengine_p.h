@@ -344,8 +344,21 @@ public:
     QFont font(const QScriptItem &si) const;
     inline QFont font() const { return fnt; }
 
+    /**
+     * Returns a pointer to an array of log clusters, offset at the script item.
+     * Each item in the array is a unsigned short.  For each character in the original string there is an entry in the table
+     * so there is a one to one correlation in indexes between the original text and the index in the logcluster.
+     * The value of each item is the position in the glyphs array. Multiple similar pointers in the logclusters array imply
+     * that one glyph is used for more than one character.
+     * \sa glyphs()
+     */
     inline unsigned short *logClusters(const QScriptItem *si) const
         { return layoutData->logClustersPtr+si->position; }
+    /**
+     * Returns an array of QGlyphLayout items, offset at the script item.
+     * Each item in the array matches one glyph in the text, storing the advance, position etc.
+     * \sa logClusters()
+     */
     inline QGlyphLayout *glyphs(const QScriptItem *si) const
         { return layoutData->glyphPtr + si->glyph_data_offset; }
 

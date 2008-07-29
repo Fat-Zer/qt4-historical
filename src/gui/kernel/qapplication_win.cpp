@@ -590,10 +590,7 @@ static void qt_set_windows_font_resources()
     QApplicationPrivate::setSystemFont(systemFont);
     QFont smallerFont = systemFont;
     if (qt_wince_is_mobile()) {
-        if (qt_wince_is_high_dpi())
-            smallerFont.setPointSize(systemFont.pointSize()-1);
-        else
-            smallerFont.setPointSize(systemFont.pointSize()-1);
+        smallerFont.setPointSize(systemFont.pointSize()-1);
         QApplication::setFont(smallerFont, "QTabBar");
     }
 #endif// Q_OS_WINCE
@@ -2448,22 +2445,6 @@ bool QApplicationPrivate::modalState()
     return app_do_modal;
 }
 
-inline void setDisabledStyle(QWidget *w, bool setStyle)
-{
-    // set/reset WS_DISABLED style.
-    if(w && w->isWindow() && w->isVisible() && w->isEnabled()) {
-        LONG dwStyle = GetWindowLong(w->winId(), GWL_STYLE);
-        if (setStyle)
-            dwStyle |= WS_DISABLED;
-        else
-            dwStyle &= ~WS_DISABLED;
-        SetWindowLong(w->winId(), GWL_STYLE, dwStyle);
-        // we might need to repaint in some situations (eg. menu)
-        if (setStyle)
-            w->repaint();
-    }
-}
-
 void QApplicationPrivate::enterModal_sys(QWidget *widget)
 {
     if (!qt_modal_stack)
@@ -2479,12 +2460,6 @@ void QApplicationPrivate::enterModal_sys(QWidget *widget)
     curWin = 0;
     qt_last_mouse_receiver = 0;
     qt_win_ignoreNextMouseReleaseEvent = false;
-    // set the WS_DISABLED style for all relevant top level windows
-    foreach(QWidget *window, QApplication::topLevelWidgets()) {
-        if(window != widget) {
-            setDisabledStyle(window, true);
-        }
-    }
 }
 
 void QApplicationPrivate::leaveModal_sys(QWidget *widget)
@@ -2507,18 +2482,6 @@ void QApplicationPrivate::leaveModal_sys(QWidget *widget)
             QApplicationPrivate::dispatchEnterLeave(w, leave); // send synthetic enter event
             curWin = w ? w->effectiveWinId() : 0;
             qt_last_mouse_receiver = w;
-            // reset the WS_DISABLED style for all relevant top level windows
-            foreach(QWidget *window, QApplication::topLevelWidgets()) {
-                if(window != widget) {
-                    setDisabledStyle(window, false);
-                }
-            }
-        } else {
-            // reset the WS_DISABLED style for the last widget in the modal stack
-            QWidget *window = qt_modal_stack->at(0);
-            if(window != widget) {
-                setDisabledStyle(window, false);
-            }
         }
         qt_win_ignoreNextMouseReleaseEvent = true;
     }

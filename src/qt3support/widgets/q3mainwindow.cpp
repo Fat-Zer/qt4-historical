@@ -1431,7 +1431,7 @@ bool Q3MainWindow::eventFilter(QObject* o, QEvent *e)
             setUpLayout();
         d->tll->activate();
     } else if (e->type() == QEvent::ContextMenu && d->dockMenu &&
-                (qobject_cast<Q3DockArea*>(o) && dockMainWindow(o) || o == d->hideDock || o == d->mb)) {
+                ((qobject_cast<Q3DockArea*>(o) && dockMainWindow(o)) || o == d->hideDock || o == d->mb)) {
         if (showDockMenu(((QMouseEvent*)e)->globalPos())) {
             ((QContextMenuEvent*)e)->accept();
             return true;

@@ -67,13 +67,13 @@ public slots:
     void on_printAction_triggered();
     void on_printPreviewAction_triggered();
     void on_unmarkAction_triggered();
-    void printPage(int index, QPainter &painter, QPrinter &printer);
+    void printDocument(QPrinter *printer);
+    void printPage(int index, QPainter *painter, QPrinter *printer);
     void showFont(QTreeWidgetItem *item);
     void updateStyles(QTreeWidgetItem *item, int column);
 
 private:
     QMap<QString, StyleItems> currentPageMap();
-    bool setupPrinter(QPrinter &printer);
     void markUnmarkFonts(Qt::CheckState state);
     void setupFontTree();
 

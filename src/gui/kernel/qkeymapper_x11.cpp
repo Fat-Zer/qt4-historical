@@ -1376,11 +1376,11 @@ bool QKeyMapperPrivate::translateKeyEventInternal(QWidget *keyWidget,
         }
 
         if (directionKeyEvent && lastWinId == keyWidget->internalWinId()) {
-            if (keysym == XK_Shift_L && directionKeyEvent == XK_Control_L ||
-                keysym == XK_Control_L && directionKeyEvent == XK_Shift_L) {
+            if ((keysym == XK_Shift_L && directionKeyEvent == XK_Control_L)
+                || (keysym == XK_Control_L && directionKeyEvent == XK_Shift_L)) {
                 directionKeyEvent = Qt::Key_Direction_L;
-            } else if (keysym == XK_Shift_R && directionKeyEvent == XK_Control_R ||
-                       keysym == XK_Control_R && directionKeyEvent == XK_Shift_R) {
+            } else if ((keysym == XK_Shift_R && directionKeyEvent == XK_Control_R)
+                       || (keysym == XK_Control_R && directionKeyEvent == XK_Shift_R)) {
                 directionKeyEvent = Qt::Key_Direction_R;
             }
         } else if (directionKeyEvent == Qt::Key_Direction_L
@@ -1584,7 +1584,9 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *keyWidget, const XEvent *even
                 // 4) something that a) doesn't translate to text or b) translates
                 //    to newline text
                 || (codeIntern == 0)
-                || (textIntern.length() == 1 && textIntern.unicode()->unicode() == '\n');
+                || (textIntern.length() == 1 && textIntern.unicode()->unicode() == '\n')
+                || (codeIntern == Qt::Key_unknown);
+                
             if (modifiersIntern == modifiers && !textIntern.isEmpty() && !stopCompression) {
                 text += textIntern;
                 count += countIntern;

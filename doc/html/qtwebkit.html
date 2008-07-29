@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtwebkit.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtwebkit.qdoc -->
 <head>
   <title>Qt 4.4: QtWebKit Module</title>
   <link rel="prev" href="qtsvg.html" />
@@ -41,9 +41,9 @@
 <p>QtWebKit provides facilities for rendering of HyperText Markup Language (HTML), Extensible HyperText Markup Language (XHTML) and Scalable Vector Graphics (SVG) documents, styled using Cascading Style Sheets (CSS) and scripted with JavaScript.</p>
 <p>A bridge between the JavaScript execution environment and the Qt object model makes it possible for custom QObjects to be scripted. Integration with the Qt networking module enables Web pages to be transparently loaded from Web servers, the local file system or even the Qt resource system.</p>
 <p>In addition to providing pure rendering features, HTML documents can be made fully editable to the user through the use of the <tt>contenteditable</tt> attribute on HTML elements.</p>
-<p>QtWebKit is based on the Open Source <a href="examples.html#webkit">WebKit</a> engine. More information about <a href="examples.html#webkit">WebKit</a> itself can be found on the <a href="http://webkit.org/">WebKit Open Source Project</a> Web site.</p>
+<p>QtWebKit is based on the Open Source WebKit engine. More information about WebKit itself can be found on the <a href="http://webkit.org/">WebKit Open Source Project</a> Web site.</p>
 <p>The QtWebKit module is part of the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>, and the <a href="opensourceedition.html">Qt Open Source Edition</a>.</p>
-<p><b>Note:</b> If you intend to use <a href="examples.html#webkit">WebKit</a> in an embedded Linux environment with <b>uClibc</b> then you need to use version <b>0.9&#x2e;29</b> or greater, as that is the version of <b>uClibc</b> with sufficient pthread support.</p>
+<p><b>Note:</b> If you intend to use WebKit in an embedded Linux environment with <b>uClibc</b> then you need to use version <b>0.9&#x2e;29</b> or greater, as that is the version of <b>uClibc</b> with sufficient pthread support.</p>
 <p><b>Note:</b> Web site icons, also known as &quot;FavIcons&quot;, are currently not supported on Windows. We plan to address this in a future release.</p>
 <p>Topics:</p>
 <ul><li><a href="#configuring-the-build-process">Configuring the Build Process</a></li>
@@ -61,15 +61,15 @@
 <h3>Architecture</h3>
 <p>The easiest way to render content is through the <a href="qwebview.html">QWebView</a> class. As a widget it can be embedded into your forms or a graphics view, and it provides convenience functions for downloading and rendering web sites.</p>
 <pre>     QWebView *view = new QWebView(parent);
-     view-&gt;load(QUrl(&quot;http:<span class="comment">//</span>www.trolltech.com/&quot;));
+     view-&gt;load(QUrl(&quot;http:<span class="comment">//www.trolltech.com/&quot;));</span>
      view-&gt;show();</pre>
 <p><a href="qwebview.html">QWebView</a> acts as a view onto Web pages, each of which is represented by an instance of the <a href="qwebpage.html">QWebPage</a> class. <a href="qwebpage.html">QWebPage</a> provides access to the document structure in a page, describing features such as frames, the navigation history, and the undo/redo stack for editable content.</p>
 <p>HTML documents can be nested using frames in a frameset. An individual frame in HTML is represented using the <a href="qwebframe.html">QWebFrame</a> class. It includes the bridge to the JavaScript window object and can be painted using <a href="qpainter.html">QPainter</a>. Each <a href="qwebpage.html">QWebPage</a> has one <a href="qwebframe.html">QWebFrame</a> object as its main frame.</p>
 <p>Individual browser features, defaults and other settings can be configured through the <a href="qwebsettings.html">QWebSettings</a> class. It is possible to provide defaults for all <a href="qwebpage.html">QWebPage</a> instances through the default settings. Individual attributes can be overidden by the page specific settings object.</p>
 <a name="license-information"></a>
 <h3>License Information</h3>
-<p>This is a snapshot of the Qt port of <a href="examples.html#webkit">WebKit</a>. The exact version information can be found in the <tt>src/3rdparty/webkit/VERSION</tt> file supplied with Qt.</p>
-<div style="padding: 0.5em; background: #e0e0e0; color: black"><p><a href="examples.html#webkit">WebKit</a> is licensed under the GNU Library General Public License. Individual contributor names and copyright dates can be found inline in the code.</p>
+<p>This is a snapshot of the Qt port of WebKit. The exact version information can be found in the <tt>src/3rdparty/webkit/VERSION</tt> file supplied with Qt.</p>
+<div style="padding: 0.5em; background: #e0e0e0; color: black"><p>WebKit is licensed under the GNU Library General Public License. Individual contributor names and copyright dates can be found inline in the code.</p>
 <p>This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.</p>
 <p>This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details.</p>
 <p>You should have received a copy of the GNU Library General Public License along with this library; see the file COPYING.LIB. If not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p>
@@ -82,6 +82,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -279,8 +279,8 @@ void QDesignerPropertySheetPrivate::setResourceProperty(int index, const QVarian
     Q_ASSERT(isResourceProperty(index));
 
     QVariant &v = m_resourceProperties[index];
-    if (qVariantCanConvert<qdesigner_internal::PropertySheetPixmapValue>(value) && qVariantCanConvert<qdesigner_internal::PropertySheetPixmapValue>(v) ||
-        qVariantCanConvert<qdesigner_internal::PropertySheetIconValue>(value) && qVariantCanConvert<qdesigner_internal::PropertySheetIconValue>(v))
+    if ((qVariantCanConvert<qdesigner_internal::PropertySheetPixmapValue>(value) && qVariantCanConvert<qdesigner_internal::PropertySheetPixmapValue>(v))
+        || (qVariantCanConvert<qdesigner_internal::PropertySheetIconValue>(value) && qVariantCanConvert<qdesigner_internal::PropertySheetIconValue>(v)))
         v = value;
 }
 
@@ -451,6 +451,7 @@ QDesignerPropertySheet::PropertyType QDesignerPropertySheet::propertyTypeFromNam
         propertyTypeHash.insert(QLatin1String("windowFilePath"),          PropertyWindowFilePath);
         propertyTypeHash.insert(QLatin1String("windowOpacity"),           PropertyWindowOpacity);
         propertyTypeHash.insert(QLatin1String("windowIconText"),          PropertyWindowIconText);
+        propertyTypeHash.insert(QLatin1String("windowModality"),          PropertyWindowModality);
         propertyTypeHash.insert(QLatin1String("windowModified"),          PropertyWindowModified );
     }
     return propertyTypeHash.value(name, PropertyNone);
@@ -509,7 +510,8 @@ QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
         createFakeProperty(QLatin1String("whatsThis"));
         createFakeProperty(QLatin1String("acceptDrops"));
         createFakeProperty(QLatin1String("dragEnabled"));
-        createFakeProperty(QLatin1String("windowModality"));
+        // windowModality is visible only for the main container, in which case the form windows enables it on loading
+        setVisible(createFakeProperty(QLatin1String("windowModality")), false);
         if (qobject_cast<const QToolBar *>(d->m_object)) // prevent toolbars from being dragged off
             createFakeProperty(QLatin1String("floatable"), QVariant(true));
 
@@ -1206,6 +1208,7 @@ bool QDesignerPropertySheet::isVisible(int index) const
 {
     if (d->invalidIndex(Q_FUNC_INFO, index))
         return false;
+
     const PropertyType type = propertyType(index);
     if (isAdditionalProperty(index)) {
         if (isFakeLayoutProperty(index) && d->m_object->isWidgetType()) {
@@ -1235,8 +1238,11 @@ bool QDesignerPropertySheet::isVisible(int index) const
         return d->m_info.value(index).visible;
     }
 
-    if (isFakeProperty(index))
+    if (isFakeProperty(index)) {
+        if (type == PropertyWindowModality) // Hidden for child widgets
+            return d->m_info.value(index).visible;
         return true;
+    }
 
     const bool visible = d->m_info.value(index).visible;
     switch (type) {

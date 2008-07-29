@@ -1074,7 +1074,7 @@ VCLinkerTool::VCLinkerTool()
         LargeAddressAware(addrAwareDefault),
         LinkDLL(unset),
         LinkIncremental(linkIncrementalDefault),
-        LinkTimeCodeGeneration(unset),
+        LinkTimeCodeGeneration(optLTCGDefault),
         MapExports(unset),
         MapLines(unset),
         OptimizeForWindows98(optWin98Default),
@@ -1124,7 +1124,7 @@ XmlOutput &operator<<(XmlOutput &xml, const VCLinkerTool &tool)
             << attrE(_LargeAddressAware, tool.LargeAddressAware, /*ifNot*/ addrAwareDefault)
             << attrT(_LinkDLL, tool.LinkDLL)
             << attrE(_LinkIncremental, tool.LinkIncremental, /*ifNot*/ linkIncrementalDefault)
-            << attrT(_LinkTimeCodeGeneration, tool.LinkTimeCodeGeneration)
+            << attrE(_LinkTimeCodeGeneration, tool.LinkTimeCodeGeneration)
             << attrS(_LinkToManagedResourceFile, tool.LinkToManagedResourceFile)
             << attrT(_MapExports, tool.MapExports)
             << attrS(_MapFileName, tool.MapFileName)
@@ -1316,10 +1316,31 @@ bool VCLinkerTool::parseOption(const char* option)
         break;
     case 0x0341877: // /LTCG[:NOSTATUS|:STATUS]
         config->WholeProgramOptimization = _True;
-        LinkTimeCodeGeneration = _True;
-        if(*(option+5) == ':' &&
-             *(option+6) == 'S')
-             ShowProgress = linkProgressAll;
+        if (config->CompilerVersion >= NET2005) {
+            LinkTimeCodeGeneration = optLTCGEnabled;
+            if(*(option+5) == ':') {
+                const char* str = option+6;
+                if (*str == 'S')
+                    ShowProgress = linkProgressAll;
+#ifndef Q_OS_WIN
+                else if (strncasecmp(str, "pginstrument", 12))
+                    LinkTimeCodeGeneration = optLTCGInstrument;
+                else if (strncasecmp(str, "pgoptimize", 10))
+                    LinkTimeCodeGeneration = optLTCGOptimize;
+                else if (strncasecmp(str, "pgupdate", 8 ))
+                    LinkTimeCodeGeneration = optLTCGUpdate;
+#else
+                else if (_stricmp(str, "pginstrument"))
+                    LinkTimeCodeGeneration = optLTCGInstrument;
+                else if (_stricmp(str, "pgoptimize"))
+                    LinkTimeCodeGeneration = optLTCGOptimize;
+                else if (_stricmp(str, "pgupdate"))
+                    LinkTimeCodeGeneration = optLTCGUpdate;
+#endif
+            }
+        } else {
+            AdditionalOptions.append(option);
+        }
         break;
 	case 0x379ED25:
     case 0x157cf65: // /MACHINE:{AM33|ARM|CEE|IA64|X86|M32R|MIPS|MIPS16|MIPSFPU|MIPSFPU16|MIPSR41XX|PPC|SH3|SH4|SH5|THUMB|TRICORE}

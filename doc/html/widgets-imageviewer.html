@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/imageviewer.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/imageviewer.qdoc -->
 <head>
   <title>Qt 4.4: Image Viewer Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -137,19 +137,19 @@
  }</pre>
 <p>If the format is supported, we display the image in <tt>imageLabel</tt> by setting the label's <a href="qlabel.html#pixmap-prop">pixmap</a>. Then we enable the <b>Print</b> and <b>Fit to Window</b> menu entries and update the rest of the view menu entries. The <b>Open</b> and <b>Exit</b> entries are enabled by default.</p>
 <p>If the <b>Fit to Window</b> option is turned off, the <a href="qscrollarea.html#widgetResizable-prop">QScrollArea::widgetResizable</a> property is <tt>false</tt> and it is our responsibility (not <a href="qscrollarea.html">QScrollArea</a>'s) to give the <a href="qlabel.html">QLabel</a> a reasonable size based on its contents. We call {<a href="qwidget.html#adjustSize">QWidget::adjustSize</a>()}{adjustSize()} to achieve this, which is essentially the same as</p>
-<pre>         imageLabel-&gt;resize(imageLabel-&gt;pixmap()-&gt;size());</pre>
+<pre> imageLabel-&gt;resize(imageLabel-&gt;pixmap()-&gt;size());</pre>
 <p>In the <tt>print()</tt> slot, we first make sure that an image has been loaded into the application:</p>
 <pre> void ImageViewer::print()
  {
      Q_ASSERT(imageLabel-&gt;pixmap());
  #ifndef QT_NO_PRINTER</pre>
 <p>If the application is built in debug mode, the <tt>Q_ASSERT()</tt> macro will expand to</p>
-<pre>         if (!imageLabel-&gt;pixmap())
-              qFatal(&quot;ASSERT: &quot;imageLabel-&gt;pixmap()&quot; in file ...&quot;);</pre>
+<pre> if (!imageLabel-&gt;pixmap())
+      qFatal(&quot;ASSERT: &quot;imageLabel-&gt;pixmap()&quot; in file ...&quot;);</pre>
 <p>In release mode, the macro simply disappear. The mode can be set in the application's <tt>.pro</tt> file. One way to do so is to add an option to <b>qmake</b> when building the appliction:</p>
-<pre>         qmake &quot;CONFIG += debug&quot; foo.pro</pre>
+<pre> qmake &quot;CONFIG += debug&quot; foo.pro</pre>
 <p>or</p>
-<pre>         qmake &quot;CONFIG += release&quot; foo.pro</pre>
+<pre> qmake &quot;CONFIG += release&quot; foo.pro</pre>
 <p>Another approach is to add this line directly to the <tt>.pro</tt> file.</p>
 <pre>     QPrintDialog dialog(&amp;printer, this);
      if (dialog.exec()) {
@@ -314,12 +314,12 @@
                              + ((factor - 1) * scrollBar-&gt;pageStep()/2)));
  }</pre>
 <p>Whenever we zoom in or out, we need to adjust the scroll bars in consequence. It would have been tempting to simply call</p>
-<pre>         scrollBar-&gt;setValue(int(factor * scrollBar-&gt;value()));</pre>
+<pre> scrollBar-&gt;setValue(int(factor * scrollBar-&gt;value()));</pre>
 <p>but this would make the top-left corner the focal point, not the center. Therefore we need to take into account the scroll bar handle's size (the <a href="qabstractslider.html#pageStep-prop">page step</a>).</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

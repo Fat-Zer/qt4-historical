@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtscript.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtscript.qdoc -->
 <head>
   <title>Qt 4.4: QtScript Module</title>
   <link rel="prev" href="qtopengl.html" />
@@ -119,7 +119,7 @@
 <a name="language-overview"></a>
 <h3>Language Overview</h3>
 <p>Qt Script is based on the ECMAScript scripting language, as defined in standard <a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">ECMA-262</a>. Microsoft's JScript, and Netscape's JavaScript are also based on the ECMAScript standard. For an overview of ECMAScript, see the <a href="ecmascript.html">ECMAScript reference</a>. If you are not familiar with the ECMAScript language, there are several existing tutorials and books that cover this subject, such as <a href="http://www.davidflanagan.com/javascript5/">JavaScript: The Definitive Guide</a>.</p>
-<p>Existing users of <a href="http://trolltech.com/products/qt/addon/qsa">Qt Script for Applications (QSA)</a> may find the <a href="porting-qsa.html">Moving from QSA to Qt Script</a> document useful when porting QSA scripts to Qt Script.</p>
+<p>Existing users of <a href="http://trolltech.com/developer/downloads/qt/qsa">Qt Script for Applications (QSA)</a> may find the <a href="porting-qsa.html">Moving from QSA to Qt Script</a> document useful when porting QSA scripts to Qt Script.</p>
 <a name="basic-usage"></a>
 <h3>Basic Usage</h3>
 <p>To evaluate script code, you create a <a href="qscriptengine.html">QScriptEngine</a> and call its evaluate() function, passing the script code (text) to evaluate as argument.</p>
@@ -561,7 +561,7 @@
 <h4>Processing Function Arguments</h4>
 <p>Two things are worth noting about function arguments:</p>
 <ol type="1">
-<li>Any script function <font color="red"><b><code>\mdash</code></b></font> including native functions <font color="red"><b><code>\mdash</code></b></font> can be invoked with any number of arguments. This means that it is up to the function itself to check the argument count if necessary, and act accordingly (e.g&#x2e;, throw an error if the number of arguments is too large, or prepare a default value if the number is too small).</li>
+<li>Any script function &mdash; including native functions &mdash; can be invoked with any number of arguments. This means that it is up to the function itself to check the argument count if necessary, and act accordingly (e.g&#x2e;, throw an error if the number of arguments is too large, or prepare a default value if the number is too small).</li>
 <li>A value of any type can be supplied as an argument to any function. This means that it is up to you to check the type of the arguments if necessary, and act accordingly (e.g&#x2e;, throw an error if an argument is not an object of a certain type).</li>
 </ol>
 <p>In summary: Qt Script does not automatically enforce any constraints on the number or type of arguments involved in a function call.</p>
@@ -730,7 +730,7 @@
 <p>Note that, even though it is not considered good practice, there is nothing that stops you from choosing to ignore the default constructed (<tt>this</tt>) object when your function is called as a constructor and creating your own object anyway; simply have the constructor return that object. The object will &quot;override&quot; the default object that the engine constructed (i.e&#x2e;, the default object will simply be discarded internally).</p>
 <a name="associating-data-with-a-function"></a>
 <h4>Associating Data with a Function</h4>
-<p>Even if a function is global <font color="red"><b><code>\mdash</code></b></font> i.e&#x2e;, not associated with any particular (type of) object <font color="red"><b><code>\mdash</code></b></font> you might still want to associate some data with it, so that it becomes self-contained; for example, the function could have a pointer to some C++ resource that it needs to access. If your application only uses a single script engine, or the same C++ resource can/should be shared among all script engines, you can simply use a static C++ variable and access it from within the native Qt Script function.</p>
+<p>Even if a function is global &mdash; i.e&#x2e;, not associated with any particular (type of) object &mdash; you might still want to associate some data with it, so that it becomes self-contained; for example, the function could have a pointer to some C++ resource that it needs to access. If your application only uses a single script engine, or the same C++ resource can/should be shared among all script engines, you can simply use a static C++ variable and access it from within the native Qt Script function.</p>
 <p>In the case where a static C++ variable or singleton class is not appropriate, you can call <a href="qscriptvalue.html#setProperty">QScriptValue::setProperty</a>() on the function object, but be aware that those properties will also be accessible to script code. The alternative is to use <a href="qscriptvalue.html#setData">QScriptValue::setData</a>(); this data is not script-accessible. The implementation can access this internal data through the <a href="qscriptcontext.html#callee">QScriptContext::callee</a>() function, which returns the function object being invoked. The following example shows how this might be used:</p>
 <pre>     QScriptValue rectifier(QScriptContext *ctx, QScriptEngine *eng)
      {
@@ -769,7 +769,7 @@
 
      // prints &quot;5,10,15,20,30&quot;
      qDebug() &lt;&lt; array.toString();</pre>
-<p>Note that, in this case, we are truly treating the native function object as a value <font color="red"><b><code>\mdash</code></b></font> i.e&#x2e;, we don't store it as a property of the scripting environment <font color="red"><b><code>\mdash</code></b></font> we simply pass it on as an &quot;anonymous&quot; argument to another script function and then forget about it.</p>
+<p>Note that, in this case, we are truly treating the native function object as a value &mdash; i.e&#x2e;, we don't store it as a property of the scripting environment &mdash; we simply pass it on as an &quot;anonymous&quot; argument to another script function and then forget about it.</p>
 <a name="the-activation-object"></a>
 <h4>The Activation Object</h4>
 <p>Every Qt Script function invocation has an <i>activation object</i> associated with it; this object is accessible through the <a href="qscriptcontext.html#activationObject">QScriptContext::activationObject</a>() function. The activation object is a script object whose properties are the local variables associated with the invocation (including the arguments for which the script function has a corresponding formal parameter name). Thus, getting, modifying, creating and deleting local variables from C++ is done using the regular <a href="qscriptvalue.html#property">QScriptValue::property</a>() and <a href="qscriptvalue.html#setProperty">QScriptValue::setProperty</a>() functions. The activation object itself is not directly accessible from script code (but it is implicitly accessed whenever a local variable is read from or written to).</p>
@@ -803,7 +803,7 @@
      print(c1()); // 1
      print(c2()); // 0
      print(c2()); // 1</pre>
-<p>The <tt>counter()</tt> function can be implemented as a native function, too <font color="red"><b><code>\mdash</code></b></font> or rather, as a pair of native functions: One for the outer and one for the inner. The definition of the outer function is as follows:</p>
+<p>The <tt>counter()</tt> function can be implemented as a native function, too &mdash; or rather, as a pair of native functions: One for the outer and one for the inner. The definition of the outer function is as follows:</p>
 <pre>     QScriptValue counter(QScriptContext *ctx, QScriptEngine *eng)
      {
          QScriptValue act = ctx-&gt;activationObject();
@@ -1110,6 +1110,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

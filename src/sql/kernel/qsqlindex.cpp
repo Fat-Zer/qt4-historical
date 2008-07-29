@@ -58,8 +58,7 @@ QT_BEGIN_NAMESPACE
 
     An \e index refers to a single table or view in a database.
     Information about the fields that comprise the index can be used
-    to generate SQL statements, or to affect the behavior of a
-    QSqlCursor object.
+    to generate SQL statements.
 */
 
 /*!

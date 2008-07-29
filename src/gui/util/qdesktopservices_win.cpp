@@ -80,6 +80,22 @@ static bool openDocument(const QUrl &file)
     return (returnValue > 32); //ShellExecute returns a value greater than 32 if successful
 }
 
+static QString expandEnvStrings(const QString &command)
+{
+
+#if defined(Q_OS_WINCE)
+    return command;
+#else
+    QByteArray path = command.toLocal8Bit();
+    char commandValue[2 * MAX_PATH] = {0};
+    DWORD returnValue = ExpandEnvironmentStringsA(path.data(), commandValue, MAX_PATH);
+    if (returnValue)
+        return QString::fromLocal8Bit(commandValue);
+    else
+        return command;
+#endif
+}
+
 static bool launchWebBrowser(const QUrl &url)
 {
     if (url.scheme() == QLatin1String("mailto")) {
@@ -96,7 +112,7 @@ static bool launchWebBrowser(const QUrl &url)
             if (res != ERROR_SUCCESS)
                 return false;
 
-            wchar_t keyValue[2 * MAX_PATH];
+            wchar_t keyValue[2 * MAX_PATH] = {0};
             returnValue = RegQueryValueExW(handle, L"", 0, 0, reinterpret_cast<unsigned char*>(keyValue), &bufferSize);
             if (!returnValue)
                 command = QString::fromRawData((QChar*)keyValue, bufferSize);
@@ -105,7 +121,7 @@ static bool launchWebBrowser(const QUrl &url)
             if (res != ERROR_SUCCESS)
                 return false;
 
-            char keyValue[2 * MAX_PATH];
+            char keyValue[2 * MAX_PATH] = {0};
             returnValue = RegQueryValueExA(handle, "", 0, 0, reinterpret_cast<unsigned char*>(keyValue), &bufferSize);
             if (!returnValue)
                 command = QString::fromLocal8Bit(keyValue);
@@ -114,6 +130,7 @@ static bool launchWebBrowser(const QUrl &url)
 
         if(returnValue)
             return false;
+        command = expandEnvStrings(command);
         command = command.trimmed();
         //Make sure the path for the process is in quotes
         int index = -1 ;

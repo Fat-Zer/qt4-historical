@@ -81,7 +81,7 @@ static bool read_xbm_header(QIODevice *device, int& w, int& h)
     buf[readBytes - 1] = '\0';
 
     // skip initial comment, if any
-    while (buf[0] != '#' && (readBytes = device->readLine( buf, buflen )) > 0);
+    while (buf[0] != '#' && (readBytes = device->readLine( buf, buflen )) > 0) {}
 
     if (readBytes <= 0)
 	return false;

@@ -59,9 +59,7 @@
 #include <QtCore/qlibrary.h>
 #include <QtCore/qmutex.h>
 #include <private/qmutexpool_p.h>
-#if defined(Q_OS_WINCE)
 #include <QtCore/qdatetime.h>
-#endif
 #if defined(Q_OS_UNIX)
 #include <QtCore/qdir.h>
 #endif
@@ -276,8 +274,8 @@ static bool libGreaterThan(const QString &lhs, const QString &rhs)
             // left hand side is shorter, so it's less than rhs
             return false;
 
-        bool ok;
-        int b;
+        bool ok = false;
+        int b = 0;
         int a = lhsparts.at(i).toInt(&ok);
         if (ok)
             b = rhsparts.at(i).toInt(&ok);
@@ -587,10 +585,8 @@ bool q_resolveOpenSslSymbols()
 // contributed by Jay Case of Sarvega, Inc.; http://sarvega.com/
 // Based on X509_cmp_time() for intitial buffer hacking.
 //==============================================================================
-time_t q_getTimeFromASN1(const ASN1_TIME *aTime)
+QDateTime q_getTimeFromASN1(const ASN1_TIME *aTime)
 {
-    time_t lResult = 0;
-
     char lBuffer[24];
     char *pBuffer = lBuffer;
 
@@ -599,14 +595,14 @@ time_t q_getTimeFromASN1(const ASN1_TIME *aTime)
 
     if (aTime->type == V_ASN1_UTCTIME) {
         if ((lTimeLength < 11) || (lTimeLength > 17))
-            return 0;
+            return QDateTime();
 
         memcpy(pBuffer, pString, 10);
         pBuffer += 10;
         pString += 10;
     } else {
         if (lTimeLength < 13)
-            return 0;
+            return QDateTime();
 
         memcpy(pBuffer, pString, 12);
         pBuffer += 12;
@@ -635,7 +631,7 @@ time_t q_getTimeFromASN1(const ASN1_TIME *aTime)
         lSecondsFromUCT = 0;
     } else {
         if ((*pString != '+') && (*pString != '-'))
-            return 0;
+            return QDateTime();
 
         lSecondsFromUCT = ((pString[1] - '0') * 10 + (pString[2] - '0')) * 60;
         lSecondsFromUCT += (pString[3] - '0') * 10 + (pString[4] - '0');
@@ -652,32 +648,12 @@ time_t q_getTimeFromASN1(const ASN1_TIME *aTime)
     lTime.tm_year = ((lBuffer[0] - '0') * 10) + (lBuffer[1] - '0');
     if (lTime.tm_year < 50)
         lTime.tm_year += 100; // RFC 2459
-    lTime.tm_wday = 0;
-    lTime.tm_yday = 0;
-    lTime.tm_isdst = 0;  // No DST adjustment requested
 
-#if !defined(Q_OS_WINCE)
-    lResult = mktime(&lTime);
-#else
-    QDate resDate(lTime.tm_yday, lTime.tm_mon, lTime.tm_mday);
+    QDate resDate(lTime.tm_year + 1900, lTime.tm_mon + 1, lTime.tm_mday);
     QTime resTime(lTime.tm_hour, lTime.tm_min, lTime.tm_sec);
-    int days = QDate(1970, 1, 1).daysTo(resDate);
-    int secs = QTime().secsTo(resTime);
-    const int secsPerDay = 86400;
-    lResult = (qlonglong(days) * secsPerDay) + secs;
-    if (lResult >= Q_INT64_C(0xFFFFFFFF))
-        lResult = uint(-1);
-#endif
-
-    if ((time_t)-1 != lResult) {
-        if (0 != lTime.tm_isdst)
-            lResult -= 3600;  // mktime may adjust for DST  (OS dependent)
-        lResult += lSecondsFromUCT;
-    } else {
-        lResult = 0;
-    }
-
-    return lResult;
+    QDateTime result(resDate, resTime, Qt::UTC);
+    result = result.addSecs(lSecondsFromUCT);
+    return result;
 }
 
 QT_END_NAMESPACE

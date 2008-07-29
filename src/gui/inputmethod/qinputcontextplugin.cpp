@@ -78,6 +78,16 @@ QT_BEGIN_NAMESPACE
     languages(), displayName(), and description(), and export the
     class with the Q_EXPORT_PLUGIN2() macro.
 
+    \legalese
+    Copyright (C) 2003-2004 immodule for Qt Project.  All rights reserved.
+
+    This file is written to contribute to Trolltech ASA under their own
+    license. You may use this file under your Qt license. Following
+    description is copied from their original file headers. Contact
+    immodule-qt@freedesktop.org if any conditions of this licensing are
+    not clear to you.
+    \endlegalese
+
     \sa QInputContext, {How to Create Qt Plugins}
 */
 

@@ -99,8 +99,6 @@ QTabWidgetEventFilter::QTabWidgetEventFilter(QTabWidget *parent) :
     connect(m_actionInsertPage, SIGNAL(triggered()), this, SLOT(addPage()));
     connect(m_actionInsertPageAfter, SIGNAL(triggered()), this, SLOT(addPageAfter()));
     connect(m_actionDeletePage, SIGNAL(triggered()), this, SLOT(removeCurrentPage()));
-    connect(m_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
-
 }
 
 QTabWidgetEventFilter::~QTabWidgetEventFilter()
@@ -114,10 +112,16 @@ void QTabWidgetEventFilter::install(QTabWidget *tabWidget)
 
 QTabWidgetEventFilter *QTabWidgetEventFilter::eventFilterOf(const QTabWidget *tabWidget)
 {
-    QList<QTabWidgetEventFilter*> filters = qFindChildren<QTabWidgetEventFilter*>(tabWidget);
-    if (filters.empty())
-        return 0;
-    return filters.front();
+    // Look for 1st order children only..otherwise, we might get filters of nested tab widgets
+    const QObjectList children = tabWidget->children();
+    const QObjectList::const_iterator cend = children.constEnd();
+    for (QObjectList::const_iterator it = children.constBegin(); it != cend; ++it) {
+        QObject *o = *it;
+        if (!o->isWidgetType())
+            if (QTabWidgetEventFilter *ef = qobject_cast<QTabWidgetEventFilter*>(o))
+                return ef;
+    }
+    return 0;
 }
 
 QMenu *QTabWidgetEventFilter::addTabWidgetContextMenuActions(const QTabWidget *tabWidget, QMenu *popup)
@@ -177,6 +181,10 @@ bool QTabWidgetEventFilter::eventFilter(QObject *o, QEvent *e)
         break;
     case QEvent::MouseButtonPress: {
         QMouseEvent *mev = static_cast<QMouseEvent*>(e);
+        if (QDesignerFormWindowInterface *fw = formWindow()) {
+            fw->clearSelection();
+            fw->selectWidget(m_tabWidget, true);
+        }
         if (mev->button() & Qt::LeftButton) {
             m_mousePressed = true;
             m_pressPoint = mev->pos();
@@ -327,16 +335,6 @@ void QTabWidgetEventFilter::addPageAfter()
         qdesigner_internal::AddTabPageCommand *cmd = new qdesigner_internal::AddTabPageCommand(fw);
         cmd->init(m_tabWidget, qdesigner_internal::AddTabPageCommand::InsertAfter);
         fw->commandHistory()->push(cmd);
-    }
-}
-
-void QTabWidgetEventFilter::slotCurrentChanged(int index)
-{
-    if (m_tabWidget->widget(index)) {
-        if (QDesignerFormWindowInterface *fw = formWindow()) {
-            fw->clearSelection();
-            fw->selectWidget(m_tabWidget, true);
-        }
     }
 }
 

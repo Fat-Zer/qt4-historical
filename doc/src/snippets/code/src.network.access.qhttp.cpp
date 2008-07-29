@@ -10,7 +10,7 @@
 
 
 //! [2]
-    QHttpRequestHeader header("GET", "/index.html");
+    QHttpRequestHeader header("GET", QUrl::toPercentEncoding("/index.html"));
     header.setValue("Host", "www.trolltech.com");
     http->setHost("www.trolltech.com");
     http->request(header);
@@ -18,8 +18,8 @@
 
 
 //! [3]
-    http->setHost("www.trolltech.com"); // id == 1
-    http->get("/index.html");           // id == 2
+    http->setHost("www.trolltech.com");                // id == 1
+    http->get(QUrl::toPercentEncoding("/index.html")); // id == 2
 //! [3]
 
 

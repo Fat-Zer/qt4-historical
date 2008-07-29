@@ -297,7 +297,7 @@ QRegion QRegion::copy() const
 
 bool QRegion::isEmpty() const
 {
-    return d == &shared_empty || d->rgn == 0;
+    return (d == &shared_empty || boundingRect().isEmpty());
 }
 
 

@@ -80,7 +80,7 @@ void CharacterData::setData(const String& data, ExceptionCode& ec)
     document()->removeMarkers(this);
 }
 
-String CharacterData::substringData( const unsigned offset, const unsigned count, ExceptionCode& ec)
+String CharacterData::substringData(unsigned offset, unsigned count, ExceptionCode& ec)
 {
     ec = 0;
     checkCharDataOperation(offset, ec);
@@ -115,7 +115,7 @@ void CharacterData::appendData( const String &arg, ExceptionCode& ec)
     oldStr->deref();
 }
 
-void CharacterData::insertData( const unsigned offset, const String &arg, ExceptionCode& ec)
+void CharacterData::insertData(unsigned offset, const String &arg, ExceptionCode& ec)
 {
     ec = 0;
     checkCharDataOperation(offset, ec);
@@ -141,7 +141,7 @@ void CharacterData::insertData( const unsigned offset, const String &arg, Except
     document()->shiftMarkers(this, offset, length);
 }
 
-void CharacterData::deleteData( const unsigned offset, const unsigned count, ExceptionCode& ec)
+void CharacterData::deleteData(unsigned offset, unsigned count, ExceptionCode& ec)
 {
     ec = 0;
     checkCharDataOperation(offset, ec);
@@ -167,7 +167,7 @@ void CharacterData::deleteData( const unsigned offset, const unsigned count, Exc
     document()->shiftMarkers(this, offset + count, -static_cast<int>(count));
 }
 
-void CharacterData::replaceData( const unsigned offset, const unsigned count, const String &arg, ExceptionCode& ec)
+void CharacterData::replaceData(unsigned offset, unsigned count, const String &arg, ExceptionCode& ec)
 {
     ec = 0;
     checkCharDataOperation(offset, ec);
@@ -241,7 +241,7 @@ void CharacterData::dispatchModifiedEvent(StringImpl *prevValue)
     dispatchSubtreeModifiedEvent();
 }
 
-void CharacterData::checkCharDataOperation( const unsigned offset, ExceptionCode& ec)
+void CharacterData::checkCharDataOperation(unsigned offset, ExceptionCode& ec)
 {
     ec = 0;
 

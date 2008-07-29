@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/tools/qdatetime.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qdatetime.cpp -->
 <head>
   <title>Qt 4.4: QDateTime Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -70,8 +70,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qdatetime.html#operator-lt-lt-46">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QDateTime &amp; <i>dateTime</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qdatetime.html#operator-gt-gt-36">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QDateTime &amp; <i>dateTime</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qdatetime.html#operator-lt-lt-19">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QDateTime &amp; <i>dateTime</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qdatetime.html#operator-gt-gt-13">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QDateTime &amp; <i>dateTime</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -171,15 +171,15 @@
 </table></p>
 <p>All other input characters will be treated as text. Any sequence of characters that are enclosed in singlequotes will also be treated as text and not be used as an expression.</p>
 <pre>         QTime time1 = QTime::fromString(&quot;131&quot;, &quot;HHh&quot;);
-         // time1 is 13:00:00
+         <span class="comment">// time1 is 13:00:00</span>
          QTime time1 = QTime::fromString(&quot;1apA&quot;, &quot;1amAM&quot;);
-         // time1 is 01:00:00
+         <span class="comment">// time1 is 01:00:00</span>
 
          QDateTime dateTime2 = QDateTime::fromString(&quot;M1d1y9800:01:02&quot;,
                                                      &quot;'M'M'd'd'y'yyhh:mm:ss&quot;);
-         // dateTime is 1 January 1998 00:01:02</pre>
+         <span class="comment">// dateTime is 1 January 1998 00:01:02</span></pre>
 <p>If the format is not satisfied an invalid <a href="qdatetime.html">QDateTime</a> is returned. The expressions that don't have leading zeroes (d, M, h, m, s, z) will be greedy. This means that they will use two digits even if this will put them outside the range and/or leave too few digits for other sections.</p>
-<pre>         QDateTime dateTime = QDateTime::fromString(&quot;130&quot;, &quot;Mm&quot;); // invalid</pre>
+<pre>         QDateTime dateTime = QDateTime::fromString(&quot;130&quot;, &quot;Mm&quot;); <span class="comment">// invalid</span></pre>
 <p>This could have meant 1 January 00:30.00 but the M will grab two digits.</p>
 <p>For any field that is not represented in the format the following defaults are used:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -193,7 +193,7 @@
 </table></p>
 <p>For example:</p>
 <pre>         QDateTime dateTime = QDateTime::fromString(&quot;1.30.1&quot;, &quot;M.d.s&quot;);
-         // dateTime is January 30 in the current year 00:00:01</pre>
+         <span class="comment">// dateTime is January 30 in the current year 00:00:01</span></pre>
 <p><a href="qdatetime.html#toString">QDateTime::toString</a>() <a href="qtime.html#toString">QTime::toString</a>()</p>
 <p>See also <a href="qdate.html#fromString">QDate::fromString</a>(), <a href="qtime.html#fromString">QTime::fromString</a>(), and <a href="qdate.html#toString">QDate::toString</a>().</p>
 <a name="//apple_ref/cpp/clm/QDateTime/fromTime_t" />
@@ -338,11 +338,11 @@
 <p>Returns true if this datetime is later than or equal to the <i>other</i> datetime; otherwise returns false.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-46"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QDateTime &amp; <i>dateTime</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-19"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QDateTime &amp; <i>dateTime</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes <i>dateTime</i> to the <i>out</i> stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-36"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QDateTime &amp; <i>dateTime</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-13"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QDateTime &amp; <i>dateTime</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a datetime from the stream <i>in</i> into <i>dateTime</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -350,6 +350,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

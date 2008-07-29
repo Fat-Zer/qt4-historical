@@ -76,7 +76,7 @@
      Q_INTERFACES(BrushInterface ShapeInterface FilterInterface)
 
  public:
-     <span class="comment">//</span> BrushInterface
+     <span class="comment">// BrushInterface</span>
      QStringList brushes() const;
      QRect mousePress(const QString &amp;brush, QPainter &amp;painter,
                       const QPoint &amp;pos);
@@ -85,11 +85,11 @@
      QRect mouseRelease(const QString &amp;brush, QPainter &amp;painter,
                         const QPoint &amp;pos);
 
-     <span class="comment">//</span> ShapeInterface
+     <span class="comment">// ShapeInterface</span>
      QStringList shapes() const;
      QPainterPath generateShape(const QString &amp;shape, QWidget *parent);
 
-     <span class="comment">//</span> FilterInterface
+     <span class="comment">// FilterInterface</span>
      QStringList filters() const;
      QImage filterImage(const QString &amp;filter, const QImage &amp;image,
                         QWidget *parent);
@@ -100,6 +100,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

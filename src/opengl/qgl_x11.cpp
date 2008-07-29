@@ -525,7 +525,6 @@ void *QGLContext::chooseVisual()
 
 
 /*!
-
   \internal
 
   \bold{X11 only:} This virtual function chooses a visual
@@ -715,7 +714,8 @@ void QGLContext::swapBuffers() const
                         glXGetVideoSyncSGI = (qt_glXGetVideoSyncSGI) dlsym(handle, "glXGetVideoSyncSGI");
                         glXWaitVideoSyncSGI = (qt_glXWaitVideoSyncSGI) dlsym(handle, "glXWaitVideoSyncSGI");
                         dlclose(handle);
-                    } else
+                    }
+                    if (!glXGetVideoSyncSGI)
 #endif
                     {
                         extern const QString qt_gl_library_name();
@@ -942,11 +942,6 @@ void QGLContext::generateFontDisplayLists(const QFont & fnt, int listBase)
         glXUseXFont(static_cast<Font>(f.handle()), 0, 256, listBase);
 }
 
-/*!
-    Returns a function pointer to the GL extension function passed in
-    \a proc. 0 is returned if a pointer to the function could not be
-    obtained.
-*/
 void *QGLContext::getProcAddress(const QString &proc) const
 {
     typedef void *(*qt_glXGetProcAddressARB)(const GLubyte *);
@@ -963,7 +958,8 @@ void *QGLContext::getProcAddress(const QString &proc) const
             if (handle) {
                 glXGetProcAddressARB = (qt_glXGetProcAddressARB) dlsym(handle, "glXGetProcAddressARB");
                 dlclose(handle);
-            } else
+            }
+            if (!glXGetProcAddressARB)
 #endif
             {
                 extern const QString qt_gl_library_name();

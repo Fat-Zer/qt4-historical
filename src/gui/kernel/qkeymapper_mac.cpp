@@ -70,10 +70,10 @@ extern bool qt_sendSpontaneousEvent(QObject *obj, QEvent *event); //qapplication
 
 Q_GUI_EXPORT void qt_mac_secure_keyboard(bool b)
 {
-    if(b) {
-        EnableSecureEventInput();
-    } else {
-        DisableSecureEventInput();
+    static bool secure = false;
+    if (b != secure){
+        b ? EnableSecureEventInput() : DisableSecureEventInput();
+        secure = b;
     }
 }
 
@@ -765,7 +765,7 @@ QKeyMapperPrivate::translateKeyEvent(QWidget *widget, EventHandlerCallRef er, Ev
                     lastTime = pressTime;
 
                     Qt::KeyboardModifiers compressMod;
-                    int compressQtKey;
+                    int compressQtKey = 0;
                     QChar compressChar;
                     if(translateKeyEventInternal(er, pressEvent,
                                                   &compressQtKey, &compressChar, &compressMod, 0)
@@ -784,7 +784,9 @@ QKeyMapperPrivate::translateKeyEvent(QWidget *widget, EventHandlerCallRef er, Ev
                         // 4) something that a) doesn't translate to text or b) translates
                         //    to newline text
                         || (compressQtKey == 0)
-                        || (compressChar == QLatin1Char('\n'));
+                        || (compressChar == QLatin1Char('\n'))
+                        || (compressQtKey == Qt::Key_unknown);
+
                     if(compressMod == modifiers && !compressChar.isNull() && !stopCompression) {
 #ifdef DEBUG_KEY_BINDINGS
                         qDebug("compressing away %c", compressChar.toLatin1());

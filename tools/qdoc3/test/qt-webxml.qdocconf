@@ -6,3 +6,6 @@ imagedirs               = $QTDIR/doc/src/images \
 
 outputdir               = $QTDIR/doc/webxml
 outputformats           = WebXML
+
+generateindex           = true
+url                     = .

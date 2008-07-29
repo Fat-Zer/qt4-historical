@@ -51,6 +51,7 @@ static const int QGRAPHICSVIEW_REGION_RECT_THRESHOLD = 50;
     contents of a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
     \mainclass
 
     QGraphicsView visualizes the contents of a QGraphicsScene in a scrollable
@@ -287,18 +288,21 @@ static const int QGRAPHICSVIEW_REGION_RECT_THRESHOLD = 50;
 #include <QtGui/qpainter.h>
 #include <QtGui/qscrollbar.h>
 #include <QtGui/qstyleoption.h>
+#ifdef Q_WS_X11
+#include <private/qt_x11_p.h>
+#endif
 
 #include <math.h>
 
 QT_BEGIN_NAMESPACE
 
 inline int q_round_bound(qreal d) //### (int)(qreal) INT_MAX != INT_MAX for single precision
-{    
+{
     if (d <= (qreal) INT_MIN)
         return INT_MIN;
     else if (d >= (qreal) INT_MAX)
         return INT_MAX;
-    return d >= 0.0 ? int(d + 0.5) : int(d - int(d-1) + 0.5) + int(d-1); 
+    return d >= 0.0 ? int(d + 0.5) : int(d - int(d-1) + 0.5) + int(d-1);
 }
 
 /*!
@@ -521,17 +525,9 @@ qint64 QGraphicsViewPrivate::verticalScroll() const
 */
 void QGraphicsViewPrivate::replayLastMouseEvent()
 {
-    Q_Q(QGraphicsView);
     if (!useLastMouseEvent || !scene)
         return;
-
-    QMouseEvent *mouseEvent = new QMouseEvent(QEvent::MouseMove,
-                                              lastMouseEvent.pos(),
-                                              lastMouseEvent.globalPos(),
-                                              lastMouseEvent.button(),
-                                              lastMouseEvent.buttons(),
-                                              lastMouseEvent.modifiers());
-    QApplication::postEvent(q->viewport(), mouseEvent);
+    mouseMoveEventHandler(&lastMouseEvent);
 }
 
 /*!
@@ -542,6 +538,63 @@ void QGraphicsViewPrivate::storeMouseEvent(QMouseEvent *event)
     useLastMouseEvent = true;
     lastMouseEvent = QMouseEvent(QEvent::MouseMove, event->pos(), event->globalPos(),
                                  event->button(), event->buttons(), event->modifiers());
+}
+
+void QGraphicsViewPrivate::mouseMoveEventHandler(QMouseEvent *event)
+{
+    Q_Q(QGraphicsView);
+
+    storeMouseEvent(event);
+    lastMouseEvent.setAccepted(false);
+
+    if (!sceneInteractionAllowed)
+        return;
+    if (handScrolling)
+        return;
+    if (!scene)
+        return;
+
+    QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseMove);
+    mouseEvent.setWidget(q->viewport());
+    mouseEvent.setButtonDownScenePos(mousePressButton, mousePressScenePoint);
+    mouseEvent.setButtonDownScreenPos(mousePressButton, mousePressScreenPoint);
+    mouseEvent.setScenePos(q->mapToScene(event->pos()));
+    mouseEvent.setScreenPos(event->globalPos());
+    mouseEvent.setLastScenePos(lastMouseMoveScenePoint);
+    mouseEvent.setLastScreenPos(lastMouseMoveScreenPoint);
+    mouseEvent.setButtons(event->buttons());
+    mouseEvent.setButton(event->button());
+    mouseEvent.setModifiers(event->modifiers());
+    lastMouseMoveScenePoint = mouseEvent.scenePos();
+    lastMouseMoveScreenPoint = mouseEvent.screenPos();
+    mouseEvent.setAccepted(false);
+    QApplication::sendEvent(scene, &mouseEvent);
+
+    // Remember whether the last event was accepted or not.
+    lastMouseEvent.setAccepted(mouseEvent.isAccepted());
+
+    if (mouseEvent.isAccepted() && mouseEvent.buttons() != 0) {
+        // The event was delivered to a mouse grabber; the press is likely to
+        // have set a cursor, and we must not change it.
+        return;
+    }
+
+#ifndef QT_NO_CURSOR
+    // Find the topmost item under the mouse with a cursor.
+    foreach (QGraphicsItem *item, scene->d_func()->cachedItemsUnderMouse) {
+        if (item->hasCursor()) {
+            _q_setViewportCursor(item->cursor());
+            return;
+        }
+    }
+
+    // No items with cursors found; revert to the view cursor.
+    if (hasStoredOriginalCursor) {
+        // Restore the original viewport cursor.
+        hasStoredOriginalCursor = false;
+        q->viewport()->setCursor(originalCursor);
+    }
+#endif
 }
 
 /*!
@@ -694,6 +747,11 @@ QGraphicsView::QGraphicsView(QWidget *parent)
     setViewport(0);
     setAcceptDrops(true);
     setBackgroundRole(QPalette::Base);
+
+    // ### Ideally this would be enabled/disabled depending on whether any
+    // widgets in the current scene enabled input methods. We could do that
+    // using a simple reference count. The same goes for acceptDrops and mouse
+    // tracking.
     setAttribute(Qt::WA_InputMethodEnabled);
 }
 
@@ -1449,6 +1507,15 @@ void QGraphicsView::ensureVisible(const QGraphicsItem *item, int xmargin, int ym
     is scaled according to \a aspectRatioMode. \a rect will be centered in the
     view if it does not fit tightly.
 
+    It's common to call fitInView() from inside a reimplementation of
+    resizeEvent(), to ensure that the whole scene, or parts of the scene,
+    scales automatically to fit the new size of the viewport as the view is
+    resized. Note though, that calling fitInView() from inside resizeEvent()
+    can lead to unwanted resize recursion, if the new transformation toggles
+    the automatic state of the scrollbars. You can toggle the scrollbar
+    policies to always on or always off to prevent this (see
+    horizontalScrollBarPolicy() and verticalScrollBarPolicy()).
+
     \sa setMatrix(), ensureVisible(), centerOn()
 */
 void QGraphicsView::fitInView(const QRectF &rect, Qt::AspectRatioMode aspectRatioMode)
@@ -1534,7 +1601,7 @@ void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect 
                            Qt::AspectRatioMode aspectRatioMode)
 {
     Q_D(QGraphicsView);
-    if (!d->scene)
+    if (!d->scene || !(painter && painter->isActive()))
         return;
 
     // Default source rect = viewport rect
@@ -2673,59 +2740,7 @@ void QGraphicsView::mouseMoveEvent(QMouseEvent *event)
         }
     }
 
-    d->storeMouseEvent(event);
-    d->lastMouseEvent.setAccepted(false);
-
-    if (!d->sceneInteractionAllowed)
-        return;
-
-    if (d->handScrolling)
-        return;
-
-    if (!d->scene)
-        return;
-
-    QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseMove);
-    mouseEvent.setWidget(viewport());
-    mouseEvent.setButtonDownScenePos(d->mousePressButton, d->mousePressScenePoint);
-    mouseEvent.setButtonDownScreenPos(d->mousePressButton, d->mousePressScreenPoint);
-    mouseEvent.setScenePos(mapToScene(event->pos()));
-    mouseEvent.setScreenPos(event->globalPos());
-    mouseEvent.setLastScenePos(d->lastMouseMoveScenePoint);
-    mouseEvent.setLastScreenPos(d->lastMouseMoveScreenPoint);
-    mouseEvent.setButtons(event->buttons());
-    mouseEvent.setButton(event->button());
-    mouseEvent.setModifiers(event->modifiers());
-    d->lastMouseMoveScenePoint = mouseEvent.scenePos();
-    d->lastMouseMoveScreenPoint = mouseEvent.screenPos();
-    mouseEvent.setAccepted(false);
-    QApplication::sendEvent(d->scene, &mouseEvent);
-
-    // Remember whether the last event was accepted or not.
-    d->lastMouseEvent.setAccepted(mouseEvent.isAccepted());
-
-    if (mouseEvent.isAccepted() && mouseEvent.buttons() != 0) {
-        // The event was delivered to a mouse grabber; the press is likely to
-        // have set a cursor, and we must not change it.
-        return;
-    }
-
-#ifndef QT_NO_CURSOR
-    // Find the topmost item under the mouse with a cursor.
-    foreach (QGraphicsItem *item, d->scene->d_func()->cachedItemsUnderMouse) {
-        if (item->hasCursor()) {
-            d->_q_setViewportCursor(item->cursor());
-            return;
-        }
-    }
-
-    // No items with cursors found; revert to the view cursor.
-    if (d->hasStoredOriginalCursor) {
-        // Restore the original viewport cursor.
-        d->hasStoredOriginalCursor = false;
-        viewport()->setCursor(d->originalCursor);
-    }
-#endif
+    d->mouseMoveEventHandler(event);
 }
 
 /*!
@@ -2934,7 +2949,11 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
     int exposedTime = stopWatch.elapsed();
 #endif
 
-    if (d->cacheMode & CacheBackground) {
+    if ((d->cacheMode & CacheBackground)
+#ifdef Q_WS_X11
+        && X11->use_xrender
+#endif
+        ) {
         if (d->mustResizeBackgroundPixmap) {
             // Recreate the background pixmap, and flag the whole background as
             // exposed.
@@ -3176,7 +3195,11 @@ void QGraphicsView::scrollContentsBy(int dx, int dy)
     }
     d->updateLastCenterPoint();
 
-    if (d->cacheMode & CacheBackground) {
+    if ((d->cacheMode & CacheBackground)
+#ifdef Q_WS_X11
+        && X11->use_xrender
+#endif
+        ) {
         // Invalidate the background pixmap
         d->backgroundPixmapExposed.translate(dx, 0);
         if (dx > 0) {
@@ -3205,7 +3228,7 @@ void QGraphicsView::scrollContentsBy(int dx, int dy)
     }
 
     // Always replay on scroll.
-    if (d->sceneInteractionAllowed && !d->handScrolling)
+    if (d->sceneInteractionAllowed)
         d->replayLastMouseEvent();
 }
 

@@ -85,9 +85,9 @@ public:
     \enum QTreeWidgetItem::ChildIndicatorPolicy
     \since 4.3
 
-    \value ShowIndicator
-    \value DontShowIndicator
-    \value DontShowIndicatorWhenChildless
+    \value ShowIndicator     The controls for expanding and collapsing will be shown for this item even if there are no children.
+    \value DontShowIndicator   The controls for expanding and collapsing will never be shown even if there are children.  If the node is forced open the user will not be able to expand or collapse the item.
+    \value DontShowIndicatorWhenChildless  The controls for expanding and collapsing will be shown if the item contains children.
 */
 
 /*!
@@ -755,7 +755,6 @@ bool QTreeModel::executePendingSort() const
         Qt::SortOrder order = view()->header()->sortIndicatorOrder();
         QTreeModel *that = const_cast<QTreeModel*>(this);
         that->sort(column, order);
-        emit that->itemsSorted();
         return true;
     }
     return false;
@@ -950,11 +949,14 @@ void QTreeModel::sortItems(QList<QTreeWidgetItem*> *items, int column, Qt::SortO
 */
 
 /*!
-  \fn void QTreeWidgetItem::sortChildren(int column, Qt::SortOrder order)
-  \since 4.2
+    \fn void QTreeWidgetItem::sortChildren(int column, Qt::SortOrder order)
+    \since 4.2
 
-  Sorts the children of the item using the given \a order,
-  by the values in the given \a column.
+    Sorts the children of the item using the given \a order,
+    by the values in the given \a column.
+
+    \note This function does nothing if the item is not associated with a
+    QTreeWidget.
 */
 
 /*!
@@ -2170,7 +2172,6 @@ public:
     void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &index);
     void _q_sort();
     void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-    void _q_itemsSorted();
     void _q_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 };
 
@@ -2245,6 +2246,7 @@ void QTreeWidgetPrivate::_q_sort()
 
 void QTreeWidgetPrivate::_q_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
+    Q_Q(QTreeWidget);
     QModelIndexList indices = selected.indexes();
     int i;
     QTreeModel *m = model();
@@ -2259,6 +2261,7 @@ void QTreeWidgetPrivate::_q_selectionChanged(const QItemSelection &selected, con
         item->d->selected = false;
     }
 
+    emit q->itemSelectionChanged();
 }
 
 void QTreeWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
@@ -2274,12 +2277,6 @@ void QTreeWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
                                   bottomRight.row(), topLeft.parent());
         }
     }
-}
-
-void QTreeWidgetPrivate::_q_itemsSorted()
-{
-    Q_Q(QTreeWidget);
-    q->doItemsLayout();
 }
 
 /*!
@@ -2373,7 +2370,7 @@ void QTreeWidgetPrivate::_q_itemsSorted()
 
     The specified \a item is the item that was clicked, or 0 if no
     item was clicked. The \a column is the item's column that was
-    clicked, or -1 if no item was clicked.
+    clicked. If no item was clicked, no signal will be emitted.
 */
 
 /*!
@@ -2384,7 +2381,7 @@ void QTreeWidgetPrivate::_q_itemsSorted()
 
     The specified \a item is the item that was clicked, or 0 if no
     item was clicked. The \a column is the item's column that was
-    clicked, or -1 if no item was clicked.
+    clicked. If no item was double clicked, no signal will be emitted.
 */
 
 /*!
@@ -2392,6 +2389,9 @@ void QTreeWidgetPrivate::_q_itemsSorted()
 
     This signal is emitted when the specified \a item is expanded so that
     all of its children are displayed.
+
+    \note This signal will not be emitted if an item changes its state when
+    expandAll() is invoked.
 
     \sa isItemExpanded(), itemCollapsed(), expandItem()
 */
@@ -2401,6 +2401,9 @@ void QTreeWidgetPrivate::_q_itemsSorted()
 
     This signal is emitted when the specified \a item is collapsed so that
     none of its children are displayed.
+
+    \note This signal will not be emitted if an item changes its state when
+    collapseAll() is invoked.
 
     \sa isItemExpanded(), itemExpanded(), collapseItem()
 */
@@ -2468,19 +2471,14 @@ QTreeWidget::QTreeWidget(QWidget *parent)
             SLOT(_q_emitItemCollapsed(QModelIndex)));
     connect(selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(_q_emitCurrentItemChanged(QModelIndex,QModelIndex)));
-    connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SIGNAL(itemSelectionChanged()));
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             this, SLOT(_q_emitItemChanged(QModelIndex)));
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             this, SLOT(_q_dataChanged(QModelIndex,QModelIndex)));
     connect(model(), SIGNAL(columnsRemoved(QModelIndex,int,int)),
             this, SLOT(_q_sort()));
-    connect(model(), SIGNAL(itemsSorted()), this, SLOT(_q_itemsSorted()));
-
     connect(selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(_q_selectionChanged(QItemSelection,QItemSelection)));
-
     header()->setClickable(false);
 }
 
@@ -2889,9 +2887,12 @@ void QTreeWidget::closePersistentEditor(QTreeWidgetItem *item, int column)
 }
 
 /*!
-  \since 4.1
+    \since 4.1
 
-  Returns the widget displayed in the cell specified by \a item and the given \a column.
+    Returns the widget displayed in the cell specified by \a item and the given \a column.
+
+    \note The tree takes ownership of the widget.
+
 */
 QWidget *QTreeWidget::itemWidget(QTreeWidgetItem *item, int column) const
 {
@@ -2900,22 +2901,24 @@ QWidget *QTreeWidget::itemWidget(QTreeWidgetItem *item, int column) const
 }
 
 /*!
-  \since 4.1
+    \since 4.1
 
-  Sets the given \a widget to be displayed in the cell specified by
-  the given \a item and \a column.
+    Sets the given \a widget to be displayed in the cell specified by
+    the given \a item and \a column.
 
-  Note that the given \a widget's \l {QWidget}{autoFillBackground}
-  property must be set to true, otherwise the widget's background will
-  be transparent, showing both the model data and the tree widget
-  item.
+    Note that the given \a widget's \l {QWidget}{autoFillBackground}
+    property must be set to true, otherwise the widget's background will
+    be transparent, showing both the model data and the tree widget
+    item.
 
-  This function should only be used to display static content in the
-  place of a tree widget item. If you want to display custom dynamic
-  content or implement a custom editor widget, use QTreeView and
-  subclass QItemDelegate instead.
+    This function should only be used to display static content in the
+    place of a tree widget item. If you want to display custom dynamic
+    content or implement a custom editor widget, use QTreeView and
+    subclass QItemDelegate instead.
 
-  \sa {Delegate Classes}
+    \note The tree takes ownership of the widget.
+
+    \sa {Delegate Classes}
 */
 void QTreeWidget::setItemWidget(QTreeWidgetItem *item, int column, QWidget *widget)
 {

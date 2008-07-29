@@ -802,146 +802,146 @@
     \image linguist-menubar.png
 
     \list
-    \o \e {File}
+    \o \gui {File}
         \list
-        \o \e {Open... Ctrl+O} \BR pops up an open file dialog from which a
+        \o \gui {Open... Ctrl+O} \BR pops up an open file dialog from which a
         translation source \c .ts or \c .xlf file can be chosen.
-        \o \e {Recently opened files} \BR shows the \c .ts files that
+        \o \gui {Recently opened files} \BR shows the \c .ts files that
         have been opened recently, click one to open it.
-        \o \e {Save Ctrl+S} \BR saves the current translation source file.
-        \o \e {Save As...} \BR pops up a save as file dialog so that the
+        \o \gui {Save Ctrl+S} \BR saves the current translation source file.
+        \o \gui {Save As...} \BR pops up a save as file dialog so that the
         current translation source file may be saved with a different
         name, format and/or put in a different location.
-        \o \e {Release} \BR create a Qt message \c .qm file with the same base 
+        \o \gui {Release} \BR create a Qt message \c .qm file with the same base 
         name as the current translation source file. The release manager's
         command line tool \l lrelease performs the same function on
         \e all of an application's translation source files.
-        \o \e {Release As...} \BR pops up a save as file dialog. The
+        \o \gui {Release As...} \BR pops up a save as file dialog. The
         filename entered will be a Qt message \c .qm file of the translation
         based on the current translation source file. The release manager's
         command line tool \l lrelease performs the same function on
         \e all of an application's translation source files.
-        \o \e {Print... Ctrl+P} \BR pops up a print dialog. If you click
+        \o \gui {Print... Ctrl+P} \BR pops up a print dialog. If you click
         OK the translation source and the translations will be printed.
-        \o \e {Exit Ctrl+Q} \BR closes \QL.
+        \o \gui {Exit Ctrl+Q} \BR closes \QL.
         \endlist
 
-    \o \e {Edit}
+    \o \gui {Edit}
         \list
-        \o \e {Undo Ctrl+Z} \BR undoes the last editing action in the
+        \o \gui {Undo Ctrl+Z} \BR undoes the last editing action in the
         translation pane.
-        \o \e {Redo Ctrl+Y} \BR redoes the last editing action in the
+        \o \gui {Redo Ctrl+Y} \BR redoes the last editing action in the
         translation pane.
-        \o \e {Cut Ctrl+X} \BR deletes any highlighted text in the
+        \o \gui {Cut Ctrl+X} \BR deletes any highlighted text in the
         translation pane and saves a copy to the clipboard.
-        \o \e {Copy Ctrl+C} \BR copies the highlighted text in the
+        \o \gui {Copy Ctrl+C} \BR copies the highlighted text in the
         translation pane to the clipboard.
-        \o \e {Paste Ctrl+V} \BR pastes the clipboard text into the
+        \o \gui {Paste Ctrl+V} \BR pastes the clipboard text into the
         translation pane.
     \omit
-        \o \e {Delete} \BR deletes the highlighted text in the
+        \o \gui {Delete} \BR deletes the highlighted text in the
         translation pane.
     \endomit
-        \o \e {Select All Ctrl+A} \BR selects all the text in the
+        \o \gui {Select All Ctrl+A} \BR selects all the text in the
         translation pane ready for copying or deleting.
-        \o \e {Find... Ctrl+F} \BR pops up the
+        \o \gui {Find... Ctrl+F} \BR pops up the
         Find dialog. When the dialog pops up
         enter the text to be found and click the \gui {Find Next} button.
         Source phrases, translations and comments may be searched.
-        \o \e {Find Next F3} \BR finds the next occurrence of the text that
+        \o \gui {Find Next F3} \BR finds the next occurrence of the text that
         was last entered in the Find dialog.
-        \o \e {Search and Translate...} \BR pops up the Search and 
+        \o \gui {Search and Translate...} \BR pops up the Search and 
         Replace Dialog. Use this dialog to translate the same text in multiple items.
-        \o \e {Translation File Settings...} \BR let you configure the target
+        \o \gui {Translation File Settings...} \BR let you configure the target
         language and the country/region of a translation source file. 
         \endlist
 
-    \o \e {Translation}
+    \o \gui {Translation}
         \list
-        \o \e {Prev Unfinished Ctrl+K} \BR moves to the nearest previous
+        \o \gui {Prev Unfinished Ctrl+K} \BR moves to the nearest previous
         unfinished source phrase (unfinished means untranslated or
         translated but failed validation).
-        \o \e {Next Unfinished Ctrl+L} \BR moves to the next unfinished source
+        \o \gui {Next Unfinished Ctrl+L} \BR moves to the next unfinished source
         phrase.
-        \o \e {Prev Shift+Ctrl+K} \BR moves to the previous source phrase.
-        \o \e {Next Shift+Ctrl+L} \BR moves to the next source phrase.
-        \o \e {Done \& Next Ctrl+Enter} \BR mark this phrase as 'done'
+        \o \gui {Prev Shift+Ctrl+K} \BR moves to the previous source phrase.
+        \o \gui {Next Shift+Ctrl+L} \BR moves to the next source phrase.
+        \o \gui {Done \& Next Ctrl+Enter} \BR mark this phrase as 'done'
         (translated) and move to the next unfinished source phrase.
-        \o \e {Begin from Source Ctrl+B} \BR copies the source text into
+        \o \gui {Begin from Source Ctrl+B} \BR copies the source text into
         the translation.
         \endlist
 
-    \o \e {Validation} (See the \l Validation section)
+    \o \gui {Validation} (See the \l Validation section)
         \list
-        \o \e {Accelerators} \BR toggles validation on or off for Alt
+        \o \gui {Accelerators} \BR toggles validation on or off for Alt
         accelerators.
-        \o \e {Ending Punctuation} \BR switches validation on or off
+        \o \gui {Ending Punctuation} \BR switches validation on or off
         for phrase ending punctuation, e.g. ellipsis, exclamation mark,
         question mark, etc.
-        \o \e {Phrase Matches} \BR sets validation on or off for
+        \o \gui {Phrase Matches} \BR sets validation on or off for
         matching against translations that are in the current phrase book.
-        \o \e {Place Marker Matches} \BR sets validation on or off for
+        \o \gui {Place Marker Matches} \BR sets validation on or off for
         the use of the same place markers in the source and translation.
         \endlist
 
-    \o \e {Phrases} (See the section \l {Phrase Books} for details.)
+    \o \gui {Phrases} (See the section \l {Phrase Books} for details.)
         \list
-        \o \e {New Phrase Book... Ctrl+N} \BR pops up a save as file dialog.
+        \o \gui {New Phrase Book... Ctrl+N} \BR pops up a save as file dialog.
         You must enter a filename to be used for the phrase book and save
         the file. Once saved you should open the phrase book to begin using
         it.
-        \o \e {Open Phrase Book... Ctrl+H} \BR pops up an open file dialog.
+        \o \gui {Open Phrase Book... Ctrl+H} \BR pops up an open file dialog.
         Find and choose a phrase book to open.
-        \o \e {Close Phrase Book} \BR displays the list of phrase books 
+        \o \gui {Close Phrase Book} \BR displays the list of phrase books 
         currently opened. Clicking on one of the items will close the phrase 
         book. If the phrase book has been modified, a dialog box asks whether 
         \QL should save the changes.
-        \o \e {Edit Phrase Book...} \BR displays the list of phrase books 
+        \o \gui {Edit Phrase Book...} \BR displays the list of phrase books 
         currently opened. Clicking on one of the items will open the
         \l{Creating and Editing Phrase Books}{Phrase Book Dialog} where you 
         can add, edit or delete phrases.
-        \o \e {Print Phrase Book...} \BR displays the list of phrase books
+        \o \gui {Print Phrase Book...} \BR displays the list of phrase books
         currently opened. Clicking on one of the items pops up a print dialog. 
         If you click OK the phrase book will be printed.
-        \o \e {Add to Phrase Book Ctrl+T} \BR Adds the source text and
+        \o \gui {Add to Phrase Book Ctrl+T} \BR Adds the source text and
         translation currently shown in the \l{Translation Area} to a phrase book.
         If multiple phrase books are loaded, a dialog box let you specify 
         select one.
-        \o \e {Other Languages...} \BR Open the 
+        \o \gui {Other Languages...} \BR Open the 
         \l{Showing Auxiliary Translations}{Auxiliary Languages Dialog}. 
         This dialog let you specify which other auxiliary translations
         should be shown in the \l{Translation Area}.
         \endlist
 
-  \o \e {Tools}
+  \o \gui {Tools}
         \list
-        \o \e {Batch Translation...} \BR Opens a \l{Batch Translation}{dialog} 
+        \o \gui {Batch Translation...} \BR Opens a \l{Batch Translation}{dialog} 
         which let you automatically insert translations for source texts which 
         are in a phrase book.
-        \o \e {Open/Refresh Form Preview F3} \BR Opens the \l{Form Preview}.
+        \o \gui {Open/Refresh Form Preview F3} \BR Opens the \l{Form Preview}.
         This window let you instantly see translations for forms created with
-        \e designer.
+        \QD.
         \endlist
 
-  \o \e {View}
+  \o \gui {View}
         \list
-        \o \e {Revert Sorting} \BR puts the items in the \l{Context List}
+        \o \gui {Revert Sorting} \BR puts the items in the \l{Context List}
         and in the \l{String List} into their original order.
-        \o \e {Display Guesses} \BR turns the display of phrases and
+        \o \gui {Display Guesses} \BR turns the display of phrases and
         guesses on or off.
-        \o \e {Statistics} \BR toggles the visibility of the Statistics dialog.
-        \o \e {Views} \BR toggles the visibility of the \l{Context List}, 
+        \o \gui {Statistics} \BR toggles the visibility of the Statistics dialog.
+        \o \gui {Views} \BR toggles the visibility of the \l{Context List}, 
         \l{String List}, \l{Phrases and Guesses Window}, \l{Warnings Window},
         or \l{Source Code Window}.
-        \o \e {Toolbars} \BR toggles the visibility of the different toolbars.
+        \o \gui {Toolbars} \BR toggles the visibility of the different toolbars.
         \endlist
 
-  \o \e {Help}
+  \o \gui {Help}
         \list
-        \o \e {Manual F1} \BR opens this manual.
-        \o \e {About Qt Linguist} \BR Shows information about \QL.
-        \o \e {About Qt} \BR Shows information about \e{Qt}.
-        \o \e {What's This? Shift+F1} \BR Click on one item in the main window 
+        \o \gui {Manual F1} \BR opens this manual.
+        \o \gui {About Qt Linguist} \BR Shows information about \QL.
+        \o \gui {About Qt} \BR Shows information about \e{Qt}.
+        \o \gui {What's This? Shift+F1} \BR Click on one item in the main window 
         to get additional information about it.
         \endlist
 

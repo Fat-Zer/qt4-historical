@@ -141,6 +141,14 @@ QDataStream &operator>>(QDataStream &in, QHeaderViewPrivate::SectionSpan &span)
     QTableWidget and QTableView create default headers. If you want
     the headers to be visible, you can use \l{QFrame::}{setVisible()}.
 
+    Not all \l{Qt::}{ItemDataRole}s will have an effect on a
+    QHeaderView. If you need to draw other roles, you can subclass
+    QHeaderView and reimplement \l{QHeaderView::}{paintEvent()}.
+    QHeaderView respects the following item data roles:
+    \l{Qt::}{TextAlignmentRole}, \l{Qt::}{DisplayRole},
+    \l{Qt::}{FontRole}, \l{Qt::}{DecorationRole},
+    \l{Qt::}{ForegroundRole}, and \l{Qt::}{BackgroundRole}.
+
     \note Each header renders the data for each section itself, and does not
     rely on a delegate. As a result, calling a header's setItemDelegate()
     function will have no effect.

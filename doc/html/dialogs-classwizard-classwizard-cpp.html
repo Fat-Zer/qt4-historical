@@ -172,7 +172,7 @@
      } else if (field(&quot;defaultCtor&quot;).toBool()) {
          block += className + &quot;::&quot; + className + &quot;()\n&quot;;
          block += &quot;{\n&quot;;
-         block += &quot;    <span class="comment">//</span> missing code\n&quot;;
+         block += &quot;    <span class="comment">// missing code\n&quot;;</span>
          block += &quot;}\n&quot;;
 
          if (field(&quot;copyCtor&quot;).toBool()) {
@@ -188,7 +188,7 @@
              block += &quot;{\n&quot;;
              if (!baseClass.isEmpty())
                  block += &quot;    &quot; + baseClass + &quot;::operator=(other);\n&quot;;
-             block += &quot;    <span class="comment">//</span> missing code\n&quot;;
+             block += &quot;    <span class="comment">// missing code\n&quot;;</span>
              block += &quot;    return *this;\n&quot;;
              block += &quot;}\n&quot;;
          }
@@ -420,6 +420,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

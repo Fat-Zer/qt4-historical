@@ -760,8 +760,6 @@ void QClipboard::connectNotify(const char *)
 { }
 
 
-/*! \reimp
- */
 bool QClipboard::event(QEvent *e)
 {
     if (e->type() == QEvent::Timer) {

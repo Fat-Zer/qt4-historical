@@ -62,7 +62,7 @@
      : QGraphicsWidget(parent)
  {
      pix = new QPixmap(QLatin1String(&quot;:/images/QT_original_R.png&quot;));
-     <span class="comment">//</span> Do not allow a size smaller than the pixmap with two frames around it.
+     <span class="comment">// Do not allow a size smaller than the pixmap with two frames around it.</span>
      setMinimumSize(pix-&gt;size() + QSize(12, 12));
  }
 
@@ -82,18 +82,18 @@
      qreal h = pix-&gt;height();
      QGradientStops stops;
 
-     <span class="comment">//</span> paint a background rect (with gradient)
+     <span class="comment">// paint a background rect (with gradient)</span>
      QLinearGradient gradient(frame.topLeft(), frame.topLeft() + QPointF(200,200));
      stops &lt;&lt; QGradientStop(0.0, QColor(60, 60,  60));
      stops &lt;&lt; QGradientStop(frame.height()/2/frame.height(), QColor(157, 195,  55));
 
-     <span class="comment">//</span>stops &lt;&lt; QGradientStop(((frame.height() + h)/2 )/frame.height(), QColor(157, 195,  55));
+     <span class="comment">//stops &lt;&lt; QGradientStop(((frame.height() + h)/2 )/frame.height(), QColor(157, 195,  55));</span>
      stops &lt;&lt; QGradientStop(1.0, QColor(215, 215, 215));
      gradient.setStops(stops);
      painter-&gt;setBrush(QBrush(gradient));
      painter-&gt;drawRoundedRect(frame, 10.0, 10.0);
 
-     <span class="comment">//</span> paint a rect around the pixmap (with gradient)
+     <span class="comment">// paint a rect around the pixmap (with gradient)</span>
      QPointF pixpos = frame.center() - (QPointF(w, h)/2);
      QRectF innerFrame(pixpos, QSizeF(w, h));
      innerFrame.adjust(-4, -4, +4, +4);
@@ -112,6 +112,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

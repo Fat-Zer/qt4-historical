@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/compiler-notes.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/compiler-notes.qdoc -->
 <head>
   <title>Qt 4.4: Compiler Notes</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -83,15 +83,16 @@
 <h4>Intel C++ Compiler for Linux</h4>
 <p>Trolltech currently tests the following compilers:</p>
 <ul>
-<li>Intel(R) C++ Compiler for applications running on IA-32, Version 10.1 Build 20080212 Package ID: l_cc_p_10.1.013</li>
-<li>Intel(R) C++ Compiler for applications running on Intel(R) 64, Version 10.1 Build 20080212 Package ID: l_cc_p_10.1.013</li>
+<li>Intel(R) C++ Compiler for applications running on IA-32, Version 10.1 Build 20080602 Package ID: l_cc_p_10.1.017</li>
+<li>Intel(R) C++ Compiler for applications running on Intel(R) 64, Version 10.1 Build 20080602 Package ID: l_cc_p_10.1.017</li>
 </ul>
+<p>We do not currently test the IA-64 (Itanium) compiler.</p>
 <a name="known-issues-with-intel-c-compiler-for-linux"></a>
 <h4>Known Issues with Intel C++ Compiler for Linux</h4>
 <ul>
-<li>Precompiled header support does not work prior in version 10.0&#x2e;025 and older. For these compilers, you should configure Qt with -no-pch. Precompiled header support works properly in version 10.0&#x2e;026 and later.</li>
+<li>Precompiled header support does not work in version 10.0&#x2e;025 and older. For these compilers, you should configure Qt with -no-pch. Precompiled header support works properly in version 10.0&#x2e;026 and later.</li>
 <li>Version 10.0&#x2e;026 for Intel 64 is known to miscompile qmake when building in release mode. For now, configure Qt with -debug. Version 10.1&#x2e;008 and later can compile qmake in release mode.</li>
-<li>Versions 10.1&#x2e;008 to 10.1&#x2e;013 for both IA-32 and Intel 64 are known crash with &quot;(0): internal error: 0_47021&quot; when compiling <a href="qtxmlpatterns.html">QtXmlPatterns</a>, <a href="qtwebkit.html">QtWebKit</a>, and Designer in release mode. For now, Qt turns off optimizations for these modules when building in release mode. This issue has been reported to Intel and is awaiting resolution.</li>
+<li>Versions 10.1&#x2e;008 to 10.1&#x2e;015 for both IA-32 and Intel 64 are known crash with &quot;(0): internal error: 0_47021&quot; when compiling <a href="qtxmlpatterns.html">QtXmlPatterns</a>, <a href="qtwebkit.html">QtWebKit</a>, and Designer in release mode. Version 10.1&#x2e;017 compiles these modules correctly in release mode.</li>
 </ul>
 <a name="intel-c-compiler-windows-altix"></a>
 <h4>Intel C++ Compiler (Windows, Altix)</h4>
@@ -120,7 +121,7 @@
 <p>We also test Qt 4 on Windows 98/Me, Windows NT and Windows 2000, with Microsoft Visual C++ 6.0 and Visual Studio .NET.</p>
 <p>In order to use Qt with the Visual Studio 2005 Express Edition you need to download and install the platform SDK. Due to limitations in the Express Edition it is not possible for us to install the Qt Visual Studio Integration. You will need to use our command line tools to build Qt applications with this edition.</p>
 <p>The Visual C++ Linker doesn't understand filenames with spaces (as in <tt>C:\Program files\Qt\</tt>) so you will have to move it to another place, or explicitly set the path yourself; for example:</p>
-<pre>     QTDIR=C:\Progra~1\Qt</pre>
+<pre> QTDIR=C:\Progra~1\Qt</pre>
 <p>Visual C++ 6.0 requires Service Pack 5 to work correctly with Qt. If you are using Visual C++ version 6.0 we highly recommend that you update to SP5.</p>
 <p>If you are experiencing strange problems with using special flags that modify the alignment of structure and union members (such as <tt>/Zp2</tt>) then you will need to recompile Qt with the flags set for the application as well.</p>
 <p>If you're using Visual Studio .NET Standard Edition, you should be using the Qt binary package provided, and not the source package. As the Standard Edition does not optimize compiled code, your compiled version of Qt would perform suboptimally with respect to speed.</p>
@@ -129,7 +130,7 @@
 <h3>IBM xlC (AIX)</h3>
 <p>The makeC++SharedLib utility must be in your PATH and be up to date to build shared libraries. From IBM's <a href="http://www.redbooks.ibm.com/abstracts/sg245674.html">C and C++ Application Development on AIX</a> Redbook:</p>
 <ul>
-<li>&quot;The second step is to use the makeC++SharedLib command to create the shared object. The command has many optional arguments, but in its simplest form, can be used as follows:&quot;<pre>        /usr/vacpp/bin/makeC++SharedLib -o shr1.o cplussource1.o</pre>
+<li>&quot;The second step is to use the makeC++SharedLib command to create the shared object. The command has many optional arguments, but in its simplest form, can be used as follows:&quot;<pre> /usr/vacpp/bin/makeC++SharedLib -o shr1.o cplussource1.o</pre>
 </li>
 <li>&quot;The full path name to the command is not required; however, to avoid this, you will have to add the directory in which it is located to your PATH environment variable. The command is located in the /usr/vacpp/bin directory with the VisualAge C++ Professional for AIX, Version 5 compiler.&quot;</li>
 </ul>
@@ -140,6 +141,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

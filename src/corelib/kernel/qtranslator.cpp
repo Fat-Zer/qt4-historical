@@ -98,7 +98,7 @@ static bool match(const uchar* found, const char* target, uint len)
     if (len > 0 && found[len-1] == '\0')
         --len;
     // 0 means anything, "" means empty
-    return !found || qstrncmp((const char *)found, target, len) == 0 && target[len] == '\0';
+    return !found || (qstrncmp((const char *)found, target, len) == 0 && target[len] == '\0');
 }
 
 static uint elfHash(const char *name)

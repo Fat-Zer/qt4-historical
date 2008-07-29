@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/ahigl.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/ahigl.qdoc -->
 <head>
   <title>Qt 4.4: OpenGL for Embedded Systems Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -21,7 +21,7 @@
 <p>An OpenGL screen driver for Qt for Embedded Linux can use OpenGL ES in three ways. First, the Qt for Embedded Linux server can use the driver to compose multiple window images and then show the composition on the screen. Second, clients can use the driver to accelerate OpenGL painting operations using the QOpenGLPaintEngine class. Finally, clients can use the driver to do OpenGL operations with instances of the <a href="qglwidget.html">QGLWidget</a> class. This example implements all three cases.</p>
 <p>The example uses an implementation of OpenGL ES from <a href="http://ati.amd.com">ATI</a> for the <a href="http://ati.amd.com/products/imageon238x/">Imageon 2380</a>. The OpenGL include files gl.h and egl.h must be installed to compile the example, and the OpenGL and EGL libraries must be installed for linking. If your target device is different, you must install the include files and libraries for that device, and you also might need to modify the example source code, if any API signatures in your EGL library differ from the ones used here.</p>
 <p>After compiling and linking the example source, install the screen driver plugin with the command <tt>make install</tt>. To start an application that uses the plugin, you can either set the environment variable <a href="qt-embedded-envvars.html#qws-display">QWS_DISPLAY</a> and then start the application, or just start the application with the <tt>-display</tt> switch, as follows:</p>
-<pre>         myApplication -qws -display ahigl</pre>
+<pre> myApplication -qws -display ahigl</pre>
 <p>The example driver also implements an animated transition effect for use when showing new windows or reshowing windows that have been minimized. To enable this transition effect, run the application with <tt>-display ahigl:effects</tt>.</p>
 <a name="the-class-definitions"></a>
 <h2>The Class Definitions</h2>
@@ -61,7 +61,7 @@
 <a name="the-plugin-class-implementation"></a>
 <h3>The Plugin Class Implementation</h3>
 <p>QAhiGLScreenPlugin is a straightforward derivation of QScreenDriverPlugin. It reimplements keys() and create(). They are called as needed by the Qt for Embedded Linux server. Recall that the server detects that the ahigl screen driver has been requested, either by including &quot;ahigl&quot; in the value for the environment variable <a href="qt-embedded-envvars.html#qws-display">QWS_DISPLAY</a>, or by running your application with a command line like the following.</p>
-<pre>         myApplication -qws -display ahigl</pre>
+<pre> myApplication -qws -display ahigl</pre>
 <p>The server calls keys(), which returns a <a href="qstringlist.html">QStringList</a> containing the singleton &quot;ahigl&quot; matching the requested screen driver and telling the server that it can use our example screen driver. The server then calls create(), which creates the instance of QAhiGLScreen.</p>
 <pre></pre>
 <p>In the code snippet above, the macro <a href="qtplugin.html#Q_EXPORT_PLUGIN2#q-export-plugin2">Q_EXPORT_PLUGIN2</a> is used to export the plugin class, QAhiGLScreen, for the qahiglscreen plugin. Further information regarding plugins and how to create them can be found at <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
@@ -125,6 +125,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

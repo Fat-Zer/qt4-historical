@@ -293,7 +293,7 @@ public:
         inline SectionSpan() : size(0), count(0), resizeMode(QHeaderView::Interactive) {}
         inline SectionSpan(int length, int sections, QHeaderView::ResizeMode mode)
             : size(length), count(sections), resizeMode(mode) {}
-        inline int sectionSize() const { return size / count; }
+        inline int sectionSize() const { return (count > 0 ? size / count : 0); }
 #ifndef QT_NO_DATASTREAM
         inline void write(QDataStream &out) const
         { out << size; out << count; out << (int)resizeMode; }

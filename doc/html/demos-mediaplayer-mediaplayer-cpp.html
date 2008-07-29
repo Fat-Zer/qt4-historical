@@ -105,16 +105,16 @@
          switch(e-&gt;type())
          {
          case QEvent::Close:
-             <span class="comment">//</span>we just ignore the cose events on the video widget
-             <span class="comment">//</span>this prevents ALT+F4 from having an effect in fullscreen mode
+             <span class="comment">//we just ignore the cose events on the video widget</span>
+             <span class="comment">//this prevents ALT+F4 from having an effect in fullscreen mode</span>
              e-&gt;ignore();
              return true;
          case QEvent::MouseMove:
              unsetCursor();
-             <span class="comment">//</span>fall through
+             <span class="comment">//fall through</span>
          case QEvent::WindowStateChange:
              {
-                 <span class="comment">//</span>we just update the state of the checkbox, in case it wasn't already
+                 <span class="comment">//we just update the state of the checkbox, in case it wasn't already</span>
                  m_action.setChecked(windowState() &amp; Qt::WindowFullScreen);
                  const Qt::WindowFlags flags = m_player-&gt;windowFlags();
                  if (windowState() &amp; Qt::WindowFullScreen) {
@@ -135,7 +135,7 @@
      void timerEvent(QTimerEvent *e)
      {
          if (e-&gt;timerId() == m_timer.timerId()) {
-             <span class="comment">//</span>let's store the cursor shape
+             <span class="comment">//let's store the cursor shape</span>
              setCursor(Qt::BlankCursor);
          }
          Phonon::VideoWidget::timerEvent(e);
@@ -261,12 +261,12 @@
      buttonPanelLayout-&gt;setSpacing(0);
      info-&gt;setMinimumHeight(100);
      info-&gt;setFont(QFont(&quot;verdana&quot;, 15));
-     <span class="comment">//</span> QStyle *flatButtonStyle = new QWindowsStyle;
+     <span class="comment">// QStyle *flatButtonStyle = new QWindowsStyle;</span>
      openButton-&gt;setFocusPolicy(Qt::NoFocus);
-     <span class="comment">//</span> openButton-&gt;setStyle(flatButtonStyle);
-     <span class="comment">//</span> playButton-&gt;setStyle(flatButtonStyle);
-     <span class="comment">//</span> rewindButton-&gt;setStyle(flatButtonStyle);
-     <span class="comment">//</span> forwardButton-&gt;setStyle(flatButtonStyle);
+     <span class="comment">// openButton-&gt;setStyle(flatButtonStyle);</span>
+     <span class="comment">// playButton-&gt;setStyle(flatButtonStyle);</span>
+     <span class="comment">// rewindButton-&gt;setStyle(flatButtonStyle);</span>
+     <span class="comment">// forwardButton-&gt;setStyle(flatButtonStyle);</span>
   #endif
      QWidget *buttonPanelWidget = new QWidget(this);
      buttonPanelWidget-&gt;setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -278,7 +278,7 @@
      vLayout-&gt;addLayout(labelLayout);
      setLayout(vLayout);
 
-     <span class="comment">//</span> Create menu bar:
+     <span class="comment">// Create menu bar:</span>
      fileMenu = new QMenu(this);
      QAction *openFileAction = fileMenu-&gt;addAction(tr(&quot;Open &amp;File...&quot;));
      QAction *openUrlAction = fileMenu-&gt;addAction(tr(&quot;Open &amp;Location...&quot;));
@@ -317,15 +317,15 @@
      fileMenu-&gt;addSeparator();
      QAction *settingsAction = fileMenu-&gt;addAction(tr(&quot;&amp;Settings...&quot;));
 
-     <span class="comment">//</span> Setup signal connections:
+     <span class="comment">// Setup signal connections:</span>
      connect(rewindButton, SIGNAL(clicked()), this, SLOT(rewind()));
-     <span class="comment">//</span>connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));
+     <span class="comment">//connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));</span>
      openButton-&gt;setMenu(fileMenu);
 
      connect(playButton, SIGNAL(clicked()), this, SLOT(playPause()));
      connect(forwardButton, SIGNAL(clicked()), this, SLOT(forward()));
      connect(volume, SIGNAL(valueChanged(int)), this, SLOT(setVolume(int)));
-     <span class="comment">//</span>connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));
+     <span class="comment">//connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));</span>
      connect(settingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettingsDialog()));
      connect(openUrlAction, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
      connect(openFileAction, SIGNAL(triggered(bool)), this, SLOT(openFile()));
@@ -363,8 +363,8 @@
          QRect videoHintRect = QRect(QPoint(0, 0), m_videoWindow.sizeHint());
          QRect newVideoRect = QApplication::desktop()-&gt;screenGeometry().intersected(videoHintRect);
          if (m_MediaObject.hasVideo()){
-             <span class="comment">//</span> Flush event que so that sizeHint takes the
-             <span class="comment">//</span> recently shown/hidden m_videoWindow into account:
+             <span class="comment">// Flush event que so that sizeHint takes the</span>
+             <span class="comment">// recently shown/hidden m_videoWindow into account:</span>
              qApp-&gt;processEvents();
              resize(sizeHint());
          } else
@@ -397,7 +397,7 @@
              playButton-&gt;setIcon(pauseIcon);
              if (m_MediaObject.hasVideo())
                  m_videoWindow.show();
-             <span class="comment">//</span> Fall through
+             <span class="comment">// Fall through</span>
          case Phonon::BufferingState:
              rewindButton-&gt;setEnabled(true);
              break;
@@ -430,7 +430,7 @@
      connect(ui-&gt;effectButton, SIGNAL(clicked()), this, SLOT(configureEffect()));
 
  #ifdef Q_WS_X11
-     <span class="comment">//</span>Cross fading is not currently implemented in the GStreamer backend
+     <span class="comment">//Cross fading is not currently implemented in the GStreamer backend</span>
      ui-&gt;crossFadeSlider-&gt;setVisible(false);
      ui-&gt;crossFadeLabel-&gt;setVisible(false);
      ui-&gt;crossFadeLabel1-&gt;setVisible(false);
@@ -439,7 +439,7 @@
  #endif
      ui-&gt;crossFadeSlider-&gt;setValue((int)(2 * m_MediaObject.transitionTime() / 1000.0f));
 
-     <span class="comment">//</span> Insert audio devices:
+     <span class="comment">// Insert audio devices:</span>
      QList&lt;Phonon::AudioOutputDevice&gt; devices = Phonon::BackendCapabilities::availableAudioOutputDevices();
      for (int i=0; i&lt;devices.size(); i++){
          QString itemText = devices[i].name();
@@ -451,7 +451,7 @@
              ui-&gt;deviceCombo-&gt;setCurrentIndex(i);
      }
 
-     <span class="comment">//</span> Insert audio effects:
+     <span class="comment">// Insert audio effects:</span>
      ui-&gt;audioEffectsCombo-&gt;addItem(&quot;&lt;no effect&gt;&quot;);
      QList&lt;Phonon::Effect *&gt; currEffects = m_audioOutputPath.effects();
      Phonon::Effect *currEffect = currEffects.size() ? currEffects[0] : 0;
@@ -475,7 +475,7 @@
          QList&lt;Phonon::Effect *&gt; currEffects = m_audioOutputPath.effects();
          Phonon::Effect *currentEffect = currEffects.size() ? currEffects[0] : 0;
 
-         <span class="comment">//</span> Deleting the running effect will stop playback, it is deleted when removed from path
+         <span class="comment">// Deleting the running effect will stop playback, it is deleted when removed from path</span>
          if (nextEffect &amp;&amp; !(currentEffect &amp;&amp; (currentEffect-&gt;description().name() == nextEffect-&gt;description().name())))
              delete nextEffect;
 
@@ -522,7 +522,7 @@
              }
          }
      } else {
-         <span class="comment">//</span> Restore previous settings
+         <span class="comment">// Restore previous settings</span>
          m_videoWidget-&gt;setBrightness(oldBrightness);
          m_videoWidget-&gt;setSaturation(oldSaturation);
          m_videoWidget-&gt;setHue(oldHue);
@@ -623,7 +623,7 @@
                      propertyControllers.insert(param.name(), spin);
                 } else if (param.type() == QVariant::Double) {
                      if (param.minimumValue() == -1.0 &amp;&amp; param.maximumValue() == 1.0) {
-                         <span class="comment">//</span>Special case values between -1 and 1.0 to use a slider for improved usability
+                         <span class="comment">//Special case values between -1 and 1.0 to use a slider for improved usability</span>
                          QSlider *slider = new QSlider(Qt::Horizontal, &amp;effectDialog);
                          slider-&gt;setMinimum(-SLIDER_RANGE);
                          slider-&gt;setMaximum(SLIDER_RANGE);
@@ -676,7 +676,7 @@
 
              effectDialog.exec();
              if (effectDialog.result() != QDialog::Accepted){
-                 <span class="comment">//</span> Revert any changes
+                 <span class="comment">// Revert any changes</span>
                  for (int k=0 ; k&lt; nextEffect-&gt;parameters().size() ; ++k) {
                      Phonon::EffectParameter param = nextEffect-&gt;parameters()[k];
                      switch(param.type()) {
@@ -726,11 +726,11 @@
  {
      QList&lt;QUrl&gt; urls = e-&gt;mimeData()-&gt;urls();
      if (e-&gt;proposedAction() == Qt::MoveAction){
-         <span class="comment">//</span> Just add to the que:
+         <span class="comment">// Just add to the que:</span>
          for (int i=0; i&lt;urls.size(); i++)
              m_MediaObject.enqueue(Phonon::MediaSource(urls[i].toLocalFile()));
      } else {
-         <span class="comment">//</span> Create new que:
+         <span class="comment">// Create new que:</span>
          m_MediaObject.clearQueue();
          if (urls.size() &gt; 0) {
              QString fileName = urls[0].toLocalFile();
@@ -971,7 +971,9 @@
      QString sourceURL = settings.value(&quot;location&quot;).toString();
      sourceURL = QInputDialog::getText(this, tr(&quot;Open Location&quot;), tr(&quot;Please enter a valid address here:&quot;), QLineEdit::Normal, sourceURL);
      if (!sourceURL.isEmpty()) {
-         setFile(sourceURL);
+             setWindowTitle(sourceURL.right(sourceURL.length() - sourceURL.lastIndexOf('/') - 1));
+             m_MediaObject.setCurrentSource(Phonon::MediaSource(QUrl::fromEncoded(sourceURL.toUtf8())));
+             m_MediaObject.play();
          settings.setValue(&quot;location&quot;, sourceURL);
      }
  }
@@ -1008,6 +1010,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/access/qhttp.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/access/qhttp.cpp -->
 <head>
   <title>Qt 4.4: QHttp Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -108,14 +108,14 @@
 <p>The class works asynchronously, so there are no blocking functions. If an operation cannot be executed immediately, the function will still return straight away and the operation will be scheduled for later execution. The results of scheduled operations are reported via signals. This approach depends on the event loop being in operation.</p>
 <p>The operations that can be scheduled (they are called &quot;requests&quot; in the rest of the documentation) are the following: <a href="qhttp.html#setHost">setHost</a>(), <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>() and <a href="qhttp.html#request">request</a>().</p>
 <p>All of these requests return a unique identifier that allows you to keep track of the request that is currently executed. When the execution of a request starts, the <a href="qhttp.html#requestStarted">requestStarted</a>() signal with the identifier is emitted and when the request is finished, the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted with the identifier and a bool that indicates if the request finished with an error.</p>
-<p>To make an HTTP request you must set up suitable HTTP headers. The following example demonstrates, how to request the main HTML page from the Trolltech home page (i.e&#x2e; the URL <tt>http:<span class="comment">//</span>www.trolltech.com/index.html</tt>):</p>
-<pre>     QHttpRequestHeader header(&quot;GET&quot;, &quot;/index.html&quot;);
+<p>To make an HTTP request you must set up suitable HTTP headers. The following example demonstrates, how to request the main HTML page from the Trolltech home page (i.e&#x2e;, the URL <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt>):</p>
+<pre>     QHttpRequestHeader header(&quot;GET&quot;, QUrl::toPercentEncoding(&quot;/index.html&quot;));
      header.setValue(&quot;Host&quot;, &quot;www.trolltech.com&quot;);
      http-&gt;setHost(&quot;www.trolltech.com&quot;);
      http-&gt;request(header);</pre>
 <p>For the common HTTP requests <tt>GET</tt>, <tt>POST</tt> and <tt>HEAD</tt>, QHttp provides the convenience functions <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>() and <a href="qhttp.html#head">head</a>(). They already use a reasonable header and if you don't have to set special header fields, they are easier to use. The above example can also be written as:</p>
-<pre>     http-&gt;setHost(&quot;www.trolltech.com&quot;); // id == 1
-     http-&gt;get(&quot;/index.html&quot;);           // id == 2</pre>
+<pre>     http-&gt;setHost(&quot;www.trolltech.com&quot;);                <span class="comment">// id == 1</span>
+     http-&gt;get(QUrl::toPercentEncoding(&quot;/index.html&quot;)); <span class="comment">// id == 2</span></pre>
 <p>For this example the following sequence of signals is emitted (with small variations, depending on network traffic, etc.):</p>
 <pre>     requestStarted(1)
      requestFinished(1, false)
@@ -142,9 +142,9 @@
 <p>The <a href="qhttp.html#readyRead">readyRead</a>() signal tells you that there is data ready to be read. The amount of data can then be queried with the <a href="qhttp.html#bytesAvailable">bytesAvailable</a>() function and it can be read with the <a href="qhttp.html#read">read</a>() or <a href="qhttp.html#readAll">readAll</a>() functions.</p>
 <p>If an error occurs during the execution of one of the commands in a sequence of commands, all the pending commands (i.e&#x2e; scheduled, but not yet executed commands) are cleared and no signals are emitted for them.</p>
 <p>For example, if you have the following sequence of requests</p>
-<pre>     http-&gt;setHost(&quot;www.foo.bar&quot;);       // id == 1
-     http-&gt;get(&quot;/index.html&quot;);           // id == 2
-     http-&gt;post(&quot;register.html&quot;, data);  // id == 3</pre>
+<pre>     http-&gt;setHost(&quot;www.foo.bar&quot;);       <span class="comment">// id == 1</span>
+     http-&gt;get(&quot;/index.html&quot;);           <span class="comment">// id == 2</span>
+     http-&gt;post(&quot;register.html&quot;, data);  <span class="comment">// id == 3</span></pre>
 <p>and the <a href="qhttp.html#get">get</a>() request fails because the host lookup fails, then the <a href="qhttp.html#post">post</a>() request is never executed and the signals would look like this:</p>
 <pre>     requestStarted(1)
      requestFinished(1, false)
@@ -264,7 +264,7 @@
 <h3 class="fn"><a name="close"></a>int QHttp::close ()</h3>
 <p>Closes the connection; this is useful if you have a keep-alive connection and want to close it.</p>
 <p>For the requests issued with <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>() and <a href="qhttp.html#head">head</a>(), <a href="qhttp.html">QHttp</a> sets the connection to be keep-alive. You can also do this using the header you pass to the <a href="qhttp.html#request">request</a>() function. <a href="qhttp.html">QHttp</a> only closes the connection to the HTTP server if the response header requires it to do so.</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>If you want to close the connection immediately, you have to use <a href="qhttp.html#abort">abort</a>() instead.</p>
 <p>See also <a href="qhttp.html#stateChanged">stateChanged</a>(), <a href="qhttp.html#abort">abort</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
@@ -312,10 +312,12 @@
 <a name="//apple_ref/cpp/instm/QHttp/get" />
 <h3 class="fn"><a name="get"></a>int QHttp::get ( const <a href="qstring.html">QString</a> &amp; <i>path</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
 <p>Sends a get request for <i>path</i> to the server set by <a href="qhttp.html#setHost">setHost</a>() or as specified in the constructor.</p>
-<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//</span>www.trolltech.com/index.html</tt>.</p>
+<p><i>path</i> must be a absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt> and must be encoded with either <a href="qurl.html#toPercentEncoding">QUrl::toPercentEncoding</a>() or <a href="qurl.html#encodedPath">QUrl::encodedPath</a>().</p>
 <p>If the IO device <i>to</i> is 0 the <a href="qhttp.html#readyRead">readyRead</a>() signal is emitted every time new content data is available to read.</p>
 <p>If the IO device <i>to</i> is not 0, the content data of the response is written directly to the device. Make sure that the <i>to</i> pointer is valid for the duration of the operation (it is safe to delete it when the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted).</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<a name="request-processing"></a>
+<h4>Request Processing</h4>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="qhttp.html#setHost">setHost</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>(), <a href="qhttp.html#request">request</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
 <a name="//apple_ref/cpp/instm/QHttp/hasPendingRequests" />
@@ -326,8 +328,8 @@
 <a name="//apple_ref/cpp/instm/QHttp/head" />
 <h3 class="fn"><a name="head"></a>int QHttp::head ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )</h3>
 <p>Sends a header request for <i>path</i> to the server set by <a href="qhttp.html#setHost">setHost</a>() or as specified in the constructor.</p>
-<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//</span>www.trolltech.com/index.html</tt>.</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt>.</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="qhttp.html#setHost">setHost</a>(), <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#request">request</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
 <a name="//apple_ref/cpp/instm/QHttp/ignoreSslErrors" />
@@ -342,11 +344,11 @@
 <a name="//apple_ref/cpp/instm/QHttp/post" />
 <h3 class="fn"><a name="post"></a>int QHttp::post ( const <a href="qstring.html">QString</a> &amp; <i>path</i>, <a href="qiodevice.html">QIODevice</a> * <i>data</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
 <p>Sends a post request for <i>path</i> to the server set by <a href="qhttp.html#setHost">setHost</a>() or as specified in the constructor.</p>
-<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//</span>www.trolltech.com/index.html</tt>.</p>
+<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt> and must be encoded with either <a href="qurl.html#toPercentEncoding">QUrl::toPercentEncoding</a>() or <a href="qurl.html#encodedPath">QUrl::encodedPath</a>().</p>
 <p>The incoming data comes via the <i>data</i> IO device.</p>
 <p>If the IO device <i>to</i> is 0 the <a href="qhttp.html#readyRead">readyRead</a>() signal is emitted every time new content data is available to read.</p>
 <p>If the IO device <i>to</i> is not 0, the content data of the response is written directly to the device. Make sure that the <i>to</i> pointer is valid for the duration of the operation (it is safe to delete it when the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted).</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="qhttp.html#setHost">setHost</a>(), <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#head">head</a>(), <a href="qhttp.html#request">request</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
 <h3 class="fn"><a name="post-2"></a>int QHttp::post ( const <a href="qstring.html">QString</a> &amp; <i>path</i>, const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
@@ -380,7 +382,7 @@
 <p>The incoming data comes via the <i>data</i> IO device.</p>
 <p>If the IO device <i>to</i> is 0 the <a href="qhttp.html#readyRead">readyRead</a>() signal is emitted every time new content data is available to read.</p>
 <p>If the IO device <i>to</i> is not 0, the content data of the response is written directly to the device. Make sure that the <i>to</i> pointer is valid for the duration of the operation (it is safe to delete it when the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted).</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="qhttp.html#setHost">setHost</a>(), <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
 <h3 class="fn"><a name="request-2"></a>int QHttp::request ( const <a href="qhttprequestheader.html">QHttpRequestHeader</a> &amp; <i>header</i>, const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
@@ -401,14 +403,14 @@
 <a name="//apple_ref/cpp/instm/QHttp/setHost" />
 <h3 class="fn"><a name="setHost"></a>int QHttp::setHost ( const <a href="qstring.html">QString</a> &amp; <i>hostName</i>, <a href="qtglobal.html#quint16-typedef">quint16</a> <i>port</i> = 80 )</h3>
 <p>Sets the HTTP server that is used for requests to <i>hostName</i> on port <i>port</i>.</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>(), <a href="qhttp.html#request">request</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
 <h3 class="fn"><a name="setHost-2"></a>int QHttp::setHost ( const <a href="qstring.html">QString</a> &amp; <i>hostName</i>, <a href="qhttp.html#ConnectionMode-enum">ConnectionMode</a> <i>mode</i>, <a href="qtglobal.html#quint16-typedef">quint16</a> <i>port</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the HTTP server that is used for requests to <i>hostName</i> on port <i>port</i> using the connection mode <i>mode</i>.</p>
 <p>If port is 0, it will use the default port for the <i>mode</i> used (80 for Http and 443 fopr Https).</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>(), <a href="qhttp.html#request">request</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
 <a name="//apple_ref/cpp/instm/QHttp/setProxy" />
@@ -437,14 +439,14 @@
 <a name="//apple_ref/cpp/instm/QHttp/setSocket" />
 <h3 class="fn"><a name="setSocket"></a>int QHttp::setSocket ( <a href="qtcpsocket.html">QTcpSocket</a> * <i>socket</i> )</h3>
 <p>Replaces the internal <a href="qtcpsocket.html">QTcpSocket</a> that <a href="qhttp.html">QHttp</a> uses with <i>socket</i>. This is useful if you want to use your own custom <a href="qtcpsocket.html">QTcpSocket</a> subclass instead of the plain <a href="qtcpsocket.html">QTcpSocket</a> that <a href="qhttp.html">QHttp</a> uses by default. <a href="qhttp.html">QHttp</a> does not take ownership of the socket, and will not delete <i>socket</i> when destroyed.</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>Note: If <a href="qhttp.html">QHttp</a> is used in a non-GUI thread that runs its own event loop, you must move <i>socket</i> to that thread before calling setSocket().</p>
 <p>See also <a href="qobject.html#moveToThread">QObject::moveToThread</a>() and <a href="threads.html">Thread Support in Qt</a>.</p>
 <a name="//apple_ref/cpp/instm/QHttp/setUser" />
 <h3 class="fn"><a name="setUser"></a>int QHttp::setUser ( const <a href="qstring.html">QString</a> &amp; <i>userName</i>, const <a href="qstring.html">QString</a> &amp; <i>password</i> = QString() )</h3>
 <p>This function sets the user name <i>userName</i> and password <i>password</i> for web pages that require authentication.</p>
-<p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
+<p>The function does not block; instead, it returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <a name="//apple_ref/cpp/instm/QHttp/sslErrors" />
 <h3 class="fn"><a name="sslErrors"></a>void QHttp::sslErrors ( const <a href="qlist.html">QList</a>&lt;<a href="qsslerror.html">QSslError</a>&gt; &amp; <i>errors</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -464,6 +466,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1497,6 +1497,12 @@ void QTextDocument::print(QPrinter *printer) const
     if (!d->title.isEmpty())
         printer->setDocName(d->title);
 
+    bool documentPaginated = d->pageSize.isValid() && !d->pageSize.isNull()
+                             && d->pageSize.height() != INT_MAX;
+
+    if (!documentPaginated && !printer->fullPage() && !printer->d_func()->hasCustomPageMargins)
+        printer->setPageMargins(23.53, 23.53, 23.53, 23.53, QPrinter::Millimeter);
+
     QPainter p(printer);
 
     // Check that there is a valid device to print to.
@@ -1510,9 +1516,7 @@ void QTextDocument::print(QPrinter *printer) const
     QRectF body = QRectF(QPointF(0, 0), d->pageSize);
     QPointF pageNumberPos;
 
-    if (d->pageSize.isValid() && !d->pageSize.isNull()
-        && d->pageSize.height() != INT_MAX)
-    {
+    if (documentPaginated) {
         qreal sourceDpiX = qt_defaultDpi();
         qreal sourceDpiY = sourceDpiX;
 
@@ -1558,9 +1562,6 @@ void QTextDocument::print(QPrinter *printer) const
             QTextFrameFormat fmt = doc->rootFrame()->frameFormat();
             fmt.setMargin(margin);
             doc->rootFrame()->setFrameFormat(fmt);
-        } else {
-            if (!printer->d_func()->hasCustomPageMargins)
-                printer->setPageMargins(23.53, 23.53, 23.53, 23.53, QPrinter::Millimeter);
         }
 
         QRectF pageRect(printer->pageRect());
@@ -1766,8 +1767,9 @@ QVariant QTextDocument::loadResource(int type, const QUrl &name)
             }
         }
 
-        QFile f(resourceUrl.toLocalFile());
-        if (f.open(QFile::ReadOnly)) {
+        QString s = resourceUrl.toLocalFile();
+        QFile f(s);
+        if (!s.isEmpty() && f.open(QFile::ReadOnly)) {
             r = f.readAll();
             f.close();
         }
@@ -2310,7 +2312,7 @@ void QTextHtmlExporter::emitBlockAttributes(const QTextBlock &block)
     html += QLatin1Char(';');
 
     html += QLatin1String(" text-indent:");
-    html += QString::number(format.indent());
+    html += QString::number(format.textIndent());
     html += QLatin1String("px;");
 
     if (block.userState() != -1) {

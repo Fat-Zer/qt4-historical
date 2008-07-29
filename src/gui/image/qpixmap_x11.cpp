@@ -230,7 +230,7 @@ static int lowest_bit(uint v)
     int i;
     ulong lb;
     lb = 1;
-    for (i=0; ((v & lb) == 0) && i<32;  i++, lb<<=1);
+    for (i=0; ((v & lb) == 0) && i<32;  i++, lb<<=1) {}
     return i==32 ? -1 : i;
 }
 
@@ -350,7 +350,7 @@ void QX11PixmapData::fromImage(const QImage &img,
 
     w = img.width();
     h = img.height();
-    d = (pixelType() == BitmapType ? 1 : img.depth());
+    d = img.depth();
 
     if (pixelType() == BitmapType) {
         bitmapFromImage(img);
@@ -400,7 +400,7 @@ void QX11PixmapData::fromImage(const QImage &img,
 
     if (d == 1 || d == 16 || d == 24) {
         image = image.convertToFormat(QImage::Format_RGB32, flags);
-        fromImage(image, flags);
+        fromImage(image, Qt::AutoColor);
         return;
     }
 
@@ -1143,6 +1143,9 @@ QX11PixmapData::~QX11PixmapData()
 
 void QX11PixmapData::release()
 {
+    delete pengine;
+    pengine = 0;
+
     if (!qApp)
         return;
 
@@ -1171,8 +1174,6 @@ void QX11PixmapData::release()
         XFreePixmap(xinfo.display(), hd);
         hd = 0;
     }
-
-    delete pengine;
 }
 
 QPixmap QX11PixmapData::alphaChannel() const

@@ -177,6 +177,7 @@ QSizeF *QGraphicsLayoutItemPrivate::effectiveSizeHints(const QSizeF &constraint)
     items to be managed by layouts.
     \since 4.4
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     QGraphicsLayoutItem is an abstract class that defines a set of virtual
     functions describing sizes, size policies, and size hints for any object

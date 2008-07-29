@@ -43,10 +43,13 @@
 
 /*!
     \page demos-browser.html
-    \title Browser
+    \title Web Browser
 
-    The Browser demonstration shows Qt's WebKit module in action,
-    providing a little web browser application.
+    The Web Browser demonstration shows Qt's WebKit module in action,
+    providing a little Web browser application.
 
     \image browser-demo.png
+
+    This browser is the foundation for the \l{Arora Browser}, a simple cross-platform
+    Web browser.
 */

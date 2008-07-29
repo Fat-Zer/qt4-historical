@@ -2064,7 +2064,9 @@ void QComboBox::insertItems(int index, const QStringList &list)
 }
 
 /*!
-      Inserts a separator item into the combobox at the given \a index.
+    \since 4.4
+
+    Inserts a separator item into the combobox at the given \a index.
 
     If the index is equal to or higher than the total number of items, the new item
     is appended to the list of existing items. If the index is zero or negative, the

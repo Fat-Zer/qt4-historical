@@ -125,30 +125,31 @@
     \list
 
     \o Intel(R) C++ Compiler for applications running on IA-32,
-    Version 10.1 Build 20080212 Package ID: l_cc_p_10.1.013
+    Version 10.1 Build 20080602 Package ID: l_cc_p_10.1.017
 
     \o Intel(R) C++ Compiler for applications running on Intel(R) 64,
-    Version 10.1 Build 20080212 Package ID: l_cc_p_10.1.013
+    Version 10.1 Build 20080602 Package ID: l_cc_p_10.1.017
 
     \endlist
+
+    We do not currently test the IA-64 (Itanium) compiler.
 
     \section2 Known Issues with Intel C++ Compiler for Linux
 
     \list
-    \o Precompiled header support does not work prior in version
-       10.0.025 and older. For these compilers, you should configure Qt
-       with -no-pch. Precompiled header support works properly in version
+
+    \o Precompiled header support does not work in version 10.0.025
+       and older. For these compilers, you should configure Qt with
+       -no-pch. Precompiled header support works properly in version
        10.0.026 and later.
     \o Version 10.0.026 for Intel 64 is known to miscompile qmake when
        building in release mode. For now, configure Qt with
        -debug. Version 10.1.008 and later can compile qmake in release
        mode.
-    \o Versions 10.1.008 to 10.1.013 for both IA-32 and Intel 64 are
+    \o Versions 10.1.008 to 10.1.015 for both IA-32 and Intel 64 are
        known crash with "(0): internal error: 0_47021" when compiling
-       QtXmlPatterns, QtWebKit, and Designer in release mode. For now,
-       Qt turns off optimizations for these modules when building in
-       release mode. This issue has been reported to Intel and is
-       awaiting resolution.
+       QtXmlPatterns, QtWebKit, and Designer in release mode. Version
+       10.1.017 compiles these modules correctly in release mode.
     \endlist
 
     \section2 Intel C++ Compiler (Windows, Altix)

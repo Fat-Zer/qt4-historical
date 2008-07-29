@@ -353,7 +353,6 @@ int q_X509_STORE_CTX_init(X509_STORE_CTX *ctx, X509_STORE *store,
                           X509 *x509, STACK_OF(X509) *chain);
 X509_STORE_CTX *q_X509_STORE_CTX_new();
 int q_X509_STORE_CTX_set_purpose(X509_STORE_CTX *ctx, int purpose);
-time_t q_getTimeFromASN1(const ASN1_TIME *aTime);
 
 #define q_BIO_get_mem_data(b, pp) (int)q_BIO_ctrl(b,BIO_CTRL_INFO,0,(char *)pp)
 #define q_BIO_pending(b) (int)q_BIO_ctrl(b,BIO_CTRL_PENDING,0,NULL)
@@ -392,6 +391,10 @@ DSA *q_d2i_DSAPrivateKey(DSA **a, unsigned char **pp, long length);
 					(char *)(rsa))
 #define q_EVP_PKEY_assign_DSA(pkey,dsa) q_EVP_PKEY_assign((pkey),EVP_PKEY_DSA,\
 					(char *)(dsa))
+
+// Helper function
+class QDateTime;
+QDateTime q_getTimeFromASN1(const ASN1_TIME *aTime);
 
 QT_END_NAMESPACE
 

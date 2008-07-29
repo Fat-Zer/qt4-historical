@@ -198,7 +198,7 @@ void qDrawEdge(QPainter *p, qreal x1, qreal y1, qreal x2, qreal y2, qreal dw1, q
     switch (style) {
     case BorderStyle_Inset:
     case BorderStyle_Outset:
-        if (style == BorderStyle_Outset && (edge == TopEdge || edge == LeftEdge)
+        if ((style == BorderStyle_Outset && (edge == TopEdge || edge == LeftEdge))
             || (style == BorderStyle_Inset && (edge == BottomEdge || edge == RightEdge)))
             c = c.color().lighter();
         // fall through!

@@ -48,8 +48,7 @@
 #include "topicchooser.h"
 #include "contentwindow.h"
 #include "preferencesdialog.h"
-#include "bookmarkwidget.h"
-#include "bookmarkdialog.h"
+#include "bookmarkmanager.h"
 #include "remotecontrol.h"
 #include "cmdlineparser.h"
 #include "aboutdialog.h"
@@ -96,22 +95,10 @@ MainWindow::MainWindow(CmdLineParser *cmdLine, QWidget *parent)
     , m_qtDocInstaller(0)
     , m_connectedInitSignals(false)
 {
-    if (cmdLine->collectionFile().isEmpty()) {
-        QString collectionPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-        if (collectionPath.isEmpty())
-            collectionPath = QDir::cleanPath(QDir::homePath() +
-            QDir::separator() + QLatin1String(".assistant"));
-        else
-            collectionPath = QDir::cleanPath(collectionPath
-            + QLatin1String("/Trolltech/Assistant"));
-
-        QDir dir;
-        if (!dir.exists(collectionPath))
-            dir.mkpath(collectionPath);
-
-        m_helpEngine = new QHelpEngine(collectionPath + QDir::separator() +
-            QString(QLatin1String("qthelpcollection_%1.qhc")).
-            arg(QLatin1String(QT_VERSION_STR)), this);
+    if (usesDefaultCollection()) {
+        MainWindow::collectionFileDirectory(true);        
+        m_helpEngine = new QHelpEngine(MainWindow::defaultHelpCollectionFileName(),
+            this);
     } else {
         m_helpEngine = new QHelpEngine(cmdLine->collectionFile(), this);
     }
@@ -179,6 +166,9 @@ MainWindow::MainWindow(CmdLineParser *cmdLine, QWidget *parent)
             qApp->setWindowIcon(appIcon);
         }
 
+        // Show the widget here, otherwise the restore geometry and state won't work
+        // on x11.
+        show();
         QByteArray ba(m_helpEngine->customValue(QLatin1String("MainWindow")).toByteArray());
         if (!ba.isEmpty())
             restoreState(ba);
@@ -237,7 +227,7 @@ MainWindow::MainWindow(CmdLineParser *cmdLine, QWidget *parent)
         else if (m_cmdLine->bookmarks() == CmdLineParser::Activate)
             showBookmarks();
         
-        if (cmdLine->collectionFile().isEmpty())
+        if (usesDefaultCollection())
             QTimer::singleShot(0, this, SLOT(lookForNewQtDocumentation()));
         else
             checkInitState();
@@ -250,9 +240,14 @@ MainWindow::~MainWindow()
         delete m_qtDocInstaller;
 }
 
+bool MainWindow::usesDefaultCollection() const
+{
+    return m_cmdLine->collectionFile().isEmpty();
+}
+
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    saveBookmarks(m_bookmarkWidget->bookmarks());
+    m_bookmarkManager->saveBookmarks();
     m_helpEngine->setCustomValue(QLatin1String("MainWindow"), saveState());
     m_helpEngine->setCustomValue(QLatin1String("MainWindowGeometry"),
         saveGeometry());
@@ -371,7 +366,7 @@ void MainWindow::insertLastPages()
         m_centralWidget->setSource(m_cmdLine->url());
     else
         m_centralWidget->setLastShownPages();
-    m_bookmarkWidget->setBookmarks(m_helpEngine->customValue(QLatin1String("Bookmarks")).toByteArray());
+
     if (m_cmdLine->search() == CmdLineParser::Activate)
         showSearch();
 }
@@ -459,7 +454,7 @@ void MainWindow::setupActions()
     m_viewMenu->addAction(tr("Index"), this,
         SLOT(showIndex()), QKeySequence(tr("ALT+I")));
     m_viewMenu->addAction(tr("Bookmarks"), this,
-        SLOT(showBookmarks()), QKeySequence(tr("ALT+B")));
+        SLOT(showBookmarks()), QKeySequence(tr("ALT+O")));
     m_viewMenu->addAction(tr("Search"), this,
         SLOT(showSearch()), QKeySequence(tr("ALT+S")));
 
@@ -500,7 +495,7 @@ void MainWindow::setupActions()
 
     menu = menuBar()->addMenu(tr("&Bookmarks"));
     tmp = menu->addAction(tr("Add Bookmark..."), this, SLOT(addBookmark()));
-    tmp->setShortcut(tr("CTRL+B"));
+    tmp->setShortcut(tr("CTRL+D"));
 
     menu = menuBar()->addMenu(tr("&Help"));
     m_aboutAction = menu->addAction(tr("About..."), this, SLOT(showAboutDialog()));
@@ -553,8 +548,6 @@ void MainWindow::setupActions()
     // bookmarks
     connect(m_bookmarkWidget, SIGNAL(requestShowLink(const QUrl&)),
         m_centralWidget, SLOT(setSource(const QUrl&)));
-    connect(m_bookmarkWidget, SIGNAL(saveBookmarks(const QByteArray&)),
-        this, SLOT(saveBookmarks(const QByteArray&)));
 
     // index window
     connect(m_indexWindow, SIGNAL(linkActivated(const QUrl&)),
@@ -675,12 +668,6 @@ void MainWindow::showNewAddress(const QUrl &url)
     m_addressLineEdit->setText(url.toString());
 }
 
-void MainWindow::saveBookmarks(const QByteArray &bookmarks)
-{
-    QString b(bookmarks);
-    m_helpEngine->setCustomValue(QLatin1String("Bookmarks"), bookmarks);
-}
-
 void MainWindow::addBookmark()
 {
     addNewBookmark(m_centralWidget->currentTitle(), m_centralWidget->currentSource().toString());
@@ -716,7 +703,7 @@ void MainWindow::showTopicChooser(const QMap<QString, QUrl> &links,
 void MainWindow::showPreferences()
 {
     PreferencesDialog dia(m_helpEngine, this,
-        m_cmdLine->collectionFile().isEmpty());
+        usesDefaultCollection());
     connect(&dia, SIGNAL(updateApplicationFont()),
         this, SLOT(updateApplicationFont()));
     connect(&dia, SIGNAL(updateBrowserFont()),
@@ -745,11 +732,7 @@ void MainWindow::addNewBookmark(const QString &title, const QString &url)
     if (url.isEmpty())
         return;
 
-    BookmarkDialog dialog(m_helpEngine, title, url, this);
-    dialog.exec();
-
-    m_bookmarkWidget->setBookmarks(
-        m_helpEngine->customValue(QLatin1String("Bookmarks")).toByteArray());
+    m_bookmarkManager->showBookmarkDialog(this, title, url);
 }
 
 void MainWindow::showAboutDialog()
@@ -813,7 +796,7 @@ void MainWindow::showAboutDialog()
             "<p>Version %2 %3</p></center>"
             "<p>%4</p>"
             "<p>%5</p>"
-            "<p>Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.</p>"
+            "<p>Copyright (C) 2000-2008 Trolltech ASA. All rights reserved.</p>"
             "<p>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
             " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
             " PARTICULAR PURPOSE.<p/>")
@@ -836,7 +819,7 @@ void MainWindow::showIndex()
 
 void MainWindow::showBookmarks()
 {
-    activateDockWidget(m_bookmarkWidget->parentWidget());
+    activateDockWidget(m_bookmarkWidget);
 }
 
 void MainWindow::activateDockWidget(QWidget *w)
@@ -963,38 +946,43 @@ void MainWindow::indexingFinished()
 
 QWidget* MainWindow::setupBookmarkWidget()
 {
-    QWidget *widget = new QWidget(this);
-    
-    QLayout *vlayout = new QVBoxLayout(widget);
-    vlayout->setMargin(4);
-    
-    QLayout *hlayout = new QHBoxLayout();
-    vlayout->addWidget(m_bookmarkWidget = new BookmarkWidget(widget, false));
-    vlayout->addItem(hlayout);
-    
-    QString system = QLatin1String("win");
-#ifdef Q_OS_MAC
-    system = QLatin1String("mac");
-#endif
-    hlayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    m_bookmarkManager = new BookmarkManager(m_helpEngine);
+    m_bookmarkWidget = new BookmarkWidget(m_bookmarkManager, this);
+    connect(m_bookmarkWidget, SIGNAL(addBookmark()), this, SLOT(addBookmark()));
+    return m_bookmarkWidget;
+}
 
-    QToolButton *button = new QToolButton(widget);
-    button->setText(tr("Add"));
-    button->setIcon(QIcon(QString::fromUtf8(":/trolltech/assistant/images/%1/addtab.png").arg(system)));
-    button->setAutoRaise(true);
-    button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    hlayout->addWidget(button);
-    connect(button, SIGNAL(clicked()), this, SLOT(addBookmark()));
+QString MainWindow::collectionFileDirectory(bool createDir, const QString &cacheDir)
+{
+    QString collectionPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    if (collectionPath.isEmpty()) {
+        if (cacheDir.isEmpty())
+            collectionPath = QDir::homePath() + QDir::separator()
+                + QLatin1String(".assistant");
+        else
+            collectionPath = QDir::homePath() + QLatin1String("/.")
+                + cacheDir;
+    } else {
+        if (cacheDir.isEmpty())
+            collectionPath = collectionPath + QLatin1String("/Trolltech/Assistant");
+        else
+            collectionPath = collectionPath + QDir::separator()
+                + cacheDir;
+    }
+    collectionPath = QDir::cleanPath(collectionPath);
+    if (createDir) {
+        QDir dir;
+        if (!dir.exists(collectionPath))
+            dir.mkpath(collectionPath);
+    }
+    return collectionPath;
+}
 
-    button = new QToolButton(widget);
-    button->setText(tr("Remove"));
-    button->setIcon(QIcon(QString::fromUtf8(":/trolltech/assistant/images/%1/closetab.png").arg(system)));
-    button->setAutoRaise(true);
-    button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    hlayout->addWidget(button);
-    connect(button, SIGNAL(clicked()), m_bookmarkWidget, SLOT(removeBookmarkOrFolder()));
-
-    return widget;
+QString MainWindow::defaultHelpCollectionFileName()
+{
+    return collectionFileDirectory() + QDir::separator() +
+            QString(QLatin1String("qthelpcollection_%1.qhc")).
+            arg(QLatin1String(QT_VERSION_STR));
 }
 
 QT_END_NAMESPACE

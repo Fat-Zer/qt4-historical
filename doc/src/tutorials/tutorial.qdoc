@@ -63,7 +63,7 @@
     "Hello world" program from Chapter 1 will have turned into a
     650-line game.
 
-    If you're completely new to Qt, please read \l{How to Learn Qt}
+    If you are completely new to Qt, please read \l{How to Learn Qt}
     if you haven't already done so.
 
     The tutorial's source code is located in Qt's \c examples/tutorials/tutorial
@@ -192,39 +192,59 @@
     In QCoreApplication::exec(), Qt receives and processes user and
     system events and passes these on to the appropriate widgets.
 
-    You should now try to compile and run this program.
+    You should now compile and run this program.
 
-    The tutorial examples are located in Qt's \c examples/tutorials/tutorial
-    directory.
-    They are automatically built when you build Qt.
+    \section1 Environment Variables
 
-    If you have typed in the source code manually, you will need to
-    follow these instructions: To compile a C++ application, you need
-    to create a makefile. The easiest way to create a makefile for Qt
-    is to use the \l{qmake} build tool supplied with Qt. If you've
-    saved \c main.cpp in its own otherwise empty directory, all you
-    need to do is:
+    If you are developing Qt applications at the command line,
+    you need to ensure that the Qt libraries and executables are
+    accessible to your environment by prepending the path to Qt's
+    \c bin directory to your \e{PATH} variable; this is described
+    in the \l{Installation} instructions for your platform.
+
+    On Windows, this is automatically done for you if you get your
+    command line prompt from the \e{Start>All Programs>Qt} menu.
+    If you get your command line prompt with \e{Start>Run>Command},
+    you have to set the \e{PATH} variable there yourself.
+
+    \section1 Building an application
+
+    The tutorial examples are located in the Qt \e
+    examples/tutorials/tutorial directory. If you installed a binary
+    Qt package, pre-built examples were installed as well. If you built
+    Qt yourself, the examples were built at the same time. In either
+    case, there is a lot to be learned about using Qt by modifying and
+    building the examples yourself.
+
+    Assuming you have copied an example's \c{.cpp} and \c{.h} files to
+    an otherwise empty directory, and you have made your changes
+    there, the next step is to create a Qt makefile in that
+    directory. To create a Qt makefile, use \l{qmake}, the build tool
+    supplied with Qt. Run the following two commands in the directory
+    containing your modified sources to create the makefile.
 
     \snippet doc/src/snippets/code/doc.src.examples.tutorial.qdoc 0
 
-    The first command tells \c qmake to create a project file (a \c
-    .pro file). The second command tells it to create a
-    platform-specific makefile based on the project file. You should
-    now be able to type \c make (or \c nmake if you're using Visual
-    Studio) and then run your first Qt application!
+    The first command tells qmake to create a project (\c{.pro}) file.
+    The second command tells qmake to use the \c{.pro} file to create
+    a platform-specific makefile.
 
-    \section1 Running the Application
+    Now you can just run \c{make} (\c{nmake} if you are using Visual
+    Studio) to compile the program, and then you can run your first Qt
+    application!
 
-    When you run the application, you will see a small window filled
-    with a single button, and on it you can read the famous words:
-    "Hello world!"
+    \section1 Running this example
+
+    When you run the example, you will see a small window showing a
+    single button. On the button you can read the famous words: "Hello
+    world!"
 
     \section1 Exercises
 
-    Try to resize the window. Click the button. If you're running
-    X11, try running the program with the \c -geometry option (for
-    example, \c {-geometry 100x200+10+20}).
-*/
+    Try to resize the window. Click the button. If you are running
+    X11, try running the program with the \c{-geometry} option (e.g.,
+    \c{-geometry 100x200+10+20}).
+ */
 
 /*! 
     \example tutorials/tutorial/t2

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/network/q3socket.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/network/q3socket.cpp -->
 <head>
   <title>Qt 4.4: Q3Socket Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -185,7 +185,7 @@
 <h3 class="fn"><a name="canReadLine"></a>bool Q3Socket::canReadLine () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if it's possible to read an entire line of text from this socket at this time; otherwise returns false.</p>
 <p>Note that if the peer closes the connection unexpectedly, this function returns false. This means that loops such as this won't work:</p>
-<pre>         while( !socket-&gt;canReadLine() ) // WRONG
+<pre>         while( !socket-&gt;canReadLine() ) <span class="comment">// WRONG</span>
              ;</pre>
 <p>Reimplemented from <a href="qiodevice.html#canReadLine">QIODevice</a>.</p>
 <p>See also <a href="qiodevice.html#readLine">readLine</a>().</p>
@@ -328,6 +328,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

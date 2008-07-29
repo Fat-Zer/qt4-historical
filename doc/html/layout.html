@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/layout.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/layout.qdoc -->
 <head>
   <title>Qt 4.4: Layout Classes</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -121,6 +121,7 @@
 <h3>Layout Issues</h3>
 <p>The use of rich text in a label widget can introduce some problems to the layout of its parent widget. Problems occur due to the way rich text is handled by Qt's layout managers when the label is word wrapped.</p>
 <p>In certain cases the parent layout is put into <a href="qlayout.html#SizeConstraint-enum">QLayout::FreeResize</a> mode, meaning that it will not adapt the layout of its contents to fit inside small sized windows, or even prevent the user from making the window too small to be usable. This can be overcome by subclassing the problematic widgets, and implementing suitable sizeHint() and minimumSizeHint() functions.</p>
+<p>In some cases, it is relevant when a layout is added to a widget. When you set the widget of a <a href="qdockwidget.html">QDockWidget</a> or a <a href="qscrollarea.html">QScrollArea</a> (with <a href="qdockwidget.html#setWidget">QDockWidget::setWidget</a>() and <a href="qscrollarea.html#setWidget">QScrollArea::setWidget</a>()), the layout must already have been set on the widget. If not, the widget will not be visible.</p>
 <a name="manual-layout"></a>
 <h3>Manual Layout</h3>
 <p>If you are making a one-of-a-kind special layout, you can also make a custom widget as described above. Reimplement <a href="qwidget.html#resizeEvent">QWidget::resizeEvent</a>() to calculate the required distribution of sizes and call <a href="qwidget.html#geometry-prop">setGeometry()</a> on each child.</p>
@@ -141,107 +142,107 @@
 <p>In most cases, you will also implement <a href="qlayout.html#minimumSize">minimumSize</a>().</p>
 <a name="the-header-file"></a>
 <h4>The Header File (<tt>card.h</tt>)</h4>
-<pre>         #ifndef CARD_H
-         #define CARD_H
+<pre> #ifndef CARD_H
+ #define CARD_H
 
-         #include &lt;QLayout&gt;
-         #include &lt;QList&gt;
+ #include &lt;QLayout&gt;
+ #include &lt;QList&gt;
 
-         class CardLayout : public QLayout
-         {
-         public:
-             CardLayout(QWidget *parent, int dist)
-                 : QLayout(parent, 0, dist) {}
-             CardLayout(QLayout *parent, int dist)
-                 : QLayout(parent, dist) {}
-             CardLayout(int dist)
-                 : QLayout(dist) {}
-             ~CardLayout();
+ class CardLayout : public QLayout
+ {
+ public:
+     CardLayout(QWidget *parent, int dist)
+         : QLayout(parent, 0, dist) {}
+     CardLayout(QLayout *parent, int dist)
+         : QLayout(parent, dist) {}
+     CardLayout(int dist)
+         : QLayout(dist) {}
+     ~CardLayout();
 
-             void addItem(QLayoutItem *item);
-             QSize sizeHint() const;
-             QSize minimumSize() const;
-             QLayoutItem *itemAt(int) const;
-             QLayoutItem *takeAt(int);
-             void setGeometry(const QRect &amp;rect);
+     void addItem(QLayoutItem *item);
+     QSize sizeHint() const;
+     QSize minimumSize() const;
+     QLayoutItem *itemAt(int) const;
+     QLayoutItem *takeAt(int);
+     void setGeometry(const QRect &amp;rect);
 
-         private:
-             QList&lt;QLayoutItem*&gt; list;
-         };
-         #endif</pre>
+ private:
+     QList&lt;QLayoutItem*&gt; list;
+ };
+ #endif</pre>
 <a name="the-implementation-file"></a>
 <h4>The Implementation File (<tt>card.cpp</tt>)</h4>
-<pre>         #include &quot;card.h&quot;</pre>
+<pre> #include &quot;card.h&quot;</pre>
 <p>First we define two functions that iterate over the layout: itemAt() and takeAt(). These functions are used internally by the layout system to handle deletion of widgets. They are also available for application programmers.</p>
 <p>ItemAt() returns the item at the given index. takeAt() removes the item at the given index, and returns it. In this case we use the list index as the layout index. In other cases where we have a more complex data structure, we may have to spend more effort defining a linear order for the items.</p>
-<pre>         QLayoutItem *CardLayout::itemAt(int idx) const
-         {
-             // QList::value() performs index checking, and returns 0 if we are
-             // outside the valid range
-             return list.value(idx);
-         }
+<pre> QLayoutItem *CardLayout::itemAt(int idx) const
+ {
+     // QList::value() performs index checking, and returns 0 if we are
+     // outside the valid range
+     return list.value(idx);
+ }
 
-         QLayoutItem *CardLayout::takeAt(int idx)
-         {
-             // QList::take does not do index checking
-             return idx &gt;= 0 &amp;&amp; idx &lt; list.size() ? list.takeAt(idx) : 0;
-         }</pre>
+ QLayoutItem *CardLayout::takeAt(int idx)
+ {
+     // QList::take does not do index checking
+     return idx &gt;= 0 &amp;&amp; idx &lt; list.size() ? list.takeAt(idx) : 0;
+ }</pre>
 <p>addItem() implements the default placement strategy for layout items. It must be implemented. It is used by <a href="qlayout-qt3.html#add">QLayout::add</a>(), by the <a href="qlayout.html">QLayout</a> constructor that takes a layout as parent. If your layout has advanced placement options that require parameters, you must provide extra access functions such as the row and column spanning overloads of <a href="qgridlayout.html#addItem">QGridLayout::addItem</a>(), addWidget(), and addLayout().</p>
-<pre>         void CardLayout::addItem(QLayoutItem *item)
-         {
-             list.append(item);
-         }</pre>
+<pre> void CardLayout::addItem(QLayoutItem *item)
+ {
+     list.append(item);
+ }</pre>
 <p>The layout takes over responsibility of the items added. Since <a href="qlayoutitem.html">QLayoutItem</a> does not inherit <a href="qobject.html">QObject</a>, we must delete the items manually. The function <a href="qlayout-qt3.html#deleteAllItems">QLayout::deleteAllItems</a>() uses takeAt() defined above to delete all the items in the layout.</p>
-<pre>         CardLayout::~CardLayout()
-         {
-             deleteAllItems();
-         }</pre>
+<pre> CardLayout::~CardLayout()
+ {
+     deleteAllItems();
+ }</pre>
 <p>The setGeometry() function actually performs the layout. The rectangle supplied as an argument does not include margin(). If relevant, use spacing() as the distance between items.</p>
-<pre>         void CardLayout::setGeometry(const QRect &amp;r)
-         {
-             QLayout::setGeometry(r);
+<pre> void CardLayout::setGeometry(const QRect &amp;r)
+ {
+     QLayout::setGeometry(r);
 
-             if (list.size() == 0)
-                 return;
+     if (list.size() == 0)
+         return;
 
-             int w = r.width() - (list.count() - 1) * spacing();
-             int h = r.height() - (list.count() - 1) * spacing();
-             int i = 0;
-             while (i &lt; list.size()) {
-                 QLayoutItem *o = list.at(i);
-                 QRect geom(r.x() + i * spacing(), r.y() + i * spacing(), w, h);
-                 o-&gt;setGeometry(geom);
-                 ++i;
-             }
-         }</pre>
+     int w = r.width() - (list.count() - 1) * spacing();
+     int h = r.height() - (list.count() - 1) * spacing();
+     int i = 0;
+     while (i &lt; list.size()) {
+         QLayoutItem *o = list.at(i);
+         QRect geom(r.x() + i * spacing(), r.y() + i * spacing(), w, h);
+         o-&gt;setGeometry(geom);
+         ++i;
+     }
+ }</pre>
 <p>sizeHint() and minimumSize() are normally very similar in implementation. The sizes returned by both functions should include spacing(), but not margin().</p>
-<pre>         QSize CardLayout::sizeHint() const
-         {
-             QSize s(0,0);
-             int n = list.count();
-             if (n &gt; 0)
-                 s = QSize(100,70); //start with a nice default size
-             int i = 0;
-             while (i &lt; n) {
-                 QLayoutItem *o = list.at(i);
-                 s = s.expandedTo(o-&gt;sizeHint());
-                 ++i;
-             }
-             return s + n*QSize(spacing(), spacing());
-         }
+<pre> QSize CardLayout::sizeHint() const
+ {
+     QSize s(0,0);
+     int n = list.count();
+     if (n &gt; 0)
+         s = QSize(100,70); //start with a nice default size
+     int i = 0;
+     while (i &lt; n) {
+         QLayoutItem *o = list.at(i);
+         s = s.expandedTo(o-&gt;sizeHint());
+         ++i;
+     }
+     return s + n*QSize(spacing(), spacing());
+ }
 
-         QSize CardLayout::minimumSize() const
-         {
-             QSize s(0,0);
-             int n = list.count();
-             int i = 0;
-             while (i &lt; n) {
-                 QLayoutItem *o = list.at(i);
-                 s = s.expandedTo(o-&gt;minimumSize());
-                 ++i;
-             }
-             return s + n*QSize(spacing(), spacing());
-         }</pre>
+ QSize CardLayout::minimumSize() const
+ {
+     QSize s(0,0);
+     int n = list.count();
+     int i = 0;
+     while (i &lt; n) {
+         QLayoutItem *o = list.at(i);
+         s = s.expandedTo(o-&gt;minimumSize());
+         ++i;
+     }
+     return s + n*QSize(spacing(), spacing());
+ }</pre>
 <a name="further-notes"></a>
 <h4>Further Notes</h4>
 <p>This layout does not handle height for width.</p>
@@ -253,6 +254,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

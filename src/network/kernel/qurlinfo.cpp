@@ -408,6 +408,8 @@ void QUrlInfo::setLastModified(const QDateTime &dt)
 }
 
 /*!
+    \since 4.4
+
     Specifies that the object the URL refers to was last read at
     \a dt.
 

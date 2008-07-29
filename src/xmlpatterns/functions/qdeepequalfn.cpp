@@ -145,8 +145,8 @@ Expression::Ptr DeepEqualFN::typeCheck(const StaticContext::Ptr &context,
     }
     else
     {
-        if(BuiltinTypes::node->xdtTypeMatches(t1) && BuiltinTypes::xsAnyAtomicType->xdtTypeMatches(t2) ||
-           BuiltinTypes::node->xdtTypeMatches(t2) && BuiltinTypes::xsAnyAtomicType->xdtTypeMatches(t1))
+        if ((BuiltinTypes::node->xdtTypeMatches(t1) && BuiltinTypes::xsAnyAtomicType->xdtTypeMatches(t2))
+            || (BuiltinTypes::node->xdtTypeMatches(t2) && BuiltinTypes::xsAnyAtomicType->xdtTypeMatches(t1)))
         {
             /* One operand contains nodes and the other atomic values, or vice versa. They can never
              * be identical. */

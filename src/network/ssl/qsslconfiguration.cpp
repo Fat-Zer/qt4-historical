@@ -60,6 +60,7 @@ Q_GLOBAL_STATIC(QSslConfigurationPrivate, emptySslConfiguration)
     \reentrant
     \module network
     \ingroup io
+    \ingroup ssl
 
     QSslConfiguration is used by Qt networking classes to relay
     information about an open SSL connection and to allow the

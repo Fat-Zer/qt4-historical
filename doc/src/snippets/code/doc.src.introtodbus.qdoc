@@ -1,5 +1,3 @@
 //! [0]
-      org.freedesktop.DBus
+org.freedesktop.DBus
 //! [0]
-
-

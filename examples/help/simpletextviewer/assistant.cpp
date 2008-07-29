@@ -54,6 +54,7 @@ Assistant::Assistant()
 {
 }
 
+//! [0]
 Assistant::~Assistant()
 {
     if (proc && proc->state() == QProcess::Running) {
@@ -61,7 +62,9 @@ Assistant::~Assistant()
         proc->waitForFinished(3000);
     }
 }
+//! [0]
 
+//! [1]
 void Assistant::showDocumentation(const QString &page)
 {
     if (!startAssistant())
@@ -70,7 +73,9 @@ void Assistant::showDocumentation(const QString &page)
     str << QLatin1String("SetSource qthelp://com.trolltech.examples.simpletextviewer/doc/")
         << page << QLatin1Char('\0') << endl;
 }
+//! [1]
 
+//! [2]
 bool Assistant::startAssistant()
 {
     if (!proc)
@@ -100,3 +105,4 @@ bool Assistant::startAssistant()
     }
     return true;
 }
+//! [2]

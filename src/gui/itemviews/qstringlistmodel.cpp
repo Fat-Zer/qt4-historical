@@ -149,7 +149,7 @@ QVariant QStringListModel::data(const QModelIndex &index, int role) const
 /*!
     Returns the flags for the item with the given \a index.
 
-    Valid items are enabled, selectable, and editable.
+    Valid items are enabled, selectable, editable, drag enabled and drop enabled.
 
     \sa QAbstractItemModel::flags()
 */

@@ -86,6 +86,23 @@
     still possible to use many of the following classes and
     features through the use of the \l{Qt3Support} module.
 
+    \section2 Painting Outside Paint Events
+
+    In Qt 3, under certain circumstances, it was possible to use
+    QPainter to draw on a given custom widget outside its
+    \l{QWidget::}{paintEvent()} reimplementation. In Qt 4, in most
+    situations, painting must occur within a widget's paint event
+    handler.
+
+    On X11, it is possible to set the \l{WA_PaintOutsidePaintEvent}
+    attribute on widgets to keep existing code, but we recommend
+    restricting the use of painting code to within paint event handlers
+    where possible.
+
+    More information about this change can be found in the
+    \l{Porting to Qt 4#Painting and Redrawing Widgets}{Painting and Redrawing Widgets}
+    section of the \l{Porting to Qt 4} document.
+
     \section2 Qt Designer
 
     The version of Qt Designer supplied with Qt 3 provided
@@ -174,7 +191,13 @@
     However, Qt 4 only provides this functionality through the
     use of the Q3UrlOperator.
 
-    It is still possible to perform operations on remote files
+    From Qt 4.4, the Network Access API provides a subset of the features
+    provided by \c QUrlOperator that are mostly intended for use with
+    applications that use the HTTP and FTP protocols. See the
+    QNetworkRequest, QNetworkReply, and QNetworkAccessManager documentation
+    for further details.
+
+    It is also possible to perform operations on remote files
     through the QHttp and QFtp classes, and on local files with
     the QFile class.
 

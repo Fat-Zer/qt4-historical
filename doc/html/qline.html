@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/tools/qline.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qline.cpp -->
 <head>
   <title>Qt 4.4: QLine Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -48,8 +48,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-lt-lt-148">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-gt-gt-85">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QLine &amp; <i>line</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-lt-lt-130">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-gt-gt-74">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QLine &amp; <i>line</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -109,18 +109,22 @@
 <a name="//apple_ref/cpp/instm/QLine/setP1" />
 <h3 class="fn"><a name="setP1"></a>void QLine::setP1 ( const <a href="qpoint.html">QPoint</a> &amp; <i>p1</i> )</h3>
 <p>Sets the starting point of this line to <i>p1</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qline.html#setP2">setP2</a>() and <a href="qline.html#p1">p1</a>().</p>
 <a name="//apple_ref/cpp/instm/QLine/setP2" />
 <h3 class="fn"><a name="setP2"></a>void QLine::setP2 ( const <a href="qpoint.html">QPoint</a> &amp; <i>p2</i> )</h3>
 <p>Sets the end point of this line to <i>p2</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qline.html#setP1">setP1</a>() and <a href="qline.html#p2">p2</a>().</p>
 <a name="//apple_ref/cpp/instm/QLine/setLine" />
 <h3 class="fn"><a name="setLine"></a>void QLine::setLine ( int <i>x1</i>, int <i>y1</i>, int <i>x2</i>, int <i>y2</i> )</h3>
 <p>Sets this line to the start in <i>x1</i>, <i>y1</i> and end in <i>x2</i>, <i>y2</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qline.html#setP1">setP1</a>(), <a href="qline.html#setP2">setP2</a>(), <a href="qline.html#p1">p1</a>(), and <a href="qline.html#p2">p2</a>().</p>
 <a name="//apple_ref/cpp/instm/QLine/setPoints" />
 <h3 class="fn"><a name="setPoints"></a>void QLine::setPoints ( const <a href="qpoint.html">QPoint</a> &amp; <i>p1</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>p2</i> )</h3>
 <p>Sets the start point of this line to <i>p1</i> and the end point of this line to <i>p2</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qline.html#setP1">setP1</a>(), <a href="qline.html#setP2">setP2</a>(), <a href="qline.html#p1">p1</a>(), and <a href="qline.html#p2">p2</a>().</p>
 <a name="//apple_ref/cpp/instm/QLine/translate" />
 <h3 class="fn"><a name="translate"></a>void QLine::translate ( const <a href="qpoint.html">QPoint</a> &amp; <i>offset</i> )</h3>
@@ -146,11 +150,11 @@
 <p>A line is identical to another line if the start and end points are identical, and the internal order of the points is the same.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-148"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-130"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>line</i> to the given <i>stream</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-85"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QLine &amp; <i>line</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-74"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QLine &amp; <i>line</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a line from the given <i>stream</i> into the given <i>line</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
@@ -158,6 +162,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

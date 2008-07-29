@@ -156,6 +156,13 @@ bool IndexWindow::eventFilter(QObject *obj, QEvent *e)
             }
         }
     }
+#ifdef Q_OS_MAC
+    else if (obj == m_indexWidget && e->type() == QEvent::KeyPress) {
+        QKeyEvent *ke = static_cast<QKeyEvent*>(e);
+        if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
+           m_indexWidget->activateCurrentItem();
+    }
+#endif
     return QWidget::eventFilter(obj, e);
 }
 

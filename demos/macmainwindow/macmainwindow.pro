@@ -3,7 +3,8 @@ TARGET          = macmainwindow
 
 CONFIG          += qt warn_on console
 
-SOURCES += main.cpp
+SOURCES += main.cpp macmainwindow.cpp
+HEADERS += macmainwindow.h
 
 build_all:!build_pass {
     CONFIG -= build_all

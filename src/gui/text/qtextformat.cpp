@@ -480,8 +480,9 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
 
     \value FontFamily
     \value FontPointSize
-    \omitvalue FontSizeAdjustment
-    \value FontSizeIncrement
+    \value FontSizeAdjustment       Specifies the change in size given to the fontsize already set using
+                                    FontPointSize or FontPixelSize.
+    \omitvalue FontSizeIncrement
     \value FontWeight
     \value FontItalic
     \value FontUnderline \e{This property has been deprecated.} Use QTextFormat::TextUnderlineStyle instead.
@@ -735,7 +736,7 @@ void QTextFormat::merge(const QTextFormat &other)
 /*!
     Returns the type of this format.
 
-    \sa ObjectTypes
+    \sa FormatType
 */
 int QTextFormat::type() const
 {
@@ -791,6 +792,8 @@ QTextImageFormat QTextFormat::toImageFormat() const
 }
 
 /*!
+    \since 4.4
+
     Returns this format as a table cell format.
 */
 QTextTableCellFormat QTextFormat::toTableCellFormat() const
@@ -1900,9 +1903,11 @@ QList<QTextOption::Tab> QTextBlockFormat::tabPositions() const
     \fn void QTextBlockFormat::setIndent(int indentation)
 
     Sets the paragraph's \a indentation. Margins are set independently of
-    indentation with setLeftMargin() and setTextIdent().
+    indentation with setLeftMargin() and setTextIndent().
+    The \a indentation is an integer that is multiplied with the document-wide
+    standard indent, resulting in the actual indent of the paragraph.
 
-    \sa indent()
+    \sa indent() QTextDocument::indentWidth()
 */
 
 

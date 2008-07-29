@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/itemviews/q3listview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/itemviews/q3listview.cpp -->
 <head>
   <title>Qt 4.4: Q3ListView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -632,9 +632,9 @@
          if (p.x() &gt; header()-&gt;sectionPos(header()-&gt;mapToIndex(0)) +
                  treeStepSize() * (i-&gt;depth() + (rootIsDecorated() ? 1 : 0)) + itemMargin() ||
                  p.x() &lt; header()-&gt;sectionPos(header()-&gt;mapToIndex(0))) {
-             ; // p is not on root decoration
+             ; <span class="comment">// p is not on root decoration</span>
          else
-             ; // p is on the root decoration
+             ; <span class="comment">// p is on the root decoration</span>
      }</pre>
 <p>This might be interesting if you use this function to find out where the user clicked and if you want to start a drag (which you do not want to do if the user clicked onto the root decoration of an item).</p>
 <p>See also <a href="q3listview.html#itemPos">itemPos</a>(), <a href="q3listview.html#itemRect">itemRect</a>(), and <a href="q3scrollview.html#viewportToContents">viewportToContents</a>().</p>
@@ -815,6 +815,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -170,7 +170,7 @@ protected:
 
         virtual void setParent(ScrollView*);
         ScrollView* parent() const;
-        virtual void geometryChanged() const;
+        virtual void geometryChanged();
         ScrollView* topLevel() const;
 
         IntRect convertToContainingWindow(const IntRect&) const;

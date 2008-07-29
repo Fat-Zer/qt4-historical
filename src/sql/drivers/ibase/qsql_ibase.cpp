@@ -467,7 +467,7 @@ static QList<QVariant> toList(char** buf, int count, T* = 0)
 }
 /* char** ? seems like bad influence from oracle ... */
 template<>
-static QList<QVariant> toList<long>(char** buf, int count, long*)
+QList<QVariant> toList<long>(char** buf, int count, long*)
 {
     QList<QVariant> res;
     for (int i = 0; i < count; ++i) {
@@ -622,7 +622,7 @@ static char* fillList(char *buffer, const QList<QVariant> &list, T* = 0)
 }
 
 template<>
-static char* fillList<float>(char *buffer, const QList<QVariant> &list, float*)
+char* fillList<float>(char *buffer, const QList<QVariant> &list, float*)
 {
     for (int i = 0; i < list.size(); ++i) {
         double val;
@@ -1770,6 +1770,15 @@ void QIBaseDriver::qHandleEventNotification(void *updatedResultBuffer)
             return;
         }
     }
+}
+
+QString QIBaseDriver::escapeIdentifier(const QString &identifier, IdentifierType) const
+{
+    QString res = identifier;
+    res.replace(QLatin1Char('"'), QLatin1String("\"\""));
+    res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
+    res.replace(QLatin1Char('.'), QLatin1String("\".\""));
+    return res;
 }
 
 QT_END_NAMESPACE

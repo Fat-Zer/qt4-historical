@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/access/qhttp.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/access/qhttp.cpp -->
 <head>
   <title>Qt 4.4: QHttpRequestHeader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -44,6 +44,7 @@
 <p>This class is used in the <a href="qhttp.html">QHttp</a> class to report the header information if the client requests something from the server.</p>
 <p>HTTP requests have a method which describes the request's action. The most common requests are &quot;GET&quot; and &quot;POST&quot;. In addition to the request method the header also includes a request-URI to specify the location for the method to use.</p>
 <p>The method, request-URI and protocol-version can be set using a constructor or later using <a href="qhttprequestheader.html#setRequest">setRequest</a>(). The values can be obtained using <a href="qhttprequestheader.html#method">method</a>(), <a href="qhttprequestheader.html#pathx">path</a>(), <a href="qhttprequestheader.html#majorVersion">majorVersion</a>() and <a href="qhttprequestheader.html#minorVersion">minorVersion</a>().</p>
+<p>Note that the request-URI must be in the format expected by the HTTP server. That is, all reserved characters must be encoded in %HH (where HH are two hexadecimal digits). See <a href="qurl.html#toPercentEncoding">QUrl::toPercentEncoding</a>() for more information.</p>
 <p>Important inherited functions: <a href="qhttpheader.html#setValue">setValue</a>() and <a href="qhttpheader.html#value">value</a>().</p>
 <p>See also <a href="qhttpresponseheader.html">QHttpResponseHeader</a> and <a href="qhttp.html">QHttp</a>.</p>
 <hr />
@@ -52,7 +53,7 @@
 <h3 class="fn"><a name="QHttpRequestHeader"></a>QHttpRequestHeader::QHttpRequestHeader ()</h3>
 <p>Constructs an empty HTTP request header.</p>
 <h3 class="fn"><a name="QHttpRequestHeader-2"></a>QHttpRequestHeader::QHttpRequestHeader ( const <a href="qstring.html">QString</a> &amp; <i>method</i>, const <a href="qstring.html">QString</a> &amp; <i>path</i>, int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</h3>
-<p>Constructs a HTTP request header for the method <i>method</i>, the request-URI <i>path</i> and the protocol-version <i>majorVer</i> and <i>minorVer</i>.</p>
+<p>Constructs a HTTP request header for the method <i>method</i>, the request-URI <i>path</i> and the protocol-version <i>majorVer</i> and <i>minorVer</i>. The <i>path</i> argument must be properly encoded for an HTTP request.</p>
 <h3 class="fn"><a name="QHttpRequestHeader-3"></a>QHttpRequestHeader::QHttpRequestHeader ( const QHttpRequestHeader &amp; <i>header</i> )</h3>
 <p>Constructs a copy of <i>header</i>.</p>
 <h3 class="fn"><a name="QHttpRequestHeader-4"></a>QHttpRequestHeader::QHttpRequestHeader ( const <a href="qstring.html">QString</a> &amp; <i>str</i> )</h3>
@@ -77,7 +78,7 @@
 <p>See also <a href="qhttprequestheader.html#method">method</a>(), <a href="qhttprequestheader.html#majorVersion">majorVersion</a>(), <a href="qhttprequestheader.html#minorVersion">minorVersion</a>(), and <a href="qhttprequestheader.html#setRequest">setRequest</a>().</p>
 <a name="//apple_ref/cpp/instm/QHttpRequestHeader/setRequest" />
 <h3 class="fn"><a name="setRequest"></a>void QHttpRequestHeader::setRequest ( const <a href="qstring.html">QString</a> &amp; <i>method</i>, const <a href="qstring.html">QString</a> &amp; <i>path</i>, int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</h3>
-<p>This function sets the request method to <i>method</i>, the request-URI to <i>path</i> and the protocol-version to <i>majorVer</i> and <i>minorVer</i>.</p>
+<p>This function sets the request method to <i>method</i>, the request-URI to <i>path</i> and the protocol-version to <i>majorVer</i> and <i>minorVer</i>. The <i>path</i> argument must be properly encoded for an HTTP request.</p>
 <p>See also <a href="qhttprequestheader.html#method">method</a>(), <a href="qhttprequestheader.html#pathx">path</a>(), <a href="qhttprequestheader.html#majorVersion">majorVersion</a>(), and <a href="qhttprequestheader.html#minorVersion">minorVersion</a>().</p>
 <a name="//apple_ref/cpp/instm/QHttpRequestHeader/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QHttpRequestHeader &amp; QHttpRequestHeader::operator= ( const QHttpRequestHeader &amp; <i>header</i> )</h3>
@@ -86,6 +87,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1756,13 +1756,13 @@ void QCleanlooksStyle::drawControl(ControlElement element, const QStyleOption *o
                 QTransform m;
                 m.translate(rect.height()-1, -1.0);
                 m.rotate(90.0);
-                painter->setTransform(m);
+                painter->setTransform(m, true);
             }
 
             int maxWidth = rect.width() - 4;
             int minWidth = 4;
 			qint64 progress = (qint64)qMax(bar->progress, bar->minimum); // workaround for bug in QProgressBar
-			double vc6_workaround = ((progress - qint64(bar->minimum)) / double(qint64(bar->maximum) - qint64(bar->minimum))) * maxWidth;
+			double vc6_workaround = ((progress - qint64(bar->minimum)) / qMax(double(1.0), double(qint64(bar->maximum) - qint64(bar->minimum))) * maxWidth);
 			int progressBarWidth = (int(vc6_workaround) > minWidth ) ? int(vc6_workaround) : minWidth;
 			int width = indeterminate ? maxWidth : progressBarWidth;
 
@@ -2238,19 +2238,19 @@ void QCleanlooksStyle::drawControl(ControlElement element, const QStyleOption *o
                 rotMatrix.rotate(180);
                 rotMatrix.translate(0, -rect.height() + 1);
                 rotMatrix.scale(-1, 1);
-                painter->setTransform(rotMatrix);
+                painter->setTransform(rotMatrix, true);
                 break;
             case QTabBar::RoundedWest:
                 rotMatrix.rotate(180 + 90);
                 rotMatrix.scale(-1, 1);
                 flip = true;
-                painter->setTransform(rotMatrix);
+                painter->setTransform(rotMatrix, true);
                 break;
             case QTabBar::RoundedEast:
                 rotMatrix.rotate(90);
                 rotMatrix.translate(0, - rect.width() + 1);
                 flip = true;
-                painter->setTransform(rotMatrix);
+                painter->setTransform(rotMatrix, true);
                 break;
             default:
                 painter->restore();

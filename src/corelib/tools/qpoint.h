@@ -168,7 +168,6 @@ inline const QPoint operator-(const QPoint &p)
 
 inline QPoint &QPoint::operator/=(qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     xp = qRound(xp/c);
     yp = qRound(yp/c);
     return *this;
@@ -176,7 +175,6 @@ inline QPoint &QPoint::operator/=(qreal c)
 
 inline const QPoint operator/(const QPoint &p, qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     return QPoint(qRound(p.xp/c), qRound(p.yp/c));
 }
 
@@ -338,7 +336,6 @@ inline const QPointF operator-(const QPointF &p)
 
 inline QPointF &QPointF::operator/=(qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     xp/=c;
     yp/=c;
     return *this;
@@ -346,7 +343,6 @@ inline QPointF &QPointF::operator/=(qreal c)
 
 inline const QPointF operator/(const QPointF &p, qreal c)
 {
-    Q_ASSERT(!qFuzzyCompare(c + 1, 1));
     return QPointF(p.xp/c, p.yp/c);
 }
 

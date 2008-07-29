@@ -147,6 +147,7 @@ private:
 
     static QStringList exampleFiles;
     static QStringList exampleDirs;
+    QString exampleNameFilter;
 };
 
 QT_END_NAMESPACE

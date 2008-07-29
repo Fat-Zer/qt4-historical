@@ -246,7 +246,7 @@ public:
     void setMinimizeMode();
     void setNormalMode();
     void setMaximizeMode();
-    void setActive(bool activate);
+    void setActive(bool activate, bool changeFocus = true);
     void processClickedSubControl();
     QRegion getRegion(Operation operation) const;
     Operation getOperation(const QPoint &pos) const;

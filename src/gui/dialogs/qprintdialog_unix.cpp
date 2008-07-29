@@ -604,22 +604,11 @@ void QPrintDialog::accept()
 }
 
 #ifdef QT3_SUPPORT
-/*!  Returns a pointer to the printer this dialog configures, or 0 if
-  this dialog does not operate on any printer.
-*/
-
 QPrinter *QPrintDialog::printer() const
 {
     Q_D(const QPrintDialog);
     return d->printer;
 }
-
-/*!
-  Sets this dialog to configure printer \a printer, or no printer if \a printer
-  is null. If \a pickupSettings is true, the dialog reads most of
-  its settings from \a printer. If \a pickupSettings is false (the
-  default) the dialog keeps its old settings.
-*/
 
 void QPrintDialog::setPrinter(QPrinter *printer, bool pickupSettings)
 {
@@ -632,12 +621,6 @@ void QPrintDialog::setPrinter(QPrinter *printer, bool pickupSettings)
     if (pickupSettings)
         d->applyPrinterProperties(printer);
 }
-
-/*!
-  Adds the \a button to the layout of the print dialog. The added
-  buttons are arranged from the left to the right below the
-  last groupbox of the printdialog.
-*/
 
 void QPrintDialog::addButton(QPushButton *button)
 {
@@ -746,23 +729,26 @@ QUnixPrintWidgetPrivate::~QUnixPrintWidgetPrivate()
 void QUnixPrintWidgetPrivate::_q_printerChanged(int index)
 {
     const int printerCount = widget.printers->count();
-    Q_ASSERT(index != printerCount - 3); // separator
     widget.filename->setEnabled(false);
     widget.lOutput->setEnabled(false);
-    if (index > printerCount - 3) { // PDF or postscript
-        widget.location->setText(QPrintDialog::tr("Local file"));
-        widget.type->setText(QPrintDialog::tr("Write %1 file").arg(index == printerCount - 2 ?
-                    QString::fromLatin1("PDF") : QString::fromLatin1("Postscript")));
-        widget.properties->setEnabled(true);
-        widget.filename->setEnabled(true);
-        widget.lOutput->setEnabled(true);
-        if (propertiesDialog)
-            propertiesDialog->selectPdfPsPrinter(printer);
+
+    if (filePrintersAdded) {
+        Q_ASSERT(index != printerCount - 3); // separator
+        if (index > printerCount - 3) { // PDF or postscript
+            widget.location->setText(QPrintDialog::tr("Local file"));
+            widget.type->setText(QPrintDialog::tr("Write %1 file").arg(index == printerCount - 2 ?
+                                                                       QString::fromLatin1("PDF") : QString::fromLatin1("Postscript")));
+            widget.properties->setEnabled(true);
+            widget.filename->setEnabled(true);
+            widget.lOutput->setEnabled(true);
+            if (propertiesDialog)
+                propertiesDialog->selectPdfPsPrinter(printer);
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-        if (optionsPane)
-            optionsPane->selectPrinter(0);
+            if (optionsPane)
+                optionsPane->selectPrinter(0);
 #endif
-        return;
+            return;
+        }
     }
 
     widget.location->setText(QString());
@@ -933,9 +919,12 @@ void QUnixPrintWidgetPrivate::_q_btnPropertiesClicked()
 
 void QUnixPrintWidgetPrivate::setupPrinter()
 {
-    // printer or file name
-    if (widget.printers->currentIndex() >= widget.printers->count() - 2) {
-        if (widget.printers->currentIndex() == widget.printers->count() - 2)
+    const int printerCount = widget.printers->count();
+    const int index = widget.printers->currentIndex();
+
+    if (filePrintersAdded && index > printerCount - 3) { // PDF or postscript
+        Q_ASSERT(index != printerCount - 3); // separator
+        if (index == printerCount - 2)
             printer->setOutputFormat(QPrinter::PdfFormat);
         else
             printer->setOutputFormat(QPrinter::PostScriptFormat);

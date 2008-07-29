@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: MediaObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">MediaObject Class Reference<br /><span class="small-subtitle">(Phonon::MediaObject)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The MediaObject class provides an interface for media playback. <a href="#details">More...</a></p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>Inherits <a href="qobject.html">QObject</a> and <a href="phonon-medianode.html">MediaNode</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-mediaobject-members.html">List of all members, including inherited members</a></li>
@@ -63,6 +63,7 @@
 </ul>
 <ul>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>3 public functions inherited from <a href="phonon-medianode.html#public-functions">Phonon::MediaNode</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -118,18 +119,18 @@
      Phonon::createPath(mediaObject, audioOutput);
      mediaObject-&gt;play();</pre>
 <p>The media object can queue sources for playback. When it has finished to play one source, it will start playing the next in the queue; the new source is then removed from the queue. The queue can be altered at any time.</p>
-<pre>     media-&gt;setCurrentSource(&quot;:/sounds/startsound.ogg&quot;);
-     media-&gt;enqueue(&quot;/home/username/music/song.mp3&quot;);
-     media-&gt;enqueue(&quot;:/sounds/endsound.ogg&quot;);</pre>
+<pre> media-&gt;setCurrentSource(&quot;:/sounds/startsound.ogg&quot;);
+ media-&gt;enqueue(&quot;/home/username/music/song.mp3&quot;);
+ media-&gt;enqueue(&quot;:/sounds/endsound.ogg&quot;);</pre>
 <p>You can also make use of the <a href="phonon-mediaobject.html#aboutToFinish">aboutToFinish()</a> signal, which is guaranteed to be emitted in time for altering the queue.</p>
-<pre>       media-&gt;setCurrentSource(&quot;:/sounds/startsound.ogg&quot;);
-       connect(media, SIGNAL(aboutToFinish()), SLOT(enqueueNextSource()));
-     }
+<pre>   media-&gt;setCurrentSource(&quot;:/sounds/startsound.ogg&quot;);
+   connect(media, SIGNAL(aboutToFinish()), SLOT(enqueueNextSource()));
+ }
 
-     void enqueueNextSource()
-     {
-       media-&gt;enqueue(&quot;/home/username/music/song.mp3&quot;);
-     }</pre>
+ void enqueueNextSource()
+ {
+   media-&gt;enqueue(&quot;/home/username/music/song.mp3&quot;);
+ }</pre>
 <p>When playback is finishing, i.e&#x2e;, when a media source has been played to the end and the queue is empty, several signals are emitted. First, the media object will emit <a href="phonon-mediaobject.html#aboutToFinish">aboutToFinish</a>() - shortly before the playback has finished - and then <a href="phonon-mediaobject.html#finished">finished</a>(). The <a href="phonon-mediaobject.html#stateChanged">stateChanged</a>() signal will also be emitted with <a href="phonon.html#State-enum">PausedState</a>, which is the state the media object takes when the playback is finished. If you wish to enter another state, you can connect a slot to <a href="phonon-mediaobject.html#finished">finished</a>() and set a new state there.</p>
 <p>The media object resolves the meta information, such as title, artist, and album. The meta data is not resolved immediately after a new source is provided, but will be resolved before the object leaves the <a href="phonon.html#State-enum">LoadingState</a>. The data is queried by string keys - which should follow the Ogg Vorbis specification <a href="http://xiph.org/vorbis/doc/v-comment.html">http://xiph.org/vorbis/doc/v-comment.html</a> - or by using the <a href="phonon.html#MetaData-enum">MetaData</a> enum. The data available will depend on the type and content of the individual media files. <a href="phonon-mediaobject.html#metaDataChanged">metaDataChanged</a>() will be emitted when the media object has resolved new meta data.</p>
 <p>Errors encountered during playback and loading of media sources are reported by emitting a state changed signal with <a href="phonon.html#State-enum">ErrorState</a>. The severity of the error can be queried by the <a href="phonon.html#ErrorType-enum">ErrorType</a>. With a <a href="phonon.html#ErrorType-enum">NormalError</a>, it might be possible to continue the playback, for instance, if only audio playback fails for a media source which also has video. A <a href="phonon.html#ErrorType-enum">FatalError</a> indicates that Phonon cannot continue playback of the current source, but it is possible to try with a different one. A user readable error message is given by <a href="phonon-mediaobject.html#errorString">errorString</a>().</p>
@@ -156,14 +157,14 @@
 <p>The tick interval is the time that elapses between the emission of two tick signals. If you set the interval to <tt>0</tt> the tick signal gets disabled.</p>
 <p>Defaults to <tt>0</tt> (disabled).</p>
 <p><b>Warning:</b> The back-end is free to choose a different tick interval close to what you asked for. This means that the following code <tt>may</tt> fail:</p>
-<pre>     int x = 200;
-     media-&gt;setTickInterval(x);
-     Q_ASSERT(x == producer-&gt;tickInterval());</pre>
+<pre> int x = 200;
+ media-&gt;setTickInterval(x);
+ Q_ASSERT(x == producer-&gt;tickInterval());</pre>
 <p>On the other hand the following is guaranteed:</p>
-<pre>     int x = 200;
-     media-&gt;setTickInterval(x);
-     Q_ASSERT(x &gt;= producer-&gt;tickInterval() &amp;&amp;
-              x &lt;= 2producer-&gt;tickInterval());</pre>
+<pre> int x = 200;
+ media-&gt;setTickInterval(x);
+ Q_ASSERT(x &gt;= producer-&gt;tickInterval() &amp;&amp;
+          x &lt;= 2producer-&gt;tickInterval());</pre>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>qint32 tickInterval () const</b></li>
@@ -198,8 +199,8 @@
 <h3 class="fn"><a name="bufferStatus"></a>void MediaObject::bufferStatus ( int <i>percentFilled</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>Provides information about the status of the buffer.</p>
 <p>You can use this signal to show a progress bar to the user when in <a href="phonon.html#State-enum">BufferingState</a>:</p>
-<pre>     progressBar-&gt;setRange(0, 100); // this is the default
-     connect(media, SIGNAL(bufferStatus(int)), progressBar, SLOT(setValue(int)));</pre>
+<pre> progressBar-&gt;setRange(0, 100); // this is the default
+ connect(media, SIGNAL(bufferStatus(int)), progressBar, SLOT(setValue(int)));</pre>
 <p><i>percentFilled</i> is a number between 0 and 100 telling you how much the buffer is filled.</p>
 <a name="//apple_ref/cpp/instm/Phonon::MediaObject/clearQueue" />
 <h3 class="fn"><a name="clearQueue"></a>void MediaObject::clearQueue ()</h3>
@@ -252,16 +253,16 @@
 <h3 class="fn"><a name="hasVideo"></a>bool MediaObject::hasVideo () const</h3>
 <p>Check whether the current media source includes a video stream.</p>
 <p><b>Warning:</b> This information is not resolved immediately after a media object gets a new source. Listen to the <a href="phonon-mediaobject.html#hasVideoChanged">hasVideoChanged</a>() signal instead.</p>
-<pre>       connect(media, SIGNAL(hasVideoChanged(bool)), hasVideoChanged(bool));
-       media-&gt;setCurrentSource(&quot;somevideo.avi&quot;);
-       media-&gt;hasVideo(); // returns false;
-     }
+<pre>   connect(media, SIGNAL(hasVideoChanged(bool)), hasVideoChanged(bool));
+   media-&gt;setCurrentSource(&quot;somevideo.avi&quot;);
+   media-&gt;hasVideo(); // returns false;
+ }
 
-     void hasVideoChanged(bool b)
-     {
-       // b == true
-       media-&gt;hasVideo(); // returns true;
-     }</pre>
+ void hasVideoChanged(bool b)
+ {
+   // b == true
+   media-&gt;hasVideo(); // returns true;
+ }</pre>
 <p>Returns <tt>true</tt> if the media contains video data; otherwise, returns <tt>false</tt>.</p>
 <p>See also <a href="phonon-mediaobject.html#hasVideoChanged">hasVideoChanged</a>().</p>
 <a name="//apple_ref/cpp/instm/Phonon::MediaObject/hasVideoChanged" />
@@ -273,16 +274,16 @@
 <h3 class="fn"><a name="isSeekable"></a>bool MediaObject::isSeekable () const</h3>
 <p>Check whether it is possible to seek, i.e&#x2e;, change the playback position in the media stream.</p>
 <p><b>Warning:</b> This information is not solved immediately after the media object gets a new media source. The <a href="phonon-mediaobject.html#hasVideoChanged">hasVideoChanged</a>() signal is emitted after this information is available.</p>
-<pre>       connect(media, SIGNAL(hasVideoChanged(bool)), hasVideoChanged(bool));
-       media-&gt;setCurrentSource(&quot;somevideo.avi&quot;);
-       media-&gt;hasVideo(); // returns false;
-     }
+<pre>   connect(media, SIGNAL(hasVideoChanged(bool)), hasVideoChanged(bool));
+   media-&gt;setCurrentSource(&quot;somevideo.avi&quot;);
+   media-&gt;hasVideo(); // returns false;
+ }
 
-     void hasVideoChanged(bool b)
-     {
-       // b == true
-       media-&gt;hasVideo(); // returns true;
-     }</pre>
+ void hasVideoChanged(bool b)
+ {
+   // b == true
+   media-&gt;hasVideo(); // returns true;
+ }</pre>
 <p>Returns <tt>true</tt> if the current media may be seeked; otherwise, returns <tt>false</tt>.</p>
 <p>See also <a href="phonon-mediaobject.html#seekableChanged">seekableChanged</a>().</p>
 <a name="//apple_ref/cpp/instm/Phonon::MediaObject/metaData" />
@@ -292,13 +293,13 @@
 <p>Therefore the following should work with every backend:</p>
 <p>Note that meta data is not resolved before the <tt>metaDataChanged()</tt> signal is emitted.</p>
 <p>A typical usage looks like this:</p>
-<pre>     setMetaArtist (media-&gt;metaData(&quot;ARTIST&quot;     ));
-     setMetaAlbum  (media-&gt;metaData(&quot;ALBUM&quot;      ));
-     setMetaTitle  (media-&gt;metaData(&quot;TITLE&quot;      ));
-     setMetaDate   (media-&gt;metaData(&quot;DATE&quot;       ));
-     setMetaGenre  (media-&gt;metaData(&quot;GENRE&quot;      ));
-     setMetaTrack  (media-&gt;metaData(&quot;TRACKNUMBER&quot;));
-     setMetaComment(media-&gt;metaData(&quot;DESCRIPTION&quot;));</pre>
+<pre> setMetaArtist (media-&gt;metaData(&quot;ARTIST&quot;     ));
+ setMetaAlbum  (media-&gt;metaData(&quot;ALBUM&quot;      ));
+ setMetaTitle  (media-&gt;metaData(&quot;TITLE&quot;      ));
+ setMetaDate   (media-&gt;metaData(&quot;DATE&quot;       ));
+ setMetaGenre  (media-&gt;metaData(&quot;GENRE&quot;      ));
+ setMetaTrack  (media-&gt;metaData(&quot;TRACKNUMBER&quot;));
+ setMetaComment(media-&gt;metaData(&quot;DESCRIPTION&quot;));</pre>
 <h3 class="fn"><a name="metaData-2"></a><a href="qstringlist.html">QStringList</a> MediaObject::metaData ( <a href="phonon.html#MetaData-enum">Phonon::MetaData</a> <i>key</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the strings associated with the given <i>key</i>.</p>
@@ -358,8 +359,8 @@
 <p>After the media object receives a new source, it will enter the <a href="phonon.html#State-enum">LoadingState</a>. When it is ready to play, it enters the <a href="phonon.html#State-enum">StoppedState</a> unless another state has been requested, e.g&#x2e;, by calling <a href="phonon-mediaobject.html#play">play</a>().</p>
 <p><i>source</i> is the <a href="phonon-mediasource.html">MediaSource</a> object to the media data. You can just as well use a <a href="qurl.html">QUrl</a> or <a href="qstring.html">QString</a> (for a local file) here.</p>
 <p>We show an example:</p>
-<pre>     QUrl url(&quot;http://www.example.com/music.ogg&quot;);
-     media-&gt;setCurrentSource(url);</pre>
+<pre> QUrl url(&quot;http://www.example.com/music.ogg&quot;);
+ media-&gt;setCurrentSource(url);</pre>
 <p>See also <a href="phonon-mediaobject.html#currentSource">currentSource</a>().</p>
 <a name="//apple_ref/cpp/instm/Phonon::MediaObject/setQueue" />
 <h3 class="fn"><a name="setQueue"></a>void MediaObject::setQueue ( const <a href="qlist.html">QList</a>&lt;<a href="phonon-mediasource.html">MediaSource</a>&gt; &amp; <i>sources</i> )</h3>
@@ -403,6 +404,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

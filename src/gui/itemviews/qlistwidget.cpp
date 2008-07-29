@@ -1493,7 +1493,7 @@ void QListWidget::sortItems(Qt::SortOrder order)
 }
 
 /*!
-    \since Qt 4.2
+    \since 4.2
     \property QListWidget::sortingEnabled
     \brief whether sorting is enabled
 

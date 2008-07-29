@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/echoplugin.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/echoplugin.qdoc -->
 <head>
   <title>Qt 4.4: Echo Plugin Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -126,7 +126,7 @@
 
      return false;
  }</pre>
-<p>Access to plugins at run-time is provided by <a href="qpluginloader.html">QPluginLoader</a>. You supply it with the filename of the shared library the plugin is stored in and call <a href="qpluginloader.html#instance">instance()</a>, which loads and returns the root component of the plugin (i.e&#x2e;, it resolves the type of the plugin and creates a <a href="qobject.html">QObject</a> instance of it). If the plugin was not successfully loaded, it will be null, so we return false. If it was loaded correctly, we can cast the plugin to our <tt>EchoInterface</tt> and return true. In the case that the plugin loaded does not implement the <tt>EchoInterface</tt>, <tt>instance()</tt> will return null, but this cannot happen in our example.</p>
+<p>Access to plugins at run-time is provided by <a href="qpluginloader.html">QPluginLoader</a>. You supply it with the filename of the shared library the plugin is stored in and call <a href="qpluginloader.html#instance">instance()</a>, which loads and returns the root component of the plugin (i.e&#x2e;, it resolves the type of the plugin and creates a <a href="qobject.html">QObject</a> instance of it). If the plugin was not successfully loaded, it will be null, so we return false. If it was loaded correctly, we can cast the plugin to our <tt>EchoInterface</tt> and return true. In the case that the plugin loaded does not implement the <tt>EchoInterface</tt>, <tt>instance()</tt> will return null, but this cannot happen in our example. Notice that the location of the plugin is not the same for all platforms.</p>
 <a name="echointerface-class-definition"></a>
 <h2>EchoInterface Class Definition</h2>
 <p>The <tt>EchoInterface</tt> defines the functions that the plugin will provide. An interface is a class that only consists of pure virtual functions. If non virtual functions were present in the class you would get misleading compile errors in the moc files.</p>
@@ -198,6 +198,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

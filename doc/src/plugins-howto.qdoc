@@ -349,6 +349,9 @@
     \row    \o \c qgif                      \o Image formats      \o GIF
     \row    \o \c qjpeg                     \o Image formats      \o JPEG
     \row    \o \c qmng                      \o Image formats      \o MNG
+    \row    \o \c qico                      \o Image formats      \o ICO
+    \row    \o \c qsvg                      \o Image formats      \o SVG
+    \row    \o \c qtiff                     \o Image formats      \o TIFF
     \row    \o \c qimsw_multi               \o Input methods (Qtopia) \o Input Method Switcher
     \row    \o \c qwstslibmousehandler      \o Mouse drivers (Qtopia) \o \c tslib mouse
     \row    \o \c qgfxtransformed           \o Graphic drivers (Qtopia) \o Transformed screen
@@ -393,6 +396,10 @@
     See the \l{tools/plugandpaint}{Plug & Paint} example and the
     associated \l{tools/plugandpaintplugins/basictools}{Basic Tools}
     plugin for details on how to do this.
+
+    \note If you are not using qmake to build your application you need
+    to make sure that the \c{QT_STATICPLUGIN} preprocessor macro is
+    defined.
 
     \sa QPluginLoader, QLibrary, {Plug & Paint Example}
 

@@ -48,8 +48,8 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
@@ -149,15 +149,15 @@ public:
     T_XOR = 76,
     T_XOR_EQ = 77,
 
-    ACCEPT_STATE = 200,
-    RULE_COUNT = 231,
-    STATE_COUNT = 406,
+    ACCEPT_STATE = 201,
+    RULE_COUNT = 232,
+    STATE_COUNT = 407,
     TERMINAL_COUNT = 83,
     NON_TERMINAL_COUNT = 86,
 
-    GOTO_INDEX_OFFSET = 406,
-    GOTO_INFO_OFFSET = 1106,
-    GOTO_CHECK_OFFSET = 1106,
+    GOTO_INDEX_OFFSET = 407,
+    GOTO_INFO_OFFSET = 1109,
+    GOTO_CHECK_OFFSET = 1109
   };
 
   static const char  *const spell [];

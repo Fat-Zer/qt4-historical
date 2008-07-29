@@ -1642,7 +1642,7 @@ void Q3ListViewItem::setExpandable(bool enable)
 void Q3ListViewItem::enforceSortOrder() const
 {
     Q3ListView *lv = listView();
-    if (!lv || lv && (lv->d->clearing || lv->d->sortcolumn == Unsorted))
+    if (!lv || (lv && (lv->d->clearing || lv->d->sortcolumn == Unsorted)))
         return;
     if (parentItem &&
          (parentItem->lsc != lsc || parentItem->lso != lso))
@@ -6280,7 +6280,7 @@ void Q3CheckListItem::activate()
 {
     Q3ListView * lv = listView();
 
-    if (lv && !lv->isEnabled() || !isEnabled())
+    if ((lv && !lv->isEnabled()) || !isEnabled())
         return;
 
     QPoint pos;
@@ -7055,7 +7055,7 @@ void Q3ListView::contentsDragMoveEvent(QDragMoveEvent *e)
     } else {
         d->autoopenTimer->stop();
     }
-    if (i && i->dropEnabled() && i->acceptDrop(e) || acceptDrops())
+    if ((i && i->dropEnabled() && i->acceptDrop(e)) || acceptDrops())
         e->accept();
     else
         e->ignore();
@@ -7733,7 +7733,7 @@ void Q3ListView::selectRange(Q3ListViewItem *from, Q3ListViewItem *to, bool inve
             }
         } else {
             bool sel = !i->selected;
-            if ((bool)i->selected != sel && sel && i->isSelectable() || !sel) {
+            if (((bool)i->selected != sel && sel && i->isSelectable()) || !sel) {
                 i->setSelected(sel);
                 changed = true;
             }

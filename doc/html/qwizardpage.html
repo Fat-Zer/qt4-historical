@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/dialogs/qwizard.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/dialogs/qwizard.cpp -->
 <head>
   <title>Qt 4.4: QWizardPage Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -189,7 +189,7 @@
 <h3 class="fn"><a name="isComplete"></a>bool QWizardPage::isComplete () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function is called by <a href="qwizard.html">QWizard</a> to determine whether the <b>Next</b> or <b>Finish</b> button should be enabled or disabled.</p>
 <p>The default implementation returns true if all <a href="qwizard.html#mandatory-fields">mandatory fields</a> are filled; otherwise, it returns false.</p>
-<p>If you reimplement this function, make sure to emit <a href="qwizardpage.html#completeChanged">completeChanged</a>() whenever the value of isComplete() changes, to ensure that <a href="qwizard.html">QWizard</a> updates the enabled or disabled state of its buttons.</p>
+<p>If you reimplement this function, make sure to emit <a href="qwizardpage.html#completeChanged">completeChanged</a>(), from the rest of your implementation, whenever the value of isComplete() changes. This ensures that <a href="qwizard.html">QWizard</a> updates the enabled or disabled state of its buttons. An example of the reimplementation is available <a href="http://doc.trolltech.com/qq/qq22-qwizard.html#validatebeforeitstoolate">here</a>.</p>
 <p>See also <a href="qwizardpage.html#completeChanged">completeChanged</a>() and <a href="qwizardpage.html#isFinalPage">isFinalPage</a>().</p>
 <a name="//apple_ref/cpp/instm/QWizardPage/isFinalPage" />
 <h3 class="fn"><a name="isFinalPage"></a>bool QWizardPage::isFinalPage () const</h3>
@@ -279,6 +279,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

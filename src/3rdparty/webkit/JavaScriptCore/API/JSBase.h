@@ -27,7 +27,9 @@
 #ifndef JSBase_h
 #define JSBase_h
 
+#ifndef __cplusplus
 #include <stdbool.h>
+#endif
 
 /* JavaScript engine interface */
 

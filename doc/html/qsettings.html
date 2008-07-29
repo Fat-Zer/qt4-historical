@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/io/qsettings.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qsettings.cpp -->
 <head>
   <title>Qt 4.4: QSettings Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -286,7 +286,8 @@
                             QSettings::NativeFormat);</pre>
 <a name="accessing-the-windows-registry-directly"></a>
 <h4>Accessing the Windows Registry Directly</h4>
-<p>On Windows, QSettings also lets you access arbitrary entries in the system registry. This is done by constructing a QSettings object with a path in the registry and <a href="qsettings.html#Format-enum">QSettings::NativeFormat</a>. For example:</p>
+<p>On Windows, QSettings lets you access settings that have been written with QSettings (or settings in a supported format, e.g&#x2e;, string data) in the system registry. This is done by constructing a QSettings object with a path in the registry and <a href="qsettings.html#Format-enum">QSettings::NativeFormat</a>.</p>
+<p>For example:</p>
 <pre>         QSettings settings(&quot;HKEY_CURRENT_USER\\Software\\Microsoft\\Office&quot;,
                             QSettings::NativeFormat);</pre>
 <p>All the registry entries that appear under the specified path can be read or written through the QSettings object as usual (using forward slashes instead of backslashes). For example:</p>
@@ -297,7 +298,7 @@
 <p>On windows, it is possible for a key to have both a value and subkeys. Its default value is accessed by using &quot;Default&quot; or &quot;.&quot; in place of a subkey:</p>
 <pre>         settings.setValue(&quot;HKEY_CURRENT_USER\\MySoft\\Star Runner\\Galaxy&quot;, &quot;Milkyway&quot;);
          settings.setValue(&quot;HKEY_CURRENT_USER\\MySoft\\Star Runner\\Galaxy\\Sun&quot;, &quot;OurStar&quot;);
-         settings.value(&quot;HKEY_CURRENT_USER\\MySoft\\Star Runner\\Galaxy\\Default&quot;); // returns &quot;Milkyway&quot;</pre>
+         settings.value(&quot;HKEY_CURRENT_USER\\MySoft\\Star Runner\\Galaxy\\Default&quot;); <span class="comment">// returns &quot;Milkyway&quot;</span></pre>
 <p>On other platforms than windows, &quot;Default&quot; and &quot;.&quot; would be treated as regular subkeys.</p>
 <a name="platform-limitations"></a>
 <h4>Platform Limitations</h4>
@@ -454,11 +455,11 @@
          settings.setValue(&quot;tv&quot;, false);
 
          QStringList keys = settings.allKeys();
-         // keys: [&quot;fridge/color&quot;, &quot;fridge/size&quot;, &quot;sofa&quot;, &quot;tv&quot;]</pre>
+         <span class="comment">// keys: [&quot;fridge/color&quot;, &quot;fridge/size&quot;, &quot;sofa&quot;, &quot;tv&quot;]</span></pre>
 <p>If a group is set using <a href="qsettings.html#beginGroup">beginGroup</a>(), only the keys in the group are returned, without the group prefix:</p>
 <pre>         settings.beginGroup(&quot;fridge&quot;);
          keys = settings.allKeys();
-         // keys: [&quot;color&quot;, &quot;size&quot;]</pre>
+         <span class="comment">// keys: [&quot;color&quot;, &quot;size&quot;]</span></pre>
 <p>See also <a href="qsettings.html#childGroups">childGroups</a>() and <a href="qsettings.html#childKeys">childKeys</a>().</p>
 <a name="//apple_ref/cpp/instm/QSettings/applicationName" />
 <h3 class="fn"><a name="applicationName"></a><a href="qstring.html">QString</a> QSettings::applicationName () const</h3>
@@ -552,11 +553,11 @@
          settings.setValue(&quot;tv&quot;, false);
 
          QStringList groups = settings.childGroups();
-         // group: [&quot;fridge&quot;]</pre>
+         <span class="comment">// group: [&quot;fridge&quot;]</span></pre>
 <p>If a group is set using <a href="qsettings.html#beginGroup">beginGroup</a>(), the first-level keys in that group are returned, without the group prefix.</p>
 <pre>         settings.beginGroup(&quot;fridge&quot;);
          groups = settings.childGroups();
-         // groups: []</pre>
+         <span class="comment">// groups: []</span></pre>
 <p>You can navigate through the entire setting hierarchy using <a href="qsettings.html#childKeys">childKeys</a>() and childGroups() recursively.</p>
 <p>See also <a href="qsettings.html#childKeys">childKeys</a>() and <a href="qsettings.html#allKeys">allKeys</a>().</p>
 <a name="//apple_ref/cpp/instm/QSettings/childKeys" />
@@ -570,11 +571,11 @@
          settings.setValue(&quot;tv&quot;, false);
 
          QStringList keys = settings.childKeys();
-         // keys: [&quot;sofa&quot;, &quot;tv&quot;]</pre>
+         <span class="comment">// keys: [&quot;sofa&quot;, &quot;tv&quot;]</span></pre>
 <p>If a group is set using <a href="qsettings.html#beginGroup">beginGroup</a>(), the top-level keys in that group are returned, without the group prefix:</p>
 <pre>         settings.beginGroup(&quot;fridge&quot;);
          keys = settings.childKeys();
-         // keys: [&quot;color&quot;, &quot;size&quot;]</pre>
+         <span class="comment">// keys: [&quot;color&quot;, &quot;size&quot;]</span></pre>
 <p>You can navigate through the entire setting hierarchy using childKeys() and <a href="qsettings.html#childGroups">childGroups</a>() recursively.</p>
 <p>See also <a href="qsettings.html#childGroups">childGroups</a>() and <a href="qsettings.html#allKeys">allKeys</a>().</p>
 <a name="//apple_ref/cpp/instm/QSettings/clear" />
@@ -602,16 +603,16 @@
 <p>Resets the group to what it was before the corresponding <a href="qsettings.html#beginGroup">beginGroup</a>() call.</p>
 <p>Example:</p>
 <pre>         settings.beginGroup(&quot;alpha&quot;);
-         // settings.group() == &quot;alpha&quot;
+         <span class="comment">// settings.group() == &quot;alpha&quot;</span>
 
          settings.beginGroup(&quot;beta&quot;);
-         // settings.group() == &quot;alpha/beta&quot;
+         <span class="comment">// settings.group() == &quot;alpha/beta&quot;</span>
 
          settings.endGroup();
-         // settings.group() == &quot;alpha&quot;
+         <span class="comment">// settings.group() == &quot;alpha&quot;</span>
 
          settings.endGroup();
-         // settings.group() == &quot;&quot;</pre>
+         <span class="comment">// settings.group() == &quot;&quot;</span></pre>
 <p>See also <a href="qsettings.html#beginGroup">beginGroup</a>() and <a href="qsettings.html#group">group</a>().</p>
 <a name="//apple_ref/cpp/instm/QSettings/fallbacksEnabled" />
 <h3 class="fn"><a name="fallbacksEnabled"></a>bool QSettings::fallbacksEnabled () const</h3>
@@ -679,7 +680,7 @@
 
          settings.remove(&quot;monkey&quot;);
          QStringList keys = settings.allKeys();
-         // keys: [&quot;ape&quot;]</pre>
+         <span class="comment">// keys: [&quot;ape&quot;]</span></pre>
 <p>Be aware that if one of the fallback locations contains a setting with the same key, that setting will be visible after calling remove().</p>
 <p>If <i>key</i> is an empty string, all keys in the current <a href="qsettings.html#group">group</a>() are removed. For example:</p>
 <pre>         QSettings settings;
@@ -693,7 +694,7 @@
          settings.endGroup();
 
          QStringList keys = settings.allKeys();
-         // keys: [&quot;ape&quot;]</pre>
+         <span class="comment">// keys: [&quot;ape&quot;]</span></pre>
 <p>See also <a href="qsettings.html#setValue">setValue</a>(), <a href="qsettings.html#value">value</a>(), and <a href="qsettings.html#contains">contains</a>().</p>
 <a name="//apple_ref/cpp/instm/QSettings/scope" />
 <h3 class="fn"><a name="scope"></a><a href="qsettings.html#Scope-enum">Scope</a> QSettings::scope () const</h3>
@@ -742,10 +743,10 @@
 <p>Example:</p>
 <pre>         QSettings settings;
          settings.setValue(&quot;interval&quot;, 30);
-         settings.value(&quot;interval&quot;).toInt();     // returns 30
+         settings.value(&quot;interval&quot;).toInt();     <span class="comment">// returns 30</span>
 
          settings.setValue(&quot;interval&quot;, 6.55);
-         settings.value(&quot;interval&quot;).toDouble();  // returns 6.55</pre>
+         settings.value(&quot;interval&quot;).toDouble();  <span class="comment">// returns 6.55</span></pre>
 <p>See also <a href="qsettings.html#value">value</a>(), <a href="qsettings.html#remove">remove</a>(), and <a href="qsettings.html#contains">contains</a>().</p>
 <a name="//apple_ref/cpp/instm/QSettings/status" />
 <h3 class="fn"><a name="status"></a><a href="qsettings.html#Status-enum">Status</a> QSettings::status () const</h3>
@@ -764,14 +765,14 @@
 <p>Example:</p>
 <pre>         QSettings settings;
          settings.setValue(&quot;animal/snake&quot;, 58);
-         settings.value(&quot;animal/snake&quot;, 1024).toInt();   // returns 58
-         settings.value(&quot;animal/zebra&quot;, 1024).toInt();   // returns 1024
-         settings.value(&quot;animal/zebra&quot;).toInt();         // returns 0</pre>
+         settings.value(&quot;animal/snake&quot;, 1024).toInt();   <span class="comment">// returns 58</span>
+         settings.value(&quot;animal/zebra&quot;, 1024).toInt();   <span class="comment">// returns 1024</span>
+         settings.value(&quot;animal/zebra&quot;).toInt();         <span class="comment">// returns 0</span></pre>
 <p>See also <a href="qsettings.html#setValue">setValue</a>(), <a href="qsettings.html#contains">contains</a>(), and <a href="qsettings.html#remove">remove</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

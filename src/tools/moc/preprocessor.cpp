@@ -232,6 +232,11 @@ static Symbols tokenize(const QByteArray &input, int lineNum = 1, TokenizeMode m
                         ++data;
                     token = CHARACTER_LITERAL;
                     break;
+                case LANGLE_SCOPE:
+                    // split <:: into two tokens, < and ::
+                    token = LANGLE;
+                    data -= 2;
+                    break;
                 case DIGIT:
                     while (is_digit_char(*data))
                         ++data;
@@ -787,6 +792,12 @@ void Preprocessor::preprocess(const QByteArray &filename, Symbols &preprocessed)
                     fi.setFile(QString::fromLocal8Bit(p.path + "/" + frameworkCandidate), QString::fromLocal8Bit(include.mid(slashPos + 1)));
                 } else {
                     fi.setFile(QString::fromLocal8Bit(p.path), QString::fromLocal8Bit(include));
+                }
+                // try again, maybe there's a file later in the include paths with the same name
+                // (186067)
+                if (fi.isDir()) {
+                    fi = QFileInfo();
+                    continue;
                 }
             }
 

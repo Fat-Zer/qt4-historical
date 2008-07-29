@@ -93,8 +93,8 @@
  GLWidget::GLWidget(QWidget *parent)
    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
  {
-     <span class="comment">//</span> create the framebuffer object - make sure to have a current
-     <span class="comment">//</span> context before creating it
+     <span class="comment">// create the framebuffer object - make sure to have a current</span>
+     <span class="comment">// context before creating it</span>
      makeCurrent();
      fbo = new QGLFramebufferObject(512, 512);
      timerId = startTimer(20);
@@ -130,7 +130,7 @@
      {
          glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-         <span class="comment">//</span> draw cube background
+         <span class="comment">// draw cube background</span>
          glPushMatrix();
          glLoadIdentity();
          glTranslatef(0.5f, 0.5f, -2.0f);
@@ -143,14 +143,14 @@
          glEnable(GL_TEXTURE_2D);
          glPopMatrix();
 
-         <span class="comment">//</span> draw cube
+         <span class="comment">// draw cube</span>
          glTranslatef(0.5f, 0.5f, 0.5f);
          glRotatef(3.0f, 1.0f, 1.0f, 1.0f);
          glTranslatef(-0.5f, -0.5f, -0.5f);
          glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
          glDrawArrays(GL_QUADS, 0, 24);
 
-         glPushMatrix(); <span class="comment">//</span> this state is popped back in the paintGL() function
+         glPushMatrix(); <span class="comment">// this state is popped back in the paintGL() function</span>
      }
      glEndList();
 
@@ -165,7 +165,7 @@
 
      cubeTexture = bindTexture(QImage(&quot;:res/cubelogo.png&quot;));
 
-     glPushMatrix(); <span class="comment">//</span> push to avoid stack underflow in the first paintGL() call
+     glPushMatrix(); <span class="comment">// push to avoid stack underflow in the first paintGL() call</span>
  }
 
  void GLWidget::resizeGL(int w, int h)
@@ -181,10 +181,10 @@
 
  void GLWidget::paintGL()
  {
-     glPopMatrix(); <span class="comment">//</span> pop the matrix pushed in the pbuffer list
+     glPopMatrix(); <span class="comment">// pop the matrix pushed in the pbuffer list</span>
 
-     <span class="comment">//</span> push the projection matrix and the entire GL state before
-     <span class="comment">//</span> doing any rendering into our framebuffer object
+     <span class="comment">// push the projection matrix and the entire GL state before</span>
+     <span class="comment">// doing any rendering into our framebuffer object</span>
      glPushAttrib(GL_ALL_ATTRIB_BITS);
      glMatrixMode(GL_PROJECTION);
      glPushMatrix();
@@ -196,14 +196,14 @@
      glTranslatef(-0.5f, -0.5f, 0.0f);
      glMatrixMode(GL_MODELVIEW);
 
-     <span class="comment">//</span> render to the framebuffer object
+     <span class="comment">// render to the framebuffer object</span>
      fbo-&gt;bind();
      glBindTexture(GL_TEXTURE_2D, cubeTexture);
      glCallList(pbufferList);
      fbo-&gt;release();
 
-     <span class="comment">//</span> pop the projection matrix and GL state back for rendering
-     <span class="comment">//</span> to the actual widget
+     <span class="comment">// pop the projection matrix and GL state back for rendering</span>
+     <span class="comment">// to the actual widget</span>
      glPopAttrib();
      glMatrixMode(GL_PROJECTION);
      glPopMatrix();
@@ -211,7 +211,7 @@
      glBindTexture(GL_TEXTURE_2D, fbo-&gt;texture());
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-     <span class="comment">//</span> draw the background
+     <span class="comment">// draw the background</span>
      glMatrixMode(GL_MODELVIEW);
      glPushMatrix();
      glLoadIdentity();
@@ -235,7 +235,7 @@
      glPopMatrix();
      glMatrixMode(GL_MODELVIEW);
 
-     <span class="comment">//</span> draw the bouncing cubes
+     <span class="comment">// draw the bouncing cubes</span>
      drawCube(0, 0.0f, 1.5f, 2.5f, 1.5f);
      drawCube(1, 1.0f, 2.0f, 2.5f, 2.0f);
      drawCube(2, 2.0f, 3.5f, 2.5f, 2.5f);
@@ -268,6 +268,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

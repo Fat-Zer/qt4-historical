@@ -49,6 +49,8 @@
 #include <qdir.h>
 #include <qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -57,8 +59,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-QT_BEGIN_NAMESPACE
 
 #ifndef QT_NO_SHAREDMEMORY
 
@@ -209,13 +209,6 @@ bool QSharedMemoryPrivate::create(int size)
             QFile::remove(makePlatformSafeKey(key));
         return false;
     }
-
-#ifndef QT_NO_SYSTEMSEMAPHORE
-    // Take ownership and force set initialValue because the semaphore
-    // might have already existed from a previous crash.
-    systemSemaphore.setKey(key, 1, QSystemSemaphore::Create);
-    systemSemaphore.acquire();
-#endif
 
     return true;
 }

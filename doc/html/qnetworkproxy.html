@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/kernel/qnetworkproxy.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/kernel/qnetworkproxy.cpp -->
 <head>
   <title>Qt 4.4: QNetworkProxy Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -99,8 +99,14 @@
 <tr><td valign="top"><tt>QNetworkProxy::HttpCachingProxy</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Proxying for HTTP requests only</td></tr>
 <tr><td valign="top"><tt>QNetworkProxy::FtpCachingProxy</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Proxying for FTP requests only</td></tr>
 </table></p>
-<p>While Socks5 proxying works for both Tcp and Udp sockets, Http proxying is limited to Tcp connections. Http proxying also doesn't support binding sockets.</p>
-<p>An HTTP caching proxy only makes sense in the context of an HTTP request, such as those made by <a href="qhttp.html">QHttp</a>. The FTP caching proxy, similarly, only makes sense for FTP requests, such as with <a href="qftp.html">QFtp</a>.</p>
+<p>The table below lists different proxy types and their capabilities. Since each proxy type has different capabilities, it is important to understand them before choosing a proxy type.</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<thead><tr valign="top" class="qt-style"><th>Proxy type</th><th>Capabilities</th></tr></thead>
+<tr valign="top" class="odd"><td>SOCKS 5</td><td>Supports TCP, UDP, binding to a port (incoming connections) and authentication.</td></tr>
+<tr valign="top" class="even"><td>Transparent HTTP</td><td>Implemented using the &quot;CONNECT&quot; command, supports only outgoing TCP connections; supports authentication.</td></tr>
+<tr valign="top" class="odd"><td>Caching HTTP</td><td>Implemented using normal HTTP commands, it is useful only in the context of HTTP requests (see <a href="qhttp.html">QHttp</a>, <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a>). The application's default proxy should not be set to the type HttpCachingProxy, since normal, outgoing TCP connections will fail, including those necessary to send the HTTP request in the first place.</td></tr>
+<tr valign="top" class="even"><td>Caching FTP</td><td>Implemented using an FTP proxy, it is useful only in the context of FTP requests (see <a href="qftp.html">QFtp</a>, <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a>). The application's default proxy should not be set to the type FtpCachingProxy since normal, outgoing TCP connections will fail, including those necessary to send the FTP request.</td></tr>
+</table></p>
 <p>See also <a href="qnetworkproxy.html#setType">setType</a>(), <a href="qnetworkproxy.html#type">type</a>(), <a href="qnetworkproxy.html#isCachingProxy">isCachingProxy</a>(), and <a href="qnetworkproxy.html#isTransparentProxy">isTransparentProxy</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -127,10 +133,12 @@
 <a name="//apple_ref/cpp/instm/QNetworkProxy/isCachingProxy" />
 <h3 class="fn"><a name="isCachingProxy"></a>bool QNetworkProxy::isCachingProxy () const</h3>
 <p>Returns true if this proxy type is a caching proxy. Caching proxies only make sense in specific contexts, since they cannot handle arbitrary data transfers.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qnetworkproxy.html#type">type</a>(), <a href="qnetworkproxy.html#isTransparentProxy">isTransparentProxy</a>(), and <a href="qnetworkproxy.html#ProxyType-enum">QNetworkProxy::ProxyType</a>.</p>
 <a name="//apple_ref/cpp/instm/QNetworkProxy/isTransparentProxy" />
 <h3 class="fn"><a name="isTransparentProxy"></a>bool QNetworkProxy::isTransparentProxy () const</h3>
 <p>Returns true if this proxy type is a transparent proxy. Transparent proxies can handle arbitrary data transfers and can be set on <a href="qtcpsocket.html">QTcpSocket</a> or even as the application's default proxy.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qnetworkproxy.html#type">type</a>(), <a href="qnetworkproxy.html#isCachingProxy">isCachingProxy</a>(), and <a href="qnetworkproxy.html#ProxyType-enum">QNetworkProxy::ProxyType</a>.</p>
 <a name="//apple_ref/cpp/instm/QNetworkProxy/password" />
 <h3 class="fn"><a name="password"></a><a href="qstring.html">QString</a> QNetworkProxy::password () const</h3>
@@ -189,6 +197,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

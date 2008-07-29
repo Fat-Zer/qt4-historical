@@ -147,7 +147,7 @@ void MessageHighlighter::highlightBlock(const QString &text)
                 } else if (ch == percent) {
                     start = pos;
                     // %[1-9]*
-                    for (++pos; pos < len && text.at(pos).isDigit(); ++pos);
+                    for (++pos; pos < len && text.at(pos).isDigit(); ++pos) {}
                     // %n
                     if (pos < len && pos == start + 1 && text.at(pos) == QLatin1Char('n'))
                         ++pos;

@@ -505,10 +505,10 @@ bool QHttpNetworkReplyPrivate::gzipCheckHeader(QByteArray &content, int &pos)
             return ret;
     }
     if ((flags & ORIG_NAME) != 0) { // skip the original file name
-        while(++pos <= maxPos && body[pos]);
+        while(++pos <= maxPos && body[pos]) {}
     }
     if ((flags & COMMENT) != 0) {   // skip the .gz file comment
-        while(++pos <= maxPos && body[pos]);
+        while(++pos <= maxPos && body[pos]) {}
     }
     if ((flags & HEAD_CRC) != 0) {  // skip the header crc
         pos += 2;
@@ -633,8 +633,8 @@ qint64 QHttpNetworkReplyPrivate::readHeader(QAbstractSocket *socket)
     while (!allHeaders && socket->bytesAvailable()) {
         if (socket->peek(&c, 1) == 1 && c == '\n') {
             // check for possible header endings. As per HTTP rfc, 
-            // the header endings will be marked by CFLFCRLF. But 
-            // we will allow CFLFLF, LFLF & CRLFLF
+            // the header endings will be marked by CRLFCRLF. But 
+            // we will allow CRLFLF, LFLF & CRLFCRLF
             if (fragment.endsWith("\n\r") || fragment.endsWith('\n')) 
                 allHeaders = true;
         }
@@ -1404,6 +1404,10 @@ void QHttpNetworkConnectionPrivate::receiveReply(QAbstractSocket *socket, QHttpN
                     reply->d_func()->removeAutoDecompressHeader();
                 } else {
                     reply->d_func()->autoDecompress = false;
+                }
+                if (reply && reply->d_func()->statusCode == 100) {
+                    reply->d_func()->state = QHttpNetworkReplyPrivate::ReadingStatusState;
+                    break; // ignore
                 }
                 if (emitSignals(reply))
                     emit reply->headerChanged();

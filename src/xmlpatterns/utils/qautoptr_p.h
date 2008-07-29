@@ -116,7 +116,7 @@ namespace QPatternist
 
         AutoPtr& operator=(AutoPtrRef<T> ref)
         {
-            if(ref.m_ptr != this->get())
+            if(ref.m_ptr != m_ptr)
             {
                 delete m_ptr;
                 m_ptr = ref.m_ptr;

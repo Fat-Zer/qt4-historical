@@ -61,7 +61,7 @@ q_atomic_test_and_set_release_int:
 	.long .q_atomic_test_and_set_release_int,TOC[tc0],0
 	.csect .text[PR]
 .q_atomic_test_and_set_release_int:
-        lwsync
+        eieio
 	lwarx  6,0,3
         xor.   6,6,4
         bne    $+12
@@ -138,7 +138,7 @@ q_atomic_test_and_set_release_ptr:
 	.long .q_atomic_test_and_set_release_ptr,TOC[tc0],0
 	.csect .text[PR]
 .q_atomic_test_and_set_release_ptr:
-        lwsync
+        eieio
 	lwarx  6,0,3
         xor.   6,6,4
         bne    $+12
@@ -255,7 +255,7 @@ q_atomic_fetch_and_store_release_int:
 	.long .q_atomic_fetch_and_store_release_int,TOC[tc0],0
 	.csect .text[PR]
 .q_atomic_fetch_and_store_release_int:
-        lwsync
+        eieio
 	lwarx  5,0,3
 	stwcx. 4,0,3
 	bne-   $-8
@@ -323,7 +323,7 @@ q_atomic_fetch_and_store_release_ptr:
 	.long .q_atomic_fetch_and_store_release_ptr,TOC[tc0],0
 	.csect .text[PR]
 .q_atomic_fetch_and_store_release_ptr:
-        lwsync
+        eieio
 	lwarx  5,0,3
 	stwcx. 4,0,3
 	bne-   $-8
@@ -393,7 +393,7 @@ q_atomic_fetch_and_add_release_int:
 	.long .q_atomic_fetch_and_add_release_int,TOC[tc0],0
 	.csect .text[PR]
 .q_atomic_fetch_and_add_release_int:
-        lwsync
+        eieio
 	lwarx  5,0,3
 	add    6,4,5
 	stwcx. 6,0,3
@@ -464,7 +464,7 @@ q_atomic_fetch_and_add_release_ptr:
 	.long .q_atomic_fetch_and_add_release_ptr,TOC[tc0],0
 	.csect .text[PR]
 .q_atomic_fetch_and_add_release_ptr:
-        lwsync
+        eieio
 	lwarx  5,0,3
 	add    6,4,5
 	stwcx. 6,0,3

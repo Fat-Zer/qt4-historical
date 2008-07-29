@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/dialogs/qpagesetupdialog_unix.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/dialogs/qpagesetupdialog_unix.cpp -->
 <head>
   <title>Qt 4.4: QPageSetupDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -81,6 +81,7 @@
 <tr><td valign="top"><tt>QPageSetupDialog::None</tt></td><td align="center" valign="top"><tt>0x0000</tt></td><td valign="top">None of the options are enabled.</td></tr>
 <tr><td valign="top"><tt>QPageSetupDialog::DontUseSheet</tt></td><td align="center" valign="top"><tt>0x0001</tt></td><td valign="top">Do not make the native print dialog a sheet. By default on Mac OS X, the native dialog is made a sheet if it has a parent that can accept sheets and is visible. Internally, Mac OS X tracks whether a printing &lt;em&gt;session&lt;/em&gt; and not which particular dialog should have a sheet or not. Therefore, make sure this value matches between the page setup dialog and the print dialog or you can potentially end up in a modal loop that you can't break.</td></tr>
 </table></p>
+<p>This enum was introduced in Qt 4.4.</p>
 <p>The PageSetupDialogOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;PageSetupDialogOption&gt;. It stores an OR combination of PageSetupDialogOption values.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -90,24 +91,28 @@
 <a name="//apple_ref/cpp/instm/QPageSetupDialog/addEnabledOption" />
 <h3 class="fn"><a name="addEnabledOption"></a>void QPageSetupDialog::addEnabledOption ( <a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOption</a> <i>option</i> )</h3>
 <p>Adds the option <i>option</i> to the set of enabled options in this dialog.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QPageSetupDialog/enabledOptions" />
 <h3 class="fn"><a name="enabledOptions"></a><a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOptions</a> QPageSetupDialog::enabledOptions () const</h3>
 <p>Returns the set of enabled options in this dialog.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qpagesetupdialog.html#setEnabledOptions">setEnabledOptions</a>().</p>
 <a name="//apple_ref/cpp/instm/QPageSetupDialog/isOptionEnabled" />
 <h3 class="fn"><a name="isOptionEnabled"></a>bool QPageSetupDialog::isOptionEnabled ( <a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOption</a> <i>option</i> ) const</h3>
 <p>Returns true if the specified <i>option</i> is enabled; otherwise returns false</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QPageSetupDialog/printer" />
 <h3 class="fn"><a name="printer"></a><a href="qprinter.html">QPrinter</a> * QPageSetupDialog::printer ()</h3>
 <p>Returns the printer that was passed to the <a href="qpagesetupdialog.html">QPageSetupDialog</a> constructor.</p>
 <a name="//apple_ref/cpp/instm/QPageSetupDialog/setEnabledOptions" />
 <h3 class="fn"><a name="setEnabledOptions"></a>void QPageSetupDialog::setEnabledOptions ( <a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOptions</a> <i>options</i> )</h3>
 <p>Sets the set of options that should be enabled for the page setup dialog to <i>options</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qpagesetupdialog.html#enabledOptions">enabledOptions</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/porting4-canvas.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/porting4-canvas.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Graphics View</title>
   <link rel="prev" href="porting4-designer.html" />
@@ -72,7 +72,7 @@
 <tr valign="top" class="odd"><td><a href="q3canvas.html#chunkSize">Q3Canvas::chunkSize</a>()</td><td>The closest equivalent to the chunks size in <a href="q3canvas.html">Q3Canvas</a> is the depth of <a href="qgraphicsscene.html">QGraphicsScene</a>'s BSP tree. <a href="qgraphicsscene.html">QGraphicsScene</a> assigns a depth automatically, and the size of each scene segment depends on this depth, and <a href="qgraphicsscene.html#sceneRect-prop">QGraphicsScene::sceneRect</a>(). See <a href="qgraphicsscene.html#itemIndexMethod-prop">QGraphicsScene::itemIndexMethod</a>.</td></tr>
 <tr valign="top" class="even"><td><a href="q3canvas.html#collisions">Q3Canvas::collisions</a>()</td><td><a href="qgraphicsscene.html">QGraphicsScene</a> provides several means to detect item collisions. The <a href="qgraphicsscene.html#items">QGraphicsScene::items</a>() overloads return items that collide with a point, a rectangle, a polygon, or an arbitrary vector path (<a href="qpainterpath.html">QPainterPath</a>). You can also call <a href="qgraphicsscene.html#collidingItems">QGraphicsScene::collidingItems</a>() to determine collision with an item.</td></tr>
 <tr valign="top" class="odd"><td><a href="q3canvas.html#drawArea">Q3Canvas::drawArea</a>()</td><td>The <a href="qgraphicsscene.html#render">QGraphicsScene::render</a>() function provides the original behavior <a href="q3canvas.html#drawArea">Q3Canvas::drawArea</a>(). In addition, you can pass a source rectangle for rendering only parts of the scene, and a destination rectangle for rendering onto designated area of the destination device. <a href="qgraphicsscene.html#render">QGraphicsScene::render</a>() can optionally transform the source rectangle to fit into the destination rectangle. See <a href="graphicsview.html#printing">Printing</a></td></tr>
-<tr valign="top" class="even"><td><a href="q3canvas.html#onCanvas">Q3Canvas::onCanvas</a>()</td><td>The is no equivalent to this function in Graphics View. However, you can combine <a href="qgraphicsscene.html#sceneRect-prop">QGraphicsScene::sceneRect</a>() and <a href="qrectf.html#intersects">QRectF::intersects</a>():<pre>         item-&gt;scene().sceneRect().intersects(item-&gt;sceneBoundingRect());</pre>
+<tr valign="top" class="even"><td><a href="q3canvas.html#onCanvas">Q3Canvas::onCanvas</a>()</td><td>The is no equivalent to this function in Graphics View. However, you can combine <a href="qgraphicsscene.html#sceneRect-prop">QGraphicsScene::sceneRect</a>() and <a href="qrectf.html#intersects">QRectF::intersects</a>():<pre> item-&gt;scene().sceneRect().intersects(item-&gt;sceneBoundingRect());</pre>
 </td></tr>
 <tr valign="top" class="odd"><td><a href="q3canvas.html#rect">Q3Canvas::rect</a>()</td><td>The equivalent, <a href="qgraphicsscene.html#sceneRect-prop">QGraphicsScene::sceneRect</a>(), returns a <a href="qrectf.html">QRectF</a> (double precision coordinates). Its top-left corner can be an arbitrary coordinate (<a href="q3canvas.html#rect">Q3Canvas::rect</a>().topLeft() is always (0, 0)).</td></tr>
 <tr valign="top" class="even"><td><a href="q3canvas.html#resize">Q3Canvas::resize</a>()</td><td>You can call QGraphicsScene::setSceneRect(0, 0, width, height) instead.</td></tr>
@@ -100,70 +100,70 @@
 <tr valign="top" class="even"><td>4</td><td>5</td><td>6</td><td>7</td></tr>
 </table></p>
 <p>With Graphics View, this pixmap can be stored as a member of a subclass of <a href="qgraphicsscene.html">QGraphicsScene</a>. The three main functions that make out the public tile API can then be declared as new members of this class. Here is one example of how to implement tile support:</p>
-<pre>             class TileScene : public QGraphicsScene
-             {
-             public:
-                 ...
+<pre> class TileScene : public QGraphicsScene
+ {
+ public:
+     ...
 
-                 void setTiles(const QPixmap &amp;pixmap, int h, int v,
-                               int tileHeight, int tileWidth);
-                 void setTile(int x, int y, int tilenum);
+     void setTiles(const QPixmap &amp;pixmap, int h, int v,
+                   int tileHeight, int tileWidth);
+     void setTile(int x, int y, int tilenum);
 
-             private:
-                 QRect tileRect(int x, int y) const;
-                 QRect tileRect(int tileNum) const;
+ private:
+     QRect tileRect(int x, int y) const;
+     QRect tileRect(int tileNum) const;
 
-                 QVector&lt;QVector&lt;int&gt; &gt; tiles;
-                 QPixmap tilePixmap;
-                 int tileW, tileH;
-                 int hTiles, vTiles;
-             };</pre>
+     QVector&lt;QVector&lt;int&gt; &gt; tiles;
+     QPixmap tilePixmap;
+     int tileW, tileH;
+     int hTiles, vTiles;
+ };</pre>
 <p>Depending on how your scene uses tiles, you may be able to simplify this approach. In this example, we will try to mimic the behavior of the <a href="q3canvas.html">Q3Canvas</a> functions.</p>
 <p>We start by creating a subclass of <a href="qgraphicsscene.html">QGraphicsScene</a> (&quot;TileScene&quot;). In this class, we declare two of the tile functions from <a href="q3canvas.html">Q3Canvas</a>, and we then add two helper function that returns the rectangle for a certain tile in our tile pixmap. We will use a two-dimensional vector of ints to keep track of what tiles should be used at what parts of the scene.</p>
-<pre>             void TileScene::setTiles(const QPixmap &amp;pixmap, int h, int v,
-                                      int tileHeight, int tileWidth)
-             {
-                 tilePixmap = pixmap;
-                 tileW = tileWidth;
-                 tileH = tileHeight;
-                 hTiles = h;
-                 vTiles = v;
+<pre> void TileScene::setTiles(const QPixmap &amp;pixmap, int h, int v,
+                          int tileHeight, int tileWidth)
+ {
+     tilePixmap = pixmap;
+     tileW = tileWidth;
+     tileH = tileHeight;
+     hTiles = h;
+     vTiles = v;
 
-                 tiles.resize(v);
-                 for (int y = 0; y &lt; v; ++y)
-                     tiles[y].resize(h);
-             }</pre>
+     tiles.resize(v);
+     for (int y = 0; y &lt; v; ++y)
+         tiles[y].resize(h);
+ }</pre>
 <p>In setTiles(), we store the pixmap and tile properties as members of the class. Then we resize the tiles vector to match the width and height of our tile grid.</p>
-<pre>             void TileScene::setTile(int x, int y, int tilenum)
-             {
-                 tiles[y][x] = tilenum;
-                 update(tileRect(x, y));
-             }</pre>
+<pre> void TileScene::setTile(int x, int y, int tilenum)
+ {
+     tiles[y][x] = tilenum;
+     update(tileRect(x, y));
+ }</pre>
 <p>The setTile() function updates the tiles index, and then updates the corresponding rect in the scene by calling tileRect().</p>
-<pre>             QRect TileScene::tileRect(int x, int y) const
-             {
-                 return QRect(x * tileW, y * tileH, tileW, tileH);
-             }</pre>
+<pre> QRect TileScene::tileRect(int x, int y) const
+ {
+     return QRect(x * tileW, y * tileH, tileW, tileH);
+ }</pre>
 <p>The first tileRect() function returns a <a href="qrect.html">QRect</a> for the tile at position (x, y).</p>
-<pre>             QRect TileScene::tileRect(int tileNum) const
-             {
-                 int numHTiles = tilePixmap.width() / tileW;
-                 int numVTiles = tilePixmap.height() / tileH;
-                 return tileRect(tileNum % numHTiles, tileNum / numHTiles);
-             }</pre>
+<pre> QRect TileScene::tileRect(int tileNum) const
+ {
+     int numHTiles = tilePixmap.width() / tileW;
+     int numVTiles = tilePixmap.height() / tileH;
+     return tileRect(tileNum % numHTiles, tileNum / numHTiles);
+ }</pre>
 <p>The second tileRect() function returns a <a href="qrect.html">QRect</a> for a tile number. With these functions in place, we can implement the drawBackground() function.</p>
-<pre>             void drawBackground(QPainter *painter, const QRectF &amp;exposed)
-             {
-                 for (int y = 0; y &lt; vTiles; ++y) {
-                     for (int x = 0; x &lt; hTiles; ++x) {
-                         QRect destRect = tileRect(x, y);
-                         if (exposed.intersects(destRect)) {
-                             painter-&gt;drawPixmap(destRect, tilePixmap,
-                                                 tileRect(tiles[y][x]));
-                         }
-                     }
-                 }
-             }</pre>
+<pre> void drawBackground(QPainter *painter, const QRectF &amp;exposed)
+ {
+     for (int y = 0; y &lt; vTiles; ++y) {
+         for (int x = 0; x &lt; hTiles; ++x) {
+             QRect destRect = tileRect(x, y);
+             if (exposed.intersects(destRect)) {
+                 painter-&gt;drawPixmap(destRect, tilePixmap,
+                                     tileRect(tiles[y][x]));
+             }
+         }
+     }
+ }</pre>
 <p>In drawBackground(), we redraw all tiles that have been exposed by intersecting each tile rect with the exposed background area.</p>
 <a name="porting-from-q3canvasview"></a>
 <h3>Porting from Q3CanvasView</h3>
@@ -234,11 +234,11 @@
 <h4>Q3CanvasEllipse</h4>
 <p>The closest equivalent to <a href="q3canvasellipse.html">Q3CanvasEllipse</a> in Graphics View is called <a href="qgraphicsellipseitem.html">QGraphicsEllipseItem</a>. The most noticable difference to <a href="qgraphicsellipseitem.html">QGraphicsEllipseItem</a> is that the ellipse is not longer drawn centered around its position; rather, it is drawn using a bounding <a href="qrectf.html">QRectF</a>, just like <a href="qpainter.html#drawEllipse">QPainter::drawEllipse</a>().</p>
 <p>For compatibility, you may want to shift the ellipse up and to the left to keep the ellipse centered. Example:</p>
-<pre>                 // Before
-                 Q3CanvasEllipse ellipse(10, 10);
+<pre>     // Before
+     Q3CanvasEllipse ellipse(10, 10);
 
-                 // After
-                 QGraphicsEllipseItem ellipse(-5, -5, 10, 10);</pre>
+     // After
+     QGraphicsEllipseItem ellipse(-5, -5, 10, 10);</pre>
 <p>Note: <a href="qgraphicsellipseitem.html">QGraphicsEllipseItem</a> uses <a href="qabstractgraphicsshapeitem.html#pen">QAbstractGraphicsShapeItem::pen</a>() for outlines, whereas <a href="q3canvasellipse.html">Q3CanvasEllipse</a> did not use <a href="q3canvaspolygonalitem.html#pen">Q3CanvasPolygonalItem::pen</a>().</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th><a href="q3canvasellipse.html">Q3CanvasEllipse</a></th><th><a href="qgraphicsellipseitem.html">QGraphicsEllipseItem</a></th></tr></thead>
@@ -269,14 +269,14 @@
 <h4>Q3CanvasSpline</h4>
 <p>The closest equivalent to <a href="q3canvasspline.html">Q3CanvasSpline</a> in Graphics View is called <a href="qgraphicspathitem.html">QGraphicsPathItem</a>. This item can be used to describe any type of path supported by <a href="qpainter.html">QPainter</a>.</p>
 <p><a href="q3canvasspline.html">Q3CanvasSpline</a> takes its control points as a <a href="q3pointarray.html">Q3PointArray</a>, but <a href="qpainterpath.html">QPainterPath</a> operates on a sequence of calls to <a href="qpainterpath.html#moveTo">QPainterPath::moveTo</a>() and <a href="qpainterpath.html#cubicTo">QPainterPath::cubicTo</a>(). Here is how you can convert a bezier curve <a href="q3pointarray.html">Q3PointArray</a> to a <a href="qpainterpath.html">QPainterPath</a>:</p>
-<pre>             static QPainterPath fromControlPoints(const Q3PointArray &amp;pa)
-             {
-                 QPainterPath path;
-                 path.moveTo(pa[0]);
-                 for (int i = 1; i &lt; pa.size(); i += 3)
-                     path.cubicTo(pa[i], pa[(i + 1) % pa.size()], pa[(i + 2) % pa.size()]);
-                 return path;
-             }</pre>
+<pre> static QPainterPath fromControlPoints(const Q3PointArray &amp;pa)
+ {
+     QPainterPath path;
+     path.moveTo(pa[0]);
+     for (int i = 1; i &lt; pa.size(); i += 3)
+         path.cubicTo(pa[i], pa[(i + 1) % pa.size()], pa[(i + 2) % pa.size()]);
+     return path;
+ }</pre>
 <p>Note: <a href="qgraphicspathitem.html">QGraphicsPathItem</a> uses <a href="qabstractgraphicsshapeitem.html#pen">QAbstractGraphicsShapeItem::pen</a>() for outlines, whereas <a href="q3canvasspline.html">Q3CanvasSpline</a> did not use <a href="q3canvaspolygonalitem.html#pen">Q3CanvasPolygonalItem::pen</a>().</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th><a href="q3canvasspline.html">Q3CanvasSpline</a></th><th><a href="qgraphicspathitem.html">QGraphicsPathItem</a></th></tr></thead>
@@ -302,12 +302,12 @@
 <h5>Q3CanvasPixmap, Q3CanvasPixmapArray</h5>
 <p>These classes have been removed from the API. You can use <a href="qpixmap.html">QPixmap</a> instead of <a href="q3canvaspixmap.html">Q3CanvasPixmap</a>, and <a href="qlist.html">QList</a> instead of <a href="q3canvaspixmaparray.html">Q3CanvasPixmapArray</a>.</p>
 <p><a href="q3canvaspixmaparray.html">Q3CanvasPixmapArray</a> included convenience for loading a sequence of pixmaps or masks using a path with a wildcard (see <a href="q3canvaspixmaparray.html#readPixmaps">Q3CanvasPixmapArray::readPixmaps</a>() and <a href="q3canvaspixmaparray.html#readCollisionMasks">Q3CanvasPixmapArray::readCollisionMasks</a>()). To achieve similar functionality using Graphics View, you can load the images by using <a href="qdir.html">QDir</a>:</p>
-<pre>                     wildcardPath.replace(&quot;%1&quot;, &quot;*&quot;);
-                     QFileInfo fi(wildcardPath);
+<pre> wildcardPath.replace(&quot;%1&quot;, &quot;*&quot;);
+ QFileInfo fi(wildcardPath);
 
-                     QList&lt;QPixmap&gt; frames;
-                     foreach (QString entry, QDir(fi.path(), fi.fileName()).entryList())
-                         frames &lt;&lt; QPixmap(fi.path() + &quot;/&quot; + entry);</pre>
+ QList&lt;QPixmap&gt; frames;
+ foreach (QString entry, QDir(fi.path(), fi.fileName()).entryList())
+     frames &lt;&lt; QPixmap(fi.path() + &quot;/&quot; + entry);</pre>
 <a name="q3canvastext"></a>
 <h4>Q3CanvasText</h4>
 <p><a href="q3canvastext.html">Q3CanvasText</a> has been split into two classes in Graphics View: <a href="qgraphicssimpletextitem.html">QGraphicsSimpleTextItem</a> and <a href="qgraphicstextitem.html">QGraphicsTextItem</a>. For porting, <a href="qgraphicssimpletextitem.html">QGraphicsSimpleTextItem</a> should be adequate. <a href="qgraphicstextitem.html">QGraphicsTextItem</a> provides advanced document structuring features similar to that of <a href="qtextedit.html">QTextEdit</a>, and it also allows interaction (e.g&#x2e;, editing and selection).</p>
@@ -329,6 +329,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

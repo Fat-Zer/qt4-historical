@@ -115,6 +115,9 @@ public:
     QPointF genericMapFromScene(const QPointF &pos, const QWidget *viewport) const;
     bool itemIsUntransformable() const;
 
+    // ### Qt 5: Remove. Workaround for reimplementation added after Qt 4.4.
+    virtual QVariant inputMethodQueryHelper(Qt::InputMethodQuery query) const;
+
     void setVisibleHelper(bool newVisible, bool explicitly, bool update = true);
     void setEnabledHelper(bool newEnabled, bool explicitly, bool update = true);
     void updateHelper(const QRectF &rect = QRectF(), bool force = false);

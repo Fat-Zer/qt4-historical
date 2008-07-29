@@ -82,6 +82,9 @@ public:
     QString selectedResource() const;
     void selectResource(const QString &resource);
 
+    QString settingsKey() const;
+    void setSettingsKey(const QString &key);
+
     // Helpers for handling the drag originating in QtResourceView (Xml/text)
     enum ResourceType { ResourceImage, ResourceStyleSheet, ResourceOther };
     static QString encodeMimeData(ResourceType resourceType, const QString &path);

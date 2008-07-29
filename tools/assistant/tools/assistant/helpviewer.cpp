@@ -250,6 +250,21 @@ void HelpViewer::wheelEvent(QWheelEvent *e)
     QWebView::wheelEvent(e);
 }
 
+void HelpViewer::mouseReleaseEvent(QMouseEvent *e)
+{
+    if (e->button() == Qt::XButton1) {
+        triggerPageAction(QWebPage::Back);
+        return;
+    }
+
+    if (e->button() == Qt::XButton2) {
+        triggerPageAction(QWebPage::Forward);
+        return;
+    }
+
+    QWebView::mouseReleaseEvent(e);
+}
+
 void HelpViewer::actionChanged()
 {
     QAction *a = qobject_cast<QAction *>(sender());
@@ -261,7 +276,7 @@ void HelpViewer::actionChanged()
         emit backwardAvailable(a->isEnabled());
 }
 
-#else
+#else   // !defined(USE_WEBKIT)
 
 HelpViewer::HelpViewer(QHelpEngine *engine, CentralWidget *parent)
     : QTextBrowser(parent)
@@ -283,7 +298,7 @@ void HelpViewer::setSource(const QUrl &url)
             bool launched = QDesktopServices::openUrl(url);
             if (!launched) {
                 QMessageBox::information(this, tr("Help"),
-                             tr("Unable to launch web browser.\n"),
+                             tr("Unable to launch external application.\n"),
                              tr("OK"));
             }
             return;
@@ -339,6 +354,13 @@ QVariant HelpViewer::loadResource(int type, const QUrl &name)
     QByteArray ba;
     if (type < 4) {
         ba = helpEngine->fileData(name);
+    }
+    
+    if (name.toString().endsWith(QLatin1String(".svg"))) {
+        QImage image;
+        image.loadFromData(ba, "svg");
+        if (!image.isNull())
+            return image;
     }
     return ba;
 }
@@ -418,6 +440,6 @@ void HelpViewer::mouseReleaseEvent(QMouseEvent *e)
     QTextBrowser::mouseReleaseEvent(e);
 }
 
-#endif
+#endif  // !defined(USE_WEBKIT)
 
 QT_END_NAMESPACE

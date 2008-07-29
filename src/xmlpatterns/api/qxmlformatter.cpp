@@ -82,7 +82,7 @@ QXmlFormatterPrivate::QXmlFormatterPrivate(const QXmlQuery &query,
 
 /*!
    \class QXmlFormatter
-   \brief The QXmlFormatter class receives an XQuery Sequence and translates it into human-readable XML.
+   \brief The QXmlFormatter class is an implementation of QXmlSerializer for transforming XQuery output into formatted XML.
    \reentrant
    \since 4.4
    \ingroup xml-tools
@@ -135,11 +135,12 @@ QXmlFormatterPrivate::QXmlFormatterPrivate(const QXmlQuery &query,
 
 /*!
   Constructs a formatter that uses the name pool and message
-  handler in \a query, and writes the result to \a outputDevice.
+  handler in \a query, and writes the result to \a outputDevice
+  as formatted XML.
 
-  \a outputDevice is passed directly to QXmlSerializer's constructor,
-  and the same semantics and expectations applies, as documented
-  in QXmlSerializer's constructor.
+  \a outputDevice is passed directly to QXmlSerializer's constructor.
+
+  \sa QXmlSerializer
  */
 QXmlFormatter::QXmlFormatter(const QXmlQuery &query,
                              QIODevice *outputDevice) : QXmlSerializer(new QXmlFormatterPrivate(query, outputDevice))
@@ -281,6 +282,11 @@ void QXmlFormatter::startOfSequence()
 void QXmlFormatter::endOfSequence()
 {
     Q_D(QXmlFormatter);
+
+    /* Flush any buffered content. */
+    if(!d->characterBuffer.isEmpty())
+        QXmlSerializer::characters(QStringRef(&d->characterBuffer));
+
     d->write('\n');
     QXmlSerializer::endOfSequence();
 }
@@ -307,10 +313,8 @@ void QXmlFormatter::item(const QPatternist::Item &item)
 }
 
 /*!
-  Returns the amount of spaces QXmlFormatter will output for each
-  indentation level.
-
-  The default is four.
+  Returns the number of spaces QXmlFormatter will output for each
+  indentation level. The default is four.
 
  \sa setIndentationDepth()
  */
@@ -321,8 +325,8 @@ int QXmlFormatter::indentationDepth() const
 }
 
 /*!
-  Sets the amount of spaces QXmlFormatter writes out for each
-  indentation level to \a depth.
+  Sets \a depth to be the number of spaces QXmlFormatter will
+  output for level of indentation. The default is four.
 
  \sa indentationDepth()
  */

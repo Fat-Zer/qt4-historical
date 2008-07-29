@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/image/qpicture.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/image/qpicture.cpp -->
 <head>
   <title>Qt 4.4: QPictureIO Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -85,16 +85,16 @@
 <p>Example:</p>
 <pre> void readSVG(QPictureIO *picture)
  {
-     <span class="comment">//</span> read the picture using the picture-&gt;ioDevice()
+     <span class="comment">// read the picture using the picture-&gt;ioDevice()</span>
  }
 
  void writeSVG(QPictureIO *picture)
  {
-     <span class="comment">//</span> write the picture using the picture-&gt;ioDevice()
+     <span class="comment">// write the picture using the picture-&gt;ioDevice()</span>
  }
 
-     <span class="comment">//</span> add the SVG picture handler
-     <span class="comment">//</span> ...</pre>
+     <span class="comment">// add the SVG picture handler</span>
+     <span class="comment">// ...</span></pre>
 <p>Before the regular expression test, all the 0 bytes in the file header are converted to 1 bytes. This is done because when Qt was ASCII-based, <a href="qregexp.html">QRegExp</a> could not handle 0 bytes in strings.</p>
 <p>The regexp is only applied on the first 14 bytes of the file.</p>
 <p>(Note that if one handlerIO supports writing a format and another supports reading it, Qt supports both reading and writing. If two handlers support the same operation, Qt chooses one arbitrarily.)</p>
@@ -154,7 +154,7 @@
 <pre>         QPictureIO iio;
          QPixmap  pixmap;
          iio.setFileName(&quot;vegeburger.pic&quot;);
-         if (iio.read()) {        <span class="comment">//</span> OK
+         if (iio.read()) {        <span class="comment">// OK</span>
              QPicture picture = iio.picture();
              QPainter painter(&amp;pixmap);
              painter.drawPicture(0, 0, picture);
@@ -222,12 +222,12 @@
          iio.setFileName(&quot;vegeburger.pic&quot;);
          iio.setFormat(&quot;PIC&quot;);
          if (iio.write())
-             return true; <span class="comment">//</span> returned true if written successfully</pre>
+             return true; <span class="comment">// returned true if written successfully</span></pre>
 <p>See also <a href="qpictureio.html#setIODevice">setIODevice</a>(), <a href="qpictureio.html#setFileName">setFileName</a>(), <a href="qpictureio.html#setFormat">setFormat</a>(), <a href="qpictureio.html#read">read</a>(), and <a href="qpixmap.html#save">QPixmap::save</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

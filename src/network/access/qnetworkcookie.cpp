@@ -71,6 +71,7 @@ public:
 
 /*!
     \class QNetworkCookie
+    \since 4.4
     \brief The QNetworkCookie class holds one network cookie.
 
     Cookies are small bits of information that stateless protocols
@@ -599,6 +600,8 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
                     position = end;
                     if (datestring.endsWith(" GMT") || datestring.endsWith(" UTC"))
                         datestring.chop(4);
+                    else if (datestring.endsWith(" +0000"))
+                        datestring.chop(6);
 
                     size_t i = 0;
                     QLocale cLocale = QLocale::c();

@@ -957,6 +957,7 @@ bool qSharedBuild()
 
 /*!
     \fn QSysInfo::WindowsVersion QSysInfo::windowsVersion()
+    \since 4.4
 
     Returns the version of the Windows operating system on which the
     application is run (Windows only).
@@ -1054,7 +1055,8 @@ bool qSharedBuild()
     On CPU architectures where the host byte order is little-endian (such as x86) this
     will swap the byte order; otherwise it will just read from \a src.
 
-    Note that template type \c{T} can only be an integer data type (signed or unsigned).
+    \note Template type \c{T} can either be a qint16, qint32 or qint64. Other types of
+    integers, e.g., qlong, are not applicable.
 
     There are no data alignment constraints for \a src.
 
@@ -1084,7 +1086,8 @@ bool qSharedBuild()
     On CPU architectures where the host byte order is big-endian (such as PowerPC) this
     will swap the byte order; otherwise it will just read from \a src.
 
-    Note that template type \c{T} can only be an integer data type (signed or unsigned).
+    \note Template type \c{T} can either be a qint16, qint32 or qint64. Other types of
+    integers, e.g., qlong, are not applicable.
 
     There are no data alignment constraints for \a src.
 
@@ -2054,7 +2057,7 @@ void qt_message_output(QtMsgType msgType, const char *buf)
             _CrtDbgBreak();
 #endif
 
-#if (defined(Q_OS_UNIX) || defined(Q_CC_MINGW)) && defined(QT_DEBUG)
+#if (defined(Q_OS_UNIX) || defined(Q_CC_MINGW))
         abort(); // trap; generates core dump
 #else
         exit(1); // goodbye cruel world
@@ -2469,6 +2472,7 @@ int qrand()
 /*!
     \macro QT_TRANSLATE_NOOP3(context, sourceText, comment)
     \relates <QtGlobal>
+    \since 4.4
 
     Marks the string literal \a sourceText for dynamic translation in the
     given \a context and with \a comment, i.e the stored \a sourceText will
@@ -2968,9 +2972,10 @@ bool QInternal::callFunction(InternalFunction func, void **args)
 
 /*!
  \fn bool qFuzzyCompare(double p1, double p2) 
+ \relates <QtGlobal>
  \since 4.4
  \threadsafe
- 
+
  Compares the floating point value \a p1 and \a p2 and
  returns \c true if they are considered equal, otherwise \c false.
 
@@ -2979,7 +2984,8 @@ bool QInternal::callFunction(InternalFunction func, void **args)
  */
 
 /*!
- \fn bool qFuzzyCompare(float p1, float p2) 
+ \fn bool qFuzzyCompare(float p1, float p2)
+ \relates <QtGlobal>
  \since 4.4
  \threadsafe
  \overload

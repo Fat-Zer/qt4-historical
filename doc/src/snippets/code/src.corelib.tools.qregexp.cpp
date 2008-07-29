@@ -21,7 +21,8 @@
 
 
 //! [2]
- QRegExp
+        QRegExp rx("ro+m");
+        rx.setMinimal(true);
 //! [2]
 
 

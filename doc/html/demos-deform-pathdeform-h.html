@@ -102,15 +102,15 @@
 
  signals:
      void clicked();
-<span class="comment"> //</span>     void frameRate(double fps);
+<span class="comment"> //     void frameRate(double fps);</span>
 
  private:
      void generateLensPixmap();
      QPainterPath lensDeform(const QPainterPath &amp;source, const QPointF &amp;offset);
 
      QBasicTimer m_repaintTimer;
-<span class="comment"> //</span>     QBasicTimer m_fpsTimer;
-<span class="comment"> //</span>     int m_fpsCounter;
+<span class="comment"> //     QBasicTimer m_fpsTimer;</span>
+<span class="comment"> //     int m_fpsCounter;</span>
      QTime m_repaintTracker;
 
      QVector&lt;QPainterPath&gt; m_paths;
@@ -167,11 +167,11 @@
      void hideControls();
  };
 
- #endif <span class="comment">//</span> PATHDEFORM_H</pre>
+ #endif <span class="comment">// PATHDEFORM_H</span></pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

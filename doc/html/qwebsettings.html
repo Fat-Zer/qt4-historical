@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/3rdparty/webkit/WebKit/qt/Api/qwebsettings.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/3rdparty/webkit/WebKit/qt/Api/qwebsettings.cpp -->
 <head>
   <title>Qt 4.4: QWebSettings Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -64,7 +64,7 @@
 <p>Each <a href="qwebpage.html">QWebPage</a> object has its own QWebSettings object, which configures the settings for that page. If a setting is not configured, then it is looked up in the global settings object, which can be accessed using <a href="qwebsettings.html#globalSettings">QWebSettings::globalSettings</a>().</p>
 <p>QWebSettings allows configuring font properties such as font size and font family, the location of a custom stylesheet, and generic attributes like java script, plugins, etc. The <a href="qwebsettings.html#WebAttribute-enum">WebAttribute</a> enum further describes this.</p>
 <p>QWebSettings also configures global properties such as the web page memory cache and the web page icon database.</p>
-<p>See also <a href="qwebpage.html#settings">QWebPage::settings</a>(), <a href="qwebview.html#settings">QWebView::settings</a>(), and l{Browser}.</p>
+<p>See also <a href="qwebpage.html#settings">QWebPage::settings</a>(), <a href="qwebview.html#settings">QWebView::settings</a>(), and <a href="qtwebkit.html#browser">Browser</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QWebSettings/FontFamily" />
@@ -117,10 +117,10 @@
 <tr><td valign="top"><tt>QWebSettings::JavascriptEnabled</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Enables or disables the running of JavaScript programs.</td></tr>
 <tr><td valign="top"><tt>QWebSettings::JavaEnabled</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Enables or disables Java applets. Currently Java applets are not supported.</td></tr>
 <tr><td valign="top"><tt>QWebSettings::PluginsEnabled</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Enables or disables plugins in web pages. Currently Flash and other plugins are not supported.</td></tr>
-<tr><td valign="top"><tt>QWebSettings::PrivateBrowsingEnabled</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Private browsing prevents <a href="examples.html#webkit">WebKit</a> from recording visited pages in the history and storing web page icons.</td></tr>
+<tr><td valign="top"><tt>QWebSettings::PrivateBrowsingEnabled</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Private browsing prevents WebKit from recording visited pages in the history and storing web page icons.</td></tr>
 <tr><td valign="top"><tt>QWebSettings::JavascriptCanOpenWindows</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Specifies whether JavaScript programs can open new windows.</td></tr>
 <tr><td valign="top"><tt>QWebSettings::JavascriptCanAccessClipboard</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Specifies whether JavaScript programs can read or write to the clipboard.</td></tr>
-<tr><td valign="top"><tt>QWebSettings::DeveloperExtrasEnabled</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Enables extra tools for Web developers. Currently this enables the &quot;Inspect&quot; element in the context menu, which shows the <a href="examples.html#webkit">WebKit</a> WebInspector for web site debugging.</td></tr>
+<tr><td valign="top"><tt>QWebSettings::DeveloperExtrasEnabled</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Enables extra tools for Web developers. Currently this enables the &quot;Inspect&quot; element in the context menu, which shows the WebKit WebInspector for web site debugging.</td></tr>
 <tr><td valign="top"><tt>QWebSettings::LinksIncludedInFocusChain</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Specifies whether hyperlinks should be included in the keyboard focus chain.</td></tr>
 </table></p>
 <a name="//apple_ref/cpp/tag/QWebSettings/WebGraphic" />
@@ -162,6 +162,7 @@
 <h3 class="fn"><a name="iconForUrl"></a><a href="qicon.html">QIcon</a> QWebSettings::iconForUrl ( const <a href="qurl.html">QUrl</a> &amp; <i>url</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the web site's icon for <i>url</i>.</p>
 <p>If the web site does not specify an icon, or the icon is not in the database, a null <a href="qicon.html">QIcon</a> is returned.</p>
+<p><b>Note:</b> The returned icon's size is arbitrary.</p>
 <p>See also <a href="qwebsettings.html#setIconDatabasePath">setIconDatabasePath</a>().</p>
 <a name="//apple_ref/cpp/clm/QWebSettings/maximumPagesInCache" />
 <h3 class="fn"><a name="maximumPagesInCache"></a>int QWebSettings::maximumPagesInCache ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -233,6 +234,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

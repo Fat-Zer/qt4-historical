@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qpalette.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qpalette.cpp -->
 <head>
   <title>Qt 4.4: QPalette Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -81,8 +81,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpalette.html#operator-lt-lt-85">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpalette.html#operator-gt-gt-53">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QPalette &amp; <i>p</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpalette.html#operator-lt-lt-135">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpalette.html#operator-gt-gt-78">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QPalette &amp; <i>p</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -158,8 +158,8 @@
 <tr><td valign="top"><tt>QPalette::Foreground</tt></td><td align="center" valign="top"><tt>WindowText</tt></td><td valign="top">This value is obsolete. Use WindowText instead.</td></tr>
 <tr><td valign="top"><tt>QPalette::Base</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">Used mostly as the background color for text entry widgets, but can also be used for other painting - such as the background of combobox drop down lists and toolbar handles. It is usually white or another light color.</td></tr>
 <tr><td valign="top"><tt>QPalette::AlternateBase</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top">Used as the alternate background color in views with alternating row colors (see <a href="qabstractitemview.html#alternatingRowColors-prop">QAbstractItemView::setAlternatingRowColors</a>()).</td></tr>
-<tr><td valign="top"><tt>QPalette::ToolTipBase</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top">Used as the background color for <a href="qtooltip.html">QToolTip</a> and <a href="qwhatsthis.html">QWhatsThis</a>.</td></tr>
-<tr><td valign="top"><tt>QPalette::ToolTipText</tt></td><td align="center" valign="top"><tt>19</tt></td><td valign="top">Used as the foreground color for <a href="qtooltip.html">QToolTip</a> and <a href="qwhatsthis.html">QWhatsThis</a>.</td></tr>
+<tr><td valign="top"><tt>QPalette::ToolTipBase</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top">Used as the background color for <a href="qtooltip.html">QToolTip</a> and <a href="qwhatsthis.html">QWhatsThis</a>. Tool tips use the Inactive color group of <a href="qpalette.html">QPalette</a>, because tool tips are not active windows.</td></tr>
+<tr><td valign="top"><tt>QPalette::ToolTipText</tt></td><td align="center" valign="top"><tt>19</tt></td><td valign="top">Used as the foreground color for <a href="qtooltip.html">QToolTip</a> and <a href="qwhatsthis.html">QWhatsThis</a>. Tool tips use the Inactive color group of <a href="qpalette.html">QPalette</a>, because tool tips are not active windows.</td></tr>
 <tr><td valign="top"><tt>QPalette::Text</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The foreground color used with <tt>Base</tt>. This is usually the same as the <tt>WindowText</tt>, in which case it must provide good contrast with <tt>Window</tt> and <tt>Base</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Button</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The general button background color. This background can be different from <tt>Window</tt> as some styles require a different background color for buttons.</td></tr>
 <tr><td valign="top"><tt>QPalette::ButtonText</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">A foreground color used with the <tt>Button</tt> color.</td></tr>
@@ -342,10 +342,14 @@
 <a name="//apple_ref/cpp/instm/QPalette/toolTipBase" />
 <h3 class="fn"><a name="toolTipBase"></a>const <a href="qbrush.html">QBrush</a> &amp; QPalette::toolTipBase () const</h3>
 <p>Returns the tool tip base brush of the current color group. This brush is used by <a href="qtooltip.html">QToolTip</a> and <a href="qwhatsthis.html">QWhatsThis</a>.</p>
+<p><b>Note:</b> Tool tips use the Inactive color group of <a href="qpalette.html">QPalette</a>, because tool tips are not active windows.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qpalette.html#ColorRole-enum">ColorRole</a> and <a href="qpalette.html#brush">brush</a>().</p>
 <a name="//apple_ref/cpp/instm/QPalette/toolTipText" />
 <h3 class="fn"><a name="toolTipText"></a>const <a href="qbrush.html">QBrush</a> &amp; QPalette::toolTipText () const</h3>
 <p>Returns the tool tip text brush of the current color group. This brush is used by <a href="qtooltip.html">QToolTip</a> and <a href="qwhatsthis.html">QWhatsThis</a>.</p>
+<p><b>Note:</b> Tool tips use the Inactive color group of <a href="qpalette.html">QPalette</a>, because tool tips are not active windows.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qpalette.html#ColorRole-enum">ColorRole</a> and <a href="qpalette.html#brush">brush</a>().</p>
 <a name="//apple_ref/cpp/instm/QPalette/window" />
 <h3 class="fn"><a name="window"></a>const <a href="qbrush.html">QBrush</a> &amp; QPalette::window () const</h3>
@@ -370,11 +374,11 @@
 <p>Returns true (usually quickly) if this palette is equal to <i>p</i>; otherwise returns false (slowly).</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-85"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-135"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the palette, <i>p</i> to the stream <i>s</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-53"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QPalette &amp; <i>p</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-78"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QPalette &amp; <i>p</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a palette from the stream, <i>s</i> into the palette <i>p</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -382,6 +386,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

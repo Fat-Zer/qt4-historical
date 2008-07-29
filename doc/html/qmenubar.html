@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qmenubar.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qmenubar.cpp -->
 <head>
   <title>Qt 4.4: QMenuBar Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -111,8 +111,8 @@
 <h3>Platform Dependent Look and Feel</h3>
 <p>Different platforms have different requirements for the appearance of menu bars and their behavior when the user interacts with them. For example, Windows systems are often configured so that the underlined character mnemonics that indicate keyboard shortcuts for items in the menu bar are only shown when the <b>Alt</b> key is pressed.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/plastique-menubar.png" alt="A menu bar shown in the Plastique widget style." /></td><td>The <a href="qplastiquestyle.html">Plastique widget style</a>, like most other styles, handles the <b>Help</b> menu in the same way as it handles any other menu.</td></tr>
-<tr valign="top" class="even"><td><img src="images/motif-menubar.png" alt="A menu bar shown in the Motif widget style." /></td><td>The <a href="qmotifstyle.html">Motif widget style</a> treats <b>Help</b> menus in a special way, placing them at right-hand end of the menu bar.</td></tr>
+<tr valign="top" class="odd"><td><img src="images/plastique-menubar.png" alt="A menu bar shown in the" /> Plastique widget style.</td><td>The <a href="qplastiquestyle.html">Plastique widget style</a>, like most other styles, handles the <b>Help</b> menu in the same way as it handles any other menu.</td></tr>
+<tr valign="top" class="even"><td><img src="images/motif-menubar.png" alt="A menu bar shown in the" /> Motif widget style.</td><td>The <a href="qmotifstyle.html">Motif widget style</a> treats <b>Help</b> menus in a special way, placing them at right-hand end of the menu bar.</td></tr>
 </table></p>
 <a name="qmenubar-on-qt-mac"></a>
 <h3>QMenuBar on Qt/Mac</h3>
@@ -125,8 +125,9 @@
 <tr valign="top" class="odd"><td>quit or exit</td><td>Application Menu | Quit &lt;application name&gt;</td><td>If this entry is not found a default Quit item will be created to call <a href="qcoreapplication.html#quit">QApplication::quit</a>()</td></tr>
 </table></p>
 <p>You can override this behavior by using the <a href="qaction.html#menuRole-prop">QAction::menuRole</a>() property.</p>
-<p>If you wish to make all windows in a Mac application share the same menu bar, you need to create a menu bar that does not have a parent. The menu bar is created like this:</p>
+<p>If you want all windows in a Mac application to share one menu bar, you must create a menu bar that does not have a parent. Create a parent-less menu bar this way:</p>
 <pre>         QMenuBar *menuBar = new QMenuBar(0);</pre>
+<p><b>Note:</b> Do <i>not</i> call <a href="qmainwindow.html#menuBar">QMainWindow::menuBar</a>() to create the shared menu bar, because that menu bar will have the <a href="qmainwindow.html">QMainWindow</a> as its parent. That menu bar would only be displayed for the parent <a href="qmainwindow.html">QMainWindow</a>.</p>
 <p><b>Note:</b> The text used for the application name in the menu bar is obtained from the value set in the <tt>Info.plist</tt> file in the application's bundle. See <a href="deployment-mac.html">Deploying an Application on Qt/Mac</a> for more information.</p>
 <a name="qmenubar-on-qt-ce"></a>
 <h3>QMenuBar on Qt/CE</h3>
@@ -224,6 +225,7 @@
 <p>Sets the default action to <i>act</i>.</p>
 <p>The default action is assigned to the left soft key. The menu is assigned to the right soft key.</p>
 <p>Currently there is only support for the default action on Windows Mobile. All other platforms ignore the default action.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qmenubar.html#defaultAction">defaultAction</a>().</p>
 <a name="//apple_ref/cpp/instm/QMenuBar/triggered" />
 <h3 class="fn"><a name="triggered"></a>void QMenuBar::triggered ( <a href="qaction.html">QAction</a> * <i>action</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -238,6 +240,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

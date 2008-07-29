@@ -343,11 +343,6 @@ static CSSStyleSheet* parseUASheet(const char* characters, unsigned size)
     return sheet;
 }
 
-template<typename T> CSSStyleSheet* parseUASheet(const T& array)
-{
-    return parseUASheet(array, sizeof(array));
-}
-
 void CSSStyleSelector::loadDefaultStyle()
 {
     if (defaultStyle)
@@ -362,23 +357,23 @@ void CSSStyleSelector::loadDefaultStyle()
     MediaQueryEvaluator printEval("print");
 
     // Strict-mode rules.
-    defaultSheet = parseUASheet(html4UserAgentStyleSheet);
+    defaultSheet = parseUASheet(html4UserAgentStyleSheet, sizeof(html4UserAgentStyleSheet));
     defaultStyle->addRulesFromSheet(defaultSheet, &screenEval);
     defaultPrintStyle->addRulesFromSheet(defaultSheet, &printEval);
 
 #if ENABLE(SVG)
     // SVG rules.
-    svgSheet = parseUASheet(svgUserAgentStyleSheet);
+    svgSheet = parseUASheet(svgUserAgentStyleSheet, sizeof(svgUserAgentStyleSheet));
     defaultStyle->addRulesFromSheet(svgSheet, &screenEval);
     defaultPrintStyle->addRulesFromSheet(svgSheet, &printEval);
 #endif
 
     // Quirks-mode rules.
-    quirksSheet = parseUASheet(quirksUserAgentStyleSheet);
+    quirksSheet = parseUASheet(quirksUserAgentStyleSheet, sizeof(quirksUserAgentStyleSheet));
     defaultQuirksStyle->addRulesFromSheet(quirksSheet, &screenEval);
     
     // View source rules.
-    viewSourceSheet = parseUASheet(sourceUserAgentStyleSheet);
+    viewSourceSheet = parseUASheet(sourceUserAgentStyleSheet, sizeof(sourceUserAgentStyleSheet));
     defaultViewSourceStyle->addRulesFromSheet(viewSourceSheet, &screenEval);
 }
 

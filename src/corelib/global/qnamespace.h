@@ -470,6 +470,7 @@ public:
         AA_MSWindowsUseDirect3DByDefault = 1, // Win only
         AA_DontShowIconsInMenus = 2,
         AA_NativeWindows = 3,
+        AA_DontCreateNativeWidgetSiblings = 4,
 
         // Add new attributes before this line
         AA_AttributeCount

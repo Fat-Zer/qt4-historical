@@ -142,7 +142,7 @@ public:
 
     QMap<QDate, QTextCharFormat> dateTextFormat() const;
     QTextCharFormat dateTextFormat(const QDate &date) const;
-    void setDateTextFormat(const QDate &date, const QTextCharFormat &color);
+    void setDateTextFormat(const QDate &date, const QTextCharFormat &format);
 
     bool isDateEditEnabled() const;
     void setDateEditEnabled(bool enable);

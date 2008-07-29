@@ -2392,7 +2392,7 @@ Text Doc::trimmedBriefText(const QString &className) const
 	    location().warning(
                 tr("Nonstandard wording in '\\%1' text for '%2' ("
                    "expected 'class', 'widget', 'namespace' or 'header')")
-                .arg(COMMAND_BRIEF).arg(className).arg(className));
+                .arg(COMMAND_BRIEF).arg(className));
 	    standardWording = false;
         }
 
@@ -2409,7 +2409,7 @@ Text Doc::trimmedBriefText(const QString &className) const
         if (whats.isEmpty()) {
 	    location().warning(
                 tr("Nonstandard wording in '\\%1' text for '%2' (expected more text)")
-                .arg(COMMAND_BRIEF).arg(className).arg(className));
+                .arg(COMMAND_BRIEF).arg(className));
 	    standardWording = false;
         } else
 	    whats[0] = whats[0].toUpper();

@@ -532,6 +532,8 @@ bool QX11Info::defaultVisual() const
 
 
 /*!
+    \since 4.4
+
     Returns true if there is a compositing manager running.
 */
 bool QX11Info::isCompositingManagerRunning()

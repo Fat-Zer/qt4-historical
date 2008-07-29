@@ -672,15 +672,16 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
         if (params.contains(QLatin1String("GetHeaderInformation"))) {
 
             // Create QImage but don't read the pixels
+            static uchar dummy[1];
             if (cinfo.output_components == 3 || cinfo.output_components == 4) {
                 if (outImage->size() != QSize(cinfo.output_width, cinfo.output_height)
                     || outImage->format() != QImage::Format_RGB32) {
-                    *outImage = QImage(cinfo.output_width, cinfo.output_height, QImage::Format_RGB32);
+                    *outImage = QImage(dummy, cinfo.output_width, cinfo.output_height, QImage::Format_RGB32);
                 }
             } else if (cinfo.output_components == 1) {
                 if (outImage->size() != QSize(cinfo.output_width, cinfo.output_height)
                     || outImage->format() != QImage::Format_Indexed8) {
-                    *outImage = QImage(cinfo.output_width, cinfo.output_height, QImage::Format_Indexed8);
+                    *outImage = QImage(dummy, cinfo.output_width, cinfo.output_height, QImage::Format_Indexed8);
                 }
             } else {
                 // Unsupported format

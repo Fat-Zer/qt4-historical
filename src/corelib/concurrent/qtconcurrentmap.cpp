@@ -72,13 +72,14 @@
     \value OrderedReduce Reduction is done in the order of the
     original sequence.
     \value SequentialReduce Reduction is done sequentally: only one
-    thread will enter the reduce function at a time (parallel reduction
+    thread will enter the reduce function at a time. (Parallel reduction
     might be supported in a future version of Qt Concurrent.)
 */
 
 /*!
     \headerfile <QtConcurrentMap>
     \title Concurrent Map and Map-Reduce
+    \ingroup threading
 
     \brief The <QtConcurrentMap> header provides concurrent Map and MapReduce.
 
@@ -193,13 +194,13 @@
     \snippet doc/src/snippets/code/src.corelib.concurrent.qtconcurrentmap.cpp 9
 
     \section2 Using Function Objects
-    
+
     QtConcurrent::map(), QtConcurrent::mapped(), and
     QtConcurrent::mappedReduced() accept function objects, which can be used to
     add state to a function call. The result_type typedef must define the 
     result type of the function call operator:
 
-    \snippet doc/src/snippets/code/src.corelib.concurrent.qtconcurrentmap.cpp 
+    \snippet doc/src/snippets/code/src.corelib.concurrent.qtconcurrentmap.cpp 14
 
     \section2 Using Bound Function Arguments
 
@@ -300,4 +301,89 @@
     Note that while \a mapFunction is called concurrently, only one thread at a
     time will call \a reduceFunction. The order in which \a reduceFunction is
     called is undefined.
+*/
+
+/*!
+  \fn void QtConcurrent::blockingMap(Sequence &sequence, MapFunction function)
+
+  Calls \a function once for each item in \a sequence. The \a function is
+  passed a reference to the item, so that any modifications done to the item
+  will appear in \a sequence.
+
+  \note This function will block until all items in the sequence have been processed.
+
+  \sa map()
+*/
+
+/*!
+  \fn void QtConcurrent::blockingMap(Iterator begin, Iterator end, MapFunction function)
+
+  Calls \a function once for each item from \a begin to \a end. The
+  \a function is passed a reference to the item, so that any modifications
+  done to the item will appear in the sequence which the iterators belong to.
+
+  \note This function will block until the iterator reaches the end of the
+  sequence being processed.
+
+  \sa map()
+*/
+
+/*!
+  \fn T QtConcurrent::blockingMapped(const Sequence &sequence, MapFunction function)
+
+  Calls \a function once for each item in \a sequence and returns a future
+  with each mapped item as a result. You can use QFuture::const_iterator or
+  QFutureIterator to iterate through the results.
+
+  \note This function will block until all items in the sequence have been processed.
+
+  \sa mapped()
+*/
+
+/*!
+  \fn T QtConcurrent::blockingMapped(ConstIterator begin, ConstIterator end, MapFunction function)
+
+  Calls \a function once for each item from \a begin to \a end and returns a
+  future with each mapped item as a result. You can use
+  QFuture::const_iterator or QFutureIterator to iterate through the results.
+
+  \note This function will block until the iterator reaches the end of the
+  sequence being processed.
+
+  \sa mapped()
+*/
+
+/*!
+  \fn T QtConcurrent::blockingMappedReduced(const Sequence &sequence, MapFunction mapFunction, ReduceFunction reduceFunction, QtConcurrent::ReduceOptions reduceOptions)
+
+  \relates <QtConcurrentMap>
+
+  Calls \a mapFunction once for each item in \a sequence. The return value of
+  each \a mapFunction is passed to \a reduceFunction.
+
+  Note that while \a mapFunction is called concurrently, only one thread at a
+  time will call \a reduceFunction. The order in which \a reduceFunction is
+  called is determined by \a reduceOptions.
+
+  \note This function will block until all items in the sequence have been processed.
+
+  \sa mapped()
+*/
+
+/*!
+  \fn T QtConcurrent::blockingMappedReduced(ConstIterator begin, ConstIterator end, MapFunction mapFunction, ReduceFunction reduceFunction, QtConcurrent::ReduceOptions reduceOptions)
+
+  \relates <QtConcurrentMap>
+
+  Calls \a mapFunction once for each item from \a begin to \a end. The return
+  value of each \a mapFunction is passed to \a reduceFunction.
+
+  Note that while \a mapFunction is called concurrently, only one thread at a
+  time will call \a reduceFunction. The order in which \a reduceFunction is
+  called is undefined.
+
+  \note This function will block until the iterator reaches the end of the
+  sequence being processed.
+
+  \sa blockingMappedReduced()
 */

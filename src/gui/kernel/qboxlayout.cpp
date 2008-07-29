@@ -959,6 +959,8 @@ void QBoxLayout::insertStretch(int index, int stretch)
 }
 
 /*!
+    \since 4.4
+
     Inserts \a spacerItem at position \a index, with zero minimum
     size and stretch factor. If \a index is negative the
     space is added at the end.
@@ -1056,6 +1058,8 @@ void QBoxLayout::addStretch(int stretch)
 }
 
 /*!
+    \since 4.4
+
     Adds \a spacerItem to the end of this box layout.
 
     \sa addSpacing(), addStretch()

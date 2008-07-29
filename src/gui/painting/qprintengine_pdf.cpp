@@ -454,7 +454,7 @@ int QPdfEnginePrivate::addBrushPattern(const QTransform &m, bool *specifyColor, 
 #endif
     }
 
-    if (!brush.isOpaque() && brush.style() < Qt::LinearGradientPattern || opacity != 1.0)
+    if ((!brush.isOpaque() && brush.style() < Qt::LinearGradientPattern) || opacity != 1.0)
         *gStateObject = addConstantAlphaObject(qRound(brush.color().alpha() * opacity));
 
     int imageObject = 0;

@@ -67,6 +67,7 @@
 
 #include <qdebug.h>
 #include <qevent.h>
+#include <qfileinfo.h>
 #include <qpainter.h>
 #if QT_VERSION >= 0x040400
 #include <qnetworkrequest.h>
@@ -273,6 +274,14 @@ QString QWebFrame::title() const
     else return QString();
 }
 
+static inline QUrl ensureAbsoluteUrl(const QUrl &url)
+{
+    if (!url.isRelative())
+        return url;
+
+    return QUrl::fromLocalFile(QFileInfo(url.toLocalFile()).absoluteFilePath());
+}
+
 /*!
     \property QWebFrame::url
     \brief the url of the frame currently viewed
@@ -282,9 +291,9 @@ QString QWebFrame::title() const
 
 void QWebFrame::setUrl(const QUrl &url)
 {
-    d->frame->loader()->begin(url);
+    d->frame->loader()->begin(ensureAbsoluteUrl(url));
     d->frame->loader()->end();
-    load(url);
+    load(ensureAbsoluteUrl(url));
 }
 
 QUrl QWebFrame::url() const
@@ -296,7 +305,7 @@ QUrl QWebFrame::url() const
     \property QWebFrame::icon
     \brief the icon associated with this frame
 
-    \sa iconChanged()
+    \sa iconChanged(), QWebSettings::iconForUrl()
 */
 
 QIcon QWebFrame::icon() const
@@ -330,9 +339,9 @@ QWebPage *QWebFrame::page() const
 void QWebFrame::load(const QUrl &url)
 {
 #if QT_VERSION < 0x040400
-    load(QWebNetworkRequest(url));
+    load(QWebNetworkRequest(ensureAbsoluteUrl(url)));
 #else
-    load(QNetworkRequest(url));
+    load(QNetworkRequest(ensureAbsoluteUrl(url)));
 #endif
 }
 
@@ -347,7 +356,7 @@ void QWebFrame::load(const QWebNetworkRequest &req)
     if (d->parentFrame())
         d->page->d->insideOpenCall = true;
 
-    QUrl url = req.url();
+    QUrl url = ensureAbsoluteUrl(req.url());
     QHttpRequestHeader httpHeader = req.httpHeader();
     QByteArray postData = req.postData();
 
@@ -393,7 +402,7 @@ void QWebFrame::load(const QNetworkRequest &req,
     if (d->parentFrame())
         d->page->d->insideOpenCall = true;
 
-    QUrl url = req.url();
+    QUrl url = ensureAbsoluteUrl(req.url());
 
     WebCore::ResourceRequest request(url);
 
@@ -853,7 +862,8 @@ QWebFrame* QWebFramePrivate::kit(WebCore::Frame* coreFrame)
 /*!
     \fn void QWebFrame::urlChanged(const QUrl &url)
 
-    This signal is emitted when the \a url of the frame changes.
+    This signal is emitted with the URL of the frame when the frame's title is
+    received. The new URL is specified by \a url.
 
     \sa url()
 */
@@ -975,7 +985,7 @@ QWebHitTestResult::~QWebHitTestResult()
 */
 bool QWebHitTestResult::isNull() const
 {
-    return d;
+    return !d;
 }
 
 /*!

@@ -149,6 +149,7 @@ public:
 protected:
     QFileSystemModel(QFileSystemModelPrivate &, QObject *parent = 0);
     void timerEvent(QTimerEvent *event);
+    bool event(QEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(QFileSystemModel)

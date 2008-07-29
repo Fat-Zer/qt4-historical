@@ -227,7 +227,7 @@
             
            This selector may also be used to test dynamic properties.
            For more information on customization using dynamic properties,
-           refer to \{Customizing Using Dynamic Properties}.
+           refer to \l{Customizing Using Dynamic Properties}.
 
            Instead of \c =, you can also use \c ~= to test whether a
            Qt property of type QStringList contains a given QString.
@@ -1304,7 +1304,7 @@
     \row
         \o QWidget \target qwidget-widget
         \o Supports only the \l{Qt Style Sheets Reference#background-prop}{background},
-           \l{#background-clip-prop}{backgorund-clip} and
+           \l{#background-clip-prop}{background-clip} and
            \l{#background-origin-prop}{background-origin} properties.
 
            If you subclass from QWidget, you need to provide a paintEvent for your
@@ -1794,13 +1794,17 @@
         \o \l{#Boolean}{Boolean}
         \o Whether the buttons in a QDialogButtonBox show icons
 
-        If this property is set to true, the buttons of a QDialogButtonBox
-        show icons.
+        If this property is set to 1, the buttons of a QDialogButtonBox
+        show icons; if it is set to 0, the icons are not shown.
 
         See the \l{Qt Style Sheets Reference#list of icons}{List of Icons}
         section for information on how to set icons.
 
         \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 51
+
+        \note Styles defining this property must be applied before the
+        QDialogButtonBox is created; this means that you must apply the
+        style to the parent widget or to the application itself.
 
     \omit
     \row
@@ -2763,7 +2767,11 @@
 
            Examples:
 
-    \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 84
+            \snippet doc/src/snippets/code/doc.src.stylesheet.qdoc 84
+
+            \note The RGB colors allowed are the same as those allowed with
+            CSS 2.1, as listed
+            \l{http://www.w3.org/TR/CSS21/syndata.html#color-units}{here}. 
 
     \row
         \o \bold Font \target Font

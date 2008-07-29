@@ -172,7 +172,7 @@
     Sets the application's title. For example:
     \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 9
     \row
-    \o \bold -geometry <width>x<height>x<Xoffset>x<YOffset> \o
+    \o \bold -geometry <width>+<height>+<Xoffset>+<Yoffset> \o
     Sets the client geometry of the first window that is shown. For example:
     \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 10
     \row

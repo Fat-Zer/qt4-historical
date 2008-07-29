@@ -63,15 +63,15 @@
 //! [7]
     // keep only images with an alpha channel
     QList<QImage> images = ...;
-    QFuture<void> = QtConcurrent::filter(strings, &QImage::hasAlphaChannel());
+    QFuture<void> alphaImages = QtConcurrent::filter(strings, &QImage::hasAlphaChannel);
 
     // keep only gray scale images
     QList<QImage> images = ...;
-    QFuture<QImage> bgrImages = QtConcurrent::filtered(images, &QImage::isGrayscale());
+    QFuture<QImage> grayscaleImages = QtConcurrent::filtered(images, &QImage::isGrayscale);
 
     // create a set of all printable characters
     QList<QChar> characters = ...;
-    QFuture<QSet<QChar> > set = QtConcurrent::filteredReduced(characters, &QChar::isPrint() , &QSet<QChar>::insert);
+    QFuture<QSet<QChar> > set = QtConcurrent::filteredReduced(characters, &QChar::isPrint, &QSet<QChar>::insert);
 //! [7]
 
 
@@ -122,7 +122,7 @@
         {
             return testString.startsWith(m_string);
         }
- 
+
         QString m_string;
     };
 

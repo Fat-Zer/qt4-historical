@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qgridlayout.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qgridlayout.cpp -->
 <head>
   <title>Qt 4.4: QGridLayout Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -86,7 +86,7 @@
 <p>Columns and rows behave identically; we will discuss columns, but there are equivalent functions for rows.</p>
 <p>Each column has a minimum width and a stretch factor. The minimum width is the greatest of that set using <a href="qgridlayout.html#setColumnMinimumWidth">setColumnMinimumWidth</a>() and the minimum width of each widget in that column. The stretch factor is set using <a href="qgridlayout.html#setColumnStretch">setColumnStretch</a>() and determines how much of the available space the column will get over and above its necessary minimum.</p>
 <p>Normally, each managed widget or layout is put into a cell of its own using <a href="qgridlayout.html#addWidget">addWidget</a>(). It is also possible for a widget to occupy multiple cells using the row and column spanning overloads of <a href="qgridlayout.html#addItem">addItem</a>() and <a href="qgridlayout.html#addWidget">addWidget</a>(). If you do this, QGridLayout will guess how to distribute the size over the columns/rows (based on the stretch factors).</p>
-<p>To remove a widget from a layout, call <a href="qlayout-qt3.html#remove">remove</a>(). Calling <a href="qwidget.html#hide">QWidget::hide</a>() on a widget also effectively removes the widget from the layout until <a href="qwidget.html#show">QWidget::show</a>() is called.</p>
+<p>To remove a widget from a layout, call <a href="qlayout.html#removeWidget">removeWidget</a>(). Calling <a href="qwidget.html#hide">QWidget::hide</a>() on a widget also effectively removes the widget from the layout until <a href="qwidget.html#show">QWidget::show</a>() is called.</p>
 <p>This illustration shows a fragment of a dialog with a five-column, three-row grid (the grid is shown overlaid in magenta):</p>
 <p align="center"><img src="images/gridlayout.png" alt="A grid layout" /></p><p>Columns 0, 2 and 4 in this dialog fragment are made up of a <a href="qlabel.html">QLabel</a>, a <a href="qlineedit.html">QLineEdit</a>, and a <a href="porting4.html#qlistbox">QListBox</a>. Columns 1 and 3 are placeholders made with <a href="qgridlayout.html#setColumnMinimumWidth">setColumnMinimumWidth</a>(). Row 0 consists of three <a href="qlabel.html">QLabel</a> objects, row 1 of three <a href="qlineedit.html">QLineEdit</a> objects and row 2 of three <a href="porting4.html#qlistbox">QListBox</a> objects. We used placeholder columns (1 and 3) to get the right amount of space between the columns.</p>
 <p>Note that the columns and rows are not equally wide or tall. If you want two columns to have the same width, you must set their minimum widths and stretch factors to be the same yourself. You do this using <a href="qgridlayout.html#setColumnMinimumWidth">setColumnMinimumWidth</a>() and <a href="qgridlayout.html#setColumnStretch">setColumnStretch</a>().</p>
@@ -178,6 +178,7 @@
 <a name="//apple_ref/cpp/instm/QGridLayout/itemAtPosition" />
 <h3 class="fn"><a name="itemAtPosition"></a><a href="qlayoutitem.html">QLayoutItem</a> * QGridLayout::itemAtPosition ( int <i>row</i>, int <i>column</i> ) const</h3>
 <p>Returns the layout item that occupies cell (<i>row</i>, <i>column</i>), or 0 if the cell is empty.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qgridlayout.html#getItemPosition">getItemPosition</a>() and <a href="qlayout.html#indexOf">indexOf</a>().</p>
 <a name="//apple_ref/cpp/instm/QGridLayout/originCorner" />
 <h3 class="fn"><a name="originCorner"></a><a href="qt.html#Corner-enum">Qt::Corner</a> QGridLayout::originCorner () const</h3>
@@ -231,6 +232,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

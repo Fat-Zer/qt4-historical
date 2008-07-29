@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtxmlpatterns.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtxmlpatterns.qdoc -->
 <head>
   <title>Qt 4.4: QtXmlPatterns Module</title>
   <link rel="prev" href="qtxml.html" />
@@ -26,36 +26,43 @@
 <h2>Classes</h2>
 <p><table width="100%" class="annotated" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><th><a href="qabstractmessagehandler.html">QAbstractMessageHandler</a></th><td>Callback interface for handling messages</td></tr>
-<tr valign="top" class="even"><th><a href="qabstracturiresolver.html">QAbstractUriResolver</a></th><td>Callback interface that is used to rewrite one URI as another</td></tr>
-<tr valign="top" class="odd"><th><a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a></th><td>Abstract interface for representing arbitrary data as XML</td></tr>
+<tr valign="top" class="even"><th><a href="qabstracturiresolver.html">QAbstractUriResolver</a></th><td>Callback interface for resolving Uniform Resource Identifiers</td></tr>
+<tr valign="top" class="odd"><th><a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a></th><td>Abstract base class for modeling non-XML data to look like XML for QXmlQuery</td></tr>
 <tr valign="top" class="even"><th><a href="qabstractxmlreceiver.html">QAbstractXmlReceiver</a></th><td>Callback interface for transforming the output of a QXmlQuery</td></tr>
-<tr valign="top" class="odd"><th><a href="qsimplexmlnodemodel.html">QSimpleXmlNodeModel</a></th><td>Simple yet powerful way of implementing QAbstractXmlNodeModel</td></tr>
-<tr valign="top" class="even"><th><a href="qsourcelocation.html">QSourceLocation</a></th><td>Used to identify a location in a resource, using a URI, line number and column number</td></tr>
-<tr valign="top" class="odd"><th><a href="qxmlformatter.html">QXmlFormatter</a></th><td>Receives an XQuery Sequence and translates it into human-readable XML</td></tr>
-<tr valign="top" class="even"><th><a href="qxmlitem.html">QXmlItem</a></th><td>Represents an item in XQuery and XPath, which is either a node or an atomic value</td></tr>
-<tr valign="top" class="odd"><th><a href="qxmlname.html">QXmlName</a></th><td>Represents a name for an XML node in a namespace-aware and efficient way</td></tr>
-<tr valign="top" class="even"><th><a href="qxmlnamepool.html">QXmlNamePool</a></th><td>Pool of XML names</td></tr>
-<tr valign="top" class="odd"><th><a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a></th><td>Used to represent a node in a node model</td></tr>
-<tr valign="top" class="even"><th><a href="qxmlquery.html">QXmlQuery</a></th><td>Used for performing queries on XML data, or on non-XML data modeled to look like XML</td></tr>
-<tr valign="top" class="odd"><th><a href="qxmlresultitems.html">QXmlResultItems</a></th><td>Iterates through the results of evaluating a query</td></tr>
-<tr valign="top" class="even"><th><a href="qxmlserializer.html">QXmlSerializer</a></th><td>Receives an XQuery sequence and translates it into XML</td></tr>
+<tr valign="top" class="odd"><th><a href="qsimplexmlnodemodel.html">QSimpleXmlNodeModel</a></th><td>Implementation of QAbstractXmlNodeModel sufficient for many common cases</td></tr>
+<tr valign="top" class="even"><th><a href="qsourcelocation.html">QSourceLocation</a></th><td>Identifies a location in a resource by URI, line, and column</td></tr>
+<tr valign="top" class="odd"><th><a href="qxmlformatter.html">QXmlFormatter</a></th><td>Implementation of QXmlSerializer for transforming XQuery output into formatted XML</td></tr>
+<tr valign="top" class="even"><th><a href="qxmlitem.html">QXmlItem</a></th><td>Contains either an XML node or an atomic value</td></tr>
+<tr valign="top" class="odd"><th><a href="qxmlname.html">QXmlName</a></th><td>Represents the name of an XML node, in an efficient, namespace-aware way</td></tr>
+<tr valign="top" class="even"><th><a href="qxmlnamepool.html">QXmlNamePool</a></th><td>Table of shared strings referenced by instances of QXmlName</td></tr>
+<tr valign="top" class="odd"><th><a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a></th><td>Identifies a node in an XML node model subclassed from QAbstractXmlNodeModel</td></tr>
+<tr valign="top" class="even"><th><a href="qxmlquery.html">QXmlQuery</a></th><td>Performs XQueries on XML data, or on non-XML data modeled to look like XML</td></tr>
+<tr valign="top" class="odd"><th><a href="qxmlresultitems.html">QXmlResultItems</a></th><td>Iterates through the results of evaluating an XQuery in QXmlQuery</td></tr>
+<tr valign="top" class="even"><th><a href="qxmlserializer.html">QXmlSerializer</a></th><td>Implementation of QAbstractXmlReceiver for transforming XQuery output into unformatted XML</td></tr>
 </table></p>
 <a name="details"></a>
 <h2>Detailed Description</h2>
 <a name="patternist"></a><ul><li><a href="#introduction">Introduction</a></li>
 <li><a href="#why-use-xquery">Why use XQuery?</a></li>
 <li><a href="#using-qtxmlpatterns">Using QtXmlPatterns</a></li>
-<ul><li><a href="#c-api">C++ API</a></li>
-<ul><li><a href="#configuring-the-build-process">Configuring the Build Process</a></li>
-</ul>
+<ul><li><a href="#evaluating-queries-programatically-using-the-c-api">Evaluating queries programatically using the C++ API</a></li>
 <li><a href="#command-line-utility">Command line utility</a></li>
 </ul>
-<li><a href="#xquery-tutorial">XQuery Tutorial</a></li>
-<li><a href="#qt-s-and-xquery-s-data-model">Qt's and XQuery's Data Model</a></li>
-<li><a href="#integrating-with-custom-data">Integrating with Custom Data</a></li>
-<li><a href="#more-on-custom-data">More on Custom Data</a></li>
+<li><a href="#xquery-language-tutorial">XQuery Language Tutorial</a></li>
+<li><a href="#the-qt-and-xquery-data-models">The Qt and XQuery Data Models</a></li>
+<ul><li><a href="#mapping-xquery-atomic-value-types-to-qvariant-types">Mapping XQuery Atomic Value Types to QVariant Types</a></li>
+<ul><li><a href="#using-qxmlnames">Using QXmlNames</a></li>
+<li><a href="#no-mapping-for-xs-time">No mapping for xs:time</a></li>
+</ul>
+<li><a href="#mapping-qvariant-types-to-xquery-atomic-value-types">Mapping QVariant Types to XQuery Atomic Value Types</a></li>
+<ul><li><a href="#binding-to-qvariant-time">Binding To QVariant::Time</a></li>
+<li><a href="#binding-to-qvariantlist">Binding To QVariantList</a></li>
+</ul>
+</ul>
+<li><a href="#using-xquery-with-non-xml-data">Using XQuery with Non-XML Data</a></li>
+<li><a href="#more-on-using-qtxmlpatterns-with-non-xml-data">More on using QtXmlPatterns with non-XML Data</a></li>
 <li><a href="#security-considerations">Security Considerations</a></li>
-<ul><li><a href="#query-injection">Query Injection</a></li>
+<ul><li><a href="#code-injection">Code Injection</a></li>
 <li><a href="#denial-of-service-attacks">Denial of Service Attacks</a></li>
 </ul>
 <li><a href="#features-and-conformance">Features and Conformance</a></li>
@@ -63,7 +70,8 @@
 <li><a href="#resource-loading">Resource Loading</a></li>
 </ul>
 </ul>
-<p>XQuery is a pragmatic language that allows XML to be queried and created in fast, concise and safe ways.</p>
+<p>XQuery is a pragmatic language that allows XML to be queried and created in fast, concise, and safe ways.</p>
+<p>The QtXmlPatterns module is part of the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>, and the <a href="opensourceedition.html">Qt Open Source Edition</a>.</p>
 <a name="introduction"></a>
 <h3>Introduction</h3>
 <pre> &lt;bibliography&gt;
@@ -75,68 +83,77 @@
 <p>The query opens the file <tt>library.xml</tt>, and for each <tt>book</tt> element that is a child of the top element <tt>bib</tt>, and whose attribute by name <tt>year</tt> is larger than 1991 and has Addison-Wesley as a publisher, it constructs a <tt>book</tt> element and attaches it to the parent element called <tt>bibliography</tt>.</p>
 <a name="why-use-xquery"></a>
 <h3>Why use XQuery?</h3>
-<p>XQuery is tailor made for selecting and aggregating information in safe and efficient ways. Hence, if an application selects and navigates data, XQuery could be a possible candidate for implementing that in a quick and bug-free manner. With <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>, these advantages are not constrained to XML files, but can be applied to other data as well.</p>
-<p>Maybe XQuery can be summarized as follows:</p>
+<p>XQuery is made for selecting and aggregating information in safe and efficient ways. Hence, if an application selects and navigates data, XQuery could be used to perform the selection and navigation tasks quickly and bug-free. With <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>, these advantages are not constrained to operating only on XML files, but can be applied to other data as well.</p>
+<p>The strengths of XQuery can be summarized as follows:</p>
 <ul>
-<li>Pragmatic functionality: XQuery has a slew of expressions for sorting, selecting and filtering data in typically one liners. Aggregation functions like <tt>avg()</tt>, <tt>abs()</tt> and <tt>max()</tt> helps further doing this concisely.</li>
-<li>Development speed: pick one of the queries in this document and imagine writing the equivalent code in C++ or Java. Compared to a one or two liner of XQuery, that would be quite a task to develop, test and maintain.</li>
-<li>Type safety: in XQuery values have strong types, and the type system respect that. For instance, one cannot pass the return value from <tt>current-time()</tt> to a function that expects <tt>xs:integer</tt>, and the value of an attribute or element can be atomic values such as <tt>xs:date</tt> or <tt>xs:double</tt>, as opposed to only strings.</li>
-<li>Interoperability: XML has a gazillion of rules for how things should be and not be. Adhering to these are important since it ensures data is consistently interpreted and that different XML processors can handle the same data. However, knowing, and keeping in mind, all these rules is a daunting task. The QtXmlPatterns engine does all this checking behind the scenes. The user just writes queries, and as long as an error isn't flagged, one can sleep tight, knowing ones data will be correctly processed with product XYZ, or appearing in the same manner on the other side of the planet.</li>
+<li><b>Pragmatic functionality</b>: XQuery has many expressions for sorting, selecting and filtering data. Typically, these can be written in one or two lines. Aggregation functions like <tt>avg()</tt>, <tt>abs()</tt> and <tt>max()</tt> help to make XQuery code even more concise.</li>
+<li><b>Development speed</b>: Pick any of the queries shown in this document and imagine writing the equivalent code in C++ or Java. Compared to the one- or two-liner required in XQuery, the equivalent procedural code would require a significant investment of time and effort for development, testing, and maintenance.</li>
+<li><b>Type safety</b>: XQuery values are strongly typed. It is illegal, for example, to pass the <tt>xs:time</tt> value returned from <tt>current-time()</tt> to a function expecting an <tt>xs:integer</tt>. The value of an attribute or element is not restricted to being an <tt>xs:string</tt> but can be any atomic value, e.g&#x2e;, <tt>xs:date</tt> or <tt>xs:double</tt>.</li>
+<li><b>Interoperability</b>: XML specifications and vocabularies describe in minute detail what constitutes valid XML in different contexts. Adherence to these standards is important, because it ensures that XML generated by one application can be read and correctly interpreted by another. However, knowing and using all these standards is a daunting task. The QtXmlPatterns XQuery engine performs all the required standards checking transparently, leaving the user free to focus on writing his query, secure in the knowledge that the output will be usable by any other XML tool.</li>
+<li><b>High-level expression</b>: Because XQuery is a high-level programming language, XQueries can be written to be human readable, while also being easily optimizable by the XQuery engine at execution time.</li>
 </ul>
-<p>On top of that the language is designed to be high level such that it is easy to analyze what the user is computing. With this, it is easier to optimize both speed and memory use of XML operations.</p>
 <a name="using-qtxmlpatterns"></a>
 <h3>Using QtXmlPatterns</h3>
-<p>Evaluating queries can be done via an ordinary Qt C++ API and using a command line interface.</p>
-<a name="c-api"></a>
-<h4>C++ API</h4>
-<a name="configuring-the-build-process"></a>
-<h5>Configuring the Build Process</h5>
-<p>Applications that use QtXmlPatterns' classes need to be configured to be built against the QtXmlPatterns module. To include the definitions of the module's classes, use the following directive:</p>
+<p>Evaluation of an XQuery can be performed programatically, using the QtXmlPatterns C++ API, or by running the XQuery engine directly using the command line interface.</p>
+<a name="evaluating-queries-programatically-using-the-c-api"></a>
+<h4>Evaluating queries programatically using the C++ API</h4>
+<p>A C++ application that uses classes from the QtXmlPatterns module includes the classes at compilation time with the following:</p>
 <pre>      #include &lt;QtXmlPatterns&gt;</pre>
-<p>To link against the module, add this line to your qmake .pro file:</p>
+<p>The application is linked with the QtXmlPatterns module by adding the following line to the qmake <tt>.pro</tt> file:</p>
 <pre>      QT += xmlpatterns</pre>
-<p>QtXmlPatterns is part of the Qt Desktop Edition, Qt Open Source Edition and the Qt Console Edition. Note that QtXmlPatterns is disabled when building Qt, if exceptions are disabled or if a compiler that doesn't support member templates, such as MSVC 6, is used.</p>
-<p>See <a href="qxmlquery.html">QXmlQuery</a> for how to use the C++ API.</p>
+<p>Note that if you build Qt yourself, QtXmlPatterns will <i>not</i> be built if exceptions are disabled, or if you compile Qt with a compiler that doesn't support member templates, e.g&#x2e;, MSVC 6.</p>
+<p>See the <a href="qxmlquery.html">QXmlQuery</a> documentation for the QtXmlPatterns C++ API.</p>
 <a name="command-line-utility"></a>
 <h4>Command line utility</h4>
-<p>A command line utility called <tt>xmlpatterns</tt> is installed and available like the other command line utilities such as <tt>moc</tt> or <tt>uic</tt>. It takes a single argument that is the filename of the query to execute:</p>
-<p><tt>xmlpatterns myQuery.xq</tt></p>
-<p>The query will be run and the output written to <tt>stdout</tt>.</p>
-<p>Pass in the <tt>-help</tt> switch to get a brief description printed to the console, such as how to bind variables using the command line.</p>
-<p>The command line utility's interface is stable for scripting, but descriptions and help messages are not designed for the purpose of automatic parsing, and can change in undefined ways in a future release of Qt.</p>
-<a name="xquery-tutorial"></a>
-<h3>XQuery Tutorial</h3>
+<p><i>xmlpatterns</i> is a command line utility for running XQueries. It takes as its single argument the name of a file containing the text of the XQuery to be evaluated.</p>
+<pre>      xmlpatterns myQuery.xq</pre>
+<p>The XQuery in <tt>myQuery.xq</tt> will be evaluated and its output written to <tt>stdout</tt>.</p>
+<p>Passing the <tt>-help</tt> switch on the command line tells xmlpatterns to print brief descriptions of the other flags it accepts.</p>
+<p>xmlpatterns can be used for scripting, but the descriptions and messages it outputs are not designed to be parsed, and they may be changed in future releases of Qt.</p>
+<a name="xquery-language-tutorial"></a>
+<h3>XQuery Language Tutorial</h3>
 <p>See <a href="xquery-introduction.html">A Short Path to XQuery</a> for a brief introduction to the XQuery language.</p>
-<a name="qtxdm"></a><a name="qt-s-and-xquery-s-data-model"></a>
-<h3>Qt's and XQuery's Data Model</h3>
-<p>XQuery and Qt has different data models. All data in XQuery takes the form of sequences of items, where an item is either a node, or an atomic value. Atomic values are the primitives found in W3C XML Schema, and nodes are usual XML nodes, although they might represent other things using <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> and <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>.</p>
-<p>Atomic values, when not being serialized, are represented with <a href="qvariant.html">QVariant</a>. The mappings are as follows.</p>
+<a name="qtxdm"></a><a name="the-qt-and-xquery-data-models"></a>
+<h3>The Qt and XQuery Data Models</h3>
+<p>XQuery and Qt don't represent data the same way. XQuery represents data as a sequence of items, where an item is either an atomic value or a node. Atomic values are the primitives specified in the W3C XML Schema. Nodes are normally XML elements or attributes, but nodes can also represent non-XML data items, when non-XML data is modeled with a custom subclass of <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>.</p>
+<a name="mapping-xquery-atomic-value-types-to-qvariant-types"></a>
+<h4>Mapping XQuery Atomic Value Types to QVariant Types</h4>
+<p>When XQuery Atomic Values are returned as XQuery result items via the QtXmlPatterns API, they are represented as instances of the <a href="qvariant.html">QVariant</a> class. The mapping from XQuery Atomic Value types to <a href="qvariant.html">QVariant</a> types (or to <a href="qxmlname.html">QXmlName</a>) is as follows.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<thead><tr valign="top" class="qt-style"><th>From XQuery</th><th>To Qt</th></tr></thead>
-<tr valign="top" class="odd"><td><tt>xs:integer</tt></td><td><a href="qvariant.html#Type-enum">QVariant::LongLong</a></td></tr>
-<tr valign="top" class="even"><td><tt>xs:string</tt></td><td><a href="qvariant.html#Type-enum">QVariant::String</a></td></tr>
+<thead><tr valign="top" class="qt-style"><th>An XQuery Atomic Value of type..&#x2e;</th><th>is returned as an instance of..&#x2e;</th></tr></thead>
+<tr valign="top" class="odd"><td><tt>xs:QName</tt></td><td><a href="qxmlname.html">QXmlName</a> (see <a href="#using-qxmlnames">Using QXmlNames</a> below)</td></tr>
+<tr valign="top" class="even"><td><tt>xs:integer</tt></td><td><a href="qvariant.html#Type-enum">QVariant::LongLong</a></td></tr>
+<tr valign="top" class="odd"><td><tt>xs:string</tt></td><td><a href="qvariant.html#Type-enum">QVariant::String</a></td></tr>
+<tr valign="top" class="even"><td><tt>xs:string*</tt></td><td><a href="qvariant.html#Type-enum">QVariant::StringList</a></td></tr>
 <tr valign="top" class="odd"><td><tt>xs:double</tt></td><td><a href="qvariant.html#Type-enum">QVariant::Double</a></td></tr>
 <tr valign="top" class="even"><td><tt>xs:float</tt></td><td><a href="qvariant.html#Type-enum">QVariant::Double</a></td></tr>
 <tr valign="top" class="odd"><td><tt>xs:boolean</tt></td><td><a href="qvariant.html#Type-enum">QVariant::Bool</a></td></tr>
 <tr valign="top" class="even"><td><tt>xs:decimal</tt></td><td><a href="qvariant.html#Type-enum">QVariant::Double</a></td></tr>
 <tr valign="top" class="odd"><td><tt>xs:hexBinary</tt></td><td><a href="qvariant.html#Type-enum">QVariant::ByteArray</a></td></tr>
 <tr valign="top" class="even"><td><tt>xs:base64Binary</tt></td><td><a href="qvariant.html#Type-enum">QVariant::ByteArray</a></td></tr>
-<tr valign="top" class="odd"><td><tt>xs:time</tt></td><td>Not supported because <tt>xs:time</tt> has a zone offset, and <a href="qtime.html">QTime</a> does not. Use <tt>xs:dateTime</tt>, or convert the value to <tt>xs:string</tt>.</td></tr>
-<tr valign="top" class="even"><td><tt>xs:date</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
-<tr valign="top" class="odd"><td><tt>xs:dateTime</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
-<tr valign="top" class="even"><td><tt>xs:gYear</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
-<tr valign="top" class="odd"><td><tt>xs:gYearMonth</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
-<tr valign="top" class="even"><td><tt>xs:gMonthDay</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
-<tr valign="top" class="odd"><td><tt>xs:gDay</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
-<tr valign="top" class="even"><td><tt>xs:gMonth</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
-<tr valign="top" class="odd"><td><tt>xs:string*</tt></td><td><a href="qvariant.html#Type-enum">QVariant::StringList</a></td></tr>
+<tr valign="top" class="odd"><td><tt>xs:gYear</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
+<tr valign="top" class="even"><td><tt>xs:gYearMonth</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
+<tr valign="top" class="odd"><td><tt>xs:gMonthDay</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
+<tr valign="top" class="even"><td><tt>xs:gDay</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
+<tr valign="top" class="odd"><td><tt>xs:gMonth</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
 <tr valign="top" class="even"><td><tt>xs:anyURI</tt></td><td><a href="qvariant.html#Type-enum">QVariant::Url</a></td></tr>
 <tr valign="top" class="odd"><td><tt>xs:untypedAtomic</tt></td><td><a href="qvariant.html#Type-enum">QVariant::String</a></td></tr>
 <tr valign="top" class="even"><td><tt>xs:ENTITY</tt></td><td><a href="qvariant.html#Type-enum">QVariant::String</a></td></tr>
-<tr valign="top" class="odd"><td><tt>xs:QName</tt></td><td><a href="qxmlname.html">QXmlName</a>. Note that the returned <a href="qxmlname.html">QXmlName</a> can only be used with the <a href="qxmlquery.html">QXmlQuery</a> instance that it was created with.</td></tr>
+<tr valign="top" class="odd"><td><tt>xs:date</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
+<tr valign="top" class="even"><td><tt>xs:dateTime</tt></td><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td></tr>
+<tr valign="top" class="odd"><td><tt>xs:time</tt></td><td>(see <a href="#xstime-not-mapped">No mapping for xs:time</a> below)</td></tr>
 </table></p>
+<a name="using-qxmlnames"></a><a name="using-qxmlnames"></a>
+<h5>Using QXmlNames</h5>
+<p>To access the strings in a <a href="qxmlname.html">QXmlName</a> returned by an <a href="qxmlquery.html#evaluateTo">XQuery evaluation</a>, the <a href="qxmlname.html">QXmlName</a> must be accessed with the <a href="qxmlnamepool.html">name pool</a> from the instance of <a href="qxmlquery.html">QXmlQuery</a> that was used for the evaluation.</p>
+<a name="xstime-not-mapped"></a><a name="no-mapping-for-xs-time"></a>
+<h5>No mapping for xs:time</h5>
+<p>An instance of <tt>xs:time</tt> can't be represented correctly as an instance of <a href="qvariant.html#Type-enum">QVariant::Time</a>, unless the <tt>xs:time</tt> is a UTC time. This is because xs:time has a zone offset (0 for UTC) in addition to the time value, which the <a href="qtime.html">QTime</a> in <a href="qvariant.html#Type-enum">QVariant::Time</a> does not have. This means that if an XQuery tries to return an atomic value of type <tt>xs:time</tt>, an invalid <a href="qvariant.html">QVariant</a> will be returned. A query can return an atomic value of type xs:time by either converting it to an <tt>xs:dateTime</tt> with an arbitrary date, or to an <tt>xs:string</tt>.</p>
+<a name="mapping-qvariant-types-to-xquery-atomic-value-types"></a>
+<h4>Mapping QVariant Types to XQuery Atomic Value Types</h4>
+<p>The reverse mapping from <a href="qvariant.html">QVariant</a> to XQuery Atomic Value is important when you want to <a href="qxmlquery.html#bindVariable">bind a variable</a> in your program to a $name used in your XQuery.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<thead><tr valign="top" class="qt-style"><th>From Qt</th><th>To XQuery</th></tr></thead>
+<thead><tr valign="top" class="qt-style"><th>An instance of..&#x2e;</th><th>can be bound to an XQuery variable of type..&#x2e;</th></tr></thead>
 <tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::LongLong</a></td><td><tt>xs:integer</tt></td></tr>
 <tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::Int</a></td><td><tt>xs:integer</tt></td></tr>
 <tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::UInt</a></td><td><tt>xs:nonNegativeInteger</tt></td></tr>
@@ -146,27 +163,33 @@
 <tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::Bool</a></td><td><tt>xs:boolean</tt></td></tr>
 <tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::Double</a></td><td><tt>xs:decimal</tt></td></tr>
 <tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::ByteArray</a></td><td><tt>xs:base64Binary</tt></td></tr>
-<tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::Date</a></td><td><tt>xs:date</tt>. The <a href="qdate.html">QDate</a> is assumed to be in timezone UTC.</td></tr>
-<tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::Time</a></td><td><tt>QTime</tt> cannot properly represent <tt>xs:time</tt>. Convert <a href="qtime.html">QTime</a> to a <a href="qdatetime.html">QDateTime</a> with a valid arbitrary date, and bind the time as a <a href="qdatetime.html">QDateTime</a> instead.</td></tr>
-<tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td><td><tt>xs:dateTime</tt></td></tr>
-<tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::StringList</a></td><td><tt>xs:string*</tt></td></tr>
-<tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::Url</a></td><td><tt>xs:string</tt></td></tr>
-<tr valign="top" class="odd"><td><a href="qvariant.html#QVariantList-typedef">QVariantList</a></td><td>A sequence of atomic values, whose type is the same as the first item in the <a href="qvariant.html#QVariantList-typedef">QVariantList</a> instance. If all the items in the <a href="qvariant.html#QVariantList-typedef">QVariantList</a> is not of the same type, behavior is undefined.</td></tr>
-<tr valign="top" class="even"><td>Any other type</td><td>It is not supported and will either lead to undefined behavior, or an unexisting variable binding, depending on context.</td></tr>
+<tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::StringList</a></td><td><tt>xs:string*</tt></td></tr>
+<tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::Url</a></td><td><tt>xs:string</tt></td></tr>
+<tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::Date</a></td><td><tt>xs:date</tt>.</td></tr>
+<tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">QVariant::DateTime</a></td><td><tt>xs:dateTime</tt></td></tr>
+<tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">QVariant::Time</a>.</td><td><tt>xs:time</tt>. (see <a href="#binding-to-time">Binding To QVariant::Time</a> below)</td></tr>
+<tr valign="top" class="odd"><td><a href="qvariant.html#QVariantList-typedef">QVariantList</a></td><td>(see <a href="#binding-to-qvariantlist">Binding To QVariantList</a> below)</td></tr>
 </table></p>
-<a name="integrating-with-custom-data"></a>
-<h3>Integrating with Custom Data</h3>
-<p>XQuery is a language designed for, and modeled on XML. However, it doesn't have to be constrained to that. By sub-classing <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> one can write queries on top of any data that can be modeled as XML.</p>
-<p>By default when QtXmlPatterns is asked to open files or to produce content, this is done using an internal representation. For instance, in this query:</p>
+<p>Types other than the ones listed in the table are not supported and will either cause undefined XQuery behavior or a nonexistent variable binding, depending on the context where the variable is used.</p>
+<a name="binding-to-time"></a><a name="binding-to-qvariant-time"></a>
+<h5>Binding To QVariant::Time</h5>
+<p>Because the instance of <a href="qtime.html">QTime</a> used in <a href="qvariant.html#Type-enum">QVariant::Time</a> does not include a zone offset, an instance of <a href="qvariant.html#Type-enum">QVariant::Time</a> should not be bound to an XQuery variable of type <tt>xs:time</tt>, unless the <a href="qtime.html">QTime</a> is UTC. When binding a non-UTC <a href="qtime.html">QTime</a> to an XQuery variable, it should first be passed as a string, or converted to a <a href="qdatetime.html">QDateTime</a> with an arbitrary date, and then bound to an XQuery variable of type <tt>xs:dateTime</tt>.</p>
+<a name="binding-to-qvariantlist"></a><a name="binding-to-qvariantlist"></a>
+<h5>Binding To QVariantList</h5>
+<p>A <a href="qvariant.html#QVariantList-typedef">QVariantList</a> can be bound to an XQuery variable name. All the QVariants in the list must be of the same type, and the variable the list is bound to must be of the same type. If the QVariants in the list are not all of the same type, the XQuery behavior is undefined.</p>
+<a name="using-xquery-with-non-xml-data"></a>
+<h3>Using XQuery with Non-XML Data</h3>
+<p>Although the XQuery language was designed for querying XML, with QtXmlPatterns one can use XQuery for querying any data that can be modeled to look like XML. Non-XML data is modeled to look like XML by loading it into a custom subclass of <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>, where it is then presented to the QtXmlPatterns XQuery engine via the same API the XQuery engine uses for querying XML.</p>
+<p>When QtXmlPatterns loads and queries XML files and produces XML output, it can always load the XML data into its default XML node model, where it can be traversed efficiently. The XQuery below traverses the product orders found in the XML file <i>myOrders.xml</i> to find all the skin care product orders and output them ordered by shipping date.</p>
 <pre> &lt;result&gt;
-     &lt;para&gt;The following Acne removers have shipped, ordered by shipping date(oldest first):&lt;/para&gt;
+     &lt;para&gt;The following skin care products have shipped, ordered by shipping date(oldest first):&lt;/para&gt;
      {
-         for $i in doc(&quot;myOrders.xml&quot;)/orders/order[@product = &quot;Acme's Acne Remover&quot;]
+         for $i in doc(&quot;myOrders.xml&quot;)/orders/order[@product = &quot;Acme Skin Care&quot;]
          order by xs:date($i/@shippingDate) descending
          return $i
      }
  &lt;/result&gt;</pre>
-<p>an efficient internal representation is used for the file <tt>myOrders.xml</tt>. However, by sub-classing <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> one can write a query on any data, by mapping XML elements and attributes to the custom data model. For instance, one could write a <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> sub-class that mirrors the file system hierarchy like this:</p>
+<p>QtXmlPatterns can be used out of the box to perform this query, provided <i>myOrders.xml</i> actually contains well-formed XML. It can be loaded directly into the default XML node model and traversed. But suppose we want QtXmlPatterns to perform queries on the hierarchical structure of the local file system. The default XML node model in QtXmlPatterns is not suitable for navigating the file system, because there is no XML file to load that contains a description of it. Such an XML file, if it existed, might look something like this:</p>
 <pre> &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
  &lt;directory name=&quot;home&quot;&gt;
 
@@ -181,7 +204,9 @@
      ...
 
  &lt;/directory&gt;</pre>
-<p>and hence have a convenient way to navigate the file system:</p>
+<p>The <a href="xmlpatterns-filetree.html">File System Example</a> does exactly this.</p>
+<p>There is no such file to load into the default XML node model, but one can write a subclass of <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> to represent the file system. This custom XML node model, once populated with all the directory and file descriptors obtained directly from the system, presents the complete file system hierarchy to the query engine via the same API used by the default XML node model to present the contents of an XML file. In other words, once the custom XML node model is populated, it presents the file system to the query engine as if a description of it had been loaded into the default XML node model from an XML file like the one shown above.</p>
+<p>Now we can write an XQuery to find all the XML files and parse them to find the ones that don't contain well-formed XML.</p>
 <pre> &lt;html&gt;
      &lt;body&gt;
          {
@@ -193,55 +218,53 @@
          }
      &lt;/body&gt;
  &lt;/html&gt;</pre>
-<p>Converting a data model to XML(text) and then read it in with an XML tool has been one approach to this, but that has disadvantages such as being inefficient. The XML representation is separated from the actual data model, and that two representations needs to be maintained simultaneously in memory.</p>
-<p>With <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> this conversion is not necessary, nor are two representation kept at the same time, since <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> is a small, efficient, stack allocated value. Also, since the XQuery engine asks the <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> for the actual data, the model can create elements, attributes and data on demand, depending on what the query actually requests. For instance, in the file system model above, the model doesn't have to read in the whole file system or encoded the content of a file until it is actually asked for.</p>
-<p>In other words, with <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> it's possible to have one data model, and then use the power of the XQuery language on top.</p>
-<p>Some examples of possible data models could be:</p>
+<p>Without QtXmlPatterns, there is no simple way to solve this kind of problem. You might do it by writing a C++ program to traverse the file system, sniff out all the XML files, and submit each one to an XML parser to test that it contains valid XML. The C++ code required to write that program will probably be more complex than the C++ code required to subclass <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>, but even if the two are comparable, your custom C++ program can be used only for that one task, while your custom XML node model can be used by any XQuery that must navigate the file system.</p>
+<p>The general approach to using XQuery to perform queries on non-XML data has been a three step process. In the first step, the data is loaded into a non-XML data model. In the second step, the non-XML data model is serialized as XML and output to XML (text) files. In the final step, an XML tool loads the XML files into a second, XML data model, where the XQueries can be performed. The development cost of implementing this process is often high, and the three step system that results is inefficient because the two data models must be built and maintained separately.</p>
+<p>With QtXmlPatterns, subclassing <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> eliminates the transformation required to convert the non-XML data model to the XML data model, because there is only ever one data model required. The non-XML data model presents the non-XML data to the query engine via the XML data model API. Also, since the query engine uses the API to access the <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>, the data model subclass can construct the elements, attributes and other data on demand, responding to the query's specific requests. This can greatly improve efficiency, because it means the entire model might not have to be built. For example, in the file system model above, it is not necessary to build an instance for a whole XML file representing the whole file system. Instead nodes are created on demand, which also likely is a small subset of the file system.</p>
+<p>Examples of other places where XQuery could be used in QtXmlPatterns to query non-XML data:</p>
 <ul>
-<li>The internal document representation in a word processor</li>
-<li>Dependencies within a build system</li>
-<li>the hierarchy(or graph) that links with HTML documents forms(for a web crawler)</li>
-<li>Images and meta data in an image collection</li>
-<li>The D-Bus interfaces available on the system</li>
-<li>The file system hierarchy(as seen above)</li>
-<li>The <a href="qobject.html">QObject</a> hierarchy.</li>
+<li>The internal representation for word processor documents</li>
+<li>The set of dependencies for a software build system</li>
+<li>The hierarchy (or graph) that links a set of HTML documents from a web crawler</li>
+<li>The images and meta-data in an image collection</li>
+<li>The set of D-Bus interfaces available in a system</li>
+<li>A <a href="qobject.html">QObject</a> hierarchy, as seen in the <a href="xmlpatterns-qobjectxmlmodel.html">QObject XML Model example</a>.</li>
 </ul>
-<p>The documentation for <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> has the details for implementing this.</p>
-<a name="more-on-custom-data"></a>
-<h3>More on Custom Data</h3>
-<p>Since QtXmlPatterns isn't constrained to XML but can use custom data directly, it turns XQuery into a mapping layer between different custom models or custom models and XML. Once QtXmlPatterns can understand the data, simple queries can be used to select in it, or to simply write it out as XML using QXmlQuery::serialize().</p>
-<p>Consider a word processor application that needs to be able to import and export different formats. Instead of having to write C++ code that converts between the different formats, one writes a query that goes from on type of XML, such as MathML, to another XML format: the one for the document representation that the DocumentRepresentation class below exposes.</p>
-<p align="center"><img src="images/patternist-wordProcessor.png" /></p><p>In the case of CSV files, which are text, a <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> sub-class is used again in order to expose the comma-separated file as XML, such that a query can operate on it.</p>
+<p>See the <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> documentation for information about how to implement custom XML node models.</p>
+<a name="more-on-using-qtxmlpatterns-with-non-xml-data"></a>
+<h3>More on using QtXmlPatterns with non-XML Data</h3>
+<p>Subclassing <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> to let the query engine access non-XML data by the same API it uses for XML is the feature that enables QtXmlPatterns to query non-XML data with XQuery. It allows XQuery to be used as a mapping layer between different non-XML node models or between a non-XML node model and the built-in XML node model. Once the subclass(es) of <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> have been written, XQuery can be used to select a set of elements from one node model, transform the selected elements, and then write them out, either as XML using <a href="qxmlquery.html#evaluateTo">QXmlQuery::evaluateTo</a>() and <a href="qxmlserializer.html">QXmlSerializer</a>, or as some other format using a subclass of <a href="qabstractxmlreceiver.html">QAbstractXmlReceiver</a>.</p>
+<p>Consider a word processor application that must import and export data in several different formats. Rather than writing a lot of C++ code to convert each input format to an intermediate form, and more C++ code to convert the intermediate form back to each output format, one can implement a solution based on QtXmlPatterns that uses simple XQueries to transform each XML or non-XML format (e.g&#x2e; MathFormula.xml below) to the intermediate form (e.g&#x2e; the DocumentRepresentation node model class below), and more simple XQueries to transform the intermediate form back to each XML or non-XML format.</p>
+<p align="center"><img src="images/patternist-wordProcessor.png" /></p><p>Because CSV files are not XML, a subclass of <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> is used to present the CSV data to the XQuery engine as if it were XML. What are not shown are the subclasses of <a href="qabstractxmlreceiver.html">QAbstractXmlReceiver</a> that would then send the selected elements into the DocumentRepresentation node model, and the subclasses of <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> that would ultimately write the output files in each format.</p>
 <a name="security-considerations"></a>
 <h3>Security Considerations</h3>
-<a name="query-injection"></a>
-<h4>Query Injection</h4>
-<p>XQuery is subject to query injection in the same manner that SQL is. If a query is constructed by concatenating strings where some of the strings are from user input, the query can be altered by carefully crafting malicious strings, unless they are properly escaped.</p>
-<p>The best solution against these attacks is typically to never construct queries from user-written strings, but instead input the user's data using variable bindings. This avoids all query injection attacks.</p>
-<p>See <a href="http://www.ibm.com/developerworks/xml/library/x-xpathinjection.html">Avoid the dangers of XPath injection, Robi Sen</a> or <a href="http://www.packetstormsecurity.org/papers/bypass/Blind_XPath_Injection_20040518.pdf">Blind XPath Injection, Amit Klein</a> for deeper discussions.</p>
+<a name="code-injection"></a>
+<h4>Code Injection</h4>
+<p>Like SQL, XQuery is vulnerable to <a href="http://en.wikipedia.org/wiki/Code_injection">code injection attacks</a>. If an XQuery is constructed by concatenation, where concatenated strings can come from user input, the final XQuery can become malevolent. The best way to prevent code injection attacks is to not construct XQueries from user-written strings, but only accept user data input using <a href="qvariant.html">QVariant</a> and variable bindings. See <a href="qxmlquery.html#bindVariable">QXmlQuery::bindVariable</a>()</p>
+<p>The articles <a href="http://www.ibm.com/developerworks/xml/library/x-xpathinjection.html">Avoid the dangers of XPath injection, Robi Sen</a> and <a href="http://www.packetstormsecurity.org/papers/bypass/Blind_XPath_Injection_20040518.pdf">Blind XPath Injection, Amit Klein</a> discuss the XQuery code injection problem in more detail.</p>
 <a name="denial-of-service-attacks"></a>
 <h4>Denial of Service Attacks</h4>
-<p>QtXmlPatterns has, as all other systems, limits. Generally, these are not checked. This is not a problem for regular use, but it does mean that a malicious query can relatively easy be constructed that causes code to crash or to exercise undefined behavior.</p>
+<p>Applications using QtXmlPatterns are subject to the same software limits as any other system. Generally, these can not be checked. This means QtXmlPatterns does not prevent rogue queries from consuming too many resources. For example, a query could take too much time to execute, or could attempt to transfer too much data. Or a query could cause an unreasonable amount of recursion, which could crash the system. XQueries can do these things accidentally, but they can also be meant as deliberate, denial of service attacks.</p>
 <a name="features-and-conformance"></a>
 <h3>Features and Conformance</h3>
 <a name="conformance"></a>
 <h4>Conformance</h4>
-<p>QtXmlPatterns aims at being a conformant XQuery implementation. In addition to supporting minimal conformance, the serialization and full-axis features are supported. 97% of the tests in W3C's test suite for XQuery passes, as of this writing, and it is expected this will improve over time. Areas where conformance is not tip top and where behavior changes may happen in future releases are:</p>
+<p>QtXmlPatterns aims at being a <a href="http://www.w3.org/TR/xquery/#id-xquery-conformance">conformant XQuery processor</a>. Apart from adhering to {http://www.w3.org/TR/xquery/#id-minimal-conformance} {Minimal Conformance}, QtXmlPatterns supports the <a href="http://www.w3.org/TR/xquery/#id-serialization-feature">Serialization Feature</a> and the <a href="http://www.w3.org/TR/xquery/#id-full-axis-feature">Full Axis Feature</a>. QtXmlPatterns passes 97% of the tests in the <a href="http://www.w3.org/XML/Query/test-suite">XML Query Test Suite</a>, and it is expected this will improve over time. Areas where conformance may be questionable and where behavior may be changed in future releases are:</p>
 <ul>
-<li>The regular expressions support is currently not conformant but follows that of Qt's <a href="qregexp.html">QRegExp</a> standard syntax.</li>
-<li>Operators between <tt>xs:time</tt>, <tt>xs:date</tt>, and <tt>xs:dateTime</tt> are incomplete</li>
-<li>Formatting of very large or very small <tt>xs:double</tt>, <tt>xs:float</tt>, and <tt>xs:decimal</tt> values may be wrong.</li>
-<li>Some corner cases involving namespaces and element constructors are wrong.</li>
+<li>Regular expression support is currently not conformant but follows Qt's <a href="qregexp.html">QRegExp</a> standard syntax.</li>
+<li>Operators for <tt>xs:time</tt>, <tt>xs:date</tt>, and <tt>xs:dateTime</tt> are incomplete.</li>
+<li>Formatting of very large or very small <tt>xs:double</tt>, <tt>xs:float</tt>, and <tt>xs:decimal</tt> values may be incorrect.</li>
+<li>Some corner cases involving namespaces and element constructors are incorrect.</li>
 </ul>
-<p>XML 1.0 and XML Namespaces 1.0 are supported, as opposed to the 1.1 versions. When strings are fed into the query using QStrings, the characters must be XML 1.0 characters. Otherwise, the behavior is undefined. This is not checked.</p>
-<p>Since XPath 2.0 is a subset of XQuery 1.0, that is supported too.</p>
+<p>XML 1.0 and XML Namespaces 1.0 are supported, as opposed to the 1.1 versions. When a strings is passed to a query as a <a href="qstring.html">QString</a>, the characters must be XML 1.0 characters. Otherwise, the behavior is undefined. This is not checked.</p>
+<p>Since XPath 2.0 is a subset of XQuery 1.0, it is supported.</p>
 <p>The specifications discusses conformance further: <a href="http://www.w3.org/TR/xquery/">XQuery 1.0: An XML Query Language</a>. W3C's XQuery testing effort can be of interest as well, <a href="http://www.w3.org/XML/Query/test-suite/">XML Query Test Suite</a>.</p>
-<p>Currently <tt>fn:collection()</tt> does not access any data set, and there is no API for providing data through the collection. As a result, evaluating <tt>fn:collection()</tt> returns the empty sequence. We hope to provide functionality for this in a future release of Qt.</p>
-<p>When opening XML files, this is done with support for <tt>xml:id</tt>. In practice this means elements that has an attribute by name <tt>xml:id</tt>, can be looked up fairly quickly with the <tt>fn:id()</tt> function. See <a href="http://www.w3.org/TR/xml-id/">xml:id Version 1.0</a> for details.</p>
-<p><b>Note:</b> Only queries encoded in UTF-8 are supported.</p>
+<p>Currently <tt>fn:collection()</tt> does not access any data set, and there is no API for providing data through the collection. As a result, evaluating <tt>fn:collection()</tt> returns the empty sequence. We intend to provide functionality for this in a future release of Qt.</p>
+<p>Processing of XML files supports <tt>xml:id</tt>. In practice, this allows elements that have an attribute named <tt>xml:id</tt> to be looked up efficiently with the <tt>fn:id()</tt> function. See <a href="http://www.w3.org/TR/xml-id/">xml:id Version 1.0</a> for details.</p>
+<p>Only queries encoded in UTF-8 are supported.</p>
 <a name="resource-loading"></a>
 <h4>Resource Loading</h4>
-<p>When QtXmlPatterns attempts to load XML resources, such as via XQuery's <tt>fn:doc()</tt> function, the following schemes are supported:</p>
+<p>When QtXmlPatterns loads an XML resource, e.g&#x2e;, using <tt>fn:doc()</tt> function, the following schemes are supported:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Scheme Name</th><th>Description</th></tr></thead>
 <tr valign="top" class="odd"><td><tt>file</tt></td><td>Local files.</td></tr>
@@ -251,7 +274,7 @@
 <tr valign="top" class="odd"><td><tt>https</tt></td><td>Resources retrieved via HTTPS. This will succeed if no SSL errors are encountered.</td></tr>
 <tr valign="top" class="even"><td><tt>qrc</tt></td><td>Qt Resource files. Expressing it as an empty scheme, :/..&#x2e;, is not supported.</td></tr>
 </table></p>
-<p>URIs are first passed to <a href="qabstracturiresolver.html">QAbstractUriResolver</a>(see <a href="qxmlquery.html#setUriResolver">QXmlQuery::setUriResolver</a>()) for possible rewrites.</p>
+<p>URIs are first passed to <a href="qabstracturiresolver.html">QAbstractUriResolver</a>. Check <a href="qxmlquery.html#setUriResolver">QXmlQuery::setUriResolver</a>() for possible rewrites.</p>
 <p>
 [Previous: <a href="qtxml.html">QtXml Module</a>]
 [<a href="modules.html">Qt's Modules</a>]
@@ -261,6 +284,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

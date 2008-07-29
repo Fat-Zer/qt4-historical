@@ -156,6 +156,7 @@ public:
     messageChanged() signal which is emitted whenever the temporary
     status message changes.
 
+    \target permanent message
     \e Normal and \e Permanent messages are displayed by creating a
     small widget (QLabel, QProgressBar or even QToolButton) and then
     adding it to the status bar using the addWidget() or the
@@ -536,10 +537,16 @@ void QStatusBar::reformat()
 }
 
 /*!
-    Hides the normal status indications and displays the given \a
-    message for the specified \a timeout milli-seconds (if non-zero),
-    or until clearMessage() or another showMessage() is called,
-    whichever occurs first.
+  
+  Hides the normal status indications and displays the given \a
+  message for the specified number of milli-seconds (\a{timeout}). If
+  \a{timeout} is 0 (default), the \a {message} remains displayed until
+  the clearMessage() slot is called or until the showMessage() slot is
+  called again to change the message.
+
+  Note that showMessage() is called to show temporary explanations of
+  tool tip texts, so passing a \a{timeout} of 0 is not sufficient to
+  display a \l{permanent message}{permanent message}.
 
     \sa messageChanged(), currentMessage(), clearMessage()
 */

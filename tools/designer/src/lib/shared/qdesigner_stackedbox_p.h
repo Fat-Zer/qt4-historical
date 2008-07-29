@@ -127,7 +127,6 @@ private slots:
     void addPage();
     void addPageAfter();
     void changeOrder();
-    void slotCurrentChanged(int index);
 
 protected:
     virtual void gotoPage(int page);

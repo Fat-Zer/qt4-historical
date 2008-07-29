@@ -86,10 +86,10 @@
 
      static void setup(QScriptEngine *e);
 
- private: <span class="comment">//</span> API
+ private: <span class="comment">// API</span>
      static QScriptValue addColorStop(QScriptContext *, QScriptEngine *);
 
- public: <span class="comment">//</span> attributes
+ public: <span class="comment">// attributes</span>
      QGradient gradient;
  };
 
@@ -104,17 +104,17 @@
  {
      Q_OBJECT
 
-     <span class="comment">//</span> compositing
+     <span class="comment">// compositing</span>
      Q_PROPERTY(qreal globalAlpha READ globalAlpha WRITE setGlobalAlpha)
      Q_PROPERTY(QString globalCompositeOperation READ globalCompositeOperation WRITE setGlobalCompositeOperation)
      Q_PROPERTY(QVariant strokeStyle READ strokeStyle WRITE setStrokeStyle)
      Q_PROPERTY(QVariant fillStyle READ fillStyle WRITE setFillStyle)
-     <span class="comment">//</span> line caps/joins
+     <span class="comment">// line caps/joins</span>
      Q_PROPERTY(qreal lineWidth READ lineWidth WRITE setLineWidth)
      Q_PROPERTY(QString lineCap READ lineCap WRITE setLineCap)
      Q_PROPERTY(QString lineJoin READ lineJoin WRITE setLineJoin)
      Q_PROPERTY(qreal miterLimit READ miterLimit WRITE setMiterLimit)
-     <span class="comment">//</span> shadows
+     <span class="comment">// shadows</span>
      Q_PROPERTY(qreal shadowOffsetX READ shadowOffsetX WRITE setShadowOffsetX)
      Q_PROPERTY(qreal shadowOffsetY READ shadowOffsetY WRITE setShadowOffsetY)
      Q_PROPERTY(qreal shadowBlur READ shadowBlur WRITE setShadowBlur)
@@ -129,33 +129,33 @@
 
      void clear();
 
-     <span class="comment">//</span> compositing
-     qreal globalAlpha() const; <span class="comment">//</span> (default 1.0)
-     QString globalCompositeOperation() const; <span class="comment">//</span> (default over)
-     QVariant strokeStyle() const; <span class="comment">//</span> (default black)
-     QVariant fillStyle() const; <span class="comment">//</span> (default black)
+     <span class="comment">// compositing</span>
+     qreal globalAlpha() const; <span class="comment">// (default 1.0)</span>
+     QString globalCompositeOperation() const; <span class="comment">// (default over)</span>
+     QVariant strokeStyle() const; <span class="comment">// (default black)</span>
+     QVariant fillStyle() const; <span class="comment">// (default black)</span>
 
      void setGlobalAlpha(qreal alpha);
      void setGlobalCompositeOperation(const QString &amp;op);
      void setStrokeStyle(const QVariant &amp;style);
      void setFillStyle(const QVariant &amp;style);
 
-     <span class="comment">//</span> line caps/joins
-     qreal lineWidth() const; <span class="comment">//</span> (default 1)
-     QString lineCap() const; <span class="comment">//</span> &quot;butt&quot;, &quot;round&quot;, &quot;square&quot; (default &quot;butt&quot;)
-     QString lineJoin() const; <span class="comment">//</span> &quot;round&quot;, &quot;bevel&quot;, &quot;miter&quot; (default &quot;miter&quot;)
-     qreal miterLimit() const; <span class="comment">//</span> (default 10)
+     <span class="comment">// line caps/joins</span>
+     qreal lineWidth() const; <span class="comment">// (default 1)</span>
+     QString lineCap() const; <span class="comment">// &quot;butt&quot;, &quot;round&quot;, &quot;square&quot; (default &quot;butt&quot;)</span>
+     QString lineJoin() const; <span class="comment">// &quot;round&quot;, &quot;bevel&quot;, &quot;miter&quot; (default &quot;miter&quot;)</span>
+     qreal miterLimit() const; <span class="comment">// (default 10)</span>
 
      void setLineWidth(qreal w);
      void setLineCap(const QString &amp;s);
      void setLineJoin(const QString &amp;s);
      void setMiterLimit(qreal m);
 
-     <span class="comment">//</span> shadows
-     qreal shadowOffsetX() const; <span class="comment">//</span> (default 0)
-     qreal shadowOffsetY() const; <span class="comment">//</span> (default 0)
-     qreal shadowBlur() const; <span class="comment">//</span> (default 0)
-     QColor shadowColor() const; <span class="comment">//</span> (default black)
+     <span class="comment">// shadows</span>
+     qreal shadowOffsetX() const; <span class="comment">// (default 0)</span>
+     qreal shadowOffsetY() const; <span class="comment">// (default 0)</span>
+     qreal shadowBlur() const; <span class="comment">// (default 0)</span>
+     QColor shadowColor() const; <span class="comment">// (default black)</span>
 
      void setShadowOffsetX(qreal x);
      void setShadowOffsetY(qreal y);
@@ -163,8 +163,8 @@
      void setShadowColor(const QColor &amp;c);
 
  public slots:
-     void save(); <span class="comment">//</span> push state on state stack
-     void restore(); <span class="comment">//</span> pop state stack and restore state
+     void save(); <span class="comment">// push state on state stack</span>
+     void restore(); <span class="comment">// pop state stack and restore state</span>
 
      void scale(qreal x, qreal y);
      void rotate(qreal angle);
@@ -180,12 +180,12 @@
                                          qreal r0, qreal x1,
                                          qreal y1, qreal r1);
 
-     <span class="comment">//</span> rects
+     <span class="comment">// rects</span>
      void clearRect(qreal x, qreal y, qreal w, qreal h);
      void fillRect(qreal x, qreal y, qreal w, qreal h);
      void strokeRect(qreal x, qreal y, qreal w, qreal h);
 
-     <span class="comment">//</span> path API
+     <span class="comment">// path API</span>
      void beginPath();
      void closePath();
      void moveTo(qreal x, qreal y);
@@ -203,7 +203,7 @@
      void clip();
      bool isPointInPath(qreal x, qreal y) const;
 
-     <span class="comment">//</span> drawing images
+     <span class="comment">// drawing images</span>
      void drawImage(DomImage *image, qreal dx, qreal dy);
      void drawImage(DomImage *image, qreal dx, qreal dy,
                     qreal dw, qreal dh);
@@ -211,7 +211,7 @@
                     qreal sw, qreal sh, qreal dx, qreal dy,
                     qreal dw, qreal dh);
 
-     <span class="comment">//</span> pixel manipulation
+     <span class="comment">// pixel manipulation</span>
      ImageData getImageData(qreal sx, qreal sy, qreal sw, qreal sh);
      void putImageData(ImageData image, qreal dx, qreal dy);
  private:
@@ -235,6 +235,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

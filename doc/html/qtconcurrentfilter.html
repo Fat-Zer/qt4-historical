@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/concurrent/qtconcurrentfilter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/concurrent/qtconcurrentfilter.cpp -->
 <head>
   <title>Qt 4.4: &lt;QtConcurrentFilter&gt; - Concurrent Filter and Filter-Reduce</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,6 +14,9 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">&lt;QtConcurrentFilter&gt; - Concurrent Filter and Filter-Reduce<br /><span class="subtitle"></span>
 </h1>
+<p>The &lt;QtConcurrentFilter&gt; header provides concurrent Filter and Filter-Reduce. <a href="#details">More...</a></p>
+<ul>
+</ul>
 <a name="Functionsx"></a>
 <h3>Functions</h3>
 <ul>
@@ -67,7 +70,7 @@
 <pre>     QStringList strings = ...;
      QFuture&lt;QString&gt; lowerCaseStrings = QtConcurrent::filtered(strings.constBegin(), strings.constEnd(), allLowerCase);
 
-     // filter in-place only works on non-const iterators
+     <span class="comment">// filter in-place only works on non-const iterators</span>
      QFuture&lt;void&gt; future = QtConcurrent::filter(strings.begin(), strings.end(), allLowerCase);
 
      QFuture&lt;QSet&lt;QString&gt; &gt; dictionary = QtConcurrent::filteredReduced(strings.constBegin(), strings.constEnd(), allLowerCase, addToDictionary);</pre>
@@ -76,7 +79,7 @@
 <p>Each of the above functions has a blocking variant that returns the final result instead of a <a href="qfuture.html">QFuture</a>. You use them in the same way as the asynchronous variants.</p>
 <pre>     QStringList strings = ...;
 
-     // each call blocks until the entire operation is finished
+     <span class="comment">// each call blocks until the entire operation is finished</span>
      QStringList lowerCaseStrings = QtConcurrent::blockingFiltered(strings, allLowerCase);
 
      QtConcurrent::blockingFilter(strings, allLowerCase);
@@ -86,26 +89,26 @@
 <a name="using-member-functions"></a>
 <h4>Using Member Functions</h4>
 <p><a href="qtconcurrentfilter.html#filter">QtConcurrent::filter</a>(), <a href="qtconcurrentfilter.html#filtered">QtConcurrent::filtered</a>(), and <a href="qtconcurrentfilter.html#filteredReduced">QtConcurrent::filteredReduced</a>() accept pointers to member functions. The member function class type must match the type stored in the sequence:</p>
-<pre>     // keep only images with an alpha channel
+<pre>     <span class="comment">// keep only images with an alpha channel</span>
      QList&lt;QImage&gt; images = ...;
-     QFuture&lt;void&gt; = QtConcurrent::filter(strings, &amp;QImage::hasAlphaChannel());
+     QFuture&lt;void&gt; alphaImages = QtConcurrent::filter(strings, &amp;QImage::hasAlphaChannel);
 
-     // keep only gray scale images
+     <span class="comment">// keep only gray scale images</span>
      QList&lt;QImage&gt; images = ...;
-     QFuture&lt;QImage&gt; bgrImages = QtConcurrent::filtered(images, &amp;QImage::isGrayscale());
+     QFuture&lt;QImage&gt; grayscaleImages = QtConcurrent::filtered(images, &amp;QImage::isGrayscale);
 
-     // create a set of all printable characters
+     <span class="comment">// create a set of all printable characters</span>
      QList&lt;QChar&gt; characters = ...;
-     QFuture&lt;QSet&lt;QChar&gt; &gt; set = QtConcurrent::filteredReduced(characters, &amp;QChar::isPrint() , &amp;QSet&lt;QChar&gt;::insert);</pre>
+     QFuture&lt;QSet&lt;QChar&gt; &gt; set = QtConcurrent::filteredReduced(characters, &amp;QChar::isPrint, &amp;QSet&lt;QChar&gt;::insert);</pre>
 <p>Note that when using <a href="qtconcurrentfilter.html#filteredReduced">QtConcurrent::filteredReduced</a>(), you can mix the use of normal and member functions freely:</p>
-<pre>     // can mix normal functions and member functions with QtConcurrent::filteredReduced()
+<pre>     <span class="comment">// can mix normal functions and member functions with QtConcurrent::filteredReduced()</span>
 
-     // create a dictionary of all lower cased strings
+     <span class="comment">// create a dictionary of all lower cased strings</span>
      extern bool allLowerCase(const QString &amp;string);
      QStringList strings = ...;
      QFuture&lt;QSet&lt;int&gt; &gt; averageWordLength = QtConcurrent::filteredReduced(strings, allLowerCase, QSet&lt;QString&gt;::insert);
 
-     // create a collage of all gray scale images
+     <span class="comment">// create a collage of all gray scale images</span>
      extern void addToCollage(QImage &amp;collage, const QImage &amp;grayscaleImage);
      QList&lt;QImage&gt; images = ...;
      QFuture&lt;QImage&gt; collage = QtConcurrent::filteredReduced(images, &amp;QImage::isGrayscale, addToCollage);</pre>
@@ -136,7 +139,7 @@
 <p>As an example, we use <a href="qstring.html#contains">QString::contains</a>():</p>
 <pre>     bool QString::contains(const QRegExp &amp;regexp) const;</pre>
 <p><a href="qstring.html#contains">QString::contains</a>() takes 2 arguments (including the &quot;this&quot; pointer) and can't be used with <a href="qtconcurrentfilter.html#filtered">QtConcurrent::filtered</a>() directly, because <a href="qtconcurrentfilter.html#filtered">QtConcurrent::filtered</a>() expects a function that takes one argument. To use <a href="qstring.html#contains">QString::contains</a>() with <a href="qtconcurrentfilter.html#filtered">QtConcurrent::filtered</a>() we have to provide a value for the <i>regexp</i> argument:</p>
-<pre>     boost::bind(&amp;QString::contains, QRegExp(&quot;^\\S+$&quot;)); // matches strings without whitespace</pre>
+<pre>     boost::bind(&amp;QString::contains, QRegExp(&quot;^\\S+$&quot;)); <span class="comment">// matches strings without whitespace</span></pre>
 <p>The return value from boost::bind() is a function object (functor) with the following signature:</p>
 <pre>     bool contains(const QString &amp;string)</pre>
 <p>This matches what <a href="qtconcurrentfilter.html#filtered">QtConcurrent::filtered</a>() expects, and the complete example becomes:</p>
@@ -165,6 +168,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

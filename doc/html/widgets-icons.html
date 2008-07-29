@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/icons.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/icons.qdoc -->
 <head>
   <title>Qt 4.4: Icons Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -164,12 +164,12 @@
 <p>In the constructor we create the labels displaying the headers and the icon's generated pixmaps, and add them to a grid layout.</p>
 <p>When creating the header labels, we make sure the enums <tt>NumModes</tt> and <tt>NumStates</tt> defined in the <tt>.h</tt> file, correspond with the number of labels that we create. Then if the enums at some point are changed, the <tt>Q_ASSERT()</tt> macro will alert that this part of the <tt>.cpp</tt> file needs to be updated as well.</p>
 <p>If the application is built in debug mode, the <tt>Q_ASSERT()</tt> macro will expand to</p>
-<pre>         if (!condition)
-              qFatal(&quot;ASSERT: &quot;condition&quot; in file ...&quot;);</pre>
+<pre> if (!condition)
+      qFatal(&quot;ASSERT: &quot;condition&quot; in file ...&quot;);</pre>
 <p>In release mode, the macro simply disappear. The mode can be set in the application's <tt>.pro</tt> file. One way to do so is to add an option to <tt>qmake</tt> when building the application:</p>
-<pre>         qmake &quot;CONFIG += debug&quot; icons.pro</pre>
+<pre> qmake &quot;CONFIG += debug&quot; icons.pro</pre>
 <p>or</p>
-<pre>         qmake &quot;CONFIG += release&quot; icons.pro</pre>
+<pre> qmake &quot;CONFIG += release&quot; icons.pro</pre>
 <p>Another approach is to add this line directly to the <tt>.pro</tt> file.</p>
 <pre> void IconPreviewArea::setIcon(const QIcon &amp;icon)
  {
@@ -775,6 +775,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

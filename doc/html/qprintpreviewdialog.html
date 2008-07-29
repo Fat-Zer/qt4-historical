@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/dialogs/qprintpreviewdialog.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/dialogs/qprintpreviewdialog.cpp -->
 <head>
   <title>Qt 4.4: QPrintPreviewDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -25,7 +25,7 @@
 <h3>Public Functions</h3>
 <ul>
 <li><div class="fn"/><b><a href="qprintpreviewdialog.html#QPrintPreviewDialog">QPrintPreviewDialog</a></b> ( QPrinter * <i>printer</i>, QWidget * <i>parent</i> = 0, Qt::WindowFlags <i>flags</i> = 0 )</li>
-<li><div class="fn"/><b><a href="qprintpreviewdialog.html#QPrintPreviewDialog-2">QPrintPreviewDialog</a></b> ( QWidget * <i>parent</i> = 0, Qt::WindowFlags <i>f</i> = 0 )</li>
+<li><div class="fn"/><b><a href="qprintpreviewdialog.html#QPrintPreviewDialog-2">QPrintPreviewDialog</a></b> ( QWidget * <i>parent</i> = 0, Qt::WindowFlags <i>flags</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qprintpreviewdialog.html#dtor.QPrintPreviewDialog">~QPrintPreviewDialog</a></b> ()</li>
 </ul>
 <ul>
@@ -68,7 +68,7 @@
 <ol type="1">
 <li>Create the QPrintPreviewDialog.<p>You can construct a QPrintPreviewDialog with an existing <a href="qprinter.html">QPrinter</a> object, or you can have QPrintPreviewDialog create one for you, which will be the system default printer.</p>
 </li>
-<li>Connect the <a href="qprintpreviewdialog.html#paintRequested">paintRequested</a>() signal to a slot.<p>When the dialog needs to generate a set of preview pages, the <a href="qprintpreviewdialog.html#paintRequested">paintRequested</a>() signal will be emitted. You can use the exact same code for the actual printing as for having the preview generated. Connect a slot to the <a href="qprintpreviewdialog.html#paintRequested">paintRequested</a>() signal, where you draw onto the <a href="qprinter.html">QPrinter</a> object that is passed into the slot.</p>
+<li>Connect the <a href="qprintpreviewdialog.html#paintRequested">paintRequested</a>() signal to a slot.<p>When the dialog needs to generate a set of preview pages, the <a href="qprintpreviewdialog.html#paintRequested">paintRequested</a>() signal will be emitted. You can use the exact same code for the actual printing as for having the preview generated, including calling <a href="qprinter.html#newPage">QPrinter::newPage</a>() to start a new page in the preview. Connect a slot to the <a href="qprintpreviewdialog.html#paintRequested">paintRequested</a>() signal, where you draw onto the <a href="qprinter.html">QPrinter</a> object that is passed into the slot.</p>
 </li>
 <li>Call <a href="qdialog.html#exec">exec</a>().<p>Call <a href="qdialog.html#exec">QPrintPreviewDialog::exec</a>() to show the preview dialog.</p>
 </li>
@@ -80,18 +80,19 @@
 <h3 class="fn"><a name="QPrintPreviewDialog"></a>QPrintPreviewDialog::QPrintPreviewDialog ( <a href="qprinter.html">QPrinter</a> * <i>printer</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>flags</i> = 0 )</h3>
 <p>Constructs a <a href="qprintpreviewdialog.html">QPrintPreviewDialog</a> based on <i>printer</i> and with <i>parent</i> as the parent widget. The widget flags <i>flags</i> are passed on to the <a href="qwidget.html">QWidget</a> constructor.</p>
 <p>See also <a href="qwidget.html#windowFlags-prop">QWidget::setWindowFlags</a>().</p>
-<h3 class="fn"><a name="QPrintPreviewDialog-2"></a>QPrintPreviewDialog::QPrintPreviewDialog ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>f</i> = 0 )</h3>
+<h3 class="fn"><a name="QPrintPreviewDialog-2"></a>QPrintPreviewDialog::QPrintPreviewDialog ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>flags</i> = 0 )</h3>
 <p>This will create an internal <a href="qprinter.html">QPrinter</a> object, which will use the system default printer.</p>
 <a name="//apple_ref/cpp/instm/QPrintPreviewDialog/~QPrintPreviewDialog" />
 <h3 class="fn"><a name="dtor.QPrintPreviewDialog"></a>QPrintPreviewDialog::~QPrintPreviewDialog ()</h3>
 <p>Destroys the <a href="qprintpreviewdialog.html">QPrintPreviewDialog</a>.</p>
 <a name="//apple_ref/cpp/instm/QPrintPreviewDialog/paintRequested" />
 <h3 class="fn"><a name="paintRequested"></a>void QPrintPreviewDialog::paintRequested ( <a href="qprinter.html">QPrinter</a> * <i>printer</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>When the the <a href="qprintpreviewdialog.html">QPrintPreviewDialog</a> needs to generate a set of preview pages, this signal is emitted with the <i>printer</i> you should draw onto.</p>
+<p>This signal is emitted when the <a href="qprintpreviewdialog.html">QPrintPreviewDialog</a> needs to generate a set of preview pages.</p>
+<p>The <i>printer</i> instance supplied is the paint device onto which you should paint the contents of each page, using the <a href="qprinter.html">QPrinter</a> instance in the same way as you would when printing directly.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

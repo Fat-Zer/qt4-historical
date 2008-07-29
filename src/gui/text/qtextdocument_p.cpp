@@ -552,7 +552,7 @@ void QTextDocumentPrivate::move(int pos, int to, int length, QTextUndoCommand::O
     if (pos == to)
         return;
 
-    bool needsInsert = to != -1;
+    const bool needsInsert = to != -1;
 
 #if !defined(QT_NO_DEBUG)
     const bool startAndEndInSameFrame = (frameAt(pos) == frameAt(pos + length - 1));
@@ -640,6 +640,8 @@ void QTextDocumentPrivate::move(int pos, int to, int length, QTextUndoCommand::O
 
 void QTextDocumentPrivate::remove(int pos, int length, QTextUndoCommand::Operation op)
 {
+    if (length == 0)
+        return;
     move(pos, -1, length, op);
 }
 
@@ -1132,6 +1134,11 @@ void QTextDocumentPrivate::documentChange(int from, int length)
     docChangeLength += diff;
 }
 
+/*
+    adjustDocumentChangesAndCursors is called whenever there is an insert or remove of characters.
+    param from is the cursor position in the document
+    param addedOrRemoved is the amount of characters added or removed.  A negative number means characters are removed.
+*/
 void QTextDocumentPrivate::adjustDocumentChangesAndCursors(int from, int addedOrRemoved, QTextUndoCommand::Operation op)
 {
     Q_Q(QTextDocument);
@@ -1560,6 +1567,14 @@ bool QTextDocumentPrivate::ensureMaximumBlockCount()
     compressPieceTable();
 
     return true;
+}
+
+/// This method is called from QTextTable when it is about to remove a table-cell to allow cursors to update their selection.
+void QTextDocumentPrivate::aboutToRemoveCell(int from, int to)
+{
+    Q_ASSERT(from <= to);
+    for (int i = 0; i < cursors.size(); ++i)
+        cursors.at(i)->aboutToRemoveCell(from, to);
 }
 
 QT_END_NAMESPACE

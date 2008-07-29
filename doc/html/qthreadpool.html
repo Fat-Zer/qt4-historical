@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/concurrent/qthreadpool.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/concurrent/qthreadpool.cpp -->
 <head>
   <title>Qt 4.4: QThreadPool Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -80,7 +80,7 @@
          }
 
          HelloWorldTask *hello = new HelloWorldTask();
-         // QThreadPool takes ownership and deletes 'hello' automatically
+         <span class="comment">// QThreadPool takes ownership and deletes 'hello' automatically</span>
          QThreadPool::globalInstance()-&gt;start(hello);</pre>
 <p>QThreadPool deletes the <a href="qrunnable.html">QRunnable</a> automatically by default. Use <a href="qrunnable.html#setAutoDelete">QRunnable::setAutoDelete</a>() to change the auto-deletion flag.</p>
 <p>QThreadPool supports executing the same <a href="qrunnable.html">QRunnable</a> more than once by calling tryStart(this) from within <a href="qrunnable.html#run">QRunnable::run</a>(). If autoDelete is enabled the <a href="qrunnable.html">QRunnable</a> will be deleted when the last thread exits the run function. Calling <a href="qthreadpool.html#start">start</a>() multiple times with the same <a href="qrunnable.html">QRunnable</a> when autoDelete is enabled creates a race condition and is not recommended.</p>
@@ -159,6 +159,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

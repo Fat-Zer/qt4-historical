@@ -172,6 +172,9 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     capacity() to find out how much memory QVector actually
     allocated.
 
+    Note that using non-const operators and functions can cause
+    QVector to do a deep copy of the data. This is due to \l{implicit sharing}.
+
     QVector's value type must be an \l{assignable data type}. This
     covers most data types that are commonly used, but the compiler
     won't let you, for example, store a QWidget as a value; instead,
@@ -421,6 +424,9 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
 
     \a i must be a valid index position in the vector (i.e., 0 <= \a i
     < size()).
+
+    Note that using non-const operators can cause QVector to do a deep
+    copy.
 
     \sa at(), value()
 */

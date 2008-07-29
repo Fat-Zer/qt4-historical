@@ -68,9 +68,8 @@ QT_BEGIN_NAMESPACE
     and is part of Qt's \l{Model/View Programming}{model/view framework}.
 
     The model items contained in the selection range can be obtained
-    by using the items() function. Use
-    QItemSelectionModel::selectedIndexes() to get a list of all
-    selected items for a view.
+    using the indexes() function. Use QItemSelectionModel::selectedIndexes()
+    to get a list of all selected items for a view.
 
     You can determine whether a given model item lies within a
     particular range by using the contains() function. Ranges can also
@@ -355,6 +354,8 @@ QItemSelection::QItemSelection(const QModelIndex &topLeft, const QModelIndex &bo
     Adds the items in the range that extends from the top-left model
     item, specified by the \a topLeft index, to the bottom-right item,
     specified by \a bottomRight to the list.
+
+    \note \a topLeft and \a bottomRight must have the same parent.
 */
 void QItemSelection::select(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
@@ -1333,7 +1334,8 @@ QModelIndexList QItemSelectionModel::selectedRows(int column) const
             for (int r = ranges.at(i).top(); r <= ranges.at(i).bottom(); ++r)
                 indexes.append(ranges.at(i).model()->index(r, column, parent));
     }
-    return indexes;
+    // remove duplicates
+    return indexes.toSet().toList();
 }
 
 /*!
@@ -1354,7 +1356,8 @@ QModelIndexList QItemSelectionModel::selectedColumns(int row) const
             for (int c = ranges.at(i).left(); c <= ranges.at(i).right(); ++c)
                 indexes.append(ranges.at(i).model()->index(row, c, parent));
     }
-    return indexes;
+    // remove duplicates
+    return indexes.toSet().toList();
 }
 
 /*!

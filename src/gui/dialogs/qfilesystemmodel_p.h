@@ -163,6 +163,14 @@ public:
             }
         }
 
+        void retranslateStrings(QFileIconProvider *iconProvider, const QString &path) {
+            if (info)
+                info->displayType = iconProvider->type(QFileInfo(path));
+            for (int i = 0; i < children.count(); ++i) {
+                children[i].retranslateStrings(iconProvider, path + QLatin1Char('/') + children[i].fileName);
+            }
+        }
+
         bool populatedChildren;
         QList<QFileSystemNode> children;
         QList<int> visibleChildren;

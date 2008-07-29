@@ -168,6 +168,7 @@ public:
                         PropertyWindowFilePath,
                         PropertyWindowOpacity,
                         PropertyWindowIconText,
+                        PropertyWindowModality,
                      PropertyWindowModified
     };
 

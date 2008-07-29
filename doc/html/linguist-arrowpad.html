@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/arrowpad.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/arrowpad.qdoc -->
 <head>
   <title>Qt 4.4: Arrow Pad Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -42,7 +42,7 @@
  {
      Q_OBJECT</pre>
 <p>When <tt>lupdate</tt> is run it not only extracts the source texts but it also groups them into contexts. A context is the name of the class in which the source text appears. Thus, in this example, &quot;ArrowPad&quot; is a context: it is the context of the texts in the <tt>ArrowPad</tt> class. The <tt>Q_OBJECT</tt> macro defines <tt>tr(x)</tt> in <tt>ArrowPad</tt> like this:</p>
-<pre>         qApp-&gt;translate(&quot;ArrowPad&quot;, x)</pre>
+<pre> qApp-&gt;translate(&quot;ArrowPad&quot;, x)</pre>
 <p>Knowing which class each source text appears in enables <i>Qt Linguist</i> to group texts that are logically related together, e.g&#x2e; all the text in a dialog will have the context of the dialog's class name and will be shown together. This provides useful information for the translator since the context in which text appears may influence how it should be translated. For some translations keyboard accelerators may need to be changed and having all the source texts in a particular context (class) grouped together makes it easier for the translator to perform any accelerator changes without introducing conflicts.</p>
 <p>In <tt>arrowpad.cpp</tt> we implement the <tt>ArrowPad</tt> class.</p>
 <pre>     upButton = new QPushButton(tr(&quot;&amp;Up&quot;));
@@ -90,10 +90,10 @@
 <p>Save the file and do the same for Dutch working with <tt>arrowpad_nl.ts</tt>:</p>
 <ul>
 <li><tt>ArrowPad</tt><ul>
-<li>&amp;Up - &amp;Boven</li>
+<li>&amp;Up - &amp;Omhoog</li>
 <li>&amp;Left - &amp;Links</li>
 <li>&amp;Right - &amp;Rechts</li>
-<li>&amp;Down - &amp;Onder</li>
+<li>&amp;Down - Omlaa&amp;g</li>
 </ul>
 </li>
 <li><tt>MainWindow</tt><ul>
@@ -105,12 +105,12 @@
 </ul>
 <p>We have to convert the <tt>tt1_fr.ts</tt> and <tt>tt1_nl.ts</tt> translation source files into <tt>.qm</tt> files. We could use <i>Qt Linguist</i> as we've done before; however using the command line tool <tt>lrelease</tt> ensures that <i>all</i> the <tt>.qm</tt> files for the application are created without us having to remember to load and <b>File|Release</b> each one individually from <i>Qt Linguist</i>.</p>
 <p>Type</p>
-<pre>         lrelease arrowpad.pro</pre>
+<pre> lrelease arrowpad.pro</pre>
 <p>This should create both <tt>arrowpad_fr.qm</tt> and <tt>arrowpad_nl.qm</tt>. Set the <tt>LANG</tt> environment variable to <tt>fr</tt>. In Unix, one of the two following commands should work</p>
-<pre>         export LANG=fr
-         setenv LANG fr</pre>
+<pre> export LANG=fr
+ setenv LANG fr</pre>
 <p>In Windows, either modify <tt>autoexec.bat</tt> or run</p>
-<pre>         set LANG=fr</pre>
+<pre> set LANG=fr</pre>
 <p>When you run the program, you should now see the French version:</p>
 <p align="center"><img src="images/linguist-arrowpad_fr.png" /></p><p>Try the same with Dutch, by setting <tt>LANG=nl</tt>. Now the Dutch version should appear:</p>
 <p align="center"><img src="images/linguist-arrowpad_nl.png" /></p><a name="exercises"></a>
@@ -122,6 +122,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -146,7 +146,7 @@
      curveMode-&gt;setText(&quot;Curves&quot;);
      lineMode-&gt;setText(&quot;Lines&quot;);
 
-     <span class="comment">//</span> Layouts
+     <span class="comment">// Layouts</span>
      QVBoxLayout *capGroupLayout = new QVBoxLayout(m_capGroup);
      capGroupLayout-&gt;addWidget(flatCap);
      capGroupLayout-&gt;addWidget(squareCap);
@@ -169,7 +169,7 @@
      pathModeGroupLayout-&gt;addWidget(curveMode);
      pathModeGroupLayout-&gt;addWidget(lineMode);
 
-     <span class="comment">//</span> Connections
+     <span class="comment">// Connections</span>
      connect(flatCap, SIGNAL(clicked()), m_renderer, SLOT(setFlatCap()));
      connect(squareCap, SIGNAL(clicked()), m_renderer, SLOT(setSquareCap()));
      connect(roundCap, SIGNAL(clicked()), m_renderer, SLOT(setRoundCap()));
@@ -188,7 +188,7 @@
      connect(dashDotDotLine, SIGNAL(clicked()), m_renderer, SLOT(setDashDotDotLine()));
      connect(customDashLine, SIGNAL(clicked()), m_renderer, SLOT(setCustomDashLine()));
 
-     <span class="comment">//</span> Set the defaults:
+     <span class="comment">// Set the defaults:</span>
      flatCap-&gt;setChecked(true);
      bevelJoin-&gt;setChecked(true);
      curveMode-&gt;setChecked(true);
@@ -228,7 +228,7 @@
      whatsThisButton-&gt;setText(&quot;What's This?&quot;);
      whatsThisButton-&gt;setCheckable(true);
 
-     <span class="comment">//</span> Layouts:
+     <span class="comment">// Layouts:</span>
      QVBoxLayout *penWidthLayout = new QVBoxLayout(penWidthGroup);
      penWidthLayout-&gt;addWidget(penWidth);
 
@@ -251,7 +251,7 @@
  #endif
      mainGroupLayout-&gt;addWidget(whatsThisButton);
 
-     <span class="comment">//</span> Set up connections
+     <span class="comment">// Set up connections</span>
      connect(animated, SIGNAL(toggled(bool)),
              m_renderer, SLOT(setAnimation(bool)));
 
@@ -266,7 +266,7 @@
      connect(m_renderer, SIGNAL(descriptionEnabledChanged(bool)),
              whatsThisButton, SLOT(setChecked(bool)));
 
-     <span class="comment">//</span> Set the defaults
+     <span class="comment">// Set the defaults</span>
      animated-&gt;setChecked(true);
      penWidth-&gt;setValue(50);
 
@@ -303,7 +303,7 @@
          enableOpenGLButton-&gt;hide();
  #endif
 
-     <span class="comment">//</span> Layouts:
+     <span class="comment">// Layouts:</span>
      QHBoxLayout *penWidthLayout = new QHBoxLayout(0);
      penWidthLayout-&gt;addWidget(penWidthLabel, 0, Qt::AlignRight);
      penWidthLayout-&gt;addWidget(penWidth);
@@ -323,7 +323,7 @@
      QGridLayout *mainLayout = new QGridLayout(this);
      mainLayout-&gt;setMargin(0);
 
-     <span class="comment">//</span> Add spacers around the form items so we don't look stupid at higher resolutions
+     <span class="comment">// Add spacers around the form items so we don't look stupid at higher resolutions</span>
      mainLayout-&gt;addItem(new QSpacerItem(0,0), 0, 0, 1, 4);
      mainLayout-&gt;addItem(new QSpacerItem(0,0), 1, 0, 2, 1);
      mainLayout-&gt;addItem(new QSpacerItem(0,0), 1, 3, 2, 1);
@@ -356,12 +356,12 @@
  {
      setWindowTitle(tr(&quot;Path Stroking&quot;));
 
-     <span class="comment">//</span> Widget construction and property setting
+     <span class="comment">// Widget construction and property setting</span>
      m_renderer = new PathStrokeRenderer(this, smallScreen);
 
      m_controls = new PathStrokeControls(0, m_renderer, smallScreen);
 
-     <span class="comment">//</span> Layouting
+     <span class="comment">// Layouting</span>
      QHBoxLayout *viewLayout = new QHBoxLayout(this);
      viewLayout-&gt;addWidget(m_renderer);
 
@@ -424,7 +424,7 @@
      QPalette pal = palette();
      painter-&gt;setPen(Qt::NoPen);
 
-     <span class="comment">//</span> Construct the path
+     <span class="comment">// Construct the path</span>
      QPainterPath path;
      path.moveTo(m_points.at(0));
 
@@ -444,11 +444,11 @@
          }
      }
 
-     <span class="comment">//</span> Draw the path
+     <span class="comment">// Draw the path</span>
      {
          QColor lg = Qt::red;
 
-         <span class="comment">//</span> The &quot;custom&quot; pen
+         <span class="comment">// The &quot;custom&quot; pen</span>
          if (m_penStyle == Qt::NoPen) {
              QPainterPathStroker stroker;
              stroker.setWidth(m_penWidth);
@@ -474,7 +474,7 @@
      }
 
      if (1) {
-         <span class="comment">//</span> Draw the control points
+         <span class="comment">// Draw the control points</span>
          painter-&gt;setPen(QColor(50, 100, 120, 200));
          painter-&gt;setBrush(QColor(200, 200, 210, 120));
          for (int i=0; i&lt;m_points.size(); ++i) {
@@ -559,14 +559,14 @@
          mouseMoveEvent(e);
      }
 
-     <span class="comment">//</span> If we're not running in small screen mode, always assume we're dragging
+     <span class="comment">// If we're not running in small screen mode, always assume we're dragging</span>
      m_mouseDrag = !m_smallScreen;
      m_mousePress = e-&gt;pos();
  }
 
  void PathStrokeRenderer::mouseMoveEvent(QMouseEvent *e)
  {
-     <span class="comment">//</span> If we've moved more then 25 pixels, assume user is dragging
+     <span class="comment">// If we've moved more then 25 pixels, assume user is dragging</span>
      if (!m_mouseDrag &amp;&amp; QPoint(m_mousePress - e-&gt;pos()).manhattanLength() &gt; 25)
          m_mouseDrag = true;
 
@@ -590,27 +590,27 @@
      if (e-&gt;timerId() == m_timer.timerId()) {
          updatePoints();
          QApplication::syncX();
-     } <span class="comment">//</span> else if (e-&gt;timerId() == m_fpsTimer.timerId()) {
-<span class="comment"> //</span>         emit frameRate(m_frameCount);
-<span class="comment"> //</span>         m_frameCount = 0;
-<span class="comment"> //</span>     }
+     } <span class="comment">// else if (e-&gt;timerId() == m_fpsTimer.timerId()) {</span>
+<span class="comment"> //         emit frameRate(m_frameCount);</span>
+<span class="comment"> //         m_frameCount = 0;</span>
+<span class="comment"> //     }</span>
  }
 
  void PathStrokeRenderer::setAnimation(bool animation)
  {
      m_timer.stop();
-<span class="comment"> //</span>     m_fpsTimer.stop();
+<span class="comment"> //     m_fpsTimer.stop();</span>
 
      if (animation) {
          m_timer.start(25, this);
-<span class="comment"> //</span>         m_fpsTimer.start(1000, this);
-<span class="comment"> //</span>         m_frameCount = 0;
+<span class="comment"> //         m_fpsTimer.start(1000, this);</span>
+<span class="comment"> //         m_frameCount = 0;</span>
      }
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

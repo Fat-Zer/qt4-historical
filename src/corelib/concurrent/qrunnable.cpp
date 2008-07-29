@@ -43,6 +43,7 @@
 
 /*!
     \class QRunnable
+    \since 4.4
     \brief The QRunnable class is the base class for all runnable objects.
 
     The QRunnable class is an interface for representing a task or
@@ -60,7 +61,7 @@
     the last thread exits the run function. Calling QThreadPool::start()
     multiple times with the same QRunnable when autoDelete is enabled
     creates a race condition and is not recommended.
-    
+
     \sa QThreadPool
 */
 

@@ -283,6 +283,7 @@ void PreferencesDialog::addDocumentationLocal()
         m_helpEngine->registerDocumentation(fileName);
         m_ui.registeredDocsListWidget->addItem(ns);
         m_regDocs.append(ns);
+        m_unregDocs.removeAll(ns);
     }
     updateFilterPage();
 }

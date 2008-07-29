@@ -52,6 +52,7 @@
 #include <QtCore/QList>
 #include <QtCore/QMap>
 #include <QtCore/QSet>
+#include <QtCore/QPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -251,12 +252,26 @@ private slots:
     void checkSelectionNow();
 
 private:
+    enum MouseState {
+        NoMouseState,
+        // Double click received
+        MouseDoubleClicked,
+        // Drawing selection rubber band rectangle
+        MouseDrawRubber,
+        // Started a move operation
+        MouseMoveDrag,
+        // Click on a widget whose parent is selected. Defer selection to release
+        MouseDeferredSelection
+    };
+    MouseState m_mouseState;
+
     void init();
     void initializeCoreTools();
 
     int getValue(const QRect &rect, int key, bool size) const;
     int calcValue(int val, bool forward, bool snap, int snapOffset) const;
     QRect applyValue(const QRect &rect, int val, int key, bool size) const;
+    void handleClickSelection(QWidget *managedWidget);
 
     bool frameNeeded(QWidget *w) const;
 
@@ -319,7 +334,6 @@ private:
     QWidget *m_currentWidget;
 
     bool m_blockSelectionChanged;
-    bool m_drawRubber;
 
     QPoint m_rectAnchor;
     QRect m_currRect;
@@ -364,7 +378,6 @@ private:
 
     QList<SetPropertyCommand*> m_moveSelection;
     int m_lastUndoIndex;
-    bool m_dblClicked;
     QPoint m_contextMenuPosition;
 
 private:

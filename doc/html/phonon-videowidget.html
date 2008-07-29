@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: VideoWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">VideoWidget Class Reference<br /><span class="small-subtitle">(Phonon::VideoWidget)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The VideoWidget class provides a widget that is used to display video. <a href="#details">More...</a></p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a> and <a href="phonon-medianode.html">MediaNode</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-videowidget-members.html">List of all members, including inherited members</a></li>
@@ -59,6 +59,7 @@
 </ul>
 <ul>
 <li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>3 public functions inherited from <a href="phonon-medianode.html#public-functions">Phonon::MediaNode</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -108,9 +109,9 @@
 <p>The widget has some possibilities to manipulate the video stream. You can change the <a href="phonon-videowidget.html#brightness-prop">brightness</a>(), <a href="phonon-videowidget.html#hue-prop">hue</a>(), <a href="phonon-videowidget.html#saturation-prop">saturation</a>(), and <a href="phonon-videowidget.html#contrast-prop">contrast</a>().</p>
 <p>The widget can resize the video to fit the widget, the <a href="phonon-videowidget.html#AspectRatio-enum">AspectRatio</a> is kept during resizing. It is also possible to go to fullScreen() mode.</p>
 <p>A typical example of usage follows below:</p>
-<pre>     MediaObject *media = new MediaObject(parent);
-     VideoWidget *vwidget = new VideoWidget(parent);
-     Phonon::createPath(media, vwidget);</pre>
+<pre> MediaObject *media = new MediaObject(parent);
+ VideoWidget *vwidget = new VideoWidget(parent);
+ Phonon::createPath(media, vwidget);</pre>
 <p><b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt;</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -231,6 +232,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

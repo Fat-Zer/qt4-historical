@@ -144,6 +144,7 @@ struct QTLWExtra {
     quint32 wattr;
     quint32 wclass;
     WindowGroupRef group;
+    IconRef windowIcon; // the current window icon, if set with setWindowIcon_sys.
     uint resizer : 4;
     uint isSetGeometry : 1;
     uint isMove : 1;
@@ -192,6 +193,7 @@ struct QWExtra {
 #endif
     uint explicitMinSize : 2;
     uint autoFillBackground : 1;
+    uint nativeChildrenForced : 1;
 
     QPointer<QStyle> style;
     QString styleSheet;
@@ -277,6 +279,7 @@ public:
         DontSubtractOpaqueChildren = 0x10,
         DontSetCompositionMode = 0x20
     };
+    bool isAboutToShow() const;
     QRegion prepareToRender(const QRegion &region, QWidget::RenderFlags renderFlags, QWidget *topLevel);
     void drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QPoint &offset, int flags = DrawAsRoot | DrawRecursive,
                     QPainter *sharedPainter = 0);
@@ -418,6 +421,8 @@ public:
     void getLayoutItemMargins(int *left, int *top, int *right, int *bottom) const;
     void setLayoutItemMargins(int left, int top, int right, int bottom);
     void setLayoutItemMargins(QStyle::SubElement element, const QStyleOption *opt = 0);
+
+    QInputContext *inputContext() const;
 
 #if defined(Q_WS_QWS)
     void moveSurface(QWindowSurface *surface, const QPoint &offset);
@@ -603,6 +608,26 @@ public:
         if (QTLWExtra *tlwExtra = maybeTopData())
             return tlwExtra->proxyWidget;
         return 0;
+    }
+
+    inline void enforceNativeChildren()
+    {
+        if (!extra)
+            createExtra();
+
+        if (extra->nativeChildrenForced)
+            return;
+        extra->nativeChildrenForced = 1;
+
+        for (int i = 0; i < children.size(); ++i) {
+            if (QWidget *child = qobject_cast<QWidget *>(children.at(i)))
+                child->setAttribute(Qt::WA_NativeWindow);
+        }
+    }
+
+    inline bool nativeChildrenForced() const
+    {
+        return extra ? extra->nativeChildrenForced : false;
     }
 
     QSize adjustedSize() const;

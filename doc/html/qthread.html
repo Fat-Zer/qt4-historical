@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/thread/qthread.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/thread/qthread.cpp -->
 <head>
   <title>Qt 4.4: QThread Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -17,7 +17,7 @@
 </h1>
 <p>The QThread class provides platform-independent threads. <a href="#details">More...</a></p>
 <pre> #include &lt;QThread&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
-<p>Inherited by <a href="qt-fulltextsearch-clucene-qhelpsearchindexreader.html">qt::fulltextsearch::clucene::QHelpSearchIndexReader</a>, <a href="qt-fulltextsearch-clucene-qhelpsearchindexwriter.html">qt::fulltextsearch::clucene::QHelpSearchIndexWriter</a>, <a href="qt-fulltextsearch-std-qhelpsearchindexreader.html">qt::fulltextsearch::std::QHelpSearchIndexReader</a>, <a href="qt-fulltextsearch-std-qhelpsearchindexwriter.html">qt::fulltextsearch::std::QHelpSearchIndexWriter</a>, </p>
+<p>Inherited by </p>
 <ul>
 <li><a href="qthread-members.html">List of all members, including inherited members</a></li>
 <li><a href="qthread-qt3.html">Qt 3 support members</a></li>
@@ -109,14 +109,14 @@
          void MyThread::run()
          {
              QTcpSocket socket;
-             // connect QTcpSocket's signals somewhere meaningful
+             <span class="comment">// connect QTcpSocket's signals somewhere meaningful</span>
              ...
              socket.connectToHost(hostName, portNumber);
              exec();
          }</pre>
 <p>This will create a <a href="qtcpsocket.html">QTcpSocket</a> in the thread and then execute the thread's event loop. Use the <a href="qthread.html#start">start</a>() method to begin execution. Execution ends when you return from <a href="qthread.html#run">run</a>(), just as an application does when it leaves main(). QThread will notifiy you via a signal when the thread is <a href="qthread.html#started">started</a>(), <a href="qthread.html#finished">finished</a>(), and <a href="qthread.html#terminated">terminated</a>(), or you can use <a href="qthread.html#isFinished">isFinished</a>() and <a href="qthread.html#isRunning">isRunning</a>() to query the state of the thread. Use <a href="qthread.html#wait">wait</a>() to block until the thread has finished execution.</p>
 <p>Each thread gets its own stack from the operating system. The operating system also determines the default size of the stack. You can use <a href="qthread.html#setStackSize">setStackSize</a>() to set a custom stack size.</p>
-<p>Each QThread can have its own event loop. You can start the event loop by calling <a href="qthread.html#exec">exec</a>(); you can stop it by calling <a href="qthread.html#exit">exit</a>() or <a href="qthread.html#quit">quit</a>(). Having an event loop in a thread makes it possible to connect signals from other threads to slots in this threads, using a mechanism called <a href="qt.html#ConnectionType-enum">queued connections</a>. It also makes it possible to use classes that require the event loop, such as <a href="qtimer.html">QTimer</a> and <a href="qtcpsocket.html">QTcpSocket</a>, in the thread. Note, however, that is is not possible to use any widget classes in the thread.</p>
+<p>Each QThread can have its own event loop. You can start the event loop by calling <a href="qthread.html#exec">exec</a>(); you can stop it by calling <a href="qthread.html#exit">exit</a>() or <a href="qthread.html#quit">quit</a>(). Having an event loop in a thread makes it possible to connect signals from other threads to slots in this thread, using a mechanism called <a href="qt.html#ConnectionType-enum">queued connections</a>. It also makes it possible to use classes that require the event loop, such as <a href="qtimer.html">QTimer</a> and <a href="qtcpsocket.html">QTcpSocket</a>, in the thread. Note, however, that it is not possible to use any widget classes in the thread.</p>
 <p>In extreme cases, you may want to forcibly <a href="qthread.html#terminate">terminate</a>() an executing thread. However, doing so is dangerous and discouraged. Please read the documentation for <a href="qthread.html#terminate">terminate</a>() and <a href="qthread.html#setTerminationEnabled">setTerminationEnabled</a>() for detailed information.</p>
 <p>The static functions <a href="qthread.html#currentThreadId">currentThreadId</a>() and <a href="qthread.html#currentThread">currentThread</a>() return identifiers for the currently executing thread. The former returns a platform specific ID for the thread; the latter returns a QThread pointer.</p>
 <p>QThread also provides platform independent sleep functions in varying resolutions. Use <a href="qthread.html#sleep">sleep</a>() for full second resolution, <a href="qthread.html#msleep">msleep</a>() for millisecond resolution, and <a href="qthread.html#usleep">usleep</a>() for microsecond resolution.</p>
@@ -270,6 +270,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

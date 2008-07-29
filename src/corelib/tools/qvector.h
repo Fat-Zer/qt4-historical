@@ -67,7 +67,7 @@ struct Q_CORE_EXPORT QVectorData
     QBasicAtomicInt ref;
     int alloc;
     int size;
-#if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
+#if defined(QT_ARCH_SPARC) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
     // workaround for bug in gcc 3.4.2
     uint sharable;
     uint capacity;
@@ -87,7 +87,7 @@ struct QVectorTypedData
     QBasicAtomicInt ref;
     int alloc;
     int size;
-#if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
+#if defined(QT_ARCH_SPARC) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
     // workaround for bug in gcc 3.4.2
     uint sharable;
     uint capacity;

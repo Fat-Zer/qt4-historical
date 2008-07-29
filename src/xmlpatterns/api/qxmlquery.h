@@ -69,7 +69,7 @@ class QIODevice;
 namespace QPatternistSDK
 {
     class TestCase;
-};
+}
 
 class Q_XMLPATTERNS_EXPORT QXmlQuery
 {

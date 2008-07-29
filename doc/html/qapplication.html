@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qapplication.cpp -->
 <head>
   <title>Qt 4.4: QApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -386,8 +386,8 @@
 <a name="//apple_ref/cpp/clm/QApplication/wheelScrollLines" />
 <a name="//apple_ref/cpp/clm/QApplication/setWheelScrollLines" />
 <h3 class="fn"><a name="wheelScrollLines-prop"></a>wheelScrollLines : int</h3>
-<p>This property holds the number of lines to scroll when the mouse wheel is rotated.</p>
-<p>If this number exceeds the number of visible lines in a certain widget, the widget should interpret the scroll operation as a single &quot;page up&quot; or &quot;page down&quot; operation instead.</p>
+<p>This property holds the number of lines to scroll a widget, when the mouse wheel is rotated.</p>
+<p>If the value exceeds the widget's number of visible lines, the widget should interpret the scroll operation as a single <i>page up</i> or <i>page down</i>. If the widget is an <a href="qabstractitemview.html">item view class</a>, then the result of scrolling one <i>line</i> depends on the setting of the widget's <a href="qabstractitemview.html#verticalScrollMode-prop">scroll mode</a>. Scroll one <i>line</i> can mean <a href="qabstractitemview.html#ScrollMode-enum">scroll one item</a> or <a href="qabstractitemview.html#ScrollMode-enum">scroll one pixel</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int wheelScrollLines ()</b></li>
@@ -467,10 +467,10 @@
              QApplication app(argc, argv, useGUI);
 
              if (useGUI) {
-                // start GUI version
+                <span class="comment">// start GUI version</span>
                 ...
              } else {
-                // start non-GUI version
+                <span class="comment">// start non-GUI version</span>
                 ...
              }
              return app.exec();
@@ -809,7 +809,7 @@
 <p>Application cursors are stored on an internal stack. setOverrideCursor() pushes the cursor onto the stack, and <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>() pops the active cursor off the stack. <a href="qapplication.html#changeOverrideCursor">changeOverrideCursor</a>() changes the curently active application override cursor. Every setOverrideCursor() must eventually be followed by a corresponding <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>(), otherwise the stack will never be emptied.</p>
 <p>Example:</p>
 <pre>         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-         calculateHugeMandelbrot();              // lunch time...
+         calculateHugeMandelbrot();              <span class="comment">// lunch time...</span>
          QApplication::restoreOverrideCursor();</pre>
 <p>See also <a href="qapplication.html#overrideCursor">overrideCursor</a>(), <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>(), <a href="qapplication.html#changeOverrideCursor">changeOverrideCursor</a>(), and <a href="qwidget.html#cursor-prop">QWidget::setCursor</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/setPalette" />
@@ -826,6 +826,7 @@
 <pre>         QApplication::setStyle(new QWindowsStyle);</pre>
 <p>When switching application styles, the color palette is set back to the initial colors or the system defaults. This is necessary since certain styles have to adapt the color palette to be fully style-guide compliant.</p>
 <p>Note that setting the style before a palette has been set (i.e&#x2e; before creating <a href="qapplication.html">QApplication</a>) will cause the application to use <a href="qstyle.html#standardPalette">QStyle::standardPalette</a>() for the palette.</p>
+<p><b>Warning:</b> Qt style sheets are currently not supported for custom <a href="qstyle.html">QStyle</a> subclasses. We plan to address this in some future release.</p>
 <p>See also <a href="qapplication.html#style">style</a>(), <a href="qstyle.html">QStyle</a>, <a href="qapplication.html#setPalette">setPalette</a>(), and <a href="qapplication.html#desktopSettingsAware">desktopSettingsAware</a>().</p>
 <h3 class="fn"><a name="setStyle-2"></a><a href="qstyle.html">QStyle</a> * QApplication::setStyle ( const <a href="qstring.html">QString</a> &amp; <i>style</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -893,6 +894,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

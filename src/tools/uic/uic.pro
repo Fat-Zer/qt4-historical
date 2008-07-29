@@ -21,6 +21,7 @@ DEFINES += QT_NO_CAST_FROM_ASCII QT_NO_CAST_TO_ASCII
 win32:DEFINES += QT_NODLL
 win32:LIBS += -luser32
 
+!contains(QT_CONFIG, qt3support):DEFINES += QT_NO_QT3_SUPPORT
 
 CONFIG -= qt
 INCLUDEPATH	 = ../../corelib/arch/generic $$QT_BUILD_TREE/include . \
@@ -79,7 +80,6 @@ unix:SOURCES += ../../corelib/io/qfsfileengine_unix.cpp ../../corelib/io/qfsfile
 win32:SOURCES += ../../corelib/io/qfsfileengine_win.cpp ../../corelib/io/qfsfileengine_iterator_win.cpp
 
 macx: {
-   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.3 #enables weak linking for 10.3 (exported)
    SOURCES += ../../corelib/kernel/qcore_mac.cpp
    LIBS += -framework CoreServices
 }

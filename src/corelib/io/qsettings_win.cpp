@@ -61,6 +61,12 @@ QT_BEGIN_NAMESPACE
 ** Some convenience functions
 */
 
+/*
+  We don't use KEY_ALL_ACCESS because it gives more rights than what we
+  need. See task 199061.
+ */
+static const REGSAM registryPermissions = KEY_READ | KEY_WRITE;
+
 static QString keyPath(const QString &rKey)
 {
     int idx = rKey.lastIndexOf(QLatin1Char('\\'));
@@ -201,7 +207,7 @@ static HKEY createOrOpenKey(HKEY parentHandle, REGSAM perms, const QString &rSub
 static HKEY createOrOpenKey(HKEY parentHandle, const QString &rSubKey, bool *readOnly)
 {
     // try to open or create it read/write
-    HKEY resultHandle = createOrOpenKey(parentHandle, KEY_ALL_ACCESS, rSubKey);
+    HKEY resultHandle = createOrOpenKey(parentHandle, registryPermissions, rSubKey);
     if (resultHandle != 0) {
         if (readOnly != 0)
             *readOnly = false;
@@ -331,7 +337,7 @@ static void deleteChildGroups(HKEY parentHandle)
         QString group = childGroups.at(i);
 
         // delete subgroups in group
-        HKEY childGroupHandle = openKey(parentHandle, KEY_ALL_ACCESS, group);
+        HKEY childGroupHandle = openKey(parentHandle, registryPermissions, group);
         if (childGroupHandle == 0)
             continue;
         deleteChildGroups(childGroupHandle);
@@ -655,7 +661,7 @@ void QWinSettingsPrivate::remove(const QString &uKey)
 
     // try to delete value bar in key foo
     LONG res;
-    HKEY handle = openKey(writeHandle(), KEY_ALL_ACCESS, keyPath(rKey));
+    HKEY handle = openKey(writeHandle(), registryPermissions, keyPath(rKey));
     if (handle != 0) {
         QT_WA( {
             res = RegDeleteValueW(handle, reinterpret_cast<const wchar_t *>(keyName(rKey).utf16()));
@@ -666,7 +672,7 @@ void QWinSettingsPrivate::remove(const QString &uKey)
     }
 
     // try to delete key foo/bar and all subkeys
-    handle = openKey(writeHandle(), KEY_ALL_ACCESS, rKey);
+    handle = openKey(writeHandle(), registryPermissions, rKey);
     if (handle != 0) {
         deleteChildGroups(handle);
 
@@ -725,7 +731,7 @@ void QWinSettingsPrivate::set(const QString &uKey, const QVariant &value)
 
     QString rKey = escapedKey(uKey);
 
-    HKEY handle = createOrOpenKey(writeHandle(), KEY_ALL_ACCESS, keyPath(rKey));
+    HKEY handle = createOrOpenKey(writeHandle(), registryPermissions, keyPath(rKey));
     if (handle == 0) {
         setStatus(QSettings::AccessError);
         return;

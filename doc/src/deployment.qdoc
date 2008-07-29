@@ -108,7 +108,10 @@
         \o \l {QtXmlPatterns}
         \o \l {QtDesigner}
         \o \l {QtAssistant}
+    \row
         \o \l {Qt3Support}
+        \o \l {QtWebKit}
+        \o \l {Phonon}
     \endtable
 
     Since Qt is not a system library, it has to be redistributed along

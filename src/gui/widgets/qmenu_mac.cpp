@@ -598,6 +598,8 @@ static EventTypeSpec menu_menu_events[] = {
 
 OSStatus qt_mac_menu_event(EventHandlerCallRef er, EventRef event, void *)
 {
+    QScopedLoopLevelCounter loopLevelCounter(QApplicationPrivate::instance()->threadData);
+
     bool handled_event = true;
     UInt32 ekind = GetEventKind(event), eclass = GetEventClass(event);
     switch(eclass) {

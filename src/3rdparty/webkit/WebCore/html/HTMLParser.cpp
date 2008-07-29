@@ -1447,7 +1447,7 @@ void HTMLParser::reportErrorToConsole(HTMLParserErrorCode errorCode, const Atomi
         else if (*tagName1 == "#comment")
             tag1 = "<!-- comment -->";
         else
-            tag1 = (closeTags ? "</" : "<") + *tagName1 + ">";
+            tag1 = String(closeTags ? "</" : "<") + *tagName1 + String(">");
     }
     if (tagName2) {
         if (*tagName2 == "#text")
@@ -1455,7 +1455,7 @@ void HTMLParser::reportErrorToConsole(HTMLParserErrorCode errorCode, const Atomi
         else if (*tagName2 == "#comment")
             tag2 = "<!-- comment -->";
         else
-            tag2 = (closeTags ? "</" : "<") + *tagName2 + ">";
+            tag2 = String(closeTags ? "</" : "<") + *tagName2 + String(">");
     }
         
     const char* errorMsg = htmlParserErrorMessageTemplate(errorCode);

@@ -94,6 +94,7 @@ public:
     bool autoStartHandshake;
     bool connectionEncrypted;
     bool ignoreSslErrors;
+    bool* readyReadEmittedPointer;
 
     QRingBuffer readBuffer;
     QRingBuffer writeBuffer;

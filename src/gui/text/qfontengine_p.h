@@ -155,6 +155,7 @@ public:
 
     /* returns 0 as glyph index for non existant glyphs */
     virtual bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const = 0;
+    virtual bool stringToCMap(const QChar *str, int len, HB_Glyph *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
 
     virtual void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const {}
     virtual void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
@@ -325,6 +326,8 @@ public:
     ~QFontEngineMulti();
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs,
+                      QTextEngine::ShaperFlags flags) const;
+    bool stringToCMap(const QChar *str, int len, HB_Glyph *glyphs, int *nglyphs,
                       QTextEngine::ShaperFlags flags) const;
 
     glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);

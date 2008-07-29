@@ -70,51 +70,32 @@ Calculator::Calculator(QWidget *parent)
     display->setFont(font);
 //! [2]
 
-//! [3]
-    QColor digitColor(150, 205, 205);
-//! [3] //! [4]
-    QColor backspaceColor(225, 185, 135);
-    QColor memoryColor(100, 155, 155);
-    QColor operatorColor(155, 175, 195);
-
+//! [4]
     for (int i = 0; i < NumDigitButtons; ++i) {
-	digitButtons[i] = createButton(QString::number(i), digitColor,
-                                       SLOT(digitClicked()));
+	digitButtons[i] = createButton(QString::number(i), SLOT(digitClicked()));
     }
 
-    Button *pointButton = createButton(tr("."), digitColor, SLOT(pointClicked()));
-    Button *changeSignButton = createButton(tr("\261"), digitColor, SLOT(changeSignClicked()));
+    Button *pointButton = createButton(tr("."), SLOT(pointClicked()));
+    Button *changeSignButton = createButton(tr("\261"), SLOT(changeSignClicked()));
 
-    Button *backspaceButton = createButton(tr("Backspace"), backspaceColor,
-                                   SLOT(backspaceClicked()));
-    Button *clearButton = createButton(tr("Clear"), backspaceColor, SLOT(clear()));
-    Button *clearAllButton = createButton(tr("Clear All"), backspaceColor.light(120),
-                                  SLOT(clearAll()));
+    Button *backspaceButton = createButton(tr("Backspace"), SLOT(backspaceClicked()));
+    Button *clearButton = createButton(tr("Clear"), SLOT(clear()));
+    Button *clearAllButton = createButton(tr("Clear All"), SLOT(clearAll()));
 
-    Button *clearMemoryButton = createButton(tr("MC"), memoryColor,
-                                     SLOT(clearMemory()));
-    Button *readMemoryButton = createButton(tr("MR"), memoryColor, SLOT(readMemory()));
-    Button *setMemoryButton = createButton(tr("MS"), memoryColor, SLOT(setMemory()));
-    Button *addToMemoryButton = createButton(tr("M+"), memoryColor,
-                                     SLOT(addToMemory()));
+    Button *clearMemoryButton = createButton(tr("MC"), SLOT(clearMemory()));
+    Button *readMemoryButton = createButton(tr("MR"), SLOT(readMemory()));
+    Button *setMemoryButton = createButton(tr("MS"), SLOT(setMemory()));
+    Button *addToMemoryButton = createButton(tr("M+"), SLOT(addToMemory()));
 
-    Button *divisionButton = createButton(tr("\367"), operatorColor,
-                                  SLOT(multiplicativeOperatorClicked()));
-    Button *timesButton = createButton(tr("\327"), operatorColor,
-                               SLOT(multiplicativeOperatorClicked()));
-    Button *minusButton = createButton(tr("-"), operatorColor,
-                               SLOT(additiveOperatorClicked()));
-    Button *plusButton = createButton(tr("+"), operatorColor,
-                              SLOT(additiveOperatorClicked()));
+    Button *divisionButton = createButton(tr("\367"), SLOT(multiplicativeOperatorClicked()));
+    Button *timesButton = createButton(tr("\327"), SLOT(multiplicativeOperatorClicked()));
+    Button *minusButton = createButton(tr("-"), SLOT(additiveOperatorClicked()));
+    Button *plusButton = createButton(tr("+"), SLOT(additiveOperatorClicked()));
 
-    Button *squareRootButton = createButton(tr("Sqrt"), operatorColor,
-                                    SLOT(unaryOperatorClicked()));
-    Button *powerButton = createButton(tr("x\262"), operatorColor,
-                               SLOT(unaryOperatorClicked()));
-    Button *reciprocalButton = createButton(tr("1/x"), operatorColor,
-                                    SLOT(unaryOperatorClicked()));
-    Button *equalButton = createButton(tr("="), operatorColor.light(120),
-                               SLOT(equalClicked()));
+    Button *squareRootButton = createButton(tr("Sqrt"), SLOT(unaryOperatorClicked()));
+    Button *powerButton = createButton(tr("x\262"), SLOT(unaryOperatorClicked()));
+    Button *reciprocalButton = createButton(tr("1/x"), SLOT(unaryOperatorClicked()));
+    Button *equalButton = createButton(tr("="), SLOT(equalClicked()));
 //! [4]
 
 //! [5]
@@ -244,7 +225,6 @@ void Calculator::additiveOperatorClicked()
 
 //! [18]
 void Calculator::multiplicativeOperatorClicked()
-//! [18] //! [19]
 {
     Button *clickedButton = qobject_cast<Button *>(sender());
     QString clickedOperator = clickedButton->text();
@@ -263,11 +243,10 @@ void Calculator::multiplicativeOperatorClicked()
     pendingMultiplicativeOperator = clickedOperator;
     waitingForOperand = true;
 }
-//! [19]
+//! [18]
 
 //! [20]
 void Calculator::equalClicked()
-//! [20] //! [21]
 {
     double operand = display->text().toDouble();
 
@@ -294,11 +273,10 @@ void Calculator::equalClicked()
     sumSoFar = 0.0;
     waitingForOperand = true;
 }
-//! [21]
+//! [20]
 
 //! [22]
 void Calculator::pointClicked()
-//! [22] //! [23]
 {
     if (waitingForOperand)
         display->setText("0");
@@ -306,11 +284,10 @@ void Calculator::pointClicked()
         display->setText(display->text() + tr("."));
     waitingForOperand = false;
 }
-//! [23]
+//! [22]
 
 //! [24]
 void Calculator::changeSignClicked()
-//! [24] //! [25]
 {
     QString text = display->text();
     double value = text.toDouble();
@@ -322,11 +299,10 @@ void Calculator::changeSignClicked()
     }
     display->setText(text);
 }
-//! [25]
+//! [24]
 
 //! [26]
 void Calculator::backspaceClicked()
-//! [26] //! [27]
 {
     if (waitingForOperand)
         return;
@@ -339,11 +315,10 @@ void Calculator::backspaceClicked()
     }
     display->setText(text);
 }
-//! [27]
+//! [26]
 
 //! [28]
 void Calculator::clear()
-//! [28] //! [29]
 {
     if (waitingForOperand)
         return;
@@ -351,11 +326,10 @@ void Calculator::clear()
     display->setText("0");
     waitingForOperand = true;
 }
-//! [29]
+//! [28]
 
 //! [30]
 void Calculator::clearAll()
-//! [30] //! [31]
 {
     sumSoFar = 0.0;
     factorSoFar = 0.0;
@@ -364,11 +338,10 @@ void Calculator::clearAll()
     display->setText("0");
     waitingForOperand = true;
 }
-//! [31]
+//! [30]
 
 //! [32]
 void Calculator::clearMemory()
-//! [32] //! [33]
 {
     sumInMemory = 0.0;
 }
@@ -390,30 +363,26 @@ void Calculator::addToMemory()
     equalClicked();
     sumInMemory += display->text().toDouble();
 }
-
-//! [33] //! [34]
-Button *Calculator::createButton(const QString &text, const QColor &color,
-//! [34] //! [35]
-                                 const char *member)
+//! [32]
+//! [34]
+Button *Calculator::createButton(const QString &text, const char *member)
 {
-    Button *button = new Button(text, color);
+    Button *button = new Button(text);
     connect(button, SIGNAL(clicked()), this, member);
     return button;
 }
-//! [35]
+//! [34]
 
 //! [36]
 void Calculator::abortOperation()
-//! [36] //! [37]
 {
     clearAll();
     display->setText(tr("####"));
 }
-//! [37]
+//! [36]
 
 //! [38]
 bool Calculator::calculate(double rightOperand, const QString &pendingOperator)
-//! [38] //! [39]
 {
     if (pendingOperator == tr("+")) {
         sumSoFar += rightOperand;
@@ -428,4 +397,4 @@ bool Calculator::calculate(double rightOperand, const QString &pendingOperator)
     }
     return true;
 }
-//! [39]
+//! [38]

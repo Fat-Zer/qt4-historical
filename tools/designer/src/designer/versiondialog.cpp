@@ -166,7 +166,7 @@ VersionDialog::VersionDialog(QWidget *parent)
 #endif
             )
 {
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint | Qt::MSWindowsFixedSizeDialogHint);
+    setWindowFlags((windowFlags() & ~Qt::WindowContextHelpButtonHint) | Qt::MSWindowsFixedSizeDialogHint);
     QGridLayout *layout = new QGridLayout(this);
     VersionLabel *label = new VersionLabel;
     QLabel *lbl = new QLabel;

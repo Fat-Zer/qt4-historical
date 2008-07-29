@@ -66,7 +66,14 @@ UnaryExpression::UnaryExpression(const AtomicMathematician::Operator op,
 Item UnaryExpression::evaluateSingleton(const DynamicContext::Ptr &context) const
 {
     if(operatorID() == AtomicMathematician::Substract)
-        return m_operand2->evaluateSingleton(context).as<Numeric>()->toNegated();
+    {
+        const Item item(m_operand2->evaluateSingleton(context));
+
+        if(item)
+            return item.as<Numeric>()->toNegated();
+        else
+            return Item();
+    }
     else
         return m_operand2->evaluateSingleton(context);
 }

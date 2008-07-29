@@ -47,6 +47,7 @@
     support for QGraphicsItem.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     The QGraphicsItemAnimation class animates a QGraphicsItem. You can
     schedule changes to the item's transformation matrix at
@@ -71,7 +72,7 @@
     An example animation with a timeline follows:
 
     \snippet doc/src/snippets/timeline/main.cpp 0
-    
+
     Note that steps lie between 0.0 and 1.0. It may be necessary to use
     \l{QTimeLine::}{setUpdateInterval()}. The default update interval
     is 40 ms. A scheduled transformation cannot be removed when set,

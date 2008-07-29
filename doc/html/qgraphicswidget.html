@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/graphicsview/qgraphicswidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/graphicsview/qgraphicswidget.cpp -->
 <head>
   <title>Qt 4.4: QGraphicsWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -159,7 +159,7 @@
 <tr valign="top" class="even"><td>The widget is already visible by default; you do not have to call <a href="qgraphicsitem.html#show">show</a>() to display the widget.</td><td><a href="qwidget.html">QWidget</a> is hidden by default until you call <a href="qgraphicsitem.html#show">show</a>().</td></tr>
 <tr valign="top" class="odd"><td>A subset of widget attributes are supported.</td><td>All widget attributes are supported.</td></tr>
 <tr valign="top" class="even"><td>A top-level item's style defaults to QGraphicsScene::style</td><td>A top-level widget's style defaults to QApplication::style</td></tr>
-<tr valign="top" class="odd"><td>Graphics View provides a custom DnD framework, different from <a href="qwidget.html">QWidget</a>.</td><td>Standard DnD framework.</td></tr>
+<tr valign="top" class="odd"><td>Graphics View provides a custom drag and drop framework, different from <a href="qwidget.html">QWidget</a>.</td><td>Standard drag and drop framework.</td></tr>
 <tr valign="top" class="even"><td>Widget items do not support modality.</td><td>Full modality support.</td></tr>
 </table></p>
 <p>QGraphicsWidget supports a subset of Qt's widget attributes, (<a href="qt.html#WidgetAttribute-enum">Qt::WidgetAttribute</a>), as shown in the table below. Any attributes not listed in this table are unsupported, or otherwise unused.</p>
@@ -226,7 +226,7 @@
 <p>This property holds the widgets' palette.</p>
 <p>This property provides the widget's palette. The palette provides colors and brushes for color groups (e.g&#x2e;, <a href="qpalette.html#ColorRole-enum">QPalette::Button</a>) and states (e.g&#x2e;, <a href="qpalette.html#ColorGroup-enum">QPalette::Inactive</a>), loosely defining the general look of the widget and its children.</p>
 <p><a href="qpalette.html">QPalette</a> consists of color groups that have been explicitly defined, and groups that are implicitly inherited from the widget's parent. Because of this, palette() can return a different palette than what has been set with setPalette(). This scheme allows you to define single entries in a palette without affecting the palette's inherited entries.</p>
-<p>When a widget's palette changes, it resolves its entries against its parent widget, or if it doesn't have a parent widget, it resolves against the scene. It then sends itself a <a href="qevent.html#Type-enum">PaletteChange</a> event, and notifies all its descendents so they can resolve their palettes as well.</p>
+<p>When a widget's palette changes, it resolves its entries against its parent widget, or if it doesn't have a parent widget, it resolves against the scene. It then sends itself a <a href="qevent.html#Type-enum">PaletteChange</a> event, and notifies all its descendants so they can resolve their palettes as well.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QPalette palette () const</b></li>
@@ -309,7 +309,7 @@
 <p>See also <a href="qgraphicswidget.html#focusPolicy-prop">focusPolicy</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/focusWidget" />
 <h3 class="fn"><a name="focusWidget"></a>QGraphicsWidget * QGraphicsWidget::focusWidget () const</h3>
-<p>If this widget, a child or descendent of this widget currently has input focus, this function will return a pointer to that widget. If no descendent has input focus, 0 is returned.</p>
+<p>If this widget, a child or descendant of this widget currently has input focus, this function will return a pointer to that widget. If no descendant has input focus, 0 is returned.</p>
 <p>See also <a href="qwidget.html#focusWidget">QWidget::focusWidget</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/getContentsMargins" />
 <h3 class="fn"><a name="getContentsMargins"></a>void QGraphicsWidget::getContentsMargins ( <a href="qtglobal.html#qreal-typedef">qreal</a> * <i>left</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> * <i>top</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> * <i>right</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> * <i>bottom</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -351,7 +351,7 @@
          {
              QGraphicsWidget::initStyleOption(option);
              if (QStyleOptionGroupBox *box = qstyleoption_cast&lt;QStyleOptionGroupBox *&gt;(option)) {
-                 // Add group box specific state.
+                 <span class="comment">// Add group box specific state.</span>
                  box-&gt;flat = isFlat();
                  ...
              }
@@ -359,8 +359,9 @@
 <p>See also <a href="qstyleoption.html#initFrom">QStyleOption::initFrom</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/isActiveWindow" />
 <h3 class="fn"><a name="isActiveWindow"></a>bool QGraphicsWidget::isActiveWindow () const</h3>
-<p>Returns true if this widget's window is the active window.</p>
+<p>Returns true if this widget's window is in the active window, or if the widget does not have a window but is in an active scene (i.e&#x2e;, a scene that currently has focus).</p>
 <p>The active window is the window that either contains a child widget that currently has input focus, or that itself has input focus.</p>
+<p>See also <a href="qgraphicsscene.html#activeWindow">QGraphicsScene::activeWindow</a>() and <a href="qgraphicsscene.html#setActiveWindow">QGraphicsScene::setActiveWindow</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/layout" />
 <h3 class="fn"><a name="layout"></a><a href="qgraphicslayout.html">QGraphicsLayout</a> * QGraphicsWidget::layout () const</h3>
 <p>Returns this widget's layout, or 0 if no layout is currently managing this widget.</p>
@@ -432,14 +433,14 @@
 <h3 class="fn"><a name="setTabOrder"></a>void QGraphicsWidget::setTabOrder ( QGraphicsWidget * <i>first</i>, QGraphicsWidget * <i>second</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Moves the <i>second</i> widget around the ring of focus widgets so that keyboard focus moves from the <i>first</i> widget to the <i>second</i> widget when the Tab key is pressed.</p>
 <p>Note that since the tab order of the <i>second</i> widget is changed, you should order a chain like this:</p>
-<pre>         setTabOrder(a, b); // a to b
-         setTabOrder(b, c); // a to b to c
-         setTabOrder(c, d); // a to b to c to d</pre>
+<pre>         setTabOrder(a, b); <span class="comment">// a to b</span>
+         setTabOrder(b, c); <span class="comment">// a to b to c</span>
+         setTabOrder(c, d); <span class="comment">// a to b to c to d</span></pre>
 <p><i>not</i> like this:</p>
-<pre>         // WRONG
-         setTabOrder(c, d); // c to d
-         setTabOrder(a, b); // a to b AND c to d
-         setTabOrder(b, c); // a to b to c, but not c to d</pre>
+<pre>         <span class="comment">// WRONG</span>
+         setTabOrder(c, d); <span class="comment">// c to d</span>
+         setTabOrder(a, b); <span class="comment">// a to b AND c to d</span>
+         setTabOrder(b, c); <span class="comment">// a to b to c, but not c to d</span></pre>
 <p>If <i>first</i> is 0, this indicates that <i>second</i> should be the first widget to receive input focus should the scene gain Tab focus (i.e&#x2e;, the user hits Tab so that focus passes into the scene). If <i>second</i> is 0, this indicates that <i>first</i> should be the first widget to gain focus if the scene gained BackTab focus.</p>
 <p>By default, tab order is defined implicitly using widget creation order.</p>
 <p>See also <a href="qgraphicswidget.html#focusPolicy-prop">focusPolicy</a> and <a href="focus.html">Keyboard Focus</a>.</p>
@@ -498,6 +499,7 @@
 <p>Returns the window frame section at position <i>pos</i>, or Qt::NoWindowFrameSection if there is no window frame section at this position.</p>
 <p>This function is used in <a href="qgraphicswidget.html">QGraphicsWidget</a>'s base implementation for window frame interaction.</p>
 <p>You can reimplement this function if you want to customize how a window can be interactively moved or resized. For instance, if you only want to allow a window to be resized by the bottom right corner, you can reimplement this function to return <a href="qt.html#WindowFrameSection-enum">Qt::NoSection</a> for all sections except <a href="qt.html#WindowFrameSection-enum">Qt::BottomRightSection</a>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qgraphicswidget.html#windowFrameEvent">windowFrameEvent</a>(), <a href="qgraphicswidget.html#paintWindowFrame">paintWindowFrame</a>(), and <a href="qgraphicswidget.html#windowFrameGeometry">windowFrameGeometry</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/windowType" />
 <h3 class="fn"><a name="windowType"></a><a href="qt.html#WindowType-enum">Qt::WindowType</a> QGraphicsWidget::windowType () const</h3>
@@ -506,6 +508,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

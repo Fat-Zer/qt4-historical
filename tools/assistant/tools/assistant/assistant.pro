@@ -6,10 +6,10 @@ TARGET = assistant
 
 DEFINES += QT_CLUCENE_SUPPORT
 
-#contains(QT_CONFIG, webkit) {
-#    DEFINES += USE_WEBKIT
-#    QT += webkit
-#}
+contains(QT_CONFIG, assistant_webkit) {
+    DEFINES += USE_WEBKIT
+    QT += webkit
+}
 
 CONFIG += qt warn_on help
 
@@ -21,6 +21,10 @@ DESTDIR = ../../../../bin
 target.path=$$[QT_INSTALL_BINS]
 INSTALLS += target
 
+### Work around a qmake issue when statically linking to
+### not-yet-installed plugins
+LIBS += -L$$QT_BUILD_TREE/plugins/sqldrivers
+
 HEADERS += helpviewer.h \
            mainwindow.h \
            indexwindow.h \
@@ -31,8 +35,7 @@ HEADERS += helpviewer.h \
            filternamedialog.h \
            centralwidget.h \
            installdialog.h \
-           bookmarkdialog.h \
-           bookmarkwidget.h \
+           bookmarkmanager.h \
            remotecontrol.h \
            cmdlineparser.h \
            aboutdialog.h \
@@ -53,8 +56,7 @@ SOURCES += helpviewer.cpp \
            filternamedialog.cpp \
            centralwidget.cpp \
            installdialog.cpp \
-           bookmarkdialog.cpp \
-           bookmarkwidget.cpp \
+           bookmarkmanager.cpp \
            remotecontrol.cpp \
            cmdlineparser.cpp \
            aboutdialog.cpp \
@@ -80,16 +82,9 @@ mac {
 }
 
 contains(CONFIG, static): {
-    win32 {
-        exists($$[QT_INSTALL_PLUGINS]/sqldrivers/qsqlite.lib) {
-            QTPLUGIN += qsqlite
-            DEFINES += USE_STATIC_SQLITE_PLUGIN
-        }
-    } else {
-        exists($$[QT_INSTALL_PLUGINS]/sqldrivers/libqsqlite.a) {
-            QTPLUGIN += qsqlite
-            DEFINES += USE_STATIC_SQLITE_PLUGIN
-        }        
+    SQLPLUGINS = $$unique(sql-plugins)
+    contains(SQLPLUGINS, sqlite): {
+        QTPLUGIN += qsqlite
+        DEFINES += USE_STATIC_SQLITE_PLUGIN
     }
 }
-

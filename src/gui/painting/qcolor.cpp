@@ -535,7 +535,7 @@ void QColor::setNamedColor(const QString &name)
 #ifndef QT_NO_COLORNAMES
     QRgb rgb;
     if (qt_get_named_rgb(name.constData(), name.length(), &rgb)) {
-        setRgb(rgb);
+        setRgba(rgb);
     } else
 #endif
     {
@@ -1959,7 +1959,7 @@ QColor::operator QVariant() const
     Returns true if setNamedColor() is allowed to look up colors in
     the X11 color database. By default, this function returns false.
 
-    \note This function is only available on the X11 platform.    
+    \note This function is only available on the X11 platform.
     \sa setAllowX11ColorNames()
 */
 bool QColor::allowX11ColorNames()

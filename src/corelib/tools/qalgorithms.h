@@ -314,11 +314,11 @@ template <typename RandomAccessIterator, typename T>
 Q_OUTOFLINE_TEMPLATE RandomAccessIterator qBinaryFind(RandomAccessIterator begin, RandomAccessIterator end, const T &value)
 {
     // Implementation is duplicated from QAlgorithmsPrivate.
-    int l = 0;
-    int r = end - begin - 1;
+    qint64 l = 0;
+    qint64 r = end - begin - 1;
     if (r < 0)
         return end;
-    int i = (l + r + 1) / 2;
+    qint64 i = (l + r + 1) / 2;
 
     while (r != l) {
         if (value < begin[i])
@@ -539,11 +539,11 @@ Q_OUTOFLINE_TEMPLATE RandomAccessIterator qUpperBoundHelper(RandomAccessIterator
 template <typename RandomAccessIterator, typename T, typename LessThan>
 Q_OUTOFLINE_TEMPLATE RandomAccessIterator qBinaryFindHelper(RandomAccessIterator begin, RandomAccessIterator end, const T &value, LessThan lessThan)
 {
-    int l = 0;
-    int r = end - begin - 1;
+    qint64 l = 0;
+    qint64 r = end - begin - 1;
     if (r < 0)
         return end;
-    int i = (l + r + 1) / 2;
+    qint64 i = (l + r + 1) / 2;
 
     while (r != l) {
         if (lessThan(value, begin[i]))

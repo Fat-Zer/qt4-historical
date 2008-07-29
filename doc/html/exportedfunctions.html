@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/exportedfunctions.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/exportedfunctions.qdoc -->
 <head>
   <title>Qt 4.4: Special-Purpose Global Functions Exported by Qt</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,21 +16,21 @@
 </h1>
 <p>Qt provides a few low-level global functions for fine-tuning applications. Most of these perform very specific tasks and are platform-specific. In general, we recommend that you try using Qt's public API before resorting to using any functions mentioned here.</p>
 <p>These functions are exported by <a href="qtcore.html">QtCore</a> and <a href="qtgui.html">QtGui</a>, but most of them aren't declared in Qt's header files. To use them in your application, you must declare them before calling them. For example:</p>
-<pre>         #ifdef Q_WS_X11
-         void qt_x11_wait_for_window_manager(QWidget *widget);
-         #endif
+<pre> #ifdef Q_WS_X11
+ void qt_x11_wait_for_window_manager(QWidget *widget);
+ #endif
 
-         int main(int argc, char *argv[])
-         {
-             QApplication app(argc, argv);
-             ...
-             window.show();
-         #ifdef Q_WS_X11
-             qt_x11_wait_for_window_manager(&amp;window);
-         #endif
-             ...
-             return app.exec();
-         }</pre>
+ int main(int argc, char *argv[])
+ {
+     QApplication app(argc, argv);
+     ...
+     window.show();
+ #ifdef Q_WS_X11
+     qt_x11_wait_for_window_manager(&amp;window);
+ #endif
+     ...
+     return app.exec();
+ }</pre>
 <p>These functions will remain as part of Qt for the lifetime of Qt 4.</p>
 <p>Functions:</p>
 <ul><li><a href="#void-qt-set-library-config-file-const-qstring-filename">void qt_set_library_config_file(const QString &amp;<i>fileName</i>)</a></li>
@@ -79,6 +79,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

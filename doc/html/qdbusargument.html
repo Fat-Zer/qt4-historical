@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/dbus/qdbusargument.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/dbus/qdbusargument.cpp -->
 <head>
   <title>Qt 4.4: QDBusArgument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -91,7 +91,7 @@
          };
          QT_DECLARE_METATYPE(MyStructure)
 
-         // Marshall the MyStructure data into a D-BUS argument
+         <span class="comment">// Marshall the MyStructure data into a D-BUS argument</span>
          QDBusArgument &amp;operator&lt;&lt;(QDBusArgument &amp;argument, const MyStructure &amp;mystruct)
          {
              argument.beginStructure();
@@ -100,7 +100,7 @@
              return argument;
          }
 
-         // Retrieve the MyStructure data from the D-BUS argument
+         <span class="comment">// Retrieve the MyStructure data from the D-BUS argument</span>
          const QDBusArgument &amp;operator&gt;&gt;(const QDBusArgument &amp;argument, MyStructure &amp;mystruct)
          {
              argument.beginStructure();
@@ -146,7 +146,7 @@
 <h3 class="fn"><a name="beginArray"></a>void QDBusArgument::beginArray ( int <i>id</i> )</h3>
 <p>Opens a new D-BUS array suitable for appending elements of meta-type <i>id</i>.</p>
 <p>This function is used usually in <tt>operator&lt;&lt;</tt> streaming operators, as in the following example:</p>
-<pre>         // append an array of MyElement types
+<pre>         <span class="comment">// append an array of MyElement types</span>
          QDBusArgument &amp;operator&lt;&lt;(QDBusArgument &amp;argument, const MyArray &amp;myarray)
          {
              argument.beginArray( qMetaTypeId&lt;MyElement&gt;() );
@@ -161,7 +161,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Recurses into the D-BUS array to allow extraction of the array elements.</p>
 <p>This function is used usually in <tt>operator&gt;&gt;</tt> streaming operators, as in the following example:</p>
-<pre>         // extract a MyArray array of MyElement elements
+<pre>         <span class="comment">// extract a MyArray array of MyElement elements</span>
          const QDBusArgument &amp;operator&gt;&gt;(const QDBusArgument &amp;argument, MyArray &amp;myarray)
          {
              argument.beginArray();
@@ -182,7 +182,7 @@
 <h3 class="fn"><a name="beginMap"></a>void QDBusArgument::beginMap ( int <i>kid</i>, int <i>vid</i> )</h3>
 <p>Opens a new D-BUS map suitable for appending elements. Maps are containers that associate one entry (the key) to another (the value), such as Qt's <a href="qmap.html">QMap</a> or <a href="qhash.html">QHash</a>. The ids of the map's key and value meta types must be passed in <i>kid</i> and <i>vid</i> respectively.</p>
 <p>This function is used usually in <tt>operator&lt;&lt;</tt> streaming operators, as in the following example:</p>
-<pre>         // append a dictionary that associates ints to MyValue types
+<pre>         <span class="comment">// append a dictionary that associates ints to MyValue types</span>
          QDBusArgument &amp;operator&lt;&lt;(QDBusArgument &amp;argument, const MyDictionary &amp;mydict)
          {
              argument.beginMap( QVariant::Int, qMetaTypeId&lt;MyValue&gt;() );
@@ -200,7 +200,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Recurses into the D-BUS map to allow extraction of the map's elements.</p>
 <p>This function is used usually in <tt>operator&gt;&gt;</tt> streaming operators, as in the following example:</p>
-<pre>         // extract a MyDictionary map that associates ints to MyValue elements
+<pre>         <span class="comment">// extract a MyDictionary map that associates ints to MyValue elements</span>
          const QDBusArgument &amp;operator&gt;&gt;(const QDBusArgument &amp;argument, MyDictionary &amp;mydict)
          {
              argument.beginMap();
@@ -417,6 +417,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

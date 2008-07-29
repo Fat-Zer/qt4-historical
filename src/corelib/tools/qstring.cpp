@@ -610,21 +610,15 @@ int QString::grow(int size)
 
 /*! \typedef QString::ConstIterator
 
-    \internal
-
     Qt-style synonym for QString::const_iterator.
 */
 
 /*! \typedef QString::Iterator
 
-    \internal
-
     Qt-style synonym for QString::iterator.
 */
 
 /*! \typedef QString::const_iterator
-
-    \internal
 
     The QString::const_iterator typedef provides an STL-style const
     iterator for QString.
@@ -634,8 +628,6 @@ int QString::grow(int size)
 
 /*! \typedef QString::iterator
 
-    \internal
-
     The QString::iterator typedef provides an STL-style non-const
     iterator for QString.
 
@@ -644,32 +636,44 @@ int QString::grow(int size)
 
 /*! \fn QString::iterator QString::begin()
 
-    \internal
+    Returns an \l{STL-style iterator} pointing to the first character in
+    the string.
+
+    \sa constBegin(), end()
 */
 
 /*! \fn QString::const_iterator QString::begin() const
 
-    \internal
+    \overload
 */
 
 /*! \fn QString::const_iterator QString::constBegin() const
 
-    \internal
+    Returns a const \l{STL-style iterator} pointing to the first character
+    in the string.
+
+    \sa begin(), constEnd()
 */
 
 /*! \fn QString::iterator QString::end()
 
-    \internal
+    Returns an \l{STL-style iterator} pointing to the imaginary character
+    after the last character in the string.
+
+    \sa begin(), constEnd()
 */
 
 /*! \fn QString::const_iterator QString::end() const
 
-    \internal
+    \overload
 */
 
 /*! \fn QString::const_iterator QString::constEnd() const
 
-    \internal
+    Returns a const \l{STL-style iterator} pointing to the imaginary
+    item after the last item in the list.
+
+    \sa constBegin(), end()
 */
 
 /*!
@@ -919,7 +923,7 @@ QString::QString(QChar ch)
     \internal
 */
 
-// ### Qt 5: rename freeData() to avoid confusion
+// ### Qt 5: rename freeData() to avoid confusion. See task 197625.
 void QString::free(Data *d)
 {
 #ifdef QT3_SUPPORT
@@ -954,6 +958,8 @@ void QString::free(Data *d)
     width and fill the new positions with a particular character, use
     the leftJustified() function:
 
+    If \a size is negative, it is equivalent to passing zero.
+
     \snippet doc/src/snippets/qstring/main.cpp 47
 
     \sa truncate(), reserve()
@@ -961,7 +967,10 @@ void QString::free(Data *d)
 
 void QString::resize(int size)
 {
-    if (size <= 0 && !d->capacity) {
+    if (size < 0)
+        size = 0;
+
+    if (size == 0 && !d->capacity) {
         Data *x = &shared_empty;
         x->ref.ref();
         if (!d->ref.deref())
@@ -1029,7 +1038,7 @@ void QString::resize(int size)
     \sa reserve(), capacity()
 */
 
-// ### Qt 5: rename reallocData() to avoid confusion
+// ### Qt 5: rename reallocData() to avoid confusion. 197625
 void QString::realloc(int alloc)
 {
     if (d->ref != 1 || d->data != d->array) {
@@ -3024,6 +3033,10 @@ QByteArray QString::toLatin1() const
     return ba;
 }
 
+// ### Qt 5: Change the return type of at least toAscii(),
+// toLatin1() and unicode() such that the use of Q_COMPILER_MANGLES_RETURN_TYPE
+// isn't necessary in the header. See task 177402.
+
 /*!
     Returns an 8-bit ASCII representation of the string as a QByteArray.
 
@@ -3699,6 +3712,8 @@ modifiable reference. Equivalent to \c at(position).
     Example:
 
     \snippet doc/src/snippets/qstring/main.cpp 83
+
+    If \a position is negative, it is equivalent to passing zero.
 
     \sa chop(), resize(), left()
 */
@@ -4486,7 +4501,7 @@ QString QString::toUpper() const
     return *this;
 }
 
-
+// ### Qt 5: Consider whether this function shouldn't be removed See task 202871.
 /*!
     Safely builds a formatted string from the format string \a cformat
     and an arbitrary list of arguments.
@@ -4495,6 +4510,8 @@ QString QString::toUpper() const
     (as returned by QChar::unicode()). The %ls escape sequence expects
     a pointer to a zero-terminated array of unicode characters of type
     ushort (as returned by QString::utf16()).
+
+    \note This function expects a UTF-8 string for %s.
 
     The format string supports most of the conversion specifiers
     provided by printf() in the standard C++ library. It doesn't
@@ -4732,6 +4749,7 @@ QString &QString::vsprintf(const char* cformat, va_list ap)
                     case lm_h: u = va_arg(ap, uint); break;
                     case lm_l: u = va_arg(ap, ulong); break;
                     case lm_ll: u = va_arg(ap, quint64); break;
+                    case lm_z: u = va_arg(ap, size_t); break;
                     default: u = 0; break;
                 }
 

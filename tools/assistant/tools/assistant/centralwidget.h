@@ -136,7 +136,7 @@ public slots:
     void printPreview();
     void updateBrowserFont();
     void setSource(const QUrl &url);
-    void setSourceInNewTab(const QUrl &url);
+    void setSourceInNewTab(const QUrl &url, qreal zoom = 0.0);
     void findCurrentText(const QString &text);
     HelpViewer *newEmptyTab();
     void home();
@@ -179,6 +179,7 @@ private:
     FindWidget *findWidget;
     QHelpEngine *helpEngine;
     QPrinter *printer;
+    bool usesDefaultCollection;
     
     SearchWidget* m_searchWidget;
 };

@@ -46,19 +46,19 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR   "4.4.0"
+#define QT_VERSION_STR   "4.4.1"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040400
+#define QT_VERSION 0x040401
 /*
    can be used like #if (QT_VERSION >= QT_VERSION_CHECK(4, 4, 0))
 */
 #define QT_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
-#define QT_PACKAGEDATE_STR "2008-04-28"
+#define QT_PACKAGEDATE_STR "2008-07-29"
 
-#define QT_PACKAGE_TAG "g62dcb32f1893c32adcb3f1cb40656449b45d8d56"
+#define QT_PACKAGE_TAG "g978511beeb057cad571e2324a1b23dfbc811f16c"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>
@@ -2253,15 +2253,15 @@ QT_LICENSED_MODULE(DBus)
 #  define QT_NO_CONCURRENT
 #endif
 
-// MSVC 6.0, MSVC .NET 2002 can`t handle the map(), etc templates,
+// MSVC 6.0, MSVC .NET 2002, and old versions of Sun CC can`t handle the map(), etc templates,
 // but the QFuture class compiles.
-#if defined(Q_CC_MSVC) && _MSC_VER <= 1300
+#if (defined(Q_CC_MSVC) && _MSC_VER <= 1300) || (defined (__SUNPRO_CC) && __SUNPRO_CC < 0x590)
 #  define QT_NO_CONCURRENT
 #endif
 
 // Mingw uses a gcc 3 version which has problems with some of the
-// map/filter overloads. So does IRIX.
-#if (defined(Q_OS_IRIX) || defined(Q_CC_MINGW)) && (__GNUC__ < 4)
+// map/filter overloads. So does IRIX and Solaris.
+#if (defined(Q_OS_IRIX) || defined(Q_CC_MINGW) || defined (Q_OS_SOLARIS)) && (__GNUC__ < 4)
 #  define QT_NO_CONCURRENT_MAP
 #  define QT_NO_CONCURRENT_FILTER
 #endif

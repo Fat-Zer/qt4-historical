@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2007 Trolltech ASA
+    Copyright (C) 2008 Holger Hans Peter Freyther
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -23,6 +24,7 @@
 #include <qbasictimer.h>
 #include <qnetworkproxy.h>
 #include <qpointer.h>
+#include <qevent.h>
 
 #include "qwebpage.h"
 #include "qwebhistory.h"
@@ -43,11 +45,24 @@ namespace WebCore
     class Element;
     class Node;
     class Page;
+
+#ifndef QT_NO_CURSOR
+    class SetCursorEvent : public QEvent {
+    public:
+        static const int EventType = 724;
+        SetCursorEvent(const QCursor&);
+
+        QCursor cursor() const;
+    private:
+        QCursor m_cursor;
+    };
+#endif
 }
 
 QT_BEGIN_NAMESPACE
 class QUndoStack;
 class QMenu;
+class QBitArray;
 QT_END_NAMESPACE
 
 class QWebPagePrivate
@@ -56,7 +71,7 @@ public:
     QWebPagePrivate(QWebPage *);
     ~QWebPagePrivate();
     void createMainFrame();
-    QMenu *createContextMenu(const WebCore::ContextMenu *webcoreMenu, const QList<WebCore::ContextMenuItem> *items);
+    QMenu *createContextMenu(const WebCore::ContextMenu *webcoreMenu, const QList<WebCore::ContextMenuItem> *items, QBitArray *visitedWebActions);
 
     QWebFrame *frameAt(const QPoint &pos) const;
 
@@ -65,7 +80,6 @@ public:
     void updateAction(QWebPage::WebAction action);
     void updateNavigationActions();
     void updateEditorActions();
-    void updateContextMenuActions(const WebCore::ContextMenu *webcoreMenu, const QList<WebCore::ContextMenuItem> *items);
 
     void timerEvent(QTimerEvent*);
     
@@ -89,6 +103,8 @@ public:
     void inputMethodEvent(QInputMethodEvent*);
 
     void shortcutOverrideEvent(QKeyEvent*);
+    bool handleScrolling(QKeyEvent*);
+    void leaveEvent(QEvent *);
 
     WebCore::ChromeClientQt *chromeClient;
     WebCore::ContextMenuClientQt *contextMenuClient;
@@ -100,8 +116,6 @@ public:
     QWebPage *q;
     QUndoStack *undoStack;
     QWidget *view;
-
-    bool modified;
 
     bool insideOpenCall;
     bool hasFocus;

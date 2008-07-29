@@ -119,7 +119,7 @@ QT_BEGIN_NAMESPACE
     \fn QSizeF QAbstractTextDocumentLayout::documentSize() const
 
     Returns the total size of the document. This is useful to display widgets
-    since they can use to information to update their scroll bars correctly
+    since they can use the information to update their scroll bars correctly.
 
     \sa documentSizeChanged(), QTextDocument::pageSize
 */

@@ -39,6 +39,6 @@ specified when Qt is configured.
 
 On all platforms:
 
-The source code for the launcher can be found in the examples/tools/qtdemo
-directory in the Qt package. This example is built at the same time as the
-Qt libraries, tools, examples, and demonstrations.
+The source code for the launcher can be found in the demos/qtdemo directory
+in the Qt package. This example is built at the same time as the Qt libraries,
+tools, examples, and demonstrations.

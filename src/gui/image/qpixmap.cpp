@@ -1661,7 +1661,7 @@ QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode)
 */
 bool QPixmap::hasAlpha() const
 {
-    return (!data->mask().isNull() || data->hasAlphaChannel());
+    return (data->hasAlphaChannel() || !data->mask().isNull());
 }
 
 /*!

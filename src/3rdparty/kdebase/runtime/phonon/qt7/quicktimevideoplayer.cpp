@@ -451,7 +451,7 @@ void QuickTimeVideoPlayer::openMovieFromFile()
 
 void QuickTimeVideoPlayer::openMovieFromUrl()
 {
-    QCFString urlString = QCFString(m_mediaSource.url().toString());
+    QCFString urlString = QCFString(m_mediaSource.url().toEncoded());
     CFURLRef url = CFURLCreateWithString(0, urlString, 0);
     DataReferenceRecord dataRef = {0, 0};
     QTNewDataReferenceFromCFURL(url, 0, &dataRef.dataRef, &dataRef.dataRefType);

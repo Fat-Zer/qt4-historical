@@ -349,7 +349,7 @@ public:
 # endif
     QRect maxWindowRect(const QScreen *screen) const { return maxWindowRects[screen]; }
     void setMaxWindowRect(const QScreen *screen, int screenNo, const QRect &rect);
-    void setScreenTransformation(QScreen *screen, int screen, int transformation);
+    void setScreenTransformation(QScreen *screen, int screenNo, int transformation);
 #endif
 
     static QApplicationPrivate *instance() { return self; }

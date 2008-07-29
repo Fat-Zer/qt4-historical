@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qprintpreviewwidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qprintpreviewwidget.cpp -->
 <head>
   <title>Qt 4.4: QPrintPreviewWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -100,7 +100,7 @@
 <ol type="1">
 <li>Create the QPrintPreviewWidget<p>Construct the QPrintPreviewWidget either by passing in an exisiting <a href="qprinter.html">QPrinter</a> object, or have QPrintPreviewWidget create a default constructed <a href="qprinter.html">QPrinter</a> object for you.</p>
 </li>
-<li>Connect the <a href="qprintpreviewwidget.html#paintRequested">paintRequested</a>() signal to a slot.<p>When the widget needs to generate a set of preview pages, a <a href="qprintpreviewwidget.html#paintRequested">paintRequested</a>() signal will be emitted from the widget. Connect a slot to this signal, and draw onto the <a href="qprinter.html">QPrinter</a> passed in as a signal parameter.</p>
+<li>Connect the <a href="qprintpreviewwidget.html#paintRequested">paintRequested</a>() signal to a slot.<p>When the widget needs to generate a set of preview pages, a <a href="qprintpreviewwidget.html#paintRequested">paintRequested</a>() signal will be emitted from the widget. Connect a slot to this signal, and draw onto the <a href="qprinter.html">QPrinter</a> passed in as a signal parameter. Call <a href="qprinter.html#newPage">QPrinter::newPage</a>(), to start a new page in the preview.</p>
 </li>
 </ol>
 <p>See also <a href="qprinter.html">QPrinter</a>, <a href="qprintdialog.html">QPrintDialog</a>, <a href="qpagesetupdialog.html">QPageSetupDialog</a>, and <a href="qprintpreviewdialog.html">QPrintPreviewDialog</a>.</p>
@@ -227,6 +227,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

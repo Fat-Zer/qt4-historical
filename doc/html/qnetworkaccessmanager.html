@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/access/qnetworkaccessmanager.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/access/qnetworkaccessmanager.cpp -->
 <head>
   <title>Qt 4.4: QNetworkAccessManager Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -17,7 +17,7 @@
 </h1>
 <p>The QNetworkAccessManager class allows the application to post network requests and receive replies <a href="#details">More...</a></p>
 <pre> #include &lt;QNetworkAccessManager&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
-<p>Inherited by <a href="qpatternist-uriloader.html">QPatternist::URILoader</a>.</p>
+<p>Inherited by </p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
@@ -83,12 +83,12 @@
          connect(manager, SIGNAL(finished(QNetworkReply*)),
                  this, SLOT(replyFinished(QNetworkReply*)));
 
-         manager-&gt;get(QNetworkRequest(&quot;http://www.trolltech.com&quot;));</pre>
+         manager-&gt;get(QNetworkRequest(&quot;http:<span class="comment">//www.trolltech.com&quot;));</span></pre>
 <p>When the <tt>replyFinished</tt> slot above is called, the parameter it takes is the <a href="qnetworkreply.html">QNetworkReply</a> object containing the downloaded data as well as meta-data (headers, etc.)&#x2e;</p>
-<p>\b Note: The slot is responsible for deleting the object at that point.</p>
+<p><b>Note:</b> The slot is responsible for deleting the object at that point.</p>
 <p>A more involved example, assuming the manager is already existent, can be:</p>
 <pre>         QNetworkRequest request;
-         request.setUrl(&quot;http://www.trolltech.com&quot;);
+         request.setUrl(&quot;http:<span class="comment">//www.trolltech.com&quot;);</span>
          request.setRawHeader(&quot;User-Agent&quot;, &quot;MyOwnBrowser 1.0&quot;);
 
          QNetworkReply *reply = manager-&gt;get(request);
@@ -200,6 +200,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

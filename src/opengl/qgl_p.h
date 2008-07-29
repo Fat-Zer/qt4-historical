@@ -189,6 +189,7 @@ public:
     bool textureCacheLookup(const QString &key, GLuint *id, qint64 *qt_id);
     void init(QPaintDevice *dev, const QGLFormat &format);
     QImage convertToGLFormat(const QImage &image, bool force_premul, GLenum texture_format);
+    int maxTextureSize();
 
 #if defined(Q_WS_WIN)
     HGLRC rc;
@@ -230,6 +231,7 @@ public:
     QGLContext *q_ptr;
 
     QGLExtensionFuncs extensionFuncs;
+    GLint max_texture_size;
 
 #ifdef Q_WS_WIN
     static inline QGLExtensionFuncs& qt_get_extension_funcs(const QGLContext *ctx) { return ctx->d_ptr->extensionFuncs; }

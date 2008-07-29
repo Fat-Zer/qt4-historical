@@ -326,7 +326,7 @@ QListView::ResizeMode QListView::resizeMode() const
 
 /*!
     \property QListView::layoutMode
-    \brief whether the layout of items should happen immediately or be delayed.
+    \brief determines whether the layout of items should happen immediately or be delayed.
 
     This property holds the layout mode for the items. When the mode
     is \l SinglePass (the default), the items are laid out all in one go.
@@ -855,7 +855,8 @@ void QListView::resizeEvent(QResizeEvent *e)
             QSize delta = e->size() - e->oldSize();
             if (!d->delayedLayout.isActive()
                 && ((d->flow == LeftToRight && delta.width() != 0)
-                    || (d->flow == TopToBottom && delta.height() != 0))) {
+                    || (d->flow == TopToBottom && delta.height() != 0)
+                    || (listWrap && !delta.isNull()))) {
                 d->delayedLayout.start(100, this); // wait 1/10 sec before starting the layout
             }
         }
@@ -1482,9 +1483,6 @@ void QListView::setSelection(const QRect &rect, QItemSelectionModel::SelectionFl
                 QRect first = rectForIndex(tl);
                 QRect last = rectForIndex(br);
                 QRect middle;
-                if (d->flow == TopToBottom) {
-                    
-                }
                 if (d->flow == LeftToRight) {
                     QRect &top = first;
                     QRect &bottom = last;
@@ -1834,6 +1832,11 @@ bool QListView::uniformItemSizes() const
     If this property is true then the item text is wrapped where
     necessary at word-breaks; otherwise it is not wrapped at all.
     This property is false by default.
+
+    Please note that even if wrapping is enabled, the cell will not be
+    expanded to make room for the text. It will print ellipsis for
+    text that cannot be shown, according to the view's
+    \l{QAbstractItemView::}{textElideMode}.
 */
 void QListView::setWordWrap(bool on)
 {
@@ -2775,11 +2778,15 @@ QRect QDynamicListViewBase::itemsRect(const QVector<QModelIndex> &indexes) const
 
 int QDynamicListViewBase::itemIndex(const QListViewItem &item) const
 {
+    if (!item.isValid())
+        return -1;
     int i = item.indexHint;
-    if (items.at(i) == item)
-        return i;
-    if (i >= items.count())
+    if (i < items.count()) {
+        if (items.at(i) == item)
+            return i;
+    } else {
         i = items.count() - 1;
+    }
 
     int j = i;
     int c = items.count();
@@ -2953,6 +2960,7 @@ void QListView::selectionChanged(const QItemSelection &selected,
 int QListView::visualIndex(const QModelIndex &index) const
 {
     Q_D(const QListView);
+    d->executePostedLayout();
     QListViewItem itm = d->indexToListViewItem(index);
     return d->itemIndex(itm);
 }

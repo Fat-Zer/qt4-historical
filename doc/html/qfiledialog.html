@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/dialogs/qfiledialog.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/dialogs/qfiledialog.cpp -->
 <head>
   <title>Qt 4.4: QFileDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -363,6 +363,7 @@
 <a name="//apple_ref/cpp/instm/QFileDialog/filter" />
 <h3 class="fn"><a name="filter"></a><a href="qdir.html#Filter-enum">QDir::Filters</a> QFileDialog::filter () const</h3>
 <p>Returns the filter that is used when displaying files.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qfiledialog.html#setFilter">setFilter</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileDialog/filterSelected" />
 <h3 class="fn"><a name="filterSelected"></a>void QFileDialog::filterSelected ( const <a href="qstring.html">QString</a> &amp; <i>filter</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -449,6 +450,7 @@
 <a name="//apple_ref/cpp/instm/QFileDialog/nameFilters" />
 <h3 class="fn"><a name="nameFilters"></a><a href="qstringlist.html">QStringList</a> QFileDialog::nameFilters () const</h3>
 <p>Returns the file type filters that are in operation on this file dialog.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qfiledialog.html#setNameFilters">setNameFilters</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileDialog/proxyModel" />
 <h3 class="fn"><a name="proxyModel"></a><a href="qabstractproxymodel.html">QAbstractProxyModel</a> * QFileDialog::proxyModel () const</h3>
@@ -472,14 +474,16 @@
 <a name="//apple_ref/cpp/instm/QFileDialog/selectNameFilter" />
 <h3 class="fn"><a name="selectNameFilter"></a>void QFileDialog::selectNameFilter ( const <a href="qstring.html">QString</a> &amp; <i>filter</i> )</h3>
 <p>Sets the current file type <i>filter</i>. Multiple filters can be passed in <i>filter</i> by separating them with semicolons or spaces.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qfiledialog.html#setNameFilter">setNameFilter</a>(), <a href="qfiledialog.html#setNameFilters">setNameFilters</a>(), and <a href="qfiledialog.html#selectedNameFilter">selectedNameFilter</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileDialog/selectedFiles" />
 <h3 class="fn"><a name="selectedFiles"></a><a href="qstringlist.html">QStringList</a> QFileDialog::selectedFiles () const</h3>
-<p>Returns a list of strings containing the absolute paths of the selected files in the dialog. If no files are selected, or the mode is not <a href="qfiledialog.html#FileMode-enum">ExistingFiles</a>, selectedFiles() is an empty string list.</p>
+<p>Returns a list of strings containing the absolute paths of the selected files in the dialog. If no files are selected, or the mode is not <a href="qfiledialog.html#FileMode-enum">ExistingFiles</a>, selectedFiles() contains the current path in the viewport.</p>
 <p>See also <a href="qfiledialog.html#selectedNameFilter">selectedNameFilter</a>() and <a href="qfiledialog.html#selectFile">selectFile</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileDialog/selectedNameFilter" />
 <h3 class="fn"><a name="selectedNameFilter"></a><a href="qstring.html">QString</a> QFileDialog::selectedNameFilter () const</h3>
 <p>Returns the filter that the user selected in the file dialog.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qfiledialog.html#selectedFiles">selectedFiles</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileDialog/setDirectory" />
 <h3 class="fn"><a name="setDirectory"></a>void QFileDialog::setDirectory ( const <a href="qstring.html">QString</a> &amp; <i>directory</i> )</h3>
@@ -514,6 +518,7 @@
 <p>If <i>filter</i> contains a pair of parentheses containing one or more of <b>anything*something</b>, separated by spaces, then only the text contained in the parentheses is used as the filter. This means that these calls are all equivalent:</p>
 <pre>        dialog.setNameFilter(&quot;All C++ files (*.cpp *.cc *.C *.cxx *.c++)&quot;);
         dialog.setNameFilter(&quot;*.cpp *.cc *.C *.cxx *.c++&quot;);</pre>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qfiledialog.html#setNameFilters">setNameFilters</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileDialog/setNameFilters" />
 <h3 class="fn"><a name="setNameFilters"></a>void QFileDialog::setNameFilters ( const <a href="qstringlist.html">QStringList</a> &amp; <i>filters</i> )</h3>
@@ -526,6 +531,7 @@
        QFileDialog dialog(this);
        dialog.setNameFilters(filters);
        dialog.exec();</pre>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qfiledialog.html#nameFilters">nameFilters</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileDialog/setProxyModel" />
 <h3 class="fn"><a name="setProxyModel"></a>void QFileDialog::setProxyModel ( <a href="qabstractproxymodel.html">QAbstractProxyModel</a> * <i>proxyModel</i> )</h3>
@@ -547,6 +553,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

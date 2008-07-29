@@ -629,8 +629,10 @@ void QTextLayout::endLayout()
         d->freeMemory();
 }
 
-/*!  Clears the line information in the layout. After having called
-  this function, lineCount() returns 0.
+/*!  \since 4.4
+
+Clears the line information in the layout. After having called
+this function, lineCount() returns 0.
  */
 void QTextLayout::clearLayout()
 {
@@ -1162,6 +1164,7 @@ void QTextLayout::draw(QPainter *p, const QPointF &pos, const QVector<FormatRang
             if (selection.format.boolProperty(QTextFormat::FullWidthSelection)) {
                 QRectF fullLineRect(tl.rect());
                 fullLineRect.translate(position);
+                fullLineRect.setRight(QFIXED_MAX);
                 if (!selectionEndInLine)
                     region.addRect(QRectF(lineRect.topRight(), fullLineRect.bottomRight()));
                 if (!selectionStartInLine)
@@ -1527,17 +1530,17 @@ static inline bool checkFullOtherwiseExtend(QScriptLine &line, QScriptLine &tmpD
 static inline void addNextCluster(int &pos, int end, QScriptLine &line, int &glyphCount,
                                   const QScriptItem &current, const unsigned short *logClusters, const QGlyphLayout *glyphs)
 {
-    int gp = logClusters[pos];
-    do {
+    int glyphPosition = logClusters[pos];
+    do { // got to the first next cluster
         ++pos;
         ++line.length;
-    } while (pos < end && logClusters[pos] == gp);
-    do {
-        line.textWidth += glyphs[gp].advance.x * !glyphs[gp].attributes.dontPrint;
-        ++gp;
-    } while (gp < current.num_glyphs && !glyphs[gp].attributes.clusterStart);
+    } while (pos < end && logClusters[pos] == glyphPosition);
+    do { // calculate the textWidth for the rest of the current cluster.
+        line.textWidth += glyphs[glyphPosition].advance.x * !glyphs[glyphPosition].attributes.dontPrint;
+        ++glyphPosition;
+    } while (glyphPosition < current.num_glyphs && !glyphs[glyphPosition].attributes.clusterStart);
 
-    Q_ASSERT((pos == end && gp == current.num_glyphs) || logClusters[pos] == gp);
+    Q_ASSERT((pos == end && glyphPosition == current.num_glyphs) || logClusters[pos] == glyphPosition);
 
     ++glyphCount;
 }

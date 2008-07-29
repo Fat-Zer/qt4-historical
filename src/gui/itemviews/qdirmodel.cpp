@@ -185,50 +185,52 @@ void QDirModelPrivate::invalidate()
 }
 
 /*!
-  \class QDirModel qdirmodel.h
+    \class QDirModel qdirmodel.h
 
-  \brief The QDirModel class provides a data model for the local filesystem.
+    \brief The QDirModel class provides a data model for the local filesystem.
 
-  \ingroup model-view
+    \ingroup model-view
 
-  This class provides access to the local filesystem, providing functions
-  for renaming and removing files and directories, and for creating new
-  directories. In the simplest case, it can be used with a suitable display
-  widget as part of a browser or filer.
+    This class provides access to the local filesystem, providing functions
+    for renaming and removing files and directories, and for creating new
+    directories. In the simplest case, it can be used with a suitable display
+    widget as part of a browser or filer.
 
-  QDirModel keeps a cache with file information. The cache needs to be
-  updated with refresh().
+    QDirModel keeps a cache with file information. The cache needs to be
+    updated with refresh().
 
-  A directory model that displays the contents of a default directory
-  is usually constructed with a parent object:
+    A directory model that displays the contents of a default directory
+    is usually constructed with a parent object:
 
-  \snippet doc/src/snippets/shareddirmodel/main.cpp 2
+    \snippet doc/src/snippets/shareddirmodel/main.cpp 2
 
-  A tree view can be used to display the contents of the model
+    A tree view can be used to display the contents of the model
 
-  \snippet doc/src/snippets/shareddirmodel/main.cpp 4
+    \snippet doc/src/snippets/shareddirmodel/main.cpp 4
 
-  and the contents of a particular directory can be displayed by
-  setting the tree view's root index:
+    and the contents of a particular directory can be displayed by
+    setting the tree view's root index:
 
-  \snippet doc/src/snippets/shareddirmodel/main.cpp 7
+    \snippet doc/src/snippets/shareddirmodel/main.cpp 7
 
-  The view's root index can be used to control how much of a
-  hierarchical model is displayed. QDirModel provides a convenience
-  function that returns a suitable model index for a path to a
-  directory within the model.
+    The view's root index can be used to control how much of a
+    hierarchical model is displayed. QDirModel provides a convenience
+    function that returns a suitable model index for a path to a
+    directory within the model.
 
-  QDirModel can be accessed using the standard interface provided by
-  QAbstractItemModel, but it also provides some convenience functions
-  that are specific to a directory model. The fileInfo() and isDir()
-  functions provide information about the underlying files and directories
-  related to items in the model.
-  
-  Directories can be created and removed using mkdir(), rmdir(), and the
-  model will be automatically updated to take the changes into account.
+    QDirModel can be accessed using the standard interface provided by
+    QAbstractItemModel, but it also provides some convenience functions
+    that are specific to a directory model. The fileInfo() and isDir()
+    functions provide information about the underlying files and directories
+    related to items in the model.
 
-  \sa nameFilters(), setFilter(), filter(), QListView, QTreeView,
-      {Dir View Example}, {Model Classes}
+    Directories can be created and removed using mkdir(), rmdir(), and the
+    model will be automatically updated to take the changes into account.
+
+    \note QDirModel requires an instance of a GUI application.
+
+    \sa nameFilters(), setFilter(), filter(), QListView, QTreeView,
+    {Dir View Example}, {Model Classes}
 */
 
 /*!
@@ -592,6 +594,7 @@ bool QDirModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
     bool success = true;
     QString to = filePath(parent) + QDir::separator();
+    QModelIndex _parent = parent;
 
     QList<QUrl> urls = data->urls();
     QList<QUrl>::const_iterator it = urls.constBegin();
@@ -615,8 +618,11 @@ bool QDirModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
             if(QFile::copy(path, to + QFileInfo(path).fileName())
                && QFile::remove(path)) {
                 QModelIndex idx=index(QFileInfo(path).path());
-                if(idx.isValid())
+                if(idx.isValid()) {
                     refresh(idx);
+                    //the previous call to refresh may invalidate the _parent. so recreate a new QModelIndex
+                    _parent = index(to);
+                }
             } else {
                 success = false;
             }
@@ -627,7 +633,7 @@ bool QDirModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     }
 
     if (success)
-        refresh(parent);
+        refresh(_parent);
 
     return success;
 }

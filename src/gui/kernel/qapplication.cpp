@@ -1328,6 +1328,9 @@ QStyle *QApplication::style()
     (i.e. before creating QApplication) will cause the application to
     use QStyle::standardPalette() for the palette.
 
+    \warning Qt style sheets are currently not supported for custom QStyle
+    subclasses. We plan to address this in some future release.
+
     \sa style(), QStyle, setPalette(), desktopSettingsAware()
 */
 void QApplication::setStyle(QStyle *style)
@@ -2125,10 +2128,10 @@ void QApplication::aboutQt()
 static bool qt_detectRTLLanguage()
 {
     return force_reverse ^
-        QApplication::tr("QT_LAYOUT_DIRECTION",
+        (QApplication::tr("QT_LAYOUT_DIRECTION",
                          "Translate this string to the string 'LTR' in left-to-right"
                          " languages or to 'RTL' in right-to-left languages (such as Hebrew"
-                         " and Arabic) to get proper widget layout.") == QLatin1String("RTL");
+                         " and Arabic) to get proper widget layout.") == QLatin1String("RTL"));
 }
 #endif
 
@@ -2379,7 +2382,7 @@ void QApplicationPrivate::dispatchEnterLeave(QWidget* enter, QWidget* leave) {
 #endif
 
     QWidget* w ;
-    if (!enter && !leave || (enter == leave))
+    if ((!enter && !leave) || (enter == leave))
         return;
 #ifdef ALIEN_DEBUG
     qDebug() << "QApplicationPrivate::dispatchEnterLeave, ENTER:" << enter << "LEAVE:" << leave;
@@ -2469,13 +2472,36 @@ void QApplicationPrivate::dispatchEnterLeave(QWidget* enter, QWidget* leave) {
 
 #ifndef QT_NO_CURSOR
     // Update cursor for alien/graphics widgets.
-    QWidget *cursorWidget = 0;
-    if (enter && (isAlien(enter) || enter->testAttribute(Qt::WA_DontShowOnScreen)))
-        cursorWidget = enter;
-    else if (leave && (isAlien(leave) || leave->testAttribute(Qt::WA_DontShowOnScreen)))
-        cursorWidget = enter ? enter : leave->nativeParentWidget();
 
-    if (cursorWidget) {
+    const bool enterOnAlien = (enter && (isAlien(enter) || enter->testAttribute(Qt::WA_DontShowOnScreen)));
+#if defined(Q_WS_X11)
+    //Whenever we leave an alien widget on X11, we need to reset its nativeParentWidget()'s cursor.
+    // This is not required on Windows as the cursor is reset on every single mouse move.
+    QWidget *parentOfLeavingCursor = 0;
+    for (int i = 0; i < leaveList.size(); ++i) {
+        w = leaveList.at(i);
+        if (!isAlien(w))
+            break;
+        if (w->testAttribute(Qt::WA_SetCursor)) {
+            parentOfLeavingCursor = w->parentWidget();
+            //continue looping, we need to find the downest alien widget with a cursor.
+            // (downest on the screen)
+        }
+    }
+    //check that we will not call qt_x11_enforce_cursor twice with the same native widget
+    if (parentOfLeavingCursor && (!enterOnAlien
+        || parentOfLeavingCursor->effectiveWinId() != enter->effectiveWinId())) {
+#ifndef QT_NO_GRAPHICSVIEW
+        QTLWExtra *extra = parentOfLeavingCursor->window()->d_func()->maybeTopData();
+        if (!extra || !extra->proxyWidget)
+#endif
+        {
+            qt_x11_enforce_cursor(parentOfLeavingCursor,true);
+        }
+    }
+#endif
+    if (enterOnAlien) {
+        QWidget *cursorWidget = enter;
         while (!cursorWidget->isWindow() && !cursorWidget->isEnabled())
             cursorWidget = cursorWidget->parentWidget();
 
@@ -3400,7 +3426,7 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
             if (key->type()==QEvent::KeyPress) {
 #ifndef QT_NO_SHORTCUT
                 // Try looking for a Shortcut before sending key events
-                if (res = qApp->d_func()->shortcutMap.tryShortcutEvent(w, key))
+                if ((res = qApp->d_func()->shortcutMap.tryShortcutEvent(w, key)))
                     return res;
 #endif
                 qt_in_tab_key_event = (key->key() == Qt::Key_Backtab
@@ -3752,12 +3778,14 @@ bool QApplicationPrivate::notify_helper(QObject *receiver, QEvent * e)
     if (receiver->isWidgetType()) {
         QWidget *widget = static_cast<QWidget *>(receiver);
 
+#if !defined(Q_OS_WINCE) || (defined(GWES_ICONCURS) && !defined(QT_NO_CURSOR))
         // toggle HasMouse widget state on enter and leave
         if ((e->type() == QEvent::Enter || e->type() == QEvent::DragEnter) &&
             (!qApp->activePopupWidget() || qApp->activePopupWidget() == widget->window()))
             widget->setAttribute(Qt::WA_UnderMouse, true);
         else if (e->type() == QEvent::Leave || e->type() == QEvent::DragLeave)
             widget->setAttribute(Qt::WA_UnderMouse, false);
+#endif
 
         if (QLayout *layout=widget->d_func()->layout) {
             layout->widgetEvent(e);
@@ -3903,12 +3931,12 @@ bool QApplicationPrivate::notify_helper(QObject *receiver, QEvent * e)
   Here's an example of how an application's QApplication::commitData()
   might be implemented:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 8
+  \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 8
 
-    If an error occurred within the application while saving its data,
-    you may want to try allowsErrorInteraction() instead.
+  If an error occurred within the application while saving its data,
+  you may want to try allowsErrorInteraction() instead.
 
-    \sa QApplication::commitData(), release(), cancel()
+  \sa QApplication::commitData(), release(), cancel()
 */
 
 
@@ -4425,6 +4453,187 @@ bool QApplication::keypadNavigationEnabled()
     return QApplicationPrivate::keypadNavigation;
 }
 #endif
+
+/*!
+    \fn void QApplication::alert(QWidget *widget, int msec)
+    \since 4.3
+
+    Causes an alert to be shown for \a widget if the window is not the active
+    window. The alert is shown for \a msec miliseconds. If \a msec is zero (the
+    default), then the alert is shown indefinitely until the window becomes
+    active again.
+
+    Currently this function does nothing on Qt for Embedded Linux.
+
+    On Mac OS X, this works more at the application level and will cause the
+    application icon to bounce in the dock.
+
+    On Windows this causes the window's taskbar entry to flash for a time. If \a
+    msec is zero, the flashing will stop and the taskbar entry will turn a
+    different color (currently orange).
+
+    On X11, this will cause the window to be marked as "demands attention",
+    the window must not be hidden (i.e. not have hide() called on it, but be
+    visible in some sort of way) in order for this to work.
+*/
+
+/*!
+    \property QApplication::cursorFlashTime
+    \brief the text cursor's flash (blink) time in milliseconds
+
+    The flash time is the time required to display, invert and
+    restore the caret display. Usually the text cursor is displayed
+    for half the cursor flash time, then hidden for the same amount
+    of time, but this may vary.
+
+    The default value on X11 is 1000 milliseconds. On Windows, the
+    control panel value is used. Widgets should not cache this value
+    since it may be changed at any time by the user changing the
+    global desktop settings.
+
+    Note that on Microsoft Windows, setting this property sets the
+    cursor flash time for all applications.
+*/
+
+/*!
+    \property QApplication::doubleClickInterval
+    \brief the time limit in milliseconds that distinguishes a double click from two
+    consecutive mouse clicks
+
+    The default value on X11 is 400 milliseconds. On Windows and Mac
+    OS X, the operating system's value is used.
+
+    On Microsoft Windows, calling this function sets the
+    double click interval for all applications.
+*/
+
+/*!
+    \property QApplication::keyboardInputInterval
+    \brief the time limit in milliseconds that distinguishes a key press
+    from two consecutive key presses
+    \since 4.2
+
+    The default value on X11 is 400 milliseconds. On Windows and Mac OS X, the
+    operating system's value is used.
+*/
+
+/*!
+    \property QApplication::wheelScrollLines
+    \brief the number of lines to scroll a widget, when the
+    mouse wheel is rotated.
+
+    If the value exceeds the widget's number of visible lines, the
+    widget should interpret the scroll operation as a single \e{page
+    up} or \e{page down}. If the widget is an \l{QAbstractItemView}
+    {item view class}, then the result of scrolling one \e line
+    depends on the setting of the widget's
+    \l{QAbstractItemView::verticalScrollMode()} {scroll mode}. Scroll
+    one \e line can mean \l{QAbstractItemView::ScrollPerItem} {scroll
+    one item} or \l{QAbstractItemView::ScrollPerPixel} {scroll one
+    pixel}.
+*/
+
+/*!
+    \fn void QApplication::setEffectEnabled(Qt::UIEffect effect, bool enable)
+
+    Enables the UI effect \a effect if \a enable is true, otherwise
+    the effect will not be used.
+
+    Note: All effects are disabled on screens running at less than
+    16-bit color depth.
+
+    \sa isEffectEnabled(), Qt::UIEffect, setDesktopSettingsAware()
+*/
+
+/*!
+    \fn bool QApplication::isEffectEnabled(Qt::UIEffect effect)
+
+    Returns true if \a effect is enabled; otherwise returns false.
+
+    By default, Qt will try to use the desktop settings. Call
+    setDesktopSettingsAware(false) to prevent this.
+
+    Note: All effects are disabled on screens running at less than
+    16-bit color depth.
+
+    \sa setEffectEnabled(), Qt::UIEffect
+*/
+
+/*!
+    \fn QWidget *QApplication::mainWidget()
+
+    Returns the main application widget, or 0 if there is no main
+    widget.
+*/
+
+/*!
+    \fn void QApplication::setMainWidget(QWidget *mainWidget)
+
+    Sets the application's main widget to \a mainWidget.
+
+    In most respects the main widget is like any other widget, except
+    that if it is closed, the application exits. Note that
+    QApplication does \e not take ownership of the \a mainWidget, so
+    if you create your main widget on the heap you must delete it
+    yourself.
+
+    You need not have a main widget; connecting lastWindowClosed() to
+    quit() is an alternative.
+
+    For X11, this function also resizes and moves the main widget
+    according to the \e -geometry command-line option, so you should
+    set the default geometry (using \l QWidget::setGeometry()) before
+    calling setMainWidget().
+
+    \sa mainWidget(), exec(), quit()
+*/
+
+/*!
+    \fn void QApplication::beep()
+
+    Sounds the bell, using the default volume and sound. The function
+    is \e not available in Qt for Embedded Linux.
+*/
+
+/*!
+    \fn void QApplication::setOverrideCursor(const QCursor &cursor)
+
+    Sets the application override cursor to \a cursor.
+
+    Application override cursors are intended for showing the user
+    that the application is in a special state, for example during an
+    operation that might take some time.
+
+    This cursor will be displayed in all the application's widgets
+    until restoreOverrideCursor() or another setOverrideCursor() is
+    called.
+
+    Application cursors are stored on an internal stack.
+    setOverrideCursor() pushes the cursor onto the stack, and
+    restoreOverrideCursor() pops the active cursor off the
+    stack. changeOverrideCursor() changes the curently active
+    application override cursor. Every setOverrideCursor() must
+    eventually be followed by a corresponding restoreOverrideCursor(),
+    otherwise the stack will never be emptied.
+
+    Example:
+    \snippet doc/src/snippets/code/src.gui.kernel.qapplication_x11.cpp 0
+
+    \sa overrideCursor() restoreOverrideCursor() changeOverrideCursor() QWidget::setCursor()
+*/
+
+/*!
+    \fn void QApplication::restoreOverrideCursor()
+
+    Undoes the last setOverrideCursor().
+
+    If setOverrideCursor() has been called twice, calling
+    restoreOverrideCursor() will activate the first cursor set.
+    Calling this function a second time restores the original widgets'
+    cursors.
+
+    \sa setOverrideCursor(), overrideCursor()
+*/
 
 /*!
     \macro qApp

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/graphicsview/qgraphicsview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/graphicsview/qgraphicsview.cpp -->
 <head>
   <title>Qt 4.4: QGraphicsView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -505,6 +505,7 @@
 <h3 class="fn"><a name="fitInView"></a>void QGraphicsView::fitInView ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>aspectRatioMode</i> = Qt::IgnoreAspectRatio )</h3>
 <p>Scales the view matrix and scrolls the scroll bars to ensure that the scene rectangle <i>rect</i> fits inside the viewport. <i>rect</i> must be inside the scene rect; otherwise, fitInView() cannot guarantee that the whole rect is visible.</p>
 <p>This function keeps the view's rotation, translation, or shear. The view is scaled according to <i>aspectRatioMode</i>. <i>rect</i> will be centered in the view if it does not fit tightly.</p>
+<p>It's common to call fitInView() from inside a reimplementation of <a href="qwidget.html#resizeEvent">resizeEvent</a>(), to ensure that the whole scene, or parts of the scene, scales automatically to fit the new size of the viewport as the view is resized. Note though, that calling fitInView() from inside <a href="qwidget.html#resizeEvent">resizeEvent</a>() can lead to unwanted resize recursion, if the new transformation toggles the automatic state of the scrollbars. You can toggle the scrollbar policies to always on or always off to prevent this (see <a href="qabstractscrollarea.html#horizontalScrollBarPolicy-prop">horizontalScrollBarPolicy</a>() and <a href="qabstractscrollarea.html#verticalScrollBarPolicy-prop">verticalScrollBarPolicy</a>()).</p>
 <p>See also <a href="qgraphicsview.html#setMatrix">setMatrix</a>(), <a href="qgraphicsview.html#ensureVisible">ensureVisible</a>(), and <a href="qgraphicsview.html#centerOn">centerOn</a>().</p>
 <h3 class="fn"><a name="fitInView-2"></a>void QGraphicsView::fitInView ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>w</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>h</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>aspectRatioMode</i> = Qt::IgnoreAspectRatio )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -636,11 +637,11 @@
          printer.setPageSize(QPrinter::A4);
          QPainter painter(&amp;printer);
 
-         // print, fitting the viewport contents into a full page
+         <span class="comment">// print, fitting the viewport contents into a full page</span>
          view.render(&amp;painter);
 
-         // print the upper half of the viewport into the lower.
-         // half of the page.
+         <span class="comment">// print the upper half of the viewport into the lower.</span>
+         <span class="comment">// half of the page.</span>
          QRect viewport = view.viewport()-&gt;rect();
          view.render(&amp;painter,
                      QRectF(0, printer.height() / 2,
@@ -683,7 +684,7 @@
          scene.addText(&quot;GraphicsView rotated clockwise&quot;);
 
          QGraphicsView view(&amp;scene);
-         view.rotate(90); // the text is rendered with a 90 degree clockwise rotation
+         view.rotate(90); <span class="comment">// the text is rendered with a 90 degree clockwise rotation</span>
          view.show();</pre>
 <p>To simplify interation with items using a transformed view, <a href="qgraphicsview.html">QGraphicsView</a> provides mapTo... and mapFrom... functions that can translate between scene and view coordinates. For example, you can call <a href="qgraphicsview.html#mapToScene">mapToScene</a>() to map a view coordinate to a floating point scene coordinate, or <a href="qgraphicsview.html#mapFromScene">mapFromScene</a>() to map from floating point scene coordinates to view coordinates.</p>
 <p>See also <a href="qgraphicsview.html#matrix">matrix</a>(), <a href="qgraphicsview.html#rotate">rotate</a>(), <a href="qgraphicsview.html#scale">scale</a>(), <a href="qgraphicsview.html#shear">shear</a>(), and <a href="qgraphicsview.html#translate">translate</a>().</p>
@@ -710,7 +711,7 @@
          scene.addText(&quot;GraphicsView rotated clockwise&quot;);
 
          QGraphicsView view(&amp;scene);
-         view.rotate(90); // the text is rendered with a 90 degree clockwise rotation
+         view.rotate(90); <span class="comment">// the text is rendered with a 90 degree clockwise rotation</span>
          view.show();</pre>
 <p>To simplify interation with items using a transformed view, <a href="qgraphicsview.html">QGraphicsView</a> provides mapTo... and mapFrom... functions that can translate between scene and view coordinates. For example, you can call <a href="qgraphicsview.html#mapToScene">mapToScene</a>() to map a view coordiate to a floating point scene coordinate, or <a href="qgraphicsview.html#mapFromScene">mapFromScene</a>() to map from floating point scene coordinates to view coordinates.</p>
 <p>See also <a href="qgraphicsview.html#transform">transform</a>(), <a href="qgraphicsview.html#rotate">rotate</a>(), <a href="qgraphicsview.html#scale">scale</a>(), <a href="qgraphicsview.html#shear">shear</a>(), and <a href="qgraphicsview.html#translate">translate</a>().</p>
@@ -746,6 +747,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

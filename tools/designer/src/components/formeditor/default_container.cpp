@@ -153,10 +153,14 @@ void QToolBoxContainer::remove(int index)
 }
 
 // ------------------- QScrollAreaContainer
+// We pass on active=true only if there are no children yet.
+// If there are children, it is a legacy custom widget QScrollArea that has an internal,
+// unmanaged child, in which case we deactivate the extension (otherwise we crash).
+// The child will then not show up in the task menu
 
 QScrollAreaContainer::QScrollAreaContainer(QScrollArea *widget, QObject *parent) :
     QObject(parent),
-    SingleChildContainer<QScrollArea>(widget)
+    SingleChildContainer<QScrollArea>(widget, widget->widget() == 0)
 {
 }
 // ------------------- QDockWidgetContainer

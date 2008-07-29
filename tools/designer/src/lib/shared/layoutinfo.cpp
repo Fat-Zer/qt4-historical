@@ -63,7 +63,9 @@ namespace qdesigner_internal {
 LayoutInfo::Type LayoutInfo::layoutType(const QDesignerFormEditorInterface *core, const QLayout *layout)
 {
     Q_UNUSED(core)
-    if (qobject_cast<const QHBoxLayout*>(layout))
+    if (!layout)
+        return NoLayout;
+    else if (qobject_cast<const QHBoxLayout*>(layout))
         return HBox;
     else if (qobject_cast<const QVBoxLayout*>(layout))
         return VBox;
@@ -71,7 +73,7 @@ LayoutInfo::Type LayoutInfo::layoutType(const QDesignerFormEditorInterface *core
         return Grid;
     else if (qobject_cast<const QFormLayout*>(layout))
        return Form;
-    return NoLayout;
+    return UnknownLayout;
 }
 
 LayoutInfo::Type LayoutInfo::layoutType(const QString &typeName)

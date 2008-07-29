@@ -61,6 +61,7 @@
 
     \reentrant
     \ingroup io
+    \ingroup ssl
     \module network
 
     QSslCipher stores information about one cryptographic cipher. It

@@ -199,7 +199,7 @@ static GstFlowReturn phonon_src_create_read (PhononSrc * src, guint64 offset, gu
         return GST_FLOW_OK;
     }
 
-    g_object_unref(buf);
+    gst_mini_object_unref(GST_MINI_OBJECT(buf));
     return GST_FLOW_ERROR;
 }
 

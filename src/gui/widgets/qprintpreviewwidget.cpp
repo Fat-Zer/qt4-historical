@@ -476,7 +476,8 @@ void QPrintPreviewWidgetPrivate::setZoomFactor(qreal _zoomFactor)
     When the widget needs to generate a set of preview pages, a
     paintRequested() signal will be emitted from the widget. Connect a
     slot to this signal, and draw onto the QPrinter passed in as a
-    signal parameter.
+    signal parameter. Call QPrinter::newPage(), to start a new
+    page in the preview.
 
     \endlist
 

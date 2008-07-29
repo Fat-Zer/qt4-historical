@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/xmlpatterns/api/qabstractmessagehandler.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/xmlpatterns/api/qabstractmessagehandler.cpp -->
 <head>
   <title>Qt 4.4: QAbstractMessageHandler Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -51,7 +51,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QAbstractMessageHandler class provides a callback interface for handling messages.</p>
-<p>QAbstractMessageHandler is an abstract base class that provides a callback interface for handling messages. Using this class allows you to avoid implementing message handling in your classes that must generate messages. For example, class <a href="qxmlquery.html">QXmlQuery</a> parses and runs an XQuery. When it detects a compile or runtime error, it generates an appropriate error message, but rather than output the message itself, it passes the message to the <a href="qabstractmessagehandler.html#message">message</a>() function of its QAbstractMessageHandler. See <a href="qxmlquery.html#setMessageHandler">QXmlQuery::setMessageHandler</a>().</p>
+<p>QAbstractMessageHandler is an abstract base class that provides a callback interface for handling messages. For example, class <a href="qxmlquery.html">QXmlQuery</a> parses and runs an XQuery. When it detects a compile or runtime error, it generates an appropriate error message, but rather than output the message itself, it passes the message to the <a href="qabstractmessagehandler.html#message">message</a>() function of its QAbstractMessageHandler. See <a href="qxmlquery.html#setMessageHandler">QXmlQuery::setMessageHandler</a>().</p>
 <p>You create a message handler by subclassing QAbstractMessageHandler and implementing <a href="qabstractmessagehandler.html#handleMessage">handleMessage</a>(). You then pass a pointer to an instance of your subclass to any classes that must generate messages. The messages are sent to the message handler via the <a href="qabstractmessagehandler.html#message">message</a>() function, which forwards them to your handleMessge(). The effect is to serialize the handling of all messages, which means your QAbstractMessageHandler subclass is thread safe.</p>
 <p>A single instance of QAbstractMessageHandler can be called on to handle messages from multiple sources. Hence, the content of a message, which is the <i>description</i> parameter passed to <a href="qabstractmessagehandler.html#message">message</a>() and <a href="qabstractmessagehandler.html#handleMessage">handleMessage</a>(), must be interpreted in light of the context that required the message to be sent. That context is specified by the <i>identifier</i> and <i>sourceLocation</i> parameters to <a href="qabstractmessagehandler.html#message">message</a>() <a href="qabstractmessagehandler.html#handleMessage">handleMessage</a>().</p>
 <hr />
@@ -76,6 +76,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

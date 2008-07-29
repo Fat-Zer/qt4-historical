@@ -141,6 +141,7 @@ public:
     QLayoutItem *takeAt(int index);
     int count() const;
 
+    QSize maximumSize() const;
     QSize minimumSize() const;
     QSize sizeHint() const;
 

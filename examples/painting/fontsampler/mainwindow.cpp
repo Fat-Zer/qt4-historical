@@ -44,7 +44,6 @@
 #include <QtGui>
 
 #include "mainwindow.h"
-#include "previewdialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
    : QMainWindow(parent)
@@ -229,38 +228,44 @@ void MainWindow::on_printAction_triggered()
         return;
 
     QPrinter printer(QPrinter::HighResolution);
-    if (!setupPrinter(printer))
+    QPrintDialog dialog(&printer, this);
+    if (dialog.exec() != QDialog::Accepted)
         return;
 
     int from = printer.fromPage();
     int to = printer.toPage();
-    if (from <= 0 && to <= 0) {
-        from = 1;
-        to = pageMap.keys().count();
-    }
+    if (from <= 0 && to <= 0)
+        printer.setFromTo(1, pageMap.keys().count());
 
-    QProgressDialog progress(tr("Printing font samples..."), tr("&Cancel"),
+    printDocument(&printer);
+}
+
+void MainWindow::printDocument(QPrinter *printer)
+{
+    printer->setFromTo(1, pageMap.count());
+
+    QProgressDialog progress(tr("Preparing font samples..."), tr("&Cancel"),
                              0, pageMap.count(), this);
     progress.setWindowModality(Qt::ApplicationModal);
-    progress.setWindowTitle(tr("Printing"));
-    progress.setMinimum(from - 1);
-    progress.setMaximum(to);
+    progress.setWindowTitle(tr("Font Sampler"));
+    progress.setMinimum(printer->fromPage() - 1);
+    progress.setMaximum(printer->toPage());
 
     QPainter painter;
-    painter.begin(&printer);
+    painter.begin(printer);
     bool firstPage = true;
 
-    for (int index = from - 1; index < to; ++index) {
+    for (int page = printer->fromPage(); page <= printer->toPage(); ++page) {
 
         if (!firstPage)
-            printer.newPage();
+            printer->newPage();
 
         qApp->processEvents();
         if (progress.wasCanceled())
             break;
 
-        printPage(index, painter, printer);
-        progress.setValue(index + 1);
+        printPage(page - 1, &painter, printer);
+        progress.setValue(page);
         firstPage = false;
     }
 
@@ -274,15 +279,10 @@ void MainWindow::on_printPreviewAction_triggered()
     if (pageMap.count() == 0)
         return;
 
-    QPrinter printer;
-
-    PreviewDialog preview(printer, this);
-    connect(&preview,
-        SIGNAL(pageRequested(int, QPainter &, QPrinter &)),
-        this, SLOT(printPage(int, QPainter &, QPrinter &)),
-        Qt::DirectConnection);
-
-    preview.setNumberOfPages(pageMap.keys().count());
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintPreviewDialog preview(&printer, this);
+    connect(&preview, SIGNAL(paintRequested(QPrinter *)),
+            this, SLOT(printDocument(QPrinter *)));
     preview.exec();
 }
 
@@ -309,16 +309,7 @@ QMap<QString, StyleItems> MainWindow::currentPageMap()
     return pageMap;
 }
 
-bool MainWindow::setupPrinter(QPrinter &printer)
-{
-    QPrintDialog dialog(&printer, this);
-    if (dialog.exec() == QDialog::Accepted)
-        return true;
-    else
-        return false;
-}
-
-void MainWindow::printPage(int index, QPainter &painter, QPrinter &printer)
+void MainWindow::printPage(int index, QPainter *painter, QPrinter *printer)
 {
     QString family = pageMap.keys()[index];
     StyleItems items = pageMap[family];
@@ -334,7 +325,7 @@ void MainWindow::printPage(int index, QPainter &painter, QPrinter &printer)
         // Calculate the maximum width and total height of the text.
         foreach (int size, sampleSizes) {
             QFont font(family, size, weight, italic);
-            font = QFont(font, painter.device());
+            font = QFont(font, painter->device());
             QFontMetricsF fontMetrics(font);
             QRectF rect = fontMetrics.boundingRect(
             QString("%1 %2").arg(family).arg(style));
@@ -343,18 +334,18 @@ void MainWindow::printPage(int index, QPainter &painter, QPrinter &printer)
         }
     }
 
-    qreal xScale = printer.pageRect().width() / width;
-    qreal yScale = printer.pageRect().height() / height;
+    qreal xScale = printer->pageRect().width() / width;
+    qreal yScale = printer->pageRect().height() / height;
     qreal scale = qMin(xScale, yScale);
 
-    qreal remainingHeight = printer.pageRect().height()/scale - height;
+    qreal remainingHeight = printer->pageRect().height()/scale - height;
     qreal spaceHeight = (remainingHeight/4.0) / (items.count() + 1);
     qreal interLineHeight = (remainingHeight/4.0) / (sampleSizes.count() * items.count());
 
-    painter.save();
-    painter.translate(printer.pageRect().width()/2.0, printer.pageRect().height()/2.0);
-    painter.scale(scale, scale);
-    painter.setBrush(QBrush(Qt::black));
+    painter->save();
+    painter->translate(printer->pageRect().width()/2.0, printer->pageRect().height()/2.0);
+    painter->scale(scale, scale);
+    painter->setBrush(QBrush(Qt::black));
 
     qreal x = -width/2.0;
     qreal y = -height/2.0 - remainingHeight/4.0 + spaceHeight;
@@ -367,18 +358,18 @@ void MainWindow::printPage(int index, QPainter &painter, QPrinter &printer)
         // Draw each line of text.
         foreach (int size, sampleSizes) {
             QFont font(family, size, weight, italic);
-            font = QFont(font, painter.device());
+            font = QFont(font, painter->device());
             QFontMetricsF fontMetrics(font);
             QRectF rect = fontMetrics.boundingRect(QString("%1 %2").arg(
                           font.family()).arg(style));
             y += rect.height();
-            painter.setFont(font);
-            painter.drawText(QPointF(x, y),
+            painter->setFont(font);
+            painter->drawText(QPointF(x, y),
                              QString("%1 %2").arg(family).arg(style));
             y += interLineHeight;
         }
         y += spaceHeight;
     }
 
-    painter.restore();
+    painter->restore();
 }

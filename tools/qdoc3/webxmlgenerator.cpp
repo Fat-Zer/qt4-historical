@@ -104,7 +104,7 @@ void WebXMLGenerator::generateTree(const Tree *tree, CodeMarker *marker)
 
     if (generateIndex)
         tre->generateIndex(outputDir() + "/" + project.toLower() + ".index",
-                           projectUrl, projectDescription, true);
+                           projectUrl, projectDescription, false);
 }
 
 void WebXMLGenerator::startText(const Node *relative, CodeMarker *marker)
@@ -257,30 +257,19 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
     case Atom::AbstractRight:
         break;
     case Atom::AutoLink:
-        if (!inLink) {
-            writer.writeStartElement("link");
-            writer.writeAttribute("raw", atom->string());
+        if (!inLink && !inSectionHeading) {
             const Node *node = findNode(atom, relative, marker);
             if (node) {
-                writer.writeAttribute("href", tre->fullDocumentLocation(node));
-                QString type = targetType(node);
-                writer.writeAttribute("type", type);
-                switch (node->type()) {
-                case Node::Enum:
-                    writer.writeAttribute("enum", tre->fullDocumentName(node));
-                    break;
-                case Node::Fake:
-                    writer.writeAttribute("page", tre->fullDocumentName(node));
-                    break;
-                default:
-                    ;
+                startLink(writer, atom, node, relative);
+                if (inLink) {
+                    writer.writeCharacters(atom->string());
+                    writer.writeEndElement(); // link
+                    inLink = false;
                 }
             } else
-                writer.writeAttribute("href", "");
-        }
-        writer.writeCharacters(atom->string());
-        if (!inLink)
-            writer.writeEndElement(); // link
+                writer.writeCharacters(atom->string());
+        } else
+            writer.writeCharacters(atom->string());
         break;
     case Atom::BaseName:
         break;
@@ -313,9 +302,9 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
             if (!(words.first() == "contains" || words.first() == "specifies"
                 || words.first() == "describes" || words.first() == "defines"
                 || words.first() == "holds" || words.first() == "determines"))
-                out() << " holds ";
+                writer.writeCharacters(" holds ");
             else
-                out() << " ";
+                writer.writeCharacters(" ");
         }
         break;
 
@@ -371,11 +360,12 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
     case Atom::FootnoteRight:
         writer.writeEndElement(); // footnote
         break;
-
+/*
     case Atom::FormatElse:
         writer.writeStartElement("else");
         writer.writeEndElement(); // else
         break;
+*/
     case Atom::FormatEndif:
         writer.writeEndElement(); // raw
         break;
@@ -546,26 +536,9 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
     case Atom::Link:
     case Atom::LinkNode:
         if (!inLink) {
-            writer.writeStartElement("link");
-            writer.writeAttribute("raw", atom->string());
             const Node *node = findNode(atom, relative, marker);
-            if (node) {
-                writer.writeAttribute("href", tre->fullDocumentLocation(node));
-                QString type = targetType(node);
-                writer.writeAttribute("type", type);
-                switch (node->type()) {
-                case Node::Enum:
-                    writer.writeAttribute("enum", tre->fullDocumentName(node));
-                    break;
-                case Node::Fake:
-                    writer.writeAttribute("page", tre->fullDocumentName(node));
-                    break;
-                default:
-                    ;
-                }
-            } else
-                writer.writeAttribute("href", "");
-            inLink = true;
+            if (node)
+                startLink(writer, atom, node, relative);
         }
         break;
 
@@ -712,7 +685,16 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
         break;
 
     case Atom::TableItemLeft:
-        writer.writeStartElement("item");
+        {
+            writer.writeStartElement("item");
+            QStringList spans = atom->string().split(",");
+            if (spans.size() == 2) {
+                if (spans.at(0) != "1")
+                    writer.writeAttribute("colspan", spans.at(0).trimmed());
+                if (spans.at(1) != "1")
+                    writer.writeAttribute("rowspan", spans.at(1).trimmed());
+            }
+        }
         break;
 
     case Atom::TableItemRight:
@@ -817,7 +799,7 @@ const Node *WebXMLGenerator::findNode(const Atom *atom, const Node *relative, Co
 
         if (node) {
             if (!node->url().isEmpty())
-                return 0;
+                return node;
             else
                 path.removeFirst();
         } else {
@@ -830,10 +812,51 @@ const Node *WebXMLGenerator::findNode(const Atom *atom, const Node *relative, Co
                 break;
             path.removeFirst();
         }
-
+/* We would ideally treat targets as nodes to be consistent.
+        if (targetAtom && node && node->isInnerNode()) {
+            Node *parentNode = const_cast<Node *>(node);
+            node = new TargetNode(static_cast<InnerNode*>(parentNode), first);
+        }
+*/
         return node;
     }
     return 0;
+}
+
+void WebXMLGenerator::startLink(QXmlStreamWriter &writer, const Atom *atom,
+                                const Node *node, const Node *relative)
+{
+    QString location = tre->fullDocumentLocation(node);
+    if (!location.isEmpty()) {
+        writer.writeStartElement("link");
+        writer.writeAttribute("raw", atom->string());
+        if (atom->string().contains("#") || node == relative) {
+            QString target = atom->string().split("#").last();
+            Atom *targetAtom = tre->findTarget(target, node);
+            if (targetAtom)
+                location += "#" + Doc::canonicalTitle(target);
+        }
+        writer.writeAttribute("href", location);
+        QString type = targetType(node);
+        writer.writeAttribute("type", type);
+        switch (node->type()) {
+        case Node::Enum:
+            writer.writeAttribute("enum", tre->fullDocumentName(node));
+            break;
+        case Node::Fake:
+            writer.writeAttribute("page", tre->fullDocumentName(node));
+            break;
+        case Node::Property:
+        {
+            const PropertyNode *propertyNode = static_cast<const PropertyNode *>(node);
+            if (propertyNode->getters().size() > 0)
+                writer.writeAttribute("getter", tre->fullDocumentName(propertyNode->getters()[0]));
+        }
+        default:
+            ;
+        }
+        inLink = true;
+    }
 }
 
 QString WebXMLGenerator::targetType(const Node *node)

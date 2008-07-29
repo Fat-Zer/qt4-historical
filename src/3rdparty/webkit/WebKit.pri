@@ -58,9 +58,3 @@ INCLUDEPATH += \
     $$BASE_DIR/WebCore/xml \
     $$BASE_DIR/WebCore/html \
     $$BASE_DIR/WebCore/plugins
-
-
-macx {
-	INCLUDEPATH += /usr/include/libxml2
-	LIBS += -lxml2 -lxslt
-}

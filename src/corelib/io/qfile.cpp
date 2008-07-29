@@ -261,6 +261,15 @@ QFilePrivate::setError(QFile::FileError err, int errNum)
     implementation detail means that QFile is not suitable for reading and
     writing certain types of files, such as device files on Unix platforms.
 
+    \section1 Platform Specific Issues
+
+    File permissions are handled differently on Linux/Mac OS X and
+    Windows.  In a non \l{QIODevice::isWriteable()}{writeable}
+    directory on Linux, files cannot be created. This is not always
+    the case on Windows, where, for instance, the 'My Documents'
+    directory usually is not writable, but it is still possible to
+    create files in it.
+
     \sa QTextStream, QDataStream, QFileInfo, QDir, {The Qt Resource System}
 */
 
@@ -946,7 +955,7 @@ bool QFile::open(OpenMode mode)
         return false;
     }
     if (fileEngine()->open(mode)) {
-        setOpenMode(mode);
+        QIODevice::open(mode);
         if (mode & Append)
             seek(size());
         return true;
@@ -1011,7 +1020,7 @@ bool QFile::open(FILE *fh, OpenMode mode)
         return false;
     }
     if(d->openExternalFile(mode, fh)) {
-        setOpenMode(mode);
+        QIODevice::open(mode);
         if (mode & Append) {
             seek(size());
         } else {
@@ -1067,7 +1076,7 @@ bool QFile::open(int fd, OpenMode mode)
         return false;
     }
     if(d->openExternalFile(mode, fd)) {
-        setOpenMode(mode);
+        QIODevice::open(mode);
         if (mode & Append)
             seek(size());
         return true;
@@ -1103,6 +1112,7 @@ QFile::handle() const
 
 /*!
     \enum QFile::MemoryMapFlags
+    \since 4.4
 
     This enum describes special options that may be used by the map()
     function.

@@ -885,6 +885,8 @@ static void parseShorthandBackgroundProperty(const QVector<Value> &values, QBrus
         } else if (v.type == Value::KnownIdentifier && v.variant.toInt() == Value_None) {
             *image = QString();
             continue;
+        } else if (v.type == Value::KnownIdentifier && v.variant.toInt() == Value_Transparent) {
+            *brush = QBrush(Qt::transparent);
         }
 
         Repeat repeatAttempt = static_cast<Repeat>(findKnownValue(v.variant.toString(),
@@ -1827,13 +1829,13 @@ bool Parser::parse(StyleSheet *styleSheet)
         if (!next(SEMICOLON)) return false;
     }
 
-    while (test(S) || test(CDO) || test(CDC));
+    while (test(S) || test(CDO) || test(CDC)) {}
 
     while (testImport()) {
         ImportRule rule;
         if (!parseImport(&rule)) return false;
         styleSheet->importRules.append(rule);
-        while (test(S) || test(CDO) || test(CDC));
+        while (test(S) || test(CDO) || test(CDC)) {}
     }
 
     do {
@@ -1854,7 +1856,7 @@ bool Parser::parse(StyleSheet *styleSheet)
         } else if (hasNext()) {
             return false;
         }
-        while (test(S) || test(CDO) || test(CDC));
+        while (test(S) || test(CDO) || test(CDC)) {}
     } while (hasNext());
     return true;
 }

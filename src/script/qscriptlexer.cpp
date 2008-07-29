@@ -846,9 +846,10 @@ bool QScript::Lexer::isLineTerminator() const
 bool QScript::Lexer::isIdentLetter(ushort c)
 {
     /* TODO: allow other legitimate unicode chars */
-    return (c >= 'a' && c <= 'z' ||
-             c >= 'A' && c <= 'Z' ||
-             c == '$' || c == '_');
+    return ((c >= 'a' && c <= 'z')
+            || (c >= 'A' && c <= 'Z')
+            || c == '$'
+            || c == '_');
 }
 
 bool QScript::Lexer::isDecimalDigit(ushort c)
@@ -858,9 +859,9 @@ bool QScript::Lexer::isDecimalDigit(ushort c)
 
 bool QScript::Lexer::isHexDigit(ushort c) const
 {
-    return (c >= '0' && c <= '9' ||
-             c >= 'a' && c <= 'f' ||
-             c >= 'A' && c <= 'F');
+    return ((c >= '0' && c <= '9')
+            || (c >= 'a' && c <= 'f')
+            || (c >= 'A' && c <= 'F'));
 }
 
 bool QScript::Lexer::isOctalDigit(ushort c) const
@@ -1065,10 +1066,13 @@ void QScript::Lexer::recordStartPos()
     startcolumn = yycolumn;
 }
 
-bool QScript::Lexer::scanRegExp()
+bool QScript::Lexer::scanRegExp(RegExpBodyPrefix prefix)
 {
     pos16 = 0;
     bool lastWasEscape = false;
+
+    if (prefix == EqualPrefix)
+        record16(QLatin1Char('='));
 
     while (1) {
         if (isLineTerminator() || current == 0) {

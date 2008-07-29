@@ -59,6 +59,7 @@
 #include <QtCore/qcoreevent.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qwaitcondition.h>
+#include <QtCore/qrunnable.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -147,6 +148,7 @@ public:
     int m_expectedResultCount;
     QtConcurrent::internal::ExceptionStore m_exceptionStore;
     QString m_progressText;
+    bool isRunFunction;
 
     // Internal functions that does not change the mutex state.
     // The mutex must be locked when calling these.

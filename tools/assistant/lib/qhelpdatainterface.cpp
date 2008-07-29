@@ -48,6 +48,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \internal
     \class QHelpDataContentItem
+    \since 4.4
     \brief The QHelpDataContentItem class provides an item which represents
     a topic or section of the contents.
 
@@ -102,11 +103,18 @@ QList<QHelpDataContentItem*> QHelpDataContentItem::children() const
     return m_children;
 }
 
+bool QHelpDataIndexItem::operator==(const QHelpDataIndexItem & other) const
+{
+    return (other.name == name) 
+            && (other.reference == reference);
+}
+
 
 
 /*!
     \internal
-    \class QHelpDataFilterSection    
+    \class QHelpDataFilterSection
+    \since 4.4
 */
 
 /*!
@@ -211,6 +219,7 @@ QStringList QHelpDataFilterSection::files() const
 /*!
     \internal
     \class QHelpDataInterface
+    \since 4.4
 */
 
 /*!
@@ -259,7 +268,7 @@ QStringList QHelpDataFilterSection::files() const
 /*!
     \fn QString QHelpDataInterface::rootPath() const = 0
 
-    Returns the root file path of the documentation set. All referenced file
+    Returns the root file path of the documentation data. All referenced file
     path or links of content items are relative to this path.
 */
 

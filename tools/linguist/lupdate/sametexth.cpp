@@ -73,8 +73,8 @@ int applySameTextHeuristic( MetaTranslator *tor )
     int inserted = 0;
 
     for ( it = all.begin(); it != all.end(); ++it ) {
-        if ( (*it).type() == TranslatorMessage::Unfinished ) {
-            if ( !(*it).isTranslated() )
+        if ( !(*it).isTranslated() ) {
+            if ( (*it).type() == TranslatorMessage::Unfinished )
                 untranslated.append( *it );
         } else {
             QByteArray key = (*it).sourceText();
@@ -88,7 +88,7 @@ int applySameTextHeuristic( MetaTranslator *tor )
                     translated.remove( key );
                     avoid.insert( key, *it );
                 }
-            } else if ( !avoid.contains(key) && (*it).isTranslated() ) {
+            } else if ( !avoid.contains(key) ) {
                 translated.insert( key, *it );
             }
         }

@@ -74,13 +74,12 @@ private:
 	void readTOC();
 	void readKeywords();
 	void readFiles();
-    void raiseErrorWithLine();
+    void raiseUnknownTokenError();
 };
 
-void QHelpProjectDataPrivate::raiseErrorWithLine()
+void QHelpProjectDataPrivate::raiseUnknownTokenError()
 {
-    raiseError(QObject::tr("Unknown token at line %1.")
-                    .arg(lineNumber()));
+    raiseError(QObject::tr("Unknown token."));
 }
 
 void QHelpProjectDataPrivate::readData(const QByteArray &contents)
@@ -93,10 +92,14 @@ void QHelpProjectDataPrivate::readData(const QByteArray &contents)
                 && attributes().value(QLatin1String("version")) == QLatin1String("1.0"))
 				readProject();
 			else
-                raiseError(QObject::tr("Unknown token at line %1. Expected \"QtHelpProject\"!")
-                    .arg(lineNumber()));
+                raiseError(QObject::tr("Unknown token. Expected \"QtHelpProject\"!"));
 		}
 	}
+
+    if (hasError()) {
+        raiseError(QObject::tr("Error in line %1: %2").arg(lineNumber())
+            .arg(errorString()));
+    }
 }
 
 void QHelpProjectDataPrivate::readProject()
@@ -123,7 +126,7 @@ void QHelpProjectDataPrivate::readProject()
                 else
                     metaData.insert(n, attributes().value(QLatin1String("value")).toString());
             } else {
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
             }
         } else if (isEndElement() && name() == QLatin1String("QtHelpProject")) {
             if (namespaceName.isEmpty())
@@ -145,7 +148,7 @@ void QHelpProjectDataPrivate::readCustomFilter()
 			if (name() == QLatin1String("filterAttribute"))
                 filter.filterAttributes.append(readElementText());
 			else
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
 		} else if (isEndElement() && name() == QLatin1String("customFilter")) {
 			break;
 		}
@@ -168,7 +171,7 @@ void QHelpProjectDataPrivate::readFilterSection()
 			else if (name() == QLatin1String("files"))
 				readFiles();
 			else
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
 		} else if (isEndElement() && name() == QLatin1String("filterSection")) {
 			break;
 		}
@@ -193,7 +196,7 @@ void QHelpProjectDataPrivate::readTOC()
                 }            
                 contentStack.push(itm);
 			} else {
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
 			}
 		} else if (isEndElement()) {
 			if (name() == QLatin1String("section")) {
@@ -202,7 +205,7 @@ void QHelpProjectDataPrivate::readTOC()
             } else if (name() == QLatin1String("toc") && contentStack.isEmpty()) {
 				break;
 			} else {
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
 			}
 		}
 	}
@@ -224,7 +227,7 @@ void QHelpProjectDataPrivate::readKeywords()
                         attributes().value(QLatin1String("id")).toString(),
                         attributes().value(QLatin1String("ref")).toString()));                
 			} else {
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
 			}
 		} else if (isEndElement()) {
 			if (name() == QLatin1String("keyword"))
@@ -232,8 +235,8 @@ void QHelpProjectDataPrivate::readKeywords()
 			else if (name() == QLatin1String("keywords"))
 				break;
 			else
-				raiseErrorWithLine();
-		}
+				raiseUnknownTokenError();
+        }
 	}
 }
 
@@ -245,14 +248,14 @@ void QHelpProjectDataPrivate::readFiles()
 			if (name() == QLatin1String("file"))
                 filterSectionList.last().addFile(readElementText());
 			else
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
 		} else if (isEndElement()) {
 			if (name() == QLatin1String("file"))
 				continue;
 			else if (name() == QLatin1String("files"))
 				break;
 			else
-				raiseErrorWithLine();
+				raiseUnknownTokenError();
 		}
 	}
 }
@@ -262,6 +265,7 @@ void QHelpProjectDataPrivate::readFiles()
 /*!
     \internal
     \class QHelpProjectData
+    \since 4.4
     \brief The QHelpProjectData class stores all information found
     in a Qt help project file.
 

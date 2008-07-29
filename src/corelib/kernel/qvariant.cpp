@@ -2615,8 +2615,8 @@ bool QVariant::convert(Type t)
     Compares this QVariant with \a v and returns true if they are
     equal; otherwise returns false.
 
-    \warning This function doesn't support custom types registered
-    with qRegisterMetaType().
+    In the case of custom types, their equalness operators are not called.
+    Instead the values' addresses are compared.
 */
 
 /*!
@@ -2920,6 +2920,9 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     Example:
 
     \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 7
+
+    \note If you are working with custom types, you should use
+    the Q_DECLARE_METATYPE() macro to register your custom type.
 
     \warning This function is not available with MSVC 6. Use
     qVariantFromValue() instead if you need to support that version

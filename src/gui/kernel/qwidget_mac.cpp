@@ -788,6 +788,8 @@ static const EventHandlerUPP make_widget_eventUPP()
 }
 OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef er, EventRef event, void *)
 {
+    QScopedLoopLevelCounter loopLevelCounter(QApplicationPrivate::instance()->threadData);
+
     bool handled_event = true;
     UInt32 ekind = GetEventKind(event), eclass = GetEventClass(event);
     switch(eclass) {
@@ -1127,7 +1129,7 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef er, EventRef event,
                 qt_event_request_window_change(widget);
             }
         } else if (ekind == kEventControlGetSizeConstraints) {
-            if (!widget) {
+            if (!widget || !qt_isGenuineQWidget(widget)) {
                 handled_event = false;
             } else {
                 handled_event = true;
@@ -1353,13 +1355,14 @@ void QWidgetPrivate::determineWindowClass()
         wclass = kDrawerWindowClass;
     else if (q->testAttribute(Qt::WA_ShowModal) && qt_mac_menu_buttons_explicitly_set(flags))
         wclass = kDocumentWindowClass;
-    else if(popup || type == Qt::SplashScreen)
+    else if(popup || (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5 && type == Qt::SplashScreen))
         wclass = kModalWindowClass;
     else if(q->testAttribute(Qt::WA_ShowModal))
         wclass = kMovableModalWindowClass;
     else if(type == Qt::ToolTip)
         wclass = kHelpWindowClass;
-    else if(type == Qt::Tool)
+    else if(type == Qt::Tool || (QSysInfo::MacintoshVersion < QSysInfo::MV_10_5
+                                 && type == Qt::SplashScreen))
         wclass = kFloatingWindowClass;
     else
         wclass = kDocumentWindowClass;
@@ -2111,14 +2114,26 @@ void QWidgetPrivate::setWindowIcon_sys(bool forceReset)
         }
     }
     if (q->isWindow()) {
+        IconRef previousIcon = 0;
         if (icon.isNull()) {
             RemoveWindowProxy(qt_mac_window_for(q));
+            previousIcon = topData->windowIcon;
+            topData->windowIcon = 0;
         } else {
             WindowClass wclass;
             GetWindowClass(qt_mac_window_for(q), &wclass);
-            if (wclass == kDocumentWindowClass)
-                SetWindowProxyIcon(qt_mac_window_for(q), qt_mac_create_iconref(*pm));
+
+            if (wclass == kDocumentWindowClass) {
+                IconRef newIcon = qt_mac_create_iconref(*pm);
+                previousIcon = topData->windowIcon;
+                topData->windowIcon = newIcon;
+                SetWindowProxyIcon(qt_mac_window_for(q), newIcon);
+            }
         }
+
+        // Release the previous icon if it was set by this function.
+        if (previousIcon != 0)
+            ReleaseIconRef(previousIcon);
     }
 }
 
@@ -2405,6 +2420,13 @@ void QWidgetPrivate::hide_sys()
                     wp; wp = GetNextWindowOfClass(wp, kDocumentWindowClass, true)) {
                     if((w = qt_mac_find_window(wp)))
                         break;
+                }
+                if (!w){
+                    for(WindowPtr wp = GetFrontWindowOfClass(kSimpleWindowClass, true);
+                        wp; wp = GetNextWindowOfClass(wp, kSimpleWindowClass, true)) {
+                        if((w = qt_mac_find_window(wp)))
+                            break;
+                    }
                 }
             }
             if(w && w->isVisible() && !w->isMinimized())
@@ -3025,6 +3047,7 @@ void QWidgetPrivate::createTLSysExtra()
 {
     extra->topextra->wclass = 0;
     extra->topextra->group = 0;
+    extra->topextra->windowIcon = 0;
     extra->topextra->resizer = 0;
     extra->topextra->isSetGeometry = 0;
 }

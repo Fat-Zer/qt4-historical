@@ -261,7 +261,7 @@ void QToolBarAreaLayoutInfo::fitLayout()
 
     int i = reverse ? lines.count() - 1 : 0;
     for (;;) {
-        if (reverse && i < 0 || !reverse && i == lines.count())
+        if ((reverse && i < 0) || (!reverse && i == lines.count()))
             break;
 
         QToolBarAreaLayoutLine &l = lines[i];

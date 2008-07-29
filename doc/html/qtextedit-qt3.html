@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qtextedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qtextedit.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QTextEdit</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -17,6 +17,7 @@
 <p><ul><li><a href="qtextedit.html">QTextEdit class reference</a></li></ul></p>
 <h3>Public Types</h3>
 <ul>
+<li><div class="fn"/>enum <b><a href="qtextedit-qt3.html#CursorAction-enum">CursorAction</a></b> { MoveBackward, MoveForward, MoveWordBackward, MoveWordForward, ..., MovePageDown }</li>
 <li><div class="fn"/>enum <b><a href="qtextedit-qt3.html#KeyboardAction-enum">KeyboardAction</a></b> { ActionBackspace, ActionDelete, ActionReturn, ActionKill, ActionWordBackspace, ActionWordDelete }</li>
 </ul>
 <h3>Public Functions</h3>
@@ -70,6 +71,37 @@
 </ul>
 <hr />
 <h2>Member Type Documentation</h2>
+<a name="//apple_ref/cpp/tag/QTextEdit/CursorAction" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveBackward" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveForward" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveWordBackward" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveWordForward" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveUp" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveDown" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveLineStart" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveLineEnd" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveHome" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MoveEnd" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MovePageUp" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MovePageDown" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MovePgUp" />
+<a name="//apple_ref/cpp/econst/QTextEdit/MovePgDown" />
+<h3 class="fn"><a name="CursorAction-enum"></a>enum QTextEdit::CursorAction</h3>
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
+<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveBackward</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveForward</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveWordBackward</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveWordForward</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveUp</tt></td><td align="center" valign="top"><tt>4</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveDown</tt></td><td align="center" valign="top"><tt>5</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveLineStart</tt></td><td align="center" valign="top"><tt>6</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveLineEnd</tt></td><td align="center" valign="top"><tt>7</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveHome</tt></td><td align="center" valign="top"><tt>8</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MoveEnd</tt></td><td align="center" valign="top"><tt>9</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MovePageUp</tt></td><td align="center" valign="top"><tt>10</tt></td></tr>
+<tr><td valign="top"><tt>QTextEdit::MovePageDown</tt></td><td align="center" valign="top"><tt>11</tt></td></tr>
+</table></p>
 <a name="//apple_ref/cpp/tag/QTextEdit/KeyboardAction" />
 <a name="//apple_ref/cpp/econst/QTextEdit/ActionBackspace" />
 <a name="//apple_ref/cpp/econst/QTextEdit/ActionDelete" />
@@ -136,10 +168,10 @@
 <h3 class="fn"><a name="italic"></a>bool QTextEdit::italic () const</h3>
 <p>Use <a href="qtextedit.html#fontItalic">fontItalic</a>() instead.</p>
 <p>See also <a href="qtextedit-qt3.html#setItalic">setItalic</a>().</p>
-<h3 class="fn"><a name="moveCursor-2"></a>void QTextEdit::moveCursor ( <a href="qtextedit.html#CursorAction-enum">CursorAction</a> <i>action</i>, <a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a> <i>mode</i> = QTextCursor::MoveAnchor )</h3>
+<h3 class="fn"><a name="moveCursor-2"></a>void QTextEdit::moveCursor ( <a href="qtextedit-qt3.html#CursorAction-enum">CursorAction</a> <i>action</i>, <a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a> <i>mode</i> = QTextCursor::MoveAnchor )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the <a href="qtextcursor.html">QTextCursor</a> class instead.</p>
-<h3 class="fn"><a name="moveCursor-3"></a>void QTextEdit::moveCursor ( <a href="qtextedit.html#CursorAction-enum">CursorAction</a> <i>action</i>, bool <i>select</i> )</h3>
+<h3 class="fn"><a name="moveCursor-3"></a>void QTextEdit::moveCursor ( <a href="qtextedit-qt3.html#CursorAction-enum">CursorAction</a> <i>action</i>, bool <i>select</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the <a href="qtextcursor.html">QTextCursor</a> class instead.</p>
 <a name="//apple_ref/cpp/instm/QTextEdit/pointSize" />
@@ -206,6 +238,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

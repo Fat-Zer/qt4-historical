@@ -25,6 +25,7 @@
 #include "config.h"
 #include "lexer.h"
 
+#include "dtoa.h"
 #include <ctype.h>
 #include <limits.h>
 #include <string.h>
@@ -468,7 +469,7 @@ int Lexer::lex()
 
   double dval = 0;
   if (state == Number) {
-    dval = strtod(buffer8, 0L);
+    dval = kjs_strtod(buffer8, 0L);
   } else if (state == Hex) { // scan hex numbers
     const char *p = buffer8 + 2;
     while (char c = *p++) {

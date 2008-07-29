@@ -135,7 +135,7 @@ Q_DECLARE_TYPEINFO(QXmlName, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QXmlName); /* This macro must appear after QT_END_NAMESPACE. */
+Q_DECLARE_METATYPE(QXmlName) /* This macro must appear after QT_END_NAMESPACE. */
 
 QT_END_HEADER
 

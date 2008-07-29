@@ -755,7 +755,7 @@ int StringImpl::find(const char* chs, int index, bool caseSensitive) const
     return -1;
 }
 
-int StringImpl::find(const UChar c, int start) const
+int StringImpl::find(UChar c, int start) const
 {
     unsigned int index = start;
     if (index >= m_length )
@@ -829,7 +829,7 @@ int StringImpl::find(const StringImpl* str, int index, bool caseSensitive) const
     }
 }
 
-int StringImpl::reverseFind(const UChar c, int index) const
+int StringImpl::reverseFind(UChar c, int index) const
 {
     if (index >= (int)m_length || m_length == 0)
         return -1;

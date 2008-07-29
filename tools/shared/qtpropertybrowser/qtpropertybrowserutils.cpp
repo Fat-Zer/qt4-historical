@@ -144,6 +144,7 @@ QCursor QtCursorDatabase::valueToCursor(int value) const
 QPixmap QtPropertyBrowserUtils::brushValuePixmap(const QBrush &b)
 {
     QImage img(16, 16, QImage::Format_ARGB32_Premultiplied);
+    img.fill(0);
 
     QPainter painter(&img);
     painter.setCompositionMode(QPainter::CompositionMode_Source);

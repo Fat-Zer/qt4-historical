@@ -246,7 +246,7 @@ int ConnectionModel::columnCount(const QModelIndex &parent) const
 
 QVariant ConnectionModel::data(const QModelIndex &index, int role) const
 {
-    if (role != Qt::DisplayRole && role != Qt::EditRole && role != Qt::FontRole && role != Qt::ForegroundRole || !m_editor)
+    if ((role != Qt::DisplayRole && role != Qt::EditRole && role != Qt::FontRole && role != Qt::ForegroundRole) || !m_editor)
         return QVariant();
 
     if (index.row() < 0 || index.row() >= m_editor->connectionCount()) {

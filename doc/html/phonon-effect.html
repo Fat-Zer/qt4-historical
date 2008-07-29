@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: Effect Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Effect Class Reference<br /><span class="small-subtitle">(Phonon::Effect)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The Effect class is used to transform audio streams. <a href="#details">More...</a></p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>Inherits <a href="qobject.html">QObject</a> and <a href="phonon-medianode.html">MediaNode</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-effect-members.html">List of all members, including inherited members</a></li>
@@ -32,6 +32,7 @@
 </ul>
 <ul>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>3 public functions inherited from <a href="phonon-medianode.html#public-functions">Phonon::MediaNode</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -48,9 +49,9 @@
 <p>An effect is a media node which is inserted into a path between a <a href="phonon-mediaobject.html">MediaObject</a> and an audio output node, for instance, an <a href="phonon-audiooutput.html">AudioOutput</a>, and transforms the media stream on that path.</p>
 <p>Examples may include simple modifiers such as fading or pitch shifting, or more complex mathematical transformations. You can query the backend for available effects with <a href="phonon-backendcapabilities.html#availableAudioEffects">BackendCapabilities::availableAudioEffects</a>().</p>
 <p>In order to use an effect, insert it into the path as follows:</p>
-<pre>     Path path = Phonon::createPath(...);
-     Effect *effect = new Effect(this);
-     path.insertEffect(effect);</pre>
+<pre> Path path = Phonon::createPath(...);
+ Effect *effect = new Effect(this);
+ path.insertEffect(effect);</pre>
 <p>The effect will immediately begin applying it's transformations on the path. To stop it, remove the Effect from the path.</p>
 <p>For creating an effect, you use the <a href="phonon-objectdescription.html#EffectDescription-typedef">EffectDescription</a>, which you get from <a href="phonon-backendcapabilities.html#availableAudioEffects">availableAudioEffects()</a>. We give a code example below.</p>
 <pre>     QList&lt;Phonon::EffectDescription&gt; effectDescriptions =
@@ -87,6 +88,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

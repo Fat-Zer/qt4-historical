@@ -172,6 +172,7 @@ private:
 
 /*!
     \class QHelpSearchQueryWidget
+    \since 4.4
     \inmodule QtHelp
     \brief The QHelpSearchQueryWidget class provides a simple line edit or 
     an advanced widget to enable the user to input a search term in a 

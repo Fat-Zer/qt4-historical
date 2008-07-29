@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/concurrent/qtconcurrentrun.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/concurrent/qtconcurrentrun.cpp -->
 <head>
   <title>Qt 4.4: &lt;QtConcurrentRun&gt; - Asynchronous Run</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,6 +14,9 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">&lt;QtConcurrentRun&gt; - Asynchronous Run<br /><span class="subtitle"></span>
 </h1>
+<p>The &lt;QtConcurrentRun&gt; header provides a way to run a function in a separate thread. <a href="#details">More...</a></p>
+<ul>
+</ul>
 <a name="Functionsx"></a>
 <h3>Functions</h3>
 <ul>
@@ -60,18 +63,18 @@
 <h4>Using Member Functions</h4>
 <p><a href="qtconcurrentrun.html#run">QtConcurrent::run</a>() also accepts pointers to member functions. The first argument must be either a const reference or a pointer to an instance of the class. Passing by const reference is useful when calling const member functions; passing by pointer is useful for calling non-const member functions that modify the instance.</p>
 <p>For example, calling <a href="qstring.html#split">QString::split</a>() (a const member function) in a separate thread is done like this:</p>
-<pre>     // call 'QStringList QString::split(const QString &amp;sep, SplitBehavior behavior, Qt::CaseSensitivity cs) const' in a separate thread
+<pre>     <span class="comment">// call 'QStringList QString::split(const QString &amp;sep, SplitBehavior behavior, Qt::CaseSensitivity cs) const' in a separate thread</span>
      QString string = ...;
      QFuture&lt;QStringList&gt; future = QtConcurrent::run(string, &amp;QString::split, QString(&quot;, &quot;), QString::KeepEmptyParts, Qt::CaseSensitive);
      ...
      QStringList result = future.result();</pre>
 <p>Calling a non-const member function is done like this:</p>
-<pre>     // call 'void QImage::invertPixels(InvertMode mode)' in a separate thread
+<pre>     <span class="comment">// call 'void QImage::invertPixels(InvertMode mode)' in a separate thread</span>
      QImage image = ...;
      QFuture&lt;void&gt; future = QtConcurrent::run(image, &amp;QImage::invertPixels, QImage::InvertRgba);
      ...
      future.waitForFinished();
-     // At this point, the pixels in 'image' have been inverted</pre>
+     <span class="comment">// At this point, the pixels in 'image' have been inverted</span></pre>
 <a name="using-bound-function-arguments"></a>
 <h4>Using Bound Function Arguments</h4>
 <p>Note that Qt does not provide support for bound functions. This is provided by 3rd party libraries like <a href="http://www.boost.org/libs/bind/bind.html">Boost</a> or <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1836.pdf">C++ TR1 Library Extensions</a>.</p>
@@ -97,6 +100,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

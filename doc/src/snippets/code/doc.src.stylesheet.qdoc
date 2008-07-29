@@ -338,7 +338,7 @@
 
 
 //! [51]
-            QDialogButtonBox { dialogbuttonbox-buttons-have-icons: true; }
+            QDialogButtonBox { dialogbuttonbox-buttons-have-icons: 1; }
 //! [51]
 
 

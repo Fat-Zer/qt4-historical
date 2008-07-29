@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: MediaNode Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,6 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">MediaNode Class Reference<br /><span class="small-subtitle">(Phonon::MediaNode)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The MediaNode class is the base class for all nodes in a media graph. <a href="#details">More...</a></p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>Inherited by <a href="phonon-audiooutput.html">Phonon::AudioOutput</a>, <a href="phonon-effect.html">Phonon::Effect</a>, <a href="phonon-mediaobject.html">Phonon::MediaObject</a>, and <a href="phonon-videowidget.html">Phonon::VideoWidget</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-medianode-members.html">List of all members, including inherited members</a></li>
@@ -37,7 +38,17 @@
 <p>You can check whether the node is implemented by the current backend by calling <a href="phonon-medianode.html#isValid">isValid</a>(). This does not guarantee that an instance of the class works as expected, but that the backend has implemented functionality for the class.</p>
 <p>Currently, Phonon has three media nodes: <a href="phonon-mediaobject.html">MediaObject</a>, <a href="phonon-audiooutput.html">AudioOutput</a>, and <a href="phonon-videowidget.html">VideoWidget</a>. Please refer to their class descriptions for details about their usage, and to find out which nodes can be connected to each other. See also <a href="phonon-overview.html#building-graphs">Building Graphs</a> in Phonon's <a href="phonon-overview.html">overview</a> document.</p>
 <p>Two nodes are connected to each other using the <a href="phonon-path.html#createPath">Phonon::createPath</a>() function. We show a code example below, in which we build a media graph for video playback and then query its media nodes for their <a href="phonon-path.html">Path</a>s:</p>
-<pre></pre>
+<pre>     Phonon::MediaObject *mediaObject = new Phonon::MediaObject;
+     Phonon::AudioOutput *audioOutput = new Phonon::AudioOutput;
+     Phonon::VideoWidget *videoWidget = new Phonon::VideoWidget;
+
+     Phonon::createPath(mediaObject, audioOutput);
+     Phonon::createPath(mediaObject, videoWidget);
+
+     QList&lt;Phonon::Path&gt; inputPaths =
+         audioOutput-&gt;inputPaths();   <span class="comment">// inputPaths = [ mediaObject ]</span>
+     QList&lt;Phonon::Path&gt; outputPaths =
+         mediaObject-&gt;outputPaths(); <span class="comment">// outputPaths = [ audioOutput, videoWidget ]</span></pre>
 <p>When you create a Phonon application, you will likely build the graph yourself. This makes <a href="phonon-medianode.html#isValid">isValid</a>() the most useful function of this class. The other two functions help navigate the graph, which you do not need to do as you created the nodes yourself.</p>
 <p>See also <a href="phonon-overview.html">Phonon Overview</a>, <a href="phonon-mediaobject.html">Phonon::MediaObject</a>, <a href="phonon-audiooutput.html">Phonon::AudioOutput</a>, and <a href="phonon-videowidget.html">Phonon::VideoWidget</a>.</p>
 <hr />
@@ -61,6 +72,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

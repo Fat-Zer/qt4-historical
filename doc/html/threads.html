@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/threads.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/threads.qdoc -->
 <head>
   <title>Qt 4.4: Thread Support in Qt</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -98,6 +98,18 @@
 <li><a href="qfuturewatcher.html">QFutureWatcher</a> allows monitoring a <a href="qfuture.html">QFuture</a> using signals-and-slots.</li>
 <li><a href="qfuturesynchronizer.html">QFutureSynchronizer</a> is a convenience class that automatically synchronizes several QFutures.</li>
 </ul>
+<p>Qt Concurrent supports several STL-compatible container and iterator types, but works best with Qt containers that have random-access iterators, such as <a href="qlist.html">QList</a> or <a href="qvector.html">QVector</a>. The map and filter functions accept both containers and begin/end iterators.</p>
+<p>STL Iterator support overview:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<thead><tr valign="top" class="qt-style"><th>Iterator Type</th><th>Example classes</th><th>Support status</th></tr></thead>
+<tr valign="top" class="odd"><td>Input Iterator</td><td></td><td>Not Supported</td></tr>
+<tr valign="top" class="even"><td>Output Iterator</td><td></td><td>Not Supported</td></tr>
+<tr valign="top" class="odd"><td>Forward Iterator</td><td>std::slist</td><td>Supported</td></tr>
+<tr valign="top" class="even"><td>Bidirectional Iterator</td><td><a href="qlinkedlist.html">QLinkedList</a>, std::list</td><td>Supported</td></tr>
+<tr valign="top" class="odd"><td>Random Access Iterator</td><td><a href="qlist.html">QList</a>, <a href="qvector.html">QVector</a>, std::vector</td><td>Supported and Recommended</td></tr>
+</table></p>
+<p>Random Access Iterators can be faster in cases where Qt Concurrent is iterating over a large number of lightweight items, since they allow skipping to any point in the container.</p>
+<p>The non in-place modifying functions such as mapped() and filtered() makes a copy of the container when called. If you are using STL containers this copy operation might take some time, in this case we recommend specifying the begin and end iterators for the container instead.</p>
 <a name="reentrant"></a><a name="thread-safe"></a><a name="reentrancy-and-thread-safety"></a>
 <h3>Reentrancy and Thread-Safety</h3>
 <p>Throughout the Qt documentation, the terms <i>reentrant</i> and <i>thread-safe</i> are used to specify how a function can be used in multithreaded applications:</p>
@@ -200,7 +212,7 @@
 <h3>Painting in Threads</h3>
 <p><a href="qpainter.html">QPainter</a> can be used to paint onto <a href="qimage.html">QImage</a>, <a href="qprinter.html">QPrinter</a>, and <a href="qpicture.html">QPicture</a> paint devices. Painting onto QPixmaps and QWidgets is <i>not</i> supported. On Mac OS X the automatic progress dialog will not be displayed if you are printing from outside the GUI thread.</p>
 <p>Any number of threads can paint at any given time, however only one thread at a time can paint on a given paint device. In other words, two threads can paint at the same time if each paints onto separate QImages, but the two threads cannot paint onto the same <a href="qimage.html">QImage</a> at the same time.</p>
-<p>Note that on X11 systems without FontConfig support, Qt cannot render text outside of the GUI thread. You can use the <a href="qfontdatabase.html#supportsThreadedFontRendering">QFontDatabase::supportsThreadedFontRendering</a>() to detect whether or not the font rendering outside the GUI thread.</p>
+<p>Note that on X11 systems without FontConfig support, Qt cannot render text outside of the GUI thread. You can use the <a href="qfontdatabase.html#supportsThreadedFontRendering">QFontDatabase::supportsThreadedFontRendering</a>() function to detect whether or not font rendering can be used outside the GUI thread.</p>
 <a name="threads-and-rich-text-processing"></a>
 <h3>Threads and Rich Text Processing</h3>
 <p>The <a href="qtextdocument.html">QTextDocument</a>, <a href="qtextcursor.html">QTextCursor</a>, and <a href="richtext.html">all related classes</a> are reentrant.</p>
@@ -220,6 +232,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

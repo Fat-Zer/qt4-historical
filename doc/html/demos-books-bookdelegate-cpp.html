@@ -70,7 +70,7 @@
  {
      if (index.column() != 5) {
          QStyleOptionViewItemV3 opt = option;
-         opt.rect.adjust(0, 0, -1, -1); <span class="comment">//</span> since we draw the grid ourselves
+         opt.rect.adjust(0, 0, -1, -1); <span class="comment">// since we draw the grid ourselves</span>
          QSqlRelationalDelegate::paint(painter, opt, index);
      } else {
          const QAbstractItemModel *model = index.model();
@@ -89,7 +89,7 @@
              painter-&gt;drawPixmap(x, y, star);
              x += width;
          }
-         drawFocus(painter, option, option.rect.adjusted(0, 0, -1, -1)); <span class="comment">//</span> since we draw the grid ourselves
+         drawFocus(painter, option, option.rect.adjusted(0, 0, -1, -1)); <span class="comment">// since we draw the grid ourselves</span>
      }
 
      QPen pen = painter-&gt;pen();
@@ -105,7 +105,7 @@
      if (index.column() == 5)
          return QSize(5 * star.width(), star.height()) + QSize(1, 1);
 
-     return QSqlRelationalDelegate::sizeHint(option, index) + QSize(1, 1); <span class="comment">//</span> since we draw the grid ourselves
+     return QSqlRelationalDelegate::sizeHint(option, index) + QSize(1, 1); <span class="comment">// since we draw the grid ourselves</span>
  }
 
  bool BookDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
@@ -120,7 +120,7 @@
          int stars = qBound(0, int(0.7 + qreal(mouseEvent-&gt;pos().x()
              - option.rect.x()) / star.width()), 5);
          model-&gt;setData(index, QVariant(stars));
-         return false; <span class="comment">//</span>so that the selection can change
+         return false; <span class="comment">//so that the selection can change</span>
      }
 
      return true;
@@ -132,7 +132,7 @@
      if (index.column() != 4)
          return QSqlRelationalDelegate::createEditor(parent, option, index);
 
-     <span class="comment">//</span> for editing the year, return a spinbox with a range from -1000 to 2100.
+     <span class="comment">// for editing the year, return a spinbox with a range from -1000 to 2100.</span>
      QSpinBox *sb = new QSpinBox(parent);
      sb-&gt;setFrame(false);
      sb-&gt;setMaximum(2100);
@@ -144,6 +144,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

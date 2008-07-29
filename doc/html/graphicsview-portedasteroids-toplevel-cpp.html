@@ -61,7 +61,7 @@
   *
   * Part of the KDE project
   */</span>
-<span class="comment"> //</span>      --- toplevel.cpp ---
+<span class="comment"> //      --- toplevel.cpp ---</span>
  #include &lt;q3accel.h&gt;
  #include &lt;qlabel.h&gt;
  #include &lt;qlayout.h&gt;
@@ -69,7 +69,7 @@
  #include &lt;qpushbutton.h&gt;
 
  #include &lt;qapplication.h&gt;
-<span class="comment"> //</span>Added by qt3to4:
+<span class="comment"> //Added by qt3to4:</span>
  #include &lt;Q3HBoxLayout&gt;
  #include &lt;QShowEvent&gt;
  #include &lt;Q3Frame&gt;
@@ -209,7 +209,7 @@
 
      vb-&gt;addWidget( view, 10 );
 
-<span class="comment"> //</span> -- bottom layout:
+<span class="comment"> // -- bottom layout:</span>
      vb-&gt;addLayout( hbd );
 
      QFont smallFont( &quot;helvetica&quot;, 14 );
@@ -469,7 +469,7 @@
      view-&gt;newGame();
      view-&gt;setRockSpeed( levels[0].rockSpeed );
      view-&gt;addRocks( levels[0].nrocks );
-<span class="comment"> //</span>    view-&gt;showText( tr( &quot;Press L to launch.&quot; ), yellow );
+<span class="comment"> //    view-&gt;showText( tr( &quot;Press L to launch.&quot; ), yellow );</span>
      view-&gt;newShip();
      waitShip = FALSE;
      view-&gt;hideText();
@@ -493,7 +493,7 @@
          view-&gt;showText( tr(&quot;Game Over!&quot;), Qt::red );
          view-&gt;endGame();
          doStats();
-<span class="comment"> //</span>        highscore-&gt;addEntry( score, level, showHiscores );
+<span class="comment"> //        highscore-&gt;addEntry( score, level, showHiscores );</span>
      }
  }
 
@@ -553,13 +553,13 @@
      brakesLCD-&gt;display( view-&gt;brakeCount() );
      shieldLCD-&gt;display( view-&gt;shieldCount() );
      shootLCD-&gt;display( view-&gt;shootCount() );
-<span class="comment"> //</span>    teleportsLCD-&gt;display( view-&gt;teleportCount() );
+<span class="comment"> //    teleportsLCD-&gt;display( view-&gt;teleportCount() );</span>
      powerMeter-&gt;setValue( view-&gt;power() );
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

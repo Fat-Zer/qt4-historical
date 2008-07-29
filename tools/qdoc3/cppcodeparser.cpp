@@ -188,6 +188,13 @@ void CppCodeParser::initializeParser(const Config &config)
 
     exampleFiles = config.getStringList(CONFIG_EXAMPLES);
     exampleDirs = config.getStringList(CONFIG_EXAMPLEDIRS);
+    QStringList exampleFilePatterns = config.getStringList(
+        CONFIG_EXAMPLES + Config::dot + CONFIG_FILEEXTENSIONS);
+
+    if (!exampleFilePatterns.isEmpty())
+        exampleNameFilter = exampleFilePatterns.join(" ");
+    else
+        exampleNameFilter = "*.cpp *.h *.js *.xq *.svg *.xml *.ui";
 }
 
 void CppCodeParser::terminateParser()
@@ -1108,7 +1115,7 @@ bool CppCodeParser::matchBaseSpecifier( ClassNode *classe, bool isClass )
     if (!matchDataType(&baseClass))
 	return false;
 
-    tre->addBaseClass(classe, access, baseClass.toPath(), baseClass.toString());
+    tre->addBaseClass(classe, access, baseClass.toPath(), baseClass.toString(), classe->parent());
     return true;
 }
 
@@ -1710,10 +1717,7 @@ void CppCodeParser::createExampleFileNodes(FakeNode *fake)
     int sizeOfBoringPartOfName = fullPath.size() - proFileName.size();
     fullPath.truncate(fullPath.lastIndexOf('/'));
 
-    // should not hardcode the file extensions.
-    // To do: create a new configuration setting and make sure its value
-    // finds its way here.
-    QStringList exampleFiles = Config::getFilesHere(fullPath, "*.cpp *.h *.js *.xq *.svg *.xml *.ui");
+    QStringList exampleFiles = Config::getFilesHere(fullPath, exampleNameFilter);
     if (!exampleFiles.isEmpty()) {
         // move main.cpp and to the end, if it exists
         QString mainCpp;

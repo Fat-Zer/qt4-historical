@@ -71,6 +71,8 @@
 #include <phonon/phononnamespace.h>
 #endif
 
+#include <QtGui/private/qt_x11_p.h>
+
 QT_BEGIN_NAMESPACE
 
 // from qapplication.cpp and qapplication_x11.cpp - These are NOT for
@@ -253,6 +255,11 @@ MainWindow::MainWindow()
     connect(buttonMainColor2, SIGNAL(colorChanged(QColor)),
                 this, SLOT(buildPalette()));
 
+    if (X11->desktopEnvironment == DE_KDE)
+        colorConfig->hide();
+    else
+        labelKDENote->hide();
+
     QFontDatabase db;
     QStringList families = db.families();
     familycombo->insertStringList(families);
@@ -375,8 +382,11 @@ MainWindow::MainWindow()
     fontpathlistbox->insertStringList(fontpaths);
 
     audiosinkCombo->addItem(tr("Auto (default)"), QLatin1String("Auto"));
-    audiosinkCombo->setItemData(audiosinkCombo->findText(tr("Auto (default)")), 
+    audiosinkCombo->setItemData(audiosinkCombo->findText(tr("Auto (default)")),
                                 tr("Choose audio output automatically."), Qt::ToolTipRole);
+    audiosinkCombo->addItem(tr("aRts"), QLatin1String("artssink"));
+    audiosinkCombo->setItemData(audiosinkCombo->findText(tr("aRts")),
+                                tr("Experimental aRts support for GStreamer."), Qt::ToolTipRole);
 #ifndef QT_NO_GSTREAMER
     phononVersionLabel->setText(Phonon::phononVersion());
     if (gst_init_check(0, 0, 0)) {
@@ -399,7 +409,7 @@ MainWindow::MainWindow()
                     description = gst_element_factory_get_description (GST_ELEMENT_FACTORY(feature));
                     audiosinkCombo->addItem(name, name);
                     audiosinkCombo->setItemData(audiosinkCombo->findText(name), description, Qt::ToolTipRole);
-                    gst_object_unref (sink);             
+                    gst_object_unref (sink);
                 }
             }
         }

@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
   \class QXmlNamePool
-  \brief The QXmlNamePool class is a pool of XML names.
+  \brief The QXmlNamePool class is a table of shared strings referenced by instances of QXmlName.
   \reentrant
   \since 4.4
   \ingroup xml-tools

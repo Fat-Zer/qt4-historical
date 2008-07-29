@@ -1,0 +1,154 @@
+/****************************************************************************
+**
+** Copyright (C) 2008-2008 Trolltech ASA. All rights reserved.
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.2, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
+**
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/*!
+    \class QColormap
+    \ingroup multimedia
+
+    \brief The QColormap class maps device independent QColors to device
+    dependent pixel values.
+*/
+
+/*! \enum QColormap::Mode
+
+    This enum describes how QColormap maps device independent RGB
+    values to device dependent pixel values.
+
+    \value Direct Pixel values are derived directly from the RGB
+    values, also known as "True Color."
+
+    \value Indexed Pixel values represent indexes into a vector of
+    available colors, i.e. QColormap uses the index of the color that
+    most closely matches an RGB value.
+
+    \value Gray Similar to \c Indexed, pixel values represent a vector
+    of available gray tones.  QColormap uses the index of the gray
+    tone that most closely matches the computed gray tone of an RGB
+    value.
+*/
+
+/*!
+    \fn QColormap QColormap::instance(int screen)
+
+    Returns the colormap for the specified \a screen.  If \a screen is
+    -1, this function returns the colormap for the default screen.
+*/
+
+/*!
+    \fn QColormap::QColormap(const QColormap &colormap)
+
+    Constructs a copy of another \a colormap.
+*/
+
+/*!
+    \fn QColormap::~QColormap()
+    
+    Destroys the colormap.
+*/
+
+/*!
+    \fn int QColormap::size() const
+
+    Returns the size of the colormap for \c Indexed and \c Gray modes;
+    Returns -1 for \c Direct mode.
+
+    \sa colormap()
+*/
+
+/*!
+    \fn uint QColormap::pixel(const QColor &color) const
+
+    Returns a device dependent pixel value for the \a color.
+
+    \sa colorAt()
+*/
+
+/*!
+    \fn int QColormap::depth() const
+
+    Returns the depth of the device.
+
+    \sa size()
+*/
+
+/*!
+    \fn QColormap::Mode QColormap::mode() const
+
+    Returns the mode of this colormap.
+
+    \sa QColormap::Mode
+*/
+
+/*!
+    \fn const QColor QColormap::colorAt(uint pixel) const
+
+    Returns a QColor for the \a pixel.
+
+    \sa pixel()
+*/
+
+/*!
+    \fn const QVector<QColor> QColormap::colormap() const
+
+    Returns a vector of colors which represents the devices colormap
+    for \c Indexed and \c Gray modes.  This function returns an empty
+    vector for \c Direct mode.
+
+    \sa size()
+*/
+
+/*! \fn HPALETTE QColormap::hPal()
+
+    This function is only available on Windows.
+
+    Returns an handle to the HPALETTE used by this colormap.  If no
+    HPALETTE is being used, this function returns zero.
+*/
+
+/*! \since 4.2
+
+    \fn QColormap &QColormap::operator=(const QColormap &colormap)
+
+    Assigns the given \a colormap to \e this color map and returns
+    a reference to \e this color map.
+*/

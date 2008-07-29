@@ -258,6 +258,7 @@ QWidget *QDesignerComponents::createResourceEditor(QDesignerFormEditorInterface 
     }
     QtResourceView *resourceView = new QtResourceView(core, parent);
     resourceView->setResourceModel(core->resourceModel());
+    resourceView->setSettingsKey(QLatin1String("ResourceBrowser"));
     return resourceView;
 }
 

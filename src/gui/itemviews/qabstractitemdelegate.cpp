@@ -150,6 +150,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \fn void QAbstractItemDelegate::sizeHintChanged(const QModelIndex &index)
+    \since 4.4
 
     This signal must be emitted when the sizeHint() of \a index changed.
 

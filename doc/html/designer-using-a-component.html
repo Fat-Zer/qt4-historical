@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/designer-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/designer-manual.qdoc -->
 <head>
   <title>Qt 4.4: Using a Component in Your Application</title>
   <link rel="prev" href="designer-using-custom-widgets.html" />
@@ -197,7 +197,7 @@
 <a name="widgetsanddialogswithautoconnect"></a><a name="widgets-and-dialogs-with-auto-connect"></a>
 <h3>Widgets and Dialogs with Auto-Connect</h3>
 <p>Although it is easy to implement a custom slot in the dialog and connect it in the constructor, we could instead use <a href="qmetaobject.html">QMetaObject</a>'s auto-connection facilities to connect the <b>OK</b> button's clicked() signal to a slot in our subclass. <tt>uic</tt> automatically generates code in the dialog's <tt>setupUi()</tt> function to do this, so we only need to declare and implement a slot with a name that follows a standard convention:</p>
-<pre>     void on_&lt;widget name&gt;_&lt;signal name&gt;(&lt;signal parameters&gt;);</pre>
+<pre> void on_&lt;widget name&gt;_&lt;signal name&gt;(&lt;signal parameters&gt;);</pre>
 <p>Using this convention, we can define and implement a slot that responds to mouse clicks on the <b>OK</b> button:</p>
 <pre> class ImageDialog : public QDialog, private Ui::ImageDialog
  {
@@ -252,6 +252,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

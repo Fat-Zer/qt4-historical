@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/thread/qreadwritelock.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/thread/qreadwritelock.cpp -->
 <head>
   <title>Qt 4.4: QReadWriteLock Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -79,6 +79,7 @@
 <tr><td valign="top"><tt>QReadWriteLock::Recursive</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">In this mode, a thread can lock the same <a href="qreadwritelock.html">QReadWriteLock</a> multiple times and the mutex won't be unlocked until a corresponding number of <a href="qreadwritelock.html#unlock">unlock</a>() calls have been made.</td></tr>
 <tr><td valign="top"><tt>QReadWriteLock::NonRecursive</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">In this mode, a thread may only lock a <a href="qreadwritelock.html">QReadWriteLock</a> once.</td></tr>
 </table></p>
+<p>This enum was introduced in Qt 4.4.</p>
 <p>See also <a href="qreadwritelock.html#QReadWriteLock">QReadWriteLock</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -88,6 +89,7 @@
 <p>See also <a href="qreadwritelock.html#lockForRead">lockForRead</a>() and <a href="qreadwritelock.html#lockForWrite">lockForWrite</a>().</p>
 <h3 class="fn"><a name="QReadWriteLock-2"></a>QReadWriteLock::QReadWriteLock ( <a href="qreadwritelock.html#RecursionMode-enum">RecursionMode</a> <i>recursionMode</i> )</h3>
 <p>Constructs a <a href="qreadwritelock.html">QReadWriteLock</a> object in the given <i>recursionMode</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qreadwritelock.html#lockForRead">lockForRead</a>(), <a href="qreadwritelock.html#lockForWrite">lockForWrite</a>(), and <a href="qreadwritelock.html#RecursionMode-enum">RecursionMode</a>.</p>
 <a name="//apple_ref/cpp/instm/QReadWriteLock/~QReadWriteLock" />
 <h3 class="fn"><a name="dtor.QReadWriteLock"></a>QReadWriteLock::~QReadWriteLock ()</h3>
@@ -134,6 +136,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -191,18 +191,26 @@ public:
 
     static bool connect(const QObject *sender, const char *signal,
                         const QObject *receiver, const char *member, Qt::ConnectionType =
+#ifdef qdoc
+                        Qt::AutoConnection
+#else
 #ifdef QT3_SUPPORT
                         Qt::AutoCompatConnection
 #else
                         Qt::AutoConnection
 #endif
+#endif
         );
     inline bool connect(const QObject *sender, const char *signal,
                         const char *member, Qt::ConnectionType type =
+#ifdef qdoc
+                        Qt::AutoConnection
+#else
 #ifdef QT3_SUPPORT
                         Qt::AutoCompatConnection
 #else
                         Qt::AutoConnection
+#endif
 #endif
         ) const;
 

@@ -60,6 +60,7 @@
  #include &lt;QList&gt;
  #include &lt;QThread&gt;
  #include &lt;QDebug&gt;
+ #include &lt;QApplication&gt;
  #include &lt;qtconcurrentmap.h&gt;
 
  #ifndef QT_NO_CONCURRENT
@@ -72,18 +73,17 @@
 
  int main(int argc, char *argv[])
  {
-     Q_UNUSED(argc);
-     Q_UNUSED(argv);
+     QApplication app(argc, argv);
 
      const int imageCount = 20;
 
-     <span class="comment">//</span> Create a list containing imageCount images.
+     <span class="comment">// Create a list containing imageCount images.</span>
      QList&lt;QImage&gt; images;
      for (int i = 0; i &lt; imageCount; ++i)
          images.append(QImage(1600, 1200, QImage::Format_ARGB32_Premultiplied));
 
-     <span class="comment">//</span> Use QtConcurrentBlocking::mapped to apply the scale function to all the
-     <span class="comment">//</span> images in the list.
+     <span class="comment">// Use QtConcurrentBlocking::mapped to apply the scale function to all the</span>
+     <span class="comment">// images in the list.</span>
      QList&lt;QImage&gt; thumbnails = QtConcurrent::blockingMapped(images, scale);
 
      return 0;
@@ -101,6 +101,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

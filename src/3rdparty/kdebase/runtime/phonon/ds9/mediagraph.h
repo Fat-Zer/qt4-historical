@@ -94,7 +94,7 @@ namespace Phonon
             void seekingFinished(MediaGraph*);
 
         private Q_SLOTS:
-            void finishLoading(quint16 workId, HRESULT hr, QSet<Filter> newlyCreated, bool isSeekable);
+            void finishLoading(quint16 workId, HRESULT hr, Graph);
             void finishSeeking(quint16 workId, qint64 time);
 
 
@@ -104,7 +104,7 @@ namespace Phonon
             static QSet<Filter> getFilterChain(const Filter &source, const Filter &sink);
 
         private:
-            HRESULT reallyFinishLoading(HRESULT, const QSet<Filter> &);
+            HRESULT reallyFinishLoading(HRESULT, const Graph &graph);
 
 
             //utility functions
@@ -130,7 +130,7 @@ namespace Phonon
             bool m_hasAudio;
             bool m_connectionsDirty;
             bool m_isStopping;
-            bool m_isSeekable;
+            mutable bool m_isSeekable;
             HRESULT m_result;
             quint16 m_index;
             quint16 m_renderId;

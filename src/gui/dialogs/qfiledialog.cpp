@@ -625,7 +625,7 @@ QStringList QFileDialogPrivate::typedFiles() const
 /*!
     Returns a list of strings containing the absolute paths of the
     selected files in the dialog. If no files are selected, or
-    the mode is not ExistingFiles, selectedFiles() is an empty string list.
+    the mode is not ExistingFiles, selectedFiles() contains the current path in the viewport.
 
     \sa selectedNameFilter(), selectFile()
 */
@@ -670,6 +670,8 @@ QStringList qt_make_filter_list(const QString &filter)
 }
 
 /*!
+    \since 4.4
+
     Sets the filter used in the file dialog to the given \a filter.
 
     If \a filter contains a pair of parentheses containing one or more
@@ -723,6 +725,8 @@ bool QFileDialog::isNameFilterDetailsVisible() const
 
 
 /*!
+    \since 4.4
+
     Sets the \a filters used in the file dialog.
 
     \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 7
@@ -759,6 +763,8 @@ void QFileDialog::setFilters(const QStringList &filters)
 }
 
 /*!
+    \since 4.4
+
     Returns the file type filters that are in operation on this file
     dialog.
 */
@@ -783,6 +789,8 @@ QStringList QFileDialog::filters() const
 }
 
 /*!
+    \since 4.4
+
     Sets the current file type \a filter. Multiple filters can be
     passed in \a filter by separating them with semicolons or spaces.
 
@@ -810,6 +818,8 @@ void QFileDialog::selectFilter(const QString &filter)
 }
 
 /*!
+    \since 4.4
+
     Returns the filter that the user selected in the file dialog.
 
     \sa selectedFiles()
@@ -831,6 +841,8 @@ QString QFileDialog::selectedFilter() const
 }
 
 /*!
+    \since 4.4
+
     Returns the filter that is used when displaying files.
 
     \sa setFilter()
@@ -2146,12 +2158,15 @@ void QFileDialogPrivate::_q_navigateToParent()
 {
     Q_Q(QFileDialog);
     QDir dir(model->rootDirectory());
+    QString newDirectory;
     if (dir.isRoot()) {
-        q->setDirectory(model->myComputer().toString());
+        newDirectory = model->myComputer().toString();
     } else {
         dir.cdUp();
-        q->setDirectory(dir.absolutePath());
+        newDirectory = dir.absolutePath();
     }
+    q->setDirectory(newDirectory);
+    emit q->directoryEntered(newDirectory);
 }
 
 /*!
@@ -2348,7 +2363,7 @@ void QFileDialogPrivate::_q_autoCompleteFileName(const QString &text) {
         QModelIndexList oldFiles = qFileDialogUi->listView->selectionModel()->selectedRows();
         QModelIndexList newFiles;
         for (int i = 0; i < multipleFiles.count(); ++i) {
-            QModelIndex idx = model->index(multipleFiles.at(i));
+            QModelIndex idx = mapFromSource(model->index(multipleFiles.at(i)));
             if (oldFiles.contains(idx))
                 oldFiles.removeAll(idx);
             else
@@ -2382,47 +2397,56 @@ void QFileDialogPrivate::_q_updateOkButton() {
     if (files.isEmpty()) {
         enableButton = false;
     } else if (lineEditText == QLatin1String("..")) {
-            isOpenDirectory = true;
+        isOpenDirectory = true;
     } else {
         switch (fileMode) {
         case QFileDialog::DirectoryOnly:
         case QFileDialog::Directory: {
             QString fn = files.first();
-            QFileInfo info(fn);
-            if (!info.exists())
-                info = QFileInfo(getEnvironmentVariable(fn));
-            if (!info.exists() || !info.isDir())
+            QModelIndex idx = model->index(fn);
+            if (!idx.isValid())
+                idx = model->index(getEnvironmentVariable(fn));
+            if (!idx.isValid() || !model->isDir(idx))
                 enableButton = false;
             break;
         }
         case QFileDialog::AnyFile: {
             QString fn = files.first();
-            QFileInfo info(fn);
-            if(info.canonicalFilePath() == q->directory().canonicalPath()) {
+            QModelIndex idx = model->index(fn);
+            QString fileDir = fn.mid(0, fn.lastIndexOf(QLatin1Char('/')));
+            QString fileName = fn.mid(fileDir.length() + 1);
+            if (lineEditText.contains(QLatin1String(".."))) {
+                QFileInfo info(fn);
+                fileDir = info.canonicalFilePath();
+                fileName = info.fileName();
+            }
+
+            if (fileDir == q->directory().canonicalPath() && fileName.isEmpty()) {
                 enableButton = false;
                 break;
             }
-            if (info.isDir()) {
+            if (idx.isValid() && model->isDir(idx)) {
                 isOpenDirectory = true;
+                enableButton = false;
                 break;
             }
-            if (!info.exists()) {
-                int maxLength = maxNameLength(info.path());
-                enableButton = maxLength < 0 || info.fileName().length() <= maxLength;
+            if (!idx.isValid()) {
+                int maxLength = maxNameLength(fileDir);
+                enableButton = maxLength < 0 || fileName.length() <= maxLength;
             }
             break;
         }
         case QFileDialog::ExistingFile:
         case QFileDialog::ExistingFiles:
             for (int i = 0; i < files.count(); ++i) {
-                QFileInfo info(files.at(i));
-                if (!info.exists())
-                    info = QFileInfo(getEnvironmentVariable(files.at(i)));
-                if (!info.exists()) {
+                QModelIndex idx = model->index(files.at(i));
+                if (!idx.isValid())
+                    idx = model->index(getEnvironmentVariable(files.at(i)));
+                if (!idx.isValid()) {
                     enableButton = false;
                     break;
                 }
-                if (info.isDir()) {
+                if (idx.isValid() && model->isDir(idx)) {
                     isOpenDirectory = true;
                     break;
                 }

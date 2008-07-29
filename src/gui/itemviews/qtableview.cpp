@@ -154,8 +154,8 @@ void QTableViewPrivate::setSpan(int row, int column, int rowSpan, int columnSpan
     if (row < 0 || column < 0 || rowSpan < 0 || columnSpan < 0)
         return;
     Span sp(row, column, rowSpan, columnSpan);
-    QList<Span>::iterator it = qLowerBound(spans.begin(), spans.end(), sp);
-    if(it != spans.end()) {
+    QList<Span>::iterator it;
+    for (it = spans.begin(); it != spans.end(); ++it) {
         if (((*it).top() == sp.top()) && ((*it).left() == sp.left())) {
             if ((sp.height() == 1) && (sp.width() == 1))
                 spans.erase(it); // "Implicit" span (1, 1), no need to store it
@@ -164,7 +164,7 @@ void QTableViewPrivate::setSpan(int row, int column, int rowSpan, int columnSpan
             return;
         }
     }
-    spans.insert(it, sp);
+    spans.append(sp);
 }
 
 /*!
@@ -173,17 +173,13 @@ void QTableViewPrivate::setSpan(int row, int column, int rowSpan, int columnSpan
 */
 QTableViewPrivate::Span QTableViewPrivate::span(int row, int column) const
 {
-    Span sp(row, column, 1, 1);
-    QList<Span>::const_iterator it = spans.constBegin();
-    QList<Span>::const_iterator end = spans.constEnd();
-    for (; it != end; ++it) {
+    QList<Span>::const_iterator it;
+    for (it = spans.begin(); it != spans.end(); ++it) {
         Span span = *it;
         if (isInSpan(row, column, span))
             return span;
-        if (span.top() != row)
-            break;
     }
-    return sp;
+    return Span(row, column, 1, 1);
 }
 
 /*!
@@ -248,7 +244,7 @@ bool QTableViewPrivate::spanContainsSection(const QHeaderView *header, int logic
 bool QTableViewPrivate::spansIntersectColumn(int column) const
 {
     QList<Span>::const_iterator it;
-    for (it = spans.constBegin(); it != spans.constEnd(); ++it) {
+    for (it = spans.begin(); it != spans.end(); ++it) {
         Span span = *it;
         if (spanContainsColumn(column, span.left(), span.width()))
             return true;
@@ -263,12 +259,10 @@ bool QTableViewPrivate::spansIntersectColumn(int column) const
 bool QTableViewPrivate::spansIntersectRow(int row) const
 {
     QList<Span>::const_iterator it;
-    for (it = spans.constBegin(); it != spans.constEnd(); ++it) {
+    for (it = spans.begin(); it != spans.end(); ++it) {
         Span span = *it;
         if (spanContainsRow(row, span.top(), span.height()))
             return true;
-        if (span.top() > row)
-            break;
     }
     return false;
 }
@@ -307,16 +301,21 @@ bool QTableViewPrivate::spansIntersectRows(const QList<int> &rows) const
 */
 QRect QTableViewPrivate::visualSpanRect(const Span &span) const
 {
+    Q_Q(const QTableView);
     // vertical
     int row = span.top();
     int rowp = verticalHeader->sectionViewportPosition(row);
     int rowh = rowSpanHeight(row, span.height());
     // horizontal
     int column = span.left();
-    int colp = horizontalHeader->sectionViewportPosition(column);
     int colw = columnSpanWidth(column, span.width());
+    if (q->isRightToLeft())
+        column = span.right();
+    int colp = horizontalHeader->sectionViewportPosition(column);
 
     const int i = showGrid ? 1 : 0;
+    if (q->isRightToLeft())
+        return QRect(colp + i, rowp, colw - i, rowh - i);
     return QRect(colp, rowp, colw - i, rowh - i);
 }
 
@@ -432,21 +431,25 @@ void QTableViewPrivate::drawCell(QPainter *painter, const QStyleOptionViewItemV4
     The QTableView class is one of the \l{Model/View Classes}
     and is part of Qt's \l{Model/View Programming}{model/view framework}.
 
+    QTableView implements the interfaces defined by the
+    QAbstractItemView class to allow it to display data provided by
+    models derived from the QAbstractItemModel class.
+
+    \section1 Navigation
+
     You can navigate the cells in the table by clicking on a cell with the
     mouse, or by using the arrow keys. Because QTableView enables
     \l{QAbstractItemView::tabKeyNavigation}{tabKeyNavigation} by default, you
     can also hit Tab and Backtab to move from cell to cell.
 
-    QTableView implements the interfaces defined by the
-    QAbstractItemView class to allow it to display data provided by
-    models derived from the QAbstractItemModel class.
+    \section1 Visual Appearance
 
     The table has a vertical header that can be obtained using the
     verticalHeader() function, and a horizontal header that is available
     through the horizontalHeader() function. The height of each row in the
     table can be found by using rowHeight(); similarly, the width of
-    columns can be found using columnWidth().  They are both just QWidgets
-    so you can hide either of them using their hide() functions.
+    columns can be found using columnWidth().  Since both of these are plain
+    widgets, you can hide either of them using their hide() functions.
 
     Rows and columns can be hidden and shown with hideRow(), hideColumn(),
     showRow(), and showColumn(). They can be selected with selectRow()
@@ -460,6 +463,22 @@ void QTableViewPrivate::drawCell(QPainter *painter, const QStyleOptionViewItemV4
     \l{QAbstractItemView::}{setIndexWidget()} function, and
     later retrieved with \l{QAbstractItemView::}{indexWidget()}.
 
+    \table
+    \row \o \inlineimage qtableview-resized.png
+    \o By default, the cells in a table do not expand to fill the available space.
+
+    You can make the cells fill the available space by stretching the last
+    header section. Access the relevant header using horizontalHeader()
+    or verticalHeader() and set the header's \l{QHeaderView::}{stretchLastSection}
+    property.
+
+    To distribute the available space according to the space requirement of
+    each column or row, call the view's resizeColumnsToContents() or
+    resizeRowsToContents() functions.
+    \endtable
+
+    \section1 Coordinate Systems
+
     For some specialized forms of tables it is useful to be able to
     convert between row and column indexes and widget coordinates.
     The rowAt() function provides the y-coordinate within the view of the
@@ -467,6 +486,12 @@ void QTableViewPrivate::drawCell(QPainter *painter, const QStyleOptionViewItemV4
     y-coordinate with rowViewportPosition(). The columnAt() and
     columnViewportPosition() functions provide the equivalent conversion
     operations between x-coordinates and column indexes.
+
+    \section1 Styles
+
+    QTableView is styled appropriately for each platform. The following images show
+    how it looks on three different platforms. Go to the \l{Qt Widget Gallery} to see
+    its appearance in other styles.
 
     \table 100%
     \row \o \inlineimage windowsxp-tableview.png Screenshot of a Windows XP style table view
@@ -729,13 +754,15 @@ void QTableView::paintEvent(QPaintEvent *event)
     if (horizontalHeader->count() == 0 || verticalHeader->count() == 0 || !d->itemDelegate)
         return;
 
-    uint x = horizontalHeader->length() - horizontalHeader->offset() - 1;
+    uint x = horizontalHeader->length() - horizontalHeader->offset() - (rightToLeft ? 0 : 1);
     uint y = verticalHeader->length() - verticalHeader->offset() - 1;
 
     QVector<QRect> rects = event->region().rects();
-    int firstRow = indexAt(QPoint(0, 0)).row();
-    int lastRow = qMax(indexAt(QPoint(0, height())).row(), d->model->rowCount(d->root));
-    QBitArray drawn((lastRow - firstRow) * columnCount);
+    int firstVisualRow = qMax(verticalHeader->visualIndexAt(0),0);
+    int lastVisualRow = verticalHeader->visualIndexAt(height());
+    if (lastVisualRow == -1)
+        lastVisualRow = d->model->rowCount(d->root);
+    QBitArray drawn((lastVisualRow - firstVisualRow) * columnCount);
 
     for (int i = 0; i < rects.size(); ++i) {
         QRect dirtyArea = rects.at(i);
@@ -801,13 +828,13 @@ void QTableView::paintEvent(QPaintEvent *event)
                 colp += offset.x();
                 int colw = columnWidth(col) - gridSize;
 
-                int currentBit = (row - firstRow) * columnCount + col;
-                if (drawn.testBit(currentBit))
+                int currentBit = (visualIndex - firstVisualRow) * columnCount + col;
+                if (currentBit < 0 || currentBit >= drawn.size() || drawn.testBit(currentBit))
                     continue;
                 drawn.setBit(currentBit);
                 const QModelIndex index = d->model->index(row, col, d->root);
                 if (index.isValid()) {
-                    option.rect = QRect(colp, rowY, colw, rowh);
+                    option.rect = QRect(colp + (showGrid && rightToLeft ? 1 : 0), rowY, colw, rowh);
                     if (alternate) {
                         if (alternateBase)
                             option.features |= QStyleOptionViewItemV2::Alternate;
@@ -1487,9 +1514,10 @@ int QTableView::sizeHintForRow(int row) const
     QHeaderView::resizeSection() on the table's horizontal header.
 
     If you reimplement this function in a subclass, note that the value you
-    return is only used when resizeColumnToContents() is called. In that case,
-    if a larger column width is required by either the horizontal header or
-    the item delegate, that width will be used instead.
+    return will be used when resizeColumnToContents() or
+    QHeaderView::resizeSections() is called. If a larger column width is
+    required by either the horizontal header or the item delegate, the larger
+    width will be used instead.
 
     \sa QWidget::sizeHint, horizontalHeader()
 */
@@ -1755,6 +1783,11 @@ void QTableView::setGridStyle(Qt::PenStyle style)
     If this property is true then the item text is wrapped where
     necessary at word-breaks; otherwise it is not wrapped at all.
     This property is true by default.
+
+    Note that even of wrapping is enabled, the cell will not be
+    expanded to fit all text. Ellipsis will be inserted according to
+    the current \l{QAbstractItemView::}{textElideMode}.
+
 */
 void QTableView::setWordWrap(bool on)
 {
@@ -2266,10 +2299,11 @@ bool QTableView::isIndexHidden(const QModelIndex &index) const
 }
 
 /*!
+    \fn void QTableView::setSpan(int row, int column, int rowSpanCount, int columnSpanCount)
     \since 4.2
 
-    Sets the span of the table element at (\a row, \a column) to (\a
-    rowSpan, \a columnSpan).
+    Sets the span of the table element at (\a row, \a column) to the number of
+    rows and columns specified by (\a rowSpanCount, \a columnSpanCount).
 
     \sa rowSpan(), columnSpan()
 */

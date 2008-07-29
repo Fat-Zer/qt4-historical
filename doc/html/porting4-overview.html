@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/porting4-overview.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/porting4-overview.qdoc -->
 <head>
   <title>Qt 4.4: Moving from Qt 3 to Qt 4</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -17,7 +17,8 @@
 <p>This document describes which parts of Qt should be used when writing an application with Qt 3, so that it can be upgraded to use Qt 4 later with a minimum of effort. However, the advice may also be useful to developers who are porting existing applications from Qt 3 to Qt 4.</p>
 <p>For a detailed overview of the porting process for existing Qt 3 applications, see the <a href="porting4.html">Porting to Qt 4</a> document.</p>
 <ul><li><a href="#qt-3-features-to-avoid">Qt 3 Features to Avoid</a></li>
-<ul><li><a href="#qt-designer">Qt Designer</a></li>
+<ul><li><a href="#painting-outside-paint-events">Painting Outside Paint Events</a></li>
+<li><a href="#qt-designer">Qt Designer</a></li>
 <li><a href="#menu-items-qmenuitem">Menu Items (QMenuItem)</a></li>
 <li><a href="#pointer-based-classes-qptr">Pointer-Based Classes (QPtr*)</a></li>
 <li><a href="#other-collection-classes-qstrlist-q-dict">Other Collection Classes (QStrList, Q*Dict)</a></li>
@@ -44,6 +45,11 @@
 <a name="qt-3-features-to-avoid"></a>
 <h3>Qt 3 Features to Avoid</h3>
 <p>Although we are proud of the level of stability we have achieved with Qt, it is important to realise that, for Qt 4 to be a substantial improvement over Qt 3, certain features have been revised to make the framework more maintainable for us and more usable for developers. It is therefore useful to know which features of Qt 3 should be avoided to help save time during a later porting effort to Qt 4. Note that it is still possible to use many of the following classes and features through the use of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<a name="painting-outside-paint-events"></a>
+<h4>Painting Outside Paint Events</h4>
+<p>In Qt 3, under certain circumstances, it was possible to use <a href="qpainter.html">QPainter</a> to draw on a given custom widget outside its <a href="qwidget.html#paintEvent">paintEvent()</a> reimplementation. In Qt 4, in most situations, painting must occur within a widget's paint event handler.</p>
+<p>On X11, it is possible to set the WA_PaintOutsidePaintEvent attribute on widgets to keep existing code, but we recommend restricting the use of painting code to within paint event handlers where possible.</p>
+<p>More information about this change can be found in the <a href="porting4.html#painting-and-redrawing-widgets">Painting and Redrawing Widgets</a> section of the <a href="porting4.html">Porting to Qt 4</a> document.</p>
 <a name="qt-designer"></a>
 <h4>Qt Designer</h4>
 <p>The version of Qt Designer supplied with Qt 3 provided extensive code editing and project management features (control over <tt>.ui.h</tt> and <tt>.pro</tt> files), and encouraged users to design main window applications from within the Qt Designer environment.</p>
@@ -70,7 +76,8 @@
 <a name="url-operations-qurloperator"></a>
 <h4>URL Operations (QUrlOperator)</h4>
 <p>The URL operator in Qt 3 provides an abstract way to handle files via HTTP, FTP, and on the local file system. However, Qt 4 only provides this functionality through the use of the <a href="q3urloperator.html">Q3UrlOperator</a>.</p>
-<p>It is still possible to perform operations on remote files through the <a href="qhttp.html">QHttp</a> and <a href="qftp.html">QFtp</a> classes, and on local files with the <a href="qfile.html">QFile</a> class.</p>
+<p>From Qt 4.4, the Network Access API provides a subset of the features provided by <tt>QUrlOperator</tt> that are mostly intended for use with applications that use the HTTP and FTP protocols. See the <a href="qnetworkrequest.html">QNetworkRequest</a>, <a href="qnetworkreply.html">QNetworkReply</a>, and <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a> documentation for further details.</p>
+<p>It is also possible to perform operations on remote files through the <a href="qhttp.html">QHttp</a> and <a href="qftp.html">QFtp</a> classes, and on local files with the <a href="qfile.html">QFile</a> class.</p>
 <a name="sql-cursors-qsqlcursor"></a>
 <h4>SQL Cursors (QSqlCursor)</h4>
 <p>In Qt 3, one of the preferred methods of working with SQL is to use a cursor to manipulate the contents of a database. In Qt 4, the preferred method of working with SQL is to use the model/view architecture (<a href="qsqlquerymodel.html">QSqlQueryModel</a> and <a href="qsqltablemodel.html">QSqlTableModel</a>) and, as a result, the cursor interface is only supplied in the <a href="q3sqlcursor.html">Q3SqlCursor</a> class.</p>
@@ -122,6 +129,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

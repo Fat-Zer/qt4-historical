@@ -206,7 +206,7 @@ void QScriptValueImpl::setProperty(QScriptNameIdImpl *nameId,
                         createMember(nameId, &member, flags);
                     }
                 }
-            } else {
+            } else if (member.isGetter()) {
                 // the property we resolved is a getter
                 if (!(flags & QScriptValue::PropertyGetter)) {
                     // find the setter, if not, create one
@@ -216,6 +216,12 @@ void QScriptValueImpl::setProperty(QScriptNameIdImpl *nameId,
                         createMember(nameId, &member, flags);
                     }
                 }
+            } else {
+                // the property is a normal property -- change the flags
+                uint newFlags = flags & ~QScript::Member::InternalRange;
+                newFlags |= QScript::Member::ObjectProperty;
+                member.resetFlags(newFlags);
+                base.m_object_value->m_members[member.id()].resetFlags(newFlags);
             }
             Q_ASSERT(member.isValid());
             if (!value.isValid()) {

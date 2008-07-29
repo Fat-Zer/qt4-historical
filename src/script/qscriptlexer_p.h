@@ -129,7 +129,12 @@ public:
         BalancedParentheses
     };
 
-    bool scanRegExp();
+    enum RegExpBodyPrefix {
+        NoPrefix,
+        EqualPrefix
+    };
+
+    bool scanRegExp(RegExpBodyPrefix prefix = NoPrefix);
     void scanExtraIdentifiers(bool scan)
         { extraIdentifiers = scan; }
 

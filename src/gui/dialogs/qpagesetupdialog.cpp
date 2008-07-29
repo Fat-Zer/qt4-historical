@@ -49,6 +49,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \enum QPageSetupDialog::PageSetupDialogOption
+    \since 4.4
 
     Used to specify options to the page setup dialog
 
@@ -62,6 +63,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
+    \since 4.4
+
     Adds the option \a option to the set of enabled options in this dialog.
 */
 void QPageSetupDialog::addEnabledOption(PageSetupDialogOption option)
@@ -70,6 +73,8 @@ void QPageSetupDialog::addEnabledOption(PageSetupDialogOption option)
 }
 
 /*!
+    \since 4.4
+
     Sets the set of options that should be enabled for the page setup dialog
     to \a options.
 */
@@ -79,6 +84,8 @@ void QPageSetupDialog::setEnabledOptions(PageSetupDialogOptions options)
 }
 
 /*!
+    \since 4.4
+
     Returns the set of enabled options in this dialog.
 */
 QPageSetupDialog::PageSetupDialogOptions QPageSetupDialog::enabledOptions() const
@@ -87,6 +94,8 @@ QPageSetupDialog::PageSetupDialogOptions QPageSetupDialog::enabledOptions() cons
 }
 
 /*!
+    \since 4.4
+
     Returns true if the specified \a option is enabled; otherwise returns false
 */
 bool QPageSetupDialog::isOptionEnabled(PageSetupDialogOption option) const

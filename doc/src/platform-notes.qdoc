@@ -58,10 +58,15 @@
     \tableofcontents{1 Platform Notes - Windows}
     \o \l{Platform Notes - Mac OS X}
     \tableofcontents{1 Platform Notes - Mac OS X}
+    \o \l{Platform Notes - Embedded Linux}
+    \tableofcontents{1 Platform Notes - Embedded Linux}
+    \o \l{Platform Notes - Windows CE}
+    \tableofcontents{1 Platform Notes - Windows CE}
     \endlist
 
     See also the \l{Compiler Notes} for information about compiler-specific
-    build issues.
+    build issues. Information about the combinations of platforms and compilers
+    supported by Qt can be found on the \l{Supported Platforms} page.
 
     If you have anything to add to this list or any of the platform or
     compiler-specific pages, please submit it via the \l{Bug Report Form}.
@@ -72,7 +77,9 @@
     \title Platform Notes - X11
 
     This page contains information about the X11 platforms Qt is currently
-    known to run on, with links to platform-specific notes.
+    known to run on, with links to platform-specific notes. More information
+    about the combinations of platforms and compilers supported by Qt can be
+    found on the \l{Supported Platforms} page.
 
     \tableofcontents
 
@@ -224,10 +231,12 @@
     \title Platform Notes - Windows
 
     This page contains information about the Windows platforms Qt is currently
-    known to run on, with links to platform-specific notes.
+    known to run on, with links to platform-specific notes. More information
+    about the combinations of platforms and compilers supported by Qt can be
+    found on the \l{Supported Platforms} page.
 
     \tableofcontents
-    
+
     \section1 Windows Vista
 
     Known issues for Qt on Vista will be listed here.
@@ -288,7 +297,9 @@
     \title Platform Notes - Mac OS X
 
     This page contains information about the Mac OS X versions Qt is currently
-    known to run on, with links to platform-specific notes.
+    known to run on, with links to platform-specific notes. More information
+    about the combinations of platforms and compilers supported by Qt can be
+    found on the \l{Supported Platforms} page.
 
     \tableofcontents
 
@@ -505,4 +516,24 @@
     \row    \o tru64-cxx           \o -             \o -                   \o Unsupported
     \row    \o tru64-g++           \o -             \o -                   \o Unsupported
     \endtable
+*/
+
+/*!
+    \page platform-notes-windows-ce.html
+    \title Platform Notes - Windows CE
+
+    This page contains information about the Windows CE and Windows Mobile
+    platforms Qt is currently known to run on, with links to platform-specific
+    notes. More information about the combinations of platforms and compilers
+    supported by Qt can be found on the \l{Supported Platforms} page.
+*/
+
+/*!
+    \page platform-notes-embedded-linux.html
+    \title Platform Notes - Embedded Linux
+
+    This page contains information about the Embedded Linux platforms Qt is
+    currently known to run on, with links to platform-specific notes. More
+    information about the combinations of platforms and compilers supported
+    by Qt can be found on the \l{Supported Platforms} page.
 */

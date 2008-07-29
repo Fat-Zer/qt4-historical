@@ -93,6 +93,12 @@ namespace QPatternist
 
         virtual Expression::Ptr typeCheck(const StaticContext::Ptr &context,
                                           const SequenceType::Ptr &reqType);
+
+        /**
+         * We call compress on our body.
+         */
+        virtual Expression::Ptr compress(const StaticContext::Ptr &context);
+
         virtual Expression::Properties properties() const;
 
         virtual SequenceType::List expectedOperandTypes() const;

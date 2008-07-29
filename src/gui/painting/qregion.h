@@ -57,7 +57,7 @@ QT_MODULE(Gui)
 template <class T> class QVector;
 class QVariant;
 
-#if defined(Q_WS_QWS) || defined(Q_WS_X11) || defined(Q_WS_MAC)
+#if defined(Q_WS_QWS) || defined(Q_WS_X11) || defined(Q_WS_MAC) || defined(Q_OS_WINCE)
 struct QRegionPrivate;
 #endif
 
@@ -183,7 +183,7 @@ private:
 #elif defined(Q_WS_MAC)
         mutable RgnHandle rgn;
 #endif
-#if defined(Q_WS_QWS) || defined(Q_WS_X11) || defined(Q_WS_MAC)
+#if defined(Q_WS_QWS) || defined(Q_WS_X11) || defined(Q_WS_MAC) || defined(Q_OS_WINCE)
         QRegionPrivate *qt_rgn;
 #endif
     };

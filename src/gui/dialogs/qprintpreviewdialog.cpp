@@ -574,7 +574,6 @@ void QPrintPreviewDialogPrivate::_q_pageSetup()
     Q_Q(QPrintPreviewDialog);
 
     QPageSetupDialog pageSetup(printer, q);
-    pageSetup.setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
     if (pageSetup.exec() == QDialog::Accepted) {
         // update possible orientation changes
         if (preview->orientation() == QPrinter::Portrait) {
@@ -631,8 +630,10 @@ void QPrintPreviewDialogPrivate::_q_zoomFactorChanged()
     When the dialog needs to generate a set of preview pages, the
     paintRequested() signal will be emitted. You can use the exact
     same code for the actual printing as for having the preview
-    generated. Connect a slot to the paintRequested() signal, where
-    you draw onto the QPrinter object that is passed into the slot.
+    generated, including calling QPrinter::newPage() to start a new
+    page in the preview. Connect a slot to the paintRequested()
+    signal, where you draw onto the QPrinter object that is passed
+    into the slot.
 
     \o Call exec().
 
@@ -659,6 +660,7 @@ QPrintPreviewDialog::QPrintPreviewDialog(QPrinter* printer, QWidget *parent, Qt:
 
 /*!
     \overload
+    \fn QPrintPreviewDialog::QPrintPreviewDialog(QWidget *parent, Qt::WindowFlags flags)
 
     This will create an internal QPrinter object, which will use the
     system default printer.
@@ -698,9 +700,12 @@ void QPrintPreviewDialog::setVisible(bool visible)
 /*!
     \fn void QPrintPreviewDialog::paintRequested(QPrinter *printer)
 
-    When the the QPrintPreviewDialog needs to generate a set of
-    preview pages, this signal is emitted with the \a printer
-    you should draw onto.
+    This signal is emitted when the QPrintPreviewDialog needs to generate
+    a set of preview pages.
+
+    The \a printer instance supplied is the paint device onto which you should
+    paint the contents of each page, using the QPrinter instance in the same way
+    as you would when printing directly.
 */
 
 

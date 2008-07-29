@@ -425,12 +425,12 @@
 
   A comprehensive list of changes between Qt 4.3 and Qt 4.4 is included
   in the \c changes-4.4.0 file
-  \l{http://www.trolltech.com/developer/notes/changes/changes-4.4.0}{available
+  \l{http://www.trolltech.com/developer/resources/notes/changes/changes-4.4.0}{available
   online}.
   \omit
   Changes between this release and the previous release are provided
-  in the \c{changes-4.4.0} file (also
-  \l{http://www.trolltech.com/developer/notes/changes/changes-4.4.0}{available online}).
+  in the \c{changes-4.4.1} file (also
+  \l{http://www.trolltech.com/developer/notes/changes/changes-4.4.1}{available online}).
   \endomit
 
   A list of other Qt 4 features can be found on the
@@ -506,7 +506,7 @@
   classes and object model.
 
   A synchonous (blocking) API is supplemented with an asynchronous (non-blocking)
-  APIs which uses the concept of \l{QFuture}{futures} to handle synchronization
+  API which uses the concept of \l{QFuture}{futures} to handle synchronization
   between a main thread and several worker threads, simplifying the delivery of
   results.
 

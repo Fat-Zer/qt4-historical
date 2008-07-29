@@ -166,17 +166,10 @@
 
     We also enlarge \c{display}'s font by 8 points.
 
-    \snippet examples/widgets/calculator/calculator.cpp 3
     \snippet examples/widgets/calculator/calculator.cpp 4
 
-    We define four colors by specifying the red, green, and blue
-    components on a scale from 0 to 255. Then, for each button, we
-    call the private \c createButton() function with the proper text
-    label, the associated color, and a slot to connect to the button.
-
-    To make the \gui{Clear All} and \gui{=} buttons stand out, we
-    call QColor::light() with a factor of 120%, making these buttons
-    20% brighter than their neighbors.
+    For each button, we call the private \c createButton() function with
+    the proper text label and a slot to connect to the button.
 
     \snippet examples/widgets/calculator/calculator.cpp 5
     \snippet examples/widgets/calculator/calculator.cpp 6
@@ -276,7 +269,6 @@
     sumSoFar as the left operand.
 
     \snippet examples/widgets/calculator/calculator.cpp 18
-    \snippet examples/widgets/calculator/calculator.cpp 19
 
     The \c multiplicativeOperatorClicked() slot is similar to \c
     additiveOperatorClicked(). We don't need to worry about pending
@@ -284,7 +276,6 @@
     precedence over additive operators.
 
     \snippet examples/widgets/calculator/calculator.cpp 20
-    \snippet examples/widgets/calculator/calculator.cpp 21
 
     Like in \c additiveOperatorClicked(), we start by handing any
     pending multiplicative and additive operators. Then we display \c
@@ -292,13 +283,11 @@
     to zero is necessary to avoid counting the value twice.
 
     \snippet examples/widgets/calculator/calculator.cpp 22
-    \snippet examples/widgets/calculator/calculator.cpp 23
 
     The \c pointClicked() slot adds a decimal point to the content in
     \c display.
 
     \snippet examples/widgets/calculator/calculator.cpp 24
-    \snippet examples/widgets/calculator/calculator.cpp 25
 
     The \c changeSignClicked() slot changes the sign of the value in
     \c display. If the current value is positive, we prepend a minus
@@ -306,26 +295,22 @@
     character from the value (the minus sign).
 
     \snippet examples/widgets/calculator/calculator.cpp 26
-    \snippet examples/widgets/calculator/calculator.cpp 27
 
     The \c backspaceClicked() removes the rightmost character in the
     display. If we get an empty string, we show "0" and set \c
     waitingForOperand to \c true.
 
     \snippet examples/widgets/calculator/calculator.cpp 28
-    \snippet examples/widgets/calculator/calculator.cpp 29
 
     The \c clear() slot resets the current operand to zero. It is
     equivalent to clicking \gui Backspace enough times to erase the
     entire operand.
 
     \snippet examples/widgets/calculator/calculator.cpp 30
-    \snippet examples/widgets/calculator/calculator.cpp 31
 
     The \c clearAll() slot resets the calculator to its initial state.
 
     \snippet examples/widgets/calculator/calculator.cpp 32
-    \snippet examples/widgets/calculator/calculator.cpp 33
 
     The \c clearMemory() slot erases the sum kept in memory, \c
     readMemory() displays the sum as an operand, \c setMemory()
@@ -336,20 +321,17 @@
     display.
 
     \snippet examples/widgets/calculator/calculator.cpp 34
-    \snippet examples/widgets/calculator/calculator.cpp 35
 
     The private \c createButton() function is called from the
     constructor to create calculator buttons.
 
     \snippet examples/widgets/calculator/calculator.cpp 36
-    \snippet examples/widgets/calculator/calculator.cpp 37
 
     The private \c abortOperation() function is called whenever a
     calculation fails. It resets the calculator state and displays
     "####".
 
     \snippet examples/widgets/calculator/calculator.cpp 38
-    \snippet examples/widgets/calculator/calculator.cpp 39
 
     The private \c calculate() function performs a binary operation.
     The right operand is given by \c rightOperand. For additive
@@ -364,8 +346,8 @@
     \snippet examples/widgets/calculator/button.h 0
 
     The \c Button class has a convenience constructor that takes a
-    text label and a color, and it reimplements QWidget::sizeHint()
-    to provide more space around the text than what QToolButton
+    text label and a parent widget, and it reimplements QWidget::sizeHint()
+    to provide more space around the text than the amount QToolButton
     normally provides.
 
     \section1 Button Class Implementation

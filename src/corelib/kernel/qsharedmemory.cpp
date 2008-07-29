@@ -260,6 +260,15 @@ bool QSharedMemory::create(int size, AccessMode mode)
 
     if (!d->initKey())
         return false;
+
+#ifndef QT_NO_SYSTEMSEMAPHORE
+#ifndef Q_OS_WIN
+    // Take ownership and force set initialValue because the semaphore
+    // might have already existed from a previous crash.
+    d->systemSemaphore.setKey(d->key, 1, QSystemSemaphore::Create);
+#endif
+#endif
+
     QString function = QLatin1String("QSharedMemory::create");
 #ifndef QT_NO_SYSTEMSEMAPHORE
     QSharedMemoryLocker lock(this);

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/widgets/q3header.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3header.cpp -->
 <head>
   <title>Qt 4.4: Q3Header Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -388,9 +388,9 @@
 <h3 class="fn"><a name="setResizeEnabled"></a>void Q3Header::setResizeEnabled ( bool <i>enable</i>, int <i>section</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>enable</i> is true the user may resize section <i>section</i>; otherwise the section may not be manually resized.</p>
 <p>If <i>section</i> is negative (the default) then the <i>enable</i> value is set for all existing sections and will be applied to any new sections that are added. Example:</p>
-<pre>     // Allow resizing of all current and future sections
+<pre>     <span class="comment">// Allow resizing of all current and future sections</span>
      header-&gt;setResizeEnabled(true);
-     // Disable resizing of section 3, (the fourth section added)
+     <span class="comment">// Disable resizing of section 3, (the fourth section added)</span>
      header-&gt;setResizeEnabled(false, 3);</pre>
 <p>If the user resizes a section, a <a href="q3header.html#sizeChange">sizeChange</a>() signal is emitted.</p>
 <p>See also <a href="q3header.html#isResizeEnabled">isResizeEnabled</a>(), <a href="q3header.html#moving-prop">setMovingEnabled</a>(), <a href="q3header.html#setClickEnabled">setClickEnabled</a>(), and <a href="q3header.html#tracking-prop">setTracking</a>().</p>
@@ -417,6 +417,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

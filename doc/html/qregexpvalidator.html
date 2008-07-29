@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qvalidator.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qvalidator.cpp -->
 <head>
   <title>Qt 4.4: QRegExpValidator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -59,44 +59,44 @@
 <p>If a string is a prefix of an <a href="qvalidator.html#State-enum">Acceptable</a> string, it is considered <a href="qvalidator.html#State-enum">Intermediate</a>. For example, &quot;&quot; and &quot;A&quot; are <a href="qvalidator.html#State-enum">Intermediate</a> for the regexp <b>[A-Z][0-9]</b> (whereas &quot;_&quot; would be <a href="qvalidator.html#State-enum">Invalid</a>).</p>
 <p>For a brief introduction to Qt's regexp engine, see <a href="qregexp.html">QRegExp</a>.</p>
 <p>Example of use:</p>
-<pre>     // regexp: optional '-' followed by between 1 and 3 digits
+<pre>     <span class="comment">// regexp: optional '-' followed by between 1 and 3 digits</span>
      QRegExp rx(&quot;-?\\d{1,3}&quot;);
      QValidator *validator = new QRegExpValidator(rx, this);
 
      QLineEdit *edit = new QLineEdit(this);
      edit-&gt;setValidator(validator);</pre>
 <p>Below we present some examples of validators. In practice they would normally be associated with a widget as in the example above.</p>
-<pre>     // integers 1 to 9999
+<pre>     <span class="comment">// integers 1 to 9999</span>
      QRegExp rx(&quot;[1-9]\\d{0,3}&quot;);
-     // the validator treats the regexp as &quot;^[1-9]\\d{0,3}$&quot;
+     <span class="comment">// the validator treats the regexp as &quot;^[1-9]\\d{0,3}$&quot;</span>
      QRegExpValidator v(rx, 0);
      QString s;
      int pos = 0;
 
-     s = &quot;0&quot;;     v.validate(s, pos);    // returns Invalid
-     s = &quot;12345&quot;; v.validate(s, pos);    // returns Invalid
-     s = &quot;1&quot;;     v.validate(s, pos);    // returns Acceptable
+     s = &quot;0&quot;;     v.validate(s, pos);    <span class="comment">// returns Invalid</span>
+     s = &quot;12345&quot;; v.validate(s, pos);    <span class="comment">// returns Invalid</span>
+     s = &quot;1&quot;;     v.validate(s, pos);    <span class="comment">// returns Acceptable</span>
 
-     rx.setPattern(&quot;\\S+&quot;);            // one or more non-whitespace characters
+     rx.setPattern(&quot;\\S+&quot;);            <span class="comment">// one or more non-whitespace characters</span>
      v.setRegExp(rx);
-     s = &quot;myfile.txt&quot;;  v.validate(s, pos); // Returns Acceptable
-     s = &quot;my file.txt&quot;; v.validate(s, pos); // Returns Invalid
+     s = &quot;myfile.txt&quot;;  v.validate(s, pos); <span class="comment">// Returns Acceptable</span>
+     s = &quot;my file.txt&quot;; v.validate(s, pos); <span class="comment">// Returns Invalid</span>
 
-     // A, B or C followed by exactly five digits followed by W, X, Y or Z
+     <span class="comment">// A, B or C followed by exactly five digits followed by W, X, Y or Z</span>
      rx.setPattern(&quot;[A-C]\\d{5}[W-Z]&quot;);
      v.setRegExp(rx);
-     s = &quot;a12345Z&quot;; v.validate(s, pos);        // Returns Invalid
-     s = &quot;A12345Z&quot;; v.validate(s, pos);        // Returns Acceptable
-     s = &quot;B12&quot;;     v.validate(s, pos);        // Returns Intermediate
+     s = &quot;a12345Z&quot;; v.validate(s, pos);        <span class="comment">// Returns Invalid</span>
+     s = &quot;A12345Z&quot;; v.validate(s, pos);        <span class="comment">// Returns Acceptable</span>
+     s = &quot;B12&quot;;     v.validate(s, pos);        <span class="comment">// Returns Intermediate</span>
 
-     // match most 'readme' files
+     <span class="comment">// match most 'readme' files</span>
      rx.setPattern(&quot;read\\S?me(\.(txt|asc|1st))?&quot;);
      rx.setCaseSensitive(false);
      v.setRegExp(rx);
-     s = &quot;readme&quot;;      v.validate(s, pos); // Returns Acceptable
-     s = &quot;README.1ST&quot;;  v.validate(s, pos); // Returns Acceptable
-     s = &quot;read me.txt&quot;; v.validate(s, pos); // Returns Invalid
-     s = &quot;readm&quot;;       v.validate(s, pos); // Returns Intermediate</pre>
+     s = &quot;readme&quot;;      v.validate(s, pos); <span class="comment">// Returns Acceptable</span>
+     s = &quot;README.1ST&quot;;  v.validate(s, pos); <span class="comment">// Returns Acceptable</span>
+     s = &quot;read me.txt&quot;; v.validate(s, pos); <span class="comment">// Returns Invalid</span>
+     s = &quot;readm&quot;;       v.validate(s, pos); <span class="comment">// Returns Intermediate</span></pre>
 <p>See also <a href="qregexp.html">QRegExp</a>, <a href="qintvalidator.html">QIntValidator</a>, <a href="qdoublevalidator.html">QDoubleValidator</a>, and <a href="tools-settingseditor.html">Settings Editor Example</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -131,6 +131,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

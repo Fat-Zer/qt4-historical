@@ -216,6 +216,47 @@
 
     \endlist
 
+    Qt Concurrent supports several STL-compatible container and iterator types, 
+    but works best with Qt containers that have random-access iterators, such as 
+    QList or QVector. The map and filter functions accept both containers and begin/end iterators.
+
+    STL Iterator support overview:
+
+    \table
+    \header
+        \o Iterator Type
+        \o Example classes
+        \o Support status
+    \row
+        \o Input Iterator
+        \o 
+        \o Not Supported
+    \row
+        \o Output Iterator
+        \o 
+        \o Not Supported
+    \row
+        \o Forward Iterator
+        \o std::slist
+        \o Supported
+    \row
+        \o Bidirectional Iterator
+        \o QLinkedList, std::list
+        \o Supported
+    \row
+        \o Random Access Iterator
+        \o QList, QVector, std::vector
+        \o Supported and Recommended
+    \endtable
+    
+    Random Access Iterators can be faster in cases where Qt Concurrent is iterating
+    over a large number of lightweight items, since they allow skipping to any point in the container. 
+
+    The non in-place modifying functions such as mapped() and filtered() makes a 
+    copy of the container when called. If you are using STL containers this copy operation
+    might take some time, in this case we recommend specifying the begin and end iterators
+    for the container instead.
+
     \keyword reentrant
     \keyword thread-safe
     \section1 Reentrancy and Thread-Safety
@@ -537,8 +578,8 @@
 
     Note that on X11 systems without FontConfig support, Qt cannot
     render text outside of the GUI thread. You can use the
-    QFontDatabase::supportsThreadedFontRendering() to detect whether
-    or not the font rendering outside the GUI thread.
+    QFontDatabase::supportsThreadedFontRendering() function to detect
+    whether or not font rendering can be used outside the GUI thread.
 
     \section1 Threads and Rich Text Processing
 

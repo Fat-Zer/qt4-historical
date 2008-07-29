@@ -47,6 +47,7 @@
     graphics view related events.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     When a QGraphicsView receives Qt mouse, keyboard, and drag and
     drop events (QMouseEvent, QKeyEvent, QDragEvent, etc.), it
@@ -85,9 +86,10 @@
 /*!
     \class QGraphicsSceneMouseEvent
     \brief The QGraphicsSceneMouseEvent class provides mouse events 
-	   in the graphics view framework.
+           in the graphics view framework.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     When a QGraphicsView receives a QMouseEvent, it translates it to
     a QGraphicsSceneMouseEvent. The event is then forwarded to the
@@ -100,18 +102,19 @@
     lastPos(), lastScreenPos(), and lastScenePos().
 
     \sa QGraphicsSceneContextMenuEvent,
-	QGraphicsSceneHoverEvent, QGraphicsSceneWheelEvent,
-	QMouseEvent
+        QGraphicsSceneHoverEvent, QGraphicsSceneWheelEvent,
+        QMouseEvent
 */
 
 /*!
     \class QGraphicsSceneWheelEvent
     \brief The QGraphicsSceneWheelEvent class provides wheel events 
-	   in the graphics view framework.
+           in the graphics view framework.
     \brief The QGraphicsSceneWheelEvent class provides wheel events in the
     graphics view framework.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     \l{QWheelEvent}{QWheelEvent}s received by a QGraphicsView are translated
     into QGraphicsSceneWheelEvents; it translates the QWheelEvent::globalPos()
@@ -125,9 +128,10 @@
 /*!
     \class QGraphicsSceneContextMenuEvent
     \brief The QGraphicsSceneContextMenuEvent class provides context
-	   menu events in the graphics view framework.
+           menu events in the graphics view framework.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     A QContextMenuEvent received by a QGraphicsView is translated
     into a QGraphicsSceneContextMenuEvent. The
@@ -156,9 +160,10 @@
 /*!
     \class QGraphicsSceneHoverEvent
     \brief The QGraphicsSceneHoverEvent class provides hover events 
-	   in the graphics view framework.
+           in the graphics view framework.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     When a QGraphicsView receives a QHoverEvent event, it translates
     it into QGraphicsSceneHoverEvent. The event is then forwarded to
@@ -171,9 +176,10 @@
 /*!
     \class QGraphicsSceneHelpEvent
     \brief The QGraphicsSceneHelpEvent class provides events when a 
-	   tooltip is requested.
+           tooltip is requested.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     When a QGraphicsView receives a QEvent of type
     QEvent::ToolTip, it creates a QGraphicsSceneHelpEvent, which is
@@ -181,7 +187,7 @@
     with \l{QGraphicsItem::}{setToolTip()}; by default QGraphicsScene
     displays the tooltip of the QGraphicsItem with the highest
     z-value (i.e, the top-most item) under the mouse position.
-    
+
     QGraphicsView does not forward events when
     \l{QWhatsThis}{"What's This"} and \l{QStatusTipEvent}{status tip}
     help is requested. If you need this, you can reimplement
@@ -195,9 +201,10 @@
 /*!
     \class QGraphicsSceneDragDropEvent
     \brief The QGraphicsSceneDragDropEvent class provides events for
-	   drag and drop in the graphics view framework. 
+           drag and drop in the graphics view framework. 
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     QGraphicsView inherits the drag and drop functionality provided
     by QWidget. When it receives a drag and drop event, it translates
@@ -222,6 +229,7 @@
     resizing in the graphics view framework.
     \since 4.4
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     A QGraphicsWidget sends itself a QGraphicsSceneResizeEvent immediately
     when its geometry changes.
@@ -238,6 +246,7 @@
     moving in the graphics view framework.
     \since 4.4
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     A QGraphicsWidget sends itself a QGraphicsSceneMoveEvent immediately when
     its local position changes. The delivery is implemented as part of
@@ -1059,6 +1068,8 @@ void QGraphicsSceneHoverEvent::setScreenPos(const QPoint &pos)
 }
 
 /*!
+    \since 4.4
+
     Returns the last recorded mouse cursor position in item coordinates.
 
     \sa lastScenePos(), lastScreenPos(), pos()
@@ -1079,6 +1090,8 @@ void QGraphicsSceneHoverEvent::setLastPos(const QPointF &pos)
 }
 
 /*!
+    \since 4.4
+
     Returns the last recorded, the scene coordinates of the previous mouse or
     hover event received by the view, that created the event mouse cursor
     position in scene coordinates.
@@ -1101,6 +1114,8 @@ void QGraphicsSceneHoverEvent::setLastScenePos(const QPointF &pos)
 }
 
 /*!
+    \since 4.4
+
     Returns the last recorded mouse cursor position in screen coordinates. The
     last recorded position is the position of the previous mouse or hover
     event received by the view that created the event.
@@ -1123,6 +1138,8 @@ void QGraphicsSceneHoverEvent::setLastScreenPos(const QPoint &pos)
 }
 
 /*!
+    \since 4.4
+
     Returns the keyboard modifiers at the moment the the hover event was sent.
 */
 Qt::KeyboardModifiers QGraphicsSceneHoverEvent::modifiers() const

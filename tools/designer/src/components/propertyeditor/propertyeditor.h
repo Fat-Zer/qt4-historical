@@ -98,6 +98,10 @@ public:
 
     virtual QString currentPropertyName() const;
 
+protected:
+
+    bool event(QEvent *event);
+
 private slots:
     void slotResetProperty(QtProperty *property);
     void slotValueChanged(QtProperty *property, const QVariant &value, bool enableSubPropertyHandling);
@@ -127,6 +131,8 @@ private:
     void clearView();
     void fillView();
     bool isLayoutGroup(QtProperty *group) const;
+    void updateColors();
+    void updateForegroundBrightness();
     QColor propertyColor(QtProperty *property) const;
     void updateActionsState();
     QtBrowserItem *nonFakePropertyBrowserItem(QtBrowserItem *item) const;
@@ -186,9 +192,12 @@ private:
     bool m_coloring;
 
     QMap<QString, bool> m_expansionState;
-    QVector<QColor> m_colors;
-    const QColor m_dynamicColor;
-    const QColor m_layoutColor;
+
+    QVector<QPair<QColor, QColor> > m_colors;
+    QPair<QColor, QColor> m_dynamicColor;
+    QPair<QColor, QColor> m_layoutColor;
+
+    bool m_brightness;
 };
 
 }  // namespace qdesigner_internal

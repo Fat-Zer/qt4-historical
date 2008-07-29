@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/porting4.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Qt 4</title>
   <link rel="prev" href="porting.html" />
@@ -415,8 +415,8 @@
 <tr valign="top" class="even"><td><a href="qtabbar.html#Shape-enum">QTabBar::RoundedBelow</a></td><td><a href="#qtabbar">QTabBar::</a> RoundedSouth</td></tr>
 <tr valign="top" class="odd"><td><a href="qtabbar.html#Shape-enum">QTabBar::TriangularAbove</a></td><td><a href="#qtabbar">QTabBar::</a> TriangularNorth</td></tr>
 <tr valign="top" class="even"><td><a href="qtabbar.html#Shape-enum">QTabBar::TriangularBelow</a></td><td><a href="#qtabbar">QTabBar::</a> TriangularSouth</td></tr>
-<tr valign="top" class="odd"><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePgDown</a></td><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePageDown</a></td></tr>
-<tr valign="top" class="even"><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePgUp</a></td><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePageUp</a></td></tr>
+<tr valign="top" class="odd"><td><a href="qtextedit-qt3.html#CursorAction-enum">QTextEdit::MovePgDown</a></td><td><a href="qtextedit-qt3.html#CursorAction-enum">QTextEdit::MovePageDown</a></td></tr>
+<tr valign="top" class="even"><td><a href="qtextedit-qt3.html#CursorAction-enum">QTextEdit::MovePgUp</a></td><td><a href="qtextedit-qt3.html#CursorAction-enum">QTextEdit::MovePageUp</a></td></tr>
 <tr valign="top" class="odd"><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::Right</a></td><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::BesideIcon</a></td></tr>
 <tr valign="top" class="even"><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::Under</a></td><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::BelowIcon</a></td></tr>
 <tr valign="top" class="odd"><td><a href="qvalidator.html#State-enum">QValidator::Valid</a></td><td><a href="qvalidator.html#State-enum">QValidator::Intermediate</a></td></tr>
@@ -755,11 +755,11 @@
 <h3>QButton</h3>
 <p>The <tt>QButton</tt> class has been replaced by <a href="qabstractbutton.html">QAbstractButton</a> in Qt 4. Classes like <a href="qpushbutton.html">QPushButton</a> and <a href="qradiobutton.html">QRadioButton</a> inherit from <a href="qabstractbutton.html">QAbstractButton</a>. As a help when porting older Qt applications, the <a href="qt3support.html">Qt3Support</a> library contains a <a href="q3button.html">Q3Button</a> class implemented in terms of the new <a href="qabstractbutton.html">QAbstractButton</a>.</p>
 <p>If you used the <tt>QButton</tt> class as a base class for your own button type and want to port your code to the newer <a href="qabstractbutton.html">QAbstractButton</a>, you need to be aware that <a href="qabstractbutton.html">QAbstractButton</a> has no equivalent for the Q3Button::drawButton(<a href="qpainter.html">QPainter</a> *) virtual function. The solution is to reimplement <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>() in your <a href="qabstractbutton.html">QAbstractButton</a> subclass as follows:</p>
-<pre>         void MyButton::paintEvent(QPaintEvent *)
-         {
-             QPainter painter(this);
-             drawButton(&amp;painter);
-         }</pre>
+<pre> void MyButton::paintEvent(QPaintEvent *)
+ {
+     QPainter painter(this);
+     drawButton(&amp;painter);
+ }</pre>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th><a href="q3button.html">Q3Button</a> function</th><th><a href="qabstractbutton.html">QAbstractButton</a> equivalent</th></tr></thead>
 <tr valign="top" class="odd"><td>Q3Button::autoResize()</td><td>Call <a href="qwidget.html">QWidget</a>:setFixedSize(<a href="qwidget.html#sizeHint-prop">QWidget::sizeHint</a>()) whenever you change the contents.</td></tr>
@@ -801,9 +801,9 @@
 <p>you can rewrite it as</p>
 <pre> QByteArray ba(64, '\0');</pre>
 </li>
-<li>QMemArray::at() returned a non-const reference, whereas the new <a href="qbytearray.html#at">QByteArray::at</a>() returns a const value. Code like<pre>         ba.at(0) = 'X';</pre>
+<li>QMemArray::at() returned a non-const reference, whereas the new <a href="qbytearray.html#at">QByteArray::at</a>() returns a const value. Code like<pre> ba.at(0) = 'X';</pre>
 <p>will no longer compile. Instead, use QByteArray::operator[]:</p>
-<pre>         ba[0] = 'X';</pre>
+<pre> ba[0] = 'X';</pre>
 </li>
 <li>The QMemArray::contains(char) function has been renamed QByteArray::count(char). In addition, there now exists a QByteArray::contains(char) function that returns a boolean value. Replace old calls to contains() with either count() or contains(), depending on whether you care about the specific number of occurrences of a character in the byte array or only care about whether the array contains that character or not.</li>
 <li>The new <a href="qbytearray.html">QByteArray</a> has no assign() function. Calls to QMemArray::assign(const QMemArray &amp;) can be replaced by calls to QByteArray::operator=(). Calls to QMemArray::assign(const T *, uint) have no equivalent in Qt 4; if you use it, the solution is either to use <a href="qbytearray.html#fromRawData">QByteArray::fromRawData</a>() and to call free() yourself to avoid a memory leak, or to use the <a href="qbytearray.html">QByteArray</a>(const char *, int) constructor, which will take a deep copy of the data.</li>
@@ -828,28 +828,28 @@
 <ol type="1">
 <li><a href="q3cache.html">Q3Cache</a> requires the user to allocate a specific number of buckets by passing a prime number (17 by default) to the constructor. In contrast, the new <a href="qcache.html">QCache</a>'s hash table automatically grows and shrinks as needed, and the constructor doesn't take a prime number.</li>
 <li><a href="q3cache.html">Q3Cache</a> supportes case-insensitive lookups by passing false as second argument to the constructor. This feature has no equivalent in <a href="qmultihash.html">QMultiHash</a>. Instead, call <a href="qstring.html#toLower">QString::toLower</a>() before you insert or lookup a key in the hash.</li>
-<li>The <a href="q3cache.html#insert">Q3Cache::insert</a>() function returns a <tt>bool</tt> value that indicates whether or not the item actually was inserted in the cache. If the item wasn't inserted, it was the caller's responsibility to delete the item. The new <a href="qcache.html#insert">QCache::insert</a>() function returns <tt>void</tt> and either adds it to the cache or deletes it right away. Old code like<pre>         if (!cache.insert(key, object))
-             delete object;</pre>
+<li>The <a href="q3cache.html#insert">Q3Cache::insert</a>() function returns a <tt>bool</tt> value that indicates whether or not the item actually was inserted in the cache. If the item wasn't inserted, it was the caller's responsibility to delete the item. The new <a href="qcache.html#insert">QCache::insert</a>() function returns <tt>void</tt> and either adds it to the cache or deletes it right away. Old code like<pre> if (!cache.insert(key, object))
+     delete object;</pre>
 <p>becomes</p>
-<pre>         cache.insert(key, object);</pre>
+<pre> cache.insert(key, object);</pre>
 </li>
-<li>The new <a href="qcache.html">QCache</a> class <i>always</i> takes ownership of the items it stores (i.e&#x2e; auto-delete is always on). If you use <a href="q3cache.html">Q3Cache</a> with auto-delete turned off (the rarely useful default), you cannot use <a href="qcache.html">QCache</a> as a direct substitute. One unelegant trick that works well in practice is to use <a href="qcache.html">QCache</a>&lt;<a href="qstring.html">QString</a>, T *&gt; instead of <a href="qcache.html">QCache</a>&lt;<a href="qstring.html">QString</a>, T&gt;. In that case, <a href="qcache.html">QCache</a> owns the pointers, not the objects that the pointers refer to. For example,<pre>             Q3Cache&lt;QWidget&gt; cache;
-             cache.insert(widget-&gt;name(), widget);
-             ...
-             QWidget *foo = cache.take(&quot;foo&quot;);
-             if (foo)
-                 foo-&gt;show();</pre>
+<li>The new <a href="qcache.html">QCache</a> class <i>always</i> takes ownership of the items it stores (i.e&#x2e; auto-delete is always on). If you use <a href="q3cache.html">Q3Cache</a> with auto-delete turned off (the rarely useful default), you cannot use <a href="qcache.html">QCache</a> as a direct substitute. One unelegant trick that works well in practice is to use <a href="qcache.html">QCache</a>&lt;<a href="qstring.html">QString</a>, T *&gt; instead of <a href="qcache.html">QCache</a>&lt;<a href="qstring.html">QString</a>, T&gt;. In that case, <a href="qcache.html">QCache</a> owns the pointers, not the objects that the pointers refer to. For example,<pre> Q3Cache&lt;QWidget&gt; cache;
+ cache.insert(widget-&gt;name(), widget);
+ ...
+ QWidget *foo = cache.take(&quot;foo&quot;);
+ if (foo)
+     foo-&gt;show();</pre>
 <p>becomes</p>
-<pre>             typedef QWidget *QWidgetPtr;
-             QCache&lt;QString, QWidgetPtr&gt; cache;
-             cache.insert(widget-&gt;name(), new QWidgetPtr(widget));
-             ...
-             QWidgetPtr *ptr = cache.take(&quot;foo&quot;);
-             if (ptr) {
-                 QWidget *foo = *ptr;
-                 delete ptr;
-                 foo-&gt;show();
-             }</pre>
+<pre> typedef QWidget *QWidgetPtr;
+ QCache&lt;QString, QWidgetPtr&gt; cache;
+ cache.insert(widget-&gt;name(), new QWidgetPtr(widget));
+ ...
+ QWidgetPtr *ptr = cache.take(&quot;foo&quot;);
+ if (ptr) {
+     QWidget *foo = *ptr;
+     delete ptr;
+     foo-&gt;show();
+ }</pre>
 <p>An alternative is to stick to using <a href="q3cache.html">Q3Cache</a>.</p>
 </li>
 </ol>
@@ -901,7 +901,7 @@
 <p>The <a href="qpalette.html">QPalette</a> object returned by <a href="qwidget.html#palette-prop">QWidget::palette</a>() returns a <a href="qpalette.html">QPalette</a> initialized with the correct current color group for the widget. This means that if you had code like</p>
 <pre><font color="#404040"> painter.setBrush(colorGroup().brush(QColorGroup::Text));</font></pre>
 <p>you can simply replace colorGroup() with palette():</p>
-<pre>         painter.setBrush(palette().brush(QPalette::Text));</pre>
+<pre> painter.setBrush(palette().brush(QPalette::Text));</pre>
 <a name="qcolordrag"></a>
 <h3>QColorDrag</h3>
 <p>The <tt>QColorDrag</tt> class has been renamed <a href="q3colordrag.html">Q3ColorDrag</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, use <a href="qmimedata.html">QMimeData</a> instead and call QMimeData::setColor() to set the color.</p>
@@ -913,10 +913,10 @@
 <h3>QCString</h3>
 <p>In Qt 3, <a href="#qcstring">QCString</a> inherited from <a href="qbytearray.html">QByteArray</a>. The main drawback of this approach is that the user had the responsibility of ensuring that the string is '\0'-terminated. Another important issue was that conversions between <tt>QCString</tt> and <a href="qbytearray.html">QByteArray</a> often gave confusing results. (See the <a href="http://doc.trolltech.com/qq/qq05-achtung.html#qcstringisastringofchars">Achtung! Binary and Character Data</a> article in <i>Qt Quarterly</i> for an overview of the pitfalls.)</p>
 <p>Qt 4 solves that problem by merging the <a href="qbytearray.html">QByteArray</a> and <tt>QCString</tt> classes into one class called <a href="qbytearray.html">QByteArray</a>. Most functions that were in <tt>QCString</tt> previously have been moved to <a href="qbytearray.html">QByteArray</a>. The '\0' issue is handled by having <a href="qbytearray.html">QByteArray</a> allocate one extra byte that it always sets to '\0'. For example:</p>
-<pre>         QByteArray ba(&quot;Hello&quot;);
-         ba.size();             // returns 5 (the '\0' is not counted)
-         ba.length();           // returns 5
-         ba.data()[5];          // returns '\0'</pre>
+<pre> QByteArray ba(&quot;Hello&quot;);
+ ba.size();             // returns 5 (the '\0' is not counted)
+ ba.length();           // returns 5
+ ba.data()[5];          // returns '\0'</pre>
 <p>The <a href="qt3support.html">Qt3Support</a> library contains a class called <a href="q3cstring.html">Q3CString</a> that inherits from the new <a href="qbytearray.html">QByteArray</a> class and that extends it to provide an API that is as close to the old <tt>QCString</tt> class as possible. Note that the following functions aren't provided by <a href="q3cstring.html">Q3CString</a>:</p>
 <ul>
 <li>QCString::find(const <a href="qregexp.html">QRegExp</a> &amp;, int)</li>
@@ -1071,23 +1071,23 @@
 <p>The following table summarizes the idioms that you need to watch out for if you want to call <tt>delete</tt> yourself.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th><a href="q3dict.html">Q3Dict</a> idiom</th><th><a href="qmultihash.html">QMultiHash</a> idiom</th></tr></thead>
-<tr valign="top" class="odd"><td><pre>         dict.replace(key, value);</pre>
-</td><td><pre>         delete hash.take(key);
-         hash.insert(key, value);</pre>
+<tr valign="top" class="odd"><td><pre> dict.replace(key, value);</pre>
+</td><td><pre> delete hash.take(key);
+ hash.insert(key, value);</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         dict.remove(key, value);</pre>
-</td><td><pre>         delete hash.take(key);</pre>
+<tr valign="top" class="even"><td><pre> dict.remove(key, value);</pre>
+</td><td><pre> delete hash.take(key);</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         dict.clear();</pre>
+<tr valign="top" class="odd"><td><pre> dict.clear();</pre>
 <p>(also called from <a href="q3dict.html">Q3Dict</a>'s destructor)</p>
-</td><td><pre>         while (!hash.isEmpty()) {
-             T *value = *hash.begin();
-             hash.erase(hash.begin());
-             delete value;
-         }</pre>
+</td><td><pre> while (!hash.isEmpty()) {
+     T *value = *hash.begin();
+     hash.erase(hash.begin());
+     delete value;
+ }</pre>
 <p>In 99% of cases, the following idiom also works:</p>
-<pre>         qDeleteAll(hash);
-         hash.clear();</pre>
+<pre> qDeleteAll(hash);
+ hash.clear();</pre>
 <p>However, it may lead to crashes if <tt>hash</tt> is referenced from the value type's destructor, because <tt>hash</tt> contains dangling pointers until clear() is called.</p>
 </td></tr>
 </table></p>
@@ -1105,17 +1105,17 @@
 <tr valign="top" class="even"><td>Q3DictIterator::operator++()</td><td>See remark below</td></tr>
 </table></p>
 <p>Be aware that <a href="qhashiterator.html">QHashIterator</a> has a different way of iterating than <a href="q3dictiterator.html">Q3DictIterator</a>. A typical loop with <a href="q3dictiterator.html">Q3DictIterator</a> looks like this:</p>
-<pre>         Q3DictIterator&lt;QWidget&gt; i(dict);
-         while (i.current() != 0) {
-             do_something(i.currentKey(), i.current());
-             ++i;
-         }</pre>
+<pre> Q3DictIterator&lt;QWidget&gt; i(dict);
+ while (i.current() != 0) {
+     do_something(i.currentKey(), i.current());
+     ++i;
+ }</pre>
 <p>Here's the equivalent <a href="qhashiterator.html">QHashIterator</a> loop:</p>
-<pre>         QHashIterator&lt;QString, QWidget *&gt; i(hash);
-         while (i.hasNext()) {
-             i.next();                   // must come first
-             do_something(i.key(), i.value());
-         }</pre>
+<pre> QHashIterator&lt;QString, QWidget *&gt; i(hash);
+ while (i.hasNext()) {
+     i.next();                   // must come first
+     do_something(i.key(), i.value());
+ }</pre>
 <p>See <a href="containers.html#java-style-iterators">Java-style iterators</a> for details.</p>
 <a name="qdir"></a>
 <h3>QDir</h3>
@@ -1205,6 +1205,7 @@
 <h3>QEventLoop</h3>
 <p>In Qt 3, <tt>QEventLoop</tt> combined the Qt event loop and the event dispatching. In Qt 4, these tasks are now assigned to two distinct classes: <a href="qeventloop.html">QEventLoop</a> and <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>.</p>
 <p>If you subclassed <a href="qeventloop.html">QEventLoop</a> to integrate with another library's event loop, you must subclass <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a> instead. See the class documentation for details.</p>
+<p>Developers using <tt>QEventLoop::loopLevel()</tt> in Qt 3 should use <a href="qcoreapplication-qt3.html#loopLevel">QCoreApplication::loopLevel</a>() instead. Note that this function is marked as obsolete, but it is expected to be available for the lifetime of Qt 4.</p>
 <a name="qfiledialog"></a>
 <h3>QFileDialog</h3>
 <p>The <a href="qfiledialog.html">QFileDialog</a> class in Qt 4 has been totally rewritten. It provides most of the functionality of the old <tt>QFileDialog</tt> class, but with a different API. Some functionality, such as the ability to preview files, is expected to be added in a later Qt 4 release.</p>
@@ -1262,7 +1263,7 @@
 <pre>     fileDialog-&gt;selectFilter(fileDialog-&gt;filters().at(3));</pre>
 </li>
 </ol>
-<p>See <a href="porting4-virtual-functions.html">Virtual Functions</a> for a list of <a href="qfiledialog.html">QFileDialog</a> virtual member functions in Qt 3 that are no longer virtual in Qt 4.</p>
+<p>There are no equivalent virtual functions to the two <a href="q3filedialog.html#setSelectedFilter">Q3FileDialog::setSelectedFilter</a>() virtual functions in the <a href="qfiledialog.html">QFileDialog</a> API. In addition, these functions have been renamed or removed, as described above.</p>
 <a name="qfocusdata"></a>
 <h3>QFocusData</h3>
 <p>The <a href="#qfocusdata">QFocusData</a> class is not available in Qt 4. Some of its functionality is available via the <a href="qwidget.html#nextInFocusChain">QWidget::nextInFocusChain</a>() and <a href="qwidget.html#focusNextPrevChild">QWidget::focusNextPrevChild</a>() functions.</p>
@@ -1508,6 +1509,7 @@
 <a name="qlineedit"></a>
 <h3>QLineEdit</h3>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qlineedit.html">QLineEdit</a> properties in Qt 3 that have changed in Qt 4.</p>
+<p>The default value of <a href="qlineedit.html">QLineEdit</a>'s <a href="qlineedit.html#dragEnabled-prop">dragEnabled</a> property was <tt>true</tt> in Qt 3. In Qt 4, the default value is <tt>false</tt>.</p>
 <p>Note that <a href="qlineedit.html">QLineEdit</a> in Qt 4 is no longer a subclass of <a href="qframe.html">QFrame</a>. If you need to visually style a line edit with a frame, we recommend either using a <a href="qframe.html">QFrame</a> as a container for a <a href="qlineedit.html">QLineEdit</a> or customizing the line edit with a <a href="stylesheet.html">style sheet</a>.</p>
 <a name="qlistbox"></a>
 <h3>QListBox</h3>
@@ -1608,7 +1610,7 @@
 <h3>QObject</h3>
 <p><a href="qobject.html#children">QObject::children</a>() now returns a <a href="qobject.html#QObjectList-typedef">QObjectList</a> instead of a pointer to a <a href="qobject.html#QObjectList-typedef">QObjectList</a>. See also the comments on <a href="qobject.html#QObjectList-typedef">QObjectList</a> below.</p>
 <p>Use <a href="qobject.html#findChildren">QObject::findChildren</a>() (or <a href="qobject.html#qFindChildren">qFindChildren</a>() if you need MSVC 6 compatibility) instead of QObject::queryList(). For example:</p>
-<pre>         QList&lt;QWidget *&gt; myWidgets = qFindChildren&lt;QWidget *&gt;(myParent);</pre>
+<pre> QList&lt;QWidget *&gt; myWidgets = qFindChildren&lt;QWidget *&gt;(myParent);</pre>
 <p>QObject::killTimers() has been removed because it was unsafe to use in subclass. (A subclass normally doesn't know whether the base class uses timers or not.)</p>
 <p>The <tt>QObject::name</tt> property has been renamed <a href="qobject.html#objectName-prop">QObject::objectName</a>.</p>
 <p><tt>QObject::objectTrees()</tt> has been removed. If you are primarly interested in widgets, use <a href="qapplication.html#allWidgets">QApplication::allWidgets</a>() or <a href="qapplication.html#topLevelWidgets">QApplication::topLevelWidgets</a>().</p>
@@ -1639,7 +1641,8 @@
 <p>The <a href="http://doc.trolltech.com/3.3/qpainter.html#RasterOP-enum">QPainter::RasterOP</a> enum has been replaced with <a href="qpainter.html#CompositionMode-enum">QPainter::CompositionMode</a>.</p>
 <a name="qpicture"></a>
 <h3>QPicture</h3>
-<p>In Qt 3, a <a href="qpicture.html">QPicture</a> could be saved in the SVG file format. In Qt 4, the SVG support is separated into the <a href="qtsvg.html">QtSvg</a> module, which provides classes for <i>displaying</i> the contents of SVG files. Qt 4 does not currently support saving of pictures in this format, but it can be achieved using the <a href="q3picture.html">Q3Picture</a> compatibility class.</p>
+<p>In Qt 3, a <a href="qpicture.html">QPicture</a> could be saved in the SVG file format. In Qt 4, the SVG support is provided by the <a href="qtsvg.html">QtSvg</a> module, which includes classes for <i>displaying</i> the contents of SVG files.</p>
+<p>If you would like to generate SVG files, you can use the <a href="q3picture.html">Q3Picture</a> compatibility class or the <a href="qsvggenerator.html">QSvgGenerator</a> class introduced in Qt 4.3&#x2e;</p>
 <a name="qpixmap"></a>
 <h3>QPixmap</h3>
 <p>The mask() function has been changed to return a reference to a <a href="qbitmap.html">QBitmap</a> rather than a pointer. As a result, it is no longer possible simply to test for a null pointer when determining whether a pixmap has a mask. Instead, you need to explicitly test whether the mask bitmap is null or not.</p>
@@ -1726,7 +1729,7 @@
      vector.resize(list.size());
      qCopy(list.begin(), list.end(), vector.begin());</pre>
 </li>
-<li>QPtrList::sort() relied on the virtual comparedItems() to sort items. In Qt 4, you can use <a href="qtalgorithms.html#qSort">qSort</a>() instead and pass your &quot;compare item&quot; function as an argument.</li>
+<li>QPtrList::sort() relied on the virtual compareItems() to sort items. In Qt 4, you can use <a href="qtalgorithms.html#qSort">qSort</a>() instead and pass your &quot;compare item&quot; function as an argument.</li>
 <li>QPtrList::find(const T *) returns an iterator, whereas QList::indexOf(T *) returns an index. To convert an index into an iterator, add the index to <a href="qlist.html#begin">QList::begin</a>().</li>
 <li>QPtrList::removeFirst() and QPtrList::removeLast() return a <tt>bool</tt> that indicates whether the element was removed or not. The corresponding <a href="qlist.html">QList</a> functions return <tt>void</tt>. You can achieve the same result by calling <a href="qlist.html#isEmpty">QList::isEmpty</a>() before attempting to remove an item.</li>
 </ol>
@@ -1734,38 +1737,38 @@
 <p>The following table summarizes the idioms that you need to watch out for if you want to call <tt>delete</tt> yourself.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>QPtrList idiom</th><th><a href="qlist.html">QList</a> idiom</th></tr></thead>
-<tr valign="top" class="odd"><td><pre>         list.replace(index, value);</pre>
-</td><td><pre>         delete list[index];
-         list[index] = value;</pre>
+<tr valign="top" class="odd"><td><pre> list.replace(index, value);</pre>
+</td><td><pre> delete list[index];
+ list[index] = value;</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         list.removeFirst();</pre>
-</td><td><pre>         delete list.takeFirst();</pre>
+<tr valign="top" class="even"><td><pre> list.removeFirst();</pre>
+</td><td><pre> delete list.takeFirst();</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         list.removeLast();</pre>
-</td><td><pre>         delete list.takeLast();</pre>
+<tr valign="top" class="odd"><td><pre> list.removeLast();</pre>
+</td><td><pre> delete list.takeLast();</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         list.remove(index);</pre>
-</td><td><pre>         delete list.takeAt(index);</pre>
+<tr valign="top" class="even"><td><pre> list.remove(index);</pre>
+</td><td><pre> delete list.takeAt(index);</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         list.remove(value);</pre>
-</td><td><pre>         int i = list.indexOf(value);
-         if (i != -1)
-             delete list.takeAt(i);</pre>
+<tr valign="top" class="odd"><td><pre> list.remove(value);</pre>
+</td><td><pre> int i = list.indexOf(value);
+ if (i != -1)
+     delete list.takeAt(i);</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         list.remove();</pre>
+<tr valign="top" class="even"><td><pre> list.remove();</pre>
 <p>(removes the current item)</p>
-</td><td><pre>         QMutableListIterator&lt;T *&gt; i;
-         ...
-         delete i.value();
-         i.remove();</pre>
+</td><td><pre> QMutableListIterator&lt;T *&gt; i;
+ ...
+ delete i.value();
+ i.remove();</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         list.clear();</pre>
+<tr valign="top" class="odd"><td><pre> list.clear();</pre>
 <p>(also called from QPtrList's destructor)</p>
-</td><td><pre>         while (!list.isEmpty())
-             delete list.takeFirst();</pre>
+</td><td><pre> while (!list.isEmpty())
+     delete list.takeFirst();</pre>
 <p>In 99% of cases, the following idiom also works:</p>
-<pre>         qDeleteAll(list);
-         list.clear();</pre>
+<pre> qDeleteAll(list);
+ list.clear();</pre>
 <p>However, it may lead to crashes if <tt>list</tt> is referenced from the value type's destructor, because <tt>list</tt> contains dangling pointers until clear() is called.</p>
 </td></tr>
 </table></p>
@@ -1786,18 +1789,18 @@
 <tr valign="top" class="odd"><td>QPtrList::take()</td><td><a href="qmutablelistiterator.html#remove">QMutableListIterator::remove</a>()</td></tr>
 </table></p>
 <p>Be aware that <a href="qlistiterator.html">QListIterator</a> has a different way of iterating than QPtrList. A typical loop with QPtrList looks like this:</p>
-<pre>         QPtrList&lt;QWidget&gt; list;
-         ...
-         while (list.current() != 0) {
-             do_something(list.current());
-             list.next();
-         }</pre>
+<pre> QPtrList&lt;QWidget&gt; list;
+ ...
+ while (list.current() != 0) {
+     do_something(list.current());
+     list.next();
+ }</pre>
 <p>Here's the equivalent <a href="qlistiterator.html">QListIterator</a> loop:</p>
-<pre>         QList&lt;QWidget *&gt; list;
-         ...
-         QListIterator&lt;QWidget *&gt; i(list);
-         while (i.hasNext())
-             do_something(i.next());</pre>
+<pre> QList&lt;QWidget *&gt; list;
+ ...
+ QListIterator&lt;QWidget *&gt; i(list);
+ while (i.hasNext())
+     do_something(i.next());</pre>
 <p>Finally, QPtrListIterator&lt;T&gt; must also be ported. There are no fewer than four iterator classes that can be used as a replacement: <a href="qlist-const-iterator.html">QList::const_iterator</a>, <a href="qlist-iterator.html">QList::iterator</a>, <a href="qlistiterator.html">QListIterator</a>, and <a href="qmutablelistiterator.html">QMutableListIterator</a>. The most straightforward class to use when porting is <a href="qmutablelistiterator.html">QMutableListIterator</a>&lt;T *&gt; (if you modify the list through the iterator) or <a href="qlistiterator.html">QListIterator</a>&lt;T *&gt; (if you don't). The following table summarizes the API differences:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>QPtrListIterator function</th><th>Qt 4 equivalent</th></tr></thead>
@@ -1812,19 +1815,19 @@
 <tr valign="top" class="odd"><td>QPtrListIterator::operator*()</td><td><a href="qmutablelistiterator.html#value">QMutableListIterator::value</a>()</td></tr>
 </table></p>
 <p>Again, be aware that <a href="qlistiterator.html">QListIterator</a> has a different way of iterating than QPtrList. A typical loop with QPtrList looks like this:</p>
-<pre>         QPtrList&lt;QWidget&gt; list;
-         ...
-         QPtrListIterator&lt;QWidget&gt; i;
-         while (i.current() != 0) {
-             do_something(i.current());
-             i.next();
-         }</pre>
+<pre> QPtrList&lt;QWidget&gt; list;
+ ...
+ QPtrListIterator&lt;QWidget&gt; i;
+ while (i.current() != 0) {
+     do_something(i.current());
+     i.next();
+ }</pre>
 <p>Here's the equivalent <a href="qlistiterator.html">QListIterator</a> loop:</p>
-<pre>         QList&lt;QWidget *&gt; list;
-         ...
-         QListIterator&lt;QWidget *&gt; i(list);
-         while (i.hasNext())
-             do_something(i.next());</pre>
+<pre> QList&lt;QWidget *&gt; list;
+ ...
+ QListIterator&lt;QWidget *&gt; i(list);
+ while (i.hasNext())
+     do_something(i.next());</pre>
 <p>Finally, QPtrListStdIterator&lt;T&gt; must also be ported. This is easy, because <a href="qlist.html">QList</a> also provides STL-style iterators (<a href="qlist-iterator.html">QList::iterator</a> and <a href="qlist-const-iterator.html">QList::const_iterator</a>).</p>
 <a name="qptrqueue-t"></a>
 <h3>QPtrQueue&lt;T&gt;</h3>
@@ -1841,19 +1844,19 @@
 <p>If you use QPtrQueue's auto-delete feature (by calling QPtrQueue::setAutoDelete(true)), you need to do some more work. You have two options: Either you call <tt>delete</tt> yourself whenever you remove an item from the container, or you can use <a href="qqueue.html">QQueue</a>&lt;T&gt; instead of <a href="qqueue.html">QQueue</a>&lt;T *&gt; (i.e&#x2e; store values directly instead of pointers to values). Here, we will show when to call <tt>delete</tt>.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>QPtrQueue idiom</th><th><a href="qqueue.html">QQueue</a> idiom</th></tr></thead>
-<tr valign="top" class="odd"><td><pre>         queue.dequeue();</pre>
-</td><td><pre>         delete queue.dequeue();</pre>
+<tr valign="top" class="odd"><td><pre> queue.dequeue();</pre>
+</td><td><pre> delete queue.dequeue();</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         queue.remove();</pre>
-</td><td><pre>         delete queue.dequeue();</pre>
+<tr valign="top" class="even"><td><pre> queue.remove();</pre>
+</td><td><pre> delete queue.dequeue();</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         queue.clear();</pre>
+<tr valign="top" class="odd"><td><pre> queue.clear();</pre>
 <p>(also called from QPtrQueue's destructor)</p>
-</td><td><pre>         while (!queue.isEmpty())
-             delete queue.dequeue();</pre>
+</td><td><pre> while (!queue.isEmpty())
+     delete queue.dequeue();</pre>
 <p>In 99% of cases, the following idiom also works:</p>
-<pre>         qDeleteAll(queue);
-         queue.clear();</pre>
+<pre> qDeleteAll(queue);
+ queue.clear();</pre>
 <p>However, it may lead to crashes if <tt>queue</tt> is referenced from the value type's destructor, because <tt>queue</tt> contains dangling pointers until clear() is called.</p>
 </td></tr>
 </table></p>
@@ -1872,19 +1875,19 @@
 <p>If you use QPtrStack's auto-delete feature (by calling QPtrStack::setAutoDelete(true)), you need to do some more work. You have two options: Either you call <tt>delete</tt> yourself whenever you remove an item from the container, or you can use <a href="qstack.html">QStack</a>&lt;T&gt; instead of <a href="qstack.html">QStack</a>&lt;T *&gt; (i.e&#x2e; store values directly instead of pointers to values). Here, we will show when to call <tt>delete</tt>.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>QPtrStack idiom</th><th><a href="qstack.html">QStack</a> idiom</th></tr></thead>
-<tr valign="top" class="odd"><td><pre>         stack.pop();</pre>
-</td><td><pre>         delete stack.pop();</pre>
+<tr valign="top" class="odd"><td><pre> stack.pop();</pre>
+</td><td><pre> delete stack.pop();</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         stack.remove();</pre>
-</td><td><pre>         delete stack.pop();</pre>
+<tr valign="top" class="even"><td><pre> stack.remove();</pre>
+</td><td><pre> delete stack.pop();</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         stack.clear();</pre>
+<tr valign="top" class="odd"><td><pre> stack.clear();</pre>
 <p>(also called from QPtrStack's destructor)</p>
-</td><td><pre>         while (!stack.isEmpty())
-             delete stack.pop();</pre>
+</td><td><pre> while (!stack.isEmpty())
+     delete stack.pop();</pre>
 <p>In 99% of cases, the following idiom also works:</p>
-<pre>         qDeleteAll(stack);
-         stack.clear();</pre>
+<pre> qDeleteAll(stack);
+ stack.clear();</pre>
 <p>However, it may lead to crashes if <tt>stack</tt> is referenced from the value type's destructor, because <tt>stack</tt> contains dangling pointers until clear() is called.</p>
 </td></tr>
 </table></p>
@@ -1923,37 +1926,37 @@
 <p>The following table summarizes the idioms that you need to watch out for if you want to call <tt>delete</tt> yourself.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>QPtrVector idiom</th><th><a href="qvector.html">QVector</a> idiom</th></tr></thead>
-<tr valign="top" class="odd"><td><pre>         vect.insert(i, ptr);</pre>
-</td><td><pre>         delete vect[i];
-         vect[i] = ptr;</pre>
+<tr valign="top" class="odd"><td><pre> vect.insert(i, ptr);</pre>
+</td><td><pre> delete vect[i];
+ vect[i] = ptr;</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         vect.remove(i);</pre>
-</td><td><pre>         delete vect[i];
-         vect[i] = 0;</pre>
+<tr valign="top" class="even"><td><pre> vect.remove(i);</pre>
+</td><td><pre> delete vect[i];
+ vect[i] = 0;</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         T *ptr = vect.take(i);</pre>
-</td><td><pre>         T *ptr = vect[i];
-         vect[i] = 0;</pre>
+<tr valign="top" class="odd"><td><pre> T *ptr = vect.take(i);</pre>
+</td><td><pre> T *ptr = vect[i];
+ vect[i] = 0;</pre>
 </td></tr>
-<tr valign="top" class="even"><td><pre>         vect.resize(n)</pre>
-</td><td><pre>         while (n &gt; vect.size())
-             vect.append(0);
-         while (n &lt; vect.size() {
-             T *ptr = vect.last();
-             vect.remove(vect.size() - 1);
-             delete ptr;
-         }</pre>
+<tr valign="top" class="even"><td><pre> vect.resize(n)</pre>
+</td><td><pre> while (n &gt; vect.size())
+     vect.append(0);
+ while (n &lt; vect.size() {
+     T *ptr = vect.last();
+     vect.remove(vect.size() - 1);
+     delete ptr;
+ }</pre>
 </td></tr>
-<tr valign="top" class="odd"><td><pre>         vect.clear();</pre>
+<tr valign="top" class="odd"><td><pre> vect.clear();</pre>
 <p>(also called from QPtrVector's destructor)</p>
-</td><td><pre>         for (int i = 0; i &lt; vect.size(); ++i)
-             T *ptr = vect[i];
-             vect[i] = 0;
-             delete ptr;
-         }</pre>
+</td><td><pre> for (int i = 0; i &lt; vect.size(); ++i)
+     T *ptr = vect[i];
+     vect[i] = 0;
+     delete ptr;
+ }</pre>
 <p>In 99% of cases, the following idiom also works:</p>
-<pre>         qDeleteAll(vect);
-         vect.clear();</pre>
+<pre> qDeleteAll(vect);
+ vect.clear();</pre>
 <p>However, it may lead to crashes if <tt>vect</tt> is referenced from the value type's destructor, because <tt>vect</tt> contains dangling pointers until clear() is called.</p>
 </td></tr>
 </table></p>
@@ -2024,13 +2027,13 @@
 <h3>QShared</h3>
 <p>The <tt>QShared</tt> class has been obsoleted by the more powerful <a href="qshareddata.html">QSharedData</a> and <a href="qshareddatapointer.html">QSharedDataPointer</a> as a means of creating custom implicitly shared classes. It has been renamed <a href="q3shared.html">Q3Shared</a> moved to the <a href="qt3support.html">Qt3Support</a> library.</p>
 <p>An easy way of porting to Qt 4 is to include this class into your project and to use it instead of <tt>QShared</tt>:</p>
-<pre>         struct Shared
-         {
-             Shared() : count(1) {}
-             void ref() { ++count; }
-             bool deref() { return !--count; }
-             uint count;
-         };</pre>
+<pre> struct Shared
+ {
+     Shared() : count(1) {}
+     void ref() { ++count; }
+     bool deref() { return !--count; }
+     uint count;
+ };</pre>
 <p>If possible, we recommend that you use <a href="qshareddata.html">QSharedData</a> and <a href="qshareddatapointer.html">QSharedDataPointer</a> instead. They provide thread-safe reference counting and handle all the reference counting behind the scenes, eliminating the risks of forgetting to increment or decrement the reference count.</p>
 <a name="qsignal"></a>
 <h3>QSignal</h3>
@@ -2181,15 +2184,15 @@
 <p>In new code, we recommend that you don't rely on the distinction between a null string and a (non-null) empty string. See <a href="qstring.html#distinction-between-null-and-empty-strings">Distinction Between Null and Empty Strings</a> for details.</p>
 </li>
 <li><a href="qstring-qt3.html#latin1">QString::latin1</a>() and <a href="qstring-qt3.html#ascii">QString::ascii</a>() have been replaced with <a href="qstring.html#toLatin1">QString::toLatin1</a>() and <a href="qstring.html#toAscii">QString::toAscii</a>(), which return a <a href="qbytearray.html">QByteArray</a> instead of a (non-reentrant) <tt>const char *</tt>. For consistency, <a href="qstring-qt3.html#utf8">QString::utf8</a>() and <a href="qstring-qt3.html#local8Bit">QString::local8Bit</a>(), which already returned a <a href="qbytearray.html">QByteArray</a> (actually a <tt>QCString</tt>), have been renamed <a href="qstring.html#toUtf8">QString::toUtf8</a>() and <a href="qstring.html#toLocal8Bit">QString::toLocal8Bit</a>().<p>To obtain a <tt>const char *</tt> pointer to ASCII or Latin-1 data, use <a href="qstring.html#toAscii">QString::toAscii</a>() or <a href="qstring.html#toLatin1">QString::toLatin1</a>() to obtain a <a href="qbytearray.html">QByteArray</a> containing the data, then call <a href="qbytearray.html#constData">QByteArray::constData</a>() to access the character data directly. Note that the pointer returned by this function is only valid for the lifetime of the byte array; you should avoid taking a pointer to the data contained in temporary objects.</p>
-<pre>         QString greeting = &quot;Hello&quot;;
-         const char *badData = greeting.toAscii().constData(); // data is invalid
-         QByteArray asciiData = greeting.toAscii();
-         const char *goodData = asciiData.constData();</pre>
+<pre> QString greeting = &quot;Hello&quot;;
+ const char *badData = greeting.toAscii().constData(); // data is invalid
+ QByteArray asciiData = greeting.toAscii();
+ const char *goodData = asciiData.constData();</pre>
 <p>In the above example, the <tt>goodData</tt> pointer is valid for the lifetime of the <tt>asciiData</tt> byte array. If you need to keep a copy of the data in a non-Qt data structure, use standard C memory allocation and string copying functions to do so <i>before</i> destroying the byte array.</p>
 </li>
-<li><a href="qstring.html#at">QString::at</a>() returned a non-const reference, whereas the new <a href="qstring.html#at">QString::at</a>() returns a const value. Code like<pre>         str.at(0) = 'X';</pre>
+<li><a href="qstring.html#at">QString::at</a>() returned a non-const reference, whereas the new <a href="qstring.html#at">QString::at</a>() returns a const value. Code like<pre> str.at(0) = 'X';</pre>
 <p>will no longer compile. Instead, use QString::operator[]:</p>
-<pre>         str[0] = 'X';</pre>
+<pre> str[0] = 'X';</pre>
 </li>
 <li>The QString::contains(<i>x</i>) function (where <i>x</i> is a character or a string) has been renamed QString::count(<i>x</i>). In addition, there now exists a set of <a href="qstring.html#contains">QString::contains</a>() functions that returns a boolean value. Replace old calls to contains() with either count() or contains(), depending on whether you care about the specific number of occurrences of a character in the string or only care about whether the string contains that character or not.</li>
 <li>Many functions in <a href="qstring.html">QString</a> had a <tt>bool</tt> parameter that specified case sensitivity. In Qt 4, in the interest of code readability and maintainability, the <tt>bool</tt> parameters have been replaced by the <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a> enum, which can take the values <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitive</a> and <a href="qt.html#CaseSensitivity-enum">Qt::CaseInsensitive</a>.<p>For example, if you have code like</p>
@@ -2375,7 +2378,7 @@
 <a name="qurloperator"></a>
 <h3>QUrlOperator</h3>
 <p>The <tt>QUrlOperator</tt> class is no longer part of the public Qt API. It has been renamed <a href="q3urloperator.html">Q3UrlOperator</a> and moved to <a href="qt3support.html">Qt3Support</a>.</p>
-<p>In Qt 4 applications, you can use classes like <a href="qftp.html">QFtp</a> and <a href="qhttp.html">QHttp</a> directly to perform file-related actions on a remote host.</p>
+<p>From Qt 4.4, the Network Access API provides a subset of the features provided by <tt>QUrlOperator</tt> that are mostly intended for use with applications that use the HTTP and FTP protocols. See the <a href="qnetworkrequest.html">QNetworkRequest</a>, <a href="qnetworkreply.html">QNetworkReply</a>, and <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a> documentation for further details.</p>
 <a name="qvaluelist-section"></a><a name="qvaluelist-t"></a>
 <h3>QValueList&lt;T&gt;</h3>
 <p>The QValueList&lt;T&gt; class has been replaced by <a href="qlist.html">QList</a>&lt;T&gt; and <a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt; in Qt 4. As a help when porting older Qt applications, the <a href="qt3support.html">Qt3Support</a> library contains a QValueList&lt;T&gt; class implemented in terms of the new <a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;. Similarly, it contains QValueListIterator&lt;T&gt; and QValueListConstIterator&lt;T&gt; classes implemented in terms of <a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;::iterator and <a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;::const_iterator.</p>
@@ -2390,7 +2393,7 @@
 <p>you can rewrite it as</p>
 <pre>     QLinkedList&lt;T&gt;::iterator i = list.end();
      while (i != list.begin()) {
-         --i; <span class="comment">//</span> decrement i before using it
+         --i; <span class="comment">// decrement i before using it</span>
          do_something(*i);
      }</pre>
 </li>
@@ -2550,7 +2553,7 @@
 <li><a href="qwidget.html#showNormal">QWidget::showNormal</a>()</li>
 <li><a href="qwidget.html#cursor-prop">QWidget::unsetCursor</a>()</li>
 </ul>
-<p>The internal clearWState() function was removed. Use <a href="qwidget.html#setWindowState">QWidget::setWindowState</a>() instead.</p>
+<p>The internal clearWState() function was removed. Use <a href="qwidget.html#setAttribute">QWidget::setAttribute</a>() instead.</p>
 <p>setWFlags() was renamed <a href="qwidget.html#windowFlags-prop">QWidget::setWindowFlags</a>().</p>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qwidget.html">QWidget</a> properties in Qt 3 that have changed in Qt 4.</p>
 <a name="qwidgetfactory"></a>
@@ -2558,7 +2561,7 @@
 <p>The <tt>QWidgetFactory</tt> class has been replaced by <a href="qformbuilder.html">QFormBuilder</a> in Qt 4.</p>
 <a name="qwidgetintdict"></a>
 <h3>QWidgetIntDict</h3>
-<p>The <a href="#qwidgetintdict">QWidgetIntDict</a> class was a synonym for QIntDict&lt;<a href="qwidget.html">QWidget</a>&gt;. It is no longer available in Qt 4. If you link against <a href="qt3support.html">Qt3Support</a>, you can use QIntDict&lt;<a href="qwidget.html">QWidget</a>&gt; instead; otherwise, see the <a href="#qdict-section">section on QDict&lt;T&gt;</a>.</p>
+<p>The <a href="#qwidgetintdict">QWidgetIntDict</a> class was a synonym for QIntDict&lt;<a href="qwidget.html">QWidget</a>&gt;. It is no longer available in Qt 4. If you link against <a href="qt3support.html">Qt3Support</a>, you can use <a href="q3intdict.html">Q3IntDict</a>&lt;<a href="qwidget.html">QWidget</a>&gt; instead; otherwise, see the <a href="#qdict-section">section on QDict&lt;T&gt;</a>.</p>
 <a name="qwidgetlist-section"></a><a name="qwidgetlist"></a>
 <h3>QWidgetList</h3>
 <p>In Qt 3, the <a href="qwidget.html#QWidgetList-typedef">QWidgetList</a> class was a typedef for QPtrList&lt;<a href="qwidget.html">QWidget</a>&gt;. In Qt 4, it is a typedef for <a href="qlist.html">QList</a>&lt;<a href="qwidget.html">QWidget</a> *&gt;. See the <a href="#qptrlist-section">section on QPtrList&lt;T&gt;</a>.</p>
@@ -2583,6 +2586,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

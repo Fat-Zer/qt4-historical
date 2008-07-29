@@ -187,11 +187,12 @@ void QHelpIndexProvider::run()
 
 /*!
     \class QHelpIndexModel
+    \since 4.4
     \inmodule QtHelp
     \brief The QHelpIndexModel class provides a model that
     supplies index keywords to views.
 
-    
+
 */
 
 /*!
@@ -347,6 +348,7 @@ QModelIndex QHelpIndexModel::filter(const QString &filter, const QString &wildca
 /*!
     \class QHelpIndexWidget
     \inmodule QtHelp
+    \since 4.4
     \brief The QHelpIndexWidget class provides a list view
     displaying the QHelpIndexModel.
 */

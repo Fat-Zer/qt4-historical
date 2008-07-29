@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/network/q3urloperator.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/network/q3urloperator.cpp -->
 <head>
   <title>Qt 4.4: Q3UrlOperator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -107,8 +107,8 @@
 <p>You can obtain additional information about the URL with <a href="q3urloperator.html#isDir">isDir</a>() and <a href="q3urloperator.html#info">info</a>(). If a directory is to be traversed using <a href="q3urloperator.html#listChildren">listChildren</a>(), a name filter can be set with <a href="q3urloperator.html#setNameFilter">setNameFilter</a>().</p>
 <p>A Q3UrlOperator can be used like this, for example to download a file (and assuming that the FTP protocol is registered):</p>
 <pre>     Q3UrlOperator *op = new Q3UrlOperator();
-     op-&gt;copy( QString(&quot;ftp://ftp.trolltech.com/qt/source/qt-2.1.0.tar.gz&quot;),
-              &quot;file:///tmp&quot; );</pre>
+     op-&gt;copy( QString(&quot;ftp:<span class="comment">//ftp.trolltech.com/qt/source/qt-2.1.0.tar.gz&quot;),</span>
+              &quot;file:<span class="comment">///tmp&quot; );</span></pre>
 <p>If you want to be notified about success/failure, progress, etc., you can connect to Q3UrlOperator's signals, e.g&#x2e; to <a href="q3urloperator.html#start">start</a>(), <a href="q3urloperator.html#newChildren">newChildren</a>(), <a href="q3urloperator.html#createdDirectory">createdDirectory</a>(), <a href="q3urloperator.html#removed">removed</a>(), <a href="q3urloperator.html#data">data</a>(), <a href="q3urloperator.html#dataTransferProgress">dataTransferProgress</a>(), <a href="q3urloperator.html#startedNextCopy">startedNextCopy</a>(), <a href="q3urloperator.html#connectionStateChanged">connectionStateChanged</a>(), <a href="q3urloperator.html#finished">finished</a>(), etc. A network operation can be stopped with <a href="q3urloperator.html#stop">stop</a>().</p>
 <p>The class uses the functionality of registered network protocols to perform these operations. Depending of the protocol of the URL, it uses an appropriate network protocol class for the operations. Each of the operation functions of Q3UrlOperator creates a <a href="q3networkoperation.html">Q3NetworkOperation</a> object that describes the operation and puts it into the operation queue for the network protocol used. If no suitable protocol could be found (because no implementation of the necessary network protocol is registered), the URL operator emits errors. Not every protocol supports every operation, but error handling deals with this problem.</p>
 <p>To register the available network protocols, use the qInitNetworkProtocols() function. The protocols currently supported are:</p>
@@ -175,16 +175,16 @@
 <p>Tells the network protocol to get data from <i>location</i> or, if it is empty, to get data from the location to which this URL points (see <a href="q3url.html#fileName">Q3Url::fileName</a>() and <a href="q3url.html#encodedPathAndQuery">Q3Url::encodedPathAndQuery</a>()). What happens then depends on the network protocol. The <a href="q3urloperator.html#data">data</a>() signal is emitted when data comes in. Because it's unlikely that all data will come in at once, it is common for multiple <a href="q3urloperator.html#data">data</a>() signals to be emitted. The <a href="q3urloperator.html#dataTransferProgress">dataTransferProgress</a>() signal is emitted while processing the operation. At the end, <a href="q3urloperator.html#finished">finished</a>() (with success or failure) is emitted, so check the state of the network operation object to see whether or not the operation was successful.</p>
 <p>If <i>location</i> is empty, the path of this <a href="q3urloperator.html">Q3UrlOperator</a> should point to a file when you use this operation. If <i>location</i> is not empty, it can be a relative URL (a child of the path to which the <a href="q3urloperator.html">Q3UrlOperator</a> points) or an absolute URL.</p>
 <p>For example, to get a web page you might do something like this:</p>
-<pre>     Q3UrlOperator op( &quot;http://www.whatever.org/cgi-bin/search.pl?cmd=Hello&quot; );
+<pre>     Q3UrlOperator op( &quot;http:<span class="comment">//www.whatever.org/cgi-bin/search.pl?cmd=Hello&quot; );</span>
      op.get();</pre>
 <p>For most other operations, the path of the <a href="q3urloperator.html">Q3UrlOperator</a> must point to a directory. If you want to download a file you could do the following:</p>
-<pre>     Q3UrlOperator op( &quot;ftp://ftp.whatever.org/pub&quot; );
-     // do some other stuff like op.listChildren() or op.mkdir( &quot;new_dir&quot; )
+<pre>     Q3UrlOperator op( &quot;ftp:<span class="comment">//ftp.whatever.org/pub&quot; );</span>
+     <span class="comment">// do some other stuff like op.listChildren() or op.mkdir( &quot;new_dir&quot; )</span>
      op.get( &quot;a_file.txt&quot; );</pre>
 <p>This will get the data of ftp://ftp.whatever.org/pub/a_file.txt.</p>
 <p><i>Never</i> do anything like this:</p>
-<pre>     Q3UrlOperator op( &quot;http://www.whatever.org/cgi-bin&quot; );
-     op.get( &quot;search.pl?cmd=Hello&quot; ); // WRONG!</pre>
+<pre>     Q3UrlOperator op( &quot;http:<span class="comment">//www.whatever.org/cgi-bin&quot; );</span>
+     op.get( &quot;search.pl?cmd=Hello&quot; ); <span class="comment">// WRONG</span>!</pre>
 <p>If <i>location</i> is not empty and relative it must not contain any queries or references, just the name of a child. So if you need to specify a query or reference, do it as shown in the first example or specify the full URL (such as http://www.whatever.org/cgi-bin/search.pl?cmd=Hello) as <i>location</i>.</p>
 <p>See also <a href="q3urloperator.html#copy">copy</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3UrlOperator/getNetworkProtocol" />
@@ -223,11 +223,11 @@
 <p>This function tells the network protocol to put <i>data</i> in <i>location</i>. If <i>location</i> is empty, it puts the <i>data</i> in the location to which the URL points. What happens depends on the network protocol. Depending on the network protocol, some data might come back after putting data, in which case the <a href="q3urloperator.html#data">data</a>() signal is emitted. The <a href="q3urloperator.html#dataTransferProgress">dataTransferProgress</a>() signal is emitted during processing of the operation. At the end, <a href="q3urloperator.html#finished">finished</a>() (with success or failure) is emitted, so check the state of the network operation object to see whether or not the operation was successful.</p>
 <p>If <i>location</i> is empty, the path of this <a href="q3urloperator.html">Q3UrlOperator</a> should point to a file when you use this operation. If <i>location</i> is not empty, it can be a relative (a child of the path to which the <a href="q3urloperator.html">Q3UrlOperator</a> points) or an absolute URL.</p>
 <p>For putting some data to a file you can do the following:</p>
-<pre>     Q3UrlOperator op( &quot;ftp://ftp.whatever.com/home/me/filename.dat&quot; );
+<pre>     Q3UrlOperator op( &quot;ftp:<span class="comment">//ftp.whatever.com/home/me/filename.dat&quot; );</span>
      op.put( data );</pre>
 <p>For most other operations, the path of the <a href="q3urloperator.html">Q3UrlOperator</a> must point to a directory. If you want to upload data to a file you could do the following:</p>
-<pre>     Q3UrlOperator op( &quot;ftp://ftp.whatever.com/home/me&quot; );
-     // do some other stuff like op.listChildren() or op.mkdir( &quot;new_dir&quot; )
+<pre>     Q3UrlOperator op( &quot;ftp:<span class="comment">//ftp.whatever.com/home/me&quot; );</span>
+     <span class="comment">// do some other stuff like op.listChildren() or op.mkdir( &quot;new_dir&quot; )</span>
      op.put( data, &quot;filename.dat&quot; );</pre>
 <p>This will upload the data to ftp://ftp.whatever.com/home/me/filename.dat.</p>
 <p>See also <a href="q3urloperator.html#copy">copy</a>().</p>
@@ -276,6 +276,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

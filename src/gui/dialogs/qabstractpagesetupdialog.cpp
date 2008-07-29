@@ -46,6 +46,7 @@
 
 #ifndef QT_NO_PRINTDIALOG
 
+#include <QtCore/qcoreapplication.h>
 #include <QtGui/qprinter.h>
 
 QT_BEGIN_NAMESPACE
@@ -67,10 +68,11 @@ QAbstractPageSetupDialog::QAbstractPageSetupDialog(QPrinter *printer, QWidget *p
 {
     Q_D(QAbstractPageSetupDialog);
     d->printer = printer;
+    setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
 
     if (printer->outputFormat() != QPrinter::NativeFormat) {
         qWarning("QAbstractPageSetupDialog::QAbstractPageSetupDialog: Page setup dialog cannot be "
-                 "used on non-native printers");    
+                 "used on non-native printers");
     }
 }
 
@@ -83,10 +85,11 @@ QAbstractPageSetupDialog::QAbstractPageSetupDialog(QAbstractPageSetupDialogPriva
 {
     Q_D(QAbstractPageSetupDialog);
     d->printer = printer;
+    setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
 
     if (printer->outputFormat() != QPrinter::NativeFormat) {
         qWarning("QAbstractPageSetupDialog::QAbstractPageSetupDialog: Page setup dialog cannot be "
-                 "used on non-native printers");    
+                 "used on non-native printers");
     }
 }
 

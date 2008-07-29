@@ -48,6 +48,8 @@
 
 #include <QtCore/qatomic.h>
 #include <QtCore/qthread.h>
+#include <QtCore/qthreadpool.h>
+#include <private/qthreadpool_p.h>
 
 #include "qfutureinterface_p.h"
 
@@ -114,7 +116,7 @@ void QFutureInterfaceBase::togglePaused()
 void QFutureInterfaceBase::setThrottled(bool enable)
 {
     // bail out if we are not changing the state
-    if (enable && (d->state & Throttled) || !enable && !(d->state & Throttled))
+    if ((enable && (d->state & Throttled)) || (!enable && !(d->state & Throttled)))
         return;
 
     // lock and change the state
@@ -274,8 +276,23 @@ void QFutureInterfaceBase::waitForResult(int resultIndex)
 {
     d->m_exceptionStore.throwPossibleException();
 
-    if (!(d->state & Running))
+    if (!(d->state & Running)) {
+        // Secret handshake: For BC reasons, QtConcurrent::run calls
+        // waitForResult(-2) before reportStarted to signal that
+        // this is a concurrent function call.
+        if (resultIndex == -2)
+            d->isRunFunction = true;
         return;
+    }
+
+    // To avoid deadlocks, use the current thread to run one of the queued
+    // runnables
+    if (d->isRunFunction) {
+        while (d->state & Running) {
+            if (QThreadPool::globalInstance()->d_func()->startFrontRunnable() == false)
+                break;
+        }
+    }
 
     QMutexLocker lock(&d->m_mutex);
 
@@ -291,6 +308,13 @@ void QFutureInterfaceBase::waitForResult(int resultIndex)
 
 void QFutureInterfaceBase::waitForFinished()
 {
+    if (d->isRunFunction) {
+        while (d->state & Running) {
+            if (QThreadPool::globalInstance()->d_func()->startFrontRunnable() == false)
+                break;
+        }
+    }
+
     QMutexLocker lock(&d->m_mutex);
 
     while (d->state & Running)
@@ -400,7 +424,7 @@ bool QFutureInterfaceBase::referenceCountIsOne() const
 QFutureInterfaceBasePrivate::QFutureInterfaceBasePrivate(QFutureInterfaceBase::State initialState)
     : refCount(1), m_progressValue(0), m_progressMinimum(0), m_progressMaximum(0),
       state(initialState), progressTimeStarted(false), pendingResults(0),
-      manualProgress(false), m_expectedResultCount(0)
+      manualProgress(false), m_expectedResultCount(0), isRunFunction(false)
 { }
 
 int QFutureInterfaceBasePrivate::internal_resultCount() const
@@ -445,8 +469,8 @@ bool QFutureInterfaceBasePrivate::internal_updateProgress(int progress,
 void QFutureInterfaceBasePrivate::internal_setThrottled(bool enable)
 {
     // bail out if we are not changing the state
-    if (enable && (state & QFutureInterfaceBase::Throttled)
-        || !enable && !(state & QFutureInterfaceBase::Throttled))
+    if ((enable && (state & QFutureInterfaceBase::Throttled))
+        || (!enable && !(state & QFutureInterfaceBase::Throttled)))
         return;
 
     // change the state

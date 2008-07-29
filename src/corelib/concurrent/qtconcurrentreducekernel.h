@@ -96,6 +96,7 @@ enum ReduceOption {
     // ParallelReduce = 0x8
 };
 Q_DECLARE_FLAGS(ReduceOptions, ReduceOption)
+Q_DECLARE_OPERATORS_FOR_FLAGS(ReduceOptions)
 
 #ifndef qdoc
 

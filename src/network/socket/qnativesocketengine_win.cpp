@@ -1188,14 +1188,14 @@ int QNativeSocketEnginePrivate::nativeSelect(int timeout,
 #else
     ret = select(1, &fdread, &fdwrite, 0, timeout < 0 ? 0 : &tv);
 #endif
+    if (readEnabled)
+        readNotifier->setEnabled(true);
+
     if (ret <= 0)
         return ret;
 
     *selectForRead = FD_ISSET(socketDescriptor, &fdread);
     *selectForWrite = FD_ISSET(socketDescriptor, &fdwrite);
-
-    if (readEnabled)
-        readNotifier->setEnabled(true);
 
     return ret;
 }

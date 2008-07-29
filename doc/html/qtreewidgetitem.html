@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/itemviews/qtreewidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qtreewidget.cpp -->
 <head>
   <title>Qt 4.4: QTreeWidgetItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -101,8 +101,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtreewidgetitem.html#operator-lt-lt-127">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtreewidgetitem.html#operator-gt-gt-75">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QTreeWidgetItem &amp; <i>item</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtreewidgetitem.html#operator-lt-lt-53">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtreewidgetitem.html#operator-gt-gt-28">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QTreeWidgetItem &amp; <i>item</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -133,11 +133,11 @@
 <a name="//apple_ref/cpp/econst/QTreeWidgetItem/DontShowIndicator" />
 <a name="//apple_ref/cpp/econst/QTreeWidgetItem/DontShowIndicatorWhenChildless" />
 <h3 class="fn"><a name="ChildIndicatorPolicy-enum"></a>enum QTreeWidgetItem::ChildIndicatorPolicy</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>QTreeWidgetItem::ShowIndicator</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
-<tr><td valign="top"><tt>QTreeWidgetItem::DontShowIndicator</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-<tr><td valign="top"><tt>QTreeWidgetItem::DontShowIndicatorWhenChildless</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QTreeWidgetItem::ShowIndicator</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The controls for expanding and collapsing will be shown for this item even if there are no children.</td></tr>
+<tr><td valign="top"><tt>QTreeWidgetItem::DontShowIndicator</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The controls for expanding and collapsing will never be shown even if there are children. If the node is forced open the user will not be able to expand or collapse the item.</td></tr>
+<tr><td valign="top"><tt>QTreeWidgetItem::DontShowIndicatorWhenChildless</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The controls for expanding and collapsing will be shown if the item contains children.</td></tr>
 </table></p>
 <p>This enum was introduced in Qt 4.3.</p>
 <a name="//apple_ref/cpp/tag/QTreeWidgetItem/ItemType" />
@@ -386,6 +386,7 @@
 <a name="//apple_ref/cpp/instm/QTreeWidgetItem/sortChildren" />
 <h3 class="fn"><a name="sortChildren"></a>void QTreeWidgetItem::sortChildren ( int <i>column</i>, <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> )</h3>
 <p>Sorts the children of the item using the given <i>order</i>, by the values in the given <i>column</i>.</p>
+<p><b>Note:</b> This function does nothing if the item is not associated with a <a href="qtreewidget.html">QTreeWidget</a>.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <a name="//apple_ref/cpp/instm/QTreeWidgetItem/statusTip" />
 <h3 class="fn"><a name="statusTip"></a><a href="qstring.html">QString</a> QTreeWidgetItem::statusTip ( int <i>column</i> ) const</h3>
@@ -434,12 +435,12 @@
 <p>See also <a href="qtreewidgetitem.html#data">data</a>() and <a href="qtreewidgetitem.html#flags">flags</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-127"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-53"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the tree widget item <i>item</i> to stream <i>out</i>.</p>
 <p>This operator uses <a href="qtreewidgetitem.html#write">QTreeWidgetItem::write</a>().</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-75"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QTreeWidgetItem &amp; <i>item</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-28"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QTreeWidgetItem &amp; <i>item</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a tree widget item from stream <i>in</i> into <i>item</i>.</p>
 <p>This operator uses <a href="qtreewidgetitem.html#read">QTreeWidgetItem::read</a>().</p>
@@ -448,6 +449,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

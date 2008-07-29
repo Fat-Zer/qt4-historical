@@ -195,6 +195,7 @@ enum Token {
     HASH,
     QUOTE,
     SINGLEQUOTE,
+    LANGLE_SCOPE,
     DIGIT,
     CHARACTER,
     NEWLINE,

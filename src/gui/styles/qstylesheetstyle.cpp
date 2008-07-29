@@ -81,6 +81,7 @@
 #include <qmdisubwindow.h>
 #include <qdialog.h>
 #include <private/qwidget_p.h>
+#include <QAbstractSpinBox>
 
 #include <limits.h>
 
@@ -512,6 +513,18 @@ public:
 
     QSize size() const { return boxSize(contentsSize()); }
     QSize size(const QSize &sz) const { return boxSize(contentsSize(sz)); }
+    QSize adjustSize(const QSize &sz)
+    {
+        if (!geo)
+            return sz;
+        QSize csz = contentsSize();
+        if (csz.width() == -1) csz.setWidth(sz.width());
+        if (csz.height() == -1) csz.setHeight(sz.height());
+        if (geo->maxWidth != -1 && csz.width() > geo->maxWidth) csz.setWidth(geo->maxWidth);
+        if (geo->maxHeight != -1 && csz.height() > geo->maxHeight) csz.setHeight(geo->maxHeight);
+        csz=csz.expandedTo(QSize(geo->minWidth, geo->minHeight));
+        return csz;
+    }
 
     int features;
     QBrush defaultBackground;
@@ -1540,6 +1553,8 @@ public:
                     return QString::fromLatin1(proxy->baseStyle()->metaObject()->className());
             }
         }
+        if(value.type() == QVariant::StringList || value.type() == QVariant::List)
+            return value.toStringList().join(QLatin1String(" "));
         return value.toString();
     }
     bool hasAttribute(NodePtr node, const QString& name) const
@@ -1609,8 +1624,10 @@ QVector<QCss::StyleRule> QStyleSheetStyle::styleRules(const QWidget *w) const
     if (styleRulesCache->contains(w))
         return styleRulesCache->value(w);
 
-    if (w)
+    if (w) {
+        QObject::disconnect(w, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
         QObject::connect(w, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
+    }
 
     if (w && unstylable(w)) {
         QVector<StyleRule> emptyRule;
@@ -1652,10 +1669,12 @@ QVector<QCss::StyleRule> QStyleSheetStyle::styleRules(const QWidget *w) const
 
     QVector<QCss::StyleSheet> widgetSs;
     for (const QWidget *wid = w; wid; wid = wid->parentWidget()) {
+        if(wid->styleSheet().isEmpty())
+            continue;
         StyleSheet ss;
         if (!styleSheetCache->contains(wid)) {
             parser.init(wid->styleSheet());
-            if (!parser.parse(&ss) && wid == w) {
+            if (!parser.parse(&ss)) {
                 parser.init(QLatin1String("* {") + wid->styleSheet() + QLatin1String("}"));
                 if (!parser.parse(&ss))
                    qWarning("Could not parse stylesheet of widget %p", wid);
@@ -2366,11 +2385,12 @@ QRect QStyleSheetStyle::positionRect(const QWidget *w, const QRenderRule& rule1,
 static QWidget *embeddedWidget(QWidget *w)
 {
 #ifndef QT_NO_COMBOBOX
-    if (QComboBox *cmb = qobject_cast<QComboBox *>(w))
+    if (QComboBox *cmb = qobject_cast<QComboBox *>(w)) {
         if (cmb->isEditable())
             return cmb->lineEdit();
         else
             return cmb;
+    }
 #endif
 
 #ifndef QT_NO_SPINBOX
@@ -3436,7 +3456,7 @@ void QStyleSheetStyle::drawControl(ControlElement ce, const QStyleOption *opt, Q
                 subRule.drawRule(p, opt->rect);
             } else if ((pseudo == PseudoElement_Item)
                         && (allRules.hasBox() || allRules.hasBorder()
-                        || allRules.background() && !allRules.background()->pixmap.isNull())) {
+                            || (allRules.background() && !allRules.background()->pixmap.isNull()))) {
                 subRule.drawRule(p, opt->rect);
                 if (subRule.hasBackground()) {
                     mi.palette.setBrush(QPalette::Highlight, Qt::NoBrush);
@@ -3922,7 +3942,9 @@ void QStyleSheetStyle::drawControl(ControlElement ce, const QStyleOption *opt, Q
 
     if (pe1 != PseudoElement_None) {
         QRenderRule subRule = renderRule(w, opt, pe1);
-        if (subRule.hasDrawable()) {
+        if (subRule.bg != 0 || subRule.hasDrawable()) {
+            //We test subRule.bg dirrectly because hasBackground() would return false for background:none.
+            //But we still don't want the default drawning in that case (example for QScrollBar::add-page) (task 198926)
             subRule.drawRule(p, opt->rect);
         } else if (fallback) {
             QWindowsStyle::drawControl(ce, opt, p, w);
@@ -4043,11 +4065,17 @@ void QStyleSheetStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *op
 
     case PE_PanelLineEdit:
         if (const QStyleOptionFrame *frm = qstyleoption_cast<const QStyleOptionFrame *>(opt)) {
+#ifndef QT_NO_SPINBOX
+            if (w && qobject_cast<const QAbstractSpinBox *>(w->parentWidget())) {
+                QRenderRule spinboxRule = renderRule(w->parentWidget(), opt);
+                if (!spinboxRule.hasNativeBorder() || !spinboxRule.baseStyleCanDraw())
+                    return;
+            }
+#endif
             if (rule.hasNativeBorder()) {
                 QStyleOptionFrame frmOpt(*frm);
                 rule.configurePalette(&frmOpt.palette, QPalette::Text, QPalette::Base);
                 frmOpt.rect = rule.borderRect(frmOpt.rect);
-
                 if (rule.baseStyleCanDraw()) {
                     rule.drawBackgroundImage(p, opt->rect);
                     baseStyle()->drawPrimitive(pe, &frmOpt, p, w);
@@ -4589,7 +4617,7 @@ QSize QStyleSheetStyle::sizeFromContents(ContentsType ct, const QStyleOption *op
                                          const QSize &csz, const QWidget *w) const
 {
     QRenderRule rule = renderRule(w, opt);
-    QSize sz = csz.expandedTo(rule.minimumContentsSize());
+    QSize sz = rule.adjustSize(csz);
 
     switch (ct) {
     case CT_SpinBox: // ### hopelessly broken QAbstractSpinBox (part 1)
@@ -4611,7 +4639,7 @@ QSize QStyleSheetStyle::sizeFromContents(ContentsType ct, const QStyleOption *op
             if (const QStyleOptionHeader *hdr = qstyleoption_cast<const QStyleOptionHeader *>(opt)) {
                 QRenderRule subRule = renderRule(w, opt, PseudoElement_HeaderViewSection);
                 if (subRule.hasGeometry() || subRule.hasBox() || !subRule.hasNativeBorder()) {
-                    sz = csz.expandedTo(subRule.minimumContentsSize());
+                    sz = subRule.adjustSize(csz);
                     if (!subRule.hasGeometry()) {
                         QSize nativeContentsSize;
                         bool nullIcon = hdr->icon.isNull();
@@ -4712,7 +4740,7 @@ QSize QStyleSheetStyle::sizeFromContents(ContentsType ct, const QStyleOption *op
 #ifndef QT_NO_TABBAR
     case CT_TabBarTab: {
         QRenderRule subRule = renderRule(w, opt, PseudoElement_TabBarTab);
-        sz = csz.expandedTo(subRule.minimumContentsSize());
+        sz = subRule.adjustSize(csz);
         if (subRule.hasBox() || subRule.hasBorder()) {
             sz = subRule.boxSize(sz);
             int spaceForIcon = 0;
@@ -4762,8 +4790,7 @@ QSize QStyleSheetStyle::sizeFromContents(ContentsType ct, const QStyleOption *op
     case CT_ItemViewItem: {
         QRenderRule subRule = renderRule(w, opt, PseudoElement_ViewItem);
         sz = baseStyle()->sizeFromContents(ct, opt, csz, w);
-        sz = subRule.contentsSize(sz);
-        sz = sz.expandedTo(subRule.minimumContentsSize());
+        sz = subRule.adjustSize(sz);
         if (subRule.hasBox() || subRule.hasBorder())
             sz = subRule.boxSize(sz);
         return sz;

@@ -10516,7 +10516,7 @@ uint QJpUnicodeConv::unicodeToSjisibmvdc(uint h, uint l) const
            if (!sjis208ibmvdc_unicode[i])
                return 0;
            if (u==sjis208ibmvdc_unicode[i]){
-               return ((0x00fa +(i/189))<<8 | 0x0040+(i%189));
+               return (((0x00fa +(i/189))<<8) | (0x0040+(i%189)));
            }
        }
     }
@@ -10620,7 +10620,7 @@ uint QJpUnicodeConv::unicodeToCp932(uint h, uint l) const
            if (!cp932_ed_ee_unicode[j])
                return 0;
            if (u==cp932_ed_ee_unicode[j]){
-               return ((0x00ed +(j/189))<<8 | 0x0040+(j%189));
+               return (((0x00ed +(j/189))<<8) | (0x0040+(j%189)));
            }
        }
     }

@@ -48,16 +48,6 @@ namespace Phonon
 {
     namespace DS9
     {
-        //helper function
-#ifndef Q_OS_WINCE
-		static ComPointer<IMalloc> getIMalloc()
-        {
-            ComPointer<IMalloc> ret;
-            ::CoGetMalloc(1, &ret);
-            return ret;
-        }
-#endif
-
         bool Backend::AudioMoniker::operator==(const AudioMoniker &other)
         {
             return other->IsEqual(*this) == S_OK;
@@ -70,6 +60,7 @@ namespace Phonon
             //registering meta types
             qRegisterMetaType<HRESULT>("HRESULT");
             qRegisterMetaType<QSet<Filter> >("QSet<Filter>");
+            qRegisterMetaType<Graph>("Graph");
         }
 
         Backend::~Backend()
@@ -117,14 +108,17 @@ namespace Phonon
             return list;
         }
 
-        ComPointer<IMoniker> Backend::getAudioOutputMoniker(int index) const
-        {
-            ComPointer<IMoniker> ret;
-            if (index >= 0) {
-                ret = m_audioOutputs[index];
-            }
-            return ret;
-        }
+		Filter Backend::getAudioOutputFilter(int index) const
+		{
+			Filter ret;
+			if (index >= 0 && index < m_audioOutputs.count()) {
+				m_audioOutputs.at(index)->BindToObject(0, 0, IID_IBaseFilter, reinterpret_cast<void**>(&ret));
+			} else {
+				//just return the default audio renderer (not directsound)
+				ret = Filter(CLSID_AudioRender, IID_IBaseFilter);
+			}
+			return ret;
+		}
 
 
         QList<int> Backend::objectDescriptionIndexes(Phonon::ObjectDescriptionType type) const
@@ -135,13 +129,15 @@ namespace Phonon
             {
             case Phonon::AudioOutputDeviceType:
                 {
-#ifndef Q_OS_WINCE
+#ifdef Q_OS_WINCE
+					ret << 0; // only one audio device with index 0
+#else
 					ComPointer<ICreateDevEnum> devEnum(CLSID_SystemDeviceEnum, IID_ICreateDevEnum);
 					if (!devEnum) {
 						return ret; //it is impossible to enumerate the devices
 					}
                     ComPointer<IEnumMoniker> enumMon;
-                    HRESULT hr = devEnum->CreateClassEnumerator(CLSID_AudioRendererCategory, &enumMon, 0);
+                    HRESULT hr = devEnum->CreateClassEnumerator(CLSID_AudioRendererCategory, enumMon.pparam(), 0);
                     if (FAILED(hr)) {
                         break;
                     }
@@ -150,11 +146,13 @@ namespace Phonon
                     //let's reorder the devices so that directshound appears first
                     int nbds = 0; //number of directsound devices
 
-                    while (S_OK == enumMon->Next(1, &mon, 0)) {
+                    while (S_OK == enumMon->Next(1, mon.pparam(), 0)) {
                         LPOLESTR str = 0;
                         mon->GetDisplayName(0,0,&str);
                         const QString name = QString::fromWCharArray(str);
-                        getIMalloc()->Free(str);
+						ComPointer<IMalloc> alloc;
+						::CoGetMalloc(1, alloc.pparam());
+                        alloc->Free(str);
 
                         int insert_pos = 0;
                         if (!m_audioOutputs.contains(mon)) {
@@ -177,7 +175,7 @@ namespace Phonon
                 {
                     m_audioEffects.clear();
                     ComPointer<IEnumDMO> enumDMO;
-                    HRESULT hr = DMOEnum(DMOCATEGORY_AUDIO_EFFECT, DMO_ENUMF_INCLUDE_KEYED, 0, 0, 0, 0, &enumDMO);
+					HRESULT hr = ::DMOEnum(DMOCATEGORY_AUDIO_EFFECT, DMO_ENUMF_INCLUDE_KEYED, 0, 0, 0, 0, enumDMO.pparam());
                     if (SUCCEEDED(hr)) {
                         CLSID clsid;
                         while (S_OK == enumDMO->Next(1, &clsid, 0, 0)) {
@@ -201,13 +199,17 @@ namespace Phonon
             {
             case Phonon::AudioOutputDeviceType:
                 {
-#ifndef Q_OS_WINCE
+#ifdef Q_OS_WINCE
+					ret["name"] = QLatin1String("default audio device");
+#else
                     const AudioMoniker &mon = m_audioOutputs[index];
                     LPOLESTR str = 0;
                     HRESULT hr = mon->GetDisplayName(0,0, &str);
                     if (SUCCEEDED(hr)) {
                         QString name = QString::fromWCharArray(str); 
-                        getIMalloc()->Free(str);
+						ComPointer<IMalloc> alloc;
+						::CoGetMalloc(1, alloc.pparam());
+                        alloc->Free(str);
                         ret["name"] = name.mid(name.indexOf('\\') + 1);
 					}
 #endif
@@ -216,7 +218,7 @@ namespace Phonon
             case Phonon::EffectType:
                 {
                     WCHAR name[80]; // 80 is clearly stated in the MSDN doc
-                    HRESULT hr = DMOGetName(m_audioEffects[index], name);
+					HRESULT hr = ::DMOGetName(m_audioEffects[index], name);
                     if (SUCCEEDED(hr)) {
                         ret["name"] = QString::fromWCharArray(name);
                     }

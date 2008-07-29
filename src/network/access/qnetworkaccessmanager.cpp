@@ -122,7 +122,7 @@ static void ensureInitialized()
     takes is the QNetworkReply object containing the downloaded data
     as well as meta-data (headers, etc.).
 
-    \b Note: The slot is responsible for deleting the object at that point.
+    \note The slot is responsible for deleting the object at that point.
 
     A more involved example, assuming the manager is already existent,
     can be:

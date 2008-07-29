@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/text/qtextformat.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/text/qtextformat.cpp -->
 <head>
   <title>Qt 4.4: QTextBlockFormat Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -107,8 +107,8 @@
 <p>See also <a href="qtextblockformat.html#bottomMargin">bottomMargin</a>(), <a href="qtextblockformat.html#setTopMargin">setTopMargin</a>(), <a href="qtextblockformat.html#setLeftMargin">setLeftMargin</a>(), and <a href="qtextblockformat.html#setRightMargin">setRightMargin</a>().</p>
 <a name="//apple_ref/cpp/instm/QTextBlockFormat/setIndent" />
 <h3 class="fn"><a name="setIndent"></a>void QTextBlockFormat::setIndent ( int <i>indentation</i> )</h3>
-<p>Sets the paragraph's <i>indentation</i>. Margins are set independently of indentation with <a href="qtextblockformat.html#setLeftMargin">setLeftMargin</a>() and setTextIdent().</p>
-<p>See also <a href="qtextblockformat.html#indent">indent</a>().</p>
+<p>Sets the paragraph's <i>indentation</i>. Margins are set independently of indentation with <a href="qtextblockformat.html#setLeftMargin">setLeftMargin</a>() and <a href="qtextblockformat.html#setTextIndent">setTextIndent</a>(). The <i>indentation</i> is an integer that is multiplied with the document-wide standard indent, resulting in the actual indent of the paragraph.</p>
+<p>See also <a href="qtextblockformat.html#indent">indent</a>() and <a href="qtextdocument.html#indentWidth-prop">QTextDocument::indentWidth</a>().</p>
 <a name="//apple_ref/cpp/instm/QTextBlockFormat/setLeftMargin" />
 <h3 class="fn"><a name="setLeftMargin"></a>void QTextBlockFormat::setLeftMargin ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>margin</i> )</h3>
 <p>Sets the paragraph's left <i>margin</i>. Indentation can be applied separately with <a href="qtextblockformat.html#setIndent">setIndent</a>().</p>
@@ -156,6 +156,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

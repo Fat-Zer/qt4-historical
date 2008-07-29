@@ -68,29 +68,25 @@ public:
 
 /*!
   \class QSimpleXmlNodeModel
-  \brief The QSimpleXmlNodeModel class provides a simple yet powerful way of implementing QAbstractXmlNodeModel.
+  \brief The QSimpleXmlNodeModel class is an implementation of QAbstractXmlNodeModel sufficient for many common cases.
   \reentrant
   \since 4.4
   \ingroup xml-tools
 
-  Since QAbstractXmlNodeModel::iterate() requires a sub-class of QAbstractXmlForwardIterator
-  to be returned for each axis, it can be a bit time consuming to implement. For that
-  reason QSimpleXmlNodeModel exists which has nextFromSimpleAxis(), that that is a quick
-  but often sufficient way of providing the node navigation. Behind the scenes
-  QSimpleXmlNodeModel::iterate() "emulates" the full XPath axes using nextFromSimpleAxis().
+  Subclassing QAbstractXmlNodeModel can be a significant task, because it
+  requires implementing several, complex member functions. QSimpleXmlNodeModel
+  provides default implementations of these member functions that are suitable
+  for a wide range of node models.
 
-  Apart from nextFromSimpleAxis(), QSimpleXmlNodeModel provides default implementations
-  for many of the members in QAbstractXmlNodeModel that are suitable for a wide range of scenarios.
-
-  Sub-classes of QSimpleXmlNodeModel must be thread-safe, just like sub-classes
-  other sub-classes of QAbstractXmlNodeModel.
+  Subclasses of QSimpleXmlNodeModel must be thread-safe.
  */
 
 /*!
-  Constructs a QSimpleXmlNodeModel instance that can be used with the name pool \a namePool. It can subsequently be accessed
-  with namePool().
+  Constructs a QSimpleXmlNodeModel for use with with the specified
+  \a namePool.
  */
-QSimpleXmlNodeModel::QSimpleXmlNodeModel(const QXmlNamePool &namePool) : QAbstractXmlNodeModel(new QSimpleXmlNodeModelPrivate(namePool))
+QSimpleXmlNodeModel::QSimpleXmlNodeModel(const QXmlNamePool &namePool)
+  : QAbstractXmlNodeModel(new QSimpleXmlNodeModelPrivate(namePool))
 {
 }
 
@@ -102,14 +98,15 @@ QSimpleXmlNodeModel::~QSimpleXmlNodeModel()
 }
 
 /*!
- If \a node is an element or attribute, typedValue() is called, and the return value
- converted to a string, as per XQuery's rules.
+ If \a node is an element or attribute, typedValue() is called, and
+ the return value converted to a string, as per XQuery's rules.
 
  If \a node is another type of node, the empty string is returned.
 
- If this function is overriden for for instance comments or processing instructions, it is important
- to remember to call this function for elements and attribute, if they have atomic values that are not
- of type \c xs:string, such that they get formatted according to XQuery.
+ If this function is overriden for comments or processing
+ instructions, it is important to remember to call it (for elements
+ and attributes having values not of type \c xs:string) to ensure that
+ the values are formatted according to XQuery.
 
  */
 QString QSimpleXmlNodeModel::stringValue(const QXmlNodeModelIndex &node) const
@@ -128,7 +125,8 @@ QString QSimpleXmlNodeModel::stringValue(const QXmlNodeModelIndex &node) const
 }
 
 /*!
-  Returns the base URI for \a node. This is always the document URI. This is safe, works and is often ok.
+  Returns the base URI for \a node. This is always the document
+  URI.
 
   \sa documentUri()
  */
@@ -138,8 +136,9 @@ QUrl QSimpleXmlNodeModel::baseUri(const QXmlNodeModelIndex &node) const
 }
 
 /*!
-  Returns the name pool that is associated with this model. The implementation of name()
-  would use this to create names.
+  Returns the name pool associated with this model. The
+  implementation of name() will use this name pool to create
+  names.
  */
 QXmlNamePool &QSimpleXmlNodeModel::namePool() const
 {
@@ -149,7 +148,8 @@ QXmlNamePool &QSimpleXmlNodeModel::namePool() const
 }
 
 /*!
-  Returns always an empty QVector. This signals that no namespace bindings are in scope for \a node.
+  Always returns an empty QVector. This signals that no namespace
+  bindings are in scope for \a node.
  */
 QVector<QXmlName> QSimpleXmlNodeModel::namespaceBindings(const QXmlNodeModelIndex &node) const
 {
@@ -158,9 +158,10 @@ QVector<QXmlName> QSimpleXmlNodeModel::namespaceBindings(const QXmlNodeModelInde
 }
 
 /*!
-  Always returns a default constructed QXmlNodeModelIndex instance, regardless of \a id.
+  Always returns a default constructed QXmlNodeModelIndex instance,
+  regardless of \a id.
 
-  This effectively means the model has no elements that has an id.
+  This effectively means the model has no elements that have an id.
  */
 QXmlNodeModelIndex QSimpleXmlNodeModel::elementById(const QXmlName &id) const
 {
@@ -171,7 +172,8 @@ QXmlNodeModelIndex QSimpleXmlNodeModel::elementById(const QXmlName &id) const
 /*!
   Always returns an empty vector, regardless of \a idref.
 
-  This effectively means the model has no elements or attributes of type \c IDREF.
+  This effectively means the model has no elements or attributes of
+  type \c IDREF.
  */
 QVector<QXmlNodeModelIndex> QSimpleXmlNodeModel::nodesByIdref(const QXmlName &idref) const
 {

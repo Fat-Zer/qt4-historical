@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qscrollarea.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qscrollarea.cpp -->
 <head>
   <title>Qt 4.4: QScrollArea Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -89,8 +89,11 @@
 <p>The scroll bars appearance depends on the currently set <a href="qt.html#ScrollBarPolicy-enum">scroll bar policies</a>. You can control the appearance of the scroll bars using the inherited functionality from <a href="qabstractscrollarea.html">QAbstractScrollArea</a>.</p>
 <p>For example, you can set the <a href="qabstractscrollarea.html#horizontalScrollBarPolicy-prop">QAbstractScrollArea::horizontalScrollBarPolicy</a> and <a href="qabstractscrollarea.html#verticalScrollBarPolicy-prop">QAbstractScrollArea::verticalScrollBarPolicy</a> properties. Or if you want the scroll bars to adjust dynamically when the contents of the scroll area changes, you can use the <a href="qabstractscrollarea.html#horizontalScrollBar">horizontalScrollBar()</a> and <a href="qabstractscrollarea.html#verticalScrollBar">verticalScrollBar()</a> functions (which enable you to access the scroll bars) and set the scroll bars' values whenever the scroll area's contents change, using the <a href="qabstractslider.html#value-prop">QScrollBar::setValue</a>() function.</p>
 <p>You can retrieve the child widget using the <a href="qscrollarea.html#widget">widget</a>() function. The view can be made to be resizable with the <a href="qscrollarea.html#widgetResizable-prop">setWidgetResizable</a>() function. The alignment of the widget can be specified with <a href="qscrollarea.html#alignment-prop">setAlignment</a>().</p>
-<p>When using a scroll area to display the contents of a custom widget, it is important to ensure that the <a href="qwidget.html#sizeHint-prop">size hint</a> of the child widget is set to a suitable value. If a standard <a href="qwidget.html">QWidget</a> is used for the child widget, it may be necessary to call <a href="qwidget.html#minimumSize-prop">QWidget::setMinimumSize</a>() to ensure that the contents of the widget are shown correctly within the scroll area.</p>
 <p>Two convenience functions <a href="qscrollarea.html#ensureVisible">ensureVisible</a>() and <a href="qscrollarea.html#ensureWidgetVisible">ensureWidgetVisible</a>() ensure a certain region of the contents is visible inside the viewport, by scrolling the contents if necessary.</p>
+<a name="size-hints-and-layouts"></a>
+<h3>Size Hints and Layouts</h3>
+<p>When using a scroll area to display the contents of a custom widget, it is important to ensure that the <a href="qwidget.html#sizeHint-prop">size hint</a> of the child widget is set to a suitable value. If a standard <a href="qwidget.html">QWidget</a> is used for the child widget, it may be necessary to call <a href="qwidget.html#minimumSize-prop">QWidget::setMinimumSize</a>() to ensure that the contents of the widget are shown correctly within the scroll area.</p>
+<p>If a scroll area is used to display the contents of a widget that contains child widgets arranged in a layout, it is important to realise that the size policy of the layout will also determine the size of the widget. This is especially useful to know if you intend to dynamically change the contents of the layout. In such cases, setting the layout's <a href="qlayout.html#sizeConstraint-prop">size constraint</a> property to one which provides constraints on the minimum and/or maximum size of the layout (e.g&#x2e;, <a href="qlayout.html#SizeConstraint-enum">QLayout::SetMinAndMaxSize</a>) will cause the size of the the scroll area to be updated whenever the contents of the layout changes.</p>
 <p>For a complete example using the QScrollArea class, see the <a href="widgets-imageviewer.html">Image Viewer</a> example. The example shows how to combine <a href="qlabel.html">QLabel</a> and QScrollArea to display an image.</p>
 <p>See also <a href="qabstractscrollarea.html">QAbstractScrollArea</a>, <a href="qscrollbar.html">QScrollBar</a>, and <a href="widgets-imageviewer.html">Image Viewer Example</a>.</p>
 <hr />
@@ -139,7 +142,8 @@
 <p>Sets the scroll area's <i>widget</i>.</p>
 <p>The <i>widget</i> becomes a child of the scroll area, and will be destroyed when the scroll area is deleted or when a new widget is set.</p>
 <p>The widget's <a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> property will be set to <tt>true</tt>.</p>
-<p>Note that if the scroll area is visible when the <i>widget</i> is added, you must <a href="qwidget.html#show">show()</a> it explicitly.</p>
+<p>If the scroll area is visible when the <i>widget</i> is added, you must <a href="qwidget.html#show">show()</a> it explicitly.</p>
+<p>Note that You must add the layout of <i>widget</i> before you call this function; if you add it later, the <i>widget</i> will not be visible - regardless of when you <a href="qwidget.html#show">show()</a> the scroll area. In this case, you can also not <a href="qwidget.html#show">show()</a> the <i>widget</i> later.</p>
 <p>See also <a href="qscrollarea.html#widget">widget</a>().</p>
 <a name="//apple_ref/cpp/instm/QScrollArea/takeWidget" />
 <h3 class="fn"><a name="takeWidget"></a><a href="qwidget.html">QWidget</a> * QScrollArea::takeWidget ()</h3>
@@ -153,6 +157,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

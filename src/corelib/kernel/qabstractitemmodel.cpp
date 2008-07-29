@@ -1222,8 +1222,6 @@ QAbstractItemModel::~QAbstractItemModel()
     \fn int QAbstractItemModel::columnCount(const QModelIndex &parent) const
 
     Returns the number of columns for the children of the given \a parent.
-    When the parent is valid it means that rowCount is returning the number
-    of children of parent.
 
     In most subclasses, the number of columns is independent of the
     \a parent. For example:
@@ -1431,6 +1429,9 @@ bool QAbstractItemModel::setData(const QModelIndex &index, const QVariant &value
 
     Returns the data stored under the given \a role for the item referred to
     by the \a index.
+
+    \note If you do not have a value to return, return an \bold empty
+    QVariant() instead of returning 0.
 
     \sa Qt::ItemDataRole, setData(), headerData()
 */

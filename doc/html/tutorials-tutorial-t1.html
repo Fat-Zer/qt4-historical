@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/tutorials/tutorial.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/tutorials/tutorial.qdoc -->
 <head>
   <title>Qt 4.4: Qt Tutorial 1 - Hello World!</title>
   <link rel="prev" href="tutorials-tutorial.html" />
@@ -65,18 +65,25 @@
  }</pre>
 <p>This is where <tt>main()</tt> passes control to Qt. <a href="qcoreapplication.html#exec">QCoreApplication::exec</a>() will return when the application exits. (<a href="qcoreapplication.html">QCoreApplication</a> is <a href="qapplication.html">QApplication</a>'s base class. It implements <a href="qapplication.html">QApplication</a>'s core, non-GUI functionality and can be used when developing non-GUI applications.)</p>
 <p>In <a href="qcoreapplication.html#exec">QCoreApplication::exec</a>(), Qt receives and processes user and system events and passes these on to the appropriate widgets.</p>
-<p>You should now try to compile and run this program.</p>
-<p>The tutorial examples are located in Qt's <tt>examples/tutorials/tutorial</tt> directory. They are automatically built when you build Qt.</p>
-<p>If you have typed in the source code manually, you will need to follow these instructions: To compile a C++ application, you need to create a makefile. The easiest way to create a makefile for Qt is to use the <a href="qmake-manual.html#qmake">qmake</a> build tool supplied with Qt. If you've saved <tt>main.cpp</tt> in its own otherwise empty directory, all you need to do is:</p>
-<pre>         qmake -project
-         qmake</pre>
-<p>The first command tells <tt>qmake</tt> to create a project file (a <tt>.pro</tt> file). The second command tells it to create a platform-specific makefile based on the project file. You should now be able to type <tt>make</tt> (or <tt>nmake</tt> if you're using Visual Studio) and then run your first Qt application!</p>
-<a name="running-the-application"></a>
-<h2>Running the Application</h2>
-<p>When you run the application, you will see a small window filled with a single button, and on it you can read the famous words: &quot;Hello world!&quot;</p>
+<p>You should now compile and run this program.</p>
+<a name="environment-variables"></a>
+<h2>Environment Variables</h2>
+<p>If you are developing Qt applications at the command line, you need to ensure that the Qt libraries and executables are accessible to your environment by prepending the path to Qt's <tt>bin</tt> directory to your <i>PATH</i> variable; this is described in the <a href="installation.html">Installation</a> instructions for your platform.</p>
+<p>On Windows, this is automatically done for you if you get your command line prompt from the <i>Start&gt;All Programs&gt;Qt</i> menu. If you get your command line prompt with <i>Start&gt;Run&gt;Command</i>, you have to set the <i>PATH</i> variable there yourself.</p>
+<a name="building-an-application"></a>
+<h2>Building an application</h2>
+<p>The tutorial examples are located in the Qt <i>examples/tutorials/tutorial</i> directory. If you installed a binary Qt package, pre-built examples were installed as well. If you built Qt yourself, the examples were built at the same time. In either case, there is a lot to be learned about using Qt by modifying and building the examples yourself.</p>
+<p>Assuming you have copied an example's <tt>.cpp</tt> and <tt>.h</tt> files to an otherwise empty directory, and you have made your changes there, the next step is to create a Qt makefile in that directory. To create a Qt makefile, use <a href="qmake-manual.html#qmake">qmake</a>, the build tool supplied with Qt. Run the following two commands in the directory containing your modified sources to create the makefile.</p>
+<pre> qmake -project
+ qmake</pre>
+<p>The first command tells qmake to create a project (<tt>.pro</tt>) file. The second command tells qmake to use the <tt>.pro</tt> file to create a platform-specific makefile.</p>
+<p>Now you can just run <tt>make</tt> (<tt>nmake</tt> if you are using Visual Studio) to compile the program, and then you can run your first Qt application!</p>
+<a name="running-this-example"></a>
+<h2>Running this example</h2>
+<p>When you run the example, you will see a small window showing a single button. On the button you can read the famous words: &quot;Hello world!&quot;</p>
 <a name="exercises"></a>
 <h2>Exercises</h2>
-<p>Try to resize the window. Click the button. If you're running X11, try running the program with the <tt>-geometry</tt> option (for example, <tt>-geometry 100x200+10+20</tt>).</p>
+<p>Try to resize the window. Click the button. If you are running X11, try running the program with the <tt>-geometry</tt> option (e.g&#x2e;, <tt>-geometry 100x200+10+20</tt>).</p>
 <p>
 [Previous: <a href="tutorials-tutorial.html">Qt Tutorial</a>]
 [<a href="tutorials-tutorial.html">Qt Tutorial</a>]
@@ -86,6 +93,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

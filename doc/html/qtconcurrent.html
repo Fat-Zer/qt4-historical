@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/concurrent/qtconcurrentmap.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/concurrent/qtconcurrentmap.cpp -->
 <head>
   <title>Qt 4.4: QtConcurrent Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -42,8 +42,8 @@
 <li><div class="fn"/>void <b><a href="qtconcurrent.html#blockingMap-2">blockingMap</a></b> ( Iterator <i>begin</i>, Iterator <i>end</i>, MapFunction <i>function</i> )</li>
 <li><div class="fn"/>T <b><a href="qtconcurrent.html#blockingMapped">blockingMapped</a></b> ( const Sequence &amp; <i>sequence</i>, MapFunction <i>function</i> )</li>
 <li><div class="fn"/>T <b><a href="qtconcurrent.html#blockingMapped-2">blockingMapped</a></b> ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, MapFunction <i>function</i> )</li>
-<li><div class="fn"/>T <b><a href="qtconcurrent.html#blockingMappedReduced">blockingMappedReduced</a></b> ( const Sequence &amp; <i>sequence</i>, MapFunction <i>function</i>, ReduceFunction <i>function</i>, QtConcurrent::ReduceOptions <i>options</i> = UnorderedReduce | SequentialReduce )</li>
-<li><div class="fn"/>T <b><a href="qtconcurrent.html#blockingMappedReduced-2">blockingMappedReduced</a></b> ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, MapFunction <i>function</i>, ReduceFunction <i>function</i>, QtConcurrent::ReduceOptions <i>options</i> = UnorderedReduce | SequentialReduce )</li>
+<li><div class="fn"/>T <b><a href="qtconcurrentmap.html#blockingMappedReduced">blockingMappedReduced</a></b> ( const Sequence &amp; <i>sequence</i>, MapFunction <i>mapFunction</i>, ReduceFunction <i>reduceFunction</i>, QtConcurrent::ReduceOptions <i>reduceOptions</i> = UnorderedReduce | SequentialReduce )</li>
+<li><div class="fn"/>T <b><a href="qtconcurrentmap.html#blockingMappedReduced-2">blockingMappedReduced</a></b> ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, MapFunction <i>mapFunction</i>, ReduceFunction <i>reduceFunction</i>, QtConcurrent::ReduceOptions <i>reduceOptions</i> = UnorderedReduce | SequentialReduce )</li>
 <li><div class="fn"/>QFuture&lt;void&gt; <b><a href="qtconcurrentfilter.html#filter">filter</a></b> ( Sequence &amp; <i>sequence</i>, FilterFunction <i>filterFunction</i> )</li>
 <li><div class="fn"/>QFuture&lt;T&gt; <b><a href="qtconcurrentfilter.html#filtered">filtered</a></b> ( const Sequence &amp; <i>sequence</i>, FilterFunction <i>filterFunction</i> )</li>
 <li><div class="fn"/>QFuture&lt;T&gt; <b><a href="qtconcurrentfilter.html#filtered-2">filtered</a></b> ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, FilterFunction <i>filterFunction</i> )</li>
@@ -79,33 +79,69 @@
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QtConcurrent::UnorderedReduce</tt></td><td align="center" valign="top"><tt>0x1</tt></td><td valign="top">Reduction is done in an arbitrary order.</td></tr>
 <tr><td valign="top"><tt>QtConcurrent::OrderedReduce</tt></td><td align="center" valign="top"><tt>0x2</tt></td><td valign="top">Reduction is done in the order of the original sequence.</td></tr>
-<tr><td valign="top"><tt>QtConcurrent::SequentialReduce</tt></td><td align="center" valign="top"><tt>0x4</tt></td><td valign="top">Reduction is done sequentally: only one thread will enter the reduce function at a time (parallel reduction might be supported in a future version of Qt Concurrent.)</td></tr>
+<tr><td valign="top"><tt>QtConcurrent::SequentialReduce</tt></td><td align="center" valign="top"><tt>0x4</tt></td><td valign="top">Reduction is done sequentally: only one thread will enter the reduce function at a time. (Parallel reduction might be supported in a future version of Qt Concurrent.)</td></tr>
 </table></p>
 <p>The ReduceOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;ReduceOption&gt;. It stores an OR combination of ReduceOption values.</p>
 <hr />
 <h2>Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QtConcurrent/blockingFilter" />
 <h3 class="fn"><a name="blockingFilter"></a>void QtConcurrent::blockingFilter ( Sequence &amp; <i>sequence</i>, FilterFunction <i>filterFunction</i> )</h3>
+<p>Calls <i>filterFunction</i> once for each item in <i>sequence</i>. If <i>filterFunction</i> returns true, the item is kept in <i>sequence</i>; otherwise, the item is removed from <i>sequence</i>.</p>
+<p><b>Note:</b> This function will block until all items in the sequence have been processed.</p>
 <a name="//apple_ref/cpp/instm/QtConcurrent/blockingFiltered" />
 <h3 class="fn"><a name="blockingFiltered"></a>Sequence QtConcurrent::blockingFiltered ( const Sequence &amp; <i>sequence</i>, FilterFunction <i>filterFunction</i> )</h3>
+<p>Calls <i>filterFunction</i> once for each item in <i>sequence</i> and returns a new Sequence of kept items. If <i>filterFunction</i> returns true, a copy of the item is put in the new Sequence. Otherwise, the item will <i>not</i> appear in the new Sequence.</p>
+<p><b>Note:</b> This function will block until all items in the sequence have been processed.</p>
+<p>See also <a href="qtconcurrentfilter.html#filtered">filtered</a>().</p>
 <h3 class="fn"><a name="blockingFiltered-2"></a>Sequence QtConcurrent::blockingFiltered ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, FilterFunction <i>filterFunction</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
+<p>Calls <i>filterFunction</i> once for each item from <i>begin</i> to <i>end</i> and returns a new Sequence of kept items. If <i>filterFunction</i> returns true, a copy of the item is put in the new Sequence. Otherwise, the item will <i>not</i> appear in the new Sequence.</p>
+<p><b>Note:</b> This function will block until the iterator reaches the end of the sequence being processed.</p>
+<p>See also <a href="qtconcurrentfilter.html#filtered">filtered</a>().</p>
 <a name="//apple_ref/cpp/instm/QtConcurrent/blockingFilteredReduced" />
 <h3 class="fn"><a name="blockingFilteredReduced"></a>T QtConcurrent::blockingFilteredReduced ( const Sequence &amp; <i>sequence</i>, FilterFunction <i>filterFunction</i>, ReduceFunction <i>reduceFunction</i>, <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::ReduceOptions</a> <i>reduceOptions</i> = UnorderedReduce | SequentialReduce )</h3>
+<p>Calls <i>filterFunction</i> once for each item in <i>sequence</i>. If <i>filterFunction</i> returns true for an item, that item is then passed to <i>reduceFunction</i>. In other words, the return value is the result of <i>reduceFunction</i> for each item where <i>filterFunction</i> returns true.</p>
+<p>Note that while <i>filterFunction</i> is called concurrently, only one thread at a time will call <i>reduceFunction</i>. The order in which <i>reduceFunction</i> is called is undefined if <i>reduceOptions</i> is <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::UnorderedReduce</a>. If <i>reduceOptions</i> is <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::OrderedReduce</a>, <i>reduceFunction</i> is called in the order of the original sequence.</p>
+<p><b>Note:</b> This function will block until all items in the sequence have been processed.</p>
+<p>See also <a href="qtconcurrentfilter.html#filteredReduced">filteredReduced</a>().</p>
 <h3 class="fn"><a name="blockingFilteredReduced-2"></a>T QtConcurrent::blockingFilteredReduced ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, FilterFunction <i>filterFunction</i>, ReduceFunction <i>reduceFunction</i>, <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::ReduceOptions</a> <i>reduceOptions</i> = UnorderedReduce | SequentialReduce )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
+<p>Calls <i>filterFunction</i> once for each item from <i>begin</i> to <i>end</i>. If <i>filterFunction</i> returns true for an item, that item is then passed to <i>reduceFunction</i>. In other words, the return value is the result of <i>reduceFunction</i> for each item where <i>filterFunction</i> returns true.</p>
+<p>Note that while <i>filterFunction</i> is called concurrently, only one thread at a time will call <i>reduceFunction</i>. The order in which <i>reduceFunction</i> is called is undefined if <i>reduceOptions</i> is <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::UnorderedReduce</a>. If <i>reduceOptions</i> is <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::OrderedReduce</a>, the <i>reduceFunction</i> is called in the order of the original sequence.</p>
+<p><b>Note:</b> This function will block until the iterator reaches the end of the sequence being processed.</p>
+<p>See also <a href="qtconcurrentfilter.html#filteredReduced">filteredReduced</a>().</p>
 <a name="//apple_ref/cpp/instm/QtConcurrent/blockingMap" />
 <h3 class="fn"><a name="blockingMap"></a>void QtConcurrent::blockingMap ( Sequence &amp; <i>sequence</i>, MapFunction <i>function</i> )</h3>
+<p>Calls <i>function</i> once for each item in <i>sequence</i>. The <i>function</i> is passed a reference to the item, so that any modifications done to the item will appear in <i>sequence</i>.</p>
+<p><b>Note:</b> This function will block until all items in the sequence have been processed.</p>
+<p>See also <a href="qtconcurrentmap.html#map">map</a>().</p>
 <h3 class="fn"><a name="blockingMap-2"></a>void QtConcurrent::blockingMap ( Iterator <i>begin</i>, Iterator <i>end</i>, MapFunction <i>function</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
+<p>Calls <i>function</i> once for each item from <i>begin</i> to <i>end</i>. The <i>function</i> is passed a reference to the item, so that any modifications done to the item will appear in the sequence which the iterators belong to.</p>
+<p><b>Note:</b> This function will block until the iterator reaches the end of the sequence being processed.</p>
+<p>See also <a href="qtconcurrentmap.html#map">map</a>().</p>
 <a name="//apple_ref/cpp/instm/QtConcurrent/blockingMapped" />
 <h3 class="fn"><a name="blockingMapped"></a>T QtConcurrent::blockingMapped ( const Sequence &amp; <i>sequence</i>, MapFunction <i>function</i> )</h3>
+<p>Calls <i>function</i> once for each item in <i>sequence</i> and returns a future with each mapped item as a result. You can use <a href="qfuture-const-iterator.html">QFuture::const_iterator</a> or <a href="qfutureiterator.html">QFutureIterator</a> to iterate through the results.</p>
+<p><b>Note:</b> This function will block until all items in the sequence have been processed.</p>
+<p>See also <a href="qtconcurrentmap.html#mapped">mapped</a>().</p>
 <h3 class="fn"><a name="blockingMapped-2"></a>T QtConcurrent::blockingMapped ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, MapFunction <i>function</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
+<p>Calls <i>function</i> once for each item from <i>begin</i> to <i>end</i> and returns a future with each mapped item as a result. You can use <a href="qfuture-const-iterator.html">QFuture::const_iterator</a> or <a href="qfutureiterator.html">QFutureIterator</a> to iterate through the results.</p>
+<p><b>Note:</b> This function will block until the iterator reaches the end of the sequence being processed.</p>
+<p>See also <a href="qtconcurrentmap.html#mapped">mapped</a>().</p>
 <a name="//apple_ref/cpp/instm/QtConcurrent/blockingMappedReduced" />
-<h3 class="fn"><a name="blockingMappedReduced"></a>T QtConcurrent::blockingMappedReduced ( const Sequence &amp; <i>sequence</i>, MapFunction <i>function</i>, ReduceFunction <i>function</i>, <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::ReduceOptions</a> <i>options</i> = UnorderedReduce | SequentialReduce )</h3>
-<h3 class="fn"><a name="blockingMappedReduced-2"></a>T QtConcurrent::blockingMappedReduced ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, MapFunction <i>function</i>, ReduceFunction <i>function</i>, <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::ReduceOptions</a> <i>options</i> = UnorderedReduce | SequentialReduce )</h3>
+<h3 class="fn"><a name="blockingMappedReduced"></a>T QtConcurrent::blockingMappedReduced ( const Sequence &amp; <i>sequence</i>, MapFunction <i>mapFunction</i>, ReduceFunction <i>reduceFunction</i>, <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::ReduceOptions</a> <i>reduceOptions</i> = UnorderedReduce | SequentialReduce )</h3>
+<p>Calls <i>mapFunction</i> once for each item in <i>sequence</i>. The return value of each <i>mapFunction</i> is passed to <i>reduceFunction</i>.</p>
+<p>Note that while <i>mapFunction</i> is called concurrently, only one thread at a time will call <i>reduceFunction</i>. The order in which <i>reduceFunction</i> is called is determined by <i>reduceOptions</i>.</p>
+<p><b>Note:</b> This function will block until all items in the sequence have been processed.</p>
+<p>See also <a href="qtconcurrentmap.html#mapped">mapped</a>().</p>
+<h3 class="fn"><a name="blockingMappedReduced-2"></a>T QtConcurrent::blockingMappedReduced ( ConstIterator <i>begin</i>, ConstIterator <i>end</i>, MapFunction <i>mapFunction</i>, ReduceFunction <i>reduceFunction</i>, <a href="qtconcurrent.html#ReduceOption-enum">QtConcurrent::ReduceOptions</a> <i>reduceOptions</i> = UnorderedReduce | SequentialReduce )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
+<p>Calls <i>mapFunction</i> once for each item from <i>begin</i> to <i>end</i>. The return value of each <i>mapFunction</i> is passed to <i>reduceFunction</i>.</p>
+<p>Note that while <i>mapFunction</i> is called concurrently, only one thread at a time will call <i>reduceFunction</i>. The order in which <i>reduceFunction</i> is called is undefined.</p>
+<p><b>Note:</b> This function will block until the iterator reaches the end of the sequence being processed.</p>
+<p>See also <a href="qtconcurrentmap.html#blockingMappedReduced">blockingMappedReduced</a>().</p>
 <a name="//apple_ref/cpp/instm/QtConcurrent/filter" />
 <h3 class="fn"><a name="filter"></a><a href="qfuture.html">QFuture</a>&lt;void&gt; QtConcurrent::filter ( Sequence &amp; <i>sequence</i>, FilterFunction <i>filterFunction</i> )</h3>
 <p>Calls <i>filterFunction</i> once for each item in <i>sequence</i>. If <i>filterFunction</i> returns true, the item is kept in <i>sequence</i>; otherwise, the item is removed from <i>sequence</i>.</p>
@@ -152,6 +188,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

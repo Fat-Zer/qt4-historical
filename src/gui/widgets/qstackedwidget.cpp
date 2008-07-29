@@ -154,8 +154,9 @@ QStackedWidget::~QStackedWidget()
 }
 
 /*!
-    Appends the given \a widget to this QStackedWidget and returns the
-    index position.
+    Appends the given \a widget to the QStackedWidget and returns the
+    index position. Ownership of \a widget is passed on to the
+    QStackedWidget.
 
     If the QStackedWidget is empty before this function is called,
     \a widget becomes the current widget.
@@ -168,7 +169,8 @@ int QStackedWidget::addWidget(QWidget *widget)
 }
 
 /*!
-    Inserts the given \a widget at the given \a index in this
+    Inserts the given \a widget at the given \a index in the
+    QStackedWidget. Ownership of \a widget is passed on to the
     QStackedWidget. If \a index is out of range, the \a widget is
     appended (in which case it is the actual index of the \a widget
     that is returned).
@@ -187,7 +189,7 @@ int QStackedWidget::insertWidget(int index, QWidget *widget)
 }
 
 /*!
-    Removes the given \a widget from this QStackedWidget. The widget
+    Removes the given \a widget from the QStackedWidget. The widget
     is \e not deleted.
 
     \sa addWidget(), insertWidget(), currentWidget()
@@ -247,7 +249,7 @@ void QStackedWidget::setCurrentWidget(QWidget *widget)
 
 /*!
     Returns the index of the given \a widget, or -1 if the given \a
-    widget is not a child of this QStackedWidget.
+    widget is not a child of the QStackedWidget.
 
     \sa currentIndex(), widget()
 */

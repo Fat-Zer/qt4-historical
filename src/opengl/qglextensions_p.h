@@ -366,6 +366,13 @@ struct QGLExtensionFuncs
 #define GL_CLAMP_TO_EDGE                  0x812F
 #endif
 
+#ifndef GL_VERSION_1_2
+#define GL_PACK_SKIP_IMAGES               0x806B
+#define GL_PACK_IMAGE_HEIGHT              0x806C
+#define GL_UNPACK_SKIP_IMAGES             0x806D
+#define GL_UNPACK_IMAGE_HEIGHT            0x806E
+#endif
+
 #define glProgramStringARB QGLContextPrivate::qt_get_extension_funcs(ctx).qt_glProgramStringARB
 #define glBindProgramARB QGLContextPrivate::qt_get_extension_funcs(ctx).qt_glBindProgramARB
 #define glDeleteProgramsARB QGLContextPrivate::qt_get_extension_funcs(ctx).qt_glDeleteProgramsARB

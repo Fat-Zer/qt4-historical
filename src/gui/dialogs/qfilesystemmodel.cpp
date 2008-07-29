@@ -98,6 +98,8 @@ QT_BEGIN_NAMESPACE
     about the underlying files and directories related to items in the model.
     Directories can be created and removed using mkdir(), rmdir().
 
+    \note QFileSystemModel requires an instance of a GUI application.
+
     \sa {Model Classes}
 */
 
@@ -1499,6 +1501,19 @@ QStringList QFileSystemModel::nameFilters() const
     }
 #endif
     return filters;
+}
+
+/*!
+    \reimp
+*/
+bool QFileSystemModel::event(QEvent *event)
+{
+    Q_D(QFileSystemModel);
+    if (event->type() == QEvent::LanguageChange) {
+        d->root.retranslateStrings(d->fileInfoGatherer.iconProvider(), QString());
+        return true;
+    }
+    return QAbstractItemModel::event(event);
 }
 
 /*!

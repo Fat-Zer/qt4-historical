@@ -602,6 +602,7 @@ void FormWindowManager::slotActionAdjustSizeActivated()
         selectedWidgets.append(m_activeFormWindow->mainContainer());
     }
 
+    // Always count the main container as unlaid-out
     foreach (QWidget *widget, selectedWidgets) {
         bool unlaidout = LayoutInfo::layoutType(core(), widget->parentWidget()) == LayoutInfo::NoLayout;
         bool isMainContainer = m_activeFormWindow->isMainContainer(widget);
@@ -759,17 +760,20 @@ void FormWindowManager::slotUpdateActions()
 
         breakAvailable = hasLayoutsToBeBroken();
 
-        QList<QWidget*> simplifiedSelection = m_activeFormWindow->selectedWidgets();
+        QWidgetList simplifiedSelection = m_activeFormWindow->selectedWidgets();
 
         selectedWidgetCount = simplifiedSelection.count();
         pasteAvailable = qApp->clipboard()->mimeData() && qApp->clipboard()->mimeData()->hasText();
 
         m_activeFormWindow->simplifySelection(&simplifiedSelection);
-        if (simplifiedSelection.isEmpty() && m_activeFormWindow->mainContainer())
-            simplifiedSelection.append(m_activeFormWindow->mainContainer());
+        QWidget *mainContainer = m_activeFormWindow->mainContainer();
+        if (simplifiedSelection.isEmpty() && mainContainer)
+            simplifiedSelection.append(mainContainer);
 
-        foreach (QWidget *widget, simplifiedSelection) {
-            if (LayoutInfo::isWidgetLaidout(m_core, widget))
+        // Always count the main container as unlaid-out
+        const QWidgetList::const_iterator cend = simplifiedSelection.constEnd();
+        for (QWidgetList::const_iterator it = simplifiedSelection.constBegin(); it != cend; ++it) {
+            if (*it != mainContainer && LayoutInfo::isWidgetLaidout(m_core, *it))
                 ++laidoutWidgetCount;
             else
                 ++unlaidoutWidgetCount;

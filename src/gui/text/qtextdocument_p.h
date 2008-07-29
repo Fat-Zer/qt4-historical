@@ -185,6 +185,8 @@ public:
     void move(int from, int to, int length, QTextUndoCommand::Operation = QTextUndoCommand::MoveCursor);
     void remove(int pos, int length, QTextUndoCommand::Operation = QTextUndoCommand::MoveCursor);
 
+    void aboutToRemoveCell(int cursorFrom, int cursorEnd);
+
     QTextFrame *insertFrame(int start, int end, const QTextFrameFormat &format);
     void removeFrame(QTextFrame *frame);
 

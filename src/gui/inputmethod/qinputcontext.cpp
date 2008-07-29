@@ -58,14 +58,13 @@
 //#define QT_NO_IM_PREEDIT_RELOCATION
 
 #include "qinputcontext.h"
+#include "qinputcontext_p.h"
 
 #ifndef QT_NO_IM
 
 #include "qplatformdefs.h"
 
 #include "qapplication.h"
-#include "qwidget.h"
-#include "private/qobject_p.h"
 #include "qmenu.h"
 #include "qtextformat.h"
 #include "qpalette.h"
@@ -74,20 +73,6 @@
 #include <limits.h>
 
 QT_BEGIN_NAMESPACE
-
-// TODO: separate QInputContextPrivate into qinputcontext_p.h and
-//       qinputcontext_x11.cpp
-class QInputContextPrivate : public QObjectPrivate
-{
-    Q_DECLARE_PUBLIC(QInputContext)
-public:
-    QInputContextPrivate()
-	: focusWidget(0)
-    {}
-
-    QWidget *focusWidget;
-};
-
 
 /*!
     \class QInputContext
@@ -140,6 +125,16 @@ public:
 	isComposing()
 
     \endtable
+
+    \legalese
+    Copyright (C) 2003-2004 immodule for Qt Project.  All rights reserved.
+
+    This file is written to contribute to Trolltech ASA under their own
+    license. You may use this file under your Qt license. Following
+    description is copied from their original file headers. Contact
+    immodule-qt@freedesktop.org if any conditions of this licensing are
+    not clear to you.
+    \endlegalese
 
     \sa QInputContextPlugin, QInputContextFactory, QApplication::setInputContext()
 */

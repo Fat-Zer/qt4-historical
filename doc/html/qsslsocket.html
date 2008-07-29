@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/ssl/qsslsocket.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/ssl/qsslsocket.cpp -->
 <head>
   <title>Qt 4.4: QSslSocket Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -189,6 +189,7 @@
 <tr><td valign="top"><tt>QSslSocket::VerifyPeer</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top"><a href="qsslsocket.html">QSslSocket</a> will request a certificate from the peer during the SSL handshake phase, and requires that this certificate is valid. On failure, <a href="qsslsocket.html">QSslSocket</a> will emit the <a href="qsslsocket.html#sslErrors">QSslSocket::sslErrors</a>() signal. This mode is the default for clients.</td></tr>
 <tr><td valign="top"><tt>QSslSocket::AutoVerifyPeer</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top"><a href="qsslsocket.html">QSslSocket</a> will automaticaly use QueryPeer for server sockets and VerifyPeer for client sockets.</td></tr>
 </table></p>
+<p>This enum was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#peerVerifyMode">QSslSocket::peerVerifyMode</a>().</p>
 <a name="//apple_ref/cpp/tag/QSslSocket/SslMode" />
 <a name="//apple_ref/cpp/econst/QSslSocket/UnencryptedMode" />
@@ -285,12 +286,15 @@
 <a name="//apple_ref/cpp/instm/QSslSocket/encryptedBytesAvailable" />
 <h3 class="fn"><a name="encryptedBytesAvailable"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QSslSocket::encryptedBytesAvailable () const</h3>
 <p>Returns the number of encrypted bytes that are awaiting decryption. Normally, this function will return 0 because <a href="qsslsocket.html">QSslSocket</a> decrypts its incoming data as soon as it can.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/encryptedBytesToWrite" />
 <h3 class="fn"><a name="encryptedBytesToWrite"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QSslSocket::encryptedBytesToWrite () const</h3>
 <p>Returns the number of encrypted bytes that are waiting to be written to the network.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/encryptedBytesWritten" />
 <h3 class="fn"><a name="encryptedBytesWritten"></a>void QSslSocket::encryptedBytesWritten ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>written</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when <a href="qsslsocket.html">QSslSocket</a> writes its encrypted data to the network. The <i>written</i> parameter contains the number of bytes that were successfully written.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qiodevice.html#bytesWritten">QIODevice::bytesWritten</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/flush" />
 <h3 class="fn"><a name="flush"></a>bool QSslSocket::flush ()</h3>
@@ -343,16 +347,19 @@
 <h3 class="fn"><a name="peerVerifyDepth"></a>int QSslSocket::peerVerifyDepth () const</h3>
 <p>Returns the maximum number of certificates in the peer's certificate chain to be checked during the SSL handshake phase, or 0 (the default) if no maximum depth has been set, indicating that the whole certificate chain should be checked.</p>
 <p>The certificates are checked in issuing order, starting with the peer's own certificate, then its issuer's certificate, and so on.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#setPeerVerifyDepth">setPeerVerifyDepth</a>() and <a href="qsslsocket.html#peerVerifyMode">peerVerifyMode</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/peerVerifyError" />
 <h3 class="fn"><a name="peerVerifyError"></a>void QSslSocket::peerVerifyError ( const <a href="qsslerror.html">QSslError</a> &amp; <i>error</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p><a href="qsslsocket.html">QSslSocket</a> can emit this signal several times during the SSL handshake, before encryption has been established, to indicate that an error has occurred while establishing the identity of the peer. The <i>error</i> is usually an indication that <a href="qsslsocket.html">QSslSocket</a> is unable to securely identify the peer.</p>
 <p>This signal provides you with an early indication when something's wrong. By connecting to this signal, you can manually choose to tear down the connection from inside the connected slot before the handshake has completed. If no action is taken, <a href="qsslsocket.html">QSslSocket</a> will proceed to emitting <a href="qsslsocket.html#sslErrors">QSslSocket::sslErrors</a>().</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#sslErrors">sslErrors</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/peerVerifyMode" />
 <h3 class="fn"><a name="peerVerifyMode"></a><a href="qsslsocket.html#PeerVerifyMode-enum">QSslSocket::PeerVerifyMode</a> QSslSocket::peerVerifyMode () const</h3>
 <p>Returns the socket's verify mode. This mode mode decides whether <a href="qsslsocket.html">QSslSocket</a> should request a certificate from the peer (i.e&#x2e;, the client requests a certificate from the server, or a server requesting a certificate from the client), and whether it should require that this certificate is valid.</p>
 <p>The default mode is <a href="qsslsocket.html#PeerVerifyMode-enum">AutoVerifyPeer</a>, which tells <a href="qsslsocket.html">QSslSocket</a> to use <a href="qsslsocket.html#PeerVerifyMode-enum">VerifyPeer</a> for clients, <a href="qsslsocket.html#PeerVerifyMode-enum">QueryPeer</a> for clients.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#setPeerVerifyMode">setPeerVerifyMode</a>(), <a href="qsslsocket.html#peerVerifyDepth">peerVerifyDepth</a>(), and <a href="qsslsocket.html#mode">mode</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/privateKey" />
 <h3 class="fn"><a name="privateKey"></a><a href="qsslkey.html">QSslKey</a> QSslSocket::privateKey () const</h3>
@@ -410,12 +417,14 @@
 <h3 class="fn"><a name="setPeerVerifyDepth"></a>void QSslSocket::setPeerVerifyDepth ( int <i>depth</i> )</h3>
 <p>Sets the maximum number of certificates in the peer's certificate chain to be checked during the SSL handshake phase, to <i>depth</i>. Setting a depth of 0 means that no maximum depth is set, indicating that the whole certificate chain should be checked.</p>
 <p>The certificates are checked in issuing order, starting with the peer's own certificate, then its issuer's certificate, and so on.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#peerVerifyDepth">peerVerifyDepth</a>() and <a href="qsslsocket.html#setPeerVerifyMode">setPeerVerifyMode</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/setPeerVerifyMode" />
 <h3 class="fn"><a name="setPeerVerifyMode"></a>void QSslSocket::setPeerVerifyMode ( <a href="qsslsocket.html#PeerVerifyMode-enum">QSslSocket::PeerVerifyMode</a> <i>mode</i> )</h3>
 <p>Sets the socket's verify mode to <i>mode</i>. This mode decides whether <a href="qsslsocket.html">QSslSocket</a> should request a certificate from the peer (i.e&#x2e;, the client requests a certificate from the server, or a server requesting a certificate from the client), and whether it should require that this certificate is valid.</p>
 <p>The default mode is <a href="qsslsocket.html#PeerVerifyMode-enum">AutoVerifyPeer</a>, which tells <a href="qsslsocket.html">QSslSocket</a> to use <a href="qsslsocket.html#PeerVerifyMode-enum">VerifyPeer</a> for clients, <a href="qsslsocket.html#PeerVerifyMode-enum">QueryPeer</a> for clients.</p>
 <p>Setting this mode after encryption has started has no effect on the current connection.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#peerVerifyMode">peerVerifyMode</a>(), <a href="qsslsocket.html#setPeerVerifyDepth">setPeerVerifyDepth</a>(), and <a href="qsslsocket.html#mode">mode</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/setPrivateKey" />
 <h3 class="fn"><a name="setPrivateKey"></a>void QSslSocket::setPrivateKey ( const <a href="qsslkey.html">QSslKey</a> &amp; <i>key</i> )</h3>
@@ -435,6 +444,7 @@
 <a name="//apple_ref/cpp/instm/QSslSocket/setReadBufferSize" />
 <h3 class="fn"><a name="setReadBufferSize"></a>void QSslSocket::setReadBufferSize ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>size</i> )</h3>
 <p>Sets the size of <a href="qsslsocket.html">QSslSocket</a>'s internal read buffer to be <i>size</i> bytes.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/setSocketDescriptor" />
 <h3 class="fn"><a name="setSocketDescriptor"></a>bool QSslSocket::setSocketDescriptor ( int <i>socketDescriptor</i>, <a href="qabstractsocket.html#SocketState-enum">SocketState</a> <i>state</i> = ConnectedState, <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>openMode</i> = ReadWrite )</h3>
 <p>Initializes <a href="qsslsocket.html">QSslSocket</a> with the native socket descriptor <i>socketDescriptor</i>. Returns true if <i>socketDescriptor</i> is accepted as a valid socket descriptor; otherwise returns false. The socket is opened in the mode specified by <i>openMode</i>, and enters the socket state specified by <i>state</i>.</p>
@@ -444,11 +454,13 @@
 <h3 class="fn"><a name="setSslConfiguration"></a>void QSslSocket::setSslConfiguration ( const <a href="qsslconfiguration.html">QSslConfiguration</a> &amp; <i>configuration</i> )</h3>
 <p>Sets the socket's SSL configuration to be the contents of <i>configuration</i>. This function sets the local certificate, the ciphers, the private key and the CA certificates to those stored in <i>configuration</i>.</p>
 <p>It is not possible to set the SSL-state related fields.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#sslConfiguration">sslConfiguration</a>(), <a href="qsslsocket.html#setLocalCertificate">setLocalCertificate</a>(), <a href="qsslsocket.html#setPrivateKey">setPrivateKey</a>(), <a href="qsslsocket.html#setCaCertificates">setCaCertificates</a>(), and <a href="qsslsocket.html#setCiphers">setCiphers</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/sslConfiguration" />
 <h3 class="fn"><a name="sslConfiguration"></a><a href="qsslconfiguration.html">QSslConfiguration</a> QSslSocket::sslConfiguration () const</h3>
 <p>Returns the socket's SSL configuration state. The default SSL configuration of a socket is to use the default ciphers, default CA certificates, no local private key or certificate.</p>
 <p>The SSL configuration also contains fields that can change with time without notice.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsslsocket.html#setSslConfiguration">setSslConfiguration</a>(), <a href="qsslsocket.html#localCertificate">localCertificate</a>(), <a href="qsslsocket.html#peerCertificate">peerCertificate</a>(), <a href="qsslsocket.html#peerCertificateChain">peerCertificateChain</a>(), <a href="qsslsocket.html#sessionCipher">sessionCipher</a>(), <a href="qsslsocket.html#privateKey">privateKey</a>(), <a href="qsslsocket.html#ciphers">ciphers</a>(), and <a href="qsslsocket.html#caCertificates">caCertificates</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/sslErrors" />
 <h3 class="fn"><a name="sslErrors"></a><a href="qlist.html">QList</a>&lt;<a href="qsslerror.html">QSslError</a>&gt; QSslSocket::sslErrors () const</h3>
@@ -460,6 +472,7 @@
 <p>If you want to continue connecting despite the errors that have occurred, you must call <a href="qsslsocket.html#ignoreSslErrors">QSslSocket::ignoreSslErrors</a>() from inside a slot connected to this signal. If you need to access the error list at a later point, you can call <a href="qsslsocket.html#sslErrors">sslErrors</a>() (without arguments).</p>
 <p><i>errors</i> contains one or more errors that prevent <a href="qsslsocket.html">QSslSocket</a> from verifying the identity of the peer.</p>
 <p>Note: You cannot use <a href="qt.html#ConnectionType-enum">Qt::QueuedConnection</a> when connecting to this signal, or calling <a href="qsslsocket.html#ignoreSslErrors">QSslSocket::ignoreSslErrors</a>() will have no effect.</p>
+<p>See also <a href="qsslsocket.html#peerVerifyError">peerVerifyError</a>().</p>
 <a name="//apple_ref/cpp/instm/QSslSocket/startClientEncryption" />
 <h3 class="fn"><a name="startClientEncryption"></a>void QSslSocket::startClientEncryption ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Starts a delayed SSL handshake for a client connection. This function can be called when the socket is in the <a href="qabstractsocket.html#SocketState-enum">ConnectedState</a> but still in the <a href="qsslsocket.html#SslMode-enum">UnencryptedMode</a>. If it is not yet connected, or if it is already encrypted, this function has no effect.</p>
@@ -503,6 +516,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

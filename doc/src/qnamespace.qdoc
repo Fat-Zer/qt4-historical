@@ -149,6 +149,10 @@
 
     \value AA_NativeWindows Ensures that widgets have native windows.
 
+    \value AA_DontCreateNativeWidgetSiblings Ensures that siblings of native
+           widgets stay non-native unless specifically set by the
+           Qt::WA_NativeWindow attribute.
+
     \omitvalue AA_AttributeCount
 */
 
@@ -904,8 +908,8 @@
     Mac OS X.
 
     \value WA_MacVariableSize Indicates the widget can choose between
-        alternative sizes for widgets to avoid clipping.
-        This attribute is only applicable to Mac OS X.
+    alternative sizes for widgets to avoid clipping.
+    This attribute is only applicable to Mac OS X.
 
     \value WA_MacBrushedMetal Indicates the widget should be drawn in
     the brushed metal style as supported by the windowing system. This
@@ -918,7 +922,8 @@
 
     \value WA_MouseNoMask Makes the widget receive mouse events for
     the entire widget regardless of the currently set mask,
-    overriding QWidget::setMask().
+    overriding QWidget::setMask(). This is not applicable for
+    top-level windows.
 
     \value WA_MouseTracking Indicates that the widget has mouse
     tracking enabled. See QWidget::mouseTracking.
@@ -1248,7 +1253,8 @@
                           On Windows keyboards, this key is mapped to the
                           Windows key.
     \value Key_Alt
-    \value Key_AltGr
+    \value Key_AltGr      On Windows, when the KeyDown event for this key is
+                          sent, the Ctrl+Alt modifiers are also set.
     \value Key_CapsLock
     \value Key_NumLock
     \value Key_ScrollLock
@@ -1826,7 +1832,8 @@
     \value Window  Indicates that the widget is a window, usually
                    with a window system frame and a title bar,
                    irrespective of whether the widget has a parent or
-                   not.
+                   not. Note that it is not possible to unset this
+                   flag if the widget does not have a parent.
 
     \value Dialog  Indicates that the widget is a window that should
                    be decorated as a dialog (i.e., typically no
@@ -1869,9 +1876,8 @@
     \value Desktop  Indicates that this widget is the desktop. This
                     is the type for QDesktopWidget.
 
-    \value SubWindow  Indicates that this widget is a child widget,
-                      irrespective of whether the widget has a parent
-                      or not.
+    \value SubWindow  Indicates that this widget is a sub-window, such
+                      as a QMdiSubWindow widget.
 
     There are also a number of flags which you can use to customize
     the appearance of top-level windows. These have no effect on other
@@ -1894,6 +1900,11 @@
            ability to understand Motif and/or NETWM hints. Most existing
            modern window managers can handle this.
 
+    The \c CustomizeWindowHint flag is used to enable customization of the window
+    controls. This flag must be set to allow the \c WindowTitleHint,
+    \c WindowSystemMenuHint, \c WindowMinimizeButtonHint and \c WindowMaximizeButtonHint
+    flags to be changed.
+
     \value CustomizeWindowHint  Turns off the default window title hints.
 
     \value WindowTitleHint  Gives the window a title bar.
@@ -1910,7 +1921,7 @@
            button. On some platforms this implies Qt::WindowSystemMenuHint for it to work.
 
     \value WindowContextHelpButtonHint  Adds a context help button to dialogs.
-        On some platforms this implies Qt::WindowSystemMenuHint for it to work.
+           On some platforms this implies Qt::WindowSystemMenuHint for it to work.
 
     \value WindowShadeButtonHint
 

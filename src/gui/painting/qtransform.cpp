@@ -52,6 +52,8 @@
 
 QT_BEGIN_NAMESPACE
 
+#define Q_NEAR_CLIP 0.000001
+
 #define MAPDOUBLE(x, y, nx, ny) \
 { \
     fx = x; \
@@ -307,15 +309,10 @@ QTransform QTransform::adjoint() const
     h13 = affine._m12*m_23 - m_13*affine._m22;
     h23 = m_13*affine._m21 - affine._m11*m_23;
     h33 = affine._m11*affine._m22 - affine._m12*affine._m21;
-    //### not a huge fan of this simplification but
-    //    i'd like to keep m33 as 1.0
-    //return QTransform(h11, h12, h13,
-    //                  h21, h22, h23,
-    //                  h31, h32, h33);
-    h33 = 1/h33;
-    return QTransform(h11*h33, h12*h33, h13*h33,
-                      h21*h33, h22*h33, h23*h33,
-                      h31*h33, h32*h33, 1.0);
+
+    return QTransform(h11, h12, h13,
+                      h21, h22, h23,
+                      h31, h32, h33);
 }
 
 /*!
@@ -349,7 +346,7 @@ QTransform QTransform::inverted(bool *invertible) const
     if (zeroDeterminant)
         return QTransform();
 
-    QTransform invert = adjoint();
+    QTransform invert = adjoint() / det;
 
     // inverting doesn't change the type
     invert.m_type = m_type;
@@ -590,9 +587,9 @@ QTransform & QTransform::operator*=(const QTransform &o)
     qreal m32 = affine._dx*o.affine._m12 + affine._dy*o.affine._m22 + m_33*o.affine._dy;
     qreal m33 = affine._dx*o.m_13 + affine._dy*o.m_23 + m_33*o.m_33;
 
-    affine._m11 = m11/m33; affine._m12 = m12/m33; m_13 = m13/m33;
-    affine._m21 = m21/m33; affine._m22 = m22/m33; m_23 = m23/m33;
-    affine._dx = m31/m33; affine._dy = m32/m33; m_33 = 1.0;
+    affine._m11 = m11; affine._m12 = m12; m_13 = m13;
+    affine._m21 = m21; affine._m22 = m22; m_23 = m23;
+    affine._dx = m31; affine._dy = m32; m_33 = m33;
 
     m_dirty = m_dirty | m_type | o.m_dirty | o.m_type;
 
@@ -850,6 +847,20 @@ QPointF QTransform::map(const QPointF &p) const
 */
 QLine QTransform::map(const QLine &l) const
 {
+    if (type() >= TxProject) {
+        QPainterPath path;
+        path.moveTo(l.p1());
+        path.lineTo(l.p2());
+        path = map(path);
+
+        if (path.elementCount() < 2) {
+            return QLine();
+        } else {
+            return QLine(QPointF(path.elementAt(0)).toPoint(),
+                         QPointF(path.elementAt(1)).toPoint());
+        }
+    }
+
     return QLine(map(l.p1()), map(l.p2()));
 }
 
@@ -866,8 +877,40 @@ QLine QTransform::map(const QLine &l) const
 
 QLineF QTransform::map(const QLineF &l) const
 {
+    if (type() >= TxProject) {
+        QPainterPath path;
+        path.moveTo(l.p1());
+        path.lineTo(l.p2());
+        path = map(path);
+
+        if (path.elementCount() < 2) {
+            return QLine();
+        } else {
+            return QLineF(path.elementAt(0), path.elementAt(1));
+        }
+    }
     return QLineF(map(l.p1()), map(l.p2()));
 }
+
+static QPolygonF mapProjective(const QTransform &transform, const QPolygonF &poly)
+{
+    if (poly.size() == 0)
+        return poly;
+
+    if (poly.size() == 1)
+        return QPolygonF() << transform.map(poly.at(0));
+
+    QPainterPath path;
+    path.addPolygon(poly);
+
+    path = transform.map(path);
+
+    QPolygonF result;
+    for (int i = 0; i < path.elementCount(); ++i)
+        result << path.elementAt(i);
+    return result;
+}
+
 
 /*!
     \fn QPolygonF operator *(const QPolygonF &polygon, const QTransform &matrix)
@@ -898,6 +941,9 @@ QLineF QTransform::map(const QLineF &l) const
 */
 QPolygonF QTransform::map(const QPolygonF &a) const
 {
+    if (type() >= QTransform::TxProject)
+        return mapProjective(*this, a);
+
     int size = a.size();
     int i;
     QPolygonF p(size);
@@ -922,6 +968,9 @@ QPolygonF QTransform::map(const QPolygonF &a) const
 */
 QPolygon QTransform::map(const QPolygon &a) const
 {
+    if (type() >= QTransform::TxProject)
+        return mapProjective(*this, QPolygonF(a)).toPolygon();
+
     int size = a.size();
     int i;
     QPolygon p(size);
@@ -970,6 +1019,127 @@ QRegion QTransform::map(const QRegion &r) const
     return p.toFillPolygon(QTransform()).toPolygon();
 }
 
+struct QHomogeneousCoordinate
+{
+    qreal x;
+    qreal y;
+    qreal w;
+
+    QHomogeneousCoordinate() {}
+    QHomogeneousCoordinate(qreal x_, qreal y_, qreal w_) : x(x_), y(y_), w(w_) {}
+
+    const QPointF toPoint() const {
+        qreal iw = 1 / w;
+        return QPointF(x * iw, y * iw);
+    }
+};
+
+static inline QHomogeneousCoordinate mapHomogeneous(const QTransform &transform, const QPointF &p)
+{
+    QHomogeneousCoordinate c;
+    c.x = transform.m11() * p.x() + transform.m21() * p.y() + transform.m31();
+    c.y = transform.m12() * p.x() + transform.m22() * p.y() + transform.m32();
+    c.w = transform.m13() * p.x() + transform.m23() * p.y() + transform.m33();
+    return c;
+}
+
+static inline bool lineTo_clipped(QPainterPath &path, const QTransform &transform, const QPointF &a, const QPointF &b, bool needsMoveTo)
+{
+    QHomogeneousCoordinate ha = mapHomogeneous(transform, a);
+    QHomogeneousCoordinate hb = mapHomogeneous(transform, b);
+
+    if (ha.w < Q_NEAR_CLIP && hb.w < Q_NEAR_CLIP)
+        return false;
+
+    if (hb.w < Q_NEAR_CLIP) {
+        const qreal t = (Q_NEAR_CLIP - hb.w) / (ha.w - hb.w);
+
+        hb.x += (ha.x - hb.x) * t;
+        hb.y += (ha.y - hb.y) * t;
+        hb.w = Q_NEAR_CLIP;
+    } else if (ha.w < Q_NEAR_CLIP) {
+        const qreal t = (Q_NEAR_CLIP - ha.w) / (hb.w - ha.w);
+
+        ha.x += (hb.x - ha.x) * t;
+        ha.y += (hb.y - ha.y) * t;
+        ha.w = Q_NEAR_CLIP;
+
+        const QPointF p = ha.toPoint();
+        if (needsMoveTo) {
+            path.moveTo(p);
+            needsMoveTo = false;
+        } else {
+            path.lineTo(p);
+        }
+    }
+
+    if (needsMoveTo)
+        path.moveTo(ha.toPoint());
+
+    path.lineTo(hb.toPoint());
+
+    return true;
+}
+
+static inline bool cubicTo_clipped(QPainterPath &path, const QTransform &transform, const QPointF &a, const QPointF &b, const QPointF &c, const QPointF &d, bool needsMoveTo)
+{
+    const QHomogeneousCoordinate ha = mapHomogeneous(transform, a);
+    const QHomogeneousCoordinate hb = mapHomogeneous(transform, b);
+    const QHomogeneousCoordinate hc = mapHomogeneous(transform, c);
+    const QHomogeneousCoordinate hd = mapHomogeneous(transform, d);
+
+    if (ha.w < Q_NEAR_CLIP && hb.w < Q_NEAR_CLIP && hc.w < Q_NEAR_CLIP && hd.w < Q_NEAR_CLIP)
+        return false;
+
+    if (ha.w >= Q_NEAR_CLIP && hb.w >= Q_NEAR_CLIP && hc.w >= Q_NEAR_CLIP && hd.w >= Q_NEAR_CLIP) {
+        if (needsMoveTo)
+            path.moveTo(ha.toPoint());
+
+        path.cubicTo(hb.toPoint(), hc.toPoint(), hd.toPoint());
+        return true;
+    }
+
+    if (lineTo_clipped(path, transform, a, b, needsMoveTo))
+            needsMoveTo = false;
+    if (lineTo_clipped(path, transform, b, c, needsMoveTo))
+            needsMoveTo = false;
+    if (lineTo_clipped(path, transform, c, d, needsMoveTo))
+            needsMoveTo = false;
+
+    return !needsMoveTo;
+}
+
+static QPainterPath mapProjective(const QTransform &transform, const QPainterPath &path)
+{
+    QPainterPath result;
+
+    QPointF last;
+    bool needsMoveTo = true;
+    for (int i = 0; i < path.elementCount(); ++i) {
+        switch (path.elementAt(i).type) {
+        case QPainterPath::MoveToElement:
+            last = path.elementAt(i);
+            needsMoveTo = true;
+            break;
+        case QPainterPath::LineToElement:
+            if (lineTo_clipped(result, transform, last, path.elementAt(i), needsMoveTo))
+                needsMoveTo = false;
+            last = path.elementAt(i);
+            break;
+        case QPainterPath::CurveToElement:
+            if (cubicTo_clipped(result, transform, last, path.elementAt(i), path.elementAt(i+1), path.elementAt(i+2), needsMoveTo))
+                needsMoveTo = false;
+            i += 2;
+            last = path.elementAt(i);
+            break;
+        default:
+            Q_ASSERT(false);
+        }
+    }
+
+    return result;
+}
+
 /*!
     \fn QPainterPath operator *(const QPainterPath &path, const QTransform &matrix)
     \since 4.3
@@ -989,9 +1159,11 @@ QRegion QTransform::map(const QRegion &r) const
 */
 QPainterPath QTransform::map(const QPainterPath &path) const
 {
-
     if (path == QPainterPath())
         return QPainterPath();
+
+    if (type() >= TxProject)
+        return mapProjective(*this, path);
 
     QPainterPath copy = path;
 
@@ -1217,6 +1389,12 @@ void QTransform::setMatrix(qreal m11, qreal m12, qreal m13,
 
 QRect QTransform::mapRect(const QRect &rect) const
 {
+    if (type() >= TxProject) {
+        QPainterPath path;
+        path.addRect(rect);
+        return map(path).boundingRect().toRect();
+    }
+
     QRect result;
     if (isAffine() && !isRotating()) {
         int x = qRound(affine._m11*rect.x() + affine._dx);
@@ -1282,7 +1460,13 @@ QRect QTransform::mapRect(const QRect &rect) const
 */
 QRectF QTransform::mapRect(const QRectF &rect) const
 {
-      QRectF result;
+    if (type() >= TxProject) {
+        QPainterPath path;
+        path.addRect(rect);
+        return map(path).boundingRect();
+    }
+
+    QRectF result;
     if (isAffine() && !isRotating()) {
         qreal x = affine._m11*rect.x() + affine._dx;
         qreal y = affine._m22*rect.y() + affine._dy;

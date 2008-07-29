@@ -1613,8 +1613,8 @@ void Q3DockWindow::setCloseMode(int m)
 
 bool Q3DockWindow::isCloseEnabled() const
 {
-    return  ((cMode & Docked) == Docked && place() == InDock ||
-              (cMode & Undocked) == Undocked && place() == OutsideDock);
+    return  (((cMode & Docked) == Docked && place() == InDock) ||
+              ((cMode & Undocked) == Undocked && place() == OutsideDock));
 }
 
 int Q3DockWindow::closeMode() const

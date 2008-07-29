@@ -337,7 +337,7 @@ void QtPropertyEditorDelegate::paint(QPainter *painter, const QStyleOptionViewIt
             hasValue = property->hasValue();
     }
     QStyleOptionViewItemV3 opt = option;
-    if (m_editorPrivate && index.column() == 0 || !hasValue) {
+    if ((m_editorPrivate && index.column() == 0) || !hasValue) {
         QtProperty *property = m_editorPrivate->indexToProperty(index);
         if (property && property->isModified()) {
             opt.font.setBold(true);

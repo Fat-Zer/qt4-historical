@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/itemviews/qabstractitemview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qabstractitemview.cpp -->
 <head>
   <title>Qt 4.4: QAbstractItemView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -381,7 +381,7 @@
 <p>This enum indicates how the view responds to user selections:</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QAbstractItemView::SingleSelection</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">When the user selects an item, any already-selected item becomes unselected, and the user cannot unselect the selected item.</td></tr>
+<tr><td valign="top"><tt>QAbstractItemView::SingleSelection</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">When the user selects an item, any already-selected item becomes unselected, and the user cannot unselect the selected item by clicking on it.</td></tr>
 <tr><td valign="top"><tt>QAbstractItemView::ContiguousSelection</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item.</td></tr>
 <tr><td valign="top"><tt>QAbstractItemView::ExtendedSelection</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. If the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item. Multiple items can be selected by dragging the mouse over them.</td></tr>
 <tr><td valign="top"><tt>QAbstractItemView::MultiSelection</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">When the user selects an item in the usual way, the selection status of that item is toggled and the other items are left alone. Multiple items can be toggled by dragging the mouse over them.</td></tr>
@@ -554,6 +554,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemView/setTextElideMode" />
 <h3 class="fn"><a name="textElideMode-prop"></a>textElideMode : <a href="qt.html#TextElideMode-enum">Qt::TextElideMode</a></h3>
 <p>This property holds the the position of the "..." in elided text.</p>
+<p>The default value for all item views is <a href="qt.html#TextElideMode-enum">Qt::ElideRight</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::TextElideMode textElideMode () const</b></li>
@@ -760,6 +761,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemView/reset" />
 <h3 class="fn"><a name="reset"></a>void QAbstractItemView::reset ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Reset the internal state of the view.</p>
+<p><b>Warning:</b> This function will reset open editors, scroll bar positions, selections, etc. Existing changes will not be committed. If you would like to save your changes when resetting the view, you can reimplement this function, commit your changes, and then call the superclass' implementation.</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/resizeEvent" />
 <h3 class="fn"><a name="resizeEvent"></a>void QAbstractItemView::resizeEvent ( <a href="qresizeevent.html">QResizeEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function is called with the given <i>event</i> when a resize event is sent to the widget.</p>
@@ -922,6 +924,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemView/updateGeometries" />
 <h3 class="fn"><a name="updateGeometries"></a>void QAbstractItemView::updateGeometries ()&nbsp;&nbsp;<tt> [virtual protected slot]</tt></h3>
 <p>Updates the geometry of the child widgets of the view.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/verticalOffset" />
 <h3 class="fn"><a name="verticalOffset"></a>int QAbstractItemView::verticalOffset () const&nbsp;&nbsp;<tt> [pure virtual protected]</tt></h3>
 <p>Returns the vertical offset of the view.</p>
@@ -953,6 +956,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

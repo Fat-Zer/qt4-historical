@@ -75,8 +75,8 @@ public:
   \reentrant
 
   QCryptographicHash can be used to generate cryptographic hashes of binary or text data.
-  
-  Currently Md4, Md5, and Sha1 are supported.
+
+  Currently MD4, MD5, and SHA1 are supported.
 */
 
 /*!
@@ -159,20 +159,26 @@ QByteArray QCryptographicHash::result() const
 {
     if (!d->result.isEmpty()) 
         return d->result;
-    
+
     switch (d->method) {
-    case Md4:
+    case Md4: {
+        md4_context copy = d->md4Context;
         d->result.resize(MD4_RESULTLEN);
-        md4_final(&d->md4Context, (unsigned char *)d->result.data());
+        md4_final(&copy, (unsigned char *)d->result.data());
         break;
-    case Md5:
+    }
+    case Md5: {
+        MD5Context copy = d->md5Context;
         d->result.resize(16);
-        MD5Final(&d->md5Context, (unsigned char *)d->result.data());
+        MD5Final(&copy, (unsigned char *)d->result.data());
         break;
-    case Sha1:
+    }
+    case Sha1: {
+        Sha1State copy = d->sha1Context;
         d->result.resize(20);
-        sha1FinalizeState(&d->sha1Context);
-        sha1ToHash(&d->sha1Context, (unsigned char *)d->result.data());
+        sha1FinalizeState(&copy);
+        sha1ToHash(&copy, (unsigned char *)d->result.data());
+    }
     }
     return d->result;
 }

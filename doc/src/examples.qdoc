@@ -93,6 +93,7 @@
     \section1 Concurrent Programming
 
     \list
+    \o \l{qtconcurrent/imagescaling}{QtConcurrent Asynchronous Image Scaling}
     \o \l{qtconcurrent/map}{QtConcurrent Map}
     \o \l{qtconcurrent/progressdialog}{QtConcurrent Progress Dialog}
     \o \l{qtconcurrent/runfunction}{QtConcurrent Run Function}
@@ -138,6 +139,12 @@
     \o \l{graphicsview/elasticnodes}{Elastic Nodes}
     \o \l{graphicsview/portedasteroids}{Ported Asteroids}
     \o \l{graphicsview/portedcanvas}{Ported Canvas}
+    \endlist
+
+    \section1 Help System
+
+    \list
+    \o \l{help/simpletextviewer}{Simple Text Viewer}\raisedaster
     \endlist
 
     \section1 Item Views
@@ -226,12 +233,6 @@
     \list
     \o \l{phonon/capabilities}{Capabilities}\raisedaster
     \o \l{phonon/musicplayer}{Music Player}\raisedaster
-    \endlist
-
-    \section1 Qt Assistant
-
-    \list
-    \o \l{assistant/simpletextviewer}{Simple Text Viewer}\raisedaster
     \endlist
 
     \section1 Qt Designer

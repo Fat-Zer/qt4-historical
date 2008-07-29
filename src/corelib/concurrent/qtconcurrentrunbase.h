@@ -81,6 +81,10 @@ class RunFunctionTaskBase : public QFutureInterface<T> , public QRunnable
 public:
     QFuture<T> start()
     {
+        // Secret handshake: Signal that this QFuture is a concurrent
+        // function call, in a binary compatable way. See 
+        // QFutureInterfaceBase::waitForResult in qfutureinterface.cpp
+        this->waitForResult(-2);
         this->reportStarted();
         QFuture<T> future = this->future();
         QThreadPool::globalInstance()->start(this, /*m_priority*/ 0);

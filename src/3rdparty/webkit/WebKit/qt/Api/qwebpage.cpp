@@ -62,6 +62,7 @@
 
 #include <QApplication>
 #include <QBasicTimer>
+#include <QBitArray>
 #include <QDebug>
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
@@ -86,6 +87,18 @@
 #endif
 
 using namespace WebCore;
+
+#ifndef QT_NO_CURSOR
+SetCursorEvent::SetCursorEvent(const QCursor& cursor)
+    : QEvent(static_cast<QEvent::Type>(EventType))
+    , m_cursor(cursor)
+{}
+
+QCursor SetCursorEvent::cursor() const
+{
+    return m_cursor;
+}
+#endif
 
 // If you change this make sure to also adjust the docs for QWebPage::userAgentForUrl
 #define WEBKIT_VERSION "523.15"
@@ -117,7 +130,6 @@ static inline Qt::DropAction dragOpToDropAction(unsigned actions)
 QWebPagePrivate::QWebPagePrivate(QWebPage *qq)
     : q(qq)
     , view(0)
-    , modified(false)
     , viewportSize(QSize(0,0))
     , hasFocus(false)
 {
@@ -136,6 +148,7 @@ QWebPagePrivate::QWebPagePrivate(QWebPage *qq)
     mainFrame = 0;
 #if QT_VERSION < 0x040400
     networkInterface = 0;
+    pluginFactory = 0;
 #else
     networkManager = 0;
     pluginFactory = 0;
@@ -219,7 +232,8 @@ static QWebPage::WebAction webActionForContextMenuAction(WebCore::ContextMenuAct
     return QWebPage::NoWebAction;
 }
 
-QMenu *QWebPagePrivate::createContextMenu(const WebCore::ContextMenu *webcoreMenu, const QList<WebCore::ContextMenuItem> *items)
+QMenu *QWebPagePrivate::createContextMenu(const WebCore::ContextMenu *webcoreMenu,
+        const QList<WebCore::ContextMenuItem> *items, QBitArray *visitedWebActions)
 {
     QMenu* menu = new QMenu(view);
     for (int i = 0; i < items->count(); ++i) {
@@ -236,6 +250,7 @@ QMenu *QWebPagePrivate::createContextMenu(const WebCore::ContextMenu *webcoreMen
                     a->setChecked(desc.checked);
 
                     menu->addAction(a);
+                    visitedWebActions->setBit(action);
                 }
                 break;
             }
@@ -243,7 +258,7 @@ QMenu *QWebPagePrivate::createContextMenu(const WebCore::ContextMenu *webcoreMen
                 menu->addSeparator();
                 break;
             case WebCore::SubmenuType: {
-                QMenu *subMenu = createContextMenu(webcoreMenu, item.platformSubMenu());
+                QMenu *subMenu = createContextMenu(webcoreMenu, item.platformSubMenu(), visitedWebActions);
 
                 bool anyEnabledAction = false;
 
@@ -427,10 +442,12 @@ void QWebPagePrivate::mouseReleaseEvent(QMouseEvent *ev)
         if (ev->button() == Qt::LeftButton) {
             if(focusFrame && (focusFrame->editor()->canCopy() || focusFrame->editor()->canDHTMLCopy())) {
                 focusFrame->editor()->copy();
+                ev->setAccepted(true);
             }
         } else if (ev->button() == Qt::MidButton) {
             if(focusFrame && (focusFrame->editor()->canPaste() || focusFrame->editor()->canDHTMLPaste())) {
                 focusFrame->editor()->paste();
+                ev->setAccepted(true);
             }
         }
         Pasteboard::generalPasteboard()->setSelectionMode(oldSelectionMode);
@@ -521,47 +538,13 @@ void QWebPagePrivate::keyPressEvent(QKeyEvent *ev)
         handled = frame->eventHandler()->keyEvent(ev);
     if (!handled) {
         handled = true;
-        PlatformScrollbar *h, *v;
-        h = q->currentFrame()->d->horizontalScrollBar();
-        v = q->currentFrame()->d->verticalScrollBar();
         QFont defaultFont;
         if (view)
             defaultFont = view->font();
         QFontMetrics fm(defaultFont);
         int fontHeight = fm.height();
-        if (ev == QKeySequence::MoveToNextPage
-            || ev->key() == Qt::Key_Space) {
-            if (v)
-                v->setValue(v->value() + q->viewportSize().height() - fontHeight * 2);
-        } else if (ev == QKeySequence::MoveToPreviousPage) {
-            if (v)
-                v->setValue(v->value() - q->viewportSize().height() + fontHeight * 2);
-        } else if (ev->key() == Qt::Key_Up && ev->modifiers() & Qt::ControlModifier
-                   || ev->key() == Qt::Key_Home) {
-            if (v)
-                v->setValue(0);
-        } else if (ev->key() == Qt::Key_Down && ev->modifiers() & Qt::ControlModifier
-                   || ev->key() == Qt::Key_End) {
-            if (v)
-                v->setValue(INT_MAX);
-        } else {
+        if (!handleScrolling(ev)) {
             switch (ev->key()) {
-            case Qt::Key_Up:
-                if (v)
-                    v->setValue(v->value() - fontHeight);
-                break;
-            case Qt::Key_Down:
-                if (v)
-                    v->setValue(v->value() + fontHeight);
-                break;
-            case Qt::Key_Left:
-                if (h)
-                    h->setValue(h->value() - fontHeight);
-                break;
-            case Qt::Key_Right:
-                if (h)
-                    h->setValue(h->value() + fontHeight);
-                break;
             case Qt::Key_Backspace:
                 if (ev->modifiers() == Qt::ShiftModifier)
                     q->triggerAction(QWebPage::Forward);
@@ -664,6 +647,15 @@ void QWebPagePrivate::dropEvent(QDropEvent *ev)
 #endif
 }
 
+void QWebPagePrivate::leaveEvent(QEvent *ev)
+{
+    // Fake a mouse move event just outside of the widget, since all
+    // the interesting mouse-out behavior like invalidating scrollbars
+    // is handled by the WebKit event handler's mouseMoved function.
+    QMouseEvent fakeEvent(QEvent::MouseMove, QCursor::pos(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    mouseMoveEvent(&fakeEvent);
+}
+
 /*!
     \property QWebPage::palette
     \brief the page's palette
@@ -739,6 +731,55 @@ void QWebPagePrivate::shortcutOverrideEvent(QKeyEvent* event)
         }
 #endif
     }
+}
+
+bool QWebPagePrivate::handleScrolling(QKeyEvent *ev)
+{
+    ScrollDirection direction;
+    ScrollGranularity granularity;
+
+    if (ev == QKeySequence::MoveToNextPage
+        || ev->key() == Qt::Key_Space) {
+        granularity = ScrollByPage;
+        direction = ScrollDown;
+    } else if (ev == QKeySequence::MoveToPreviousPage) {
+        granularity = ScrollByPage;
+        direction = ScrollUp;
+    } else if (ev->key() == Qt::Key_Up && ev->modifiers() & Qt::ControlModifier
+               || ev->key() == Qt::Key_Home) {
+        granularity = ScrollByDocument;
+        direction = ScrollUp;
+    } else if (ev->key() == Qt::Key_Down && ev->modifiers() & Qt::ControlModifier
+               || ev->key() == Qt::Key_End) {
+        granularity = ScrollByDocument;
+        direction = ScrollDown;
+    } else {
+        switch (ev->key()) {
+            case Qt::Key_Up:
+                granularity = ScrollByLine;
+                direction = ScrollUp;
+                break;
+            case Qt::Key_Down:
+                granularity = ScrollByLine;
+                direction = ScrollDown;
+                break;
+            case Qt::Key_Left:
+                granularity = ScrollByLine;
+                direction = ScrollLeft;
+                break;
+            case Qt::Key_Right:
+                granularity = ScrollByLine;
+                direction = ScrollRight;
+                break;
+            default:
+                return false;
+        }
+    }
+
+    if (!mainFrame->d->frame->eventHandler()->scrollOverflow(direction, granularity))
+        mainFrame->d->frame->view()->scroll(direction, granularity);
+
+    return true;
 }
 
 /*!
@@ -917,8 +958,8 @@ QVariant QWebPage::inputMethodQuery(Qt::InputMethodQuery property) const
     loadProgress() signal, on the other hand, is emitted whenever an element
     of the web page completes loading, such as an embedded image, a script,
     etc. Finally, the loadFinished() signal is emitted when the page has
-    loaded completely. It's argument - either \c true or \c false - indicates
-    load success or failure.
+    loaded completely. Its argument, either true or false, indicates whether
+    or not the load operation succeeded.
 
     \section1 Using QWebPage in a Widget-less Environment
 
@@ -1589,7 +1630,9 @@ QAction *QWebPage::action(WebAction action) const
 */
 bool QWebPage::isModified() const
 {
-    return d->modified;
+    if (!d->undoStack)
+        return false;
+    return d->undoStack->canUndo();
 }
 
 /*!
@@ -1659,6 +1702,9 @@ bool QWebPage::event(QEvent *ev)
         d->inputMethodEvent(static_cast<QInputMethodEvent*>(ev));
     case QEvent::ShortcutOverride:
         d->shortcutOverrideEvent(static_cast<QKeyEvent*>(ev));
+        break;
+    case QEvent::Leave:
+        d->leaveEvent(ev);
         break;
     default:
         return QObject::event(ev);
@@ -1761,13 +1807,14 @@ bool QWebPage::swallowContextMenuEvent(QContextMenuEvent *event)
 */
 void QWebPage::updatePositionDependentActions(const QPoint &pos)
 {
-    // disable position dependent actions first and enable them if WebCore adds them enabled to the context menu.
-
+    // First we disable all actions, but keep track of which ones were originally enabled.
+    QBitArray originallyEnabledWebActions(QWebPage::WebActionCount);
     for (int i = ContextMenuItemTagNoAction; i < ContextMenuItemBaseApplicationTag; ++i) {
         QWebPage::WebAction action = webActionForContextMenuAction(WebCore::ContextMenuAction(i));
-        QAction *a = this->action(action);
-        if (a)
+        if (QAction *a = this->action(action)) {
+            originallyEnabledWebActions.setBit(action, a->isEnabled());
             a->setEnabled(false);
+        }
     }
 
     WebCore::Frame* focusedFrame = d->page->focusController()->focusedOrMainFrame();
@@ -1780,9 +1827,28 @@ void QWebPage::updatePositionDependentActions(const QPoint &pos)
         menu.addInspectElementItem();
 
     delete d->currentContextMenu;
-    // createContextMenu also enables actions if necessary
-    d->currentContextMenu = d->createContextMenu(&menu, menu.platformDescription());
+
+    // Then we let createContextMenu() enable the actions that are put into the menu
+    QBitArray visitedWebActions(QWebPage::WebActionCount);
+    d->currentContextMenu = d->createContextMenu(&menu, menu.platformDescription(), &visitedWebActions);
+
+    // Finally, we restore the original enablement for the actions that were not put into the menu.
+    originallyEnabledWebActions &= ~visitedWebActions; // Mask out visited actions (they're part of the menu)
+    for (int i = 0; i < QWebPage::WebActionCount; ++i) {
+        if (originallyEnabledWebActions.at(i)) {
+            if (QAction *a = this->action(QWebPage::WebAction(i))) {
+                a->setEnabled(true);
+            }
+        }
+    }
+
+    // This whole process ensures that any actions put into to the context menu has the right
+    // enablement, while also keeping the correct enablement for actions that were left out of
+    // the menu.
+
 }
+
+
 
 /*!
     \enum QWebPage::Extension
@@ -1949,6 +2015,8 @@ QNetworkAccessManager *QWebPage::networkAccessManager() const
 /*!
     Sets the QWebPluginFactory \a factory responsible for creating plugins embedded into this
     QWebPage.
+
+    Note: The plugin factory is only used if the QWebSettings::PluginsEnabled attribute is enabled.
 
     \sa pluginFactory()
 */

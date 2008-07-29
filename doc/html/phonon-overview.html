@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon.qdoc -->
 <head>
   <title>Qt 4.4: Phonon Overview</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -47,7 +47,7 @@
 <p>In this overview, we take a look at the main concepts of Phonon. We also explain the architecture, examine the core API classes, and show examples on how to use the classes provided.</p>
 <a name="architecture"></a>
 <h2>Architecture</h2>
-<p>Phonon has tree basic concepts: media objects, sinks, and paths. A media object manages a media source, for instance, a music file; it provides simple playback control, such as starting, stopping, and pausing the playback. A sink outputs the media from Phonon, e.g&#x2e;, by rendering video on a widget, or by sending audio to a sound card. Paths are used to connect Phonon objects, i.e&#x2e;, a media object and a sink, in a graph - called a media graph in Phonon.</p>
+<p>Phonon has three basic concepts: media objects, sinks, and paths. A media object manages a media source, for instance, a music file; it provides simple playback control, such as starting, stopping, and pausing the playback. A sink outputs the media from Phonon, e.g&#x2e;, by rendering video on a widget, or by sending audio to a sound card. Paths are used to connect Phonon objects, i.e&#x2e;, a media object and a sink, in a graph - called a media graph in Phonon.</p>
 <p>As an example, we show a media graph for an audio stream:</p>
 <p align="center"><img src="images/conceptaudio.png" /></p><p>The playback is started and managed by the media object, which send the media stream to any sinks connected to it by a path. The sink then plays the stream back, usually though a sound card.</p>
 <a name="media-objects"></a>
@@ -55,7 +55,7 @@
 <p>The media object, an instance of the <a href="phonon-mediaobject.html">MediaObject</a> class, lets you start, pause, and stop the playback of a media stream, i.e&#x2e;, it provided basic control over the playback. You may think of the object as a simple media player.</p>
 <p>The media data is provided by a media source, which is kept by the media object. The media source is a separate object - an instance of <a href="phonon-mediasource.html">MediaSource</a> - in Phonon, and not part of the graph itself. The source will supply the media object with raw data. The data can be read from files and streamed over a network. The contents of the source will be interpreted by the media object.</p>
 <p>A media object is always instantiated with the default constructor and then supplied with a media source. Concrete code examples are given later in this overview.</p>
-<p>As a complement to the media object, Phonon also provides MediaController, which provides control over features that are optional for a given media. For instance, for chapters, menus, and titles of a VOB (DVD) file will be features managed by a MediaController.</p>
+<p>As a complement to the media object, Phonon also provides <a href="phonon-mediacontroller.html">MediaController</a>, which provides control over features that are optional for a given media. For instance, for chapters, menus, and titles of a VOB (DVD) file will be features managed by a <a href="phonon-mediacontroller.html">MediaController</a>.</p>
 <a name="sinks"></a>
 <h3>Sinks</h3>
 <p>A sink is a node that can output media from the graph, i.e&#x2e;, it does not send its output to other nodes. A sink is usually a rendering device.</p>
@@ -81,7 +81,7 @@
      player-&gt;play(url);</pre>
 <p>The VideoPlayer is a widget onto which the video will be drawn.</p>
 <p>The <tt>.pro</tt> file for a project needs the following line to be added:</p>
-<pre>         QT += phonon</pre>
+<pre> QT += phonon</pre>
 <p>Phonon comes with several widgets that provide functionality commonly associated with multimedia players - notably SeekSlider for controlling the position of the stream, VolumeSlider for controlling sound volume, and EffectWidget for controlling the parameters of an effect. You can learn about them in the API documentation.</p>
 <a name="building-graphs"></a>
 <h2>Building Graphs</h2>
@@ -190,6 +190,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -46,15 +46,11 @@
 #include "button.h"
 
 //! [0]
-Button::Button(const QString &text, const QColor &color, QWidget *parent)
+Button::Button(const QString &text, QWidget *parent)
     : QToolButton(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     setText(text);
-
-    QPalette newPalette = palette();
-    newPalette.setColor(QPalette::Button, color);
-    setPalette(newPalette);
 }
 //! [0]
 

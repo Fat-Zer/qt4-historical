@@ -100,6 +100,7 @@ public slots:
     virtual void setTouchscreenEmulation( bool ) = 0;
     virtual void setLcdScreenEmulation( bool ) = 0;
     virtual void setZoom( double, double ) = 0;
+    virtual void setRotation(Rotation) = 0;
     virtual void startAnimation( const QString& ) = 0;
     virtual void stopAnimation() = 0;
     virtual void skinKeyPressEvent( int code, const QString& text, bool autorep=FALSE ) = 0;
@@ -144,6 +145,7 @@ public slots:
     void setTouchscreenEmulation(bool);
     void setLcdScreenEmulation(bool);
     void setZoom(double, double);
+    void setRotation(Rotation);
     void startAnimation(const QString&);
     void stopAnimation();
     void skinKeyPressEvent(int code, const QString& text, bool autorep=FALSE);

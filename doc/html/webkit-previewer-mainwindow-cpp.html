@@ -130,7 +130,7 @@
  {
      QString fileName = QFileDialog::getOpenFileName(this);
      if (!fileName.isEmpty()) {
-         <span class="comment">//</span> read from file
+         <span class="comment">// read from file</span>
          QFile file(fileName);
 
          if (!file.open(QIODevice::ReadOnly)) {
@@ -142,7 +142,7 @@
          QTextStream out(&amp;file);
          QString output = out.readAll();
 
-         <span class="comment">//</span> display contents
+         <span class="comment">// display contents</span>
          centralWidget-&gt;plainTextEdit-&gt;setPlainText(output);
      }
  }
@@ -151,7 +151,7 @@
  {
      bool ok;
      QString url = QInputDialog::getText(this, tr(&quot;Enter a URL&quot;),
-                   tr(&quot;URL:&quot;), QLineEdit::Normal, &quot;http:<span class="comment">//</span>&quot;, &amp;ok);
+                   tr(&quot;URL:&quot;), QLineEdit::Normal, &quot;http:<span class="comment">//&quot;, &amp;ok);</span>
 
      if (ok &amp;&amp; !url.isEmpty()) {
          centralWidget-&gt;webView-&gt;setUrl(url);
@@ -164,7 +164,7 @@
      QString fileName = QFileDialog::getSaveFileName(this);
 
      if (!fileName.isEmpty()) {
-         <span class="comment">//</span> save to file
+         <span class="comment">// save to file</span>
          QFile file(fileName);
 
          if (!file.open(QIODevice::WriteOnly)) {
@@ -197,6 +197,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

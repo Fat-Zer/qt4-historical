@@ -94,7 +94,7 @@ QXmlSerializerPrivate::QXmlSerializerPrivate(const QXmlQuery &query,
 
 /*!
   \class QXmlSerializer
-  \brief The QXmlSerializer class receives an XQuery sequence and translates it into XML.
+  \brief The QXmlSerializer class is an implementation of QAbstractXmlReceiver for transforming XQuery output into unformatted XML.
 
   \reentrant
   \since 4.4
@@ -151,10 +151,9 @@ QXmlSerializerPrivate::QXmlSerializerPrivate(const QXmlQuery &query,
   write mode, otherwise behavior is undefined.
 
   \a outputDevice must not be opened with QIODevice::Text because it
-  will cause the output to be incorrect. This class will ensure line endings
-  are serialized as according with the XML specification.
-
- QXmlSerializer does not own \a outputDevice.
+  will cause the output to be incorrect. This class will ensure line
+  endings are serialized as according with the XML specification.
+  QXmlSerializer does not take ownership of \a outputDevice.
  */
 QXmlSerializer::QXmlSerializer(const QXmlQuery &query,
                                QIODevice *outputDevice) : QAbstractXmlReceiver(new QXmlSerializerPrivate(query, outputDevice))
@@ -179,7 +178,7 @@ bool QXmlSerializer::atDocumentRoot() const
 {
     Q_D(const QXmlSerializer);
     return d->state == BeforeDocumentElement ||
-           d->state == InsideDocumentElement && d->hasClosedElement.size() == 1;
+           (d->state == InsideDocumentElement && d->hasClosedElement.size() == 1);
 }
 
 /*!
@@ -374,7 +373,7 @@ void QXmlSerializer::attribute(const QXmlName &name,
     {
         Q_UNUSED(d);
         d->query.d->staticContext()->error(QtXmlPatterns::tr(
-           "Attribute element %1 can't be serialized because it appears at "
+           "Attribute %1 can't be serialized because it appears at "
            "the top level.").arg(formatKeyword(d->np, name)),
                                            ReportContext::SENR0001,
                                            d->query.d->expression().data());
@@ -589,10 +588,11 @@ void QXmlSerializer::endDocument()
 }
 
 /*!
- Returns a pointer to the output device. There is no corresponding
- function to \e set the output device, because the output device
- must be passed to the constructor. The serializer does not own
- the IO device returned.
+
+  Returns a pointer to the output device. There is no corresponding
+  function to \e set the output device, because the output device must
+  be passed to the constructor. The serializer does not take ownership
+  of its IO device.
  */
 QIODevice *QXmlSerializer::outputDevice() const
 {
@@ -603,9 +603,8 @@ QIODevice *QXmlSerializer::outputDevice() const
 /*!
   Sets the codec the serializer will use for encoding its XML output.
   The output codec is set to \a outputCodec. By default, the output
-  codec is set to the one for \c UTF-8.
-
-  The serializer does not take ownership of the codec.
+  codec is set to the one for \c UTF-8. The serializer does not take
+  ownership of the codec.
 
   \sa codec()
 
@@ -642,7 +641,8 @@ void QXmlSerializer::endOfSequence()
 {
     /* If this function is changed to flush or close or something like that,
      * take into consideration QXmlFormatter, especially
-     * QXmlFormatter::endOfSequence(). */
+     * QXmlFormatter::endOfSequence().
+     */
 }
 
 QT_END_NAMESPACE

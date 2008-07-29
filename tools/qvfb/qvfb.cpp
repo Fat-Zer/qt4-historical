@@ -286,7 +286,6 @@ void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& sk
 		view = new QVFbView( display_id, pw, ph, d, rot, skin );
 	    skin->setView( view );
 	    view->setContentsMargins( 0, 0, 0, 0 );
-	    view->setFixedSize( sw, sh);
             view->setTouchscreenEmulation(!parameters.hasMouseHover);
 	    connect(skin, SIGNAL(skinKeyPressEvent(int,QString,bool)), view, SLOT(skinKeyPressEvent(int,QString,bool)));
 	    connect(skin, SIGNAL(skinKeyReleaseEvent(int,QString,bool)), view, SLOT(skinKeyReleaseEvent(int,QString,bool)));
@@ -345,6 +344,7 @@ void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& sk
 	}
 	menuBar()->show();
 	scroller = new QScrollArea(this);
+	scroller->setFocusPolicy(Qt::NoFocus); // don't steal key events from the embedded app
 #ifdef Q_WS_X11
 	if (displayType == X11)
 	    view = new QVFbX11View( display_id, pw, ph, d, rot, scroller );
@@ -425,6 +425,11 @@ QMenu* QVFb::createViewMenu()
 	enableCursor(true);
     viewMenu->addAction( "&Refresh Rate...", this, SLOT(changeRate()) );
     viewMenu->addSeparator();
+    viewMenu->addAction( "No rotation", this, SLOT(setRot0()) );
+    viewMenu->addAction( "90\260 rotation", this, SLOT(setRot90()) );
+    viewMenu->addAction( "180\260 rotation", this, SLOT(setRot180()) );
+    viewMenu->addAction( "270\260 rotation", this, SLOT(setRot270()) );
+    viewMenu->addSeparator();
     viewMenu->addAction( "Zoom scale &0.5", this, SLOT(setZoomHalf()) );
     viewMenu->addAction( "Zoom scale 0.75", this, SLOT(setZoom075()) );
     viewMenu->addAction( "Zoom scale &1", this, SLOT(setZoom1()) );
@@ -451,15 +456,40 @@ void QVFb::setZoom(double z)
         secondaryView->setZoom(z,z*skinscaleV/skinscaleH);
 
     if (skin) {
-	skin->setZoom(z/skinscaleH);
-	view->setFixedSize(
-	    int(view->displayWidth()*z),
-	    int(view->displayHeight()*z*skinscaleV/skinscaleH));
+	skin->setTransform(QMatrix().scale(z/skinscaleH,z/skinscaleV).rotate(90*view->displayRotation()));
         if (secondaryView)
             secondaryView->setFixedSize(
                     int(secondaryView->displayWidth()*z),
                     int(secondaryView->displayHeight()*z*skinscaleV/skinscaleH));
     }
+}
+
+void QVFb::setRotation(QVFbView::Rotation r)
+{
+    view->setRotation(r);
+    if (secondaryView)
+        secondaryView->setRotation(r);
+    setZoom(view->zoomH());
+}
+
+void QVFb::setRot0()
+{
+    setRotation(QVFbView::Rot0);
+}
+
+void QVFb::setRot90()
+{
+    setRotation(QVFbView::Rot90);
+}
+
+void QVFb::setRot180()
+{
+    setRotation(QVFbView::Rot180);
+}
+
+void QVFb::setRot270()
+{
+    setRotation(QVFbView::Rot270);
 }
 
 void QVFb::setZoomHalf()

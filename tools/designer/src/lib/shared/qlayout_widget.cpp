@@ -233,13 +233,14 @@ static bool removeEmptyCellsOnGrid(GridLikeLayout *grid, const QRect &area)
         for (int r = area.y(); r < bottomRow; r++) {
             const int index = findGridItemAt(grid, r ,c);
             if (index != -1)
-                if (QLayoutItem *item = grid->itemAt(index))
+                if (QLayoutItem *item = grid->itemAt(index)) {
                     if (isEmptyItem(item)) {
                         if (indexesToBeRemoved.indexOf(index) == -1)
                             indexesToBeRemoved.push_back(index);
                     } else {
                         return false;
                     }
+                }
         }
     // remove, starting from last
     if (!indexesToBeRemoved.empty()) {

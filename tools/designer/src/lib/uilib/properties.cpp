@@ -159,7 +159,7 @@ QVariant domPropertyToVariant(const DomProperty *p)
         return QVariant(p->elementBool() == QFormBuilderStrings::instance().trueValue);
 
     case DomProperty::Cstring:
-        return QVariant(p->elementCstring());
+        return QVariant(p->elementCstring().toUtf8());
 
     case DomProperty::Point: {
         const DomPoint *point = p->elementPoint();

@@ -88,7 +88,12 @@ public:
         { m_translations = QStringList(translation); }
     QString translation() const { return m_translations.value(0); }
     bool isTranslated() const
-        { return m_translations.count() > 1 || !m_translations.value(0).isEmpty(); }
+    {
+        foreach (const QString &trans, m_translations)
+            if (!trans.isEmpty())
+                return true;
+        return false;
+    }
 
     enum Prefix { NoPrefix, Hash, HashContext, HashContextSourceText,
                   HashContextSourceTextComment };

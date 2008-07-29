@@ -541,6 +541,34 @@ bool QGraphicsWidgetPrivate::hasDecoration() const
     return (windowFlags & Qt::Window) && (windowFlags & Qt::WindowTitleHint);
 }
 
+/*!
+    \internal
+*/
+void QGraphicsWidgetPrivate::setFocusWidget()
+{
+    // Update focus child chain.
+    QGraphicsWidget *widget = static_cast<QGraphicsWidget *>(q_ptr);
+    QGraphicsWidget *parent = widget;
+    bool hidden = !visible;
+    do {
+        parent->d_func()->focusChild = widget;
+    } while (!parent->isWindow() && (parent = parent->parentWidget()) && (!hidden || !parent->d_func()->visible));
+}
+
+/*!
+    \internal
+*/
+void QGraphicsWidgetPrivate::clearFocusWidget()
+{
+    // Reset focus child chain.
+    QGraphicsWidget *parent = static_cast<QGraphicsWidget *>(q_ptr);
+    do {
+        if (parent->d_func()->focusChild != q_ptr)
+            break;
+        parent->d_func()->focusChild = 0;
+    } while (!parent->isWindow() && (parent = parent->parentWidget()));
+}
+
 /**
  * is called after a reparent has taken place to fix up the focus chain(s)
  */
@@ -558,6 +586,12 @@ void QGraphicsWidgetPrivate::fixFocusChainBeforeReparenting(QGraphicsWidget *new
     QGraphicsWidget *firstOld = 0;
     bool wasPreviousNew = true;
 
+    if (focusChild) {
+        // Ensure that the current focus child doesn't leave pointers around
+        // before reparenting.
+        focusChild->clearFocus();
+    }
+    
     while (w != q) {
         bool isCurrentNew = q->isAncestorOf(w);
         if (isCurrentNew) {

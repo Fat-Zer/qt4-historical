@@ -136,9 +136,6 @@ public:
     inline QModelIndex createIndexFromItem(int row, int col, QTreeWidgetItem *item) const
     { return createIndex(row, col, item); }
 
-Q_SIGNALS:
-    void itemsSorted();
-
 protected:
     QTreeModel(QTreeModelPrivate &, QTreeWidget *parent = 0);
     void emitDataChanged(QTreeWidgetItem *item, int column);

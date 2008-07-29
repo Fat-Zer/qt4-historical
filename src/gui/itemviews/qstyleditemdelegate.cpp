@@ -228,6 +228,10 @@ public:
     custom delegates. The code required should be equal unless the
     custom delegate also wishes to use the style for drawing.
 
+    If you wish to customize the painting of item views, you should
+    implement a custom style. Please see the QStyle class
+    documentation for details.
+
     \sa {Delegate Classes}, QItemDelegate, QAbstractItemDelegate, QStyle,
         {Spin Box Delegate Example}, {Star Delegate Example}, {Color
          Editor Factory Example}

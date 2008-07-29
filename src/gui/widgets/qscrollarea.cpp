@@ -106,6 +106,13 @@ QT_BEGIN_NAMESPACE
     function. The alignment of the widget can be specified with
     setAlignment().
 
+    Two convenience functions ensureVisible() and
+    ensureWidgetVisible() ensure a certain region of the contents is
+    visible inside the viewport, by scrolling the contents if
+    necessary.
+
+    \section1 Size Hints and Layouts
+
     When using a scroll area to display the contents of a custom
     widget, it is important to ensure that the
     \l{QWidget::sizeHint}{size hint} of the child widget is set to a
@@ -114,10 +121,16 @@ QT_BEGIN_NAMESPACE
     ensure that the contents of the widget are shown correctly within
     the scroll area.
 
-    Two convenience functions ensureVisible() and
-    ensureWidgetVisible() ensure a certain region of the contents is
-    visible inside the viewport, by scrolling the contents if
-    necessary.
+    If a scroll area is used to display the contents of a widget that
+    contains child widgets arranged in a layout, it is important to
+    realise that the size policy of the layout will also determine the
+    size of the widget. This is especially useful to know if you intend
+    to dynamically change the contents of the layout. In such cases,
+    setting the layout's \l{QLayout::sizeConstraint}{size constraint}
+    property to one which provides constraints on the minimum and/or
+    maximum size of the layout (e.g., QLayout::SetMinAndMaxSize) will
+    cause the size of the the scroll area to be updated whenever the
+    contents of the layout changes.
 
     For a complete example using the QScrollArea class, see the \l
     {widgets/imageviewer}{Image Viewer} example. The example shows how
@@ -233,8 +246,14 @@ QWidget *QScrollArea::widget() const
     The widget's \l{QWidget::setAutoFillBackground()}{autoFillBackground}
     property will be set to \c{true}.
 
-    Note that if the scroll area is visible when the \a widget is
+    If the scroll area is visible when the \a widget is
     added, you must \l{QWidget::}{show()} it explicitly.
+
+    Note that You must add the layout of \a widget before you call
+    this function; if you add it later, the \a widget will not be
+    visible - regardless of when you \l{QWidget::}{show()} the scroll
+    area. In this case, you can also not \l{QWidget::}{show()} the \a
+    widget later.
 
     \sa widget()
 */

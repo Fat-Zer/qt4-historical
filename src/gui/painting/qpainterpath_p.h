@@ -116,10 +116,15 @@ inline void QPainterPathData::close()
     Q_ASSERT(ref == 1);
     require_moveTo = true;
     const QPainterPath::Element &first = elements.at(cStart);
-    const QPainterPath::Element &last = elements.last();
+    QPainterPath::Element &last = elements.last();
     if (first.x != last.x || first.y != last.y) {
-        QPainterPath::Element e = { first.x, first.y, QPainterPath::LineToElement };
-        elements << e;
+        if (qFuzzyCompare(first.x, last.x) && qFuzzyCompare(first.y, last.y)) {
+            last.x = first.x;
+            last.y = first.y;
+        } else {
+            QPainterPath::Element e = { first.x, first.y, QPainterPath::LineToElement };
+            elements << e;
+        }
     }
 }
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/platform-notes.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/platform-notes.qdoc -->
 <head>
   <title>Qt 4.4: Platform Notes - X11</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,7 +14,7 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Platform Notes - X11<br /><span class="subtitle"></span>
 </h1>
-<p>This page contains information about the X11 platforms Qt is currently known to run on, with links to platform-specific notes.</p>
+<p>This page contains information about the X11 platforms Qt is currently known to run on, with links to platform-specific notes. More information about the combinations of platforms and compilers supported by Qt can be found on the <a href="supported-platforms.html">Supported Platforms</a> page.</p>
 <ul><li><a href="#aix-5-1-or-later">AIX - 5.1 or later</a></li>
 <li><a href="#freebsd-6-0-release">FreeBSD - 6.0-RELEASE</a></li>
 <li><a href="#hp-ux">HP-UX</a></li>
@@ -68,7 +68,7 @@
 <h3>Installation problems</h3>
 <p>See also the <a href="http://www.trolltech.com/developer/faqs/Qt/installation">Installation FAQ</a>.</p>
 <p>If you experience problems when installing new Qt Open Source Edition versions, try to use the Qt Open Source Edition archives (e.g&#x2e; RPM) provided by your Linux provider. If you need to install the source (.tgz) archive, be aware that you will probably end up with two different versions of the Qt library installed on your system, which will probably lead to link errors, like this:</p>
-<pre>     undefined reference to `_vt.11QPushButton'</pre>
+<pre> undefined reference to `_vt.11QPushButton'</pre>
 <p>Fix this by removing the old version of the library.</p>
 <p>If you have problems installing a Qt Open Source Edition Linux archive (e.g&#x2e; RPM), please consult your Linux provider (who made it), not us.</p>
 <p>Some RPM versions have problems installing some of the Qt RPM archives where installation stops with an error message warning about a &quot;Failed Dependency&quot;. Use the <tt>--nodeps</tt> option to <tt>rpm</tt> to workaround this problem.</p>
@@ -82,7 +82,7 @@
 <p>Be sure to check the installation notes for <a href="http://gcc.gnu.org/install/specific.html#x-x-solaris2">GCC on Solaris</a>. Do not use GCC with Sun's assembler/linker, this will result in link-time errors in shared libraries. Use GNU binutils instead.</p>
 <p>GCC 3.2&#x2e;* is known to miscompile Qt due to an optimizer bug that will cause the resulting binaries to hang.</p>
 <p>GCC gives compilation error</p>
-<pre>     ANSI C++ forbids declaration ... with no type</pre>
+<pre> ANSI C++ forbids declaration ... with no type</pre>
 <p>on systems with old X11 header files. This is fixed by patches <a href="http://sunsolve.sun.com/search/document.do?assetkey=urn:cds:docid:1-21-108652">108652-24</a> on Solaris 8, <a href="http://sunsolve.sun.com/search/document.do?assetkey=urn:cds:docid:1-21-108376">108376-21</a> on Solaris 7, and <a href="http://sunsolve.sun.com/search/document.do?assetkey=urn:cds:docid:1-21-105633">105633-56</a> on Solaris 2.6&#x2e;</p>
 <a name="solaris-2-6"></a>
 <h3>Solaris 2.6</h3>
@@ -91,6 +91,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

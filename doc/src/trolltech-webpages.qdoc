@@ -57,7 +57,7 @@
 */
 
 /*!
-    \externalpage http://www.trolltech.com/products/qt/addon/solutions/
+    \externalpage http://www.trolltech.com/products/qt/addons
     \title Qt Solutions
 */
 
@@ -92,12 +92,12 @@
 */
 
 /*!
-    \externalpage http://www.trolltech.com/products/qt/addon/solutions/catalog/4/Utilities/qtcorba/
+    \externalpage http://trolltech.com/products/qt/addons/catalog/4/Utilities/qtcorba/
     \title CORBA Framework
 */
 
 /*!
-    \externalpage http://www.trolltech.com/products/qt/addon/solutions/catalog/4/Widgets/qtwindowlistmenu/
+    \externalpage http://trolltech.com/products/qt/addons/catalog/4/Widgets/qtwindowlistmenu/
     \title Window Menu
 */
 
@@ -207,6 +207,11 @@
 */
 
 /*!
-    \externalpage http://trolltech.com/products/qt/addon/qsa
+    \externalpage http://trolltech.com/developer/downloads/qt/qsa
     \title Qt Script for Applications (QSA)
+*/
+
+/*!
+    \externalpage http://trolltech.com/products/qt/addons/catalog/4/Utilities/qtsharedmemory/
+    \title QtSharedMemory
 */

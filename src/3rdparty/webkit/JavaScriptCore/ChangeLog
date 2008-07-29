@@ -1,3 +1,37 @@
+2007-12-16  Alexey Proskuryakov  <ap@webkit.org>
+
+        Reviewed by Darin.
+
+        http://bugs.webkit.org/show_bug.cgi?id=16162
+        Problems with float parsing on Linux (locale-dependent parsing was used).
+
+        * kjs/dtoa.cpp: Removed USE_LOCALE to reduce future confusion.
+        * kjs/lexer.cpp: (KJS::Lexer::lex): Parse with kjs_strtod, not the system one.
+
+2008-02-27  Alexey Proskuryakov  <ap@webkit.org>
+
+        Reviewed by Sam Weinig.
+
+        http://bugs.webkit.org/show_bug.cgi?id=17030
+        Small buffer overflow within initialization
+
+        * kjs/date_object.cpp:
+        (KJS::DateObjectFuncImp::callAsFunction):
+        (KJS::parseDate):
+        Remove unnecessary and incorrect memset() calls - GregorianDateTime can initialize itself.
+
+2008-05-23  Tor Arne Vestbø  <tavestbo@trolltech.com>
+
+        Reviewed by Simon.
+
+        Fixed toLower and toUpper implementations to allow being called
+        with a null result pointer and resultLength, to determine the
+        number of characters needed for the case conversion.
+
+        * wtf/unicode/qt4/UnicodeQt4.h:
+        (WTF::Unicode::toLower):
+        (WTF::Unicode::toUpper):
+
 2007-10-18  Maciej Stachowiak  <mjs@apple.com>
 
         Reviewed by Adam.

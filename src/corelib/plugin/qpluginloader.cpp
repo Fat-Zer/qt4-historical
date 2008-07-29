@@ -337,6 +337,7 @@ QLibrary::LoadHints QPluginLoader::loadHints() const
 
 /*!
     \relates QPluginLoader
+    \since 4.4
 
     Registers the given \a function with the plugin loader.
 */

@@ -179,11 +179,6 @@
 */
 
 /*!
-    \externalpage http://trolltech.com/products/qt/addon/solutions/catalog/4/Utilities/qtsharedmemory/
-    \title QtSharedMemory
-*/
-
-/*!
     \externalpage http://webkit.org/
     \title WebKit Open Source Project
 */
@@ -191,4 +186,14 @@
 /*!
     \externalpage http://www.informit.com/store/product.aspx?isbn=0132354160
     \title C++ GUI Programming with Qt 4, 2nd Edition
+*/
+
+/*!
+    \externalpage http://www.openssl.org/
+    \title OpenSSL Toolkit
+*/
+
+/*!
+    \externalpage http://arora-browser.org/
+    \title Arora Browser
 */

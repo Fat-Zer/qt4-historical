@@ -499,10 +499,8 @@ void QWidgetPrivate::moveRect(const QRect &rect, int dx, int dy)
         wbs->dirtyOnScreen += destRect.translated(toplevelOffset);
 #else
         if (!q->internalWinId()) {
-            QWidget *nativeParent = q->nativeParentWidget();
-            const QPoint nativeParentOffset = pw->mapTo(nativeParent, QPoint(0, 0));
-            nativeParent->d_func()->dirtyOnScreen += sourceRect.translated(nativeParentOffset);
-            nativeParent->d_func()->dirtyOnScreen += destRect.translated(nativeParentOffset);
+            tlw->d_func()->dirtyOnScreen += sourceRect.translated(toplevelOffset);
+            tlw->d_func()->dirtyOnScreen += destRect.translated(toplevelOffset);
         }
 #endif
     }

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/io/qurl.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qurl.cpp -->
 <head>
   <title>Qt 4.4: QUrl Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -124,8 +124,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qurl.html#operator-lt-lt-57">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QUrl &amp; <i>url</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qurl.html#operator-gt-gt-40">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QUrl &amp; <i>url</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qurl.html#operator-lt-lt-143">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QUrl &amp; <i>url</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qurl.html#operator-gt-gt-82">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QUrl &amp; <i>url</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -141,7 +141,7 @@
 <p>Calling <a href="qurl.html#isRelative">isRelative</a>() will tell whether or not the URL is relative. A relative URL can be resolved by passing it as argument to <a href="qurl.html#resolved">resolved</a>(), which returns an absolute URL. <a href="qurl.html#isParentOf">isParentOf</a>() is used for determining whether one URL is a parent of another.</p>
 <p><a href="qurl.html#fromLocalFile">fromLocalFile</a>() constructs a QUrl by parsing a local file path. <a href="qurl.html#toLocalFile">toLocalFile</a>() converts a URL to a local file path.</p>
 <p>The human readable representation of the URL is fetched with <a href="qurl.html#toString">toString</a>(). This representation is appropriate for displaying a URL to a user in unencoded form. The encoded form however, as returned by <a href="qurl.html#toEncoded">toEncoded</a>(), is for internal use, passing to web servers, mail clients and so on.</p>
-<p>QUrl conforms to the URI specification from <a href="http://www.rfc-editor.org/rfc/rfc3986.txt">RFC 3986</a> (Uniform Resource Identifier: Generic Syntax), and includes scheme extensions from <a href="http://www.rfc-editor.org/rfc/rfc1738.txt">RFC 1738</a> (Uniform Resource Locators).</p>
+<p>QUrl conforms to the URI specification from <a href="http://www.rfc-editor.org/rfc/rfc3986.txt">RFC 3986</a> (Uniform Resource Identifier: Generic Syntax), and includes scheme extensions from <a href="http://www.rfc-editor.org/rfc/rfc1738.txt">RFC 1738</a> (Uniform Resource Locators). Case folding rules in QUrl conform to <a href="http://www.rfc-editor.org/rfc/rfc3491.txt">RFC 3491</a> (Nameprep: A Stringprep Profile for Internationalized Domain Names (IDN)).</p>
 <p>See also <a href="qurlinfo.html">QUrlInfo</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -161,7 +161,7 @@
 <p>The formatting options define how the URL is formatted when written out as text.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QUrl::None</tt></td><td align="center" valign="top"><tt>0x0</tt></td><td valign="top">The URL is left unchanged.</td></tr>
+<tr><td valign="top"><tt>QUrl::None</tt></td><td align="center" valign="top"><tt>0x0</tt></td><td valign="top">The format of the URL is unchanged.</td></tr>
 <tr><td valign="top"><tt>QUrl::RemoveScheme</tt></td><td align="center" valign="top"><tt>0x1</tt></td><td valign="top">The scheme is removed from the URL.</td></tr>
 <tr><td valign="top"><tt>QUrl::RemovePassword</tt></td><td align="center" valign="top"><tt>0x2</tt></td><td valign="top">Any password in the URL is removed.</td></tr>
 <tr><td valign="top"><tt>QUrl::RemoveUserInfo</tt></td><td align="center" valign="top"><tt>RemovePassword | 0x4</tt></td><td valign="top">Any user information in the URL is removed.</td></tr>
@@ -172,6 +172,7 @@
 <tr><td valign="top"><tt>QUrl::RemoveFragment</tt></td><td align="center" valign="top"><tt>0x80</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QUrl::StripTrailingSlash</tt></td><td align="center" valign="top"><tt>0x10000</tt></td><td valign="top">The trailing slash is removed if one is present.</td></tr>
 </table></p>
+<p>Note that the case folding rules in <a href="http://www.rfc-editor.org/rfc/rfc3491.txt">Nameprep</a>, which <a href="qurl.html">QUrl</a> conforms to, require host names to always be converted to lower case, regardless of the Qt::FormattingOptions used.</p>
 <p>The FormattingOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;FormattingOption&gt;. It stores an OR combination of FormattingOption values.</p>
 <a name="//apple_ref/cpp/tag/QUrl/ParsingMode" />
 <a name="//apple_ref/cpp/econst/QUrl/TolerantMode" />
@@ -198,10 +199,10 @@
 <h3 class="fn"><a name="QUrl-2"></a>QUrl::QUrl ( const <a href="qstring.html">QString</a> &amp; <i>url</i> )</h3>
 <p>Constructs a URL by parsing <i>url</i>. <i>url</i> is assumed to be in human readable representation, with no percent encoding. <a href="qurl.html">QUrl</a> will automatically percent encode all characters that are not allowed in a URL.</p>
 <p>Example:</p>
-<pre>         QUrl url(&quot;http://www.example.com/List of holidays.xml&quot;);
-         // url.toEncoded() == &quot;http://www.example.com/List%20of%20holidays.xml&quot;</pre>
+<pre>         QUrl url(&quot;http:<span class="comment">//www.example.com/List of holidays.xml&quot;);</span>
+         <span class="comment">// url.toEncoded() == &quot;http://www.example.com/List%20of%20holidays.xml&quot;</span></pre>
 <p>To construct a URL from an encoded string, call <a href="qurl.html#fromEncoded">fromEncoded</a>():</p>
-<pre>         QUrl url = QUrl::fromEncoded(&quot;http://www.trolltech.com/List%20of%20holidays.xml&quot;);</pre>
+<pre>         QUrl url = QUrl::fromEncoded(&quot;http:<span class="comment">//www.trolltech.com/List%20of%20holidays.xml&quot;);</span></pre>
 <p>See also <a href="qurl.html#setUrl">setUrl</a>(), <a href="qurl.html#setEncodedUrl">setEncodedUrl</a>(), <a href="qurl.html#fromEncoded">fromEncoded</a>(), and <a href="qurl.html#ParsingMode-enum">TolerantMode</a>.</p>
 <h3 class="fn"><a name="QUrl-3"></a>QUrl::QUrl ( const QUrl &amp; <i>other</i> )</h3>
 <p>Constructs a copy of <i>other</i>.</p>
@@ -273,6 +274,7 @@
 <a name="//apple_ref/cpp/instm/QUrl/encodedQueryItems" />
 <h3 class="fn"><a name="encodedQueryItems"></a><a href="qlist.html">QList</a>&lt;<a href="qpair.html">QPair</a>&lt;<a href="qbytearray.html">QByteArray</a>, <a href="qbytearray.html">QByteArray</a>&gt; &gt; QUrl::encodedQueryItems () const</h3>
 <p>Returns the query string of the URL, as a map of encoded keys and values.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qurl.html#setEncodedQueryItems">setEncodedQueryItems</a>(), <a href="qurl.html#setQueryItems">setQueryItems</a>(), and <a href="qurl.html#setEncodedQuery">setEncodedQuery</a>().</p>
 <a name="//apple_ref/cpp/instm/QUrl/encodedUserName" />
 <h3 class="fn"><a name="encodedUserName"></a><a href="qbytearray.html">QByteArray</a> QUrl::encodedUserName () const</h3>
@@ -417,10 +419,10 @@
 <h3 class="fn"><a name="resolved"></a>QUrl QUrl::resolved ( const QUrl &amp; <i>relative</i> ) const</h3>
 <p>Returns the result of the merge of this URL with <i>relative</i>. This URL is used as a base to convert <i>relative</i> to an absolute URL.</p>
 <p>If <i>relative</i> is not a relative URL, this function will return <i>relative</i> directly. Otherwise, the paths of the two URLs are merged, and the new URL returned has the scheme and authority of the base URL, but with the merged path, as in the following example:</p>
-<pre>          QUrl baseUrl(&quot;http://www.trolltech.com/support&quot;);
+<pre>          QUrl baseUrl(&quot;http:<span class="comment">//www.trolltech.com/support&quot;);</span>
           QUrl relativeUrl(&quot;../products/solutions&quot;);
           qDebug(baseUrl.resolved(relativeUrl).toString());
-          // prints &quot;http://www.trolltech.com/products/solutions&quot;</pre>
+          <span class="comment">// prints &quot;http://www.trolltech.com/products/solutions&quot;</span></pre>
 <p>Calling resolved() with &quot;..&quot; returns a <a href="qurl.html">QUrl</a> whose directory is one level higher than the original. Similarly, calling resolved() with &quot;../&#x2e;.&quot; removes two levels from the path. If <i>relative</i> is &quot;/&quot;, the path becomes &quot;/&quot;.</p>
 <p>See also <a href="qurl.html#isRelative">isRelative</a>().</p>
 <a name="//apple_ref/cpp/instm/QUrl/scheme" />
@@ -523,7 +525,7 @@
 <p>Sets the characters used for delimiting between keys and values, and between key-value pairs in the URL's query string. The default value delimiter is '=' and the default pair delimiter is '&amp;'.</p>
 <p align="center"><img src="images/qurl-querystring.png" /></p><p><i>valueDelimiter</i> will be used for separating keys from values, and <i>pairDelimiter</i> will be used to separate key-value pairs. Any occurrences of these delimiting characters in the encoded representation of the keys and values of the query string are percent encoded.</p>
 <p>If <i>valueDelimiter</i> is set to '-' and <i>pairDelimiter</i> is '/', the above query string would instead be represented like this:</p>
-<pre>         http://www.example.com/cgi-bin/drawgraph.cgi?type-pie/color-green</pre>
+<pre>         http:<span class="comment">//www.example.com/cgi-bin/drawgraph.cgi?type-pie/color-green</span></pre>
 <p>Calling this function does not change the delimiters of the current query string. It only affects <a href="qurl.html#queryItems">queryItems</a>(), <a href="qurl.html#setQueryItems">setQueryItems</a>() and addQueryItems().</p>
 <a name="//apple_ref/cpp/instm/QUrl/setQueryItems" />
 <h3 class="fn"><a name="setQueryItems"></a>void QUrl::setQueryItems ( const <a href="qlist.html">QList</a>&lt;<a href="qpair.html">QPair</a>&lt;<a href="qstring.html">QString</a>, <a href="qstring.html">QString</a>&gt; &gt; &amp; <i>query</i> )</h3>
@@ -573,7 +575,7 @@
 <p>Unreserved is defined as: ALPHA / DIGIT / &quot;-&quot; / &quot;.&quot; / &quot;_&quot; / &quot;~&quot;</p>
 <pre>          QByteArray ba = QUrl::toPercentEncoding(&quot;{a fishy string?}&quot;, &quot;{}&quot;, &quot;s&quot;);
           qDebug(ba.constData());
-          // prints &quot;{a fi%73hy %73tring%3F}&quot;</pre>
+          <span class="comment">// prints &quot;{a fi%73hy %73tring%3F}&quot;</span></pre>
 <a name="//apple_ref/cpp/instm/QUrl/toString" />
 <h3 class="fn"><a name="toString"></a><a href="qstring.html">QString</a> QUrl::toString ( <a href="qurl.html#FormattingOption-enum">FormattingOptions</a> <i>options</i> = None ) const</h3>
 <p>Returns the human-displayable string representation of the URL. The output can be customized by passing flags with <i>options</i>.</p>
@@ -600,11 +602,11 @@
 <p>Returns true if this URL and the given <i>url</i> are equal; otherwise returns false.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-57"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QUrl &amp; <i>url</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-143"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QUrl &amp; <i>url</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes url <i>url</i> to the stream <i>out</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-40"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QUrl &amp; <i>url</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-82"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QUrl &amp; <i>url</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a url into <i>url</i> from the stream <i>in</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -612,6 +614,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

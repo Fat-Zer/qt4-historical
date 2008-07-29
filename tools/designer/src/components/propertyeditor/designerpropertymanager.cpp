@@ -687,6 +687,8 @@ void DesignerPropertyManager::slotValueChanged(QtProperty *property, const QVari
         QFont font = qVariantValue<QFont>(fontProperty->value());
         font.setStyleStrategy(indexToAntialiasing(value.toInt()));
         fontProperty->setValue(qVariantFromValue(font));
+    } else if (m_propertyToFontSubProperties.contains(property)) {
+        updateFontModifiedState(property, value);
     } else if (QtProperty *iProperty = m_iconSubPropertyToProperty.value(property, 0)) {
         QtVariantProperty *iconProperty = variantProperty(iProperty);
         PropertySheetIconValue icon = qVariantValue<PropertySheetIconValue>(iconProperty->value());
@@ -1028,6 +1030,7 @@ bool DesignerPropertyManager::isPropertyTypeSupported(int propertyType) const
     case QVariant::LongLong:
     case QVariant::ULongLong:
     case QVariant::Url:
+    case QVariant::ByteArray:
     case QVariant::StringList:
     case QVariant::Brush:
         return true;
@@ -1102,6 +1105,9 @@ QString DesignerPropertyManager::valueText(const QtProperty *property) const
     }
     if (m_urlValues.contains(const_cast<QtProperty *>(property))) {
         return m_urlValues.value(const_cast<QtProperty *>(property)).toString();
+    }
+    if (m_byteArrayValues.contains(const_cast<QtProperty *>(property))) {
+        return QString::fromUtf8(m_byteArrayValues.value(const_cast<QtProperty *>(property)));
     }
     if (m_stringListValues.contains(const_cast<QtProperty *>(property))) {
         return m_stringListValues.value(const_cast<QtProperty *>(property)).join(QLatin1String("; "));
@@ -1206,6 +1212,8 @@ QVariant DesignerPropertyManager::value(const QtProperty *property) const
         return m_uLongLongValues.value(const_cast<QtProperty *>(property));
     if (m_urlValues.contains(const_cast<QtProperty *>(property)))
         return m_urlValues.value(const_cast<QtProperty *>(property));
+    if (m_byteArrayValues.contains(const_cast<QtProperty *>(property)))
+        return m_byteArrayValues.value(const_cast<QtProperty *>(property));
     if (m_stringListValues.contains(const_cast<QtProperty *>(property)))
         return m_stringListValues.value(const_cast<QtProperty *>(property));
 
@@ -1223,6 +1231,7 @@ int DesignerPropertyManager::valueType(int propertyType) const
     case QVariant::LongLong:
     case QVariant::ULongLong:
     case QVariant::Url:
+    case QVariant::ByteArray:
     case QVariant::StringList:
     case QVariant::Brush:
         return propertyType;
@@ -1321,21 +1330,14 @@ void DesignerPropertyManager::setValue(QtProperty *property, const QVariant &val
 
         return;
     } else if (m_propertyToFontSubProperties.contains(property)) {
-        QMap<int, QtProperty *> subProperties = m_propertyToFontSubProperties.value(property);
-        QFont font = qVariantValue<QFont>(value);
-        const unsigned mask = font.resolve();
-        QMapIterator<int, QtProperty *> itSub(subProperties);
-        int index = 0;
-        while (itSub.hasNext()) {
-            const unsigned flag = fontFlag(index);
-            QtProperty *fontSubProperty = itSub.next().value();
-            fontSubProperty->setModified(mask & flag);
-            ++index;
-        }
+        updateFontModifiedState(property, value);
+
         if (QtProperty *antialiasingProperty = m_propertyToAntialiasing.value(property, 0)) {
             QtVariantProperty *antialiasing = variantProperty(antialiasingProperty);
-            if (antialiasing)
+            if (antialiasing) {
+                QFont font = qVariantValue<QFont>(value);
                 antialiasing->setValue(antialiasingToIndex(font.styleStrategy()));
+            }
         }
     } else if (m_paletteValues.contains(property)) {
         if (value.type() != QVariant::Palette && !value.canConvert(QVariant::Palette))
@@ -1485,6 +1487,22 @@ void DesignerPropertyManager::setValue(QtProperty *property, const QVariant &val
         emit propertyChanged(property);
 
         return;
+    } else if (m_byteArrayValues.contains(property)) {
+        if (value.type() != QVariant::ByteArray && !value.canConvert(QVariant::ByteArray))
+            return;
+
+        const QByteArray v = value.toByteArray();
+
+        const QByteArray oldValue = m_byteArrayValues.value(property);
+        if (v == oldValue)
+            return;
+
+        m_byteArrayValues[property] = v;
+
+        emit QtVariantPropertyManager::valueChanged(property, v);
+        emit propertyChanged(property);
+
+        return;
     } else if (m_stringListValues.contains(property)) {
         if (value.type() != QVariant::StringList && !value.canConvert(QVariant::StringList))
             return;
@@ -1517,6 +1535,21 @@ void DesignerPropertyManager::setValue(QtProperty *property, const QVariant &val
         property->setToolTip(DesignerPropertyManager::value(property).toString());
     else if (QtVariantPropertyManager::valueType(property) == QVariant::Bool)
         property->setToolTip(QtVariantPropertyManager::valueText(property));
+}
+
+void DesignerPropertyManager::updateFontModifiedState(QtProperty *property, const QVariant &value)
+{
+    QMap<int, QtProperty *> subProperties = m_propertyToFontSubProperties.value(property);
+    QFont font = qVariantValue<QFont>(value);
+    const unsigned mask = font.resolve();
+    QMapIterator<int, QtProperty *> itSub(subProperties);
+    int index = 0;
+    while (itSub.hasNext()) {
+        const unsigned flag = fontFlag(index);
+        QtProperty *fontSubProperty = itSub.next().value();
+        fontSubProperty->setModified(mask & flag);
+        ++index;
+    }
 }
 
 void DesignerPropertyManager::initializeProperty(QtProperty *property)
@@ -1555,6 +1588,9 @@ void DesignerPropertyManager::initializeProperty(QtProperty *property)
         break;
     case QVariant::Url:
         m_urlValues[property] = 0;
+        break;
+    case QVariant::ByteArray:
+        m_byteArrayValues[property] = 0;
         break;
     case QVariant::StringList:
         m_stringListValues[property] = QStringList();
@@ -1698,6 +1734,7 @@ void DesignerPropertyManager::uninitializeProperty(QtProperty *property)
     m_longLongValues.remove(property);
     m_uLongLongValues.remove(property);
     m_urlValues.remove(property);
+    m_byteArrayValues.remove(property);
     m_stringListValues.remove(property);
 
     m_brushManager.uninitializeProperty(property);
@@ -1890,6 +1927,9 @@ void DesignerEditorFactory::slotValueChanged(QtProperty *property, const QVarian
     case QVariant::Url:
         applyToEditors(m_urlPropertyToEditors.value(property), &TextEditor::setText, value.toUrl().toString());
         break;
+    case QVariant::ByteArray:
+        applyToEditors(m_byteArrayPropertyToEditors.value(property), &TextEditor::setText, QString::fromUtf8(value.toByteArray()));
+        break;
     case QVariant::StringList:
         applyToEditors(m_stringListPropertyToEditors.value(property), &StringListEditorButton::setStringList, value.toStringList());
         break;
@@ -1979,6 +2019,14 @@ QWidget *DesignerEditorFactory::createEditor(QtVariantPropertyManager *manager, 
         m_urlPropertyToEditors[property].append(ed);
         m_editorToUrlProperty[ed] = property;
         connect(ed, SIGNAL(textChanged(QString)), this, SLOT(slotUrlChanged(QString)));
+        editor = ed;
+    }
+        break;
+    case QVariant::ByteArray: {
+        TextEditor *ed = createTextEditor(parent, ValidationMultiLine, QString::fromUtf8(manager->value(property).toByteArray()));
+        m_byteArrayPropertyToEditors[property].append(ed);
+        m_editorToByteArrayProperty[ed] = property;
+        connect(ed, SIGNAL(textChanged(QString)), this, SLOT(slotByteArrayChanged(QString)));
         editor = ed;
     }
         break;
@@ -2072,6 +2120,8 @@ void DesignerEditorFactory::slotEditorDestroyed(QObject *object)
         return;
     if (removeEditor(object, &m_urlPropertyToEditors, &m_editorToUrlProperty))
         return;
+    if (removeEditor(object, &m_byteArrayPropertyToEditors, &m_editorToByteArrayProperty))
+        return;
     if (removeEditor(object, &m_stringListPropertyToEditors, &m_editorToStringListProperty))
         return;
 }
@@ -2114,6 +2164,11 @@ void DesignerEditorFactory::slotULongLongChanged(const QString &value)
 void DesignerEditorFactory::slotUrlChanged(const QString &value)
 {
     updateManager(this, &m_changingPropertyValue, m_editorToUrlProperty, qobject_cast<QWidget *>(sender()), QUrl(value));
+}
+
+void DesignerEditorFactory::slotByteArrayChanged(const QString &value)
+{
+    updateManager(this, &m_changingPropertyValue, m_editorToByteArrayProperty, qobject_cast<QWidget *>(sender()), value.toUtf8());
 }
 
 void DesignerEditorFactory::slotStringTextChanged(const QString &value)

@@ -59,6 +59,7 @@ QT_BEGIN_NAMESPACE
     in Graphics View.
     \since 4.4
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     QGraphicsLayout is an abstract class that defines a virtual API for
     arranging QGraphicsWidget children and other QGraphicsLayoutItem objects
@@ -108,7 +109,7 @@ QT_BEGIN_NAMESPACE
     When the layout's geometry changes, QGraphicsLayout immediately rearranges
     all of its managed items by calling setGeometry() on each item. This
     rearrangement is called \e activating the layout.
-    
+
     QGraphicsLayout updates its own geometry to match the contentsRect() of the
     QGraphicsLayoutItem it is managing. Thus, it will automatically rearrange all
     its items when the widget is resized. QGraphicsLayout caches the sizes of all

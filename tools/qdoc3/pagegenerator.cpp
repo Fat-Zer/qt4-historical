@@ -119,6 +119,7 @@ QString PageGenerator::fileBase(const Node *node)
             begun = true;
         } else if (begun) {
             res += QLatin1Char('-');
+            begun = false;
         }
     }
     while (res.endsWith(QLatin1Char('-')))

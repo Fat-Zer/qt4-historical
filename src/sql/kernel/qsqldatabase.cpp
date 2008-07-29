@@ -1426,6 +1426,8 @@ QSqlDatabase QSqlDatabase::cloneDatabase(const QSqlDatabase &other, const QStrin
 }
 
 /*!
+    \since 4.4
+
     Returns the connection's name; it may be empty.
 
     \sa addDatabase()

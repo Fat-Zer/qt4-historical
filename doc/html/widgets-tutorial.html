@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/tutorials/widgets-tutorial.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/tutorials/widgets-tutorial.qdoc -->
 <head>
   <title>Qt 4.4: Widgets Tutorial</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -29,7 +29,7 @@
      window-&gt;resize(320, 240);
      window-&gt;show();</pre>
     </td><td align="right">
-    <p><font color="red">[Missing image widgets-tutorial-toplevel.png]</font></p>
+    <p><img src="images/widgets-tutorial-toplevel.png" /></p>
     </td></tr>
     </table>
     <p>We can add a child widget to this window by passing <tt>window</tt> as the parent to its constructor. In this case, we add a button to the window and place it in a specific location:</p>
@@ -39,7 +39,7 @@
      button-&gt;move(100, 100);
      button-&gt;show();</pre>
     </td><td align="right">
-    <p><font color="red">[Missing image widgets-tutorial-childwidget.png]</font></p>
+    <p><img src="images/widgets-tutorial-childwidget.png" /></p>
     </td></tr>
     </table>
     <p>The button is now a child of the window and will be deleted when the window is destroyed. Note that hiding or closing the window does not automatically destroy it.</p>
@@ -56,7 +56,7 @@
      layout-&gt;addWidget(lineEdit);
      window-&gt;setLayout(layout);</pre>
     </td><td align="right">
-    <p><font color="red">[Missing image widgets-tutorial-windowlayout.png]</font></p>
+    <p><img src="images/widgets-tutorial-windowlayout.png" /></p>
     </td></tr>
     </table>
     <p>The <tt>layout</tt> object we construct manages the positions and sizes of widgets supplied to it with the <a href="qboxlayout.html#addWidget">addWidget()</a> function. The layout itself is supplied to the window itself in the call to <a href="qwidget.html#setLayout">setLayout()</a>. Layouts are only visible through the effects they have on the widgets (and other layouts) they are responsible for managing.</p>
@@ -77,7 +77,7 @@
      mainLayout-&gt;addWidget(resultView);
      window-&gt;setLayout(mainLayout);</pre>
     </td><td align="right">
-    <p><font color="red">[Missing image widgets-tutorial-nestedlayouts.png]</font></p>
+    <p><img src="images/widgets-tutorial-nestedlayouts.png" /></p>
     </td></tr>
     </table>
     <p>As well as <a href="qhboxlayout.html">QHBoxLayout</a> and <a href="qvboxlayout.html">QVBoxLayout</a>, Qt also provides <a href="qgridlayout.html">QGridLayout</a> and <a href="qformlayout.html">QFormLayout</a> classes to help with more complex user interfaces.</p>
@@ -85,6 +85,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

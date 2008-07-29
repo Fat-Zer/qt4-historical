@@ -378,23 +378,29 @@ bool Q3DragObject::drag(DragMode mode)
     drag->setPixmap(d->pixmap);
     drag->setHotSpot(d->hot);
 
-    Qt::DropActions op;
+    Qt::DropActions allowedOps;
+    Qt::DropAction defaultOp;
     switch(mode) {
+    default:
     case DragDefault:
     case DragCopyOrMove:
-        op = Qt::CopyAction|Qt::MoveAction;
+        allowedOps = Qt::CopyAction|Qt::MoveAction;
+        defaultOp = Qt::IgnoreAction;
         break;
     case DragCopy:
-        op = Qt::CopyAction;
+        allowedOps = Qt::CopyAction;
+        defaultOp = Qt::CopyAction;
         break;
     case DragMove:
-        op = Qt::MoveAction;
+        allowedOps = Qt::MoveAction;
+        defaultOp = Qt::MoveAction;
         break;
     case DragLink:
-        op = Qt::LinkAction;
+        allowedOps = Qt::LinkAction;
+        defaultOp = Qt::LinkAction;
         break;
     }
-    bool retval = (drag->start(op) == Qt::MoveAction);
+    bool retval = (drag->exec(allowedOps, defaultOp) == Qt::MoveAction);
     last_target = drag->target();
 
     return retval;
@@ -1224,10 +1230,10 @@ QByteArray Q3UriDrag::unicodeUriToUri(const QString& uuri)
     int n = utf8.length();
     bool isFile = uuri.startsWith(QLatin1String("file://"));
     for (int i=0; i<n; i++) {
-        if (utf8[i] >= 'a' && utf8[i] <= 'z'
+        if ((utf8[i] >= 'a' && utf8[i] <= 'z')
           || utf8[i] == '/'
-          || utf8[i] >= '0' && utf8[i] <= '9'
-          || utf8[i] >= 'A' && utf8[i] <= 'Z'
+          || (utf8[i] >= '0' && utf8[i] <= '9')
+          || (utf8[i] >= 'A' && utf8[i] <= 'Z')
 
           || utf8[i] == '-' || utf8[i] == '_'
           || utf8[i] == '.' || utf8[i] == '!'

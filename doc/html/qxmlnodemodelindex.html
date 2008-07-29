@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/xmlpatterns/api/qabstractxmlnodemodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/xmlpatterns/api/qabstractxmlnodemodel.cpp -->
 <head>
   <title>Qt 4.4: QXmlNodeModelIndex Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -15,7 +15,7 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QXmlNodeModelIndex Class Reference<br /><span class="small-subtitle">[<a href="qtxmlpatterns.html">QtXmlPatterns</a> module]</span>
 </h1>
-<p>The QXmlNodeModelIndex class is used to represent a node in a node model. <a href="#details">More...</a></p>
+<p>The QXmlNodeModelIndex class identifies a node in an XML node model subclassed from <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>. <a href="#details">More...</a></p>
 <pre> #include &lt;QXmlNodeModelIndex&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
@@ -41,27 +41,24 @@
 <li><div class="fn"/>bool <b><a href="qxmlnodemodelindex.html#operator-not-eq">operator!=</a></b> ( const QXmlNodeModelIndex &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qxmlnodemodelindex.html#operator-eq-eq">operator==</a></b> ( const QXmlNodeModelIndex &amp; <i>other</i> ) const</li>
 </ul>
-<a name="related-non-members"></a>
-<h3>Related Non-Members</h3>
-<ul>
-<li><div class="fn"/>uint <b><a href="qxmlnodemodelindex.html#qHash-11">qHash</a></b> ( const QXmlNodeModelIndex &amp; <i>index</i> )</li>
-</ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
-<p>The QXmlNodeModelIndex class is used to represent a node in a node model.</p>
-<p>QXmlNodeModelIndex is used as an index into <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>. It contains two things:</p>
+<p>The QXmlNodeModelIndex class identifies a node in an XML node model subclassed from <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>.</p>
+<p>QXmlNodeModelIndex is an index into an <a href="qabstractxmlnodemodel.html">XML node model</a>. It contains:</p>
 <ul>
-<li>A pointer to a <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>, retrievable via <a href="qxmlnodemodelindex.html#model">model</a>()</li>
-<li>Data, retrievable via <a href="qxmlnodemodelindex.html#data">data</a>(), <a href="qxmlnodemodelindex.html#internalPointer">internalPointer</a>() and <a href="qxmlnodemodelindex.html#additionalData">additionalData</a>().</li>
+<li>A pointer to an <a href="qabstractxmlnodemodel.html">XML node model</a>, which is returned by <a href="qxmlnodemodelindex.html#model">model</a>(), and</li>
+<li>Some data, which is returned by <a href="qxmlnodemodelindex.html#data">data</a>(), <a href="qxmlnodemodelindex.html#internalPointer">internalPointer</a>(), and <a href="qxmlnodemodelindex.html#additionalData">additionalData</a>().</li>
 </ul>
-<p>QXmlNodeModelIndex is intentionally a simple class. For instance it doesn't have a function for getting a node's name or the list of its attributes. Therefore, QXmlNodeModelIndex is primarily useful if you are using your own node model, but falls short if you to some degree want to spectate the nodes as ordinary XML nodes. Typically the best way to achieve the latter is to either send the result out to a <a href="qabstractxmlreceiver.html">QAbstractXmlReceiver</a> or to put more of the logic inside the query.</p>
-<p>For instance, let's say you want to populate a list widget with the values of a set of attributes. Instead of letting the query return a set of elements and then iterate over the their attributes and extract the string values, let the query do all this directly and then evaluate it using <a href="qxmlquery.html#evaluateTo">QXmlQuery::evaluateTo</a>() and pass a pointer to <a href="qstringlist.html">QStringList</a>.</p>
-<p>QXmlNodeModelIndex does not impose restrictions on what data QXmlNodeModelIndex should contain, that is entirely up to the associated <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>.</p>
-<p>Conceptually, QXmlNodeModelIndex can be seen as being one of the two types of items in XQuery: namely nodes. When the XQuery engine handles nodes, it uses QXmlNodeModelIndex in order to delegate the actual functionality to the associated <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>.</p>
-<p>Since QXmlNodeModelIndex is dependent on a particular <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> subclass, there is no way to create instances, except for via <a href="qabstractxmlnodemodel.html#createIndex">QAbstractXmlNodeModel::createIndex</a>(). Since that function is protected, it can probably be good to create a function that creates node indexes from arguments that fits the particular node model.</p>
-<p>A default constructed node index <tt>null</tt>, and <a href="qxmlnodemodelindex.html#isNull">isNull</a>() will return <tt>true</tt>.</p>
-<p>QXmlNodeModelIndex and <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> follows the same design pattern that <a href="qmodelindex.html">QModelIndex</a> <a href="qabstractitemmodel.html">QAbstractItemModel</a> do.</p>
+<p>Because QXmlNodeModelIndex is intentionally a simple class, it doesn't have member functions for accessing the properties of nodes. For example, it doesn't have functions for getting a node's name or its list of attributes or child nodes. If you find that you need to retrieve this kind of information from your query results, there are two ways to proceed.</p>
+<ul>
+<li>Send the output of your XQuery to an <a href="qabstractxmlreceiver.html">XML receiver</a>, or</li>
+<li>Let your XQuery do all the work to produce the desired result.</li>
+</ul>
+<p>The second case is explained by example. Suppose you want to populate a list widget with the values of certain attributes from a set of result elements. You could write an XQuery to return the set of elements, and then you would write the code to iterate over the result elements, get their attributes, and extract the desired string values. But the simpler way is to just augment your XQuery to finding the desired attribute values. Then all you have to do is evaluate the XQuery using the version of <a href="qxmlquery.html#evaluateTo">QXmlQuery::evaluateTo</a>() that populates a <a href="qstringlist.html">QStringList</a>, which you can send directly to your widget.</p>
+<p>QXmlNodeModelIndex doesn't impose any restrictions on the <i>data</i> value an QXmlNodeModelIndex should contain. The meaning of the data left to the associated <a href="qabstractxmlnodemodel.html">node model</a>. Because QXmlNodeModelIndex depends on a particular subclass of <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> for its existence, the only way you can create an instance of QXmlNodeModelIndex is by asking the node model to create one for you with <a href="qabstractxmlnodemodel.html#createIndex">QAbstractXmlNodeModel::createIndex</a>(). Since that function is protected, it is usually a good ide to write a public function that creates a QXmlNodeModelIndex from arguments that are appropriate for your particular node model.</p>
+<p>A default constructed node index is said to be null, i.e&#x2e;, <a href="qxmlnodemodelindex.html#isNull">isNull</a>() returns true.</p>
+<p>QXmlNodeModelIndex and <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> follow the same design pattern used for <a href="qmodelindex.html">QModelIndex</a> and <a href="qabstractitemmodel.html">QAbstractItemModel</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QXmlNodeModelIndex/DocumentOrder" />
@@ -69,12 +66,12 @@
 <a name="//apple_ref/cpp/econst/QXmlNodeModelIndex/Follows" />
 <a name="//apple_ref/cpp/econst/QXmlNodeModelIndex/Is" />
 <h3 class="fn"><a name="DocumentOrder-enum"></a>enum QXmlNodeModelIndex::DocumentOrder</h3>
-<p>Identifies what specific node comparison operator that should be used.</p>
+<p>Identifies the specific node comparison operator that should be used.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QXmlNodeModelIndex::Precedes</tt></td><td align="center" valign="top"><tt>-1</tt></td><td valign="top">Signifies the <tt>\&lt;\&lt;</tt> operator. Whether the first operand precedes the second operand in document order.</td></tr>
-<tr><td valign="top"><tt>QXmlNodeModelIndex::Follows</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Signifies the <tt>\&gt;\&gt;</tt> operator. Whether the first operand follows the second operand in document order.</td></tr>
-<tr><td valign="top"><tt>QXmlNodeModelIndex::Is</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Signifies the <tt>is</tt> operator. Whether two nodes have the same node identity.</td></tr>
+<tr><td valign="top"><tt>QXmlNodeModelIndex::Precedes</tt></td><td align="center" valign="top"><tt>-1</tt></td><td valign="top">Signifies the <tt>\&lt;\&lt;</tt> operator. Test whether the first operand precedes the second in the document.</td></tr>
+<tr><td valign="top"><tt>QXmlNodeModelIndex::Follows</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Signifies the <tt>\&gt;\&gt;</tt> operator. Test whether the first operand follows the second in the document.</td></tr>
+<tr><td valign="top"><tt>QXmlNodeModelIndex::Is</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Signifies the <tt>is</tt> operator. Test whether two nodes have the same node identity.</td></tr>
 </table></p>
 <a name="//apple_ref/cpp/tdef/QXmlNodeModelIndex/List" />
 <h3 class="fn"><a name="List-typedef"></a>typedef QXmlNodeModelIndex::List</h3>
@@ -88,7 +85,7 @@
 <a name="//apple_ref/cpp/econst/QXmlNodeModelIndex/Namespace" />
 <a name="//apple_ref/cpp/econst/QXmlNodeModelIndex/ProcessingInstruction" />
 <h3 class="fn"><a name="NodeKind-enum"></a>enum QXmlNodeModelIndex::NodeKind</h3>
-<p>Identifies the kind of a node.</p>
+<p>Identifies a kind of node.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QXmlNodeModelIndex::Attribute</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Identifies an attribute node</td></tr>
@@ -97,8 +94,9 @@
 <tr><td valign="top"><tt>QXmlNodeModelIndex::Document</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Identifies a document node</td></tr>
 <tr><td valign="top"><tt>QXmlNodeModelIndex::Element</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Identifies an element node</td></tr>
 <tr><td valign="top"><tt>QXmlNodeModelIndex::Namespace</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top">Identifies a namespace node</td></tr>
-<tr><td valign="top"><tt>QXmlNodeModelIndex::ProcessingInstruction</tt></td><td align="center" valign="top"><tt>32</tt></td><td valign="top">Identifies a processing instruction. Not that the optional XML declaration at very beginning of the XML document is not a processing instruction</td></tr>
+<tr><td valign="top"><tt>QXmlNodeModelIndex::ProcessingInstruction</tt></td><td align="center" valign="top"><tt>32</tt></td><td valign="top">Identifies a processing instruction.</td></tr>
 </table></p>
+<p>Note that the optional XML declaration at very beginning of the XML document is not a processing instruction</p>
 <p>See also <a href="qabstractxmlnodemodel.html#kind">QAbstractXmlNodeModel::kind</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -110,41 +108,34 @@
 <p>Standard copy constructor. Creates a <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> instance that is a copy of <i>other</i>.</p>
 <a name="//apple_ref/cpp/instm/QXmlNodeModelIndex/additionalData" />
 <h3 class="fn"><a name="additionalData"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QXmlNodeModelIndex::additionalData () const</h3>
-<p>Returns the second data section that this node index carries.</p>
+<p>Returns the second data value. The node index holds two data values. <a href="qxmlnodemodelindex.html#data">data</a>() returns the first one.</p>
 <p>See also <a href="qxmlnodemodelindex.html#data">data</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlNodeModelIndex/data" />
 <h3 class="fn"><a name="data"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QXmlNodeModelIndex::data () const</h3>
-<p>Returns the first data section that this node index carries.</p>
+<p>Returns the first data value. The node index holds two data values. <a href="qxmlnodemodelindex.html#additionalData">additionalData</a>() returns the second one.</p>
 <p>See also <a href="qxmlnodemodelindex.html#additionalData">additionalData</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlNodeModelIndex/internalPointer" />
 <h3 class="fn"><a name="internalPointer"></a>void * QXmlNodeModelIndex::internalPointer () const</h3>
-<p>Returns the first data section typed as a void * pointer.</p>
+<p>Returns the first data value as a void* pointer.</p>
 <p>See also <a href="qxmlnodemodelindex.html#additionalData">additionalData</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlNodeModelIndex/isNull" />
 <h3 class="fn"><a name="isNull"></a>bool QXmlNodeModelIndex::isNull () const</h3>
-<p>Returns <tt>true</tt> if this <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> is a default constructed value, otherwise <tt>false</tt>.</p>
-<p>A <tt>null</tt> <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> instance doesn't represent any node and cannot be used in conjunction with <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>.</p>
+<p>Returns true if this <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> is a default constructed value, otherwise false.</p>
+<p>A null <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> doesn't represent any node and cannot be used in conjunction with <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a>.</p>
 <a name="//apple_ref/cpp/instm/QXmlNodeModelIndex/model" />
 <h3 class="fn"><a name="model"></a>const <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> * QXmlNodeModelIndex::model () const</h3>
-<p>Returns the <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> that this node index belongs to. <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> does not own <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> nor keep track of its lifetime, so this pointer will dangle whenthe <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> is deallocated.</p>
-<p>There is no setter for this, <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> instances are created with <a href="qabstractxmlnodemodel.html#createIndex">QAbstractXmlNodeModel::createIndex</a>().</p>
+<p>Returns the <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> that this node index refers to. <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> does not own <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> and does not keep track of its lifetime, so this pointer will dangle if the <a href="qabstractxmlnodemodel.html">QAbstractXmlNodeModel</a> is deallocated first.</p>
+<p>There is no setter for the node model because instances of <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> instances are only created with <a href="qabstractxmlnodemodel.html#createIndex">QAbstractXmlNodeModel::createIndex</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlNodeModelIndex/operator!=" />
 <h3 class="fn"><a name="operator-not-eq"></a>bool QXmlNodeModelIndex::operator!= ( const QXmlNodeModelIndex &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is the same node as this.</p>
 <a name="//apple_ref/cpp/instm/QXmlNodeModelIndex/operator==" />
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QXmlNodeModelIndex::operator== ( const QXmlNodeModelIndex &amp; <i>other</i> ) const</h3>
-<p>Returns true if this node is the same as <i>other</i>.</p>
-<p>In other words, this operator does not compare values, children or names of nodes, it tells whether two nodes have the same node identity. That is, whether they are from the same document and can be found at the exact same place.</p>
-<hr />
-<h2>Related Non-Members</h2>
-<h3 class="fn"><a name="qHash-11"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const QXmlNodeModelIndex &amp; <i>index</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Computes a hash key from the <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> <i>index</i>, and returns it.</p>
-<p>The hash is computed on <a href="qxmlnodemodelindex.html#data">QXmlNodeModelIndex::data</a>(), <a href="qxmlnodemodelindex.html#additionalData">QXmlNodeModelIndex::additionalData</a>(), and <a href="qxmlnodemodelindex.html#model">QXmlNodeModelIndex::model</a>(). This means the hash key can be used for node indexes from different node models.</p>
+<p>Returns true if this node is the same as <i>other</i>. This operator does not compare values, children, or names of nodes. It compares node identities, i.e&#x2e;, whether two nodes are from the same document and are found at the exact same place.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

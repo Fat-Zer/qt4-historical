@@ -49,6 +49,7 @@ int main (int argc, char *argv[])
     Q_INIT_RESOURCE(mediaplayer);
     QApplication app(argc, argv);
     app.setApplicationName("Media Player");
+    app.setOrganizationName("Trolltech");
     app.setQuitOnLastWindowClosed(true);
     
     QString fileString = app.arguments().value(1);

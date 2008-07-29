@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/3rdparty/webkit/WebKit/qt/Api/qwebpage.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/3rdparty/webkit/WebKit/qt/Api/qwebpage.cpp -->
 <head>
   <title>Qt 4.4: QWebPage Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -145,7 +145,7 @@
 <p>The QWebPage class provides an object to view and edit web documents.</p>
 <p>QWebPage holds a main frame responsible for web content, settings, the history of navigated links and actions. This class can be used, together with <a href="qwebframe.html">QWebFrame</a>, to provide functionality like <a href="qwebview.html">QWebView</a> in a widget-less environment.</p>
 <p>QWebPage's API is very similar to <a href="qwebview.html">QWebView</a>, as you are still provided with common functions like <a href="qwebpage.html#action">action</a>() (known as <a href="qwebview.html#pageAction">pageAction()</a> in <a href="qwebview.html">QWebView</a>), <a href="qwebpage.html#triggerAction">triggerAction</a>(), <a href="qwebpage.html#findText">findText</a>() and <a href="qwebpage.html#settings">settings</a>(). More <a href="qwebview.html">QWebView</a>-like functions can be found in the main frame of QWebPage, obtained via <a href="qwebpage.html#mainFrame">QWebPage::mainFrame</a>(). For example, the load(), setUrl() and setHtml() unctions for QWebPage can be accessed using <a href="qwebframe.html">QWebFrame</a>.</p>
-<p>The <a href="qwebpage.html#loadStarted">loadStarted</a>() signal is emitted when the page begins to load.The <a href="qwebpage.html#loadProgress">loadProgress</a>() signal, on the other hand, is emitted whenever an element of the web page completes loading, such as an embedded image, a script, etc. Finally, the <a href="qwebpage.html#loadFinished">loadFinished</a>() signal is emitted when the page has loaded completely. It's argument - either <tt>true</tt> or <tt>false</tt> - indicates load success or failure.</p>
+<p>The <a href="qwebpage.html#loadStarted">loadStarted</a>() signal is emitted when the page begins to load.The <a href="qwebpage.html#loadProgress">loadProgress</a>() signal, on the other hand, is emitted whenever an element of the web page completes loading, such as an embedded image, a script, etc. Finally, the <a href="qwebpage.html#loadFinished">loadFinished</a>() signal is emitted when the page has loaded completely. Its argument, either true or false, indicates whether or not the load operation succeeded.</p>
 <a name="using-qwebpage-in-a-widget-less-environment"></a>
 <h3>Using QWebPage in a Widget-less Environment</h3>
 <p>Before you begin painting a QWebPage object, you need to set the size of the viewport by calling <a href="qwebpage.html#viewportSize-prop">setViewportSize</a>(). Then, you invoke the main frame's render function (<a href="qwebframe.html#render">QWebFrame::render</a>()). An example of this is shown in the code snippet below.</p>
@@ -426,7 +426,7 @@
 <p>Destroys the web page.</p>
 <a name="//apple_ref/cpp/instm/QWebPage/acceptNavigationRequest" />
 <h3 class="fn"><a name="acceptNavigationRequest"></a>bool QWebPage::acceptNavigationRequest ( <a href="qwebframe.html">QWebFrame</a> * <i>frame</i>, const <a href="qnetworkrequest.html">QNetworkRequest</a> &amp; <i>request</i>, <a href="qwebpage.html#NavigationType-enum">NavigationType</a> <i>type</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This function is called whenever <a href="examples.html#webkit">WebKit</a> requests to navigate <i>frame</i> to the resource specified by <i>request</i> by means of the specified navigation type <i>type</i>.</p>
+<p>This function is called whenever WebKit requests to navigate <i>frame</i> to the resource specified by <i>request</i> by means of the specified navigation type <i>type</i>.</p>
 <p>If <i>frame</i> is a null pointer then navigation to a new window is requested. If the request is accepted <a href="qwebpage.html#createWindow">createWindow</a>() will be called.</p>
 <p>The default implementation interprets the page's <a href="qwebpage.html#linkDelegationPolicy-prop">linkDelegationPolicy</a> and emits linkClicked accordingly or returns true to let <a href="qwebpage.html">QWebPage</a> handle the navigation itself.</p>
 <p>See also <a href="qwebpage.html#createWindow">createWindow</a>().</p>
@@ -446,10 +446,10 @@
 <p>A suggested filename may be provided in <i>suggestedFile</i>. The frame originating the request is provided as <i>parentFrame</i>.</p>
 <a name="//apple_ref/cpp/instm/QWebPage/createPlugin" />
 <h3 class="fn"><a name="createPlugin"></a><a href="qobject.html">QObject</a> * QWebPage::createPlugin ( const <a href="qstring.html">QString</a> &amp; <i>classid</i>, const <a href="qurl.html">QUrl</a> &amp; <i>url</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>paramNames</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>paramValues</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This function is called whenever <a href="examples.html#webkit">WebKit</a> encounters a HTML object element with type &quot;application/x-qt-plugin&quot;. The <i>classid</i>, <i>url</i>, <i>paramNames</i> and <i>paramValues</i> correspond to the HTML object element attributes and child elements to configure the embeddable object.</p>
+<p>This function is called whenever WebKit encounters a HTML object element with type &quot;application/x-qt-plugin&quot;. The <i>classid</i>, <i>url</i>, <i>paramNames</i> and <i>paramValues</i> correspond to the HTML object element attributes and child elements to configure the embeddable object.</p>
 <a name="//apple_ref/cpp/instm/QWebPage/createWindow" />
 <h3 class="fn"><a name="createWindow"></a>QWebPage * QWebPage::createWindow ( <a href="qwebpage.html#WebWindowType-enum">WebWindowType</a> <i>type</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This function is called whenever <a href="examples.html#webkit">WebKit</a> wants to create a new window of the given <i>type</i>, for example when a JavaScript program requests to open a document in a new window.</p>
+<p>This function is called whenever WebKit wants to create a new window of the given <i>type</i>, for example when a JavaScript program requests to open a document in a new window.</p>
 <p>If the new window can be created, the new window's <a href="qwebpage.html">QWebPage</a> is returned; otherwise a null pointer is returned.</p>
 <p>If the view associated with the web page is a <a href="qwebview.html">QWebView</a> object, then the default implementation forwards the request to <a href="qwebview.html">QWebView</a>'s createWindow() function; otherwise it returns a null pointer.</p>
 <p>See also <a href="qwebpage.html#acceptNavigationRequest">acceptNavigationRequest</a>().</p>
@@ -570,6 +570,7 @@
 <a name="//apple_ref/cpp/instm/QWebPage/setPluginFactory" />
 <h3 class="fn"><a name="setPluginFactory"></a>void QWebPage::setPluginFactory ( <a href="qwebpluginfactory.html">QWebPluginFactory</a> * <i>factory</i> )</h3>
 <p>Sets the <a href="qwebpluginfactory.html">QWebPluginFactory</a> <i>factory</i> responsible for creating plugins embedded into this <a href="qwebpage.html">QWebPage</a>.</p>
+<p>Note: The plugin factory is only used if the <a href="qwebsettings.html#WebAttribute-enum">QWebSettings::PluginsEnabled</a> attribute is enabled.</p>
 <p>See also <a href="qwebpage.html#pluginFactory">pluginFactory</a>().</p>
 <a name="//apple_ref/cpp/instm/QWebPage/setView" />
 <h3 class="fn"><a name="setView"></a>void QWebPage::setView ( <a href="qwidget.html">QWidget</a> * <i>view</i> )</h3>
@@ -641,6 +642,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -422,15 +422,19 @@ static double getDSTOffsetSimple(double localTimeSeconds)
     time_t localTime = static_cast<time_t>(localTimeSeconds);
 
     tm localTM;
-#if PLATFORM(QT)
+#if PLATFORM(WIN_OS)
+#if COMPILER(MINGW)
+    localTM = *localtime(&localTime);
+#else
+    localtime_s(&localTM, &localTime);
+#endif
+#elif PLATFORM(QT)
     // ### this is not threadsafe but we don't use multiple threads anyway
     // in the Qt build
 #if USE(MULTIPLE_THREADS)
-#error Mulitple threads are currently not supported in the Qt/mingw build
+#error Multiple threads are currently not supported in the Qt/mingw build
 #endif
     localTM = *localtime(&localTime);
-#elif PLATFORM(WIN_OS)
-    localtime_s(&localTM, &localTime);
 #else
     localtime_r(&localTime, &localTM);
 #endif

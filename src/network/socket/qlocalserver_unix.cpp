@@ -82,7 +82,7 @@ bool QLocalServerPrivate::listen(const QString &requestedServerName)
     // Construct the unix address
     struct ::sockaddr_un addr;
     addr.sun_family = PF_UNIX;
-    if (sizeof(sockaddr_un) < (uint)fullServerName.toLatin1().size()) {
+    if (sizeof(addr.sun_path) < (uint)fullServerName.toLatin1().size() + 1) {
         setError(QLatin1String("QLocalServer::listen"));
         return false;
     }

@@ -121,7 +121,7 @@ static void printHelp()
 
 static void printVersion()
 {
-    Location::information( tr("qdoc version 3.0") );
+    Location::information( tr("qdoc version 4.4.1") );
 }
 
 static void processQdocconfFile(const QString &fileName)
@@ -190,7 +190,10 @@ static void processQdocconfFile(const QString &fileName)
     QStringList indexFiles = config.getStringList(CONFIG_INDEXES);
     tree->readIndexes(indexFiles);
 
-    QSet<QString> excludedDirs = config.getStringSet(CONFIG_EXCLUDEDIRS);
+    QSet<QString> excludedDirs;
+    QStringList excludedDirsList = config.getStringList(CONFIG_EXCLUDEDIRS);
+    foreach (QString excludeDir, excludedDirsList)
+        excludedDirs.insert(QDir::fromNativeSeparators(excludeDir));
 
     QSet<QString> headers = QSet<QString>::fromList(
         config.getAllFiles(CONFIG_HEADERS, CONFIG_HEADERDIRS,

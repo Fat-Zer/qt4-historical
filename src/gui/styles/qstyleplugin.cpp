@@ -76,9 +76,10 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QStyle* QStylePlugin::create(const QString& key)
+    \fn QStyle *QStylePlugin::create(const QString& key)
 
     Creates and returns a QStyle object for the given style \a key.
+    If a plugin cannot create a style, it should return 0 instead.
 
     The style key is usually the class name of the required
     style. Note that the keys are case insensitive. For example:

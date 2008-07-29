@@ -582,7 +582,8 @@ QString QAccessibleLineEdit::text(Text t, int child) const
         return str;
     switch (t) {
     case Value:
-        str = lineEdit()->text();
+        if (lineEdit()->echoMode() == QLineEdit::Normal)
+            str = lineEdit()->text();
         break;
     default:
         break;
@@ -612,7 +613,7 @@ QAccessible::State QAccessibleLineEdit::state(int child) const
     QLineEdit *l = lineEdit();
     if (l->isReadOnly())
         state |= ReadOnly;
-    if (l->echoMode() == QLineEdit::Password)
+    if (l->echoMode() != QLineEdit::Normal)
         state |= Protected;
     state |= Selectable;
     if (l->hasSelectedText())

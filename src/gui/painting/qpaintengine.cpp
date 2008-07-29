@@ -57,7 +57,6 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QTextItem
-    \internal
 
     \brief The QTextItem class provides all the information required to draw
     text in a custom paint engine.
@@ -199,6 +198,13 @@ QFont QTextItem::font() const
   \value LinearGradientFill The engine supports linear gradient fills.
   \value MaskedBrush        The engine is capable of rendering brushes that has a
                             texture with an alpha channel or a mask.
+  \value ObjectBoundingModeGradients The engine has native support for gradients
+                            with coordinate mode QGradient::ObjectBoundingMode.
+                            Otherwise, if QPaintEngine::PatternTransform is
+                            supported, object bounding mode gradients are
+                            converted to gradients with coordinate mode
+                            QGradient::LogicalMode and a brush transform for
+                            the coordinate mapping.
   \value PainterPaths       The engine has path support.
   \value PaintOutsidePaintEvent The engine is capable of painting outside of
                                 paint events.
@@ -308,9 +314,7 @@ struct QT_Point {
     by the \a pointCount first points in \a points, using mode \a
     mode.
 
-    The default implementation of this function will try to use drawPath
-    if the engine supports the feature QPaintEngine::PainterPaths or try
-    the float based drawPolygon() implementation if not.
+    \note At least one of the drawPolygon() functions must be reimplemented.
 */
 void QPaintEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
 {
@@ -337,9 +341,7 @@ struct QT_PointF {
     Reimplement this virtual function to draw the polygon defined by the
     \a pointCount first points in \a points, using mode \a mode.
 
-    The default implementation of this function will try to use drawPath()
-    if the engine supports the feature QPaintEngine::PainterPaths or try
-    the int based drawPolygon() implementation if not.
+    \note At least one of the drawPolygon() functions must be reimplemented.
 */
 void QPaintEngine::drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
 {

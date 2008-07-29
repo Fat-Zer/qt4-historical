@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/tools/assistant/lib/qhelpenginecore.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/tools/assistant/lib/qhelpenginecore.cpp -->
 <head>
   <title>Qt 4.4: QHelpEngineCore Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -18,6 +18,7 @@
 <p>The QHelpEngineCore class provides the core functionality of the help system. <a href="#details">More...</a></p>
 <pre> #include &lt;QHelpEngineCore&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p>Inherited by <a href="qhelpengine.html">QHelpEngine</a>.</p>
+<p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="qhelpenginecore-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -126,7 +127,7 @@
 <p>See also <a href="qhelpenginecore.html#setCustomValue">setCustomValue</a>() and <a href="qhelpenginecore.html#removeCustomValue">removeCustomValue</a>().</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/documentationFileName" />
 <h3 class="fn"><a name="documentationFileName"></a><a href="qstring.html">QString</a> QHelpEngineCore::documentationFileName ( const <a href="qstring.html">QString</a> &amp; <i>namespaceName</i> )</h3>
-<p>Returns the absolute file name of the Qt documentation file (.qch) identified by the <i>namespaceName</i>. If there is no documentation with the specified namespace registered, an empty string is returned.</p>
+<p>Returns the absolute file name of the Qt compressed help file (.qch) identified by the <i>namespaceName</i>. If there is no Qt compressed help file with the specified namespace registered, an empty string is returned.</p>
 <p>See also <a href="qhelpenginecore.html#namespaceName">namespaceName</a>().</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/error" />
 <h3 class="fn"><a name="error"></a><a href="qstring.html">QString</a> QHelpEngineCore::error () const</h3>
@@ -137,10 +138,10 @@
 <p>/sa <a href="qhelpenginecore.html#findFile">findFile</a>()</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/files" />
 <h3 class="fn"><a name="files"></a><a href="qlist.html">QList</a>&lt;<a href="qurl.html">QUrl</a>&gt; QHelpEngineCore::files ( const <a href="qstring.html">QString</a> <i>namespaceName</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>filterAttributes</i>, const <a href="qstring.html">QString</a> &amp; <i>extensionFilter</i> = QString() )</h3>
-<p>Returns a list of files contained in the documentation set <i>namespaceName</i>. The files can be filtered by <i>filterAttributes</i> as well as by their extension <i>extensionFilter</i> (e.g&#x2e; 'html').</p>
+<p>Returns a list of files contained in the Qt compressed help file <i>namespaceName</i>. The files can be filtered by <i>filterAttributes</i> as well as by their extension <i>extensionFilter</i> (e.g&#x2e; 'html').</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/filterAttributeSets" />
 <h3 class="fn"><a name="filterAttributeSets"></a><a href="qlist.html">QList</a>&lt;<a href="qstringlist.html">QStringList</a>&gt; QHelpEngineCore::filterAttributeSets ( const <a href="qstring.html">QString</a> &amp; <i>namespaceName</i> ) const</h3>
-<p>Returns a list of filter attributes for the different filter sections defined in the documentation set with the namespace <i>namespaceName</i>.</p>
+<p>Returns a list of filter attributes for the different filter sections defined in the Qt compressed help file with the given namespace <i>namespaceName</i>.</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/filterAttributes" />
 <h3 class="fn"><a name="filterAttributes"></a><a href="qstringlist.html">QStringList</a> QHelpEngineCore::filterAttributes () const</h3>
 <p>Returns a list of all defined filter attributes.</p>
@@ -155,18 +156,18 @@
 <p>Returns a map of hits found for the <i>id</i>. A hit contains the title of the document and the url where the keyword is located. The result depends on the current filter, meaning only the keywords registered for the current filter will be returned.</p>
 <a name="//apple_ref/cpp/clm/QHelpEngineCore/metaData" />
 <h3 class="fn"><a name="metaData"></a><a href="qvariant.html">QVariant</a> QHelpEngineCore::metaData ( const <a href="qstring.html">QString</a> &amp; <i>documentationFileName</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the meta data for the documentation file <i>documentationFileName</i>. If there is no data available for <i>name</i>, an invalid QVariant() is returned. The meta data is defined when creating the documention file and cannot be modified later. Common meta data includes e.g&#x2e; the author of the documentation.</p>
+<p>Returns the meta data for the Qt compressed help file <i>documentationFileName</i>. If there is no data available for <i>name</i>, an invalid QVariant() is returned. The meta data is defined when creating the Qt compressed help file and cannot be modified later. Common meta data includes e.g&#x2e; the author of the documentation.</p>
 <a name="//apple_ref/cpp/clm/QHelpEngineCore/namespaceName" />
 <h3 class="fn"><a name="namespaceName"></a><a href="qstring.html">QString</a> QHelpEngineCore::namespaceName ( const <a href="qstring.html">QString</a> &amp; <i>documentationFileName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the namespace name of a documentation set specified by its file name. If the file is not valid, an empty string is returned.</p>
+<p>Returns the namespace name defined for the Qt compressed help file (.qch) specified by its file name. If the file is not valid, an empty string is returned.</p>
 <p>See also <a href="qhelpenginecore.html#documentationFileName">documentationFileName</a>().</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/registerDocumentation" />
 <h3 class="fn"><a name="registerDocumentation"></a>bool QHelpEngineCore::registerDocumentation ( const <a href="qstring.html">QString</a> &amp; <i>documentationFileName</i> )</h3>
-<p>Registers the documentation set contained in the file <i>documentationFileName</i>. One documentation set, uniquely identified by its namespace can only be registered once. True is returned if the registration was successful, otherwise false.</p>
+<p>Registers the Qt compressed help file (.qch) contained in the file <i>documentationFileName</i>. One compressed help file, uniquely identified by its namespace can only be registered once. True is returned if the registration was successful, otherwise false.</p>
 <p>See also <a href="qhelpenginecore.html#unregisterDocumentation">unregisterDocumentation</a>() and <a href="qhelpenginecore.html#error">error</a>().</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/registeredDocumentations" />
 <h3 class="fn"><a name="registeredDocumentations"></a><a href="qstringlist.html">QStringList</a> QHelpEngineCore::registeredDocumentations () const</h3>
-<p>Returns a list of all documentations registered in the collection file. The returned names are the namespaces of the documentation sets.</p>
+<p>Returns a list of all registered Qt compressed help files of the current collection file. The returned names are the namespaces of the registered Qt compressed help files (.qch).</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/removeCustomFilter" />
 <h3 class="fn"><a name="removeCustomFilter"></a>bool QHelpEngineCore::removeCustomFilter ( const <a href="qstring.html">QString</a> &amp; <i>filterName</i> )</h3>
 <p>Returns true if the filter <i>filterName</i> was removed successfully, otherwise false.</p>
@@ -198,7 +199,7 @@
 <p>This signal is emitted when setup is started.</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/unregisterDocumentation" />
 <h3 class="fn"><a name="unregisterDocumentation"></a>bool QHelpEngineCore::unregisterDocumentation ( const <a href="qstring.html">QString</a> &amp; <i>namespaceName</i> )</h3>
-<p>Unregisters the documentation set identified by its <i>namespaceName</i> from the help collection. Returns true on success, otherwise false.</p>
+<p>Unregisters the Qt compressed help file (.qch) identified by its <i>namespaceName</i> from the help collection. Returns true on success, otherwise false.</p>
 <p>See also <a href="qhelpenginecore.html#registerDocumentation">registerDocumentation</a>() and <a href="qhelpenginecore.html#error">error</a>().</p>
 <a name="//apple_ref/cpp/instm/QHelpEngineCore/warning" />
 <h3 class="fn"><a name="warning"></a>void QHelpEngineCore::warning ( const <a href="qstring.html">QString</a> &amp; <i>msg</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -207,6 +208,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

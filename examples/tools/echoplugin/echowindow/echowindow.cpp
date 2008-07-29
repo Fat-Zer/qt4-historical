@@ -118,3 +118,4 @@ bool EchoWindow::loadPlugin()
 
     return false;
 }
+//! [3]

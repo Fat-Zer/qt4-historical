@@ -570,7 +570,7 @@ inline QString QResourceRoot::name(int node) const
 }
 int QResourceRoot::findNode(const QString &_path, const QLocale &locale) const
 {
-    QString path = _path;
+    QString path = QDir::cleanPath(_path);
     {
         QString root = mappingRoot();
         if(!root.isEmpty()) {

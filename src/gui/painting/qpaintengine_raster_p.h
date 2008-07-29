@@ -208,6 +208,7 @@ public:
     ProcessSpans getBrushFunc(const QRect &rect, const QSpanData *data) const;
     ProcessSpans getBrushFunc(const QRectF &rect, const QSpanData *data) const;
 
+    void strokeProjective(const QPainterPath &path);
     void initializeRasterizer(QSpanData *data);
 
     QPointF brushOffset;

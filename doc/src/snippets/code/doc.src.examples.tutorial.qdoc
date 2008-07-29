@@ -1,12 +1,10 @@
 //! [0]
-        qmake -project
-        qmake
+qmake -project
+qmake
 //! [0]
 
 
 //! [1]
-        qmake -project
-        qmake
+qmake -project
+qmake
 //! [1]
-
-

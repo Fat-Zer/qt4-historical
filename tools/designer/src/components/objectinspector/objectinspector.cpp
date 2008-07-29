@@ -60,6 +60,7 @@ TRANSLATOR qdesigner_internal::ObjectInspector
 #include <QtDesigner/QDesignerPropertyEditorInterface>
 
 // shared
+#include <qdesigner_utils_p.h>
 #include <formwindowbase_p.h>
 #include <qdesigner_dnditem_p.h>
 #include <textpropertyeditor_p.h>
@@ -443,9 +444,11 @@ static inline bool mainContainerIsCurrent(const QDesignerFormWindowInterface *fw
 void ObjectInspector::ObjectInspectorPrivate::setFormWindow(QDesignerFormWindowInterface *fwi)
 {
     const bool blocked = m_treeView->selectionModel()->blockSignals(true);
-    m_treeView->setUpdatesEnabled(false);
-    setFormWindowBlocked(fwi);
-    m_treeView->setUpdatesEnabled(true);
+    {
+        UpdateBlocker ub(m_treeView);
+        setFormWindowBlocked(fwi);
+    }
+
     m_treeView->update();
     m_treeView->selectionModel()->blockSignals(blocked);
 }

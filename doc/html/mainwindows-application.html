@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/application.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/application.qdoc -->
 <head>
   <title>Qt 4.4: Application Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -217,9 +217,9 @@
  }</pre>
 <p>Creating actions isn't sufficient to make them available to the user; we must also add them to the menu system. This is what <tt>createMenus()</tt> does. We create a <b>File</b>, an <b>Edit</b>, and a <b>Help</b> menu. <a href="qmainwindow.html#menuBar">QMainWindow::menuBar</a>() lets us access the window's menu bar widget. We don't have to worry about creating the menu bar ourselves; the first time we call this function, the <a href="qmenubar.html">QMenuBar</a> is created.</p>
 <p>Just before we create the <b>Help</b> menu, we call <a href="qmenubar.html#addSeparator">QMenuBar::addSeparator</a>(). This has no effect for most widget styles (e.g&#x2e;, Windows and Mac OS X styles), but for Motif-based styles this makes sure that <b>Help</b> is pushed to the right side of the menu bar. Try running the application with various styles and see the results:</p>
-<pre>         application -style=windows
-         application -style=motif
-         application -style=cde</pre>
+<pre> application -style=windows
+ application -style=motif
+ application -style=cde</pre>
 <p>Let's now review the toolbars:</p>
 <pre> void MainWindow::createToolBars()
  {
@@ -378,6 +378,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

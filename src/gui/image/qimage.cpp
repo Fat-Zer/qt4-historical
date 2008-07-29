@@ -335,9 +335,7 @@ QImageData::~QImageData()
     Because QImage is a QPaintDevice subclass, QPainter can be used to
     draw directly onto images.  When using QPainter on a QImage, the
     painting can be performed in another thread than the current GUI
-    thread, that is except rendering text (because QFont is GUI
-    dependent). To render text in another thread, the text must first
-    be derived as a QPainterPath in the GUI thread.
+    thread.
 
     The QImage class supports several image formats described by the
     \l Format enum. These include monochrome, 8-bit, 32-bit and
@@ -351,6 +349,9 @@ QImageData::~QImageData()
     QImage objects can be passed around by value since the QImage
     class uses \l{Implicit Data Sharing}{implicit data
     sharing}. QImage objects can also be streamed and compared.
+
+    \note If you would like to load QImage objects in a static build of Qt,
+    refer to the \l{How To Create Qt Plugins#Static Plugins}{Plugin HowTo}.
 
     \tableofcontents
 
@@ -1317,7 +1318,9 @@ void QImage::detach()
 
         if (d->ref != 1 || d->ro_data)
             *this = copy();
-        ++d->detach_no;
+
+        if (d)
+            ++d->detach_no;
     }
 }
 
@@ -5661,11 +5664,11 @@ QImage::Endian QImage::systemBitOrder()
 
 static QImage smoothScaled(const QImage &source, int w, int h) {
     QImage src = source;
-    if (src.format() == QImage::Format_ARGB32_Premultiplied)
-        src = src.convertToFormat(QImage::Format_ARGB32);
+    if (src.format() == QImage::Format_ARGB32)
+        src = src.convertToFormat(QImage::Format_ARGB32_Premultiplied);
     else if (src.depth() < 32) {
         if (src.hasAlphaChannel())
-            src = src.convertToFormat(QImage::Format_ARGB32);
+            src = src.convertToFormat(QImage::Format_ARGB32_Premultiplied);
         else
             src = src.convertToFormat(QImage::Format_RGB32);
     }

@@ -12,7 +12,7 @@
         scene.addItem(...
         ...
         QPrinter printer(QPrinter::HighResolution);
-        printer.setPageSize(QPrinter::A4);
+        printer.setPaperSize(QPrinter::A4);
 
         QPainter painter(&printer);
         scene.render(&painter);

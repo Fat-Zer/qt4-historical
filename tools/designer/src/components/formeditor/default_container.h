@@ -130,9 +130,9 @@ private:
 template <class Container>
 class SingleChildContainer: public QDesignerContainerExtension
 {
+protected:
+    explicit SingleChildContainer(Container *widget, bool active = true);
 public:
-    explicit SingleChildContainer(Container *widget);
-
     virtual int count() const;
     virtual QWidget *widget(int index) const;
     virtual int currentIndex() const;
@@ -142,20 +142,21 @@ public:
     virtual void remove(int /*index*/) {}
 
 private:
+    const bool m_active;
     Container *m_container;
 };
 
 template <class Container>
-SingleChildContainer<Container>::SingleChildContainer(Container *widget) :
+SingleChildContainer<Container>::SingleChildContainer(Container *widget, bool active) :
+    m_active(active),
     m_container(widget)
 {
-    Q_ASSERT(m_container->widget() == 0);
 }
 
 template <class Container>
 int SingleChildContainer<Container>::count() const
 {
-    return m_container->widget() ? 1 : 0;
+    return  m_active && m_container->widget() ? 1 : 0;
 }
 
 template <class Container>
@@ -167,7 +168,7 @@ QWidget *SingleChildContainer<Container>::widget(int /* index */) const
 template <class Container>
 int SingleChildContainer<Container>::currentIndex() const
 {
-    return m_container->widget() ? 0 : -1;
+    return m_active && m_container->widget() ? 0 : -1;
 }
 
 template <class Container>

@@ -87,6 +87,7 @@ namespace Phonon
             Q_OBJECT
         public:
             WorkerThread();
+            ~WorkerThread();
 
             virtual void run();
 
@@ -97,7 +98,7 @@ namespace Phonon
             quint16 addUrlToRender(const QString &url);
             quint16 addFilterToRender(const Filter &filter);
 
-            void addGraphForEventManagement(Graph graph);
+            void replaceGraphForEventManagement(Graph newGraph, Graph oldGraph);
 
     		void abortCurrentRender(qint16 renderId);
 
@@ -105,7 +106,7 @@ namespace Phonon
             void signalStop();
 
         Q_SIGNALS:
-            void asyncRenderFinished(quint16, HRESULT, QSet<Filter>, bool);
+            void asyncRenderFinished(quint16, HRESULT, Graph);
             void asyncSeekingFinished(quint16, qint64);
             void stateReady(IGraphBuilder*, Phonon::State);
             void eventReady(IGraphBuilder*, long eventCode, long param1);
@@ -117,7 +118,7 @@ namespace Phonon
                 Render,
                 Seek,
                 ChangeState,
-                AddGraph //just updates recalls WaitForMultipleObject
+                ReplaceGraph //just updates recalls WaitForMultipleObject
             };
 
             struct Work
@@ -125,6 +126,7 @@ namespace Phonon
                 Task task;
                 quint16 id;
                 Graph graph;
+                Graph oldGraph;
                 Filter filter;
                 QString url;
                 union

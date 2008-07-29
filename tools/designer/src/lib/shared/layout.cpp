@@ -1040,8 +1040,8 @@ bool Grid::locateWidget(QWidget *w, int &row, int &col, int &rowspan, int &colsp
 
     row = startIndex / m_ncols;
     col = startIndex % m_ncols;
-    for (rowspan = 1; row + rowspan < m_nrows && cell(row + rowspan, col) == w; rowspan++);
-    for (colspan = 1; col + colspan < m_ncols && cell(row, col + colspan) == w; colspan++);
+    for (rowspan = 1; row + rowspan < m_nrows && cell(row + rowspan, col) == w; rowspan++) {}
+    for (colspan = 1; col + colspan < m_ncols && cell(row, col + colspan) == w; colspan++) {}
     return true;
 }
 
@@ -1165,6 +1165,12 @@ void removeIntVecDuplicates(QVector<int> &v)
             ++current;
 }
 
+// Ensure a non-zero size for a widget geometry (squeezed spacers)
+inline QRect expandGeometry(const QRect &rect)
+{
+    return rect.isEmpty() ? QRect(rect.topLeft(), rect.size().expandedTo(QSize(1, 1))) : rect;
+}
+
 template <class GridLikeLayout, int LayoutType, int GridMode>
 QWidgetList GridLayout<GridLikeLayout, LayoutType, GridMode>::buildGrid(const QWidgetList &widgetList)
 {
@@ -1185,7 +1191,7 @@ QWidgetList GridLayout<GridLikeLayout, LayoutType, GridMode>::buildGrid(const QW
     // Using push_back would look nicer, but operator[] is much faster
     int index  = 0;
     for (int i = 0; i < widgetCount; ++i) {
-        const QRect widgetPos = widgetList.at(i)->geometry();
+        const QRect widgetPos = expandGeometry(widgetList.at(i)->geometry());
         x[index]   = widgetPos.left();
         x[index+1] = widgetPos.right();
         y[index]   = widgetPos.top();
@@ -1200,13 +1206,15 @@ QWidgetList GridLayout<GridLikeLayout, LayoutType, GridMode>::buildGrid(const QW
     removeIntVecDuplicates(x);
     removeIntVecDuplicates(y);
 
-    m_grid.resize(y.size() - 1, x.size() - 1);
+    // Note that left == right and top == bottom for size 1 items; reserve
+    // enough space
+    m_grid.resize(y.size(), x.size());
 
     const  QWidgetList::const_iterator cend = widgetList.constEnd();
     for (QWidgetList::const_iterator it = widgetList.constBegin(); it != cend; ++it) {
         QWidget *w = *it;
         // Mark the cells in the grid that contains a widget
-        const QRect widgetPos = w->geometry();
+        const QRect widgetPos = expandGeometry(w->geometry());
         QRect c(0, 0, 0, 0); // rect of columns/rows
 
         // From left til right (not including)

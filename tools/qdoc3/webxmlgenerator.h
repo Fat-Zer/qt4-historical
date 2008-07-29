@@ -81,6 +81,8 @@ protected:
 
 private:
     const Node *findNode(const Atom *atom, const Node *relative, CodeMarker *marker);
+    void startLink(QXmlStreamWriter &writer, const Atom *atom, const Node *node,
+                   const Node *relative);
     QString targetType(const Node *node);
 
     const Tree *tre;

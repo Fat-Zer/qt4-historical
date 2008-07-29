@@ -49,64 +49,62 @@ QT_BEGIN_NAMESPACE
 
 /*!
   \class QAbstractUriResolver
-  \brief The QAbstractUriResolver class provides a callback interface that is used to rewrite one URI as another.
+  \brief The QAbstractUriResolver class is a callback interface for resolving Uniform Resource Identifiers.
   \since 4.4
   \reentrant
   \ingroup xml-tools
 
-  Uniform Resource Identifiers, URIs, are strings that identify
-  or name a resource. That URIs are not more specific than that, makes
-  them versatelite, global identifiers.
+  A Uniform Resource Identifier (URI) is a string that uniquely
+  identifies a resource. URIs are versatile global identifiers. It is
+  often useful to transform a URI that identifies something logical
+  into a URI that locates something physical (a URL), or to simply map
+  a URI to a different URI. QAbstractUriResolver::resolve() provides
+  this functionality.
 
-  However, in some circumstances it can be useful to turn a URI that
-  identifies something logical, into a URI that locates something physical(an URL),
-  or to simply rewrite one URI into a completely different. QAbstractUriResolver
-  offers this functionality through its resolve() function.
+  For example, one could write a QAbstractUriResolver subclass that
+  rewrites library ISBN number URIs as book title URLs, e.g.,
+  \e{urn:isbn:0-345-33973-8} would be rewritten as
+  \e{file:///books/returnOfTheKing.doc}. Or a QAbstractUriResolver
+  subclass could be written for a web browser to let the web browser
+  protect the user's private files by mapping incoming requests for
+  them to null URIs.
 
-  For instance, one could write a QAbstractUriResolver subclass that rewrites \c urn:isbn:0-345-33973-8
-  into an actual file: \c file:///books/returnOfTheKing.doc. Or a web browser could disallow
-  certain URIs, as part of protecting the user's private files from malicious scripts.
-
-  \sa {http://en.wikipedia.org/wiki/Uniform_Resource_Identifier} {Wikipedia, Uniform Resource Identifier}
+  \sa {http://en.wikipedia.org/wiki/Uniform_Resource_Identifier}
 */
 
 /*!
-  Constructs a QAbstractUriResolver instance.
-
-  The argument \a parent is sent to the QObject's constructor.
+  Constructs a QAbstractUriResolver with the specified \a parent.
  */
 QAbstractUriResolver::QAbstractUriResolver(QObject *parent) : QObject(parent)
 {
 }
 
 /*!
-  Destructs this QAbstractUriResolver instance.
+  Destructor.
  */
 QAbstractUriResolver::~QAbstractUriResolver()
 {
 }
 
 /*!
-    \fn QUrl QAbstractUriResolver::resolve(const QUrl &relative,
-                                           const QUrl &baseURI) const = 0;
+  \fn QUrl QAbstractUriResolver::resolve(const QUrl &relative, const QUrl &baseURI) const
 
-    Given \a relative and \a baseURI, returns the URI that actually should be used.
+  Returns the \a relative URI resolved using the \a baseURI.
 
-    \a baseURI is the URI that the caller would use for resolving \a relative
-    into an absolute URI.
+  The caller guarantees that both \a relative and \a baseURI are
+  valid, and that \a baseURI is absolute. \a relative can be relative,
+  absolute, or empty.
 
-    The caller guarantees that \a baseURI is valid and absolute, and that \a relative is
-    valid or empty and may be relative or absolute.
+  The returned QUrl can be a default constructed QUrl. If it is not a
+  default constructed QUrl, it will be absolute and valid. If a default
+  constructed QUrl is returned, it means the \a relative URI was not
+  accepted to be resolved.
 
-    The implementation guarantees that the returned QUrl is absolute or a
-    default constructed QUrl. In other cases, effects are undefined. If a default
-    constructed QUrl is returned, it signals that this QAbstractUriResolver did not accept
-    the URI requested to be resolved.
+  If the reimplemented resolve() function decides it has nothing to do
+  about resolving the \a relative URI, it should simply return the \a
+  relative URI resolved against the \a baseURI, i.e.:
 
-    This means if this QAbstractUriResolvers has no particular task to do with the URI, it
-    should simply return \a relative resolved against \a baseURI, which is done by:
-
-    \snippet doc/src/snippets/code/src.xmlpatterns.api.qabstracturiresolver.cpp 0
+  \snippet doc/src/snippets/code/src.xmlpatterns.api.qabstracturiresolver.cpp 0
 
   \sa QUrl::isRelative(), QUrl::isValid()
  */

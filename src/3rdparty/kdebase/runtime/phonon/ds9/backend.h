@@ -25,6 +25,7 @@ along with this library.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtCore/QList>
 
 #include "compointer.h"
+#include "backendnode.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -60,7 +61,7 @@ namespace Phonon
             bool startConnectionChange(QSet<QObject *>);
             bool endConnectionChange(QSet<QObject *>);
 
-            ComPointer<IMoniker> getAudioOutputMoniker(int index) const;
+            Filter getAudioOutputFilter(int index) const;
 
         Q_SIGNALS:
             void objectDescriptionChanged(ObjectDescriptionType);

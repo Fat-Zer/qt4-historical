@@ -79,7 +79,7 @@ QDataStream &qt_stream_out_qcolorgroup(QDataStream &s, const QColorGroup &g)
         int max = QPalette::NColorRoles;
         if (s.version() <= QDataStream::Qt_2_1)
             max = QPalette::HighlightedText + 1;
-        if (s.version() <= QDataStream::Qt_4_3)
+        else if (s.version() <= QDataStream::Qt_4_3)
             max = QPalette::AlternateBase + 1;
         for(int r = 0 ; r < max ; r++)
             s << g.brush((QPalette::ColorRole)r);
@@ -302,18 +302,26 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
 
 /*!
     \fn const QBrush & QPalette::toolTipBase() const
+    \since 4.4
 
     Returns the tool tip base brush of the current color group. This brush is
     used by QToolTip and QWhatsThis.
+
+    \note Tool tips use the Inactive color group of QPalette, because tool
+    tips are not active windows.
 
     \sa ColorRole brush()
 */
 
 /*!
     \fn const QBrush & QPalette::toolTipText() const
+    \since 4.4
 
     Returns the tool tip text brush of the current color group. This brush is
     used by QToolTip and QWhatsThis.
+
+    \note Tool tips use the Inactive color group of QPalette, because tool
+    tips are not active windows.
 
     \sa ColorRole brush()
 */
@@ -425,10 +433,10 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     "base" rather than literal colors like "red" or "turquoise". The color
     roles are enumerated and defined in the \l ColorRole documentation.
 
-				We strongly recommend that you use the default palette of the
-				current style (returned by QApplication::palette()) and
-				modify that as necessary. This is done by Qt's widgets when they
-				are drawn.
+                                We strongly recommend that you use the default palette of the
+                                current style (returned by QApplication::palette()) and
+                                modify that as necessary. This is done by Qt's widgets when they
+                                are drawn.
 
     To modify a color group you call the functions
     setColor() and setBrush(), depending on whether you want a pure
@@ -488,10 +496,14 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
                           QAbstractItemView::setAlternatingRowColors()).
 
     \value ToolTipBase Used as the background color for QToolTip and
-                          QWhatsThis.
+                          QWhatsThis. Tool tips use the Inactive color group
+                          of QPalette, because tool tips are not active
+                          windows.
 
     \value ToolTipText Used as the foreground color for QToolTip and
-                          QWhatsThis.
+                          QWhatsThis. Tool tips use the Inactive color group
+                          of QPalette, because tool tips are not active
+                          windows.
 
     \value Text  The foreground color used with \c Base. This is usually
                  the same as the \c WindowText, in which case it must provide
@@ -962,7 +974,7 @@ qint64 QPalette::cacheKey() const
 */
 QPalette QPalette::resolve(const QPalette &other) const
 {
-    if (*this == other && resolve_mask == other.resolve_mask
+    if ((*this == other && resolve_mask == other.resolve_mask)
         || resolve_mask == 0) {
         QPalette o = other;
         o.resolve_mask = resolve_mask;
@@ -1021,7 +1033,7 @@ QDataStream &operator<<(QDataStream &s, const QPalette &p)
             int max = QPalette::ToolTipText + 1;
             if (s.version() <= QDataStream::Qt_2_1)
                 max = QPalette::HighlightedText + 1;
-            if (s.version() <= QDataStream::Qt_4_3)
+            else if (s.version() <= QDataStream::Qt_4_3)
                 max = QPalette::AlternateBase + 1;
             for (int r = 0; r < max; r++)
                 s << p.d->br[grp][r];

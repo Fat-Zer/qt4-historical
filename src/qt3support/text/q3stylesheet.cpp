@@ -1463,9 +1463,9 @@ void Q3StyleSheet::scaleFont(QFont& font, int logicalSize) const
         s = baseSize;
     }
     if (pixel)
-        font.setPixelSize(s);
+        font.setPixelSize(qMax(1, s));
     else
-        font.setPointSize(s);
+        font.setPointSize(qMax(1, s));
 }
 
 QT_END_NAMESPACE

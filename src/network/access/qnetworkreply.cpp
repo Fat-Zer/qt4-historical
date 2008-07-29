@@ -59,8 +59,9 @@ QNetworkReplyPrivate::QNetworkReplyPrivate()
 
 /*!
     \class QNetworkReply
-    \brief The QNetworkReply class contains the data and headers for a request posted with QNetworkAccessManager
     \since 4.4
+    \brief The QNetworkReply class contains the data and headers for a request
+    posted with QNetworkAccessManager
 
     \reentrant
     \module network
@@ -167,7 +168,7 @@ QNetworkReplyPrivate::QNetworkReplyPrivate()
     \value ProtocolFailure              a breakdown in protocol was
     detected (parsing error, invalid or unexpected responses, etc.)
 
-    \sa error(), error(QNetworkReply::NetworkError)
+    \sa error() 
 */
 
 /*!

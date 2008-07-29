@@ -76,8 +76,10 @@ public:
     virtual bool resolve(const QScriptValueImpl &object,
                          QScriptNameIdImpl *nameId,
                          QScript::Member *member, QScriptValueImpl *base);
-    virtual bool get(const QScriptValueImpl &obj, const Member &m,
+    virtual bool get(const QScriptValueImpl &object, const Member &member,
                      QScriptValueImpl *out_value);
+    virtual bool put(QScriptValueImpl *object, const Member &member,
+                     const QScriptValueImpl &value);
     virtual QScriptClassDataIterator *newIterator(const QScriptValueImpl &object);
 };
 
@@ -167,6 +169,13 @@ bool StringClassData::get(const QScriptValueImpl &object,
     else
         eng->newUndefined(result);
 
+    return true;
+}
+
+bool StringClassData::put(QScriptValueImpl *, const Member &,
+                          const QScriptValueImpl &)
+{
+    // writes to string elements are ignored
     return true;
 }
 

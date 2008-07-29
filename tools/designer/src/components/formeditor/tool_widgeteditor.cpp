@@ -135,8 +135,6 @@ bool WidgetEditorTool::handleEvent(QWidget *widget, QWidget *managedWidget, QEve
     case QEvent::Resize:
     case QEvent::Move:
         m_formWindow->updateSelection(widget);
-        if (event->type() != QEvent::Resize)
-            m_formWindow->updateChildSelections(widget);
         break;
 
     case QEvent::FocusOut:
@@ -229,7 +227,7 @@ bool WidgetEditorTool::handlePaintEvent(QWidget *widget, QWidget *managedWidget,
     return false;
 }
 
-bool WidgetEditorTool::handleDragEnterMoveEvent(QWidget *, QWidget *, QDragMoveEvent *e, bool isEnter)
+bool WidgetEditorTool::handleDragEnterMoveEvent(QWidget *widget, QWidget * /*managedWidget*/, QDragMoveEvent *e, bool isEnter)
 {
     const QDesignerMimeData *mimeData = qobject_cast<const QDesignerMimeData *>(e->mimeData());
     if (!mimeData)
@@ -239,8 +237,8 @@ bool WidgetEditorTool::handleDragEnterMoveEvent(QWidget *, QWidget *, QDragMoveE
         e->ignore();
         return true;
     }
-
-    const QPoint formPos = e->pos();
+    // If custom widgets have acceptDrops=true, the event occurs for them
+    const QPoint formPos = widget != m_formWindow ? widget->mapTo(m_formWindow, e->pos()) : e->pos();
     const QPoint globalPos = m_formWindow->mapToGlobal(formPos);
     const FormWindowBase::WidgetUnderMouseMode wum = mimeData->items().size() == 1 ? FormWindowBase::FindSingleSelectionDropTarget : FormWindowBase::FindMultiSelectionDropTarget;
     QWidget *dropTarget = m_formWindow->widgetUnderMouse(formPos, wum);

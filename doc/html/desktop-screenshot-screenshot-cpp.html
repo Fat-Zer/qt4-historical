@@ -120,8 +120,8 @@
  {
      if (delaySpinBox-&gt;value() != 0)
          qApp-&gt;beep();
-     originalPixmap = QPixmap(); <span class="comment">//</span> clear image for low memory situations
-                                 <span class="comment">//</span> on embedded devices.
+     originalPixmap = QPixmap(); <span class="comment">// clear image for low memory situations</span>
+                                 <span class="comment">// on embedded devices.</span>
      originalPixmap = QPixmap::grabWindow(QApplication::desktop()-&gt;winId());
      updateScreenshotLabel();
 
@@ -193,6 +193,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

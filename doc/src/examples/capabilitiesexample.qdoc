@@ -84,7 +84,7 @@
     parts of both the definition and implementation of the \c Window
     class.
 
-    \snippet phonon/capabilities/window.h windowMembers
+    \snippet examples/phonon/capabilities/window.h windowMembers
 
     We need the slot to notice changes in the backends capabilities. 
 
@@ -101,7 +101,7 @@
 
     Our examination starts with a look at the constructor:
 
-    \snippet phonon/capabilities/window.cpp constructor
+    \snippet examples/phonon/capabilities/window.cpp constructor
 
     After creating the user interface, we call \c updateWidgets(),
     which will fill the widgets with the information we get from the
@@ -118,7 +118,7 @@
     information it has about its abilities and present it in the GUI
     of \c Window. We dissect it here:
 
-    \snippet phonon/capabilities/window.cpp outputDevices
+    \snippet examples/phonon/capabilities/window.cpp outputDevices
 
     The
     \l{Phonon::BackendCapabilities::}{availableAudioOutputDevicesChanged()}
@@ -136,21 +136,21 @@
     descriptions are shown as tooltips and disabled devices are
     shown in gray.
 
-    \snippet phonon/capabilities/window.cpp mimeTypes
+    \snippet examples/phonon/capabilities/window.cpp mimeTypes
 
     The MIME types supported are given as strings in a QStringList. We
     can therefore create a list widget item with the string, and
     append it to the \c mimeListWidget, which displays the available
     MIME types.
 
-    \snippet phonon/capabilities/window.cpp effects
+    \snippet examples/phonon/capabilities/window.cpp effects
 
     As before we add the description and name to our widget, which in
     this case is a QTreeWidget. A particular effect may also have
     parameters, which are inserted in the tree as child nodes of their
     effect.
 
-    \snippet phonon/capabilities/window.cpp effectsParameters
+    \snippet examples/phonon/capabilities/window.cpp effectsParameters
 
     The parameters are only accessible through an instance of the
     \l{Phonon::}{Effect} class. Notice that an effect is created
@@ -166,5 +166,5 @@
     application a name. You do this with
     \l{QCoreApplication::}{setApplicationName()}.
 
-    \snippet phonon/capabilities/main.cpp everything
+    \snippet examples/phonon/capabilities/main.cpp everything
 */

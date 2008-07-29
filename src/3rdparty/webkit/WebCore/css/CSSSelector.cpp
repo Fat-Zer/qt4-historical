@@ -218,10 +218,13 @@ String CSSSelector::selectorText() const
     const AtomicString& prefix = m_tag.prefix();
     const AtomicString& localName = m_tag.localName();
     if (m_match == CSSSelector::None || !prefix.isNull() || localName != starAtom) {
-        if (prefix.isNull())
+        if (prefix.isNull()) {
             str = localName;
-        else
-            str = prefix + "|" + localName;
+        } else {
+            str = prefix;
+            str += "|";
+            str += localName;
+        }
     }
 
     const CSSSelector* cs = this;
@@ -249,8 +252,10 @@ String CSSSelector::selectorText() const
         } else if (cs->hasAttribute()) {
             str += "[";
             const AtomicString& prefix = cs->m_attr.prefix();
-            if (!prefix.isNull())
-                str += prefix + "|";
+            if (!prefix.isNull()) {
+                str += prefix;
+                str += "|";
+            }
             str += cs->m_attr.localName();
             switch (cs->m_match) {
                 case CSSSelector::Exact:

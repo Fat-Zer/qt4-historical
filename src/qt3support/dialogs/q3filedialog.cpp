@@ -1430,7 +1430,7 @@ void QFileListBox::viewportDropEvent(QDropEvent *e)
 bool QFileListBox::acceptDrop(const QPoint &pnt, QWidget *source)
 {
     Q3ListBoxItem *item = itemAt(pnt);
-    if (!item || item && !itemRect(item).contains(pnt)) {
+    if (!item || (item && !itemRect(item).contains(pnt))) {
         if (source == viewport() && startDragDir == filedialog->dirPath())
             return false;
         return true;
@@ -1838,7 +1838,7 @@ void Q3FileDialogQFileListView::viewportDropEvent(QDropEvent *e)
 bool Q3FileDialogQFileListView::acceptDrop(const QPoint &pnt, QWidget *source)
 {
     Q3ListViewItem *item = itemAt(pnt);
-    if (!item || item && !itemRect(item).contains(pnt)) {
+    if (!item || (item && !itemRect(item).contains(pnt))) {
         if (source == viewport() && startDragDir == filedialog->dirPath())
             return false;
         return true;
@@ -3597,8 +3597,8 @@ void Q3FileDialog::okClicked()
             = (Q3FileDialogPrivate::File *)files->currentItem();
         Q3FileDialogPrivate::MCItem * m
             = (Q3FileDialogPrivate::MCItem *)d->moreFiles->item(d->moreFiles->currentItem());
-        if (c && files->isVisible() && files->hasFocus() ||
-             m && d->moreFiles->isVisible()) {
+        if ((c && files->isVisible() && files->hasFocus())
+            || (m && d->moreFiles->isVisible())) {
             if (c && files->isVisible())
                 f = c->info;
             else
@@ -5274,8 +5274,8 @@ bool Q3FileDialog::eventFilter(QObject * o, QEvent * e)
         return true;
     } else if ((o == d->moreFiles || o == d->moreFiles->viewport()) &&
                 e->type() == QEvent::FocusIn) {
-        if (o == d->moreFiles->viewport() && !d->moreFiles->viewport()->hasFocus() ||
-             o == d->moreFiles && !d->moreFiles->hasFocus())
+        if ((o == d->moreFiles->viewport() && !d->moreFiles->viewport()->hasFocus())
+            || (o == d->moreFiles && !d->moreFiles->hasFocus()))
             ((QWidget*)o)->setFocus();
         return false;
     }
@@ -5776,8 +5776,8 @@ void Q3FileDialog::insertEntry(const Q3ValueList<QUrlInfo> &lst, Q3NetworkOperat
             i = new Q3FileDialogPrivate::File(d, &inf, files);
             i2 = new Q3FileDialogPrivate::MCItem(d->moreFiles, i);
 
-            if (d->mode == ExistingFiles && inf.isDir() ||
-                (isDirectoryMode(d->mode) && inf.isFile())) {
+            if ((d->mode == ExistingFiles && inf.isDir())
+                || (isDirectoryMode(d->mode) && inf.isFile())) {
                 i->setSelectable(false);
                 i2->setSelectable(false);
             }
@@ -6003,7 +6003,7 @@ void Q3FileDialog::resortDir()
         item2 = new Q3FileDialogPrivate::MCItem(d->moreFiles, item, item2);
         item->i = item2;
         d->pendingItems.append(item);
-        if (d->mode == ExistingFiles && item->info.isDir() ||
+        if ((d->mode == ExistingFiles && item->info.isDir()) ||
             (isDirectoryMode(d->mode) && item->info.isFile())) {
             item->setSelectable(false);
             item2->setSelectable(false);

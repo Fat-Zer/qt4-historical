@@ -50,6 +50,7 @@
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtCore/QSettings>
 #include <QtXml/QDomDocument>
 #include <QtGui/QMenu>
 #include <QtGui/QHeaderView>
@@ -66,6 +67,9 @@ static const char *rccFileTag = "file";
 static const char *rccAliasAttribute = "alias";
 static const char *rccPrefixAttribute = "prefix";
 static const char *rccLangAttribute = "lang";
+static const char *SplitterPosition = "SplitterPosition";
+static const char *Geometry = "Geometry";
+static const char *QrcDialogC = "QrcDialog";
 
 static QString msgOverwrite(const QString &fname)
 {
@@ -2044,17 +2048,31 @@ QtResourceEditorDialog::QtResourceEditorDialog(QDesignerDialogGuiInterface *dlgG
                     this, SLOT(slotCurrentTreeViewItemChanged(const QModelIndex &)));
 
     d_ptr->m_ui.resourceTreeView->setColumnWidth(0, 200);
-    d_ptr->m_ui.resourceTreeView->setMinimumWidth(400);
-    d_ptr->m_ui.qrcFileList->setMinimumWidth(200);
 
     d_ptr->slotCurrentTreeViewItemChanged(QModelIndex());
     d_ptr->m_removeQrcFileAction->setEnabled(false);
     d_ptr->m_moveUpQrcFileAction->setEnabled(false);
     d_ptr->m_moveDownQrcFileAction->setEnabled(false);
+
+    QSettings settings;
+    settings.beginGroup(QLatin1String(QrcDialogC));
+
+    d_ptr->m_ui.splitter->restoreState(settings.value(QLatin1String(SplitterPosition)).toByteArray());
+    if (settings.contains(QLatin1String(Geometry)))
+        setGeometry(settings.value(QLatin1String(Geometry)).toRect());
+
+    settings.endGroup();
 }
 
 QtResourceEditorDialog::~QtResourceEditorDialog()
 {
+    QSettings settings;
+    settings.beginGroup(QLatin1String(QrcDialogC));
+
+    settings.setValue(QLatin1String(SplitterPosition), d_ptr->m_ui.splitter->saveState());
+    settings.setValue(QLatin1String(Geometry), geometry());
+    settings.endGroup();
+
     delete d_ptr;
 }
 

@@ -152,11 +152,8 @@ void QWidgetAction::setDefaultWidget(QWidget *widget)
     d->defaultWidget->hide();
     d->defaultWidget->setParent(0);
     d->defaultWidgetInUse = false;
-    if (!d->defaultWidget->isEnabled())
-        setEnabled(false);
-    else if (!isEnabled())
+    if (!isEnabled())
         d->defaultWidget->setEnabled(false);
-    d->defaultWidget->installEventFilter(this);
 }
 
 /*!
@@ -244,10 +241,7 @@ bool QWidgetAction::event(QEvent *event)
  */
 bool QWidgetAction::eventFilter(QObject *obj, QEvent *event)
 {
-    Q_D(QWidgetAction);
-    if (obj == d->defaultWidget && event->type() == QEvent::EnabledChange)
-        setEnabled(d->defaultWidget->isEnabled());
-    return QAction::eventFilter(obj, event);
+    return QAction::eventFilter(obj,event);
 }
 
 /*!

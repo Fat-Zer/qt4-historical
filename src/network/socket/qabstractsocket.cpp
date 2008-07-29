@@ -457,8 +457,6 @@ void QAbstractSocketPrivate::resetSocketLayer()
     }
     if (connectTimer) {
         connectTimer->stop();
-        delete connectTimer;
-        connectTimer = 0;
     }
 }
 
@@ -1135,12 +1133,12 @@ void QAbstractSocket::connectToHostImplementation(const QString &hostName, quint
 {
     Q_D(QAbstractSocket);
 #if defined(QABSTRACTSOCKET_DEBUG)
-    qDebug("QAbstractSocket::connectToHost(\"%s\", %i, %i)...", hostName.toLatin1().constData(), port,
+    qDebug("QAbstractSocket::connectToHost(\"%s\", %i, %i)...", qPrintable(hostName), port,
            (int) openMode);
 #endif
 
     if (d->state == ConnectedState || d->state == ConnectingState) {
-        qWarning("QAbstractSocket::connectToHost() called when already connecting/connected");
+        qWarning("QAbstractSocket::connectToHost() called when already connecting/connected to \"%s\"", qPrintable(hostName));
         return;
     }
 
@@ -1167,7 +1165,7 @@ void QAbstractSocket::connectToHostImplementation(const QString &hostName, quint
 
     if (!d_func()->isBuffered)
         openMode |= QAbstractSocket::Unbuffered;
-    setOpenMode(openMode);
+    QIODevice::open(openMode);
     emit stateChanged(d->state);
 
     QHostAddress temp;
@@ -1368,7 +1366,7 @@ bool QAbstractSocket::setSocketDescriptor(int socketDescriptor, SocketState sock
     if (d->threadData->eventDispatcher)
         d->socketEngine->setReceiver(d);
 
-    setOpenMode(openMode);
+    QIODevice::open(openMode);
 
     if (d->state != socketState) {
         d->state = socketState;

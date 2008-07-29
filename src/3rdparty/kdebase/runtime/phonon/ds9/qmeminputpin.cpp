@@ -66,9 +66,8 @@ namespace Phonon
         {
             //this allows to serialize with Receive calls
             QMutexLocker locker(&m_mutexReceive); 
-            foreach(IPin *current, m_outputs) {
-                ComPointer<IPin> conn;
-                current->ConnectedTo(&conn);
+            foreach(QPin *current, m_outputs) {
+                IPin *conn = current->connected();
                 if (conn) {
                     conn->EndOfStream();
                 }
@@ -79,9 +78,8 @@ namespace Phonon
         STDMETHODIMP QMemInputPin::BeginFlush()
         {
             //pass downstream
-            foreach(IPin *current, m_outputs) {
-                ComPointer<IPin> conn;
-                current->ConnectedTo(&conn);
+            foreach(QPin *current, m_outputs) {
+                IPin *conn = current->connected();
                 if (conn) {
                     conn->BeginFlush();
                 }
@@ -94,9 +92,8 @@ namespace Phonon
         STDMETHODIMP QMemInputPin::EndFlush()
         {
             //pass downstream
-            foreach(IPin *current, m_outputs) {
-                ComPointer<IPin> conn;
-                current->ConnectedTo(&conn);
+            foreach(QPin *current, m_outputs) {
+                IPin *conn = current->connected();
                 if (conn) {
                     conn->EndFlush();
                 }
@@ -161,8 +158,7 @@ namespace Phonon
             setMemoryAllocator(alloc);
 
             foreach(QPin *current, outputs()) {
-                ComPointer<IPin> pin;
-                current->ConnectedTo(&pin);
+                IPin *pin = current->connected();
                 if (pin) {
                     ComPointer<IMemInputPin> input(pin, IID_IMemInputPin);
                     input->NotifyAllocator(alloc, m_shouldDuplicateSamples);
@@ -206,8 +202,6 @@ namespace Phonon
             }
 
             foreach(QPin *current, outputs()) {
-                ComPointer<IPin> pin;
-                current->ConnectedTo(&pin);
                 IMediaSample *outSample = m_shouldDuplicateSamples ? 
                     duplicateSampleForOutput(sample, current->memoryAllocator())
                     : sample;
@@ -216,6 +210,7 @@ namespace Phonon
                     m_parent->processSample(outSample);
                 }
 
+                IPin *pin = current->connected();
                 if (pin) {
                     ComPointer<IMemInputPin> input(pin, IID_IMemInputPin);
                     if (input) {
@@ -254,8 +249,7 @@ namespace Phonon
         {
             //we test the output to see if they can block
             foreach(QPin *current, m_outputs) {
-                ComPointer<IPin> input;
-                current->ConnectedTo(&input);
+                IPin *input = current->connected();
                 if (input) {
                     ComPointer<IMemInputPin> meminput(input, IID_IMemInputPin);
                     if (meminput && meminput->ReceiveCanBlock() != S_FALSE) {

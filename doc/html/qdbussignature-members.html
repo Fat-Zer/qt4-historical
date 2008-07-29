@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/dbus/qdbusextratypes.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/dbus/qdbusextratypes.cpp -->
 <head>
   <title>Qt 4.4: List of All Members for QDBusSignature</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -17,10 +17,14 @@
 <p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/>class <a href="qstring-null.html">Null</a></li>
+<li><div class="fn"/>typedef <a href="qstring.html#ConstIterator-typedef">ConstIterator</a></li>
+<li><div class="fn"/>typedef <a href="qstring.html#Iterator-typedef">Iterator</a></li>
 <li><div class="fn"/>enum <a href="qstring.html#NormalizationForm-enum">NormalizationForm</a></li>
 <li><div class="fn"/>enum <a href="qstring.html#SectionFlag-enum">SectionFlag</a></li>
 <li><div class="fn"/>flags <a href="qstring.html#SectionFlag-enum">SectionFlags</a></li>
 <li><div class="fn"/>enum <a href="qstring.html#SplitBehavior-enum">SplitBehavior</a></li>
+<li><div class="fn"/>typedef <a href="qstring.html#const_iterator-typedef">const_iterator</a></li>
+<li><div class="fn"/>typedef <a href="qstring.html#iterator-typedefx">iterator</a></li>
 <li><div class="fn"/><a href="qdbussignature.html#QDBusSignature">QDBusSignature</a> ()</li>
 <li><div class="fn"/><a href="qdbussignature.html#QDBusSignature-2">QDBusSignature</a> ( const char * )</li>
 <li><div class="fn"/><a href="qdbussignature.html#QDBusSignature-3">QDBusSignature</a> ( const QLatin1String &amp; )</li>
@@ -52,6 +56,8 @@
 <li><div class="fn"/><a href="qstring.html#arg-19">arg</a> ( char, int, const QChar &amp; ) const : QString</li>
 <li><div class="fn"/><a href="qstring.html#arg-20">arg</a> ( double, int, char, int, const QChar &amp; ) const : QString</li>
 <li><div class="fn"/><a href="qstring.html#at">at</a> ( int ) const : const QChar</li>
+<li><div class="fn"/><a href="qstring.html#begin">begin</a> () : iterator</li>
+<li><div class="fn"/><a href="qstring.html#begin-2">begin</a> () const : const_iterator</li>
 <li><div class="fn"/><a href="qstring.html#capacity">capacity</a> () const : int</li>
 <li><div class="fn"/><a href="qstring.html#chop">chop</a> ( int )</li>
 <li><div class="fn"/><a href="qstring.html#clear">clear</a> ()</li>
@@ -62,7 +68,9 @@
 <li><div class="fn"/><a href="qstring.html#compare-5">compare</a> ( const QString &amp; ) const : int</li>
 <li><div class="fn"/><a href="qstring.html#compare-6">compare</a> ( const QString &amp;, Qt::CaseSensitivity ) const : int</li>
 <li><div class="fn"/><a href="qstring.html#compare-7">compare</a> ( const QLatin1String &amp;, Qt::CaseSensitivity ) const : int</li>
+<li><div class="fn"/><a href="qstring.html#constBegin">constBegin</a> () const : const_iterator</li>
 <li><div class="fn"/><a href="qstring.html#constData">constData</a> () const : const QChar *</li>
+<li><div class="fn"/><a href="qstring.html#constEnd">constEnd</a> () const : const_iterator</li>
 <li><div class="fn"/><a href="qstring.html#contains">contains</a> ( const QString &amp;, Qt::CaseSensitivity ) const : bool</li>
 <li><div class="fn"/><a href="qstring.html#contains-4">contains</a> ( QChar, Qt::CaseSensitivity ) const : bool</li>
 <li><div class="fn"/><a href="qstring.html#contains-5">contains</a> ( const QRegExp &amp; ) const : bool</li>
@@ -72,6 +80,8 @@
 <li><div class="fn"/><a href="qstring.html#count-4">count</a> () const : int</li>
 <li><div class="fn"/><a href="qstring.html#data">data</a> () : QChar *</li>
 <li><div class="fn"/><a href="qstring.html#data-2">data</a> () const : const QChar *</li>
+<li><div class="fn"/><a href="qstring.html#end">end</a> () : iterator</li>
+<li><div class="fn"/><a href="qstring.html#end-2">end</a> () const : const_iterator</li>
 <li><div class="fn"/><a href="qstring.html#endsWith">endsWith</a> ( const QString &amp;, Qt::CaseSensitivity ) const : bool</li>
 <li><div class="fn"/><a href="qstring.html#endsWith-3">endsWith</a> ( const QLatin1String &amp;, Qt::CaseSensitivity ) const : bool</li>
 <li><div class="fn"/><a href="qstring.html#endsWith-4">endsWith</a> ( const QChar &amp;, Qt::CaseSensitivity ) const : bool</li>
@@ -121,12 +131,12 @@
 <li><div class="fn"/><a href="qstring.html#prepend-3">prepend</a> ( const QByteArray &amp; ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#prepend-4">prepend</a> ( const char * ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#prepend-5">prepend</a> ( QChar ) : QString &amp;</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qstring.html#push_back">push_back</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qstring.html#push_back-2">push_back</a> ( QChar )</li>
 <li><div class="fn"/><a href="qstring.html#push_front">push_front</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qstring.html#push_front-2">push_front</a> ( QChar )</li>
 <li><div class="fn"/><a href="qstring.html#remove">remove</a> ( int, int ) : QString &amp;</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qstring.html#remove-4">remove</a> ( const QString &amp;, Qt::CaseSensitivity ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#remove-5">remove</a> ( QChar, Qt::CaseSensitivity ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#remove-6">remove</a> ( const QRegExp &amp; ) : QString &amp;</li>
@@ -243,6 +253,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/thread/qmutex.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/thread/qmutex.cpp -->
 <head>
   <title>Qt 4.4: QMutex Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -56,26 +56,26 @@
              number /= 2;
          }</pre>
 <p>If these two methods are called in succession, the following happens:</p>
-<pre>         // method1()
-         number *= 5;        // number is now 30
-         number /= 4;        // number is now 7
+<pre>         <span class="comment">// method1()</span>
+         number *= 5;        <span class="comment">// number is now 30</span>
+         number /= 4;        <span class="comment">// number is now 7</span>
 
-         // method2()
-         number *= 3;        // number is now 21
-         number /= 2;        // number is now 10</pre>
+         <span class="comment">// method2()</span>
+         number *= 3;        <span class="comment">// number is now 21</span>
+         number /= 2;        <span class="comment">// number is now 10</span></pre>
 <p>If these two methods are called simultaneously from two threads then the following sequence could result:</p>
-<pre>         // Thread 1 calls method1()
-         number *= 5;        // number is now 30
+<pre>         <span class="comment">// Thread 1 calls method1()</span>
+         number *= 5;        <span class="comment">// number is now 30</span>
 
-         // Thread 2 calls method2().
-         //
-         // Most likely Thread 1 has been put to sleep by the operating
-         // system to allow Thread 2 to run.
-         number *= 3;        // number is now 90
-         number /= 2;        // number is now 45
+         <span class="comment">// Thread 2 calls method2().</span>
+         <span class="comment">//</span>
+         <span class="comment">// Most likely Thread 1 has been put to sleep by the operating</span>
+         <span class="comment">// system to allow Thread 2 to run.</span>
+         number *= 3;        <span class="comment">// number is now 90</span>
+         number /= 2;        <span class="comment">// number is now 45</span>
 
-         // Thread 1 finishes executing.
-         number /= 4;        // number is now 11, instead of 10</pre>
+         <span class="comment">// Thread 1 finishes executing.</span>
+         number /= 4;        <span class="comment">// number is now 11, instead of 10</span></pre>
 <p>If we add a mutex, we should get the result we want:</p>
 <pre>         QMutex mutex;
          int number = 6;
@@ -147,6 +147,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

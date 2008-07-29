@@ -999,25 +999,6 @@ static void qt_qimageScaleAARGBSetup(QImageScaleInfo *isi, unsigned int *dest,
 }
 #endif
 
-QImage qSmoothScaleImageAutoConvert(QImage &src, int dw, int dh)
-{
-    QImage buffer;
-    if (src.isNull())
-        return buffer;
-
-    if (src.format() == QImage::Format_ARGB32_Premultiplied)
-        src = src.convertToFormat(QImage::Format_ARGB32);
-    else if (src.depth() < 32) {
-        if (src.hasAlphaChannel())
-            src = src.convertToFormat(QImage::Format_ARGB32);
-        else
-            src = src.convertToFormat(QImage::Format_RGB32);
-    }
-
-    return qSmoothScaleImage(src, dw, dh);
-}
-
-
 QImage qSmoothScaleImage(const QImage &src, int dw, int dh)
 {
     QImage buffer;
@@ -1038,7 +1019,7 @@ QImage qSmoothScaleImage(const QImage &src, int dw, int dh)
         return QImage();
     }
 
-    if (src.format() == QImage::Format_ARGB32)
+    if (src.format() == QImage::Format_ARGB32_Premultiplied)
         qt_qimageScaleArgb(scaleinfo, (unsigned int *)buffer.scanLine(0),
                            0, 0, 0, 0, dw, dh, dw, w);
     else

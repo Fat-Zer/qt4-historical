@@ -56,7 +56,9 @@ QMutexPrivate::QMutexPrivate(QMutex::RecursionMode mode)
         // mutex was created before initializing WindowsVersion. this
         // can happen when creating the resource file engine handler,
         // for example. try again with just the A version
-#ifndef Q_OS_WINCE
+#ifdef Q_OS_WINCE
+        event = CreateEventW(0, FALSE, FALSE, 0);
+#else
         event = CreateEventA(0, FALSE, FALSE, 0);
 #endif
     } else {

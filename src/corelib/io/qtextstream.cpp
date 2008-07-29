@@ -544,11 +544,11 @@ bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
     if (!codec || autoDetectUnicode) {
         autoDetectUnicode = false;
         
-        if (bytesRead >= 4 && (uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe && uchar(buf[2]) == 0 && uchar(buf[3]) == 0
-                               || uchar(buf[0]) == 0 && uchar(buf[1]) == 0 && uchar(buf[2]) == 0xfe && uchar(buf[3]) == 0xff)) {
+        if (bytesRead >= 4 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe && uchar(buf[2]) == 0 && uchar(buf[3]) == 0)
+                               || (uchar(buf[0]) == 0 && uchar(buf[1]) == 0 && uchar(buf[2]) == 0xfe && uchar(buf[3]) == 0xff))) {
             codec = QTextCodec::codecForName("UTF-32");
-        } else if (bytesRead >= 2 && (uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe
-                               || uchar(buf[0]) == 0xfe && uchar(buf[1]) == 0xff)) {
+        } else if (bytesRead >= 2 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe)
+                                      || (uchar(buf[0]) == 0xfe && uchar(buf[1]) == 0xff))) {
             codec = QTextCodec::codecForName("UTF-16");
         } else if (!codec) {
             codec = QTextCodec::codecForLocale();

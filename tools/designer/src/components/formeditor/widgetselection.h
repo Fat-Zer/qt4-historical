@@ -118,6 +118,7 @@ public:
     void setWidget(QWidget *w);
     bool isUsed() const;
 
+    void updateActive();
     void updateGeometry();
     void hide();
     void show();

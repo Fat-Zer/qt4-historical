@@ -1,12 +1,7 @@
-FORMS     = previewdialogbase.ui \
-            mainwindowbase.ui
-HEADERS   = mainwindow.h \
-            previewdialog.h \
-            previewlabel.h
+FORMS     = mainwindowbase.ui
+HEADERS   = mainwindow.h
 SOURCES   = main.cpp \
-            mainwindow.cpp \
-            previewdialog.cpp \
-            previewlabel.cpp
+            mainwindow.cpp
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/painting/fontsampler

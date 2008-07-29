@@ -393,12 +393,17 @@ bool Moc::parseFunction(FunctionDef *def, bool inMacro)
 
     if (inMacro) {
         next(RPAREN);
+        prev();
     } else {
+        if (test(THROW)) {
+            next(LPAREN);
+            until(RPAREN);
+        }
         if (test(SEMIC))
             ;
         else if ((def->inlineCode = test(LBRACE)))
             until(RBRACE);
-        else if (test(EQ) || test(THROW))
+        else if (test(EQ))
             until(SEMIC);
         else
             error();

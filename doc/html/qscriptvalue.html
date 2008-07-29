@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/script/qscriptvalue.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/script/qscriptvalue.cpp -->
 <head>
   <title>Qt 4.4: QScriptValue Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -213,13 +213,13 @@
    QScriptValue global = engine.globalObject();
    QScriptValue fullName = global.property(&quot;fullName&quot;);
    QScriptValue who = global.property(&quot;somePerson&quot;);
-   qDebug() &lt;&lt; fullName.call(who).toString(); // &quot;John Doe&quot;
+   qDebug() &lt;&lt; fullName.call(who).toString(); <span class="comment">// &quot;John Doe&quot;</span>
 
    engine.evaluate(&quot;function cube(x) { return x * x * x; }&quot;);
    QScriptValue cube = global.property(&quot;cube&quot;);
    QScriptValueList args;
    args &lt;&lt; QScriptValue(&amp;engine, 3);
-   qDebug() &lt;&lt; cube.call(QScriptValue(), args).toNumber(); // 27</pre>
+   qDebug() &lt;&lt; cube.call(QScriptValue(), args).toNumber(); <span class="comment">// 27</span></pre>
 <p>See also <a href="qscriptvalue.html#construct">construct</a>().</p>
 <h3 class="fn"><a name="call-2"></a>QScriptValue QScriptValue::call ( const QScriptValue &amp; <i>thisObject</i>, const QScriptValue &amp; <i>arguments</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -335,11 +335,12 @@
 <p>Returns the value of this <a href="qscriptvalue.html">QScriptValue</a>'s property with the given <i>name</i>, using the given <i>mode</i> to resolve the property.</p>
 <p>If no such property exists, an invalid <a href="qscriptvalue.html">QScriptValue</a> is returned.</p>
 <p>If the property is implemented using a getter function (i.e&#x2e; has the <a href="qscriptvalue.html#PropertyFlag-enum">PropertyGetter</a> flag set), calling property() has side-effects on the script engine, since the getter function will be called (possibly resulting in an uncaught script exception). If an exception occurred, property() returns the value that was thrown (typically an <tt>Error</tt> object).</p>
-<p>See also <a href="qscriptvalue.html#setProperty">setProperty</a>() and <a href="qscriptvalue.html#propertyFlags">propertyFlags</a>().</p>
+<p>See also <a href="qscriptvalue.html#setProperty">setProperty</a>(), <a href="qscriptvalue.html#propertyFlags">propertyFlags</a>(), and <a href="qscriptvalueiterator.html">QScriptValueIterator</a>.</p>
 <h3 class="fn"><a name="property-2"></a>QScriptValue QScriptValue::property ( const <a href="qscriptstring.html">QScriptString</a> &amp; <i>name</i>, const <a href="qscriptvalue.html#ResolveFlag-enum">ResolveFlags</a> &amp; <i>mode</i> = ResolvePrototype ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the value of this <a href="qscriptvalue.html">QScriptValue</a>'s property with the given <i>name</i>, using the given <i>mode</i> to resolve the property.</p>
 <p>This overload of <a href="qscriptvalue.html#property">property</a>() is useful when you need to look up the same property repeatedly, since the lookup can be performed faster when the name is represented as an interned string.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qscriptengine.html#toStringHandle">QScriptEngine::toStringHandle</a>() and <a href="qscriptvalue.html#setProperty">setProperty</a>().</p>
 <h3 class="fn"><a name="property-3"></a>QScriptValue QScriptValue::property ( <a href="qtglobal.html#quint32-typedef">quint32</a> <i>arrayIndex</i>, const <a href="qscriptvalue.html#ResolveFlag-enum">ResolveFlags</a> &amp; <i>mode</i> = ResolvePrototype ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -353,6 +354,7 @@
 <h3 class="fn"><a name="propertyFlags-2"></a><a href="qscriptvalue.html#PropertyFlag-enum">QScriptValue::PropertyFlags</a> QScriptValue::propertyFlags ( const <a href="qscriptstring.html">QScriptString</a> &amp; <i>name</i>, const <a href="qscriptvalue.html#ResolveFlag-enum">ResolveFlags</a> &amp; <i>mode</i> = ResolvePrototype ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the flags of the property with the given <i>name</i>, using the given <i>mode</i> to resolve the property.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qscriptvalue.html#property">property</a>().</p>
 <a name="//apple_ref/cpp/instm/QScriptValue/prototype" />
 <h3 class="fn"><a name="prototype"></a>QScriptValue QScriptValue::prototype () const</h3>
@@ -381,6 +383,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the value of this <a href="qscriptvalue.html">QScriptValue</a>'s property with the given <i>name</i> to the given <i>value</i>. The given <i>flags</i> specify how this property may be accessed by script code.</p>
 <p>This overload of <a href="qscriptvalue.html#setProperty">setProperty</a>() is useful when you need to set the same property repeatedly, since the operation can be performed faster when the name is represented as an interned string.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qscriptengine.html#toStringHandle">QScriptEngine::toStringHandle</a>().</p>
 <h3 class="fn"><a name="setProperty-3"></a>void QScriptValue::setProperty ( <a href="qtglobal.html#quint32-typedef">quint32</a> <i>arrayIndex</i>, const QScriptValue &amp; <i>value</i>, const <a href="qscriptvalue.html#PropertyFlag-enum">PropertyFlags</a> &amp; <i>flags</i> = KeepExistingFlags )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -508,6 +511,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

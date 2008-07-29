@@ -456,6 +456,7 @@ void QTreeView::setItemsExpandable(bool enable)
 
 /*!
   \property QTreeView::expandsOnDoubleClick
+  \since 4.4
   \brief whether the items can be expanded by double-clicking.
 
   This property holds whether the user can expand and collapse items
@@ -588,7 +589,7 @@ void QTreeView::setRowHidden(int row, const QModelIndex &parent, bool hide)
     Q_D(QTreeView);
     if (!d->model)
         return;
-    QModelIndex index = d->model->index(row, 0, parent);
+    QPersistentModelIndex index = d->model->index(row, 0, parent);
     if (!index.isValid())
         return;
 
@@ -816,7 +817,7 @@ void QTreeView::setExpanded(const QModelIndex &index, bool expanded)
 }
 
 /*!
-    \since Qt 4.2
+    \since 4.2
     \property QTreeView::sortingEnabled
     \brief whether sorting is enabled
 
@@ -854,7 +855,7 @@ bool QTreeView::isSortingEnabled() const
 }
 
 /*!
-    \since Qt 4.2
+    \since 4.2
     \property QTreeView::animated
     \brief whether animations are enabled
 
@@ -919,6 +920,10 @@ bool QTreeView::allColumnsShowFocus() const
     If this property is true then the item text is wrapped where
     necessary at word-breaks; otherwise it is not wrapped at all.
     This property is false by default.
+
+    Note that even if wrapping is enabled, the cell will not be
+    expanded to fit all text. Ellipsis will be inserted according to
+    the current \l{QAbstractItemView::}{textElideMode}.
 */
 void QTreeView::setWordWrap(bool on)
 {
@@ -2319,6 +2324,9 @@ static bool treeViewItemLessThan(const QTreeViewItem &left,
 void QTreeView::rowsInserted(const QModelIndex &parent, int start, int end)
 {
     Q_D(QTreeView);
+    qSort(d->expandedIndexes.begin(), d->expandedIndexes.end());
+    qSort(d->hiddenIndexes.begin(), d->hiddenIndexes.end());
+
     // if we are going to do a complete relayout anyway, there is no need to update
     if (d->delayedLayout.isActive()) {
         QAbstractItemView::rowsInserted(parent, start, end);
@@ -2341,7 +2349,7 @@ void QTreeView::rowsInserted(const QModelIndex &parent, int start, int end)
                                                     : d->viewItems.at(parentItem).total) - 1;
 
         int firstColumn = 0;
-        while (isColumnHidden(firstColumn) && firstColumn < header()->count())
+        while (isColumnHidden(firstColumn) && firstColumn < header()->count() - 1)
             ++firstColumn;
 
         const int delta = end - start + 1;
@@ -2481,16 +2489,18 @@ void QTreeView::sortByColumn(int column, Qt::SortOrder order)
 }
 
 /*!
-    Selects all the items in the underlying model.
+  \reimp
 */
 void QTreeView::selectAll()
 {
     Q_D(QTreeView);
     if (!selectionModel())
         return;
-    d->select(d->viewItems.first().index, d->viewItems.last().index,
-              QItemSelectionModel::ClearAndSelect
-              |QItemSelectionModel::Rows);
+    SelectionMode mode = d->selectionMode;
+    if (mode != SingleSelection && !d->viewItems.isEmpty())
+        d->select(d->viewItems.first().index, d->viewItems.last().index,
+                  QItemSelectionModel::ClearAndSelect
+                  |QItemSelectionModel::Rows);
 }
 
 /*!
@@ -3008,6 +3018,9 @@ void QTreeViewPrivate::layout(int i)
     // remove hidden items
     if (hidden > 0)
         viewItems.remove(last + 1, hidden); // collapse
+
+    if (i > -1 && viewItems.at(i).total == (uint)count)
+        return; // nothing changed
 
     while (parent != root) {
         Q_ASSERT(i > -1);
@@ -3587,6 +3600,8 @@ void QTreeViewPrivate::rowsRemoved(const QModelIndex &parent,
                                    int start, int end, bool after)
 {
     Q_Q(QTreeView);
+    qSort(expandedIndexes.begin(), expandedIndexes.end());
+    qSort(hiddenIndexes.begin(), hiddenIndexes.end());
 
     // if we are going to do a complete relayout anyway, there is no need to update
     if (delayedLayout.isActive()) {

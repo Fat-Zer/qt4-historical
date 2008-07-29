@@ -28,8 +28,8 @@ EOF
     ;;
 
 *g++*|c++)
-    case `"$COMPILER" --version 2>/dev/null` in
-    *3.3*)
+    case `"$COMPILER" -dumpversion 2>/dev/null` in
+    3.*)
         ;;
     *)
 

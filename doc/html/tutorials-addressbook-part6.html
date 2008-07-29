@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/tutorials/addressbook.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/tutorials/addressbook.qdoc -->
 <head>
   <title>Qt 4.4: Address Book 6 - Loading and Saving</title>
   <link rel="prev" href="tutorials-addressbook-part5.html" />
@@ -96,7 +96,7 @@
 
          QDataStream in(&amp;file);
          in.setVersion(QDataStream::Qt_4_3);
-         contacts.empty();   <span class="comment">//</span> empty existing contacts
+         contacts.empty();   <span class="comment">// empty existing contacts</span>
          in &gt;&gt; contacts;</pre>
 <p>Otherwise, we instantiate a <a href="qdatastream.html">QDataStream</a> object, <tt>in</tt>, set its version as above and read the serialized data into the <tt>contacts</tt> data structure. Note that we empty <tt>contacts</tt> before reading data into it to simplify the file reading process. A more advanced method would be to read the contacts into temporary <a href="qmap.html">QMap</a> object, and copy only the contacts that do not already exist in <tt>contacts</tt>.</p>
 <pre>         if (contacts.isEmpty()) {
@@ -121,6 +121,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

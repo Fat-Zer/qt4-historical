@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/styles/qstylefactory.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/styles/qstylefactory.cpp -->
 <head>
   <title>Qt 4.4: QStyleFactory Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -36,8 +36,9 @@
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/clm/QStyleFactory/create" />
 <h3 class="fn"><a name="create"></a><a href="qstyle.html">QStyle</a> * QStyleFactory::create ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Creates a <a href="qstyle.html">QStyle</a> object that matches the given <i>key</i>. This is either a built-in style, or a style from a style plugin.</p>
-<p>Note that keys are case insensitive.</p>
+<p>Creates and returns a <a href="qstyle.html">QStyle</a> object that matches the given <i>key</i>, or returns 0 if no matching style is found.</p>
+<p>Both built-in styles and styles from style plugins are queried for a matching style.</p>
+<p><b>Note:</b> The keys used are case insensitive.</p>
 <p>See also <a href="qstylefactory.html#keys">keys</a>().</p>
 <a name="//apple_ref/cpp/clm/QStyleFactory/keys" />
 <h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QStyleFactory::keys ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -47,6 +48,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

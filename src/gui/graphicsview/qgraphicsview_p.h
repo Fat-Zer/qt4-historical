@@ -105,6 +105,7 @@ public:
     bool useLastMouseEvent;
     void replayLastMouseEvent();
     void storeMouseEvent(QMouseEvent *event);
+    void mouseMoveEventHandler(QMouseEvent *event);
 
     QPointF lastCenterPoint;
     bool keepLastCenterPoint;

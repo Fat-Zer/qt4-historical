@@ -214,11 +214,11 @@ static QT_FT_Long QT_FT_MulDiv(QT_FT_Long  a, QT_FT_Long  b, QT_FT_Long  c)
 /* Disable the tracing mechanism for simplicity -- developers can      */
 /* activate it easily by redefining these two macros.                  */
 #ifndef QT_FT_ERROR
-#define QT_FT_ERROR( x )  do ; while ( 0 )     /* nothing */
+#define QT_FT_ERROR( x )  do {} while ( 0 )     /* nothing */
 #endif
 
 #ifndef QT_FT_TRACE
-#define QT_FT_TRACE( x )  do ; while ( 0 )     /* nothing */
+#define QT_FT_TRACE( x )  do {} while ( 0 )     /* nothing */
 #endif
 
 #define Raster_Err_None          0

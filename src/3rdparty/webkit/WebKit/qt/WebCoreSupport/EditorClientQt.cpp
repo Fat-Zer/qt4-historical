@@ -204,7 +204,6 @@ void EditorClientQt::respondToChangedContents()
 {
     if (dumpEditingCallbacks)
         printf("EDITING DELEGATE: webViewDidChange:WebViewDidChangeNotification\n");
-    m_page->d->modified = true;
 }
 
 void EditorClientQt::respondToChangedSelection()
@@ -412,6 +411,11 @@ void EditorClientQt::handleKeypress(KeyboardEvent* event)
                             frame->editor()->execCommand("Undo");
                             break;
                         default:
+                            // catch combination AltGr+key or Ctrl+Alt+key
+                            if (kevent->altKey() && !kevent->text().isEmpty()) {
+                                frame->editor()->insertText(kevent->text(), event);
+                                break;
+                            }
                             return;
                     }
                 } else return;

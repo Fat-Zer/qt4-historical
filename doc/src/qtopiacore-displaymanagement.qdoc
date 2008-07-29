@@ -129,7 +129,7 @@
         \o \c littleendian
         \o LinuxFb
         \o Tells the driver it must handle a little-endian frame 
-	buffer in a big-endian system.
+        buffer in a big-endian system.
     \row
         \o \c mmWidth=<value> \target mmWidth
         \o LinuxFb, QVFb
@@ -164,10 +164,7 @@
 
     \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 5
 
-    \table 100%
-    \header \o Subdrivers
-    \row \o
-
+    \section1 Subdrivers and Multiple Drivers
 
     The VNC, Transformed and Multi screen drivers depend on
     subdrivers. The general syntax for specifying a driver is as
@@ -204,6 +201,7 @@
 
     \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 9
 
-    \endtable
-
+    In this last example, Qt is using two screen drivers simultaneously,
+    displaying output on both the device's screen and across a network on
+    VNC client displays.
 */

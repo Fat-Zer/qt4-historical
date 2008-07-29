@@ -59,6 +59,7 @@ class QHelpEngineCore;
 class QHelpEngine;
 class CentralWidget;
 class ContentWindow;
+class BookmarkManager;
 class BookmarkWidget;
 class CmdLineParser;
 class QtDocInstaller;
@@ -75,6 +76,9 @@ public:
 
     static void activateCurrentBrowser();
     static void activateCurrentCentralWidgetTab();
+    static QString collectionFileDirectory(bool createDir = false,
+        const QString &cacheDir = QString());
+    static QString defaultHelpCollectionFileName();
 
 public:
     void hideContents();
@@ -83,6 +87,7 @@ public:
     void hideSearch();
     void setIndexString(const QString &str);
     void expandTOC(int depth);
+    bool usesDefaultCollection() const;
 
 signals:
     void initDone();
@@ -104,7 +109,6 @@ private slots:
     void copyAvailable(bool yes);
     void updateNavigationItems();
     void showNewAddress(const QUrl &url);
-    void saveBookmarks(const QByteArray &bookmarks);
     void addNewBookmark(const QString &title, const QString &url);
     void showTopicChooser(const QMap<QString, QUrl> &links, const QString &keyword);    
     void updateApplicationFont();
@@ -133,6 +137,7 @@ private:
     IndexWindow *m_indexWindow;
     ContentWindow *m_contentWindow;
     BookmarkWidget *m_bookmarkWidget;
+    BookmarkManager *m_bookmarkManager;
     QLineEdit *m_addressLineEdit;
     QComboBox *m_filterCombo;
 

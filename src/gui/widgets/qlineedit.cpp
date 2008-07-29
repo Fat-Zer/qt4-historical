@@ -2238,11 +2238,12 @@ void QLineEdit::focusInEvent(QFocusEvent *e)
     Q_D(QLineEdit);
     if (e->reason() == Qt::TabFocusReason ||
          e->reason() == Qt::BacktabFocusReason  ||
-         e->reason() == Qt::ShortcutFocusReason)
+         e->reason() == Qt::ShortcutFocusReason) {
         if (d->maskData)
             d->moveCursor(d->nextMaskBlank(0));
         else if (!d->hasSelectedText())
             selectAll();
+    }
 #ifdef QT_KEYPAD_NAVIGATION
     if (!QApplication::keypadNavigationEnabled() || (hasEditFocus() && e->reason() == Qt::PopupFocusReason))
 #endif

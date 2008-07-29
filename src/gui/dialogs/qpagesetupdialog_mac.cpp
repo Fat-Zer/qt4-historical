@@ -61,7 +61,14 @@ public:
             DisposePMSheetDoneUPP(upp);
             upp = 0;
         }
-        sheetCallbackMap.remove(ep->session);
+        QHash<PMPrintSession, QPageSetupDialogPrivate *>::iterator it = sheetCallbackMap.begin();
+        while (it != sheetCallbackMap.end()) {
+            if (it.value() == this) {
+                it = sheetCallbackMap.erase(it);
+            } else {
+                ++it;
+            }
+        }
     }
     static void pageSetupDialogSheetDoneCallback(PMPrintSession printSession, WindowRef /*documentWindow*/, Boolean accepted) {
         QPageSetupDialogPrivate *priv = sheetCallbackMap.value(printSession);
@@ -127,13 +134,26 @@ int QPageSetupDialog::exec()
         modal_widg.setObjectName(QLatin1String(__FILE__ "__modal_dlg"));
         modal_widg.createWinId();
 	QApplicationPrivate::enterModal(&modal_widg);
-    QApplicationPrivate::native_modal_dialog_active = true;
+        QApplicationPrivate::native_modal_dialog_active = true;
         PMSessionPageSetupDialog(ep->session, ep->format, &d->acceptStatus);
         while (d->sheetBlocks) {
             qApp->processEvents(QEventLoop::WaitForMoreEvents);
         }
 	QApplicationPrivate::leaveModal(&modal_widg);
-    QApplicationPrivate::native_modal_dialog_active = false;
+        QApplicationPrivate::native_modal_dialog_active = false;
+        
+        // if the margins have changed, we have to use the margins from the new 
+        // PMFormat object
+        if (d->acceptStatus == Accepted) {
+            PMPaper paper;
+            PMPaperMargins margins;
+            PMGetPageFormatPaper(ep->format, &paper);
+            PMPaperGetMargins(paper, &margins);
+            ep->leftMargin = margins.left;
+            ep->topMargin = margins.top;
+            ep->rightMargin = margins.right;
+            ep->bottomMargin = margins.bottom;
+        }
     }
     return d->acceptStatus ? Accepted : Rejected;
 }

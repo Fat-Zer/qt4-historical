@@ -49,6 +49,7 @@
 #include <QDomDocument>
 
 #include "atom.h"
+#include "doc.h"
 #include "htmlgenerator.h"
 #include "location.h"
 #include "node.h"
@@ -62,13 +63,15 @@ struct InheritanceBound
     Node::Access access;
     QStringList basePath;
     QString dataTypeWithTemplateArgs;
+    InnerNode *parent;
 
     InheritanceBound()
 	: access(Node::Public) { }
     InheritanceBound( Node::Access access0, const QStringList& basePath0,
-		      const QString &dataTypeWithTemplateArgs0)
+		      const QString &dataTypeWithTemplateArgs0, InnerNode *parent)
 	: access(access0), basePath(basePath0),
-	  dataTypeWithTemplateArgs(dataTypeWithTemplateArgs0) { }
+	  dataTypeWithTemplateArgs(dataTypeWithTemplateArgs0),
+          parent(parent) { }
 };
 
 struct Target
@@ -330,10 +333,11 @@ Atom *Tree::findTarget(const QString &target, const Node *node) const
 
 void Tree::addBaseClass( ClassNode *subclass, Node::Access access,
 			 const QStringList &basePath,
-			 const QString &dataTypeWithTemplateArgs )
+			 const QString &dataTypeWithTemplateArgs,
+                         InnerNode *parent )
 {
     priv->unresolvedInheritanceMap[subclass].append(
-	    InheritanceBound(access, basePath, dataTypeWithTemplateArgs));
+	    InheritanceBound(access, basePath, dataTypeWithTemplateArgs, parent));
 }
 
 
@@ -346,6 +350,11 @@ void Tree::addPropertyFunction(PropertyNode *property, const QString &funcName,
 void Tree::addToGroup(Node *node, const QString &group)
 {
     priv->groupMap.insert(group, node);
+}
+
+QMultiMap<QString, Node *> Tree::groups() const
+{
+    return priv->groupMap;
 }
 
 void Tree::resolveInheritance(NamespaceNode *rootNode)
@@ -420,6 +429,8 @@ void Tree::resolveInheritance(int pass, ClassNode *classe)
 	QList<InheritanceBound>::ConstIterator b = bounds.begin();
 	while ( b != bounds.end() ) {
 	    ClassNode *baseClass = (ClassNode *)findNode((*b).basePath, Node::Class);
+            if (!baseClass && (*b).parent)
+                baseClass = (ClassNode *)findNode((*b).basePath, Node::Class, (*b).parent);
 	    if (baseClass)
 		classe->addBaseClass((*b).access, baseClass, (*b).dataTypeWithTemplateArgs);
 	    ++b;
@@ -462,7 +473,7 @@ void Tree::resolveGroups()
         prevGroup = i.key();
     }
 
-    priv->groupMap.clear();
+    //priv->groupMap.clear();
 }
 
 void Tree::resolveTargets()
@@ -839,8 +850,12 @@ void Tree::readIndexSection(const QDomElement &element,
         section->setStatus(Node::Commendable);
 
     section->setModuleName(element.attribute("module"));
-    if (!indexUrl.isEmpty())
-        section->setUrl(indexUrl + "/" + href);
+    if (!indexUrl.isEmpty()) {
+        if (indexUrl.startsWith("."))
+            section->setUrl(href);
+        else
+            section->setUrl(indexUrl + "/" + href);
+    }
 
     // Create some content for the node.
     QSet<QString> emptySet;
@@ -1705,7 +1720,8 @@ QString Tree::fullDocumentLocation(const Node *node) const
             return "";
     } else if (node->type() == Node::Fake) {
         return node->fileBase() + ".html";
-    }
+    } else if (node->fileBase().isEmpty())
+        return "";
 
     QString parentName;
     Node *parentNode = 0;
@@ -1763,7 +1779,7 @@ QString Tree::fullDocumentLocation(const Node *node) const
         case Node::Variable:
             return parentName + "#" + node->name() + "-var";
         case Node::Target:
-            return parentName + "#" + node->name();
+            return parentName + "#" + Doc::canonicalTitle(node->name());
         case Node::Fake:
             {
             QString pageName = node->name();

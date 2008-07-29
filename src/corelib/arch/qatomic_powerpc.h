@@ -179,7 +179,7 @@ inline bool QBasicAtomicInt::testAndSetAcquire(int expectedValue, int newValue)
 inline bool QBasicAtomicInt::testAndSetRelease(int expectedValue, int newValue)
 {
     register int result;
-    asm volatile("lwsync\n"
+    asm volatile("eieio\n"
                  "lwarx  %[result], 0, %[_q_value]\n"
                  "xor.   %[result], %[result], %[expectedValue]\n"
                  "bne    $+12\n"
@@ -226,7 +226,7 @@ inline int QBasicAtomicInt::fetchAndStoreAcquire(int newValue)
 inline int QBasicAtomicInt::fetchAndStoreRelease(int newValue)
 {
     register int originalValue;
-    asm volatile("lwsync\n"
+    asm volatile("eieio\n"
                  "lwarx  %[originalValue], 0, %[_q_value]\n"
                  "stwcx. %[newValue], 0, %[_q_value]\n"
                  "bne-   $-8\n"
@@ -277,7 +277,7 @@ inline int QBasicAtomicInt::fetchAndAddRelease(int valueToAdd)
 {
     register int originalValue;
     register int newValue;
-    asm volatile("lwsync\n"
+    asm volatile("eieio\n"
                  "lwarx  %[originalValue], 0, %[_q_value]\n"
                  "add    %[newValue], %[originalValue], %[valueToAdd]\n"
                  "stwcx. %[newValue], 0, %[_q_value]\n"
@@ -340,7 +340,7 @@ template <typename T>
 Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::testAndSetRelease(T *expectedValue, T *newValue)
 {
     register void *result;
-    asm volatile("lwsync\n"
+    asm volatile("eieio\n"
                  LPARX"  %[result], 0, %[_q_value]\n"
                  "xor.   %[result], %[result], %[expectedValue]\n"
                  "bne    $+12\n"
@@ -390,7 +390,7 @@ template <typename T>
 Q_INLINE_TEMPLATE T *QBasicAtomicPointer<T>::fetchAndStoreRelease(T *newValue)
 {
     register T *originalValue;
-    asm volatile("lwsync\n"
+    asm volatile("eieio\n"
                  LPARX"  %[originalValue], 0, %[_q_value]\n"
                  STPCX"  %[newValue], 0, %[_q_value]\n"
                  "bne-   $-8\n"
@@ -444,7 +444,7 @@ Q_INLINE_TEMPLATE T *QBasicAtomicPointer<T>::fetchAndAddRelease(qptrdiff valueTo
 {
     register T *originalValue;
     register T *newValue;
-    asm volatile("lwsync\n"
+    asm volatile("eieio\n"
                  LPARX"  %[originalValue], 0, %[_q_value]\n"
                  "add    %[newValue], %[originalValue], %[valueToAdd]\n"
                  STPCX"  %[newValue], 0, %[_q_value]\n"

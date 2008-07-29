@@ -83,14 +83,26 @@ public:
 };
 
 
+#ifndef Q_CC_SUN // ambiguity between const T * and T *
+
 template <class T>
 inline bool operator==(const T *o, const QPointer<T> &p)
 { return o == p.operator->(); }
 
-#ifndef Q_CC_SUN // ambiguity between const T * and T *
 template<class T>
 inline bool operator==(const QPointer<T> &p, const T *o)
 { return p.operator->() == o; }
+
+#else
+
+template<class T>
+inline bool operator==(const void *o, const QPointer<T> &p)
+{ return o == p.operator->(); }
+
+template<class T>
+inline bool operator==(const QPointer<T> &p, const void *o)
+{ return p.operator->() == o; }
+
 #endif
 
 template <class T>
@@ -106,14 +118,26 @@ inline bool operator==(const QPointer<T> &p1, const QPointer<T> &p2)
 { return p1.operator->() == p2.operator->(); }
 
 
+#ifndef Q_CC_SUN // ambiguity between const T * and T *
+
 template <class T>
 inline bool operator!=(const T *o, const QPointer<T> &p)
 { return o != p.operator->(); }
 
-#ifndef Q_CC_SUN // ambiguity between const T * and T *
 template<class T>
 inline bool operator!= (const QPointer<T> &p, const T *o)
 { return p.operator->() != o; }
+
+#else
+
+template<class T>
+inline bool operator!= (const void *o, const QPointer<T> &p)
+{ return o != p.operator->(); }
+
+template<class T>
+inline bool operator!= (const QPointer<T> &p, const void *o)
+{ return p.operator->() != o; }
+
 #endif
 
 template <class T>

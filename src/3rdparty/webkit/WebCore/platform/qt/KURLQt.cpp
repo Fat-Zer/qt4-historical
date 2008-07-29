@@ -40,22 +40,35 @@ KURL::operator QUrl() const
     QByteArray ba;
     ba.reserve(s.length());
 
-    for (const char *src = s.ascii(); *src; ++src) {
+    const char *src = s.ascii();
+    const char *host = strstr(src, "://");
+    if (host)
+        host += 3;
+
+    const char *path = host ? strstr(host, "/") : 0;
+
+    for (; *src; ++src) {
         const char chr = *src;
 
         switch (chr) {
+            encode:
             case '{':
             case '}':
             case '|':
             case '\\':
             case '^':
-            case '[':
-            case ']':
             case '`':
                 ba.append('%');
                 ba.append(toHex((chr & 0xf0) >> 4));
                 ba.append(toHex(chr & 0xf));
                 break;
+            case '[':
+            case ']':
+                // special case: if this is the host part, don't encode
+                // otherwise, encode
+                if (!host || (path && src >= path))
+                    goto encode;
+                // fall through
             default:
                 ba.append(chr);
                 break;

@@ -109,41 +109,24 @@ public:
 
     uchar *map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags);
     bool unmap(uchar *ptr);
-#ifdef Q_WS_WIN
-    QHash<uchar *, QPair<int /*offset*/, HANDLE /*handle*/> > maps;
-#else
-    QHash<uchar *, QPair<int /*offset*/, int /*handle|len*/> > maps;
-#endif
-    int fd;
+
     FILE *fh;
 #ifdef Q_WS_WIN
     HANDLE fileHandle;
+    QHash<uchar *, QPair<int /*offset*/, HANDLE /*handle*/> > maps;
+    mutable int cachedFd;
+    mutable DWORD fileAttrib;
+#else
+    QHash<uchar *, QPair<int /*offset*/, int /*handle|len*/> > maps;
+    mutable QT_STATBUF st;
 #endif
+    int fd;
+
 #ifdef Q_USE_DEPRECATED_MAP_API
     void mapHandleClose();
     HANDLE fileMapHandle;
 #endif
 
-    mutable uint is_sequential : 2;
-    mutable uint could_stat : 1;
-    mutable uint tried_stat : 1;
-#ifdef Q_OS_UNIX
-    mutable uint need_lstat : 1;
-    mutable uint is_link : 1;
-#endif
-#ifdef Q_WS_WIN
-    mutable DWORD fileAttrib;
-#else
-    mutable QT_STATBUF st;
-#endif
-    bool doStat() const;
-    bool isSymlink() const;
-
-#if defined(Q_OS_WIN32)
-    int sysOpen(const QString &, int flags);
-#endif
-
-    bool closeFileHandle;
     enum LastIOCommand
     {
         IOFlushCommand,
@@ -152,6 +135,22 @@ public:
     };
     LastIOCommand  lastIOCommand;
     bool lastFlushFailed;
+    bool closeFileHandle;
+
+    mutable uint is_sequential : 2;
+    mutable uint could_stat : 1;
+    mutable uint tried_stat : 1;
+#ifdef Q_OS_UNIX
+    mutable uint need_lstat : 1;
+    mutable uint is_link : 1;
+#endif
+    bool doStat() const;
+    bool isSymlink() const;
+
+#if defined(Q_OS_WIN32)
+    int sysOpen(const QString &, int flags);
+#endif
+
 #if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
     static void resolveLibs();
     static bool resolveUNCLibs_NT();

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/widgets/q3scrollview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3scrollview.cpp -->
 <head>
   <title>Qt 4.4: Q3ScrollView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -453,19 +453,19 @@
 <p>The function should draw the rectangle (<i>clipx</i>, <i>clipy</i>, <i>clipw</i>, <i>cliph</i>) of the contents using painter <i>p</i>. The clip rectangle is in the scrollview's coordinates.</p>
 <p>For example:</p>
 <pre>     {
-         // Fill a 40000 by 50000 rectangle at (100000,150000)
+         <span class="comment">// Fill a 40000 by 50000 rectangle at (100000,150000)</span>
 
-         // Calculate the coordinates...
+         <span class="comment">// Calculate the coordinates...</span>
          int x1 = 100000, y1 = 150000;
          int x2 = x1+40000-1, y2 = y1+50000-1;
 
-         // Clip the coordinates so X/Windows will not have problems...
+         <span class="comment">// Clip the coordinates so X/Windows will not have problems...</span>
          if (x1 &lt; clipx) x1=clipx;
          if (y1 &lt; clipy) y1=clipy;
          if (x2 &gt; clipx+clipw-1) x2=clipx+clipw-1;
          if (y2 &gt; clipy+cliph-1) y2=clipy+cliph-1;
 
-         // Paint using the small coordinates...
+         <span class="comment">// Paint using the small coordinates...</span>
          if (x2 &gt;= x1 &amp;&amp; y2 &gt;= y1)
              p-&gt;fillRect(x1, y1, x2-x1+1, y2-y1+1, red);
      }</pre>
@@ -626,6 +626,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

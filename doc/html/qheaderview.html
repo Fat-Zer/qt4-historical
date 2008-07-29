@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/itemviews/qheaderview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qheaderview.cpp -->
 <head>
   <title>Qt 4.4: QHeaderView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -200,6 +200,7 @@
 <a name="appearance"></a>
 <h3>Appearance</h3>
 <p><a href="qtablewidget.html">QTableWidget</a> and <a href="qtableview.html">QTableView</a> create default headers. If you want the headers to be visible, you can use <a href="qwidget.html#visible-prop">setVisible()</a>.</p>
+<p>Not all <a href="qt.html#ItemDataRole-enum">ItemDataRole</a>s will have an effect on a QHeaderView. If you need to draw other roles, you can subclass QHeaderView and reimplement <a href="qwidget.html#paintEvent">paintEvent()</a>. QHeaderView respects the following item data roles: <a href="qt.html#ItemDataRole-enum">TextAlignmentRole</a>, <a href="qt.html#ItemDataRole-enum">DisplayRole</a>, <a href="qt.html#ItemDataRole-enum">FontRole</a>, <a href="qt.html#ItemDataRole-enum">DecorationRole</a>, <a href="qt.html#ItemDataRole-enum">ForegroundRole</a>, and <a href="qt.html#ItemDataRole-enum">BackgroundRole</a>.</p>
 <p><b>Note:</b> Each header renders the data for each section itself, and does not rely on a delegate. As a result, calling a header's <a href="qabstractitemview.html#setItemDelegate">setItemDelegate</a>() function will have no effect.</p>
 <p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qlistview.html">QListView</a>, <a href="qtableview.html">QTableView</a>, and <a href="qtreeview.html">QTreeView</a>.</p>
 <hr />
@@ -577,6 +578,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

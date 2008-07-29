@@ -79,7 +79,7 @@
 #include "qdebug.h"
 #include "private/qstylesheetstyle_p.h"
 #include "private/qstyle_p.h"
-#include "qinputcontext.h"
+#include "private/qinputcontext_p.h"
 #include "qfileinfo.h"
 
 #if defined (Q_WS_WIN)
@@ -260,6 +260,14 @@ void QWidgetPrivate::scrollChildren(int dx, int dy)
     }
 }
 
+QInputContext *QWidgetPrivate::inputContext() const
+{
+#ifndef QT_NO_IM
+    if (ic)
+        return ic;
+#endif
+    return qApp->inputContext();
+}
 
 /*!
     This function returns the QInputContext for this widget. By
@@ -277,11 +285,7 @@ QInputContext *QWidget::inputContext()
     if (!testAttribute(Qt::WA_InputMethodEnabled))
         return 0;
 
-#ifndef QT_NO_IM
-    if (d->ic)
-        return d->ic;
-#endif
-    return qApp->inputContext();
+    return d->inputContext();
 }
 
 /*!
@@ -1183,6 +1187,10 @@ void QWidget::create(WId window, bool initializeWindow, bool destroyOldWindow)
             // enforce a native handle for the parent unless the Qt::WA_DontCreateNativeAncestors
             // attribute is set.
             d->createWinId(window);
+            // Nothing more to do.
+            Q_ASSERT(testAttribute(Qt::WA_WState_Created));
+            Q_ASSERT(internalWinId());
+            return;
         }
     }
 
@@ -1423,6 +1431,7 @@ void QWidgetPrivate::createExtra()
         extra->maxw = extra->maxh = QWIDGETSIZE_MAX;
         extra->explicitMinSize = 0;
         extra->autoFillBackground = 0;
+        extra->nativeChildrenForced = 0;
 #ifndef QT_NO_CURSOR
         extra->curs = 0;
 #endif
@@ -1784,7 +1793,7 @@ bool QWidgetPrivate::paintOnScreen() const
 #else
     Q_Q(const QWidget);
     if (q->testAttribute(Qt::WA_PaintOnScreen)
-            || !q->isWindow() && q->window()->testAttribute(Qt::WA_PaintOnScreen)) {
+            || (!q->isWindow() && q->window()->testAttribute(Qt::WA_PaintOnScreen))) {
         return true;
     }
 
@@ -1956,6 +1965,8 @@ QWidget *QWidget::find(WId id)
     Portable in principle, but if you use it you are probably about to
     do something non-portable. Be careful.
 
+    \note We recommend that you do not store this value as it is likely to
+    change during run-time.
     \sa find()
 */
 WId QWidget::winId() const
@@ -1978,9 +1989,9 @@ void QWidgetPrivate::createWinId(WId winid)
         if (!q->isWindow()) {
             QWidget *parent = q->parentWidget();
             QWidgetPrivate *pd = parent->d_func();
+            if (forceNativeWindow && !q->testAttribute(Qt::WA_DontCreateNativeAncestors))
+                parent->setAttribute(Qt::WA_NativeWindow);
             if (!parent->internalWinId()) {
-                if (forceNativeWindow && !q->testAttribute(Qt::WA_DontCreateNativeAncestors))
-                    parent->setAttribute(Qt::WA_NativeWindow);
                 pd->createWinId();
             }
 
@@ -2020,9 +2031,13 @@ void QWidget::createWinId()
 }
 
 /*!
+    \since 4.4
+
     Returns the effective window system identifier of the widget, i.e.
     the native parent's window system identifier.
 
+    \note We recommend that you do not store this value as it is likely to
+    change during run-time.
     \sa nativeParentWidget()
 */
 WId QWidget::effectiveWinId() const
@@ -2116,6 +2131,9 @@ QStyle *QWidget::style() const
     purposes, where you want to show Qt's styling capabilities. Real
     applications should avoid it and use one consistent GUI style
     instead.
+
+    \warning Qt style sheets are currently not supported for custom QStyle
+    subclasses. We plan to address this in some future release.
 
     \sa style(), QStyle, QApplication::style(), QApplication::setStyle()
 */
@@ -2738,7 +2756,7 @@ void QWidgetPrivate::setEnabled_helper(bool enable)
 #endif
 #if defined (Q_WS_WIN)
     if (q->hasFocus())
-        QWinInputContext::updateImeStatus(q, true);
+        QInputContextPrivate::updateImeStatus(q, true);
 #endif
     QEvent e(QEvent::EnabledChange);
     QApplication::sendEvent(q, &e);
@@ -3577,6 +3595,8 @@ QWidget *QWidget::window() const
 }
 
 /*!
+    \since 4.4
+
     Returns the native parent for this widget, i.e. the next ancestor widget
     that has a system identifier, or 0 if it does not have any native parent.
 
@@ -4313,9 +4333,11 @@ void QWidget::render(QPainter *painter, const QPoint &targetOffset,
     }
 
     QPixmap pixmap(size);
+    if (!(renderFlags & DrawWindowBackground))
+        pixmap.fill(Qt::transparent);
     render(&pixmap, QPoint(), toBePainted, renderFlags);
 
-    const bool restore = painter->renderHints() & QPainter::SmoothPixmapTransform;
+    const bool restore = !(painter->renderHints() & QPainter::SmoothPixmapTransform);
     painter->setRenderHints(QPainter::SmoothPixmapTransform, true);
 
     painter->drawPixmap(QRect(targetOffset, size), pixmap);
@@ -4345,15 +4367,30 @@ void QWidget::render(QPainter *painter, const QPoint &targetOffset,
     extra->inRenderWithPainter = false;
 }
 
+bool QWidgetPrivate::isAboutToShow() const
+{
+    if (data.in_show)
+        return true;
+
+    Q_Q(const QWidget);
+    if (q->isHidden())
+        return false;
+
+    // The widget will be shown if any of its ancestors are about to show.
+    QWidget *parent = q->parentWidget();
+    return parent ? parent->d_func()->isAboutToShow() : false;
+}
+
 QRegion QWidgetPrivate::prepareToRender(const QRegion &region, QWidget::RenderFlags renderFlags, QWidget *topLevel)
 {
     if (!topLevel)
         return QRegion();
 
     Q_Q(QWidget);
+    const bool isVisible = q->isVisible();
 
     // Make sure the widget is laid out correctly.
-    if (!q->isVisible()) {
+    if (!isVisible && !isAboutToShow()) {
         if (!topLevel->testAttribute(Qt::WA_WState_Created))
             topLevel->d_func()->createWinId();
         topLevel->ensurePolished();
@@ -4394,7 +4431,7 @@ QRegion QWidgetPrivate::prepareToRender(const QRegion &region, QWidget::RenderFl
             if (!widget->isWindow() && widget->parentWidget()->d_func()->layout)
                 widget->parentWidget()->d_func()->layout->invalidate();
         }
-    } else {
+    } else if (isVisible) {
         topLevel->d_func()->sendPendingMoveAndResizeEvents(true, true);
     }
 
@@ -4958,6 +4995,7 @@ QString QWidget::windowIconText() const
 
 /*!
     \property QWidget::windowFilePath
+    \since 4.4
     \brief the file path associated with a widget.
 
     This property only makes sense for windows. It associates a file path with
@@ -5164,6 +5202,17 @@ void QWidget::setFocus(Qt::FocusReason reason)
        )
         return;
 
+#ifndef QT_NO_GRAPHICSVIEW
+    QWidget *previousProxyFocus = 0;
+    if (QTLWExtra *topData = window()->d_func()->maybeTopData()) {
+        if (topData->proxyWidget && topData->proxyWidget->hasFocus()) {
+            previousProxyFocus = topData->proxyWidget->widget()->focusWidget();
+            if (previousProxyFocus && previousProxyFocus->focusProxy())
+                previousProxyFocus = previousProxyFocus->focusProxy();
+        }
+    }
+#endif
+
     QWidget *w = f;
     if (isHidden()) {
         while (w && w->isHidden()) {
@@ -5180,14 +5229,10 @@ void QWidget::setFocus(Qt::FocusReason reason)
 #ifndef QT_NO_GRAPHICSVIEW
     // Update proxy state
     if (QTLWExtra *topData = window()->d_func()->maybeTopData()) {
-        if (topData->proxyWidget) {
-            if (!topData->proxyWidget->hasFocus()) {
-                topData->proxyWidget->setFocus(reason);
-            } else if (!hasFocus()) {
-                // Send event to self
-                QFocusEvent event(QEvent::FocusIn, reason);
-                QApplication::sendEvent(this, &event);
-            }
+        if (topData->proxyWidget && !topData->proxyWidget->hasFocus()) {
+            topData->proxyWidget->d_func()->focusFromWidgetToProxy = 1;
+            topData->proxyWidget->setFocus(reason);
+            topData->proxyWidget->d_func()->focusFromWidgetToProxy = 0;
         }
     }
 #endif
@@ -5201,6 +5246,28 @@ void QWidget::setFocus(Qt::FocusReason reason)
             //setFocusWidget will already post a focus event for us (that the AT client receives) on Windows
 # endif
             QAccessible::updateAccessibility(f, 0, QAccessible::Focus);
+#endif
+#ifndef QT_NO_GRAPHICSVIEW
+        if (QTLWExtra *topData = window()->d_func()->maybeTopData()) {
+            if (topData->proxyWidget) {
+                if (previousProxyFocus && previousProxyFocus != f) {
+                    // Send event to self
+                    QFocusEvent event(QEvent::FocusOut, reason);
+                    QPointer<QWidget> that = previousProxyFocus;
+                    QApplication::sendEvent(previousProxyFocus, &event);
+                    if (that)
+                        QApplication::sendEvent(that->style(), &event);
+                }
+                if (!isHidden()) {
+                    // Send event to self
+                    QFocusEvent event(QEvent::FocusIn, reason);
+                    QPointer<QWidget> that = f;
+                    QApplication::sendEvent(f, &event);
+                    if (that)
+                        QApplication::sendEvent(that->style(), &event);
+                }
+            }
+        }
 #endif
     }
 }
@@ -5357,11 +5424,8 @@ bool QWidget::isActiveWindow() const
 
 #ifndef QT_NO_GRAPHICSVIEW
     if (QTLWExtra *tlwExtra = tlw->d_func()->maybeTopData()) {
-        if (isVisible() && tlwExtra->proxyWidget) {
-            if (tlwExtra->proxyWidget->isWindow())
-                return tlwExtra->proxyWidget->isActiveWindow();
-            return tlwExtra->proxyWidget->hasFocus();
-        }
+        if (isVisible() && tlwExtra->proxyWidget)
+            return tlwExtra->proxyWidget->isActiveWindow();
     }
 #endif
 
@@ -6383,7 +6447,14 @@ void QWidget::setVisible(bool visible)
     } else { // hide
         if (testAttribute(Qt::WA_WState_ExplicitShowHide) && testAttribute(Qt::WA_WState_Hidden))
             return;
-
+#if defined(Q_WS_WIN)
+        // reset WS_DISABLED style in a Blocked window
+        if(isWindow() && QApplicationPrivate::isBlockedByModal(this)) {
+            LONG dwStyle = GetWindowLong(winId(), GWL_STYLE);
+            dwStyle &= ~WS_DISABLED;
+            SetWindowLong(winId(), GWL_STYLE, dwStyle);
+        }
+#endif
         if (QApplicationPrivate::hidden_focus_widget == this)
             QApplicationPrivate::hidden_focus_widget = 0;
 
@@ -6468,10 +6539,17 @@ void QWidgetPrivate::hideChildren(bool spontaneous)
             widget->setAttribute(Qt::WA_WState_Visible, false);
         widget->d_func()->hideChildren(spontaneous);
         QHideEvent e;
-        if (spontaneous)
+        if (spontaneous) {
             QApplication::sendSpontaneousEvent(widget, &e);
-        else
+        } else {
             QApplication::sendEvent(widget, &e);
+            if (widget->internalWinId()
+                && widget->testAttribute(Qt::WA_DontCreateNativeAncestors)) {
+                // hide_sys() on an ancestor won't have any affect on this
+                // widget, so it needs an explicit hide_sys() of its own
+                widget->d_func()->hide_sys();
+            }
+        }
 #ifndef QT_NO_ACCESSIBILITY
         if (!spontaneous)
             QAccessible::updateAccessibility(widget, 0, QAccessible::ObjectHide);
@@ -6835,7 +6913,23 @@ bool QWidget::isAncestorOf(const QWidget *child) const
     return false;
 }
 
-
+#if defined(Q_WS_WIN)
+inline void setDisabledStyle(QWidget *w, bool setStyle)
+{
+    // set/reset WS_DISABLED style.
+    if(w && w->isWindow() && w->isVisible() && w->isEnabled()) {
+        LONG dwStyle = GetWindowLong(w->winId(), GWL_STYLE);
+        if (setStyle)
+            dwStyle |= WS_DISABLED;
+        else
+            dwStyle &= ~WS_DISABLED;
+        SetWindowLong(w->winId(), GWL_STYLE, dwStyle);
+        // we might need to repaint in some situations (eg. menu)
+        if (setStyle)
+            w->repaint();
+    }
+}
+#endif
 
 /*****************************************************************************
   QWidget event handling
@@ -7020,14 +7114,14 @@ bool QWidget::event(QEvent *event)
         break;
     case QEvent::FocusIn:
 #if defined(Q_WS_WIN)
-        QWinInputContext::updateImeStatus(this, true);
+        QInputContextPrivate::updateImeStatus(this, true);
 #endif
         focusInEvent((QFocusEvent*)event);
         break;
 
     case QEvent::FocusOut:
 #if defined(Q_WS_WIN)
-        QWinInputContext::updateImeStatus(this, false);
+        QInputContextPrivate::updateImeStatus(this, false);
 #endif
         focusOutEvent((QFocusEvent*)event);
         break;
@@ -7229,6 +7323,9 @@ bool QWidget::event(QEvent *event)
                     QApplication::sendEvent(o, event);
                 }
             }
+#if defined(Q_WS_WIN)
+            setDisabledStyle(this, (event->type() == QEvent::WindowBlocked));
+#endif
         }
         break;
 #ifndef QT_NO_TOOLTIP
@@ -8465,6 +8562,15 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
     QWidget *oldtlw = window();
     bool newParent = (parent != parentWidget()) || !wasCreated;
 
+#if defined(Q_WS_X11) || defined(Q_WS_WIN)
+    if (newParent && parent) {
+        if (testAttribute(Qt::WA_NativeWindow) && !qApp->testAttribute(Qt::AA_DontCreateNativeWidgetSiblings))
+            parent->d_func()->enforceNativeChildren();
+        else if (parent->d_func()->nativeChildrenForced() || parent->testAttribute(Qt::WA_PaintOnScreen))
+            setAttribute(Qt::WA_NativeWindow);
+    }
+#endif
+
     if (wasCreated) {
         if (!testAttribute(Qt::WA_WState_Hidden)) {
             hide();
@@ -8518,11 +8624,6 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
     }
     d->resolveLayoutDirection();
     d->resolveLocale();
-
-    if (QTLWExtra *extra = oldtlw->d_func()->maybeTopData())
-        extra->sizeAdjusted = false;
-    if (QTLWExtra *extra = window()->d_func()->maybeTopData())
-        extra->sizeAdjusted = false;
 
     // Note: GL widgets under Windows will always need a ParentChange
     // event to handle recreation/rebinding of the GL context, hence
@@ -8617,7 +8718,7 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
 
 void QWidget::scroll(int dx, int dy)
 {
-    if (!updatesEnabled() && children().size() == 0 || !isVisible())
+    if ((!updatesEnabled() && children().size() == 0) || !isVisible())
         return;
     if (dx == 0 && dy == 0)
         return;
@@ -8640,12 +8741,12 @@ void QWidget::scroll(int dx, int dy)
 
     If \a r is empty or invalid, the result is undefined.
 
-    \sa QScrollArea bitBlt()
+    \sa QScrollArea
 */
 void QWidget::scroll(int dx, int dy, const QRect &r)
 {
 
-    if (!updatesEnabled() && children().size() == 0 || !isVisible())
+    if ((!updatesEnabled() && children().size() == 0) || !isVisible())
         return;
     if (dx == 0 && dy == 0)
         return;
@@ -8994,6 +9095,8 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
         break;
 #endif
     case Qt::WA_NativeWindow:
+        if (!qApp->testAttribute(Qt::AA_DontCreateNativeWidgetSiblings) && parentWidget())
+            parentWidget()->d_func()->enforceNativeChildren();
         if (on && !internalWinId() && testAttribute(Qt::WA_WState_Created))
             d->createWinId();
         break;
@@ -9001,8 +9104,11 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
 #if defined(Q_WS_WIN) || defined(Q_WS_X11)
         // Recreate the widget if it's already created as an alien widget and
         // WA_PaintOnScreen is enabled. Paint on screen widgets must have win id.
-        if (on && !testAttribute(Qt::WA_NativeWindow))
+        // So must their children.
+        if (on) {
             setAttribute(Qt::WA_NativeWindow);
+            d->enforceNativeChildren();
+        }
 #endif
         // fall through
     case Qt::WA_OpaquePaintEvent:
@@ -9019,12 +9125,18 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
         d->macUpdateIgnoreMouseEvents();
 #endif
         break;
-#if defined (Q_WS_WIN)
-    case Qt::WA_InputMethodEnabled:
+    case Qt::WA_InputMethodEnabled: {
+#if defined(Q_WS_WIN) || (defined(Q_WS_QWS) && !defined(QT_NO_QWS_INPUTMETHODS))
         if (hasFocus())
-            QWinInputContext::updateImeStatus(this, true);
-        break;
+            QInputContextPrivate::updateImeStatus(this, true);
 #endif
+        QInputContext *ic = d->inputContext();
+        if (!on && ic && ic->focusWidget() == this) {
+            ic->reset();
+            ic->setFocusWidget(0);
+        }
+        break;
+    }
     case Qt::WA_WindowPropagation:
         d->resolvePalette();
         d->resolveFont();
@@ -9491,6 +9603,12 @@ void QWidget::raise()
             create();
         else if (from == parentChildCount - 1)
             return;
+
+#ifndef Q_WS_MAC
+        QRegion region(rect());
+        d->subtractOpaqueSiblings(region, QPoint());
+        d->invalidateBuffer(region);
+#endif
     }
     if (testAttribute(Qt::WA_WState_Created))
         d->raise_sys();
@@ -10211,5 +10329,227 @@ QT_END_NAMESPACE
     \relates QWidget
 
     Platform dependent window identifier.
+*/
+
+/*!
+    \fn void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
+
+    Frees up window system resources. Destroys the widget window if \a
+    destroyWindow is true.
+
+    destroy() calls itself recursively for all the child widgets,
+    passing \a destroySubWindows for the \a destroyWindow parameter.
+    To have more control over destruction of subwidgets, destroy
+    subwidgets selectively first.
+
+    This function is usually called from the QWidget destructor.
+*/
+
+/*!
+    \fn QPaintEngine *QWidget::paintEngine() const
+
+    Returns the widget's paint engine.
+*/
+
+/*!
+    \fn QPoint QWidget::mapToGlobal(const QPoint &pos) const
+
+    Translates the widget coordinate \a pos to global screen
+    coordinates. For example, \c{mapToGlobal(QPoint(0,0))} would give
+    the global coordinates of the top-left pixel of the widget.
+
+    \sa mapFromGlobal() mapTo() mapToParent()
+*/
+
+/*!
+    \fn QPoint QWidget::mapFromGlobal(const QPoint &pos) const
+
+    Translates the global screen coordinate \a pos to widget
+    coordinates.
+
+    \sa mapToGlobal() mapFrom() mapFromParent()
+*/
+
+/*!
+    \fn void QWidget::grabMouse()
+
+    Grabs the mouse input.
+
+    This widget receives all mouse events until releaseMouse() is
+    called; other widgets get no mouse events at all. Keyboard
+    events are not affected. Use grabKeyboard() if you want to grab
+    that.
+
+    \warning Bugs in mouse-grabbing applications very often lock the
+    terminal. Use this function with extreme caution, and consider
+    using the \c -nograb command line option while debugging.
+
+    It is almost never necessary to grab the mouse when using Qt, as
+    Qt grabs and releases it sensibly. In particular, Qt grabs the
+    mouse when a mouse button is pressed and keeps it until the last
+    button is released.
+
+    Note that only visible widgets can grab mouse input. If
+    isVisible() returns false for a widget, that widget cannot call
+    grabMouse().
+
+    \sa releaseMouse() grabKeyboard() releaseKeyboard() grabKeyboard()
+    focusWidget()
+*/
+
+/*!
+    \fn void QWidget::grabMouse(const QCursor &cursor)
+    \overload
+
+    Grabs the mouse input and changes the cursor shape.
+
+    The cursor will assume shape \a cursor (for as long as the mouse
+    focus is grabbed) and this widget will be the only one to receive
+    mouse events until releaseMouse() is called().
+
+    \warning Grabbing the mouse might lock the terminal.
+
+    \sa releaseMouse(), grabKeyboard(), releaseKeyboard(), setCursor()
+*/
+
+/*!
+    \fn void QWidget::releaseMouse()
+
+    Releases the mouse grab.
+
+    \sa grabMouse(), grabKeyboard(), releaseKeyboard()
+*/
+
+/*!
+    \fn void QWidget::grabKeyboard()
+
+    Grabs the keyboard input.
+
+    This widget receives all keyboard events until releaseKeyboard()
+    is called; other widgets get no keyboard events at all. Mouse
+    events are not affected. Use grabMouse() if you want to grab that.
+
+    The focus widget is not affected, except that it doesn't receive
+    any keyboard events. setFocus() moves the focus as usual, but the
+    new focus widget receives keyboard events only after
+    releaseKeyboard() is called.
+
+    If a different widget is currently grabbing keyboard input, that
+    widget's grab is released first.
+
+    \sa releaseKeyboard() grabMouse() releaseMouse() focusWidget()
+*/
+
+/*!
+    \fn void QWidget::releaseKeyboard()
+
+    Releases the keyboard grab.
+
+    \sa grabKeyboard(), grabMouse(), releaseMouse()
+*/
+
+/*!
+    \fn QWidget *QWidget::mouseGrabber()
+
+    Returns the widget that is currently grabbing the mouse input.
+
+    If no widget in this application is currently grabbing the mouse,
+    0 is returned.
+
+    \sa grabMouse(), keyboardGrabber()
+*/
+
+/*!
+    \fn QWidget *QWidget::keyboardGrabber()
+
+    Returns the widget that is currently grabbing the keyboard input.
+
+    If no widget in this application is currently grabbing the
+    keyboard, 0 is returned.
+
+    \sa grabMouse(), mouseGrabber()
+*/
+
+/*!
+    \fn void QWidget::activateWindow()
+
+    Sets the top-level widget containing this widget to be the active
+    window.
+
+    An active window is a visible top-level window that has the
+    keyboard input focus.
+
+    This function performs the same operation as clicking the mouse on
+    the title bar of a top-level window. On X11, the result depends on
+    the Window Manager. If you want to ensure that the window is
+    stacked on top as well you should also call raise(). Note that the
+    window must be visible, otherwise activateWindow() has no effect.
+
+    On Windows, if you are calling this when the application is not
+    currently the active one then it will not make it the active
+    window.  It will change the color of the taskbar entry to indicate
+    that the window has changed in some way. This is because Microsoft
+    do not allow an application to interrupt what the user is currently
+    doing in another application.
+
+    \sa isActiveWindow(), window(), show()
+*/
+
+/*!
+    \fn int QWidget::metric(PaintDeviceMetric m) const
+
+    Internal implementation of the virtual QPaintDevice::metric()
+    function.
+
+    \a m is the metric to get.
+*/
+
+/*!
+    \fn void QWidget::setMask(const QRegion &region)
+    \overload
+
+    Causes only the parts of the widget which overlap \a region to be
+    visible. If the region includes pixels outside the rect() of the
+    widget, window system controls in that area may or may not be
+    visible, depending on the platform.
+
+    Note that this effect can be slow if the region is particularly
+    complex.
+
+    \sa windowOpacity
+*/
+
+/*!
+    \fn void QWidget::setMask(const QBitmap &bitmap)
+
+    Causes only the pixels of the widget for which \a bitmap has a
+    corresponding 1 bit to be visible. If the region includes pixels
+    outside the rect() of the widget, window system controls in that
+    area may or may not be visible, depending on the platform.
+
+    Note that this effect can be slow if the region is particularly
+    complex.
+
+    The following code shows how an image with an alpha channel can be
+    used to generate a mask for a widget:
+
+    \snippet doc/src/snippets/widget-mask/main.cpp 0
+
+    The label shown by this code is masked using the image it contains,
+    giving the appearance that an irregularly-shaped image is being drawn
+    directly onto the screen.
+
+    Masked widgets receive mouse events only on their visible
+    portions.
+
+    \sa clearMask(), windowOpacity(), {Shaped Clock Example}
+*/
+
+/*!
+    \fn void QWidget::clearMask()
+
+    Removes any mask set by setMask().
+
+    \sa setMask()
 */
 

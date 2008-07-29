@@ -93,11 +93,12 @@ QHelpGeneratorPrivate::~QHelpGeneratorPrivate()
 /*!
     \internal
     \class QHelpGenerator
+    \since 4.4
     \brief The QHelpGenerator class generates a new
-    documentation set.
+    Qt compressed help file (.qch).
 
     The help generator takes a help data structure as
-    input for generating a new documentation set. Since
+    input for generating a new Qt compressed help files. Since
     the generation may takes some time, the generator emits
     various signals to inform about its current state.
 */
@@ -145,7 +146,7 @@ QHelpGenerator::~QHelpGenerator()
 
 /*!
     Takes the \a helpData and generates a new documentation
-    set from it. The documentation set is written to \a
+    set from it. The Qt compressed help file is written to \a
     outputFileName. Returns true on success, otherwise false.
 */
 bool QHelpGenerator::generate(QHelpDataInterface *helpData,

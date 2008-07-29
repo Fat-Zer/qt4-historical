@@ -1203,8 +1203,6 @@ void QWidgetPrivate::raise_sys()
     Q_ASSERT(q->testAttribute(Qt::WA_WState_Created));
     if (q->internalWinId())
         SetWindowPos(q->internalWinId(), HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
-    if (!q->isWindow())
-        invalidateBuffer(q->rect());
 }
 
 void QWidgetPrivate::lower_sys()

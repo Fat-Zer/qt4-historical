@@ -115,7 +115,7 @@ uint qHash(const QBitArray &bitArray)
     // the padding is initialized to 0 in bitArray.d
     int n = bitArray.size();
     if (n & 0x7)
-        result = (result << 4) + bitArray.d.at(m) & ((1 << n) - 1);
+        result = ((result << 4) + bitArray.d.at(m)) & ((1 << n) - 1);
     return result;
 }
 

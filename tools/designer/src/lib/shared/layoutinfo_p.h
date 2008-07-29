@@ -77,7 +77,8 @@ public:
         HBox,
         VBox,
         Grid,
-        Form
+        Form,
+        UnknownLayout // QDockWindow inside QMainWindow is inside QMainWindowLayout - it doesn't mean there is no layout
     };
 
     static void deleteLayout(const QDesignerFormEditorInterface *core, QWidget *widget);

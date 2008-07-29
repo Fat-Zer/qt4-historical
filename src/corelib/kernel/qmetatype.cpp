@@ -441,6 +441,8 @@ int QMetaType::registerType(const char *typeName, Destructor destructor,
 }
 
 /*! 
+    \since 4.4
+
     Unregisters a user type, with \a typeName. 
 
     \sa type(), typeName()

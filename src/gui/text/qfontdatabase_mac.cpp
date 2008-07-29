@@ -412,28 +412,28 @@ FamilyFound:
 static void registerFont(QFontDatabasePrivate::ApplicationFont *fnt)
 {
     ATSFontContainerRef handle;
-    OSStatus e;
+    OSStatus e  = noErr;
 
     if(fnt->data.isEmpty()) {
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
-        extern OSErr qt_mac_create_fsref(const QString &, FSRef *); // qglobal.cpp
-        FSRef ref;
-        if(qt_mac_create_fsref(fnt->fileName, &ref) != noErr)
-            return;
+        if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
+                extern OSErr qt_mac_create_fsref(const QString &, FSRef *); // qglobal.cpp
+                FSRef ref;
+                if(qt_mac_create_fsref(fnt->fileName, &ref) != noErr)
+                    return;
 
-        ATSFontActivateFromFileReference(&ref, kATSFontContextLocal, kATSFontFormatUnspecified, 0, kATSOptionFlagsDefault, &handle);
-} else 
+                ATSFontActivateFromFileReference(&ref, kATSFontContextLocal, kATSFontFormatUnspecified, 0, kATSOptionFlagsDefault, &handle);
+        } else
 #endif
-{
-        extern Q_CORE_EXPORT OSErr qt_mac_create_fsspec(const QString &, FSSpec *); // global.cpp
-        FSSpec spec;
-        if(qt_mac_create_fsspec(fnt->fileName, &spec) != noErr)
-            return;
+        {
+            extern Q_CORE_EXPORT OSErr qt_mac_create_fsspec(const QString &, FSSpec *); // global.cpp
+            FSSpec spec;
+            if(qt_mac_create_fsspec(fnt->fileName, &spec) != noErr)
+                return;
 
-        e = ATSFontActivateFromFileSpecification(&spec, kATSFontContextLocal, kATSFontFormatUnspecified,
-                                           0, kATSOptionFlagsDefault, &handle);
-}
+            e = ATSFontActivateFromFileSpecification(&spec, kATSFontContextLocal, kATSFontFormatUnspecified,
+                                               0, kATSOptionFlagsDefault, &handle);
+        }
     } else {
         e = ATSFontActivateFromMemory((void *)fnt->data.constData(), fnt->data.size(), kATSFontContextLocal,
                                            kATSFontFormatUnspecified, 0, kATSOptionFlagsDefault, &handle);

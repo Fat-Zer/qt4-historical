@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/network/q3http.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/network/q3http.cpp -->
 <head>
   <title>Qt 4.4: Q3Http Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -99,7 +99,7 @@
 <p>This class provides two different interfaces: one is the <a href="q3networkprotocol.html">Q3NetworkProtocol</a> interface that allows you to use HTTP through the <a href="porting4.html#qurloperator">QUrlOperator</a> abstraction. The other is a direct interface to HTTP that allows you to have more control over the requests and that allows you to access the response header fields.</p>
 <p>Don't mix the two interfaces, since the behavior is not well-defined.</p>
 <p>If you want to use Q3Http with the <a href="q3networkprotocol.html">Q3NetworkProtocol</a> interface, you do not use it directly, but rather through a <a href="porting4.html#qurloperator">QUrlOperator</a>, for example:</p>
-<pre>     QUrlOperator op( &quot;http://www.trolltech.com&quot; );
+<pre>     QUrlOperator op( &quot;http:<span class="comment">//www.trolltech.com&quot; );</span>
      op.get( &quot;index.html&quot; );</pre>
 <p>This code will only work if the Q3Http class is registered; to register the class, you must call <a href="q3urloperator.html#q3InitNetworkProtocols">q3InitNetworkProtocols</a>() before using a <a href="porting4.html#qurloperator">QUrlOperator</a> with HTTP.</p>
 <p>The <a href="q3networkprotocol.html">Q3NetworkProtocol</a> interface for HTTP only supports the operations <a href="q3networkprotocol.html#operationGet">operationGet</a>() and <a href="q3networkprotocol.html#operationPut">operationPut</a>(), i.e&#x2e; QUrlOperator::get() and QUrlOperator::put(), if you use it with a <a href="porting4.html#qurloperator">QUrlOperator</a>.</p>
@@ -113,8 +113,8 @@
      http-&gt;setHost( &quot;www.trolltech.com&quot; );
      http-&gt;request( header );</pre>
 <p>For the common HTTP requests <tt>GET</tt>, <tt>POST</tt> and <tt>HEAD</tt>, Q3Http provides the convenience functions <a href="q3http.html#get">get</a>(), <a href="q3http.html#post">post</a>() and <a href="q3http.html#head">head</a>(). They already use a reasonable header and if you don't have to set special header fields, they are easier to use. The above example can also be written as:</p>
-<pre>     http-&gt;setHost( &quot;www.trolltech.com&quot; ); // id == 1
-     http-&gt;get( &quot;/index.html&quot; );           // id == 2</pre>
+<pre>     http-&gt;setHost( &quot;www.trolltech.com&quot; ); <span class="comment">// id == 1</span>
+     http-&gt;get( &quot;/index.html&quot; );           <span class="comment">// id == 2</span></pre>
 <p>For this example the following sequence of signals is emitted (with small variations, depending on network traffic, etc.):</p>
 <pre>     requestStarted( 1 )
      requestFinished( 1, false )
@@ -141,9 +141,9 @@
 <p>The <a href="q3http.html#readyRead">readyRead</a>() signal tells you that there is data ready to be read. The amount of data can then be queried with the <a href="q3http.html#bytesAvailable">bytesAvailable</a>() function and it can be read with the <a href="q3http.html#readBlock">readBlock</a>() or <a href="q3http.html#readAll">readAll</a>() functions.</p>
 <p>If an error occurs during the execution of one of the commands in a sequence of commands, all the pending commands (i.e&#x2e; scheduled, but not yet executed commands) are cleared and no signals are emitted for them.</p>
 <p>For example, if you have the following sequence of reqeusts</p>
-<pre>     http-&gt;setHost( &quot;www.foo.bar&quot; );       // id == 1
-     http-&gt;get( &quot;/index.html&quot; );           // id == 2
-     http-&gt;post( &quot;register.html&quot;, data );  // id == 3</pre>
+<pre>     http-&gt;setHost( &quot;www.foo.bar&quot; );       <span class="comment">// id == 1</span>
+     http-&gt;get( &quot;/index.html&quot; );           <span class="comment">// id == 2</span>
+     http-&gt;post( &quot;register.html&quot;, data );  <span class="comment">// id == 3</span></pre>
 <p>and the <a href="q3http.html#get">get</a>() request fails because the host lookup fails, then the <a href="q3http.html#post">post</a>() request is never executed and the signals would look like this:</p>
 <pre>     requestStarted( 1 )
      requestFinished( 1, false )
@@ -284,7 +284,7 @@
 <a name="//apple_ref/cpp/instm/Q3Http/get" />
 <h3 class="fn"><a name="get"></a>int Q3Http::get ( const <a href="qstring.html">QString</a> &amp; <i>path</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
 <p>Sends a get request for <i>path</i> to the server set by <a href="q3http.html#setHost">setHost</a>() or as specified in the constructor.</p>
-<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//</span>www.trolltech.com/index.html</tt>.</p>
+<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt>.</p>
 <p>If the IO device <i>to</i> is 0 the <a href="q3http.html#readyRead">readyRead</a>() signal is emitted every time new content data is available to read.</p>
 <p>If the IO device <i>to</i> is not 0, the content data of the response is written directly to the device. Make sure that the <i>to</i> pointer is valid for the duration of the operation (it is safe to delete it when the <a href="q3http.html#requestFinished">requestFinished</a>() signal is emitted).</p>
 <p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="q3http.html#requestStarted">requestStarted</a>() and <a href="q3http.html#requestFinished">requestFinished</a>().</p>
@@ -298,14 +298,14 @@
 <a name="//apple_ref/cpp/instm/Q3Http/head" />
 <h3 class="fn"><a name="head"></a>int Q3Http::head ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )</h3>
 <p>Sends a header request for <i>path</i> to the server set by <a href="q3http.html#setHost">setHost</a>() or as specified in the constructor.</p>
-<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//</span>www.trolltech.com/index.html</tt>.</p>
+<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt>.</p>
 <p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="q3http.html#requestStarted">requestStarted</a>() and <a href="q3http.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="q3http.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="q3http.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="q3http.html#setHost">setHost</a>(), <a href="q3http.html#get">get</a>(), <a href="q3http.html#post">post</a>(), <a href="q3http.html#request">request</a>(), <a href="q3http.html#requestStarted">requestStarted</a>(), <a href="q3http.html#requestFinished">requestFinished</a>(), and <a href="q3http.html#done">done</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Http/post" />
 <h3 class="fn"><a name="post"></a>int Q3Http::post ( const <a href="qstring.html">QString</a> &amp; <i>path</i>, <a href="qiodevice.html">QIODevice</a> * <i>data</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
 <p>Sends a post request for <i>path</i> to the server set by <a href="q3http.html#setHost">setHost</a>() or as specified in the constructor.</p>
-<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//</span>www.trolltech.com/index.html</tt>.</p>
+<p><i>path</i> must be an absolute path like <tt>/index.html</tt> or an absolute URI like <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt>.</p>
 <p>The incoming data comes via the <i>data</i> IO device.</p>
 <p>If the IO device <i>to</i> is 0 the <a href="q3http.html#readyRead">readyRead</a>() signal is emitted every time new content data is available to read.</p>
 <p>If the IO device <i>to</i> is not 0, the content data of the response is written directly to the device. Make sure that the <i>to</i> pointer is valid for the duration of the operation (it is safe to delete it when the <a href="q3http.html#requestFinished">requestFinished</a>() signal is emitted).</p>
@@ -374,6 +374,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

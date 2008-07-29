@@ -553,6 +553,7 @@ bool QSqlTableModel::setData(const QModelIndex &index, const QVariant &value, in
         if (row.op == QSqlTableModelPrivate::None) {
             row.op = QSqlTableModelPrivate::Update;
             row.rec = d->rec;
+			row.primaryValues = d->primaryValues(indexInQuery(index).row());
         }
         row.rec.setValue(index.column(), value);
         emit dataChanged(index, index);
@@ -595,7 +596,7 @@ bool QSqlTableModel::updateRowInTable(int row, const QSqlRecord &values)
     QSqlRecord rec(values);
     emit beforeUpdate(row, rec);
 
-    const QSqlRecord whereValues = d->primaryValues(row);
+    const QSqlRecord whereValues = d->strategy == OnManualSubmit ? d->cache[row].primaryValues : d->primaryValues(row);
     bool prepStatement = d->db.driver()->hasFeature(QSqlDriver::PreparedQueries);
     QString stmt = d->db.driver()->sqlStatement(QSqlDriver::UpdateStatement, d->tableName,
                                                 rec, prepStatement);

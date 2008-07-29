@@ -46,6 +46,7 @@
 #ifndef QT_NO_SCRIPT
 
 #include "qscriptlexer_p.h"
+#include "qscriptparser_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -118,6 +119,16 @@ bool SyntaxChecker::parse(const QString &code)
 
           tos -= rhs [r];
           act = state_stack [tos++];
+
+          switch (r) {
+          case Q_SCRIPT_REGEXPLITERAL_RULE1:
+          case Q_SCRIPT_REGEXPLITERAL_RULE2: {
+              // Skip the rest of the RegExp literal
+              bool rx = lexer.scanRegExp();
+              if (!rx)
+                  return true;
+          } break;
+          }
 
           state_stack [tos] = nt_action (act, lhs [r] - TERMINAL_COUNT);
         }

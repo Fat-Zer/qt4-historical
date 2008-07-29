@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(padnavigator);
 
     Panel panel(3, 3);
+    panel.setFocus();
     panel.show();
 
     return app.exec();

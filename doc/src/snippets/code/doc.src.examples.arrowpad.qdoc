@@ -1,21 +1,19 @@
 //! [0]
-        qApp->translate("ArrowPad", x)
+qApp->translate("ArrowPad", x)
 //! [0]
 
 
 //! [1]
-        lrelease arrowpad.pro
+lrelease arrowpad.pro
 //! [1]
 
 
 //! [2]
-        export LANG=fr
-        setenv LANG fr
+export LANG=fr
+setenv LANG fr
 //! [2]
 
 
 //! [3]
-        set LANG=fr
+set LANG=fr
 //! [3]
-
-

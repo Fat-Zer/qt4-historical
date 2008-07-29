@@ -96,6 +96,14 @@ QT_BEGIN_NAMESPACE
   setMinimumDate(), setMaximumDate(),  setMinimumTime(),
   and setMaximumTime().
 
+  \section1 Using a Pop-up Calendar Widget
+  
+  QDateTimeEdit can be configured to allow a QCalendarWidget to be used
+  to select dates. This is enabled by setting the calendarPopup property.
+  Additionally, you can supply a custom calendar widget for use as the
+  calendar pop-up by calling the setCalendarWidget() function. The existing
+  calendar widget can be retrieved with calendarWidget().
+  
   \table 100%
   \row \o \inlineimage windowsxp-datetimeedit.png Screenshot of a Windows XP style date time editing widget
        \o A date time editing widget shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
@@ -698,7 +706,7 @@ void QDateTimeEdit::setCurrentSectionIndex(int index)
 /*!
   \since 4.4
 
-  \brief Returns the calendar widget for the edit if calendarPopup is
+  \brief Returns the calendar widget for the editor if calendarPopup is
   set to true and (sections() & DateSections_Mask) != 0.
 
   This function creates and returns a calendar widget if none has been set.
@@ -716,6 +724,14 @@ QCalendarWidget *QDateTimeEdit::calendarWidget() const
     return d->monthCalendar->calendarWidget();
 }
 
+/*!
+  \since 4.4
+
+  Sets the calendar widget to be used for the calendar pop-up. The editor does
+  not automatically take ownership of the calendar widget.
+
+  \sa calendarPopup
+*/
 void QDateTimeEdit::setCalendarWidget(QCalendarWidget *calendarWidget)
 {
     Q_D(QDateTimeEdit);
@@ -803,6 +819,10 @@ QString QDateTimeEdit::sectionText(Section section) const
   \row \i MMMM d yy \i July 2 69
   \endtable
 
+  Note that if you specify a two digit year, it will be interpreted
+  to be in the century in which the date time edit was initialized.
+  The default century is the 21 (2000-2099).
+
   If you specify an invalid format the format will not be set.
 
   \sa QDateTime::toString(), displayedSections()
@@ -860,10 +880,10 @@ void QDateTimeEdit::setDisplayFormat(const QString &format)
 
 /*!
     \property QDateTimeEdit::calendarPopup
-    \brief the current calender popup showing mode.
+    \brief the current calender pop-up showing mode.
     \since 4.2
 
-    The calendar popup will be shown upon clicking the arrow button.
+    The calendar pop-up will be shown upon clicking the arrow button.
     This property is valid only if there is a valid date display format.
 
     \sa setDisplayFormat()

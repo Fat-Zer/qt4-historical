@@ -530,6 +530,56 @@ bool QFontEngineQPF::getSfntTableData(uint tag, uchar *buffer, uint *length) con
     return false;
 }
 
+bool QFontEngineQPF::stringToCMap(const QChar *str, int len, HB_Glyph *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const
+{
+    if (!externalCMap && !cmapOffset && renderingFontEngine) {
+        if (!renderingFontEngine->stringToCMap(str, len, glyphs, nglyphs, flags))
+            return false;
+#ifndef QT_NO_FREETYPE
+        const_cast<QFontEngineQPF *>(this)->ensureGlyphsLoaded(glyphs, *nglyphs);
+#endif
+        return true;
+    }
+
+    if (*nglyphs < len) {
+        *nglyphs = len;
+        return false;
+    }
+
+#if defined(DEBUG_FONTENGINE)
+    QSet<QChar> seenGlyphs;
+#endif
+
+    const uchar *cmap = externalCMap ? externalCMap : (fontData + cmapOffset);
+
+    int glyph_pos = 0;
+    if (symbol) {
+        for (int i = 0; i < len; ++i) {
+            unsigned int uc = getChar(str, i, len);
+            glyphs[glyph_pos] = getTrueTypeGlyphIndex(cmap, uc);
+            if(!glyphs[glyph_pos] && uc < 0x100)
+                glyphs[glyph_pos] = getTrueTypeGlyphIndex(cmap, uc + 0xf000);
+            ++glyph_pos;
+        }
+    } else {
+        for (int i = 0; i < len; ++i) {
+            unsigned int uc = getChar(str, i, len);
+            glyphs[glyph_pos] = getTrueTypeGlyphIndex(cmap, uc);
+#if 0 && defined(DEBUG_FONTENGINE)
+            QChar c(uc);
+            if (!findGlyph(glyphs[glyph_pos].glyph) && !seenGlyphs.contains(c))
+                qDebug() << "glyph for character" << c << "/" << hex << uc << "is" << dec << glyphs[glyph_pos].glyph;
+
+            seenGlyphs.insert(c);
+#endif
+            ++glyph_pos;
+        }
+    }
+
+    *nglyphs = glyph_pos;
+    return true;
+}
+
 bool QFontEngineQPF::stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const
 {
     if (!externalCMap && !cmapOffset && renderingFontEngine) {
@@ -837,6 +887,35 @@ QFixed QFontEngineQPF::emSquareSize() const
         return freetype->face->units_per_EM;
     else
         return freetype->face->size->metrics.y_ppem;
+}
+
+void QFontEngineQPF::ensureGlyphsLoaded(const HB_Glyph *glyphs, int len)
+{
+    if (readOnly)
+        return;
+    bool locked = false;
+    for (int i = 0; i < len; ++i) {
+        if (!glyphs[i])
+            continue;
+        const Glyph *g = findGlyph(glyphs[i]);
+        if (g)
+            continue;
+        if (!locked) {
+            if (!lockFile())
+                return;
+            locked = true;
+            g = findGlyph(glyphs[i]);
+            if (g)
+                continue;
+        }
+        loadGlyph(glyphs[i]);
+    }
+    if (locked) {
+        unlockFile();
+#if defined(DEBUG_FONTENGINE)
+        qDebug() << "Finished rendering glyphs\n";
+#endif
+    }
 }
 
 void QFontEngineQPF::ensureGlyphsLoaded(const QGlyphLayout *glyphs, int len)

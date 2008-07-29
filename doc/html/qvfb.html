@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/emb-qvfb.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/emb-qvfb.qdoc -->
 <head>
   <title>Qt 4.4: The Virtual Framebuffer</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,13 +28,13 @@
 <a name="displaying-the-virtual-framebuffer"></a>
 <h2>Displaying the Virtual Framebuffer</h2>
 <p>To run the <tt>qvfb</tt> tool displaying the virtual framebuffer, the <a href="qt-embedded.html">Qt for Embedded Linux</a> library must be configured and compiled with the <tt>-qvfb</tt> option:</p>
-<pre>          cd path/to/QtEmbedded
-          ./configure -qvfb
-          make</pre>
+<pre> cd path/to/QtEmbedded
+ ./configure -qvfb
+ make</pre>
 <p>Then compile and run the <tt>qvfb</tt> tool as a normal Qt/X11 application (i.e&#x2e; do <i>not</i> compile it as a <a href="qt-embedded.html">Qt for Embedded Linux</a> application):</p>
-<pre>         cd path/to/Qt/tools/qvfb
-         make
-         ./qvfb</pre>
+<pre> cd path/to/Qt/tools/qvfb
+ make
+ ./qvfb</pre>
 <p>The <tt>qvfb</tt> application supports the following command line options:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Option</th><th>Description</th></tr></thead>
@@ -71,7 +71,7 @@
 </table></p>
 <p><b>Creating Custom Skins</b></p>
 <p>The XML and pixmap files specifying a custom skin must be located in subdirectory of the Qt's <tt>/tools/qvfb</tt> directory, called <tt>/customskin.skin</tt>. See the ClamshellPhone skin for an example of the file structure:</p>
-<pre>         cd path/to/Qt/tools/qvfb/ClamshellPhone.skin/</pre>
+<pre> cd path/to/Qt/tools/qvfb/ClamshellPhone.skin/</pre>
 <p>The <tt>/ClamshellPhone.skin</tt> directory contains the following files:</p>
 <ul>
 <li><tt>ClamshellPhone.skin</tt></li>
@@ -83,47 +83,47 @@
 <p>Note that the <tt>defaultbuttons.conf</tt> file is only necessary if the skin is supposed to be used with <a href="http://www.trolltech.com/products/qtopia/">Qtopia</a> (The file customizes the launch screen applications, orders the soft keys and provides input method hints). See the <a href="http://www.trolltech.com/products/qtopia/">Qtopia</a> documentation for more information.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th colspan="3">The ClamshellPhone Skin</th></tr></thead>
-<tr valign="top" class="odd"><td colspan="3"><pre>         [SkinFile]
-         Up=ClamshellPhone1-5.png
-         Down=ClamshellPhone1-5-pressed.png
-         Closed=ClamshellPhone1-5-closed.png
-         Screen=72 84 176 208
-         Areas=22
+<tr valign="top" class="odd"><td colspan="3"><pre> [SkinFile]
+ Up=ClamshellPhone1-5.png
+ Down=ClamshellPhone1-5-pressed.png
+ Closed=ClamshellPhone1-5-closed.png
+ Screen=72 84 176 208
+ Areas=22
 
-         &quot;Power&quot;     0x0100000a 205 563 249 586
-         &quot;1&quot;         0x0031      62 414 119 438
-         &quot;2&quot;         0x0032     130 414 189 438
-         &quot;3&quot;         0x0033     198 413 257 438
-         &quot;4&quot;         0x0034      54 444 117 470
-         &quot;5&quot;         0x0035     128 444 189 471
-         &quot;6&quot;         0x0036     202 444 264 471
-         &quot;7&quot;         0x0037      47 477 113 507
-         &quot;8&quot;         0x0038     126 477 190 507
-         &quot;9&quot;         0x0039     205 478 270 509
-         &quot;*&quot;         0x002a      39 515 110 552
-         &quot;0&quot;         0x0030     122 515 195 553
-         &quot;#&quot;         0x0023     207 516 280 553
-         &quot;Context1&quot;  0x01100000 137 360 108 383 123 410 90 409  60 387  63 378
-                                100 362
-         &quot;Back&quot;      0x01000061 184 361 206 376 213 387 197 410 226 410 256 392
-                                258 381 244 369
-         &quot;Backspace&quot; 0x01000003  68 563 113 587
-         &quot;Select&quot;    0x01010000 160 391 172 390 181 386 184 381 180 377 173
-                                373 165 372 155 372 145 375 138 378 136
-                                382 138 387 147 390
-         &quot;Left&quot;      0x1000012  141 390 136 385 136 381 143 375 132 371 120
-                                380 121 393 129 401
-         &quot;Down&quot;      0x1000015  143 389 130 402 162 412 191 404 175 390
-         &quot;Right&quot;     0x1000014  186 370 176 375 184 382 182 387 175 390 190 404
-                                201 396 202 375
-         &quot;Up&quot;        0x1000013  133 370 143 374 176 374 185 370 169 362 149 362
-         &quot;Flip&quot;      0x01100006  98 325 225 353</pre>
+ &quot;Power&quot;     0x0100000a 205 563 249 586
+ &quot;1&quot;         0x0031      62 414 119 438
+ &quot;2&quot;         0x0032     130 414 189 438
+ &quot;3&quot;         0x0033     198 413 257 438
+ &quot;4&quot;         0x0034      54 444 117 470
+ &quot;5&quot;         0x0035     128 444 189 471
+ &quot;6&quot;         0x0036     202 444 264 471
+ &quot;7&quot;         0x0037      47 477 113 507
+ &quot;8&quot;         0x0038     126 477 190 507
+ &quot;9&quot;         0x0039     205 478 270 509
+ &quot;*&quot;         0x002a      39 515 110 552
+ &quot;0&quot;         0x0030     122 515 195 553
+ &quot;#&quot;         0x0023     207 516 280 553
+ &quot;Context1&quot;  0x01100000 137 360 108 383 123 410 90 409  60 387  63 378
+                        100 362
+ &quot;Back&quot;      0x01000061 184 361 206 376 213 387 197 410 226 410 256 392
+                        258 381 244 369
+ &quot;Backspace&quot; 0x01000003  68 563 113 587
+ &quot;Select&quot;    0x01010000 160 391 172 390 181 386 184 381 180 377 173
+                        373 165 372 155 372 145 375 138 378 136
+                        382 138 387 147 390
+ &quot;Left&quot;      0x1000012  141 390 136 385 136 381 143 375 132 371 120
+                        380 121 393 129 401
+ &quot;Down&quot;      0x1000015  143 389 130 402 162 412 191 404 175 390
+ &quot;Right&quot;     0x1000014  186 370 176 375 184 382 182 387 175 390 190 404
+                        201 396 202 375
+ &quot;Up&quot;        0x1000013  133 370 143 374 176 374 185 370 169 362 149 362
+ &quot;Flip&quot;      0x01100006  98 325 225 353</pre>
 <p>The <tt>ClamShellPhone.skin</tt> file quoted above, specifies three pixmaps: One for the normal skin (<tt>Up</tt>), one for the activated skin (<tt>Down</tt>) and one for the closed skin (<tt>Closed</tt>). In addition, it is possible to specify a pixmap for the cursor (using a <tt>Cursor</tt> variable).</p>
 <p>The file also specifies the screen size (<tt>Screen</tt>) and the number of available buttons (<tt>Areas</tt>). Then it describes the buttons themselves; each button is specified by its name, keycode and coordinates.</p>
 <p>The coordinates are a list of at least 2 points in clockwise order that define a shape for the button; a click inside this shape will be treated as a click on that button. While pressed, the pixels for the button are redrawn from the activated skin.</p>
 </td></tr>
 <tr valign="top" class="even"></tr>
-<tr valign="top" class="odd"><td><p align="center"><font color="red">[Missing image qt-embedded-clamshellphone-closed.png]</font></p></td><td><p align="center"><font color="red">[Missing image qt-embedded-clamshellphone.png]</font></p></td><td><p align="center"><font color="red">[Missing image qt-embedded-clamshellphone-pressed.png]</font></p></td></tr>
+<tr valign="top" class="odd"><td><p align="center"><img src="images/qt-embedded-clamshellphone-closed.png" alt="The ClamshellPhone Skin (closed)" /></p></td><td><p align="center"><img src="images/qt-embedded-clamshellphone.png" alt="The ClamshellPhone Skin" /></p></td><td><p align="center"><img src="images/qt-embedded-clamshellphone-pressed.png" alt="The ClamshellPhone Skin (pressed)" /></p></td></tr>
 <tr valign="top" class="even"><td><tt>ClamshellPhone1-5-closed.png</tt></td><td><tt>ClamshellPhone1-5.png</tt></td><td><tt>ClamshellPhone1-5-pressed.png</tt></td></tr>
 </table></p>
 <a name="the-file-menu"></a>
@@ -139,18 +139,18 @@
 <a name="running-applications-using-the-virtual-framebuffer"></a>
 <h2>Running Applications Using the Virtual Framebuffer</h2>
 <p>Once the virtual framebuffer (the <tt>qvfb</tt> application) is running, it is ready for use: Start a server application (i.e&#x2e; construct a <a href="qapplication.html">QApplication</a> object with the <a href="qapplication.html#Type-enum">QApplication::GuiServer</a> flag or use the <tt>-qws</tt> command line parameter. See the <a href="qt-embedded-running.html">running applications</a> documentation for details). For example:</p>
-<pre>         cd path/to/QtEmbedded/examples/widgets/analogclock
-         make
-         ./analogclock -qws</pre>
+<pre> cd path/to/QtEmbedded/examples/widgets/analogclock
+ make
+ ./analogclock -qws</pre>
 <p>Note that as long as the virtual framebuffer is running and the current <a href="qt-embedded.html">Qt for Embedded Linux</a> configuration supports <tt>qvfb</tt>, <a href="qt-embedded.html">Qt for Embedded Linux</a> will automatically detect it and use it by default. Alternatively, the <tt>-display</tt> option can be used to specify the virtual framebuffer driver. For example:</p>
-<pre>         cd path/to/QtEmbedded/examples/widgets/analogclock
-         make
-         ./analogclock -qws -display QVFb:0</pre>
+<pre> cd path/to/QtEmbedded/examples/widgets/analogclock
+ make
+ ./analogclock -qws -display QVFb:0</pre>
 <p><b>Warning:</b> If <tt>qvfb</tt> is not running (or the current <a href="qt-embedded.html">Qt for Embedded Linux</a> configuration doesn't support it) and the driver is not explicitly specified, <a href="qt-embedded.html">Qt for Embedded Linux</a> will write to the real framebuffer and the X11 display will be corrupted.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

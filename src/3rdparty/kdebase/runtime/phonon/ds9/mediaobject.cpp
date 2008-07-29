@@ -46,6 +46,10 @@ namespace Phonon
             m_handles << m_waitCondition;
         }
 
+        WorkerThread::~WorkerThread()
+        {
+        }
+
         WorkerThread::Work WorkerThread::dequeueWork()
         {
             QMutexLocker locker(&m_mutex);
@@ -164,13 +168,13 @@ namespace Phonon
             return w.id;
         }
 
-        void WorkerThread::addGraphForEventManagement(Graph graph)
+        void WorkerThread::replaceGraphForEventManagement(Graph newGraph, Graph oldGraph)
         {
             QMutexLocker locker(&m_mutex);
             Work w;
-            w.task = AddGraph;
-            //we create a new graph
-            w.graph = graph;
+            w.task = ReplaceGraph;
+            w.graph = newGraph;
+            w.oldGraph = oldGraph;
             m_queue.enqueue(w);
             m_waitCondition.set();
         }
@@ -183,15 +187,31 @@ namespace Phonon
 
             m_currentRender = w.graph;
 			m_currentRenderId = w.id;
-            if (w.task == AddGraph) {
+            if (w.task == ReplaceGraph) {
                 QMutexLocker locker(&m_mutex);
-                ComPointer<IMediaEvent> mediaEvent(w.graph, IID_IMediaEvent);
                 HANDLE h;
-                if (SUCCEEDED(mediaEvent->GetEventHandle(reinterpret_cast<OAEVENT*>(&h)))) {
+
+                //remove the old graph
+                if (SUCCEEDED(ComPointer<IMediaEvent>(w.oldGraph, IID_IMediaEvent)
+                    ->GetEventHandle(reinterpret_cast<OAEVENT*>(&h)))) {
+                    int index = m_handles.indexOf(h);
+                    if (index != -1) {
+                        m_handles.remove(index);
+                    }
+
+                    index = m_graphs.indexOf(w.oldGraph);
+                    if (index != -1) {
+                        m_graphs.remove(index);
+                    }
+                }
+
+                //add the new graph
+                if (SUCCEEDED(ComPointer<IMediaEvent>(w.graph, IID_IMediaEvent)
+                    ->GetEventHandle(reinterpret_cast<OAEVENT*>(&h)))) {
                     m_graphs += w.graph;
                     m_handles += h;
                 }
-            }else if (w.task == Render) {
+            } else if (w.task == Render) {
                 if (w.filter) {
                     //let's render pins
                     w.graph->AddFilter(w.filter, 0);
@@ -207,24 +227,7 @@ namespace Phonon
                     hr = w.graph->RenderFile(reinterpret_cast<const wchar_t *>(w.url.utf16()), 0);
                 }
                 if (hr != E_ABORT) {
-                    //let's first check if it is seekable
-                    DWORD caps = AM_SEEKING_CanSeekAbsolute;
-                    ComPointer<IMediaSeeking> mediaSeeking(w.graph, IID_IMediaSeeking);
-                    const bool isSeekable = SUCCEEDED(mediaSeeking->CheckCapabilities(&caps));
-
-                    //we need to remove all the filters from the graph so that they don't get destructed
-                    const QSet<Filter> filters = MediaGraph::getAllFilters(w.graph);
-#ifndef Q_OS_WINCE
-					ComPointer<IGraphConfig> config(w.graph, IID_IGraphConfig);
-
-
-                    foreach(Filter filter, filters) {
-                        config->RemoveFilterEx(filter, REMFILTERF_LEAVECONNECTED);
-                    }
-#endif
-
-                    //if it was aborted or the queue is not empty, another source will be loaded
-                    emit asyncRenderFinished(w.id, hr, filters, isSeekable);
+					emit asyncRenderFinished(w.id, hr, w.graph);
                 }
             } else if (w.task == Seek) {
                 //that's a seekrequest
@@ -250,7 +253,7 @@ namespace Phonon
                     const QList<OutputPin> pins = BackendNode::pins(filter, PINDIR_OUTPUT);
                     foreach(OutputPin pin, pins) {
                         InputPin input;
-                        if (pin->ConnectedTo(&input) == S_OK) {
+                        if (pin->ConnectedTo(input.pparam()) == S_OK) {
                             used = true;
                         }
                     }
@@ -370,6 +373,9 @@ namespace Phonon
 
         MediaObject::~MediaObject()
         {
+            //be sure to finish the timer first
+            m_tickTimer.stop();
+
             //we finish the worker thread here
             m_thread.signalStop();
             m_thread.wait();
@@ -860,6 +866,7 @@ namespace Phonon
                     const qint64 current = currentTime();
                     const OAFilterState currentState = currentGraph()->syncGetRealState();
 
+                    emit tick(current); //this ensures that the end of the seek slider is reached
                     emit finished();
 
                     if (currentTime() == current && currentGraph()->syncGetRealState() == currentState) {

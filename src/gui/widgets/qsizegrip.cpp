@@ -528,8 +528,8 @@ void QSizeGrip::setVisible(bool visible)
 /*! \reimp */
 bool QSizeGrip::eventFilter(QObject *o, QEvent *e)
 {
-    if (isHidden() && testAttribute(Qt::WA_WState_ExplicitShowHide)
-            || e->type() != QEvent::WindowStateChange) {
+    if ((isHidden() && testAttribute(Qt::WA_WState_ExplicitShowHide))
+        || e->type() != QEvent::WindowStateChange) {
         return QWidget::eventFilter(o, e);
     }
     QWidget *tlw = qt_sizegrip_topLevelWidget(this);

@@ -105,7 +105,7 @@ template <typename T>
 Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::isFetchAndAddWaitFree()
 { return false; }
 
-#if defined(QT_BUILD_QREGION_UNIX_CPP)
+#if defined(QT_BUILD_QREGION_CPP)
 #warning "workaround!"
 __attribute__((noinline))
 #else

@@ -630,10 +630,8 @@ void Q3Header::keyPressEvent(QKeyEvent *e)
             repaint(sRect(handleIdx));
             emit pressed(d->i2s[i]);
         }
-    } else if (orientation() == Qt::Horizontal &&
-                (e->key() == Qt::Key_Right || e->key() == Qt::Key_Left)
-                || orientation() == Qt::Vertical &&
-                (e->key() == Qt::Key_Up || e->key() == Qt::Key_Down)) {
+    } else if ((orientation() == Qt::Horizontal && (e->key() == Qt::Key_Right || e->key() == Qt::Key_Left))
+               || (orientation() == Qt::Vertical && (e->key() == Qt::Key_Up || e->key() == Qt::Key_Down))) {
         int dir = e->key() == Qt::Key_Right || e->key() == Qt::Key_Down ? 1 : -1;
         int s = d->i2s[i];
         if (e->state() & Qt::ControlButton  && d->resize[s]) {
@@ -1640,8 +1638,8 @@ void Q3Header::paintEvent(QPaintEvent *e)
                     opt.state = QStyle::State_None;
                     style()->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, &p, this);
                 }
-                if (orient == Qt::Horizontal && r. right() >= e->rect().right() ||
-                     orient == Qt::Vertical && r. bottom() >= e->rect().bottom())
+                if ((orient == Qt::Horizontal && r. right() >= e->rect().right())
+                    || (orient == Qt::Vertical && r. bottom() >= e->rect().bottom()))
                     return;
             }
         }

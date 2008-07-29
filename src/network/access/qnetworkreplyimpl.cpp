@@ -176,7 +176,7 @@ void QNetworkReplyImplPrivate::setup(QNetworkAccessManager::Operation op, const 
         q->connect(outgoingData, SIGNAL(readChannelFinished()), SLOT(_q_sourceReadChannelFinished()));
     }
 
-    q->setOpenMode(QIODevice::ReadOnly);
+    q->QIODevice::open(QIODevice::ReadOnly);
     QMetaObject::invokeMethod(q, "_q_startOperation", Qt::QueuedConnection);
 }
 

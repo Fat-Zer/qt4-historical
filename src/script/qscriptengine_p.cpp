@@ -277,21 +277,6 @@ bool ArgumentsClassData::resolve(const QScriptValueImpl &object, QScriptNameIdIm
                                  QScript::Member *member, QScriptValueImpl *base)
 {
     QScriptEnginePrivate *eng_p = QScriptEnginePrivate::get(object.engine());
-
-    if (nameId == eng_p->idTable()->id_length) {
-        member->native(nameId, /*id=*/ 0,
-                       QScriptValue::Undeletable
-                       | QScriptValue::ReadOnly);
-        *base = object;
-        return true;
-    } else if (nameId == eng_p->idTable()->id_callee) {
-        member->native(nameId, /*id=*/ 0,
-                       QScriptValue::Undeletable
-                       | QScriptValue::ReadOnly);
-        *base = object;
-        return true;
-    }
-
     QString propertyName = eng_p->toString(nameId);
     bool isNumber;
     quint32 index = propertyName.toUInt(&isNumber);
@@ -310,20 +295,10 @@ bool ArgumentsClassData::resolve(const QScriptValueImpl &object, QScriptNameIdIm
 bool ArgumentsClassData::get(const QScriptValueImpl &object, const QScript::Member &member,
                              QScriptValueImpl *out_value)
 {
-    QScriptEnginePrivate *eng_p = QScriptEnginePrivate::get(object.engine());
     QScript::ArgumentsObjectData *data = ArgumentsClassData::get(object);
     if (member.nameId() == 0) {
         QScriptObject *activation_data = data->activation.objectValue();
         *out_value = activation_data->m_objects[member.id()];
-        return true;
-    } else if (member.nameId() == eng_p->idTable()->id_length) {
-        eng_p->newNumber(out_value, data->length);
-        return true;
-    } else if (member.nameId() == eng_p->idTable()->id_callee) {
-        if (!data->callee.isValid())
-            *out_value = eng_p->undefinedValue();
-        else
-            *out_value = data->callee;
         return true;
     }
     return false;
@@ -343,7 +318,6 @@ void ArgumentsClassData::mark(const QScriptValueImpl &object, int generation)
 {
     QScript::ArgumentsObjectData *data = ArgumentsClassData::get(object);
     data->activation.mark(generation);
-    data->callee.mark(generation);
 }
 
 QScriptClassDataIterator *ArgumentsClassData::newIterator(const QScriptValueImpl &object)
@@ -998,6 +972,7 @@ QScriptValueImpl QScriptEnginePrivate::toPrimitive_helper(const QScriptValueImpl
                 activation.setScope(m_globalObject);
             me->setActivationObject(activation);
             me->setThisObject(object);
+            me->m_callee = f_valueOf;
             foo->execute(me);
             QScriptValueImpl result = me->returnValue();
             bool exception = (me->state() == QScriptContext::ExceptionState);

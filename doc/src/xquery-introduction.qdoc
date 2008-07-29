@@ -43,622 +43,724 @@
 
 /*!
     \page xquery-introduction.html
-    \startpage index.html QtReference Documentation
     \title A Short Path to XQuery
-    \brief An introduction to the programming language XQuery.
+    \ingroup scripting
+
+    \startpage index.html QtReference Documentation
     \target XQuery-introduction
 
-XQuery is programming language specified by the W3C for working with XML -- or
-anything that can be represented as so.
+XQuery is a language for querying XML data or non-XML data that can be
+modeled as XML. XQuery is specified by the \l{http://www.w3.org}{W3C}.
 
 \tableofcontents
 
 \section1 Introduction
 
-Compared to programming languages such as Java and C++, which comprise of
-statements, XQuery has expressions at its core. There are various expressions
-available ranging from sorting to function calls, but one of the simplest is
-a direct node constructor. For example:
+Where Java and C++ are \e{statement-based} languages, the XQuery
+language is \e{expression-based}. The simplest XQuery expression is an
+XML element constructor:
 
-\quotefile snippets/patternist/oneElementConstructor.xq
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 20
 
-This is an XQuery query and it also happens to be a well-formed XML document.
-Regular XML nodes can be used as expressions in XQuery. Other expressions can
-be embedded using curly braces:
+This \c <recipe/> element is an XQuery expression that forms a
+complete XQuery. In fact, this XQuery doesn't actually query
+anything. It just creates an empty \c{<recipe/>} element in the
+output. But \l{Constructing Elements} {constructing new elements in
+an XQuery} is often necessary.
 
-\quotefile snippets/patternist/copyID.xq
+An XQuery expression can also be enclosed in curly braces and embedded
+in another XQuery expression. This XQuery has a document expression
+embedded in a node expression:
 
-\section1 Selecting Nodes with Paths
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 21
 
-In C++ and Java, \c for loops and function recursion is used to perform
-iterative tasks. In contrast, XQuery supplies the declarative path expressions,
-specifically designed to make iterative tasks concise and precise.
+It creates a new \c{html} element in the output and sets its \c{id}
+attribute to be the \c{id} attribute from an \c{html} element in the
+\c{other.html} file.
 
-A path expression consists of one or more steps separated by slash or double
-slash, where the result of each step becomes the \e focus for the next step.
-The resulting nodes are always delivered in document order and without
-duplicates. For instance:
+\section1 Using Path Expressions To Match & Select Items
 
-\quotefile snippets/patternist/pathsAllParagraphs.xq
+In C++ and Java, we write nested \c{for} loops and recursive functions
+to traverse XML trees in search of elements of interest. In XQuery, we
+write these iterative and recursive algorithms with \e{path
+expressions}.
 
-selects all \c p elements in the document \c index.html regardless of where
-they appear.
+A path expression looks somewhat like a typical \e{file pathname} for
+locating a file in a hierarchical file system. It is a sequence of one
+or more \e {steps} separated by slash '/' or double slash '//'.
+Although path expressions are used for traversing XML trees, not file
+systems, in QtXmlPatterms we can model a file system to look like an
+XML tree, so in QtXmlPatterns we can use XQuery to traverse a file
+system. See the \l {File System Example} {file system example}.
 
-A path expression is always evaluated to a particular focus. Sometimes this
-focus is created by the path expression itself, as seen above by using the \c
-doc() function. In other cases the focus is set by a parent expression, or by
-calling QXmlQuery::setFocus().
+Think of a path expression as an algorithm for traversing an XML tree
+to find and collect items of interest. This algorithm is evaluated by
+evaluating each step moving from left to right through the sequence. A
+step is evaluated with a set of input items (nodes and atomic values),
+sometimes called the \e focus.  The step is evaluated for each item in
+the focus. These evaluations produce a new set of items, called the \e
+result, which then becomes the focus that is passed to the next step.
+Evaluation of the final step produces the final result, which is the
+result of the XQuery.  The items in the result set are presented in
+\l{http://www.w3.org/TR/xquery/#id-document-order} {document order}
+and without duplicates.
 
-The focus is a sequence of nodes, however it can consist of atomic values too.
-This focus acts as a context, which the subsequent step filters. A step is
-invoked for each item in the focus; for each item that the step accepts, the
-next step is applied. This way paths provide iteration, similar to a nested set
-of \c for loops. This query:
+With QtXmlPatterns, a standard way to present the initial focus to a
+query is to call QXmlQuery::setFocus(). Another common way is to let
+the XQuery itself create the initial focus by using the first step of
+the path expression to call the XQuery \c{doc()} function. The
+\c{doc()} function loads an XML document and returns the \e {document
+node}. Note that the document node is \e{not} the same as the
+\e{document element}. The \e{document node} is a node constructed in
+memory, when the document is loaded. It represents the entire XML
+document, not the document element. The \e{document element} is the
+single, top-level XML element in the file. The \c{doc()} function
+returns the document node, which becomes the singleton node in the
+initial focus set. The document node will have one child node, and
+that child node will represent the document element.  Consider the
+following XQuery:
 
-\quotefile snippets/patternist/pathAB.xq
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 18
 
-contains one top level path expression which has four steps: a call to the \c
-doc() function, and then three node tests. Reading through the query in a
-step-by-step manner gives:
+The \c{doc()} function loads the file \l{cookbook.xml} and returns the
+document node. The document node then becomes the focus for the next
+step \c{recipe}. Here the double slash means select all \c{recipe}
+elements found below the document node, regardless of where they
+appear in the document tree.  The query selects all \c{recipe}
+elements in the cookbook. See \l{Running The Cookbook Examples} for
+instructions on how to run this query (and most of the ones that
+follow) from the command line.
+
+Conceptually, evaluation of the steps of a path expression is similar
+to iterating through the same number of nested \c for loops. Consider
+the following XQuery, which builds on the previous one:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 19
+
+This XQuery is a single path expression composed of three steps. The
+first step creates the initial focus by calling the \c{doc()}
+function. We can paraphrase what the query engine does at each step:
 
 \list 1
-    \o For each node returned by the function \c doc() (which is one document
-       node);
-    \o for each node that appears as a descendant of the document node and
-       is an element with name \c p
-    \o return the child elements whose name is \c span
+    \o for each node in the initial focus (the document node)...
+    \o for each descendant node that is a \c{recipe} element...
+    \o collect the child nodes that are \c{title} elements.
 \endlist
 
-This query evaluates to zero or more \c span elements.
+Again the double slash means select all the \c{recipe} elements in the
+document. The single slash before the \c{title} element means select
+only those \c{title} elements that are \e{child} elements of a
+\c{recipe} element (i.e. not grandchildren, etc). The XQuery evaluates
+to a final result set containing the \c{title} element of each
+\c{recipe} element in the cookbook.
 
-Although a step in a path can be any expression as long as only the last step
-evaluates to atomic values, the most common is when steps are \e axis \e steps.
-Axis steps consists of two parts: an axis, and a node test. For each node in
-the focus for the step, the axis navigates it and the node test is applied to
-each node along that axis. In fact, the element test above actually use a short
-form for a combination between the \c child axis, and the \c element() node
-test. This query evaluates to the exact same output:
+\section2 Axis Steps
 
-\quotefile snippets/patternist/nodeTestChildElement.xq
+The most common kind of path step is called an \e{axis step}, which
+tells the query engine which way to navigate from the context node,
+and which test to perform when it encounters nodes along the way. An
+axis step has two parts, an \e{axis specifier}, and a \e{node test}.
+Conceptually, evaluation of an axis step proceeds as follows: For each
+node in the focus set, the query engine navigates out from the node
+along the specified axis and applies the node test to each node it
+encounters. The nodes selected by the node test are collected in the
+result set, which becomes the focus set for the next step.
 
-There is a wide range of different axes and node tests, in order to be able
-to filter nodes in specific ways.
+In the example XQuery above, the second and third steps are both axis
+steps. Both apply the \c{element(name)} node test to nodes encountered
+while traversing along some axis. But in this example, the two axis
+steps are written in a \l{Shorthand Form} {shorthand form}, where the
+axis specifier and the node test are not written explicitly but are
+implied. XQueries are normally written in this shorthand form, but
+they can also be written in the longhand form. If we rewrite the
+XQuery in the longhand form, it looks like this:
 
-\section2 Axes
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 22
 
-These are the axes available in XPath, and hence also XQuery:
+The two axis steps have been expanded. The first step (\c{//recipe})
+has been rewritten as \c{/descendant-or-self::element(recipe)}, where
+\c{descendant-or-self::} is the axis specifier and \c{element(recipe)}
+is the node test. The second step (\c{title}) has been rewritten as
+\c{/child::element(title)}, where \c{child::} is the axis specifier
+and \c{element(title)} is the node test. The output of the expanded
+XQuery will be exactly the same as the output of the shorthand form.
+
+To create an axis step, concatenate an axis specifier and a node
+test. The following sections list the axis specifiers and node tests
+that are available.
+
+\section2 Axis Specifiers
+
+An axis specifier defines the direction you want the query engine to
+take, when it navigates away from the context node. QtXmlPatterns
+supports the following axes.
+
+\table
+\header
+  \o Axis Specifier
+  \o refers to the axis containing...
+  \row
+    \o \c{self::}
+    \o the context node itself
+  \row
+    \o \c{attribute::}
+    \o all attribute nodes of the context node
+  \row
+    \o \c{child::}
+    \o all child nodes of the context node (not attributes)
+  \row
+    \o \c{descendant::}
+    \o all descendants of the context node (children, grandchildren, etc)
+  \row
+    \o \c{descendant-or-self::}
+    \o all nodes in \c{descendant} + \c{self}
+  \row
+    \o \c{parent::}
+    \o the parent node of the context node, or empty if there is no parent
+  \row
+    \o \c{ancestor::}
+    \o all ancestors of the context node (parent, grandparent, etc)
+  \row
+    \o \c{ancestor-or-self::}
+    \o all nodes in \c{ancestor} + \c{self}
+  \row
+    \o \c{following::}
+    \o all nodes in the tree containing the context node, \e not
+    including \c{descendant}, \e and that follow the context node
+    in the document
+  \row
+    \o \c{preceding::}
+    \o all nodes in the tree contianing the context node, \e not
+    including \c{ancestor}, \e and that precede the context node in
+    the document
+  \row
+    \o \c{following-sibling::}
+    \o all children of the context node's \c{parent} that follow the
+    context node in the document
+  \row
+    \o \c{preceding-sibling::}
+    \o all children of the context node's \c{parent} that precede the
+    context node in the document
+\endtable
+
+\section2 Node Tests
+
+A node test is a conditional expression that must be true for a node
+if the node is to be selected by the axis step. The conditional
+expression can test just the \e kind of node, or it can test the \e
+kind of node and the \e name of the node. The XQuery specification for
+\l{http://www.w3.org/TR/xquery/#node-tests} {node tests} also defines
+a third condition, the node's \e {Schema Type}, but schema type tests
+are not supported in QtXmlPatterns.
+
+QtXmlPatterns supports the following node tests. The tests that have a
+\c{name} parameter test the node's name in addition to its \e{kind}
+and are often called the \l{Name Tests}.
+
+\table
+\header
+  \o Node Test
+  \o matches all...
+  \row
+    \o \c{node()}
+    \o nodes of any kind
+  \row
+    \o \c{text()}
+    \o text nodes
+  \row
+    \o \c{comment()}
+    \o comment nodes
+  \row
+    \o \c{element()}
+    \o element nodes (same as star: *)
+  \row
+    \o \c{element(name)}
+    \o element nodes named \c{name}
+  \row
+    \o \c{attribute()}
+    \o attribute nodes
+  \row
+    \o \c{attribute(name)}
+    \o attribute nodes named \c{name}
+   \row
+    \o \c{processing-instruction()}
+    \o processing-instructions
+  \row
+    \o \c{processing-instruction(name)}
+    \o processing-instructions named \c{name}
+  \row
+    \o \c{document-node()}
+    \o document nodes (there is only one)
+  \row
+    \o \c{document-node(element(name))}
+    \o document node with document element \c{name}
+\endtable
+
+\target Shorthand Form
+\section2 Shorthand Form
+
+Writing axis steps using the longhand form with axis specifiers and
+node tests is semantically clear but syntactically verbose. The
+shorthand form is easy to learn and, once you learn it, just as easy
+to read. In the shorthand form, the axis specifier and node test are
+implied by the syntax. XQueries are normally written in the shorthand
+form. Here is a table of some frequently used shorthand forms:
+
+\table
+\header
+  \o Shorthand syntax
+  \o Short for...
+  \o matches all...
+  \row
+    \o \c{name}
+    \o \c{child::element(name)}
+    \o child nodes that are \c{name} elements
+
+  \row
+    \o \c{*}
+    \o \c{child::element()}
+    \o child nodes that are elements (\c{node()} matches
+    \e all child nodes)
+
+  \row
+    \o \c{..}
+    \o \c{parent::node()}
+    \o parent nodes (there is only one)
+
+  \row
+    \o \c{@*}
+    \o \c{attribute::attribute()}
+    \o attribute nodes
+
+  \row
+    \o \c{@name}
+    \o \c{attribute::attribute(name)}
+    \o \c{name} attributes
+
+  \row
+    \o \c{//}
+    \o \c{descendant-or-self::node()}
+    \o descendent nodes (when used instead of '/')
+
+\endtable
+
+The \l{http://www.w3.org/TR/xquery/}{XQuery language specification}
+has a more detailed section on the shorthand form, which it calls the
+\l{http://www.w3.org/TR/xquery/#abbrev} {abbreviated syntax}. More
+examples of path expressions written in the shorthand form are found
+there. There is also a section listing examples of path expressions
+written in the the \l{http://www.w3.org/TR/xquery/#unabbrev} {longhand
+form}.
+
+\target Name Tests
+\section2 Name Tests
+
+The name tests are the \l{Node Tests} that have the \c{name}
+parameter. A name test must match the node \e name in addition to the
+node \e kind. We have already seen name tests used:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 19
+
+In this path expression, both \c{recipe} and \c{title} are name tests
+written in the shorthand form. XQuery resolves these names
+(\l{http://www.w3.org/TR/xquery/#id-basics}{QNames}) to their expanded
+form using the
+\l{http://www.w3.org/TR/xquery/#dt-namespace-declaration} {namespace
+declarations} it knows about. Resolving a name to its expanded form
+means replacing its namespace prefix (if one is present; there aren't
+any prefixes in the example) with a namespace URI. The expanded name
+then consists of the namespace URI and the local name.
+
+But the names in the example above don't have namespace prefixes,
+because we didn't include a namespace declaration in our
+\c{cookbook.xml} file. Since we will often use XQuery to query XML
+documents that use namespaces, let's add a \e{default} namespace
+now. Change the \e{document element} in \c{cookbook.xml} from:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 23
+
+to...
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 24
+
+This is called a default namespace declaration because it doesn't
+include a namespace prefix. Including this default namespace
+declaration in the document element means that all unprefixed element
+names, including the document element itself (\c{cookbook}), are in
+the default namespace \c{http://cookbook/namespace}. Note that default
+namespace declarations do not apply to unprefixed attribute names.
+The unprefixed attribute names remain in \e no namespace.  Also note
+that the URL we've chosen as our namespace URI need not refer to an
+actual location, and doesn't refer to one in this case. But click on
+\l{http://www.w3.org/XML/1998/namespace}, for example, which is the
+namespace URI for elements and attributes prefixed with \c{xml:}.
+
+Now when we run the XQuery example above, no output is produced. The path
+expression no longer matches anything in the cookbook file because it doesn't
+know about the namespace we added to the cookbook. Apart from placing namespace
+declarations on element constructors, there are two ways to declare the
+namespace in the XQuery. We can give it a \e{namespace prefix} (e.g. \c{c} for
+cookbook) and
+prefix each name test with the namespace prefix:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 3
+
+Or we can declare the namespace to be the \e{default element
+namespace}, and then we can still run the original XQuery:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 4
+
+Both versions produce the same output. They both select all the \c
+title elements:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 5
+
+But note how the output is slightly different from the output produced
+before we added the namespace declaration to the cookbook file.
+QtXmlPatterns automatically includes the correct namespace attribute
+in each \c title element in the output. When QtXmlPatterns loads a
+document and expands a QName, it creates an instance of QXmlName,
+which retains the namespace prefix along with the namespace URI and
+the local name. See QXmlName for further details.
+
+One thing to keep in mind from this namespace discussion, whether you
+run XQueries in a Qt program using QtXmlPatterns, or you run them from
+the command line using xmlpatterns, is that if you don't get the
+output you expect, it might be because you didn't declare the right
+namespaces in your XQuery.
+
+\section3 Wildcards in Name Tests
+
+The wildcard \c{'*'} can be used in a name test. To find all the
+attributes in the cookbook but select only the ones in the \c{xml}
+namespace, use the \c{xml:} namespace prefix but replace the
+\e{local name} (the attribute name) with the wildcard:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 7
+
+Oops! If you save this XQuery in \c{file.xq} and run it through
+\c{xmlpatterns}, it doesn't work. You get an error message instead,
+something like this: \e{Error SENR0001 in file:///...file.xq, at line
+1, column 1: Attribute xml:id can't be serialized because it appears
+at the top level.} The XQuery actually ran correctly. It selected a
+bunch of \c{xml:id} attributes and put them in the result set. But
+then \c{xmlpatterns} sent the result set to a \l{QXmlSerializer}
+{serializer}, which tried to output it as well-formed XML. Since the
+result set contains only attributes and attributes alone are not
+well-formed XML, the \l{QXmlSerializer} {serializer} reports a
+\l{http://www.w3.org/TR/2005/WD-xslt-xquery-serialization-20050915/#id-errors}
+{serialization error}.
+
+Fear not. XQuery can do more than just find and select elements and
+attributes. It can \l{Constructing Elements} {construct new ones on
+the fly} as well, which is what we need to do here if we want \c
+xmlpatterns to let us see the attributes we selected. The example
+above and the ones below are revisited in the \l{Constructing
+Elements} section. You can jump ahead to see the modified examples
+now, and then come back, or you can press on from here.
+
+To find all the \c{name} attributes in the cookbook and select them
+all regardless of their namespace, replace the namespace prefix with
+the wildcard and write \c{name} (the attribute name) as the local
+name:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 8
+
+To find and select all the attributes of the \e{document element} in
+the cookbook, replace the entire name test with the wildcard:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 9
+
+\section1 Using Predicates In Path Expressions
+
+Predicates can be used to further filter the nodes selected by a path
+expression. A predicate is an expression in square brackets ('[' and
+']') that either returns a boolean value or a number. A predicate can
+appear at the end of any path step in a path expression. The predicate
+is applied to each node in the focus set.  If a node passes the
+filter, the node is included in the result set.  The query below
+selects the recipe element that has the \c{title} element
+\c{"Hard-Boiled Eggs"}.
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 10
+
+The dot expression ('.') can be used in predicates and path
+expressions to refer to the current context node. The following query
+uses the dot expression to refer to the current \c{method} element.
+The query selects the empty \c{method} elements from the cookbook.
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 11
+
+Note that passing the dot expression to the
+\l{http://www.w3.org/TR/xpath-functions/#func-string-length}
+{string-length()} function is optional. When
+\l{http://www.w3.org/TR/xpath-functions/#func-string-length}
+{string-length()} is called with no parameter, the context node is
+assumed:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 12
+
+Actually, selecting an empty \c{method} element might not be very
+useful by itself. It doesn't tell you which recipe has the empty
+method:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 31
+
+\target Empty Method Not Robust
+What you probably want to see instead are the \c{recipe} elements that
+have empty \c{method} elements:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 32
+
+The predicate uses the
+\l{http://www.w3.org/TR/xpath-functions/#func-string-length}
+{string-length()} function to test the length of each \c{method}
+element in each \c{recipe} element found by the node test. If a method
+contains no text, the predicate evaluates to \c true and the
+\c{recipe} element is selected. If the method contains some text, the
+predicate evaluates to \c false, and the \c{recipe} element is
+discarded.  The output is the entire recipe that has no instructions
+for preparation:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 33
+
+The astute reader will have noticed that this use of
+\c{string-length()} to find an empty element is unreliable. It works
+in this case, because the method element is written as \c{<method/>},
+guaranteeing that its string length will be 0. It will still work if
+the method element is written as \c{<method></method>}, but it will
+fail if there is any whitespace between the opening and ending \c
+method tags. A more robust way to find the recipes with empty methods
+is presented in the section on \l{Boolean Predicates}.
+
+There are many more functions and operators defined for XQuery and
+XPath. They are all \l{http://www.w3.org/TR/xpath-functions}
+{documented here}.
+
+\section2 Positional Predicates
+
+Predicates are often used to filter items based on their position in
+a sequence. For path expressions processing items loaded from XML
+documents, the normal sequence is
+\l{http://www.w3.org/TR/xquery/#id-document-order} {document order}.
+This query returns the second \c{recipe} element in the
+\c{cookbook.xml} file:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 13
+
+The other frequently used positional function is
+\l{http://www.w3.org/TR/xpath-functions/#func-last} {last()}, which
+returns the numeric position of the last item in the focus set. Stated
+another way, \l{http://www.w3.org/TR/xpath-functions/#func-last}
+{last()} returns the size of the focus set. This query returns the
+last recipe in the cookbook:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 16
+
+And this query returns the next to last \c{recipe}:
+
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 17
+
+\section2 Boolean Predicates
+
+The other kind of predicate evaluates to \e true or \e false. A
+boolean predicate takes the value of its expression and determines its
+\e{effective boolean value} according to the following rules:
 
 \list
-    \o \c child All child nodes, but no attribute nodes of the current context node
-    \o \c descendant All the descendants
-    \o \c attribute All the attribute node
-    \o \c self The current item in the focus itself.
-    \o \c descendant-or-self As the \c descendant axis, but includes the context node too
-    \o \c following-sibling All the other child nodes of the parent of the
-          context node, that appears after the context node, in document order.
-    \o \c following The nodes that appear after the context node in document order
-    \o \c parent The parent node, if any
-    \o \c ancestor The ancestors of the context node. That is the parent, and
-          the parent's parent, and so on.
-    \o \c preceding-sibling All the other child nodes of the parent of the context
-          node, that appears before the context node, in document order.
-    \o \c preceding All the nodes that appear before the context node except ancestor
-    \o \c ancestor-or-self As the axis \c ancestor but includes the context node
+    \o An expression that evaluates to a single node is \c{true}.
+
+    \o An expression that evaluates to a string is \c{false} if the
+       string is empty and \c{true} if the string is not empty.
+
+    \o An expression that evaluates to a boolean value (i.e. type
+    \c{xs:boolean}) is that value.
+
+    \o If the expression evaluates to anything else, it's an error
+    (e.g. type \c{xs:date}).
+
 \endlist
 
-\section2 Node tests
+We have already seen some boolean predicates in use.  Earlier, we saw
+a \e{not so robust} way to find the \l{Empty Method Not Robust}
+{recipes that have no instructions}. \c{[string-length(method) = 0]}
+is a boolean predicate that would fail in the example if the empty
+method element was written with both opening and closing tags and
+there was whitespace between the tags. Here is a more robust way that
+uses a different boolean predicate.
 
-Node tests generally filter nodes based on their kind, whether the context node
-is a processing-instruction or not for instance, or their name, or a
-combination between the two.
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 34
 
-\section3 Name Tests
+This one uses the
+\l{http://www.w3.org/TR/xpath-functions/#func-empty} {empty()} and
+function to test whether the method contains any steps. If the method
+contains no steps, then \c{empty(step)} will return \c true, and
+hence the predicate will evaluate to \c{true}.
 
-Name tests are namespace aware, meaning that a name test such as \c svg
-wouldn't match the document element in a SVG document, since the document
-element is in the SVG namespace. The various namespace declarations can be used
-to provide namespaces. This query:
+But even that version isn't foolproof. Suppose the method does contain
+steps, but all the steps themselves are empty. That's still a case of
+a recipe with no instructions that won't be detected. There is a
+better way:
 
-\quotefile snippets/patternist/twoSVGElements.xq
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 35
 
-selects the document element twice, because the two name tests match the same
-element, although the namespaces are supplied differently each time.  Once
-through a prefix binding, and the other by picking up the default element
-namespace.
+This version uses the
+\l{http://www.w3.org/TR/xpath-functions/#func-not} {not} and
+\l{http://www.w3.org/TR/xpath-functions/#func-normalize-space}
+{normalize-space()} functions. \c{normalize-space(method))} returns
+the contents of the method element as a string, but with all the
+whitespace normalized, i.e., the string value of each \c{step} element
+will have its whitespace normalized, and then all the normalized step
+values will be concatenated. If that string is empty, then \c{not()}
+returns \c{true} and the predicate is \c{true}.
 
-\section3 Names and Wildcards
+We can also use the
+\l{http://www.w3.org/TR/xpath-functions/#func-position} {position()}
+function in a comparison to inspect positions with conditional logic. The
+\l{http://www.w3.org/TR/xpath-functions/#func-position} {position()}
+function returns the position index of the current context item in the
+sequence of items:
 
-Names can be combined with wildcards in order to select for instance any element or
-attribute as long as it is in a particular namespace, or an attribute or element
-appearing in any namespace, as long as it has a particular local name. This is
-achieved by using a wildcard as the prefix or local name. For instance this
-query:
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 14
 
-\quotefile snippets/patternist/anyXLinkAttribute.xq
+Note that the first position in the sequence is position 1, not 0. We
+can also select \e{all} the recipes after the first one:
 
-selects all the attributes that are in the XLink namespace, and this query:
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 15
 
-\quotefile snippets/patternist/anyHTMLElement.xq
+\target Constructing Elements
+\section1 Constructing Elements
 
-selects an element whose local name is \c html, regardless of its namespace.
+In the section about \l{Wildcards in Name Tests} {using wildcards in
+name tests}, we saw three simple example XQueries, each of which
+selected a different list of XML attributes from the cookbook.  We
+couldn't use \c{xmlpatterns} to run these queries, however, because
+\c{xmlpatterns} sends the XQuery results to a \l{QXmlSerializer}
+{serializer}, which expects to serialize the results as well-formed
+XML. Since a list of XML attributes by itself is not well-formed XML,
+the serializer reported an error for each XQuery.
 
-The following are various kind tests.
+Since an attribute must appear in an element, for each attribute in
+the result set, we must create an XML element. We can do that using a
+\l{http://www.w3.org/TR/xquery/#id-for-let} {\c{for} clause} with a
+\l{http://www.w3.org/TR/xquery/#id-variables} {bound variable}, and a
+\l{http://www.w3.org/TR/xquery/#id-orderby-return} {\c{return}
+clause} with an element constructor:
 
-\section3 Kind Tests
-\list
-    \o \c node() matches any node
-    \o \c text() matches any text node
-    \o \c comment() matches any comment node
-    \o \c element() matches any element. This is the same as the star: *
-    \o \c element(name) matches any element with the name name
-    \o \c attribute() matches any attribute.
-    \o \c processing-instruction() matches any processing-instruction
-    \o \c processing-instruction(target) matches any processing-instruction
-          whose target (name) is \c target
-    \o \c attribute(name) matches any attribute with the name name
-    \o \c document-node() matches any document node
-    \o \c document-node(element(doc)) matches any document node that
-          has a document element named \c doc
-\endlist
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 25
 
-In addition there are node tests related to the schema types of nodes, although they
-are currently unsupported by QtXmlPatterns.
+The \c{for} clause produces a sequence of attribute nodes from the result
+of the path expression. Each attribute node in the sequence is bound
+to the variable \c{$i}. The \c{return} clause then constructs a \c{p}
+element around the attribute node. Here is the output:
 
-\section2 Abbreviated syntax
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 28
 
-For many common tasks the full axis step syntax is a bit verbose and for that
-reason simplified alternatives exists, which typically combine axes and node
-tests. Some examples:
+The output contains one \c{p} element for each \c{xml:id} attribute in
+the cookbook. Note that XQuery puts each attribute in the right place
+in its \c{p} element, despite the fact that in the \c{return} clause,
+the \c{$i} variable is positioned as if it is meant to become \c{p}
+element content.
 
-\list
-    \o \c item selects any child element of the context node that is named
-       \c item. Short for \c child::element(item)
-    \o \c * selects any child that is an element. Note that children of
-         other types, such as comments, are skipped. Short for
-         \c child::element(). If all nodes are of interest, \c node()
-         will select them.
-    \o \c .. is equal to \c parent::node(). That is, it selects the parent node
-    \o \c @* selects any attribute. Short for \c attribute::attribute()
-    \o \c @href selects any attribute by name \c href. Short for \c attribute::attribute(href)
-    \o \c // before another step is a short form for descendant-or-self::node()
-\endlist
+The other two examples from the \l{Wildcards in Name Tests} {wildcard}
+section can be rewritten the same way. Here is the XQuery that selects
+all the \c{name} attributes, regardless of namespace:
 
-\section1 More on Focus and Filtering: Predicates
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 26
 
-In addition to steps as a way to filter content, XPath & XQuery has the
-predicate expression: an expression with a second expression to its right
-enclosed in brackets. For instance this query:
+And here is its output:
 
-\quotefile snippets/patternist/firstParagraph.xq
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 29
 
-selects the paragraph that has an attribute with the ID \c thatSpecialOne.
+And here is the XQuery that selects all the attributes from the
+\e{document element}:
 
-Like steps in path expressions, predicates also make use of the focus. For each
-item in the source sequence, the predicate is applied, and if the item passes
-the filter, it is part of the result. Inside a predicate (and inside steps too)
-the current context item can be accessed by using the dot expression. Consider
-this query:
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 27
 
-\quotefile snippets/patternist/emptyParagraphs.xq
+And here is its output:
 
-For each \c p element that the node test returns, the predicate is invoked. If
-the predicate expression evaluates to true, it returns the node, and that it will
-do if the string value of the predicate's context item is zero.
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 30
 
-There are two kinds of predicates: numeric predicates and truth predicates.
+\section2 Constructing Values
 
-\section2 Select based on Positions and Numeric Ranges
+To construct a value inside an element, enclose an expression in curly
+braces and embed it in the constructor. Here we compute the content
+for a new \c{e} element:
 
-While a predicate is applied to its focus, the current \e context \e position
-can be obtained by using the function \c position(). For instance, this query:
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 36
 
-\quotefile snippets/patternist/paragraphsExceptTheFiveFirst.xq
+Sending this XQuery through xmlpatterns produces:
 
-selects all the paragraphs except the five first.
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 37
 
-In addition to \c position(), the function last() also returns a number related
-to the focus: the position of the last item. \c last() inside a predicate by itself
-will simply select the last item in the input sequence, but it can also be combined
-with for instances an offset:
+To compute the value of an attribute, enclose the expression in
+curly braces and embed it in the attribute value:
 
-\quotefile snippets/patternist/nextLastParagraph.xq
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 38
 
-which would return the next last paragraph in the document.
+Sending this XQuery through xmlpatterns produces:
 
-Positions inside a focus starts from one, not zero.
-
-\section2 Filterting based on Logic
-
-If a predicate doesn't evaluate to a number, it is considered a truth predicate.
-A truth predicate takes the value the predicate expression evaluates to
-and computes its \e effective \e boolean \e value. The rules for how that is done,
-is as follows:
-
-\list
-    \o If it's a single node, the result is \c true
-    \o If the value is a string, the value is \c false if it's empty,
-       otherwise \c true
-    \o If it's a value of type \c xs:boolean, the value is returned as is
-    \o Otherwise, for instance if the return value is date, a type error occur
-\endlist
-
-For instance, this query:
-
-\quotefile snippets/patternist/paragraphsWithTables.xq
-
-selects all paragraphs that has a table as a child, since the predicate
-evaluates to true if the contained step, \c table, matches any nodes. This is
-of course very different from:
-
-\quotefile snippets/patternist/tablesInParagraphs.xq
-
-which returns the tables found inside paragraphs (which should be none, since
-they cannot appear there).
-
-\section1 Creating nodes
-
-While the XQuery language has a lot of functions and expression for
-selecting and filtering exisitng content, it can also create new content using
-its node constructors. Consider:
-
-\quotefile snippets/patternist/directTreeFragment.xq
-
-While this looks like an XML document, and in fact is so, it also is a valid
-XQuery query. Node constructors are by large just like XML, so if one knows
-XML, one can simply continue to write XML inside queries whenever one needs to
-have nodes created. There is however two things that set direct node constructs
-apart from XML: one can embed XQuery expressions inside of them, and they are
-expressions themselves. Let's first look at the former.
-
-\section2 Computing values inside nodes
-
-Creating a value inside a node at runtime is done by embedding
-expressions inside curly braces. For instance, this expression, simple as it
-is, constructs an element with the text node "6" inside of it:
-
-\quotefile snippets/patternist/bracesIncluded.xq
-
-Similarly, one can embed expressions inside attributes. For instance:
-
-\quotefile snippets/patternist/expressionInsideAttribute.xq
-
-creates an element whose attribute called \c class has the value "important
-example obsolete", without quotes.
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 39
 
 \section2 Node Constructors are Expressions
 
-Because node constructors are expressions just like for instance function
-calls, paths and literals, they can appear anywhere where expressions can
-appear. For instance:
+Because node constructors are expressions, they can be used in
+XQueries wherever expressions are allowed.
 
-\quotefile snippets/patternist/nodeConstructorsAreExpressions.xq
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 40
 
-If \c maybeNotWellformed.xml can be read successfully it creates a \c para
-element for each \c p element that appears anywhere in the document and copies
-\c p's child nodes into it. But if the document cannot be loaded, a single \c para
-element is created that contains a descriptive message.
+If \c{cookbook.xml} is loaded without error, a \c{resept} element
+(Norweigian word for recipe) is constructed for each \c{recipe}
+element in the cookbook, and the child nodes of the \c{recipe} are
+copied into the \c{resept} element. But if the cookbook document
+doesn't exist or does not contain well-formed XML, a single \c{resept}
+element is constructed containing an error message.
 
-Hence, in the above query node constructors appear in two places:
+\section1 Running The Cookbook Examples
 
-\list
-    \o Once as a child in the \c else branch in the \c if expression
-    \o As one of the axis steps in the path expression
-\endlist
+Most of the XQuery examples in this document refer to the cookbook
+written in XML shown below. Save it as \c{cookbook.xml}. In the same
+directory, save one of the cookbook XQuery examples in a \c{.xq} file
+(e.g. \c{file.xq}). Run the XQuery using Qt's command line utility:
 
-\section2 Computing Node Names at Runtime
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 6
 
-Direct node constructors are fine, but what if one doesn't know the names of
-the nodes to construct when writing the query? For each direct element
-constructor, there exist a \e computed node constructor, that takes names and
-the node values as arbitrary expressions. For instance, the query seen above
-that produced a small XML document, can also be written like this:
+\section2 cookbook.xml
 
-\quotefile snippets/patternist/computedTreeFragment.xq
-
-\section2 Copying nodes into other nodes
-
-When an expression embedded inside a node expression evaluates to strings (or
-any other type of atomic values) the values becomes text nodes by concatenating
-them with a space inbetween. However, when the expression evaluates to nodes,
-they are copied and becomes children of the surrounding node. This can
-occasionally be deceptive. Consider this query:
-
-\quotefile snippets/patternist/copyAttribute.xq
-
-This won't output a \c p element that has the value of the \c version
-attribute, it will instead copy the attribute onto the \c p element whose result
-in not even valid XHTML. The approach is instead, in the case of wanting the
-value of the attribute instead of itself, to extract that using for instance
-the \c string() function:
-
-\quotefile snippets/patternist/fnStringOnAttribute.xq
-
-\section1 Escaping Characters
-
-In the XQuery syntax, a set of characters are given special meaning. For instance,
-apostrophes or quotes start and terminate string literals. These can be escaped by
-writing the character twice:
-
-For instance:
-
-\quotefile snippets/patternist/escapeStringLiterals.xq
-
-Evaluates to:
-
-\quotefile snippets/patternist/escapeStringLiterals.xml
-
-However, sometimes the easiest is to start the string literal with
-apostrophes instead of quotes, if the string contains quotes. One can also use XML
-character references, like \c &amp; or \c &#xA;, to express characters that cannot be directly
-represented in the encoding of the file containing the query.
-
-When curly braces should appear inside node constructors, one can again escape them
-with double braces or use character references. For instance:
-
-\quotefile snippets/patternist/escapeCurlyBraces.xq
-
-\section1 Dates, Times, Numbers and other Atomic Values
-
-Apart from nodes, XQuery has atomic values and they are just what one would
-think they are: small, primitive values, that have a similar role to C++'s
-plain old data structures like \c float or \c long. In total there are about
-twenty of them, some of the most common being:
-
-\table
-    \header
-        \o Name
-        \o Description
-    \row
-        \o \c xs:integer
-        \o A 64 bit integer
-    \row
-        \o \c xs:boolean
-        \o A boolean value, \c false or \c true
-    \row
-        \o \c xs:double
-        \o A 64 bit floating point value
-    \row
-        \o \c xs:string
-        \o A string where each codepoint is an XML 1.0
-           character(essentially Unicode)
-    \row
-        \o \c xs:date
-        \o A date, such as when you're born: \c 1984-10-15
-    \row
-        \o \c xs:time
-        \o A time, such as when you show up at work: \c 09:00:00
-    \row
-        \o \c xs:dateTime
-        \o A date followed by a time: 1974-10-15T05:00:00
-    \row
-        \o \c xs:duration
-        \o A time interval such as P5Y2M10DT15H, which
-           represents five years, two months, 10 days, and 15 hours.
-    \row
-        \o \c xs:base64Binary
-        \o Represents data, possibly binary data, in Base 64 encoding.
-\endtable
-
-Atomic values can be seen as types which have:
-
-\list
-    \o a name, such as \c xs:duration
-    \o builtin operators for performing arithmetics, comparisons, and
-       conversions between other atomic values
-\endlist
-
-\section2 Creating Atomic Values
-
-Apart from the builtin functions that returns atomic values, such as
-\c current-date-time(), constructor functions can be used to 
-
-Integers, decimals, doubles and strings can be created by using literal expressions.
-Booleans with the functions \c true() or \c false() (just \c true or \c false
-would be name tests), and for the rest constructor functions must be used.
-
-Essentially each atomic type can construct a value from a string. While doing so it
-validates the input string to ensure it has a proper format and if not, it
-issues a dynamic error. These formats tend to be as one would guess it to be. For
-instance, if one passes "1.five" to \c xs:decimal's constructor, as opposed to
-"1.5" it will halt the query such that the bug can be corrected.
-
-In the example an \c xs:boolean was created from an \c xs:integer as opposed to
-from a string, and that's because values doesn't have to be constructed from
-strings, they can be created, or converted, from a range of different types.
-For instance, an \c xs:double can be created from a \c xs:decimal, or a \c
-xs:boolean can be converted to an \c xs:string. What conversions that are
-possible depends on the types but they tend to be intuitive. One of the
-specifications has a
-\l{http://www.w3.org/TR/xpath-functions/#casting-from-primitive-to-primitive}{nifty
-table} outlining those.
-
-\section2 Using Atomic Values
-
-Once atomic values have been constructed, via one of the methods mentioned
-above, or as return values from functions or by evaluating variables, one can
-pass them along to functions, convert them to strings and attach them as part
-of text nodes to nodes, or use operators between them. Let's look at the
-latter.
-
-Apart from the usual arithmetic operators between numbers one would expect,
-they are also available between more exotic types. Have a look at this query:
-
-\quotefromfile snippets/patternist/literalsAndOperators.xq
-\skipuntil -
-
-It substracts two dates which returns an \c xs:dayTimeDuration, which it
-subsequently compares against another \c :xs:dayTimeDuration. The query
-finally evaluates to a single atomic value of type \c xs:boolean.
-
-The available operators and between what types are summarized in
-\l{http://www.w3.org/TR/xquery/#mapping}{a table} in the main XQuery
-specification.
+\snippet snippets/code/doc.src.qtxmlpatterns.qdoc 100
 
 \section1 Further Reading
 
-XQuery is a big language that is hard to cover in an overview. If one wants a
-good understanding of the subject, a good thing could be to get a book on
-topic.
+There is much more to the XQuery language than we have presented in
+this short introduction. We will be adding more here in later
+releases. In the meantime, playing with the \c xmlpatterns utility and
+making modifications to the XQuery examples provided here will be
+quite informative. An XQuery textbook will be a good investment.
 
-Another alternative is to ask a question or two on the mailing lists
-\l{http://lists.trolltech.com/qt-interest/}{qt-interest} or
-\l{http://www.x-query.com/mailman/listinfo/talk}{talk at x-query.com}.
-
-\l{http://www.functx.com/functx/}{FunctX} is a collection of XQuery functions
-that can be both useful and educational.
-
-Of course, the specifications is one alternative, but one has to take a deep
-breath before diving into those. Here are the links to (some of) them:
+You can also ask questions on XQuery mail lists:
 
 \list
-    \o \l{http://www.w3.org/TR/xquery/}{XQuery 1.0: An XML Query Language} is
-        the main specification that describes the syntax and behavior.
-    \o \l{http://www.w3.org/TR/xpath-functions/}{XQuery 1.0 and XPath 2.0 Functions
-       and Operators} describes all the builtin functions, and how conversions between
-       atomic values are done.
+\o
+\l{http://lists.trolltech.com/qt-interest/}{qt-interest}
+\o
+\l{http://www.x-query.com/mailman/listinfo/talk}{talk at x-query.com}.
 \endlist
 
-\section1 FAQ
+\l{http://www.functx.com/functx/}{FunctX} has a collection of XQuery
+functions that can be both useful and educational.
 
-\section2 Path expressions misses
+This introduction contains many links to the specifications, which, of course,
+are the ultimate source of information about XQuery. They can be a bit
+difficult, though, so consider investing in a textbook:
 
-Often this is caused by that the names that the axis step matches, is different
-from nodes being matched.  For instance, let's say that \c index.html in this
-query:
+\list
 
-\quotefile snippets/patternist/simpleHTML.xq
+    \o \l{http://www.w3.org/TR/xquery/}{XQuery 1.0: An XML Query
+    Language} - the main source for syntax and semantics.
 
-is an XHTML document and hence it resides in the namespace \c
-http://www.w3.org/1999/xhtml/. The path won't match since they look for
-\c{{}html} and so forth, while the actual name is
-\c{{http://www.w3.org/1999/xhtml/}html}. The fix is straight forward:
+    \o \l{http://www.w3.org/TR/xpath-functions/}{XQuery 1.0 and XPath
+       2.0 Functions and Operators} - the builtin functions and operators.
 
-\quotefile snippets/patternist/simpleXHTML.xq
-
-Path expressions also pick up the default namespace if one is declared:
-
-\quotefile snippets/patternist/embedDataInXHTML.xq
-
-In this case the nodes created by the direct element constructors will be in
-the XHTML namespace, but so will the path expressions. Hence they look for
-\c{{http://www.w3.org/1999/xhtml/}tests} and so forth, while \c testResult.xml
-is perhaps in a different namespace, or no namespace at all.
-
-Another reason coulbe be that the context item is not what one expects it to
-be. For instance, this expression:
-
-\quotefile snippets/patternist/docPlainHTML.xq
-
-won't match because the node the \c doc() function returns is not the top
-element node(\c html), it is the document node.
-
-\section2 Variable in for loop is out of scope
-
-Due to expression precedence it might be necessary to wrap the \c return
-expression in a \c for clause with paranteses:
-
-\quotefile snippets/patternist/forClause.xq
-
-Without the paranteses on the last line, the arithmetic expression would have
-had the whole \c for clause as it left operand, and since the scope of variable
-\c $d ends at the \c return clause, the variable reference would be out of
-scope.
-
-\section2 Expressions aren't evaluated
-
-If an expression is inside a node constructor it must be surrounded by curly
-braces, otherwise it's interpreted as text. This:
-
-\quotefile snippets/patternist/bracesOmitted.xq
-
-evaluates to:
-
-\quotefile snippets/patternist/bracesOmittedResult.xml
-
-while:
-
-\quotefile snippets/patternist/bracesIncluded.xq
-
-evaluates to:
-
-\quotefile snippets/patternist/bracesIncludedResult.xml
-
-\section2 Filters selects the wrong things
-
-When having predicates, consider what the predicate applies to. For instance,
-this query:
-
-\quotefile snippets/patternist/filterOnStep.xq
-
-evaluates to the first \c span elements in each \c p element, while this query:
-
-\quotefile snippets/patternist/filterOnPath.xq
-
-evaluates to only one \c span element, the one that occured first in the result
-of the path expression as a whole. In the first case the filter expression was
-applied for the \c span step.
-
-\section2 FLWOR doesn't behave as expected
-
-Note that a \c for expression generates a so called tuple stream, while a \c
-let clause is an ordinary variable binding. For instance, if a \c let binding
-is placed inside a \c for binding it is created for each tuple. The \c order \c
-by clause in turn applies to the result of the tuple stream that the \c for
-clause evaluates to. Consider:
-
-\quotefile snippets/patternist/letOrderBy.xq
-
-evaluates to 4 2 -2 2 -8 2.
-
-This expression:
-
-\quotefile snippets/patternist/invalidLetOrderBy.xq
-
-wouldn't be sorted since the items the \c let clause binds aren't
-dealt with on an individual basis.
-
-\section2 Nodes are created in the wrong order
-
-If nodes are created in the wrong order, it can possibly be related to that the
-document order between nodes created with node constructors is undefined. For
-that reason node sorting, which is invoked by path expressions for instance,
-returns nodes in an order which is undefined. Hence, one gets nodes in an
-arbitrary order if node constructors are placed somewhere in a path expression;
-or indirectly, if nodes are created inside a user-declared function which is
-called from a path step. Consider:
-
-\quotefile snippets/patternist/nodeConstructorsInPaths.xq
-
-This query evaluates to a sequence of \c p elements. However, the order is not
-in the same order as the \c item elements appear in \c feed.rss. The order is,
-counter intuitive as it may seem, undefined.
-
-One approach to this is to instead use the \c for loop, which doesn't perform
-node sorting on its result:
-
-\quotefile snippets/patternist/forClauseOnFeed.xq
-
-\section2 true or false doesn't work
-
-Boolean values, that is atomic values of type \c xs:boolean, cannot be created
-by writing \c true or \c false inside the query, since those are steps, name
-tests to be precise. The safest and easiest way to create boolean values is to
-use the builtin functions \c false() or \c true().
-
-Another way is to invoke its constructor function:
-
-\quotefile snippets/patternist/xsBooleanTrue.xq
+\endlist
 
 */
-
-/*
-+ Selecting nodes with Path Expressions
-    - Languages like C++ and Java typically use for loops and recursion in
-      order to perform tasks iteratively. XQuery supplies the declarative path
-expressions, which are specifically designed to make such jobs concise and
-precise to evaluate.
-
-+ Filtering content
-    - Closely related to paths are filter expressions.
-*/
-

@@ -1,5 +1,3 @@
-QT += network
-
 HEADERS       = mainwindow.h \
                 findfiledialog.h \
                 assistant.h \

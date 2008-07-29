@@ -61,8 +61,7 @@ QT_BEGIN_NAMESPACE
 /*!
   \class QXmlQuery
 
-  \brief The QXmlQuery class is used for performing queries on XML
-  data, or on non-XML data modeled to look like XML.
+  \brief The QXmlQuery class performs XQueries on XML data, or on non-XML data modeled to look like XML.
 
   \reentrant
   \since 4.4
@@ -102,7 +101,7 @@ QT_BEGIN_NAMESPACE
 
   \list
 
-  \o evaluateTo() is called with a pointer to an XML
+  \o evaluateTo(QAbstractXmlReceiver *) is called with a pointer to an XML
   \l {QAbstractXmlReceiver} {receiver}, which receives the query
   results as a sequence of callbacks. The receiver callback class
   is like the callback class used for translating the output of a
@@ -114,7 +113,7 @@ QT_BEGIN_NAMESPACE
 
   \list
 
-  \o evaluateTo() is called with a pointer to an iterator for
+  \o evaluateTo(QXmlResultItems *) is called with a pointer to an iterator for
   an empty sequence of query \l {QXmlResultItems} {result items}.
   The Java-like iterator allows the query results to be accessed
   sequentially.
@@ -123,7 +122,7 @@ QT_BEGIN_NAMESPACE
 
   \list
 
-  \o evaluateTo() is similar to evaluateTo(), but the
+  \o evaluateTo(QStringList * target) is similar to evaluateTo(QXmlResultItems * result), but the
   query must evaluate to a sequence of strings.
 
   \endlist
@@ -135,8 +134,8 @@ QT_BEGIN_NAMESPACE
   query evaluation will begin. But when a query is run on a custom
   node model representing non-XML data, one of the bindVariable()
   functions must be called to bind a variable name to a starting node.
-  $variable name can then be used in the written query to access the
-  starting node in the custom data model. It is not necessary to
+  A variable reference can then be used in the written query to access the
+  node in the custom data model. It is not necessary to
   declare the variable name external in the query. See the example in
   the documentation for QAbstractXmlNodeModel.
 
@@ -161,7 +160,7 @@ QT_BEGIN_NAMESPACE
   \o QXmlResultItems::hasError() will return \c true, or
   evaluateTo() will return \c false;
 
-  \o The results of the evaluation function called are undefined.
+  \o The results of the evaluation function called is undefined.
 
   \endlist
 
@@ -169,7 +168,7 @@ QT_BEGIN_NAMESPACE
 
   A query can create \l {QXmlItem}{query result items}, open
   documents, and allocate other resources. All resources created,
-  opened, or allocated by QtPatterns are normally managed and
+  opened, or allocated by QtXmlPatterns are normally managed and
   deallocated automatically, when they are no longer needed. If it
   should become necessary to deallocate resources manually, ensure
   that the relevant instances of QXmlQuery, QAbstractXmlReceiver, and
@@ -195,9 +194,8 @@ QXmlQuery::QXmlQuery(const QXmlQuery &other) : d(new QXmlQueryPrivate(*other.d))
 }
 
 /*!
-  Constructs a QXmlQuery instance that will use \a np as its
-  name pool. The query cannot be evaluated until setQuery()
-  has been called.
+  Constructs a query that will use \a np as its name pool. The query
+  cannot be evaluated until setQuery() has been called.
  */
 QXmlQuery::QXmlQuery(const QXmlNamePool &np) : d(new QXmlQueryPrivate())
 {
@@ -234,7 +232,7 @@ QXmlQuery &QXmlQuery::operator=(const QXmlQuery &other)
   handler includes color codes if \e stderr can render colors.
 
   Note that changing the message handler after the query has been
-  compiled has no effect, ie the query uses the same message handler
+  compiled has no effect, i.e. the query uses the same message handler
   at runtime that it uses at compile time.
 
   When QXmlQuery calls QAbstractMessageHandler::message(),
@@ -242,8 +240,8 @@ QXmlQuery &QXmlQuery::operator=(const QXmlQuery &other)
 
   \table
   \header
-    \o QAbstractMessageHandler::handle() argument
-    \o Passed
+    \o message() argument
+    \o Semantics
   \row
     \o QtMsgType type
     \o Only QtWarningMsg and QtFatalMsg are used. The former
@@ -278,12 +276,12 @@ QAbstractMessageHandler *QXmlQuery::messageHandler() const
 }
 
 /*!
-  Sets this QXmlQuery to the XQuery read from the \a sourceCode
+  Sets this QXmlQuery to an XQuery read from the \a sourceCode
   device.  The device must have been opened with at least
   QIODevice::ReadOnly.
 
   \a documentURI represents the query obtained from the \a sourceCode
-  device. It is the Base URI of the static context, as defined in the
+  device. It is the base URI of the static context, as defined in the
   \l {http://www.w3.org/TR/xquery/}{XQuery language}. It is used
   internally to resolve relative URIs that appear in the query, and
   for message reporting. \a documentURI can be empty. If it is empty,
@@ -319,9 +317,9 @@ void QXmlQuery::setQuery(QIODevice *sourceCode, const QUrl &documentURI)
 /*!
   \overload
   The behavior and requirements of this function are the same as for
-  setQuery(QIODevice *, const QUrl &) after the XQuery has been read
+  setQuery(QIODevice*, const QUrl&), after the XQuery has been read
   from the IO device into a string. Because \a sourceCode is already
-  a Unicode string detection of its encoding is unnecessary.
+  a Unicode string, detection of its encoding is unnecessary.
 */
 void QXmlQuery::setQuery(const QString &sourceCode, const QUrl &documentURI)
 {
@@ -368,12 +366,12 @@ void QXmlQuery::setQuery(const QUrl &queryURI, const QUrl &baseURI)
     d->queryURI = QXmlQueryPrivate::normalizeQueryURI(baseURI.isEmpty() ? queryURI : baseURI);
 
     QNetworkAccessManager networkManager;
-    QIODevice * result = 0;
+    QPatternist::AutoPtr<QIODevice> result;
 
     try
     {
-        result = QPatternist::AccelTreeResourceLoader::load(canonicalURI, &networkManager,
-                                                            d->staticContext());
+        result.reset(QPatternist::AccelTreeResourceLoader::load(canonicalURI, &networkManager,
+                                                                d->staticContext()));
     }
     catch(const QPatternist::Exception)
     {
@@ -382,33 +380,32 @@ void QXmlQuery::setQuery(const QUrl &queryURI, const QUrl &baseURI)
 
     if(result)
     {
-        setQuery(result, d->queryURI);
+        setQuery(result.data(), d->queryURI);
         result->close();
     }
     else
         d->recompileRequired();
-
-    delete result;
 }
 
 /*!
   Binds the variable \a name to the \a value so that $\a name can be
   used from within the query to refer to the \a value.
 
-  \a name must not be \e null, i.e., \a {name}.isNull() must return
-  \e false. If \a name has already been bound, its previous binding
-  will be overriden.
+  \a name must not be \e null. \a {name}.isNull() must return false.
+  If \a name has already been bound by a previous bindVariable() call,
+  its previous binding will be overriden.
 
-  If \a {value}.isNull() returns \e true, the existing binding for
-  the \a name is removed.
+  If \a {value} is null so that \a {value}.isNull() returns true, and
+  \a {name} already has a binding, the effect is to remove the
+  existing binding for \a {name}.
 
-  For example, in order to bind a value of type QString or QUrl, wrap
-  the value in a QVariant such that QXmlItem's QVariant constructor is
-  called.
+  To bind a value of type QString or QUrl, wrap the value in a
+  QVariant such that QXmlItem's QVariant constructor is called.
 
-  All strings fed into the query must be valid XQuery strings. More specifically, they
-  must consist of only XML 1.0 characters. This is not checked. If they are not, the
-  behavior is undefined.
+  All strings processed by the query must be valid XQuery strings,
+  which means they must contain only XML 1.0 characters. However,
+  this requirement is not checked. If the query processes an invalid
+  string, the behavior is undefined.
 
   \sa QVariant::isValid(), {QtXDM}{How QVariant maps to XQuery's Data Model},
    QXmlItem::isNull()
@@ -452,29 +449,28 @@ void QXmlQuery::bindVariable(const QString &localName, const QXmlItem &value)
   Binds the variable \a name to the \a device so that $\a name can be
   used from within the query to refer to the \a device. The QIODevice
   \a device is exposed to the query as a URI of type \c xs:anyURI,
-  which can be passed to the \c fn:doc() function to be read. e.g.,
-  this function can be used to pass an XML document in the memory to
+  which can be passed to the \c fn:doc() function to be read. E.g.,
+  this function can be used to pass an XML document in memory to
   \c fn:doc.
 
   \snippet doc/src/snippets/code/src.xmlpatterns.api.qxmlquery.cpp 1
 
   The caller must ensure that \c device has been opened with at least
-  QIODevice::ReadOnly prior to this binding, or else the behavior is
+  QIODevice::ReadOnly prior to this binding. Otherwise, behavior is
   undefined.
 
-  If the query will access an XML document contained in a QString, you
-  can do so with QBuffer, as shown in the code snippet below. Suppose
-  \e myQString contains \e {<document>content</document>}
+  If the query will access an XML document contained in a QString, use
+  a QBuffer as shown in the following snippet. Suppose \e myQString
+  contains \e {<document>content</document>}
 
   \snippet doc/src/snippets/qxmlquery/bindingExample.cpp 0
 
-  \a name must not be \e null, i.e., \a {name}.isNull() must return \e
-  false. If \a name has already been bound, its previous binding will
-  be overriden. The URI that \a name evaluates to is arbitrary and may
+  \a name must not be \e null. \a {name}.isNull() must return false.
+  If \a name has already been bound, its previous binding will be
+  overriden. The URI that \a name evaluates to is arbitrary and may
   change.
 
-  For as long as this QXmlQuery instance is allocated, \a device must not
-  be deleted.
+  \a device must not be deleted while this QXmlQuery exists.
 */
 void QXmlQuery::bindVariable(const QXmlName &name, QIODevice *device)
 {
@@ -518,18 +514,18 @@ void QXmlQuery::bindVariable(const QString &localName, QIODevice *device)
 }
 
 /*!
-
   Evaluates this query and sends the result as a sequence of callbacks
   to the \l {QAbstractXmlReceiver} {receiver} \a callback. QXmlQuery
   does not take ownership of \a callback.
 
   If an error occurs during the evaluation, error messages are sent to
-  messageHandler() and \e false is returned.
+  messageHandler() and false is returned.
 
-  If \a callback is null, or if this query \l {isValid()} {is invalid},
-  \e false is returned and the behavior is undefined.
+  If this query \l {isValid()} {is invalid}, \c false is returned
+  and the behavior is undefined. If \a callback is null,
+  behavior is undefined.
 
-  \sa QAbstractXmlReceiver,  isValid()
+  \sa QAbstractXmlReceiver, isValid()
  */
 bool QXmlQuery::evaluateTo(QAbstractXmlReceiver *callback) const
 {
@@ -565,19 +561,17 @@ bool QXmlQuery::evaluateTo(QAbstractXmlReceiver *callback) const
 }
 
 /*!
-
   Attempts to evaluate the query and returns the results in the
-  \a target \l {QStringList} {string list}..
+  \a target \l {QStringList} {string list}.
 
   If the query \l {isValid()} {is valid} and the evaluation succeeds,
-  \e true is returned. Otherwise, \e false is returned and the
-  contents of \a target are undefined.
+  true is returned. Otherwise, false is returned and the contents of
+  \a target are undefined.
 
-  The query must evaluate to a sequence of \c xs:string values, and
-  this is checked by compiling the query as if it had been passed to a
-  function accepting \c xs:string*. This means that the result nodes
-  will be converted to strings, and values that cannot be promoted to
-  \c xs:string will trigger type errors.
+  The query must evaluate to a sequence of \c xs:string values. If the
+  query does not evaluate to a sequence of strings, the values can
+  often be converted by adding a call to \c string() at the end of the
+  XQuery.
 
   If \a target is \c null, the behavior is undefined.
  */
@@ -628,9 +622,9 @@ bool QXmlQuery::evaluateTo(QStringList *target) const
 
 /*!
   Starts the evaluation and makes it available in \a result.  If \a
-  result is \c null, the behavior is undefined. The evaluation takes
-  place incrementally (lazy evaluation), when QXmlResultItems::next()
-  is called.
+  result is null, the behavior is undefined. The evaluation takes
+  place incrementally (lazy evaluation), as the caller uses
+  QXmlResultItems::next() to get the enxt result.
 
   \sa QXmlResultItems::next()
 */
@@ -666,7 +660,7 @@ void QXmlQuery::evaluateTo(QXmlResultItems *result) const
 }
 
 /*!
-  Returns \c true if this query is valid. Examples of invalid queries
+  Returns true if this query is valid. Examples of invalid queries
   are ones that contain syntax errors or that have not had setQuery()
   called for them yet.
  */
@@ -676,9 +670,8 @@ bool QXmlQuery::isValid() const
 }
 
 /*!
-  Sets the URI resolver to \a resolver.
-
-  QXmlQuery does not take ownership of \a resolver.
+  Sets the URI resolver to \a resolver. QXmlQuery does not take
+  ownership of \a resolver.
 
   \sa uriResolver()
  */
@@ -688,25 +681,21 @@ void QXmlQuery::setUriResolver(const QAbstractUriResolver *resolver)
 }
 
 /*!
-  Returns the URI resolver in use. If no URI resolver has been set,
-  QtXmlPatterns will use the URI in queries as is.
+  Returns the query's URI resolver. If no URI resolver has been set,
+  QtXmlPatterns will use the URIs in queries as they are.
 
-  The URI resolver provides a level of abstraction or "polymorphic
-  URIs." A resolver can rewrite "logical" URIs to physical ones, or it
-  can translate obsolete or invalid URIs to valid ones.
+  The URI resolver provides a level of abstraction, or \e{polymorphic
+  URIs}. A resolver can rewrite \e{logical} URIs to physical ones, or
+  it can translate obsolete or invalid URIs to valid ones.
 
   QtXmlPatterns calls the URI resolver for all URIs it encounters,
-  except for namespaces. Specifically:
+  except for namespaces. Specifically, all builtin functions that deal
+  with URIs (\c{fn:doc()}, and \c{fn:doc-available()}).
 
-  \list
-    \o All builtin functions that deals with URIs. This is \c fn:doc(),
-       and \c fn:doc-available()
-  \endlist
-
-  For instance, in the case of \c fn:doc(), the absolute URI is the
-  base URI in the static context (which most likely is the location of
-  the query). Instead of using the URI that the user specified, the
-  return value of QAbstractUriResolver::resolve() will be used.
+  In the case of \c{fn:doc()}, the absolute URI is the base URI in the
+  static context (which most likely is the location of the query).
+  Rather than use the URI the user specified, the return value of
+  QAbstractUriResolver::resolve() will be used.
 
   When QtXmlPatterns calls QAbstractUriResolver::resolve() the
   absolute URI is the URI mandated by the XQuery language, and the
@@ -730,19 +719,18 @@ QXmlNamePool QXmlQuery::namePool() const
 }
 
 /*!
-  Sets the focus to \a item.
+  Sets the focus to \a item. The focus is the set of items that the
+  context item expression and path expressions navigate from. For
+  example, in the expression \e p/span, the element that \e p
+  evaluates to is the focus for the following expression, \e span.
 
-  The focus is the set of items that the context
-  item expression and path expressions navigate from. For example, in
-  the expression \e p/span, the element that \e p evaluates to, is the
-  focus for the following expression, \e span.
+  The focus can be accessed using the context item expression, dot,
+  \e ".".
 
-  The focus can be accessed using the context item expression, a dot, \e ".".
-
-  By default the focus is not set, it is undefined, and will therefore
-  result in a dynamic error, \c XPDY0002, if attempted to be used.
-
-  The focus must be set before the query is set with setQuery().
+  By default, the focus is not set but is undefined. It will therefore
+  result in a dynamic error, \c XPDY0002, if the query is evaluated
+  without a focus. In fact, the focus must be set before the query is
+  set with setQuery().
  */
 void QXmlQuery::setFocus(const QXmlItem &item)
 {

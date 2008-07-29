@@ -204,7 +204,7 @@ static bool shouldAddNamespaceElem(const Element* elem)
 {
     // Don't add namespace attribute if it is already defined for this elem.
     const AtomicString& prefix = elem->prefix();
-    AtomicString attr = !prefix.isEmpty() ? "xmlns:" + prefix : "xmlns";
+    AtomicString attr = !prefix.isEmpty() ? String("xmlns:") + prefix : String("xmlns");
     return !elem->hasAttribute(attr);
 }
 
@@ -237,7 +237,7 @@ static String addNamespace(const AtomicString& prefix, const AtomicString& ns, H
     AtomicStringImpl* foundNS = namespaces.get(pre);
     if (foundNS != ns.impl()) {
         namespaces.set(pre, ns.impl());
-        return " xmlns" + (!prefix.isEmpty() ? ":" + prefix : "") + "=\"" + escapeTextForMarkup(ns, true) + "\"";
+        return String(" xmlns") + (!prefix.isEmpty() ? String(":") + prefix : String("")) + String("=\"") + escapeTextForMarkup(ns, true) + String("\"");
     }
     
     return "";
@@ -630,7 +630,7 @@ DeprecatedString createMarkup(const Range* range, Vector<Node*>* nodes, EAnnotat
                 // Bring the background attribute over, but not as an attribute because a background attribute on a div
                 // appears to have no effect.
                 if (!style->getPropertyCSSValue(CSS_PROP_BACKGROUND_IMAGE) && static_cast<Element*>(fullySelectedRoot)->hasAttribute(backgroundAttr))
-                    style->setProperty(CSS_PROP_BACKGROUND_IMAGE, "url('" + static_cast<Element*>(fullySelectedRoot)->getAttribute(backgroundAttr) + "')");
+                    style->setProperty(CSS_PROP_BACKGROUND_IMAGE, String("url('") + static_cast<Element*>(fullySelectedRoot)->getAttribute(backgroundAttr) + String("')"));
                 
                 if (style->length()) {
                     markups.prepend("<div style=\"" + escapeTextForMarkup(style->cssText(), true) + "\">");

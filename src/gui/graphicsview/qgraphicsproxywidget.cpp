@@ -70,6 +70,7 @@ QT_BEGIN_NAMESPACE
     a QWidget in a QGraphicsScene.
     \since 4.4
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     QGraphicsProxyWidget embeds any QWidget-based widget, for example, a
     QPushButton, QFontComboBox, or even QFileDialog, into QGraphicsScene. It
@@ -225,25 +226,27 @@ void QGraphicsProxyWidgetPrivate::sendWidgetMouseEvent(QGraphicsSceneMouseEvent 
     switch (event->type()) {
     case QEvent::GraphicsSceneMousePress:
         type = QEvent::MouseButtonPress;
-        if (!buttonDown)
-            buttonDown = receiver;
+        if (!embeddedMouseGrabber)
+            embeddedMouseGrabber = receiver;
         else
-            receiver = buttonDown;
+            receiver = embeddedMouseGrabber;
         break;
     case QEvent::GraphicsSceneMouseRelease:
         type = QEvent::MouseButtonRelease;
-        if (buttonDown)
-            receiver = buttonDown;
+        if (embeddedMouseGrabber)
+            receiver = embeddedMouseGrabber;
         break;
     case QEvent::GraphicsSceneMouseDoubleClick:
         type = QEvent::MouseButtonDblClick;
-        if (buttonDown)
-            receiver = buttonDown;
+        if (!embeddedMouseGrabber)
+            embeddedMouseGrabber = receiver;
+        else
+            receiver = embeddedMouseGrabber;
         break;
     case QEvent::GraphicsSceneMouseMove:
         type = QEvent::MouseMove;
-        if (buttonDown)
-            receiver = buttonDown;
+        if (embeddedMouseGrabber)
+            receiver = embeddedMouseGrabber;
         break;
     default:
         Q_ASSERT_X(false, "QGraphicsProxyWidget", "internal error");
@@ -251,50 +254,34 @@ void QGraphicsProxyWidgetPrivate::sendWidgetMouseEvent(QGraphicsSceneMouseEvent 
     }
 
     if (!lastWidgetUnderMouse) {
-        QApplicationPrivate::dispatchEnterLeave(buttonDown ? buttonDown : widget, 0);
+        QApplicationPrivate::dispatchEnterLeave(embeddedMouseGrabber ? embeddedMouseGrabber : widget, 0);
         lastWidgetUnderMouse = widget;
     }
 
     // Map event position from us to the receiver
     pos = mapToReceiver(pos, receiver);
 
-    // Set click focus on the correct child.
-    if (type == QEvent::MouseButtonPress) {
-        QWidget *newFw = receiver;
-        QWidget *fw = widget->focusWidget();
-        do {
-            if (newFw->isEnabled() && (newFw->focusPolicy() & Qt::ClickFocus)) {
-                if (fw)
-                    removeSubFocusHelper(fw, Qt::MouseFocusReason);
-                setSubFocusHelper(newFw, Qt::MouseFocusReason);
-                break;
-            }
-            newFw = newFw->parentWidget();
-        } while (newFw);
-    }
-
     // Send mouse event.
     QMouseEvent *mouseEvent = QMouseEvent::createExtendedMouseEvent(type, pos,
                                                                     receiver->mapToGlobal(pos.toPoint()), event->button(),
                                                                     event->buttons(), event->modifiers());
 
-    QWidget *buttonDownPtr = (QWidget *)buttonDown;
+    QWidget *embeddedMouseGrabberPtr = (QWidget *)embeddedMouseGrabber;
     QApplicationPrivate::sendMouseEvent(receiver, mouseEvent, alienWidget, widget,
-                                        &buttonDownPtr, lastWidgetUnderMouse);
-    buttonDown = buttonDownPtr;
+                                        &embeddedMouseGrabberPtr, lastWidgetUnderMouse);
+    embeddedMouseGrabber = embeddedMouseGrabberPtr;
 
-    // Update 'buttonDown'. We need to handle this ourself as the viewport is registered as the current
-    // mouse grabber, thus we cannot do the "right" thing in QApplicationPrivate::sendMouseEvent.
-    if (buttonDown && type == QEvent::MouseButtonRelease && !event->buttons()) {
-
+    // Handle enter/leave events when last button is released from mouse
+    // grabber child widget.
+    if (embeddedMouseGrabber && type == QEvent::MouseButtonRelease && !event->buttons()) {
         Q_Q(QGraphicsProxyWidget);
         if (q->rect().contains(event->pos()) && q->acceptsHoverEvents())
             lastWidgetUnderMouse = alienWidget ? alienWidget : widget;
         else // released on the frame our outside the item, or doesn't accept hover events.
             lastWidgetUnderMouse = 0;
 
-        QApplicationPrivate::dispatchEnterLeave(lastWidgetUnderMouse, buttonDown);
-        buttonDown = 0;
+        QApplicationPrivate::dispatchEnterLeave(lastWidgetUnderMouse, embeddedMouseGrabber);
+        embeddedMouseGrabber = 0;
 
 #ifndef QT_NO_CURSOR
         // ### Restore the cursor, don't override it.
@@ -336,10 +323,9 @@ void QGraphicsProxyWidgetPrivate::sendWidgetKeyEvent(QKeyEvent *event)
 /*!
     \internal
 */
-void QGraphicsProxyWidgetPrivate::setSubFocusHelper(QWidget *widget, Qt::FocusReason reason)
+void QGraphicsProxyWidgetPrivate::removeSubFocusHelper(QWidget *widget, Qt::FocusReason reason)
 {
-    widget->setFocus(reason);
-    QFocusEvent event(QEvent::FocusIn, reason);
+    QFocusEvent event(QEvent::FocusOut, reason);
     QPointer<QWidget> widgetGuard = widget;
     QApplication::sendEvent(widget, &event);
     if (widgetGuard && event.isAccepted())
@@ -348,14 +334,38 @@ void QGraphicsProxyWidgetPrivate::setSubFocusHelper(QWidget *widget, Qt::FocusRe
 
 /*!
     \internal
+
+    Reimplemented from QGraphicsItemPrivate. ### Qt 5: Move impl to
+    reimplementation QGraphicsProxyWidget::inputMethodQuery().
 */
-void QGraphicsProxyWidgetPrivate::removeSubFocusHelper(QWidget *widget, Qt::FocusReason reason)
+QVariant QGraphicsProxyWidgetPrivate::inputMethodQueryHelper(Qt::InputMethodQuery query) const
 {
-    QFocusEvent event(QEvent::FocusOut, reason);
-    QPointer<QWidget> widgetGuard = widget;
-    QApplication::sendEvent(widget, &event);
-    if (widgetGuard && event.isAccepted())
-        QApplication::sendEvent(widget->style(), &event);
+    Q_Q(const QGraphicsProxyWidget);
+    if (!widget || !q->hasFocus())
+        return QVariant();
+
+    QWidget *focusWidget = widget->focusWidget();
+    if (!focusWidget)
+        focusWidget = widget;
+    QVariant v = focusWidget->inputMethodQuery(query);
+    QPointF focusWidgetPos = q->subWidgetRect(focusWidget).topLeft();
+    switch (v.type()) {
+    case QVariant::RectF:
+        v = v.toRectF().translated(focusWidgetPos);
+        break;
+    case QVariant::PointF:
+        v = v.toPointF() + focusWidgetPos;
+        break;
+    case QVariant::Rect:
+        v = v.toRect().translated(focusWidgetPos.toPoint());
+        break;
+    case QVariant::Point:
+        v = v.toPoint() + focusWidgetPos.toPoint();
+        break;
+    default:
+        break;
+    }
+    return v;
 }
 
 /*!
@@ -604,7 +614,7 @@ void QGraphicsProxyWidgetPrivate::setWidget_helper(QWidget *newWidget, bool auto
     posChangeMode = QGraphicsProxyWidgetPrivate::WidgetToProxyMode;
     sizeChangeMode = QGraphicsProxyWidgetPrivate::WidgetToProxyMode;
 
-    if (autoShow && !newWidget->testAttribute(Qt::WA_WState_ExplicitShowHide) || !newWidget->testAttribute(Qt::WA_WState_Hidden)) {
+    if ((autoShow && !newWidget->testAttribute(Qt::WA_WState_ExplicitShowHide)) || !newWidget->testAttribute(Qt::WA_WState_Hidden)) {
         newWidget->show();
     }
 
@@ -624,8 +634,8 @@ void QGraphicsProxyWidgetPrivate::setWidget_helper(QWidget *newWidget, bool auto
         q->setStyle(widget->style());
     if (newWidget->testAttribute(Qt::WA_SetFont))
         q->setFont(widget->font());
-    if (newWidget->testAttribute(Qt::WA_SetPalette))
-        q->setPalette(widget->palette());
+    // Always copy the palette.
+    q->setPalette(widget->palette());
     if (!newWidget->testAttribute(Qt::WA_Resized))
         newWidget->adjustSize();
     updateProxyGeometryFromWidget();
@@ -756,6 +766,33 @@ QVariant QGraphicsProxyWidget::itemChange(GraphicsItemChange change,
 */
 bool QGraphicsProxyWidget::event(QEvent *event)
 {
+    Q_D(QGraphicsProxyWidget);
+    if (!d->widget)
+        return QGraphicsWidget::event(event);
+
+    if (event->type() == QEvent::StyleChange) {
+        // Propagate style changes to the embedded widget.
+        if (!d->styleChangeMode) {
+            d->styleChangeMode = QGraphicsProxyWidgetPrivate::ProxyToWidgetMode;
+            d->widget->setStyle(style());
+            d->styleChangeMode = QGraphicsProxyWidgetPrivate::NoMode;
+        }
+    } else if (event->type() == QEvent::PaletteChange) {
+        // Propagate style changes to the embedded widget.
+        if (!d->paletteChangeMode) {
+            d->paletteChangeMode = QGraphicsProxyWidgetPrivate::ProxyToWidgetMode;
+            d->widget->setPalette(palette());
+            d->paletteChangeMode = QGraphicsProxyWidgetPrivate::NoMode;
+        }
+    } else if (event->type() == QEvent::InputMethod) {
+        // Forward input method events if the focus widget enables
+        // input methods.
+        // ### Qt 4.5: this code must also go into a reimplementation
+        // of inputMethodEvent().
+        QWidget *focusWidget = d->widget->focusWidget();
+        if (focusWidget->testAttribute(Qt::WA_InputMethodEnabled))
+            QApplication::sendEvent(focusWidget, event);
+    }
     return QGraphicsWidget::event(event);
 }
 
@@ -809,6 +846,22 @@ bool QGraphicsProxyWidget::eventFilter(QObject *object, QEvent *event)
                 update(rects.at(i));
             break;
         }
+        case QEvent::StyleChange:
+            // Propagate style changes to the proxy.
+            if (!d->styleChangeMode) {
+                d->styleChangeMode = QGraphicsProxyWidgetPrivate::WidgetToProxyMode;
+                setStyle(d->widget->style());
+                d->styleChangeMode = QGraphicsProxyWidgetPrivate::NoMode;
+            }
+            break;
+        case QEvent::PaletteChange:
+            // Propagate palette changes to the proxy.
+            if (!d->paletteChangeMode) {
+                d->paletteChangeMode = QGraphicsProxyWidgetPrivate::WidgetToProxyMode;
+                setPalette(d->widget->palette());
+                d->paletteChangeMode = QGraphicsProxyWidgetPrivate::NoMode;
+            }
+            break;
         default:
             break;
         }
@@ -897,7 +950,7 @@ void QGraphicsProxyWidget::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
         return;
     }
 
-    d->buttonDown = 0;
+    d->embeddedMouseGrabber = 0;
     d->sendWidgetMouseEvent(event);
 }
 
@@ -916,7 +969,7 @@ void QGraphicsProxyWidget::ungrabMouseEvent(QEvent *event)
 {
     Q_D(QGraphicsProxyWidget);
     Q_UNUSED(event);
-    d->buttonDown = 0;
+    d->embeddedMouseGrabber = 0;
 }
 
 /*!
@@ -1042,19 +1095,26 @@ void QGraphicsProxyWidget::focusInEvent(QFocusEvent *event)
 #endif
     Q_D(QGraphicsProxyWidget);
 
+    if (d->focusFromWidgetToProxy) {
+        // Prevent recursion when the proxy autogains focus through the
+        // embedded widget calling setFocus(). ### Could be done with event
+        // filter on FocusIn instead?
+        return;
+    }
+    
     switch (event->reason()) {
     case Qt::TabFocusReason: {
 	if (QWidget *focusChild = d->findFocusChild(0, true))
-	    d->setSubFocusHelper(focusChild, event->reason());
+            focusChild->setFocus(event->reason());
         break;
     }
     case Qt::BacktabFocusReason:
 	if (QWidget *focusChild = d->findFocusChild(0, false))
-	    d->setSubFocusHelper(focusChild, event->reason());
+            focusChild->setFocus(event->reason());
         break;
     default:
 	if (d->widget && d->widget->focusWidget()) {
-	    d->setSubFocusHelper(d->widget->focusWidget(), event->reason());
+	    d->widget->focusWidget()->setFocus(event->reason());
 	    return;
 	}
 	break;
@@ -1071,8 +1131,10 @@ void QGraphicsProxyWidget::focusOutEvent(QFocusEvent *event)
 #endif
     Q_D(QGraphicsProxyWidget);
     if (d->widget) {
-	if (QWidget *focusWidget = d->widget->focusWidget())
-	    d->removeSubFocusHelper(focusWidget, event->reason());
+        // We need to explicitly remove subfocus from the embedded widget's
+        // focus widget.
+        if (QWidget *focusWidget = d->widget->focusWidget())
+            d->removeSubFocusHelper(focusWidget, event->reason());
     }
 }
 
@@ -1088,9 +1150,7 @@ bool QGraphicsProxyWidget::focusNextPrevChild(bool next)
     Qt::FocusReason reason = next ? Qt::TabFocusReason : Qt::BacktabFocusReason;
     QWidget *lastFocusChild = d->widget->focusWidget();
     if (QWidget *newFocusChild = d->findFocusChild(lastFocusChild, next)) {
-        if (lastFocusChild)
-	    d->removeSubFocusHelper(lastFocusChild, reason);
-	d->setSubFocusHelper(newFocusChild, reason);
+	newFocusChild->setFocus(reason);
 	return true;
     }
 
@@ -1166,7 +1226,7 @@ void QGraphicsProxyWidget::paint(QPainter *painter, const QStyleOptionGraphicsIt
     // Disable QPainter's default pen being cosmetic. This allows widgets and
     // styles to follow Qt's existing defaults without getting ugly cosmetic
     // lines when scaled.
-    bool restore = painter->renderHints() & QPainter::NonCosmeticDefaultPen;
+    bool restore = !(painter->renderHints() & QPainter::NonCosmeticDefaultPen);
     painter->setRenderHints(QPainter::NonCosmeticDefaultPen, true);
 
     d->widget->render(painter, exposedWidgetRect.topLeft(), exposedWidgetRect);

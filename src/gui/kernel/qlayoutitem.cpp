@@ -442,16 +442,32 @@ void QWidgetItem::setGeometry(const QRect &rect)
     QRect r = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
             ? fromLayoutItemRect(wid->d_func(), rect)
             : rect;
-    QSize s = r.size().boundedTo(maximumSize() + r.size() - rect.size());
+    const QSize widgetRectSurplus = r.size() - rect.size(); 
+
+    /* 
+       For historical reasons, this code is done using widget rect 
+       coordinates, not layout item rect coordinates. However, 
+       QWidgetItem's sizeHint(), maximumSize(), and heightForWidth() 
+       all work in terms of layout item rect coordinates, so we have to 
+       add or subtract widgetRectSurplus here and there. The code could 
+       be much simpler if we did everything using layout item rect 
+       coordinates and did the conversion right before the call to 
+       QWidget::setGeometry(). 
+     */ 
+
+    QSize s = r.size().boundedTo(maximumSize() + widgetRectSurplus);  
     int x = r.x();
     int y = r.y();
     if (align & (Qt::AlignHorizontal_Mask | Qt::AlignVertical_Mask)) {
         QSize pref(sizeHint());
+        pref += widgetRectSurplus;
         if (align & Qt::AlignHorizontal_Mask)
             s.setWidth(qMin(s.width(), pref.width()));
         if (align & Qt::AlignVertical_Mask) {
             if (hasHeightForWidth())
-                s.setHeight(qMin(s.height(), heightForWidth(s.width())));
+                s.setHeight(qMin(s.height(), 
+                                 heightForWidth(s.width() - widgetRectSurplus.width()) 
+                                 + widgetRectSurplus.height()));
             else
                 s.setHeight(qMin(s.height(), pref.height()));
         }
@@ -698,7 +714,7 @@ void QWidgetItemV2::updateCacheIfNecessary() const
     q_cachedSizeHint = expandedSizeHint;
     q_cachedSizeHint = q_cachedSizeHint.boundedTo(maximumSize)
                                        .expandedTo(minimumSize);
-    q_cachedSizeHint = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    q_cachedSizeHint = useLayoutItemRect
            ? toLayoutItemSize(wid->d_func(), q_cachedSizeHint)
            : q_cachedSizeHint;
 

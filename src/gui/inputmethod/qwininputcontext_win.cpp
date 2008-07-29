@@ -42,6 +42,7 @@
 ****************************************************************************/
 
 #include "qwininputcontext_p.h"
+#include "qinputcontext_p.h"
 
 #include "qfont.h"
 #include "qwidget.h"
@@ -711,7 +712,7 @@ inline void enableIme(QWidget *w,  bool value)
 }
 
 
-void QWinInputContext::updateImeStatus(QWidget *w, bool hasFocus)
+void QInputContextPrivate::updateImeStatus(QWidget *w, bool hasFocus)
 {
     if (!w)
         return;
@@ -722,9 +723,9 @@ void QWinInputContext::updateImeStatus(QWidget *w, bool hasFocus)
 #endif
     if (hasFocus || e) {
         if (isInPopup(w))
-            enablePopupChild(w, hasIme);
+            QWinInputContext::enablePopupChild(w, hasIme);
         else
-            enable(w, hasIme);
+            QWinInputContext::enable(w, hasIme);
     }
 }
 

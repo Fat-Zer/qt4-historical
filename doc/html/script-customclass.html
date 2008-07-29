@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/qtscriptcustomclass.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/qtscriptcustomclass.qdoc -->
 <head>
   <title>Qt 4.4: Custom Script Class Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,25 +28,25 @@
 <a name="bytearray-class-in-use"></a>
 <h2>ByteArray Class In Use</h2>
 <p>When the <tt>ByteArray</tt> class has been made available to the scripting environment, <tt>ByteArray</tt> objects can be constructed like so:</p>
-<pre>     var ba = new ByteArray();    // constructs an empty ByteArray
-     var ba2 = new ByteArray(10); // constructs a ByteArray of length 10 (all bytes initialized to 0)</pre>
+<pre> var ba = new ByteArray();    // constructs an empty ByteArray
+ var ba2 = new ByteArray(10); // constructs a ByteArray of length 10 (all bytes initialized to 0)</pre>
 <p><tt>ByteArray</tt> objects behave similar to normal <tt>Array</tt> objects. Every <tt>ByteArray</tt> object has a <tt>length</tt> property, that holds the length of the array. If a new value is assigned to the <tt>length</tt> property, the array is resized. If the array is enlarged, the new bytes are initialized to 0. (This is a difference from normal <tt>Array</tt> objects; <tt>ByteArray</tt> objects are always dense arrays.) Use normal array operations to read or write bytes in the array. The following code sets all the bytes of an array to a certain value:</p>
-<pre>     for (var i = 0; i &lt; ba.length; ++i)
-         ba[i] = 123;</pre>
+<pre> for (var i = 0; i &lt; ba.length; ++i)
+     ba[i] = 123;</pre>
 <p>When assigning a value to an array element, the value is truncated to eight bits:</p>
-<pre>     ba[0] = 257;
-     print(ba[0]);  // 1</pre>
+<pre> ba[0] = 257;
+ print(ba[0]);  // 1</pre>
 <p>Like normal <tt>Array</tt> objects, if the array index is greater than the current length of the array, the array is resized accordingly:</p>
-<pre>     var ba3 = new ByteArray();
-     print(ba3.length); // 0
-     ba[0] = 64;
-     print(ba3.length); // 1</pre>
+<pre> var ba3 = new ByteArray();
+ print(ba3.length); // 0
+ ba[0] = 64;
+ print(ba3.length); // 1</pre>
 <p>Property names that aren't valid array indexes are treated like normal object properties (again, the same is the case for normal <tt>Array</tt> objects); in other words, it's perfectly fine to do something like this:</p>
-<pre>     ba[&quot;foo&quot;] = &quot;Hello&quot;;</pre>
+<pre> ba[&quot;foo&quot;] = &quot;Hello&quot;;</pre>
 <p>The above assignment won't affect the contents of the array, but will rather assign a value to the object property named &quot;foo&quot;.</p>
 <p><tt>ByteArray</tt> objects have a set of methods: chop(), equals(), <a href="qtextstream.html#left">left</a>(), mid(), toBase64() and so on. These map directly onto the corresponding methods in <a href="qbytearray.html">QByteArray</a>.</p>
-<pre>     var ba64 = ba.toBase64();
-     print(ba64.toLatin1String());</pre>
+<pre> var ba64 = ba.toBase64();
+ print(ba64.toLatin1String());</pre>
 <a name="bytearray-class-implementation"></a>
 <h2>ByteArray Class Implementation</h2>
 <p>To implement the <tt>ByteArray</tt> script class in C++, we create a subclass of <a href="qscriptclass.html">QScriptClass</a>, called ByteArrayClass, and reimplement the virtual functions from <a href="qscriptclass.html">QScriptClass</a>. We also provide a Qt Script constructor function suitable for being added to a <a href="qscriptengine.html">QScriptEngine</a>'s environment.</p>
@@ -257,6 +257,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

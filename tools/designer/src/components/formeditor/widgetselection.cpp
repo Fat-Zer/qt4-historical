@@ -499,9 +499,15 @@ void WidgetSelection::setWidget(QWidget *w)
 
     m_widget->installEventFilter(this);
 
+    updateActive();
+
+    updateGeometry();
+    show();
+}
+
+void WidgetSelection::updateActive()
+{
     const WidgetState ws = widgetState(m_formWindow->core(), m_widget);
-    if (debugWidgetSelection)
-       qDebug() <<   "WidgetSelection::setWidget" << m_widget << "State " << ws;
 
     const bool cornersActive = ws == UnlaidOut;
     const bool edgesActive = ws == UnlaidOut || ws == ManagedGridLayout;
@@ -512,9 +518,6 @@ void WidgetSelection::setWidget(QWidget *w)
            const bool isEdge = i == WidgetHandle::Left || i == WidgetHandle::Top || i == WidgetHandle::Right || i == WidgetHandle::Bottom;
            h->setActive(isEdge ? edgesActive : cornersActive);
        }
-
-    updateGeometry();
-    show();
 }
 
 bool WidgetSelection::isUsed() const

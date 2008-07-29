@@ -134,12 +134,44 @@
     \value HttpCachingProxy Proxying for HTTP requests only
     \value FtpCachingProxy Proxying for FTP requests only
 
-    While Socks5 proxying works for both Tcp and Udp sockets, Http proxying is limited to Tcp connections.
-    Http proxying also doesn't support binding sockets.
+    The table below lists different proxy types and their
+    capabilities. Since each proxy type has different capabilities, it
+    is important to understand them before choosing a proxy type.
 
-    An HTTP caching proxy only makes sense in the context of an HTTP
-    request, such as those made by QHttp. The FTP caching proxy,
-    similarly, only makes sense for FTP requests, such as with QFtp.
+    \table
+    \header
+        \o Proxy type
+        \o Capabilities
+
+    \row
+        \o SOCKS 5
+        \o Supports TCP, UDP, binding to a port (incoming connections)
+           and authentication.
+
+    \row
+        \o Transparent HTTP
+        \o Implemented using the "CONNECT" command, supports only
+           outgoing TCP connections; supports authentication.
+
+    \row
+        \o Caching HTTP
+        \o Implemented using normal HTTP commands, it is useful only
+           in the context of HTTP requests (see QHttp,
+           QNetworkAccessManager). The application's default proxy
+           should not be set to the type HttpCachingProxy, since
+           normal, outgoing TCP connections will fail, including those
+           necessary to send the HTTP request in the first place.
+
+    \row
+        \o Caching FTP
+        \o Implemented using an FTP proxy, it is useful only in the
+           context of FTP requests (see QFtp,
+           QNetworkAccessManager). The application's default proxy
+           should not be set to the type FtpCachingProxy since normal,
+           outgoing TCP connections will fail, including those
+           necessary to send the FTP request.
+
+    \endtable
 
     \sa setType(), type(), isCachingProxy(), isTransparentProxy()
 */
@@ -346,6 +378,8 @@ QNetworkProxy::ProxyType QNetworkProxy::type() const
 }
 
 /*!
+    \since 4.4
+
     Returns true if this proxy type is a caching proxy. Caching
     proxies only make sense in specific contexts, since they cannot
     handle arbitrary data transfers.
@@ -365,6 +399,8 @@ bool QNetworkProxy::isCachingProxy() const
 }
 
 /*!
+    \since 4.4
+
     Returns true if this proxy type is a transparent
     proxy. Transparent proxies can handle arbitrary data transfers and
     can be set on QTcpSocket or even as the application's default

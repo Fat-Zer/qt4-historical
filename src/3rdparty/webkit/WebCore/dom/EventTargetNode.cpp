@@ -86,7 +86,7 @@ void EventTargetNode::removedFromDocument()
     Node::removedFromDocument();
 }
 
-void EventTargetNode::addEventListener(const AtomicString &eventType, PassRefPtr<EventListener> listener, const bool useCapture)
+void EventTargetNode::addEventListener(const AtomicString &eventType, PassRefPtr<EventListener> listener, bool useCapture)
 {
     if (!document()->attached())
         return;

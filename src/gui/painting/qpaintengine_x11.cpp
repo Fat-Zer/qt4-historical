@@ -85,7 +85,8 @@ extern Drawable qt_x11Handle(const QPaintDevice *pd);
 extern const QX11Info *qt_x11Info(const QPaintDevice *pd);
 extern QPixmap qt_pixmapForBrush(int brushStyle, bool invert); //in qbrush.cpp
 
-static const qreal aliasedCoordinateDelta = 0.5 - 1e-6;
+// use the same rounding as in qrasterizer.cpp (6 bit fixed point)
+static const qreal aliasedCoordinateDelta = 0.5 - 0.015625;
 
 #undef X11 // defined in qt_x11_p.h
 /*!
@@ -1456,7 +1457,7 @@ void QX11PaintEnginePrivate::fillPolygon_dev(const QPointF *polygonPoints, int p
         && !has_fill_pattern
         && (clippedCount > 0)
         && (fill.style() != Qt::NoBrush)
-        && (has_fill_texture && fill.texture().hasAlpha() || antialias || !solid_fill || has_alpha_pen != has_alpha_brush))
+        && ((has_fill_texture && fill.texture().hasAlpha()) || antialias || !solid_fill || has_alpha_pen != has_alpha_brush))
     {
         QRect br = tessellator->tessellate((QPointF *)clippedPoints, clippedCount,
                                               mode == QPaintEngine::WindingMode);

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/emb-performance.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/emb-performance.qdoc -->
 <head>
   <title>Qt 4.4: Qt for Embedded Linux Performance Tuning</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -30,7 +30,7 @@
 <p>This improves the start-up time and reduces memory usage at the expense of flexibility (to add a new application, you must recompile the single executable) and robustness (if one application has a bug, it might harm other applications).</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><b>Creating a Static Build</b><p>To compile Qt as a static library, use the <tt>-static</tt> option when running configure:</p>
-<pre>         ./configure -static</pre>
+<pre> ./configure -static</pre>
 <p>To build the application suite as an all-in-one application, design each application as a stand-alone widget (or set of widgets) with only minimal code in the <tt>main()</tt> function. Then, write an application that provides a means of switching between the applications. The <a href="http://www.trolltech.com/products/qtopia/">Qtopia</a> platform is an example using this approach: It can be built either as a set of dynamically linked executables, or as a single static application.</p>
 <p>Note that the application still should link dynamically against the standard C library and any other libraries which might be used by other applications on the target device.</p>
 </td></tr>
@@ -39,35 +39,35 @@
 <a name="alternative-memory-allocation"></a>
 <h2>Alternative Memory Allocation</h2>
 <p>The libraries shipped with some C++ compilers on some platforms have poor performance in the built-in &quot;new&quot; and &quot;delete&quot; operators. Improved memory allocation and performance may be gained by re-implementing these functions:</p>
-<pre>         void *operator new[](size_t size)
-         {
-             return malloc(size);
-         }
+<pre> void *operator new[](size_t size)
+ {
+     return malloc(size);
+ }
 
-         void *operator new(size_t size)
-         {
-             return malloc(size);
-         }
+ void *operator new(size_t size)
+ {
+     return malloc(size);
+ }
 
-         void operator delete[](void *ptr)
-         {
-             free(ptr);
-         }
+ void operator delete[](void *ptr)
+ {
+     free(ptr);
+ }
 
-         void operator delete[](void *ptr, size_t)
-         {
-             free(ptr);
-         }
+ void operator delete[](void *ptr, size_t)
+ {
+     free(ptr);
+ }
 
-         void operator delete(void *ptr)
-         {
-             free(ptr);
-         }
+ void operator delete(void *ptr)
+ {
+     free(ptr);
+ }
 
-         void operator delete(void *ptr, size_t)
-         {
-             free(ptr);
-         }</pre>
+ void operator delete(void *ptr, size_t)
+ {
+     free(ptr);
+ }</pre>
 <p>The example above shows the necessary code to switch to the plain C memory allocators.</p>
 <a name="bypassing-the-backing-store"></a>
 <h2>Bypassing the Backing Store</h2>
@@ -77,6 +77,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -431,11 +431,7 @@ bool MetaTranslator::saveTS( const QString& filename) const
         if ( contextIsUtf8 )
             t << " encoding=\"UTF-8\"";
         t << ">\n";
-        // This is a hack for task 167419. I can't reproduce the problem
-        // but others still see it.
         QString name = evilBytes( context, contextIsUtf8 );
-        if (name.isEmpty())
-            name = QLatin1String("@default");
         t << "    <name>" << name << "</name>\n";
         if ( !comment.isEmpty() )
             t << "    <comment>" << comment << "</comment>\n";

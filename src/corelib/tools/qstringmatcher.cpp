@@ -155,7 +155,7 @@ static inline int bm_find(const ushort *uc, uint l, int index, const ushort *puc
     Call setPattern() to give it a pattern to match.
 */
 QStringMatcher::QStringMatcher()
-    : d_ptr(0)
+    : d_ptr(0), q_cs(Qt::CaseSensitive)
 {
     qMemSet(q_skiptable, 0, sizeof(q_skiptable));
 }
@@ -261,10 +261,6 @@ int QStringMatcher::indexIn(const QString &str, int from) const
 */
 
 /*!
-    \fn int qFindStringInStringBoyerMoore(
-        const QChar *haystack, int haystackLen, int haystackOffset,
-        const QChar *needle, int needleLen, Qt::CaseSensitivity cs)
-
     \internal
 */
 

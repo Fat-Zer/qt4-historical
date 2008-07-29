@@ -86,6 +86,7 @@ public:
     QPalette::ColorRole currentItemBackgroundRole() const;
     void setCurrentItemBackgroundRole(QPalette::ColorRole role);
 
+    bool eventFilter(QObject *watched, QEvent *event);
     // Add context menu and return page submenu or 0.
 
     QMenu *addContextMenuActions(QMenu *popup) const;
@@ -95,7 +96,6 @@ private slots:
     void addPage();
     void addPageAfter();
     void changeOrder();
-    void slotCurrentChanged(int index);
 
 private:
     QToolBox *m_toolbox;

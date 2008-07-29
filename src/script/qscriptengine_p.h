@@ -99,7 +99,6 @@ public:
 public: // attributes
     QScriptValueImpl activation;
     uint length;
-    QScriptValueImpl callee;
 };
 
 } // namespace QScript
@@ -552,11 +551,11 @@ inline void QScriptEnginePrivate::newConstructor(QScriptValueImpl *ctor,
                                           QScriptValueImpl &proto)
 {
     newFunction(ctor, function);
-    ctor->setProperty(QLatin1String("prototype"), proto,
+    ctor->setProperty(m_id_table.id_prototype, proto,
                       QScriptValue::Undeletable
                       | QScriptValue::ReadOnly
                       | QScriptValue::SkipInEnumeration);
-    proto.setProperty(QLatin1String("constructor"), *ctor,
+    proto.setProperty(m_id_table.id_constructor, *ctor,
                       QScriptValue::Undeletable
                       | QScriptValue::SkipInEnumeration);
 }
@@ -569,10 +568,12 @@ inline void QScriptEnginePrivate::newArguments(QScriptValueImpl *object,
     QScript::ArgumentsObjectData *data = new QScript::ArgumentsObjectData();
     data->activation = activation;
     data->length = length;
-    data->callee = callee;
-
     newObject(object, m_class_arguments);
     object->setObjectData(data);
+    object->setProperty(m_id_table.id_callee, callee,
+                        QScriptValue::SkipInEnumeration);
+    object->setProperty(m_id_table.id_length, QScriptValueImpl(this, length),
+                        QScriptValue::SkipInEnumeration);
 }
 
 inline QScriptFunction *QScriptEnginePrivate::convertToNativeFunction(const QScriptValueImpl &object)

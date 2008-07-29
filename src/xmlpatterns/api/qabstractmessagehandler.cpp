@@ -63,13 +63,12 @@ public:
   \brief The QAbstractMessageHandler class provides a callback interface for handling messages.
 
   QAbstractMessageHandler is an abstract base class that provides a
-  callback interface for handling messages. Using this class allows
-  you to avoid implementing message handling in your classes that must
-  generate messages. For example, class QXmlQuery parses and runs an
-  XQuery. When it detects a compile or runtime error, it generates an
-  appropriate error message, but rather than output the message
-  itself, it passes the message to the message() function of its
-  QAbstractMessageHandler. See QXmlQuery::setMessageHandler().
+  callback interface for handling messages. For example, class
+  QXmlQuery parses and runs an XQuery. When it detects a compile
+  or runtime error, it generates an appropriate error message,
+  but rather than output the message itself, it passes the message to
+  the message() function of its QAbstractMessageHandler.
+  See QXmlQuery::setMessageHandler().
 
   You create a message handler by subclassing QAbstractMessageHandler
   and implementing handleMessage(). You then pass a pointer to an

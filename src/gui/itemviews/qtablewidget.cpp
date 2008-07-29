@@ -2016,7 +2016,8 @@ QTableWidgetItem *QTableWidget::takeVerticalHeaderItem(int row)
 }
 
 /*!
-  Returns the horizontal header item for column \a column.
+    Returns the horizontal header item for column, \a column, if one has been
+    set; otherwise returns 0.
 */
 QTableWidgetItem *QTableWidget::horizontalHeaderItem(int column) const
 {
@@ -2121,7 +2122,8 @@ QTableWidgetItem *QTableWidget::currentItem() const
 /*!
     Sets the current item to \a item.
 
-    Depending on the current selection mode, the item may also be selected.
+    Depending on the current \l{QAbstractItemView::SelectionMode}{selection mode},
+    the item may also be selected.
 
     \sa currentItem(), setCurrentCell()
 */
@@ -2150,7 +2152,8 @@ void QTableWidget::setCurrentItem(QTableWidgetItem *item, QItemSelectionModel::S
     Sets the current cell to be the cell at position (\a row, \a
     column).
 
-    Depending on the current selection mode, the cell may also be selected.
+    Depending on the current \l{QAbstractItemView::SelectionMode}{selection mode},
+    the cell may also be selected. 
 
     \sa setCurrentItem(), currentRow(), currentColumn()
 */
@@ -2240,11 +2243,13 @@ void QTableWidget::closePersistentEditor(QTableWidgetItem *item)
 }
 
 /*!
-  \since 4.1
+    \since 4.1
 
-  Returns the widget displayed in the cell in the given \a row and \a column.
+    Returns the widget displayed in the cell in the given \a row and \a column.
 
-  \sa setCellWidget()
+    \note The table takes ownership of the widget.
+
+    \sa setCellWidget()
 */
 QWidget *QTableWidget::cellWidget(int row, int column) const
 {
@@ -2253,11 +2258,13 @@ QWidget *QTableWidget::cellWidget(int row, int column) const
 }
 
 /*!
-  \since 4.1
+    \since 4.1
 
-  Sets the \a widget to be displayed in the cell in the given \a row and \a column.
+    Sets the \a widget to be displayed in the cell in the given \a row and \a column.
 
-  \sa cellWidget()
+    \note The table takes ownership of the widget.
+
+    \sa cellWidget()
 */
 void QTableWidget::setCellWidget(int row, int column, QWidget *widget)
 {

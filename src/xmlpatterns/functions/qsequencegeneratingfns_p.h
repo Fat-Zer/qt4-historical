@@ -141,7 +141,7 @@ namespace QPatternist
         }
 
     private:
-        Q_DISABLE_COPY(StaticBaseUriContainer);
+        Q_DISABLE_COPY(StaticBaseUriContainer)
         QUrl m_staticBaseURI;
     };
 

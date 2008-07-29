@@ -1926,7 +1926,11 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
 #endif
                     if (!testing) {
                         QRect r(x, y, w, h);
-                        r = constrainedRect(r, QApplication::desktop()->screenGeometry(widget));
+                        QDesktopWidget *desktop = QApplication::desktop();
+                        if (desktop->isVirtualDesktop())
+                            r = constrainedRect(r, desktop->screenGeometry(desktop->screenNumber(r.topLeft())));
+                        else
+                            r = constrainedRect(r, desktop->screenGeometry(widget));
                         widget->move(r.topLeft());
                         widget->resize(r.size());
                     }

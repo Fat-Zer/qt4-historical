@@ -43,6 +43,10 @@
 
 #include "qgl.h"
 
+// There are functions that are deprecated in 10.5, but really there's no way around them
+// for Carbon, so just undefine them.
+#undef DEPRECATED_ATTRIBUTE
+#define DEPRECATED_ATTRIBUTE
 #if defined(Q_WS_MAC)
 #ifdef qDebug
 #    undef qDebug
@@ -57,6 +61,7 @@
 #    include <AGL/aglRenderers.h>
 #    include <OpenGL/gl.h>
 #endif
+
 
 #include <CoreServices/CoreServices.h>
 #include <private/qfont_p.h>

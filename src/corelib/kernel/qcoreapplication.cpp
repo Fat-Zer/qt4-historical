@@ -58,6 +58,7 @@
 #include <private/qprocess_p.h>
 #include <qtextcodec.h>
 #include <qthread.h>
+#include <qthreadpool.h>
 #include <qthreadstorage.h>
 #include <private/qthread_p.h>
 #include <qlibraryinfo.h>
@@ -439,6 +440,7 @@ void QCoreApplication::init()
 
 #ifdef Q_OS_UNIX
     setlocale(LC_ALL, "");                // use correct char set mapping
+    setlocale(LC_NUMERIC, "C");        // make sprintf()/scanf() work
 #endif
 
 #ifdef Q_WS_WIN
@@ -501,6 +503,8 @@ QCoreApplication::~QCoreApplication()
     QCoreApplicationPrivate::is_app_running = false;
 
 #ifndef QT_NO_THREAD
+    // Synchronize and stop the global thread pool threads.
+    QThreadPool::globalInstance()->waitForDone();
     QThread::cleanup();
 #endif
 
@@ -1726,6 +1730,8 @@ QString QCoreApplication::applicationFilePath()
 }
 
 /*!
+    \since 4.4
+
     Returns the current process ID for the application.
 */
 qint64 QCoreApplication::applicationPid()

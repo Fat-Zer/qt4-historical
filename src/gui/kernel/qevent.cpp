@@ -228,6 +228,8 @@ QMouseEvent *QMouseEvent::createExtendedMouseEvent(Type type, const QPointF &pos
 }
 
 /*!
+    \since 4.4
+
     Returns the position of the mouse cursor as a QPointF, relative to the
     widget that received the event.
 
@@ -2879,7 +2881,7 @@ QHideEvent::~QHideEvent()
     \ingroup events
 
     There are two kinds of show events: show events caused by the
-    window system (spontaneous), and internal show events. Spontaneous
+    window system (spontaneous), and internal show events. Spontaneous (QEvent::spontaneous())
     show events are sent just after the window system shows the
     window; they are also sent when a top-level window is redisplayed
     after being iconified. Internal show events are delivered just
@@ -2925,6 +2927,8 @@ QShowEvent::~QShowEvent()
 
     This event is only used to notify the application of a request.
     It may be safely ignored.
+
+    \note This class is currently supported for Mac Os X only.
 */
 
 /*!

@@ -1524,6 +1524,8 @@ void QScript::QtFunction::execute(QScriptContextPrivate *context)
                 tid = argType.typeId();
                 v = QVariant(tid, (void *)0);
                 converted = eng_p->convert(actual, tid, v.data());
+                if (eng_p->hasUncaughtException())
+                    return;
             }
 
             if (!converted) {
@@ -1912,8 +1914,10 @@ public:
 
     virtual bool resolve(const QScriptValueImpl &object, QScriptNameIdImpl *nameId,
                          QScript::Member *member, QScriptValueImpl *base);
-    virtual bool get(const QScriptValueImpl &obj, const QScript::Member &member,
+    virtual bool get(const QScriptValueImpl &object, const QScript::Member &member,
                      QScriptValueImpl *result);
+    virtual bool put(QScriptValueImpl *object, const QScript::Member &member,
+                     const QScriptValueImpl &value);
     virtual void mark(const QScriptValueImpl &object, int generation);
 
 private:
@@ -1935,9 +1939,14 @@ bool ExtQMetaObjectData::resolve(const QScriptValueImpl &object,
     if (!meta)
         return false;
 
-    QScriptEngine *eng = object.engine();
+    QScriptEnginePrivate *eng_p = QScriptEnginePrivate::get(object.engine());
+    if (eng_p->idTable()->id_prototype == nameId) {
+        // prototype property is a proxy to constructor's prototype property
+        member->native(nameId, /*id=*/0, QScriptValue::Undeletable);
+        return true;
+    }
 
-    QByteArray name = QScriptEnginePrivate::get(eng)->toString(nameId).toLatin1();
+    QByteArray name = eng_p->toString(nameId).toLatin1();
 
     for (int i = 0; i < meta->enumeratorCount(); ++i) {
         QMetaEnum e = meta->enumerator(i);
@@ -1956,14 +1965,35 @@ bool ExtQMetaObjectData::resolve(const QScriptValueImpl &object,
     return false;
 }
 
-bool ExtQMetaObjectData::get(const QScriptValueImpl &obj,
+bool ExtQMetaObjectData::get(const QScriptValueImpl &object,
                              const QScript::Member &member,
                              QScriptValueImpl *result)
 {
     if (! member.isNativeProperty())
         return false;
 
-    *result = QScriptValueImpl(QScriptEnginePrivate::get(obj.engine()), member.id());
+    QScriptEnginePrivate *eng_p = QScriptEnginePrivate::get(object.engine());
+    if (eng_p->idTable()->id_prototype == member.nameId()) {
+        ExtQMetaObject::Instance *inst = ExtQMetaObject::Instance::get(object, m_classInfo);
+        *result = inst->ctor.property(eng_p->idTable()->id_prototype);
+    } else {
+        *result = QScriptValueImpl(eng_p, member.id());
+    }
+    return true;
+}
+
+bool ExtQMetaObjectData::put(QScriptValueImpl *object, const Member &member,
+                             const QScriptValueImpl &value)
+{
+    if (! member.isNativeProperty())
+        return false;
+
+    QScriptEnginePrivate *eng_p = QScriptEnginePrivate::get(object->engine());
+    if (eng_p->idTable()->id_prototype == member.nameId()) {
+        ExtQMetaObject::Instance *inst = ExtQMetaObject::Instance::get(*object, m_classInfo);
+        inst->ctor.setProperty(eng_p->idTable()->id_prototype, value);
+    }
+
     return true;
 }
 

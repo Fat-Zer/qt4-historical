@@ -43,15 +43,22 @@
 
 /*!
   \class QAbstractXmlForwardIterator
-  \brief The QAbstractXmlForwardIterator class is an abstract forward iterator.
+  \brief The QAbstractXmlForwardIterator class is a base class for forward iterators.
   \reentrant
   \since 4.4
-  \internal
   \ingroup xml-tools
+  \internal
 
-   In order for an item to be able to be instantiated in QAbstractXmlForwardIterator, it needs to:
-   - have a copy constructor, default constructor, and an assignment operator
-   - An appropriate qIsForwardIteratorEnd() function
+  This abstract base class is for creating iterators for
+  traversing custom data structures modeled to look like XML.
+  An item can be instantiated in QAbstractXmlForwardIterator if:
+  \list
+
+  \o It has a default constructor, a copy constructor, and an
+  assignment operator, and
+
+  \o It has an appropriate qIsForwardIteratorEnd() function.
+  \endlist
 
    @ingroup Patternist_iterators
    @author Frans Englich <fenglich@trolltech.com>
@@ -60,17 +67,17 @@
 /*!
  \typedef QAbstractXmlForwardIterator::Ptr
 
- A smart pointer wrapping an instance of a  QAbstractXmlForwardIterator subclass.
+ A smart pointer wrapping an instance of a QAbstractXmlForwardIterator subclass.
  */
 
 /*!
  \typedef QAbstractXmlForwardIterator::List
- A QList instance, containing QAbstractXmlForwardIterator::Ptr instances.
+ A QList containing QAbstractXmlForwardIterator::Ptr instances.
  */
 
 /*!
  \typedef QAbstractXmlForwardIterator::Vector
- A QVector instance, containing QAbstractXmlForwardIterator::Ptr instances.
+ A QVector containing QAbstractXmlForwardIterator::Ptr instances.
  */
 
 /*!
@@ -82,7 +89,7 @@
 /*!
   \fn QAbstractXmlForwardIterator::~QAbstractXmlForwardIterator()
 
-  Destructs this instance.
+  Destructor.
  */
 
 /*!
@@ -95,83 +102,82 @@
 /*!
   \fn T QAbstractXmlForwardIterator::current() const = 0;
 
-  Returns the current item in the sequence. If it is called before any call
-  to next(), a null object is returned. If the end of the sequence have been reached a null object
-  is returned.
+  Returns the current item in the sequence. If this function is called
+  before the first call to next(), a null object is returned. If the
+  end of the sequence has been reached, a null object is returned.
  */
 
 /*!
   \fn qint64 QAbstractXmlForwardIterator::position() const = 0;
 
-   Returns the current position in the sequence that this
-   QAbstractXmlForwardIterator represents.
+   Returns the current position in the sequence represented
+   by \e this.
 
-   The first position is 1, not 0. If next() hasn't been called, 0 is returned. If
-   the end of this QAbstractXmlForwardIterator has been reached, -1 is returned.
+   The first position is 1, not 0. If next() hasn't been called, 0 is
+   returned. If \e this has reached the end, -1 is returned.
  */
 
 /*!
   \fn bool qIsForwardIteratorEnd(const T &unit)
+  \since 4.4
   \relates QAbstractXmlForwardIterator
 
-  Callback QAbstractXmlForwardIterator uses for determining whether \a unit is the end
-  of a sequence.
+  The Callback QAbstractXmlForwardIterator uses for determining
+  whether \a unit is the end of a sequence.
 
-  If \a unit is a value that would signal the end of a sequence(typically a default constructed value), this
-  function returns \c true, otherwise \c false.
+  If \a unit is a value that would signal the end of a sequence
+  (typically a default constructed value), this function returns \c
+  true, otherwise \c false.
 
-  This implementation works for all types that has a boolean operator. In other words,
-  this function should work satisfactory for pointers, for example.
+  This implementation works for any type that has a boolean operator.
+  For example, this function should work satisfactory for pointers.
  */
 
 /*!
   \fn qint64 QAbstractXmlForwardIterator::count()
   \internal
 
-   Determines the amount of items this QAbstractXmlForwardIterator represents.
+   Determines the number of items this QAbstractXmlForwardIterator
+   represents.
 
-   Note that this function is not \c const, it modifies the QAbstractXmlForwardIterator
-   as opposed to for example Qt's container classes functions by the same name. The
-   reason for this is efficiency. If this QAbstractXmlForwardIterator should stay intact, one should
-   use a copy().
+   Note that this function is not \c const. It modifies the
+   QAbstractXmlForwardIterator. The reason for this is efficiency. If
+   this QAbstractXmlForwardIterator must not be changed, get a copy()
+   before performing the count.
 
-   The default implementation simply calls next() until the end is reached. Hence, it may
-   be of interest to override this function if the sub-class knows a better way of computing
-   its count.
+   The default implementation simply calls next() until the end is
+   reached. Hence, it may be of interest to override this function if
+   the sub-class knows a better way of computing its count.
 
-   Returns the size of the sequence, the number of items in the sequence.
+   The number of items in the sequence is returned.
  */
 
 /*!
   \fn QAbstractXmlForwardIterator<T>::Ptr QAbstractXmlForwardIterator::toReversed();
   \internal
 
-  Retrieves an iterator working in a reverse direction over the sequence.
+  Returns a reverse iterator for the sequence.
 
-  \note This function may modify the iterator, it can be considered a function
-  that evaluates this QAbstractXmlForwardIterator. It is not a getter, but potentially alters
-  the iterator in the same way the next() function does. If this QAbstractXmlForwardIterator should
-  stay intact, such that it can be used for evaluation with next(), one should
-  first copy this QAbstractXmlForwardIterator with the copy() function.
-
-  Returns an iterator that iterates the sequence this iterator
-  represents, in reverse order.
+  This function may modify the iterator, it can be considered a
+  function that evaluates this QAbstractXmlForwardIterator. It is not
+  a \e getter, but potentially alters the iterator in the same way the
+  next() function does. If this QAbstractXmlForwardIterator must not
+  be modified, such that it can be used for evaluation with next(),
+  use a copy().
  */
 
 /*!
   \fn QList<T> QAbstractXmlForwardIterator<T>::toList();
   \internal
 
-   Performs a copy of this QAbstractXmlForwardIterator(with copy()), and returns its items
-   in a QList. Thus, this function acts as a conversion function, by allowing
-   a sequence of items to be converted into a QList, instead of being represented
-   by an QAbstractXmlForwardIterator.
+   Performs a copy of this QAbstractXmlForwardIterator(with copy()),
+   and returns its items in a QList. Thus, this function acts as a
+   conversion function, converting the sequence to a QList.
 
-   @note This function may modify the iterator, it can be considered a function
-   that evaluates this QAbstractXmlForwardIterator. It is not a getter, but potentially alters
-   the iterator in the same way the next() function does. If this QAbstractXmlForwardIterator should
-   stay intact, such that it can be used for evaluation with next(), one should
-   first copy this QAbstractXmlForwardIterator with the copy() function.
+   This function may modify the iterator. It is not a \e getter, but
+   potentially alters the iterator in the same way the next() function
+   does. If this QAbstractXmlForwardIterator must not be modified,
+   such that it can be used for evaluation with next(), use a copy().
  */
 
 /*!
@@ -185,19 +191,17 @@
 /*!
   \fn T QAbstractXmlForwardIterator::isEmpty();
   \internal
-
-
+  Returns true if the sequence is empty.
  */
 
 /*!
   \fn qint64 QAbstractXmlForwardIterator::sizeHint() const;
   \internal
 
-  Gives a hint to the size of the contained sequence. The hint is assumed
-  to be as close as possible to the actual size.
+  Gives a hint to the size of the contained sequence. The hint is
+  assumed to be as close as possible to the actual size.
 
-  If no sensible estimation can be done at all about the
-  size, -1 should be returned.
+  If no sensible estimate can be computed, -1 should be returned.
  */
 
 /*!
@@ -206,11 +210,10 @@
 
    Copies this QAbstractXmlForwardIterator and returns the copy.
 
-   A copy and the original instance are completely independent of each other, and
-   doesn't affect each other in anyway. Since evaluating an QAbstractXmlForwardIterator modifies it,
-   one should always use a copy when an QAbstractXmlForwardIterator needs to be used several times.
-
-   Returns a copy of this QAbstractXmlForwardIterator.
+   A copy and the original instance are completely independent of each
+   other. Because evaluating an QAbstractXmlForwardIterator modifies
+   it, one should always use a copy when an
+   QAbstractXmlForwardIterator needs to be used several times.
  */
 
 /*!
@@ -232,7 +235,7 @@
  */
 
 /*!
-  \fn QPatternist::ListIteratorPlatform::ListIteratorPlatform(const InputList &list);
+  \fn QPatternist::ListIteratorPlatform::ListIteratorPlatform(const ListType &list);
 
   Constructs a ListIteratorPlatform that walks the given \a list.
  */
@@ -245,13 +248,14 @@
   \internal
   \ingroup xml-tools
 
-   ListIterator takes a reference to a QList<T> instance, and allows access
-   to that list via its QAbstractXmlForwardIterator interface. ListIterator is parameterized on
-   one argument, the type to iterate upon, such as Item or Expression::Ptr.
+   ListIterator takes a reference to a QList<T> instance and allows
+   access to that list via its QAbstractXmlForwardIterator interface.
+   ListIterator is parameterized with the type to iterate over, e.g.,
+   Item or Expression::Ptr.
 
-   ListIterator is for example used by the ExpressionSequence, to create an iterator
-   over its operands that is subsequently passed to
-   an MappingIterator.
+   ListIterator is used by the ExpressionSequence to create an
+   iterator over its operands. The iterator will be passed to a
+   MappingIterator.
  */
 
 /*!
@@ -260,8 +264,8 @@
 
    An object generator for ListIterator.
 
-   makeListIterator() is a convenience function for avoiding specifying
-   the full template instantiation for ListIterator. Conceptually, it
+   makeListIterator() is a convenience function to avoid specifying
+   the full template instantiation for ListIterator.  Conceptually, it
    is identical to Qt's qMakePair().
 
  */

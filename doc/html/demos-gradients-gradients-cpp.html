@@ -63,7 +63,7 @@
      : QWidget(parent), m_shade_type(type), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
  {
 
-     <span class="comment">//</span> Checkers background
+     <span class="comment">// Checkers background</span>
      if (m_shade_type == ARGBShade) {
          QPixmap pm(20, 20);
          QPainter pmp(&amp;pm);
@@ -87,7 +87,7 @@
             &lt;&lt; QPointF(sizeHint().width(), 0);
 
      m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
-<span class="comment"> //</span>     m_hoverPoints-&gt;setConnectionType(HoverPoints::LineConnection);
+<span class="comment"> //     m_hoverPoints-&gt;setConnectionType(HoverPoints::LineConnection);</span>
      m_hoverPoints-&gt;setPoints(points);
      m_hoverPoints-&gt;setPointLock(0, HoverPoints::LockToLeft);
      m_hoverPoints-&gt;setPointLock(1, HoverPoints::LockToRight);
@@ -329,7 +329,7 @@
      whatsThisButton-&gt;setText(&quot;What's This?&quot;);
      whatsThisButton-&gt;setCheckable(true);
 
-     <span class="comment">//</span> Layouts
+     <span class="comment">// Layouts</span>
      QHBoxLayout *mainLayout = new QHBoxLayout(this);
      mainLayout-&gt;addWidget(m_renderer);
      mainLayout-&gt;addWidget(mainGroup);
@@ -529,6 +529,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

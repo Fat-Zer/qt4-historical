@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/dialogs/qfilesystemmodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/dialogs/qfilesystemmodel.cpp -->
 <head>
   <title>Qt 4.4: QFileSystemModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -105,6 +105,7 @@
 <p>Unlike the <a href="qdirmodel.html">QDirModel</a>, QFileSystemModel uses a separate thread to populate itself so it will not cause the main thread to hang as the file system is being queried. Calls to <a href="qabstractitemmodel.html#rowCount">rowCount</a>() will return 0 until the model populates a directory.</p>
 <p>QFileSystemModel keeps a cache with file information. The cache is automatically kept up to date using the <a href="qfilesystemwatcher.html">QFileSystemWatcher</a>.</p>
 <p>QFileSystemModel can be accessed using the standard interface provided by <a href="qabstractitemmodel.html">QAbstractItemModel</a>, but it also provides some convenience functions that are specific to a directory model. The <a href="qfilesystemmodel.html#fileInfo">fileInfo</a>(), <a href="qfilesystemmodel.html#isDir">isDir</a>(), <a href="qobject-qt3.html#name">name</a>(), and path() functions provide information about the underlying files and directories related to items in the model. Directories can be created and removed using <a href="qfilesystemmodel.html#mkdir">mkdir</a>(), <a href="qfilesystemmodel.html#rmdir">rmdir</a>().</p>
+<p><b>Note:</b> QFileSystemModel requires an instance of a GUI application.</p>
 <p>See also <a href="model-view-model.html">Model Classes</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -270,6 +271,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

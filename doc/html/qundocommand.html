@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/util/qundostack.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/util/qundostack.cpp -->
 <head>
   <title>Qt 4.4: QUndoCommand Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -64,15 +64,15 @@
      stack-&gt;undo();
 
      MyCommand *command3 = new MyCommand();
-     stack-&gt;push(command3); // command2 gets deleted</pre>
+     stack-&gt;push(command3); <span class="comment">// command2 gets deleted</span></pre>
 <p>In effect, when a command is pushed, it becomes the top-most command on the stack.</p>
 <p>To support command compression, QUndoCommand has an <a href="qundocommand.html#id">id</a>() and the virtual function <a href="qundocommand.html#mergeWith">mergeWith</a>(). These functions are used by <a href="qundostack.html#push">QUndoStack::push</a>().</p>
 <p>To support command macros, a QUndoCommand object can have any number of child commands. Undoing or redoing the parent command will cause the child commands to be undone or redone. A command can be assigned to a parent explicitly in the constructor. In this case, the command will be owned by the parent.</p>
 <p>The parent in this case is usually an empty command, in that it doesn't provide its own implementation of <a href="qundocommand.html#undo">undo</a>() and <a href="qundocommand.html#redo">redo</a>(). Instead, it uses the base implementations of these functions, which simply call <a href="qundocommand.html#undo">undo</a>() or <a href="qundocommand.html#redo">redo</a>() on all its children. The parent should, however, have a meaningful <a href="qundocommand.html#text">text</a>().</p>
-<pre>     QUndoCommand *insertRed = new QUndoCommand(); // an empty command
+<pre>     QUndoCommand *insertRed = new QUndoCommand(); <span class="comment">// an empty command</span>
      insertRed-&gt;setText(&quot;insert red text&quot;);
 
-     new InsertText(document, idx, text, insertRed); // becomes child of insertRed
+     new InsertText(document, idx, text, insertRed); <span class="comment">// becomes child of insertRed</span>
      new SetColor(document, idx, text.length(), Qt::red, insertRed);
 
      stack.push(insertRed);</pre>
@@ -96,10 +96,12 @@
 <a name="//apple_ref/cpp/instm/QUndoCommand/child" />
 <h3 class="fn"><a name="child"></a>const QUndoCommand * QUndoCommand::child ( int <i>index</i> ) const</h3>
 <p>Returns the child command at <i>index</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qundocommand.html#childCount">childCount</a>() and <a href="qundostack.html#command">QUndoStack::command</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoCommand/childCount" />
 <h3 class="fn"><a name="childCount"></a>int QUndoCommand::childCount () const</h3>
 <p>Returns the number of child commands in this command.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qundocommand.html#child">child</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoCommand/id" />
 <h3 class="fn"><a name="id"></a>int QUndoCommand::id () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -116,7 +118,7 @@
 <p>The default implementation returns false.</p>
 <pre>     bool AppendText::mergeWith(const QUndoCommand *other)
      {
-         if (other-&gt;id() != id()) // make sure other is also an AppendText command
+         if (other-&gt;id() != id()) <span class="comment">// make sure other is also an AppendText command</span>
              return false;
          m_text += static_cast&lt;const AppendText*&gt;(other)-&gt;m_text;
          return true;
@@ -146,6 +148,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -123,10 +123,14 @@ void HtmlGenerator::initializeGenerator(const Config &config)
     while (edition != editionNames.end()) {
         QString editionName = *edition;
         QStringList editionModules = config.getStringList(
-                                    CONFIG_EDITION + Config::dot + editionName);
+            CONFIG_EDITION + Config::dot + editionName + Config::dot + "modules");
+        QStringList editionGroups = config.getStringList(
+            CONFIG_EDITION + Config::dot + editionName + Config::dot + "groups");
 
         if (!editionModules.isEmpty())
             editionModuleMap[editionName] = editionModules;
+        if (!editionGroups.isEmpty())
+            editionGroupMap[editionName] = editionGroups;
 
         ++edition;
     }
@@ -359,14 +363,35 @@ int HtmlGenerator::generateAtom(const Atom *atom, const Node *relative, CodeMark
             if (moduleClassMap.contains(moduleName))
                 generateAnnotatedList(relative, marker, moduleClassMap[moduleName]);
         } else if (atom->string().contains("classesbyedition")) {
+
             QString arg = atom->string().trimmed();
             QString editionName = atom->string().mid(atom->string().indexOf(
                 "classesbyedition") + 16).trimmed();
+
             if (editionModuleMap.contains(editionName)) {
+
+                // Add all classes in the modules listed for that edition.
                 QMap<QString, const Node *> editionClasses;
                 foreach (QString moduleName, editionModuleMap[editionName]) {
                     if (moduleClassMap.contains(moduleName))
                         editionClasses.unite(moduleClassMap[moduleName]);
+                }
+
+                // Add additional groups and remove groups of classes that
+                // should be excluded from the edition.
+
+                QMultiMap <QString, Node *> groups = tre->groups();
+                foreach (QString groupName, editionGroupMap[editionName]) {
+                    QList<Node *> groupClasses;
+                    if (groupName.startsWith("-")) {
+                        groupClasses = groups.values(groupName.mid(1));
+                        foreach (Node *node, groupClasses)
+                            editionClasses.remove(node->name());
+                    } else {
+                        groupClasses = groups.values(groupName);
+                        foreach (Node *node, groupClasses)
+                            editionClasses.insert(node->name(), node);
+                    }
                 }
                 generateAnnotatedList(relative, marker, editionClasses);
             }
@@ -950,7 +975,7 @@ void HtmlGenerator::generateFakeNode( const FakeNode *fake, CodeMarker *marker )
                   fake, marker);
 
     if (fake->subType() == FakeNode::Module) {
-        // Only generate brief text and status for modules.
+        // Generate brief text and status for modules.
         generateBrief(fake, marker);
         generateStatus(fake, marker);
 
@@ -961,6 +986,48 @@ void HtmlGenerator::generateFakeNode( const FakeNode *fake, CodeMarker *marker )
         if (moduleClassMap.contains(fake->name())) {
             out() << "<h2>Classes</h2>\n";
             generateAnnotatedList(fake, marker, moduleClassMap[fake->name()]);
+        }
+    } else if (fake->subType() == FakeNode::HeaderFile) {
+        // Generate brief text and status for modules.
+        generateBrief(fake, marker);
+        generateStatus(fake, marker);
+
+        out() << "<ul>\n";
+
+        QString membersLink = generateListOfAllMemberFile(fake, marker);
+        if (!membersLink.isEmpty())
+            out() << "<li><a href=\"" << membersLink << "\">"
+                  << "List of all members, including inherited members</a></li>\n";
+
+        QString obsoleteLink = generateLowStatusMemberFile(fake, marker, CodeMarker::Obsolete);
+        if (!obsoleteLink.isEmpty())
+            out() << "<li><a href=\"" << obsoleteLink << "\">"
+                  << "Obsolete members</a></li>\n";
+
+        QString compatLink = generateLowStatusMemberFile(fake, marker, CodeMarker::Compat);
+        if (!compatLink.isEmpty())
+            out() << "<li><a href=\"" << compatLink << "\">"
+                  << "Qt 3 support members</a></li>\n";
+
+        out() << "</ul>\n";
+
+        if (!membersLink.isEmpty()) {
+            DcfSection membersSection;
+            membersSection.title = "List of all members";
+            membersSection.ref = membersLink;
+            appendDcfSubSection(&fakeSection, membersSection);
+        }
+        if (!obsoleteLink.isEmpty()) {
+            DcfSection obsoleteSection;
+            obsoleteSection.title = "Obsolete members";
+            obsoleteSection.ref = obsoleteLink;
+            appendDcfSubSection(&fakeSection, obsoleteSection);
+        }
+        if (!compatLink.isEmpty()) {
+            DcfSection compatSection;
+            compatSection.title = "Qt 3 support members";
+            compatSection.ref = compatLink;
+            appendDcfSubSection(&fakeSection, compatSection);
         }
     }
 
@@ -1910,9 +1977,7 @@ void HtmlGenerator::generateSectionList(const Section& section, const Node *rela
         int i = 0;
         NodeList::ConstIterator m = section.members.begin();
         while ( m != section.members.end() ) {
-            if ((*m)->access() == Node::Private ||
-                ((*m)->type() == Node::Variable &&
-                 (*m)->access() != Node::Public)) {
+            if ((*m)->access() == Node::Private) {
                 ++m;
                 continue;
             }

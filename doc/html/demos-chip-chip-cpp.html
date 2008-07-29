@@ -120,7 +120,7 @@
          painter-&gt;setPen(QPen(Qt::black, 0));
      }
 
-     <span class="comment">//</span> Draw text
+     <span class="comment">// Draw text</span>
      if (option-&gt;levelOfDetail &gt;= 2) {
          QFont font(&quot;Times&quot;, 10);
          font.setStyleStrategy(QFont::ForceOutline);
@@ -133,7 +133,7 @@
          painter-&gt;restore();
      }
 
-     <span class="comment">//</span> Draw lines
+     <span class="comment">// Draw lines</span>
      QVarLengthArray&lt;QLineF, 36&gt; lines;
      if (option-&gt;levelOfDetail &gt;= 0.5) {
          for (int i = 0; i &lt;= 10; i += (option-&gt;levelOfDetail &gt; 0.5 ? 1 : 2)) {
@@ -158,7 +158,7 @@
      }
      painter-&gt;drawLines(lines.data(), lines.size());
 
-     <span class="comment">//</span> Draw red ink
+     <span class="comment">// Draw red ink</span>
      if (stuff.size() &gt; 1) {
          painter-&gt;setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
          painter-&gt;setBrush(Qt::NoBrush);
@@ -195,6 +195,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

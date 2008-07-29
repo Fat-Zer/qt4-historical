@@ -93,6 +93,7 @@ public slots:
     void setTouchscreenEmulation( bool );
     void setLcdScreenEmulation( bool );
     void setZoom( double, double );
+    void setRotation(Rotation);
     void startAnimation( const QString& );
     void stopAnimation();
 

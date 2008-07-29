@@ -56,6 +56,7 @@
 //
 
 #include <QtCore/QMap>
+#include <QtCore/QStringList>
 #include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
@@ -88,6 +89,7 @@ public:
     QMap<QString, QHelpDBReader*> readerMap;
     QMap<QString, QHelpDBReader*> fileNameReaderMap;
     QMultiMap<QString, QHelpDBReader*> virtualFolderMap;
+    QStringList orderedFileNameList;
 
     QHelpCollectionHandler *collectionHandler;
     QString currentFilter;

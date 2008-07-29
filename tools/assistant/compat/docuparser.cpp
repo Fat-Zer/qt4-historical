@@ -92,7 +92,7 @@ DocuParser *DocuParser::createParser(const QString &fileName)
         }
     }
 
-    if (majVer < 3 || majVer == 3 && minVer < 2) {
+    if (majVer < 3 || (majVer == 3 && minVer < 2)) {
         return new DocuParser310;
     }
 

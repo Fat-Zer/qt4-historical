@@ -355,6 +355,13 @@ enum optWin98Type {
     optWin98No,
     optWin98Yes
 };
+enum optLinkTimeCodeGenType {
+    optLTCGDefault,
+    optLTCGEnabled,
+    optLTCGInstrument,
+    optLTCGOptimize,
+    optLTCGUpdate
+};
 enum pchOption {
     pchNone,
     pchCreateUsingSpecific,
@@ -572,7 +579,7 @@ public:
     addressAwarenessType    LargeAddressAware;
     triState                LinkDLL;
     linkIncrementalType     LinkIncremental;
-    triState                LinkTimeCodeGeneration;
+    optLinkTimeCodeGenType  LinkTimeCodeGeneration;
     QString                 LinkToManagedResourceFile;
     triState                MapExports;
     QString                 MapFileName;

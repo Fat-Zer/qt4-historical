@@ -154,6 +154,7 @@ SvgGLView::SvgGLView(const QString &file, QWidget *parent)
 void SvgGLView::setHighQualityAntialiasing(bool hq)
 {
     highQualityAntialiasing = hq;
+    update();
 }
 
 void SvgGLView::paintEvent(QPaintEvent *)

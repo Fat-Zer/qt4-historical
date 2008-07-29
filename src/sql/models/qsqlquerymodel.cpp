@@ -443,6 +443,8 @@ QSqlQuery QSqlQueryModel::query() const
 /*!
     Returns information about the last error that occurred on the
     database.
+
+    \sa query()
 */
 QSqlError QSqlQueryModel::lastError() const
 {

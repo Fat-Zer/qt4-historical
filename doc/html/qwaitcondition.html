@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/thread/qwaitcondition_unix.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qwaitcondition.qdoc -->
 <head>
   <title>Qt 4.4: QWaitCondition Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -66,7 +66,7 @@
              getchar();
 
              mutex.lock();
-             // Sleep until there are no busy worker threads
+             <span class="comment">// Sleep until there are no busy worker threads</span>
              while (count &gt; 0) {
                  mutex.unlock();
                  sleep(1);
@@ -103,6 +103,7 @@
 <li><i>time</i> milliseconds has elapsed. If <i>time</i> is <tt>ULONG_MAX</tt> (the default), then the wait will never timeout (the event must be signalled). This function will return false if the wait timed out.</li>
 </ul>
 <p>The <i>readWriteLock</i> will be returned to the same locked state. This function is provided to allow the atomic transition from the locked state to the wait state.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qwaitcondition.html#wakeOne">wakeOne</a>() and <a href="qwaitcondition.html#wakeAll">wakeAll</a>().</p>
 <a name="//apple_ref/cpp/instm/QWaitCondition/wakeAll" />
 <h3 class="fn"><a name="wakeAll"></a>void QWaitCondition::wakeAll ()</h3>
@@ -117,6 +118,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

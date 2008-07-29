@@ -47,6 +47,7 @@
     items in a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     It provides a light-weight foundation for writing your own custom items.
     This includes defining the item's geometry, collision detection, its
@@ -242,7 +243,7 @@
     QGraphicsScene::drawItems(). This flag was introduced in Qt 4.3.
 
     \value ItemClipsChildrenToShape The item clips the painting of all its
-    descendents to its own shape. Items that are either direct or indirect
+    descendants to its own shape. Items that are either direct or indirect
     children of this item cannot draw outside this item's shape. By default,
     this flag is disabled; children can draw anywhere. This behavior is
     enforced by QGraphicsView::drawItems() or
@@ -485,6 +486,7 @@
 #include <QtGui/qevent.h>
 
 #include <private/qgraphicsitem_p.h>
+#include <private/qgraphicswidget_p.h>
 #include <private/qtextcontrol_p.h>
 #include <private/qtextengine_p.h>
 
@@ -731,6 +733,22 @@ bool QGraphicsItemPrivate::itemIsUntransformable() const
 }
 
 /*!
+    \internal
+
+    This helper function helped us add input method query support in
+    Qt 4.4.1 without having to reimplement the inputMethodQuery()
+    function in QGraphicsProxyWidget. ### Qt 5: Remove. We cannot
+    remove it in 4.5+ even if we do reimplement the function properly,
+    because apps compiled with 4.4 will not be able to call the
+    reimplementation.
+*/
+QVariant QGraphicsItemPrivate::inputMethodQueryHelper(Qt::InputMethodQuery query) const
+{
+    Q_UNUSED(query);
+    return QVariant();
+}
+
+/*!
     Constructs a QGraphicsItem with the given \a parent.
 
     If \a parent is 0, you can add the item to a scene by calling
@@ -786,6 +804,8 @@ QGraphicsItem::QGraphicsItem(QGraphicsItemPrivate &dd, QGraphicsItem *parent,
 */
 QGraphicsItem::~QGraphicsItem()
 {
+    clearFocus();
+
     QVariant variant;
     foreach (QGraphicsItem *child, d_ptr->children) {
         if (QGraphicsItem *parent = child->parentItem()) {
@@ -884,6 +904,8 @@ QGraphicsItem *QGraphicsItem::topLevelItem() const
 }
 
 /*!
+    \since 4.4
+
     Returns a pointer to the item's parent widget. The item's parent widget is
     the closest parent item that is a widget.
 
@@ -898,6 +920,8 @@ QGraphicsWidget *QGraphicsItem::parentWidget() const
 }
 
 /*!
+    \since 4.4
+
     Returns a pointer to the item's top level widget (i.e., the item's
     ancestor whose parent is 0, or whose parent is not a widget), or 0 if this
     item does not have a top level widget. If the item is its own top level
@@ -911,6 +935,8 @@ QGraphicsWidget *QGraphicsItem::topLevelWidget() const
 }
 
 /*!
+    \since 4.4
+
     Returns the item's window, or 0 if this item does not have a window. If
     the item is a window, it will return itself.  Otherwise it will return the
     closest ancestor that is a window.
@@ -946,6 +972,14 @@ void QGraphicsItem::setParentItem(QGraphicsItem *parent)
     parent = qVariantValue<QGraphicsItem *>(itemChange(ItemParentChange, variant));
     if (parent == d_ptr->parent)
         return;
+
+    if (QGraphicsWidget *w = d_ptr->isWidget ? static_cast<QGraphicsWidget *>(this) : parentWidget()) {
+        // Update the child focus chain; when reparenting a widget that has a
+        // focus child, ensure that that focus child clears its focus child
+        // chain from our parents before it's reparented.
+        if (QGraphicsWidget *focusChild = w->focusWidget())
+            focusChild->clearFocus();
+    }
 
     // We anticipate geometry changes
     prepareGeometryChange();
@@ -1021,6 +1055,8 @@ QList<QGraphicsItem *> QGraphicsItem::children() const
 }
 
 /*!
+    \since 4.4
+
     Returns a list of this item's children. The items are returned in no
     particular order.
 
@@ -1032,6 +1068,7 @@ QList<QGraphicsItem *> QGraphicsItem::childItems() const
 }
 
 /*!
+    \since 4.4
     Returns true if this item is a widget (i.e., QGraphicsWidget); otherwise,
     returns false.
 */
@@ -1041,6 +1078,7 @@ bool QGraphicsItem::isWidget() const
 }
 
 /*!
+    \since 4.4
     Returns true if the item is a QGraphicsWidget window, otherwise returns
     false.
 
@@ -1346,15 +1384,16 @@ bool QGraphicsItem::isVisible() const
 }
 
 /*!
-   Returns true if the item is visible to \a parent; otherwise, false is
-   returned. \a parent can be 0, in which case this function will return
-   whether the item is visible to the scene or not.
+    \since 4.4
+    Returns true if the item is visible to \a parent; otherwise, false is
+    returned. \a parent can be 0, in which case this function will return
+    whether the item is visible to the scene or not.
 
-   An item may not be visible to its ancestors even if isVisible() is true. If
-   any ancestor is hidden, the item itself will be implicitly hidden, in which
-   case this function will return false.
+    An item may not be visible to its ancestors even if isVisible() is true. If
+    any ancestor is hidden, the item itself will be implicitly hidden, in which
+    case this function will return false.
 
-   \sa isVisible(), setVisible()
+    \sa isVisible(), setVisible()
 */
 bool QGraphicsItem::isVisibleTo(const QGraphicsItem *parent) const
 {
@@ -1405,19 +1444,43 @@ void QGraphicsItemPrivate::setVisibleHelper(bool newVisible, bool explicitly, bo
             if (scene->d_func()->keyboardGrabberItems.contains(q))
                 q->ungrabKeyboard();
         }
-        if (q_ptr->hasFocus())
-            q_ptr->clearFocus();
+        if (q_ptr->hasFocus() && scene) {
+            // Hiding the closest non-window ancestor of the focus item
+            QGraphicsItem *focusItem = scene->focusItem();
+            bool clear = true;
+            if (isWidget && !focusItem->isWindow()) {
+                do {
+                    if (focusItem == q_ptr) {
+                        clear = !static_cast<QGraphicsWidget *>(q_ptr)->focusNextPrevChild(true);
+                        break;
+                    }
+                } while ((focusItem = focusItem->parentWidget()) && !focusItem->isWindow());
+            }
+            if (clear)
+                q_ptr->clearFocus();
+        }
         if (q_ptr->isSelected())
             q_ptr->setSelected(false);
     } else {
-        if (scene && q_ptr->isWidget() && static_cast<QGraphicsWidget *>(q_ptr)->windowType() == Qt::Popup)
-            scene->d_func()->addPopup(static_cast<QGraphicsWidget *>(q_ptr));
+        if (isWidget && scene) {
+            QGraphicsWidget *widget = static_cast<QGraphicsWidget *>(q_ptr);
+            if (widget->windowType() == Qt::Popup)
+                scene->d_func()->addPopup(widget);
+        }
     }
 
     // Update children with explicitly = false.
     foreach (QGraphicsItem *child, children) {
         if (!newVisible || !child->d_ptr->explicitlyHidden)
             child->d_ptr->setVisibleHelper(newVisible, false);
+    }
+
+    // Enable subfocus
+    if (newVisible && isWidget) {
+        QGraphicsWidget *widget = static_cast<QGraphicsWidget *>(q_ptr);
+        QGraphicsWidget *fw = widget->focusWidget();
+        if (fw && fw != scene->focusItem())
+            scene->setFocusItem(fw);
     }
 
     // Deliver post-change notification.
@@ -1506,8 +1569,22 @@ void QGraphicsItemPrivate::setEnabledHelper(bool newEnabled, bool explicitly, bo
     if (!newEnabled) {
         if (scene && scene->mouseGrabberItem() == q_ptr)
             q_ptr->ungrabMouse();
-        if (q_ptr->hasFocus())
-            q_ptr->clearFocus();
+        if (q_ptr->hasFocus()) {
+            // Disabling the closest non-window ancestor of the focus item
+            // causes focus to pop to the next item, otherwise it's cleared.
+            QGraphicsItem *focusItem = scene->focusItem();
+            bool clear = true;
+            if (isWidget && !focusItem->isWindow() && q_ptr->isAncestorOf(focusItem)) {
+                do {
+                    if (focusItem == q_ptr) {
+                        clear = !static_cast<QGraphicsWidget *>(q_ptr)->focusNextPrevChild(true);
+                        break;
+                    }
+                } while ((focusItem = focusItem->parentWidget()) && !focusItem->isWindow());
+            }
+            if (clear)
+                q_ptr->clearFocus();
+        }
         if (q_ptr->isSelected())
             q_ptr->setSelected(false);
     }
@@ -1819,14 +1896,14 @@ void QGraphicsItem::setHandlesChildEvents(bool enabled)
 }
 
 /*!
-    Returns true if this item has focus (i.e., can accept key events);
-    otherwise, returns false.
+    Returns true if this item has keyboard input focus; otherwise, returns
+    false.
 
-    \sa setFocus(), QGraphicsScene::setFocusItem()
+    \sa focusWidget(), QGraphicsScene::focusItem(), setFocus(), QGraphicsScene::setFocusItem()
 */
 bool QGraphicsItem::hasFocus() const
 {
-    return d_ptr->scene && d_ptr->scene->focusItem() == this;
+    return (d_ptr->scene && d_ptr->scene->focusItem() == this);
 }
 
 /*!
@@ -1849,9 +1926,15 @@ bool QGraphicsItem::hasFocus() const
 */
 void QGraphicsItem::setFocus(Qt::FocusReason focusReason)
 {
-    if (!d_ptr->scene || !isVisible() || !isEnabled() || hasFocus())
+    if (!d_ptr->scene || !isEnabled() || hasFocus() || !(d_ptr->flags & ItemIsFocusable))
         return;
-    d_ptr->scene->setFocusItem(this, focusReason);
+    if (isVisible()) {
+        // Visible items immediately gain focus from scene.
+        d_ptr->scene->setFocusItem(this, focusReason);
+    } else if (d_ptr->isWidget) {
+        // Just set up subfocus.
+        static_cast<QGraphicsWidget *>(this)->d_func()->setFocusWidget();
+    }
 }
 
 /*!
@@ -1860,15 +1943,23 @@ void QGraphicsItem::setFocus(Qt::FocusReason focusReason)
     If it has focus, a focus out event is sent to this item to tell it that it
     is about to lose the focus.
 
-    Only items that set the ItemIsFocusable flag can accept keyboard focus.
+    Only items that set the ItemIsFocusable flag, or widgets that set an
+    appropriate focus policy, can accept keyboard focus.
 
-    \sa setFocus()
+    \sa setFocus(), QGraphicsWidget::focusPolicy
 */
 void QGraphicsItem::clearFocus()
 {
     if (!d_ptr->scene || !hasFocus())
         return;
-    d_ptr->scene->setFocusItem(0);
+    if (d_ptr->isWidget) {
+        // Invisible widget items with focus must explicitly clear subfocus.
+        static_cast<QGraphicsWidget *>(this)->d_func()->clearFocusWidget();
+    }
+    if (d_ptr->scene->focusItem() == this) {
+        // If this item has the scene's input focus, clear it.
+        d_ptr->scene->setFocusItem(0);
+    }
 }
 
 /*!
@@ -2489,17 +2580,17 @@ void QGraphicsItem::setZValue(qreal z)
 }
 
 /*!
-    Returns the bounding rect of this item's descendents (i.e., its children,
+    Returns the bounding rect of this item's descendants (i.e., its children,
     their children, etc.) in local coordinates. If the item has no children,
     this function returns an empty QRectF.
 
     This does not include this item's own bounding rect; it only returns
-    its descendents' accumulated bounding rect. If you need to include this
+    its descendants' accumulated bounding rect. If you need to include this
     item's bounding rect, you can add boundingRect() to childrenBoundingRect()
     using QRectF::operator|().
 
     This function is linear in complexity; it determines the size of the
-    returned bounding rect by iterating through all descendents.
+    returned bounding rect by iterating through all descendants.
 
     \sa boundingRect(), sceneBoundingRect()
 */
@@ -2573,10 +2664,14 @@ QRectF QGraphicsItem::sceneBoundingRect() const
 
     \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsitem.cpp 9
 
+    The outline of a shape can vary depending on the width and style of the
+    pen used when drawing. If you want to include this outline in the item's
+    shape, you can create a shape from the stroke using QPainterPathStroker.
+
     This function is called by the default implementations of contains() and
     collidesWithPath().
 
-    \sa boundingRect(), contains(), prepareGeometryChange()
+    \sa boundingRect(), contains(), prepareGeometryChange(), QPainterPathStroker
 */
 QPainterPath QGraphicsItem::shape() const
 {
@@ -2802,6 +2897,8 @@ QPainterPath QGraphicsItem::opaqueArea() const
 }
 
 /*!
+    \since 4.4
+
     Returns the bounding region for this item. The coordinate space of the
     returned region depends on \a itemToDeviceTransform. If you pass an
     identity QTransform as a parameter, this function will return a local
@@ -2873,11 +2970,15 @@ QRegion QGraphicsItem::boundingRegion(const QTransform &itemToDeviceTransform) c
 }
 
 /*!
+    \since 4.4
+
     Returns the item's bounding region granularity; a value between and
     including 0 and 1. The default value is 0 (i.e., the lowest granularity,
     where the bounding region corresponds to the item's bounding rectangle).
 
+\omit
 ### NOTE
+\endomit
 
     \sa setBoundingRegionGranularity()
 */
@@ -2943,9 +3044,18 @@ void QGraphicsItem::setBoundingRegionGranularity(qreal granularity)
     QPalette::Text brush from the paint device's palette. The brush is
     initialized to QPalette::Window.
 
+    Make sure to constrain all painting inside the boundaries of
+    boundingRect() to avoid rendering artifacts (as QGraphicsView does not
+    clip the painter for you). In particular, when QPainter renders the
+    outline of a shape using an assigned QPen, half of the outline will be
+    drawn outside, and half inside, the shape you're rendering (e.g., with a
+    pen width of 2 units, you must draw outlines 1 unit inside
+    boundingRect()). QGraphicsItem does not support use of cosmetic pens with
+    a non-zero width.
+
     All painting is done in local coordinates.
 
-    \sa setCacheMode()
+    \sa setCacheMode(), QPen::width(), {Item Coordinates}
 */
 
 /*!
@@ -3029,9 +3139,25 @@ void QGraphicsItem::scroll(qreal dx, qreal dy, const QRectF &rect)
         return;
     if (!d->scene)
         return;
+    if (d->cacheMode != NoCache) {
+        // ### This is very slow, and can be done much better. If the cache is
+        // local and matches the below criteria for rotation and scaling, we
+        // can easily scroll. And if the cache is in device coordinates, we
+        // can scroll both the viewport and the cache.
+        update(rect);
+        return;
+    }
+
     QRectF scrollRect = !rect.isNull() ? rect : boundingRect();
     int couldntScroll = d->scene->views().size();
     foreach (QGraphicsView *view, d->scene->views()) {
+        if (view->viewport()->inherits("QGLWidget")) {
+            // ### Please replace with a widget attribute; any widget that
+            // doesn't support partial updates / doesn't support scrolling
+            // should be skipped in this code. Qt::WA_NoPartialUpdates or so.
+            continue;
+        }
+
         static const QLineF up(0, 0, 0, -1);
         static const QLineF down(0, 0, 0, 1);
         static const QLineF left(0, 0, -1, 0);
@@ -3586,6 +3712,8 @@ bool QGraphicsItem::isAncestorOf(const QGraphicsItem *child) const
 }
 
 /*!
+    \since 4.4
+
     Returns the closest common ancestor item of this item and \a other, or 0
     if either \a other is 0, or there is no common ancestor.
 
@@ -3624,6 +3752,7 @@ QGraphicsItem *QGraphicsItem::commonAncestorItem(const QGraphicsItem *other) con
 }
 
 /*!
+    \since 4,4
     Returns true if this item is currently under the mouse cursor in one of
     the views; otherwise, false is returned.
 
@@ -4375,6 +4504,13 @@ void QGraphicsItem::inputMethodEvent(QInputMethodEvent *event)
 */
 QVariant QGraphicsItem::inputMethodQuery(Qt::InputMethodQuery query) const
 {
+    if (isWidget()) {
+        // ### Qt 5: Remove. The reimplementation in
+        // QGraphicsProxyWidget solves this problem (but requires a
+        // recompile to take effect).
+        return d_ptr->inputMethodQueryHelper(query);
+    }
+
     Q_UNUSED(query);
     return QVariant();
 }
@@ -4700,6 +4836,7 @@ QPainterPath QAbstractGraphicsShapeItem::opaqueArea() const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     To set the item's path, pass a QPainterPath to QGraphicsPathItem's
     constructor, or call the setPath() function. The path() function
@@ -4902,6 +5039,7 @@ QVariant QGraphicsPathItem::extension(const QVariant &variant) const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     To set the item's rectangle, pass a QRectF to QGraphicsRectItem's
     constructor, or call the setRect() function. The rect() function
@@ -5140,6 +5278,7 @@ QVariant QGraphicsRectItem::extension(const QVariant &variant) const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     QGraphicsEllipseItem respresents an ellipse with a fill and an outline,
     and you can also use it for ellipse segments (see startAngle(),
@@ -5452,6 +5591,7 @@ QVariant QGraphicsEllipseItem::extension(const QVariant &variant) const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     To set the item's polygon, pass a QPolygonF to
     QGraphicsPolygonItem's constructor, or call the setPolygon()
@@ -5685,6 +5825,7 @@ QVariant QGraphicsPolygonItem::extension(const QVariant &variant) const
     QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     To set the item's line, pass a QLineF to QGraphicsLineItem's
     constructor, or call the setLine() function. The line() function
@@ -5946,6 +6087,7 @@ QVariant QGraphicsLineItem::extension(const QVariant &variant) const
     a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     To set the item's pixmap, pass a QPixmap to QGraphicsPixmapItem's
     constructor, or call the setPixmap() function. The pixmap()
@@ -6311,6 +6453,7 @@ QVariant QGraphicsPixmapItem::extension(const QVariant &variant) const
     a QGraphicsScene to display formatted text.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     To set the item's text, pass a QString to QGraphicsTextItem's
     constructor, or call setHtml()/setPlainText().
@@ -7093,6 +7236,7 @@ void QGraphicsSimpleTextItemPrivate::updateBoundingRect()
     that you can add to a QGraphicsScene.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     To set the item's text, you can either pass a QString to
     QGraphicsSimpleTextItem's constructor, or call setText() to change the
@@ -7325,6 +7469,7 @@ QVariant QGraphicsSimpleTextItem::extension(const QVariant &variant) const
     one.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     A QGraphicsItemGroup is a special type of compound item that
     treats itself and all its children as one item (i.e., all events

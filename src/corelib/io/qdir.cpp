@@ -1201,6 +1201,7 @@ QDir::SortFlags QDir::sorting() const
     \value Size  Sort by file size.
     \value Type  Sort by file type (extension).
     \value Unsorted  Do not sort.
+    \value NoSort Not sorted by default.
 
     \value DirsFirst  Put the directories first, then the files.
     \value DirsLast Put the files first, then the directories.
@@ -1210,7 +1211,6 @@ QDir::SortFlags QDir::sorting() const
 
     \omitvalue SortByMask
     \omitvalue DefaultSort
-    \omitvalue NoSort
 
     You can only specify one of the first four.
 

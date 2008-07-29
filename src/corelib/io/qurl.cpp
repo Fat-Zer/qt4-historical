@@ -103,8 +103,10 @@
     servers, mail clients and so on.
 
     QUrl conforms to the URI specification from
-    \l{RFC 3986} (Uniform Resource Identifier: Generic Syntax), and includes scheme extensions from
-    \l{RFC 1738} (Uniform Resource Locators).
+    \l{RFC 3986} (Uniform Resource Identifier: Generic Syntax), and includes
+    scheme extensions from \l{RFC 1738} (Uniform Resource Locators). Case
+    folding rules in QUrl conform to \l{RFC 3491} (Nameprep: A Stringprep
+    Profile for Internationalized Domain Names (IDN)).
 
     \sa QUrlInfo
 */
@@ -149,7 +151,7 @@
     The formatting options define how the URL is formatted when written out
     as text.
 
-    \value None          The URL is left unchanged.
+    \value None The format of the URL is unchanged.
     \value RemoveScheme  The scheme is removed from the URL.
     \value RemovePassword  Any password in the URL is removed.
     \value RemoveUserInfo  Any user information in the URL is removed.
@@ -161,6 +163,10 @@
                         is removed.
     \value RemoveFragment
     \value StripTrailingSlash  The trailing slash is removed if one is present.
+
+    Note that the case folding rules in \l{RFC 3491}{Nameprep}, which QUrl
+    conforms to, require host names to always be converted to lower case,
+    regardless of the Qt::FormattingOptions used.
 */
 
 #include "qplatformdefs.h"
@@ -4651,6 +4657,8 @@ QList<QPair<QString, QString> > QUrl::queryItems() const
 }
 
 /*!
+    \since 4.4
+
     Returns the query string of the URL, as a map of encoded keys and values.
 
     \sa setEncodedQueryItems(), setQueryItems(), setEncodedQuery()

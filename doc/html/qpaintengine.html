@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qpaintengine.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/painting/qpaintengine.cpp -->
 <head>
   <title>Qt 4.4: QPaintEngine Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -117,6 +117,7 @@
 <a name="//apple_ref/cpp/econst/QPaintEngine/ConstantOpacity" />
 <a name="//apple_ref/cpp/econst/QPaintEngine/LinearGradientFill" />
 <a name="//apple_ref/cpp/econst/QPaintEngine/MaskedBrush" />
+<a name="//apple_ref/cpp/econst/QPaintEngine/ObjectBoundingModeGradients" />
 <a name="//apple_ref/cpp/econst/QPaintEngine/PainterPaths" />
 <a name="//apple_ref/cpp/econst/QPaintEngine/PaintOutsidePaintEvent" />
 <a name="//apple_ref/cpp/econst/QPaintEngine/PatternBrush" />
@@ -140,6 +141,7 @@
 <tr><td valign="top"><tt>QPaintEngine::ConstantOpacity</tt></td><td align="center" valign="top"><tt>0x00001000</tt></td><td valign="top">The engine supports the feature provided by <a href="qpainter.html#setOpacity">QPainter::setOpacity</a>().</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::LinearGradientFill</tt></td><td align="center" valign="top"><tt>0x00000010</tt></td><td valign="top">The engine supports linear gradient fills.</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::MaskedBrush</tt></td><td align="center" valign="top"><tt>0x00002000</tt></td><td valign="top">The engine is capable of rendering brushes that has a texture with an alpha channel or a mask.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::ObjectBoundingModeGradients</tt></td><td align="center" valign="top"><tt>0x00010000</tt></td><td valign="top">The engine has native support for gradients with coordinate mode <a href="qgradient.html#CoordinateMode-enum">QGradient::ObjectBoundingMode</a>. Otherwise, if QPaintEngine::PatternTransform is supported, object bounding mode gradients are converted to gradients with coordinate mode <a href="qgradient.html#CoordinateMode-enum">QGradient::LogicalMode</a> and a brush transform for the coordinate mapping.</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::PainterPaths</tt></td><td align="center" valign="top"><tt>0x00000200</tt></td><td valign="top">The engine has path support.</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::PaintOutsidePaintEvent</tt></td><td align="center" valign="top"><tt>0x20000000</tt></td><td valign="top">The engine is capable of painting outside of paint events.</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::PatternBrush</tt></td><td align="center" valign="top"><tt>0x00000008</tt></td><td valign="top">The engine is capable of rendering brushes with the brush patterns specified in <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a>.</td></tr>
@@ -244,11 +246,11 @@
 <a name="//apple_ref/cpp/instm/QPaintEngine/drawPolygon" />
 <h3 class="fn"><a name="drawPolygon"></a>void QPaintEngine::drawPolygon ( const <a href="qpointf.html">QPointF</a> * <i>points</i>, int <i>pointCount</i>, <a href="qpaintengine.html#PolygonDrawMode-enum">PolygonDrawMode</a> <i>mode</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Reimplement this virtual function to draw the polygon defined by the <i>pointCount</i> first points in <i>points</i>, using mode <i>mode</i>.</p>
-<p>The default implementation of this function will try to use drawPath if the engine supports the feature <a href="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::PainterPaths</a> or try the float based drawPolygon() implementation if not.</p>
+<p><b>Note:</b> At least one of the drawPolygon() functions must be reimplemented.</p>
 <h3 class="fn"><a name="drawPolygon-2"></a>void QPaintEngine::drawPolygon ( const <a href="qpoint.html">QPoint</a> * <i>points</i>, int <i>pointCount</i>, <a href="qpaintengine.html#PolygonDrawMode-enum">PolygonDrawMode</a> <i>mode</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reimplement this virtual function to draw the polygon defined by the <i>pointCount</i> first points in <i>points</i>, using mode <i>mode</i>.</p>
-<p>The default implementation of this function will try to use <a href="qpaintengine.html#drawPath">drawPath</a>() if the engine supports the feature <a href="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::PainterPaths</a> or try the int based <a href="qpaintengine.html#drawPolygon">drawPolygon</a>() implementation if not.</p>
+<p><b>Note:</b> At least one of the <a href="qpaintengine.html#drawPolygon">drawPolygon</a>() functions must be reimplemented.</p>
 <a name="//apple_ref/cpp/instm/QPaintEngine/drawRects" />
 <h3 class="fn"><a name="drawRects"></a>void QPaintEngine::drawRects ( const <a href="qrectf.html">QRectF</a> * <i>rects</i>, int <i>rectCount</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Draws the first <i>rectCount</i> rectangles in the buffer <i>rects</i>. The default implementation of this function calls <a href="qpaintengine.html#drawPath">drawPath</a>() or <a href="qpaintengine.html#drawPolygon">drawPolygon</a>() depending on the feature set of the paint engine.</p>
@@ -256,7 +258,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>The default implementation converts the first <i>rectCount</i> rectangles in the buffer <i>rects</i> to a <a href="qrectf.html">QRectF</a> and calls the floating point version of this function.</p>
 <a name="//apple_ref/cpp/instm/QPaintEngine/drawTextItem" />
-<h3 class="fn"><a name="drawTextItem"></a>void QPaintEngine::drawTextItem ( const <a href="qpointf.html">QPointF</a> &amp; <i>p</i>, const QTextItem &amp; <i>textItem</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="drawTextItem"></a>void QPaintEngine::drawTextItem ( const <a href="qpointf.html">QPointF</a> &amp; <i>p</i>, const <a href="qtextitem.html">QTextItem</a> &amp; <i>textItem</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This function draws the text item <i>textItem</i> at position <i>p</i>. The default implementation of this function converts the text to a <a href="qpainterpath.html">QPainterPath</a> and paints the resulting path.</p>
 <a name="//apple_ref/cpp/instm/QPaintEngine/drawTiledPixmap" />
 <h3 class="fn"><a name="drawTiledPixmap"></a>void QPaintEngine::drawTiledPixmap ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i>, const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qpointf.html">QPointF</a> &amp; <i>p</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -294,6 +296,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

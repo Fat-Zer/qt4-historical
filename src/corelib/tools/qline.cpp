@@ -44,9 +44,8 @@
 #include "qline.h"
 #include "qdebug.h"
 #include "qdatastream.h"
+#include "qmath.h"
 #include <private/qnumeric_p.h>
-
-#include <math.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -221,6 +220,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \fn void QLine::setP1(const QPoint &p1)
+    \since 4.4
 
     Sets the starting point of this line to \a p1.
 
@@ -230,6 +230,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \fn void QLine::setP2(const QPoint &p2)
+    \since 4.4
 
     Sets the end point of this line to \a p2.
 
@@ -239,6 +240,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \fn void QLine::setPoints(const QPoint &p1, const QPoint &p2)
+    \since 4.4
 
     Sets the start point of this line to \a p1 and the end point of this line to \a p2.
 
@@ -248,6 +250,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \fn void QLine::setLine(int x1, int y1, int x2, int y2)
+    \since 4.4
 
     Sets this line to the start in \a x1, \a y1 and end in \a x2, \a y2.
 
@@ -550,7 +553,7 @@ qreal QLineF::length() const
 {
     qreal x = pt2.x() - pt1.x();
     qreal y = pt2.y() - pt1.y();
-    return sqrt(x*x + y*y);
+    return qSqrt(x*x + y*y);
 }
 
 /*!
@@ -595,8 +598,8 @@ void QLineF::setAngle(qreal angle)
     const qreal angleR = angle * M_2PI / 360.0;
     const qreal l = length();
 
-    const qreal dx = cos(angleR) * l;
-    const qreal dy = -sin(angleR) * l;
+    const qreal dx = qCos(angleR) * l;
+    const qreal dy = -qSin(angleR) * l;
 
     pt2.rx() = pt1.x() + dx;
     pt2.ry() = pt1.y() + dy;
@@ -615,7 +618,7 @@ void QLineF::setAngle(qreal angle)
 QLineF QLineF::fromPolar(qreal length, qreal angle)
 {
     const qreal angleR = angle * M_2PI / 360.0;
-    return QLineF(0, 0, cos(angleR) * length, -sin(angleR) * length);
+    return QLineF(0, 0, qCos(angleR) * length, -qSin(angleR) * length);
 }
 
 /*!
@@ -629,7 +632,7 @@ QLineF QLineF::unitVector() const
     qreal x = pt2.x() - pt1.x();
     qreal y = pt2.y() - pt1.y();
 
-    qreal len = sqrt(x*x + y*y);
+    qreal len = qSqrt(x*x + y*y);
     QLineF f(p1(), QPointF(pt1.x() + x/len, pt1.y() + y/len));
 
 #ifndef QT_NO_DEBUG
@@ -752,6 +755,7 @@ QLineF::IntersectType QLineF::intersect(const QLineF &l, QPointF *intersectionPo
 
 /*!
     \fn void QLineF::setP1(const QPointF &p1)
+    \since 4.4
 
     Sets the starting point of this line to \a p1.
 
@@ -761,6 +765,7 @@ QLineF::IntersectType QLineF::intersect(const QLineF &l, QPointF *intersectionPo
 
 /*!
     \fn void QLineF::setP2(const QPointF &p2)
+    \since 4.4
 
     Sets the end point of this line to \a p2.
 
@@ -770,6 +775,7 @@ QLineF::IntersectType QLineF::intersect(const QLineF &l, QPointF *intersectionPo
 
 /*!
     \fn void QLineF::setPoints(const QPointF &p1, const QPointF &p2)
+    \since 4.4
 
     Sets the start point of this line to \a p1 and the end point of this line to \a p2.
 
@@ -779,6 +785,7 @@ QLineF::IntersectType QLineF::intersect(const QLineF &l, QPointF *intersectionPo
 
 /*!
     \fn void QLineF::setLine(qreal x1, qreal y1, qreal x2, qreal y2)
+    \since 4.4
 
     Sets this line to the start in \a x1, \a y1 and end in \a x2, \a y2.
 

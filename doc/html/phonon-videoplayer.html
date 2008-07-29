@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: VideoPlayer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">VideoPlayer Class Reference<br /><span class="small-subtitle">(Phonon::VideoPlayer)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The VideoPlayer widget is used to perform playback of video. <a href="#details">More...</a></p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-videoplayer-members.html">List of all members, including inherited members</a></li>
@@ -84,9 +84,9 @@
 <p>VideoPlayer is provided for convenience and removes the need to create a media graph with a <a href="phonon-mediaobject.html">MediaObject</a>, <a href="phonon-audiooutput.html">AudioOutput</a>, and <a href="phonon-videowidget.html">VideoWidget</a>. If you need functionality not supported by the player, you can build this <a href="phonon-overview.html#building-graphs">graph</a> yourself.</p>
 <p>Keep in mind that when the VideoPlayer instance is deleted the playback will stop.</p>
 <p>A play and forget code example:</p>
-<pre>     VideoPlayer *player = new VideoPlayer(Phonon::VideoCategory, parentWidget);
-     connect(player, SIGNAL(finished()), player, SLOT(deleteLater()));
-     player-&gt;play(url);</pre>
+<pre> VideoPlayer *player = new VideoPlayer(Phonon::VideoCategory, parentWidget);
+ connect(player, SIGNAL(finished()), player, SLOT(deleteLater()));
+ player-&gt;play(url);</pre>
 <p><b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt;</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -128,8 +128,8 @@
 <h3 class="fn"><a name="play"></a>void VideoPlayer::play ( const <a href="phonon-mediasource.html">Phonon::MediaSource</a> &amp; <i>source</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Plays the media from the given <i>source</i>. Starts playback as fast as possible. This can take a considerable time depending on the URL and the backend.</p>
 <p>If you need low latency between calling play() and the sound actually starting to play on your output device you need to use <a href="phonon-mediaobject.html">MediaObject</a> and be able to set the URL before calling play(). Note that</p>
-<pre>     audioPlayer-&gt;load(url);
-     audioPlayer-&gt;play();</pre>
+<pre> audioPlayer-&gt;load(url);
+ audioPlayer-&gt;play();</pre>
 <p>doesn't make a difference: the application should be idle between the load and play calls so that the backend can start preloading the media and fill audio buffers.</p>
 <h3 class="fn"><a name="play-2"></a>void VideoPlayer::play ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -161,6 +161,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

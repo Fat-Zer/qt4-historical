@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/global/qglobal.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/global/qglobal.cpp -->
 <head>
   <title>Qt 4.4: &lt;QtGlobal&gt; - Global Qt Declarations</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,6 +14,11 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">&lt;QtGlobal&gt; - Global Qt Declarations<br /><span class="subtitle"></span>
 </h1>
+<p>The &lt;QtGlobal&gt; header provides basic declarations and is included by all other Qt headers. <a href="#details">More...</a></p>
+<ul>
+<li><a href="qtglobal-obsolete.html">Obsolete members</a></li>
+<li><a href="qtglobal-qt3.html">Qt 3 support members</a></li>
+</ul>
 <a name="Typesx"></a>
 <h3>Types</h3>
 <ul>
@@ -49,6 +54,8 @@
 <li><div class="fn"/>T <b><a href="qtglobal.html#qFromBigEndian-2">qFromBigEndian</a></b> ( T <i>src</i> )</li>
 <li><div class="fn"/>T <b><a href="qtglobal.html#qFromLittleEndian">qFromLittleEndian</a></b> ( const uchar * <i>src</i> )</li>
 <li><div class="fn"/>T <b><a href="qtglobal.html#qFromLittleEndian-2">qFromLittleEndian</a></b> ( T <i>src</i> )</li>
+<li><div class="fn"/>bool <b><a href="qtglobal.html#qFuzzyCompare">qFuzzyCompare</a></b> ( double <i>p1</i>, double <i>p2</i> )</li>
+<li><div class="fn"/>bool <b><a href="qtglobal.html#qFuzzyCompare-2">qFuzzyCompare</a></b> ( float <i>p1</i>, float <i>p2</i> )</li>
 <li><div class="fn"/>QtMsgHandler <b><a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a></b> ( QtMsgHandler <i>handler</i> )</li>
 <li><div class="fn"/>int <b><a href="qtglobal.html#qMacVersion">qMacVersion</a></b> ()</li>
 <li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMax">qMax</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
@@ -159,7 +166,7 @@
          int maxValue = 6;
 
          int boundedValue = qBound(minValue, myValue, maxValue);
-         // boundedValue == 6</pre>
+         <span class="comment">// boundedValue == 6</span></pre>
 <p>&lt;QtGlobal&gt; also contains functions that generate messages from the given string argument: <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qFatal">qFatal</a>() and <a href="qtglobal.html#qWarning">qWarning</a>(). These functions call the message handler with the given message. For example:</p>
 <pre>         if (!driver()-&gt;isOpen() || driver()-&gt;isOpenError()) {
              qWarning(&quot;QSqlQuery::exec: database not open&quot;);
@@ -272,7 +279,7 @@
          int myValue = -4;
 
          absoluteValue = qAbs(myValue);
-         // absoluteValue == 4</pre>
+         <span class="comment">// absoluteValue == 4</span></pre>
 <a name="//apple_ref/cpp/func//qBound" />
 <h3 class="fn"><a name="qBound"></a>const T &amp; qBound ( const T &amp; <i>min</i>, const T &amp; <i>value</i>, const T &amp; <i>max</i> )</h3>
 <p>Returns <i>value</i> bounded by <i>min</i> and <i>max</i>. This is equivalent to qMax(<i>min</i>, qMin(<i>value</i>, <i>max</i>)). For example:</p>
@@ -281,7 +288,7 @@
          int maxValue = 6;
 
          int boundedValue = qBound(minValue, myValue, maxValue);
-         // boundedValue == 6</pre>
+         <span class="comment">// boundedValue == 6</span></pre>
 <p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>().</p>
 <a name="//apple_ref/cpp/func//qCritical" />
 <h3 class="fn"><a name="qCritical"></a>void qCritical ( const char * <i>msg</i>, ... )</h3>
@@ -319,7 +326,7 @@
 <p>Example:</p>
 <pre>         int divide(int a, int b)
          {
-             if (b == 0)                                // program error
+             if (b == 0)                                <span class="comment">// program error</span>
                  qFatal(&quot;divide: cannot divide by zero&quot;);
              return a / b;
          }</pre>
@@ -328,7 +335,7 @@
 <a name="//apple_ref/cpp/func//qFromBigEndian" />
 <h3 class="fn"><a name="qFromBigEndian"></a>T qFromBigEndian ( const <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>src</i> )</h3>
 <p>Reads a big-endian number from memory location <i>src</i> and returns the number in the host byte order representation. On CPU architectures where the host byte order is little-endian (such as x86) this will swap the byte order; otherwise it will just read from <i>src</i>.</p>
-<p>Note that template type <tt>T</tt> can only be an integer data type (signed or unsigned).</p>
+<p><b>Note:</b> Template type <tt>T</tt> can either be a qint16, qint32 or qint64. Other types of integers, e.g&#x2e;, qlong, are not applicable.</p>
 <p>There are no data alignment constraints for <i>src</i>.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qtglobal.html#qFromLittleEndian">qFromLittleEndian</a>(), <a href="qtglobal.html#qToBigEndian">qToBigEndian</a>(), and <a href="qtglobal.html#qToLittleEndian">qToLittleEndian</a>().</p>
@@ -339,7 +346,7 @@
 <a name="//apple_ref/cpp/func//qFromLittleEndian" />
 <h3 class="fn"><a name="qFromLittleEndian"></a>T qFromLittleEndian ( const <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>src</i> )</h3>
 <p>Reads a little-endian number from memory location <i>src</i> and returns the number in the host byte order representation. On CPU architectures where the host byte order is big-endian (such as PowerPC) this will swap the byte order; otherwise it will just read from <i>src</i>.</p>
-<p>Note that template type <tt>T</tt> can only be an integer data type (signed or unsigned).</p>
+<p><b>Note:</b> Template type <tt>T</tt> can either be a qint16, qint32 or qint64. Other types of integers, e.g&#x2e;, qlong, are not applicable.</p>
 <p>There are no data alignment constraints for <i>src</i>.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qtglobal.html#qFromBigEndian">qFromBigEndian</a>(), <a href="qtglobal.html#qToBigEndian">qToBigEndian</a>(), and <a href="qtglobal.html#qToLittleEndian">qToLittleEndian</a>().</p>
@@ -347,6 +354,16 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Converts <i>src</i> from little-endian byte order and returns the number in host byte order representation of that number. On CPU architectures where the host byte order is big-endian (such as PowerPC) this will return <i>src</i> with the byte order swapped; otherwise it will return <i>src</i> unmodified.</p>
 <p>This function was introduced in Qt 4.3.</p>
+<a name="//apple_ref/cpp/clm//qFuzzyCompare" />
+<h3 class="fn"><a name="qFuzzyCompare"></a>bool qFuzzyCompare ( double <i>p1</i>, double <i>p2</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Compares the floating point value <i>p1</i> and <i>p2</i> and returns <tt>true</tt> if they are considered equal, otherwise <tt>false</tt>.</p>
+<p>The two numbers are compared in a relative way, where the exactness is stronger the smaller the numbers are.</p>
+<p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
+<p>This function was introduced in Qt 4.4.</p>
+<h3 class="fn"><a name="qFuzzyCompare-2"></a>bool qFuzzyCompare ( float <i>p1</i>, float <i>p2</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/func//qInstallMsgHandler" />
 <h3 class="fn"><a name="qInstallMsgHandler"></a><a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> qInstallMsgHandler ( <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> <i>handler</i> )</h3>
 <p>Installs a Qt message <i>handler</i> which has been defined previously. Returns a pointer to the previous message handler (which may be 0).</p>
@@ -396,7 +413,7 @@
          int yourValue = 4;
 
          int maxValue = qMax(myValue, yourValue);
-         // maxValue == myValue</pre>
+         <span class="comment">// maxValue == myValue</span></pre>
 <p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qMin" />
 <h3 class="fn"><a name="qMin"></a>const T &amp; qMin ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
@@ -405,7 +422,7 @@
          int yourValue = 4;
 
          int minValue = qMin(myValue, yourValue);
-         // minValue == yourValue</pre>
+         <span class="comment">// minValue == yourValue</span></pre>
 <p>See also <a href="qtglobal.html#qMax">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qRound64" />
 <h3 class="fn"><a name="qRound64"></a><a href="qtglobal.html#qint64-typedef">qint64</a> qRound64 ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
@@ -519,6 +536,7 @@
                     greeting_strings[type].source,
                     greeting_strings[type].comment);
          }</pre>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</a>(), <a href="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <a name="//apple_ref/cpp/macro//QT_TRANSLATE_NOOP" />
 <h3 class="fn"><a name="QT_TRANSLATE_NOOP"></a>QT_TRANSLATE_NOOP (  <i>context</i>,  <i>sourceText</i> )</h3>
@@ -575,7 +593,7 @@
 <p>Prints a warning message containing the source code file name and line number if <i>test</i> is false.</p>
 <p>Q_ASSERT() is useful for testing pre- and post-conditions during development. It does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
-<pre>         // File: div.cpp
+<pre>         <span class="comment">// File: div.cpp</span>
 
          #include &lt;QtGlobal&gt;
 
@@ -592,7 +610,7 @@
 <p>Prints the message <i>what</i> together with the location <i>where</i>, the source file name and line number if <i>test</i> is false.</p>
 <p>Q_ASSERT_X is useful for testing pre- and post-conditions during development. It does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
-<pre>         // File: div.cpp
+<pre>         <span class="comment">// File: div.cpp</span>
 
          #include &lt;QtGlobal&gt;
 
@@ -692,9 +710,9 @@
 <p>Example:</p>
 <pre>         int *a;
 
-         Q_CHECK_PTR(a = new int[80]);   // WRONG!
+         Q_CHECK_PTR(a = new int[80]);   <span class="comment">// WRONG</span>!
 
-         a = new (nothrow) int[80];      // Right
+         a = new (nothrow) int[80];      <span class="comment">// Right</span>
          Q_CHECK_PTR(a);</pre>
 <p>See also <a href="qtglobal.html#qWarning">qWarning</a>() and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_DECLARE_TYPEINFO" />
@@ -909,6 +927,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1389,6 +1389,17 @@ bool Compiler::visit(AST::SwitchStatement *node)
 
     iPop(); // expression
 
+    if (previousLoop && !m_activeLoop->continueLabel.uses.isEmpty()) {
+        // join the continues and add to outer loop
+        iBranch(3);
+        foreach (int index, m_activeLoop->continueLabel.uses) {
+            patchInstruction(index, nextInstructionOffset() - index);
+        }
+        iPop();
+        iBranch(0);
+        previousLoop->continueLabel.uses.append(nextInstructionOffset() - 1);
+    }
+
     switchStatement(was);
     changeActiveLoop(previousLoop);
     m_loops.remove(node);
@@ -1448,7 +1459,7 @@ void Compiler::endVisit(AST::ContinueStatement *node)
     iBranch(0);
 
     Loop *loop = findLoop(node->label);
-    if (! loop) {
+    if (!loop || !m_iterationStatement) {
         m_compilationUnit.setError(QString::fromUtf8("label not found"),
                                    node->startLine);
         return;

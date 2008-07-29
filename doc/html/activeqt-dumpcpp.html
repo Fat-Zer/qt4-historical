@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/activeqt-dumpcpp.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/activeqt-dumpcpp.qdoc -->
 <head>
   <title>Qt 4.4: The dumpcpp Tool (ActiveQt)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -31,19 +31,19 @@
 <pre></pre>
 <p>The generated namespace will declare all enumerations, as well as one QAxObject subclass for each <tt>coclass</tt> and <tt>interface</tt> declared in the type library. coclasses marked with the <tt>control</tt> attribute will be wrapped by a QAxWidget subclass.</p>
 <p>Those classes that wrap creatable coclasses (i.e&#x2e; coclasses that are not marked as <tt>noncreatable</tt>) have a default constructor; this is typically a single class of type <tt>Application</tt>.</p>
-<pre>     Outlook::Application *outlook = new Outlook::Application;</pre>
+<pre> Outlook::Application *outlook = new Outlook::Application;</pre>
 <p>All other classes can only be created by passing an IDispatch interface pointer to the constructor; those classes should however not be created explicitly. Instead, use the appropriate API of already created objects.</p>
-<pre>     Outlook::_NameSpace *session = outlook-&gt;Session();</pre>
+<pre> Outlook::_NameSpace *session = outlook-&gt;Session();</pre>
 <p>All coclass wrappers also have one constructors taking an interface wrapper class for each interface implemented.</p>
-<pre>     Outlook::NameSpace *session = outlook-&gt;Session();</pre>
+<pre> Outlook::NameSpace *session = outlook-&gt;Session();</pre>
 <p>You have to create coclasses to be able to connect to signals of the subobject. Note that the constructor deletes the interface object, so the following will cause a segmentation fault:</p>
-<pre>     Outlook::_NameSpace *tmp = outlook-&gt;Session();
-     Outlook::NameSpace *session = new Outlook::NameSpace(tmp);
-     delete tmp; // or any other use of tmp: segfault</pre>
+<pre> Outlook::_NameSpace *tmp = outlook-&gt;Session();
+ Outlook::NameSpace *session = new Outlook::NameSpace(tmp);
+ delete tmp; // or any other use of tmp: segfault</pre>
 <p>If the return type is of a coclass or interface type declared in another type library you have to include the namespace header for that other type library before including the header for the namespace you want to use (both header have to be generated with this tool).</p>
 <p>By default, methods and property returning subobjects will use the type as in the type library. The caller of the function is responsible for deleting or reparenting the object returned. If the <tt>-compat</tt> switch is set, properties and method returning a COM object have the return type <tt>IDispatch*</tt>, and the namespace will not declare wrapper classes for interfaces.</p>
 <p>In this case, create the correct wrapper class explicitly:</p>
-<pre>     Outlook::NameSpace *session = new Outlook::NameSpace(outlook-&gt;Session());</pre>
+<pre> Outlook::NameSpace *session = new Outlook::NameSpace(outlook-&gt;Session());</pre>
 <p>You can of course use the IDispatch* returned directly, in which case you have to call <tt>Release()</tt> when finished with the interface.</p>
 <p>All classes in the namespace are tagged with a macro that allows you to export or import them from a DLL. To do that, declare the macro to expand to <tt>__declspec(dllimport/export)</tt> before including the header file.</p>
 <p>To build the tool you must first build the <a href="qaxcontainer.html">QAxContainer</a> library. Then run your make tool in <tt>tools/dumpcpp</tt>.</p>
@@ -51,6 +51,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

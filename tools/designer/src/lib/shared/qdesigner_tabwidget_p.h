@@ -98,7 +98,6 @@ private slots:
     void removeCurrentPage();
     void addPage();
     void addPageAfter();
-    void slotCurrentChanged(int index);
 
 private:
     int pageFromPosition(const QPoint &pos, QRect &rect) const;

@@ -104,9 +104,15 @@ QIconvCodec::QIconvCodec()
         QLibrary libiconv(QLatin1String("/usr/lib/libiconv"));
         libiconv.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 
-        ptr_iconv_open = reinterpret_cast<Ptr_iconv_open>(libiconv.resolve("libiconv_open"));
-        ptr_iconv = reinterpret_cast<Ptr_iconv>(libiconv.resolve("libiconv"));
-        ptr_iconv_close = reinterpret_cast<Ptr_iconv_close>(libiconv.resolve("libiconv_close"));
+        ptr_iconv_open = reinterpret_cast<Ptr_iconv_open>(libiconv.resolve("libiconv_open")); 
+        if (!ptr_iconv_open) 
+            ptr_iconv_open = reinterpret_cast<Ptr_iconv_open>(libiconv.resolve("iconv_open")); 
+        ptr_iconv = reinterpret_cast<Ptr_iconv>(libiconv.resolve("libiconv")); 
+        if (!ptr_iconv) 
+            ptr_iconv = reinterpret_cast<Ptr_iconv>(libiconv.resolve("iconv")); 
+        ptr_iconv_close = reinterpret_cast<Ptr_iconv_close>(libiconv.resolve("libiconv_close")); 
+        if (!ptr_iconv_close) 
+            ptr_iconv_close = reinterpret_cast<Ptr_iconv_close>(libiconv.resolve("iconv_close")); 
 
         Q_ASSERT_X(ptr_iconv_open && ptr_iconv && ptr_iconv_close,
         "QIconvCodec::QIconvCodec()",
@@ -361,7 +367,7 @@ iconv_t QIconvCodec::createIconv_t(const char *to, const char *from)
             cd = iconv_open(to ? to : lang, from ? from : lang);
 
         // 5. "@euro"
-        if (cd == (iconv_t) -1 && ctype && strstr(ctype, "@euro") || lang && strstr(lang, "@euro"))
+        if ((cd == (iconv_t) -1 && ctype && strstr(ctype, "@euro")) || (lang && strstr(lang, "@euro")))
             cd = iconv_open(to ? to : "ISO8859-15", from ? from : "ISO8859-15");
 
         delete [] ctype;

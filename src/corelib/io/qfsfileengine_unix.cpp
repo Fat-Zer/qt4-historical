@@ -813,7 +813,10 @@ uint QFSFileEngine::ownerId(FileOwner own) const
 QString QFSFileEngine::owner(FileOwner own) const
 {
 #if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD)
-    QVarLengthArray<char, 1024> buf(sysconf(_SC_GETPW_R_SIZE_MAX));
+    int size_max = sysconf(_SC_GETPW_R_SIZE_MAX);
+    if (size_max == -1)
+        size_max = 1024;
+    QVarLengthArray<char, 1024> buf(size_max);
 #endif
 
     if (own == OwnerUser) {
@@ -829,7 +832,10 @@ QString QFSFileEngine::owner(FileOwner own) const
     } else if (own == OwnerGroup) {
         struct group *gr = 0;
 #if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD)
-        buf.resize(sysconf(_SC_GETGR_R_SIZE_MAX));
+        size_max = sysconf(_SC_GETGR_R_SIZE_MAX);
+        if (size_max == -1)
+            size_max = 1024;
+        buf.resize(size_max);
         struct group entry;
         getgrgid_r(ownerId(own), &entry, buf.data(), buf.size(), &gr);
 #else

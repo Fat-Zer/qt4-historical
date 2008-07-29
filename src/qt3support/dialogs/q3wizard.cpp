@@ -325,7 +325,7 @@ void Q3Wizard::showPage( QWidget * page )
     Q3WizardPrivate::Page * p = d->page( page );
     if ( p ) {
 	int i;
-	for( i = 0; i < (int)d->pages.count() && d->pages.at( i ) != p; i++ );
+	for( i = 0; i < (int)d->pages.count() && d->pages.at( i ) != p; i++ ) {}
 	bool notFirst( false );
 
 	if( i ) {
@@ -583,7 +583,7 @@ void Q3Wizard::updateButtons()
 	return;
 
     int i;
-    for( i = 0; i < (int)d->pages.count() && d->pages.at( i ) != d->current; i++ );
+    for( i = 0; i < (int)d->pages.count() && d->pages.at( i ) != d->current; i++ ) {}
     bool notFirst( false );
     if( i ) {
 	i--;

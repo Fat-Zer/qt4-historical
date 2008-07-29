@@ -69,46 +69,46 @@
      if (!QSqlDatabase::drivers().contains(&quot;QSQLITE&quot;))
          QMessageBox::critical(this, &quot;Unable to load database&quot;, &quot;This demo needs the SQLITE driver&quot;);
 
-     <span class="comment">//</span> initialize the database
+     <span class="comment">// initialize the database</span>
      QSqlError err = initDb();
      if (err.type() != QSqlError::NoError) {
          showError(err);
          return;
      }
 
-     <span class="comment">//</span> Create the data model
+     <span class="comment">// Create the data model</span>
      model = new QSqlRelationalTableModel(ui.bookTable);
      model-&gt;setEditStrategy(QSqlTableModel::OnManualSubmit);
      model-&gt;setTable(&quot;books&quot;);
 
-     <span class="comment">//</span> Remeber the indexes of the columns
+     <span class="comment">// Remeber the indexes of the columns</span>
      authorIdx = model-&gt;fieldIndex(&quot;author&quot;);
      genreIdx = model-&gt;fieldIndex(&quot;genre&quot;);
 
-     <span class="comment">//</span> Set the relations to the other database tables
+     <span class="comment">// Set the relations to the other database tables</span>
      model-&gt;setRelation(authorIdx, QSqlRelation(&quot;authors&quot;, &quot;id&quot;, &quot;name&quot;));
      model-&gt;setRelation(genreIdx, QSqlRelation(&quot;genres&quot;, &quot;id&quot;, &quot;name&quot;));
 
-     <span class="comment">//</span> Set the localized header captions
+     <span class="comment">// Set the localized header captions</span>
      model-&gt;setHeaderData(authorIdx, Qt::Horizontal, tr(&quot;Author Name&quot;));
      model-&gt;setHeaderData(genreIdx, Qt::Horizontal, tr(&quot;Genre&quot;));
      model-&gt;setHeaderData(model-&gt;fieldIndex(&quot;title&quot;), Qt::Horizontal, tr(&quot;Title&quot;));
      model-&gt;setHeaderData(model-&gt;fieldIndex(&quot;year&quot;), Qt::Horizontal, tr(&quot;Year&quot;));
      model-&gt;setHeaderData(model-&gt;fieldIndex(&quot;rating&quot;), Qt::Horizontal, tr(&quot;Rating&quot;));
 
-     <span class="comment">//</span> Populate the model
+     <span class="comment">// Populate the model</span>
      if (!model-&gt;select()) {
          showError(model-&gt;lastError());
          return;
      }
 
-     <span class="comment">//</span> Set the model and hide the ID column
+     <span class="comment">// Set the model and hide the ID column</span>
      ui.bookTable-&gt;setModel(model);
      ui.bookTable-&gt;setItemDelegate(new BookDelegate(ui.bookTable));
      ui.bookTable-&gt;setColumnHidden(model-&gt;fieldIndex(&quot;id&quot;), true);
      ui.bookTable-&gt;setSelectionMode(QAbstractItemView::SingleSelection);
 
-     <span class="comment">//</span> Initialize the Author combo box
+     <span class="comment">// Initialize the Author combo box</span>
      ui.authorEdit-&gt;setModel(model-&gt;relationModel(authorIdx));
      ui.authorEdit-&gt;setModelColumn(model-&gt;relationModel(authorIdx)-&gt;fieldIndex(&quot;name&quot;));
 
@@ -139,6 +139,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

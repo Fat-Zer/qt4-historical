@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/kernel/qsystemsemaphore.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qsystemsemaphore.cpp -->
 <head>
   <title>Qt 4.4: QSystemSemaphore Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -56,12 +56,12 @@
 <p>A system semaphore is created with a string key that other processes can use to use the same semaphore.</p>
 <p>Example: Create a system semaphore</p>
 <pre>     QSystemSemaphore sem(&quot;market&quot;, 3, QSystemSemaphore::Create);
-                                  // resources available == 3
-     sem.acquire();               // resources available == 2
-     sem.acquire();               // resources available == 1
-     sem.acquire();               // resources available == 0
-     sem.release();               // resources available == 1
-     sem.release(2);              // resources available == 3</pre>
+                                  <span class="comment">// resources available == 3</span>
+     sem.acquire();               <span class="comment">// resources available == 2</span>
+     sem.acquire();               <span class="comment">// resources available == 1</span>
+     sem.acquire();               <span class="comment">// resources available == 0</span>
+     sem.release();               <span class="comment">// resources available == 1</span>
+     sem.release(2);              <span class="comment">// resources available == 3</span></pre>
 <p>A typical application of system semaphores is for controlling access to a circular buffer shared by a producer process and a consumer processes.</p>
 <p>See also <a href="qsharedmemory.html">QSharedMemory</a>, <a href="qsemaphore.html">QSemaphore</a></p>
 <hr />
@@ -131,10 +131,10 @@
 <p>Releases <i>n</i> resources guarded by the semaphore. Returns true unless there is a system error.</p>
 <p>Example: Create a system semaphore having five resources; acquire them all and then release them all.</p>
 <pre>   QSystemSemaphore sem(&quot;market&quot;, 5, QSystemSemaphore::Create);
-   sem.acquire(5);           // acquire all 5 resources
-   sem.release(5);           // release the 5 resources</pre>
+   sem.acquire(5);           <span class="comment">// acquire all 5 resources</span>
+   sem.release(5);           <span class="comment">// release the 5 resources</span></pre>
 <p>This function can also &quot;create&quot; resources. For example, immediately following the sequence of statements above, suppose we add the statement:</p>
-<pre>   sem.release(10);          // &quot;create&quot; 10 new resources</pre>
+<pre>   sem.release(10);          <span class="comment">// &quot;create&quot; 10 new resources</span></pre>
 <p>Ten new resources are now guarded by the semaphore, in addition to the five that already existed. You would not normally use this function to create more resources.</p>
 <p>See also <a href="qsystemsemaphore.html#acquire">acquire</a>().</p>
 <a name="//apple_ref/cpp/instm/QSystemSemaphore/setKey" />
@@ -145,6 +145,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

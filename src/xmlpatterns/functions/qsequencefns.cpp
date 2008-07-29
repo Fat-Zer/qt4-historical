@@ -271,6 +271,10 @@ SequenceType::Ptr SubsequenceFN::staticType() const
     const SequenceType::Ptr opType(m_operands.first()->staticType());
     const Cardinality opCard(opType->cardinality());
 
+    /* Optimization: we can do much stronger inference here. If the length is a
+     * constant, we can constrain the range at least upwards of the
+     * cardinality, for instance. */
+
     /* The subsequence(expr, 1, 1), add empty-sequence() to the static type. */
     if(m_operands.at(1)->isEvaluated()                                                      &&
        m_operands.count() == 3                                                              &&
@@ -286,15 +290,6 @@ SequenceType::Ptr SubsequenceFN::staticType() const
         return makeGenericSequenceType(opType->itemType(),
                                        opCard | Cardinality::zeroOrOne());
     }
-
-    Cardinality card;
-
-    if(opCard.isEmpty())
-        card = Cardinality::empty();
-    else
-        card = opCard.toWithoutMany();
-
-    return makeGenericSequenceType(opType->itemType(), card);
 }
 
 Expression::Ptr DocFN::typeCheck(const StaticContext::Ptr &context,

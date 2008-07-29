@@ -281,7 +281,12 @@ inline QScriptValue qScriptValueFromQMetaObject(
 template<> inline QScriptValue qscriptQMetaObjectConstructor<T>(QScriptContext *ctx, QScriptEngine *eng, T *) \
 { \
     _Arg1 arg1 = qscriptvalue_cast<_Arg1> (ctx->argument(0)); \
-    return eng->newQObject(new T(arg1), QScriptEngine::AutoOwnership); \
+    T* t = new T(arg1); \
+    if (ctx->isCalledAsConstructor()) \
+        return eng->newQObject(ctx->thisObject(), t, QScriptEngine::AutoOwnership); \
+    QScriptValue o = eng->newQObject(t, QScriptEngine::AutoOwnership); \
+    o.setPrototype(ctx->callee().property(QString::fromLatin1("prototype"))); \
+    return o; \
 }
 
 #  ifndef QT_NO_MEMBER_TEMPLATES

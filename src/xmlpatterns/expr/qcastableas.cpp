@@ -122,7 +122,7 @@ Expression::Ptr CastableAs::typeCheck(const StaticContext::Ptr &context,
          * empty sequence(if empty is allowed), to xs:QName. */
         if(m_operand->is(IDStringValue) ||
            BuiltinTypes::xsQName->xdtTypeMatches(seqt->itemType()) ||
-           *seqt->itemType() == *CommonSequenceTypes::Empty && m_targetType->cardinality().allowsEmpty())
+           (*seqt->itemType() == *CommonSequenceTypes::Empty && m_targetType->cardinality().allowsEmpty()))
         {
             return wrapLiteral(CommonValues::BooleanTrue, context, this)->typeCheck(context, reqType);
         }

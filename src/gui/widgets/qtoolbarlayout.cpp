@@ -82,6 +82,8 @@ QToolBarLayout::QToolBarLayout(QWidget *parent)
         expanding(false), empty(true), expandFlag(false), popupMenu(0)
 {
     QToolBar *tb = qobject_cast<QToolBar*>(parent);
+    if (!tb)
+        return;
 
     extension = new QToolBarExtension(tb);
     extension->setFocusPolicy(Qt::NoFocus);
@@ -107,6 +109,8 @@ QToolBarLayout::~QToolBarLayout()
 void QToolBarLayout::updateMarginAndSpacing()
 {
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return;
     QStyle *style = tb->style();
     QStyleOptionToolBar opt;
     tb->initStyleOption(&opt);
@@ -144,9 +148,10 @@ void QToolBarLayout::setUsePopupMenu(bool set)
 
 void QToolBarLayout::checkUsePopupMenu()
 {
-    QMainWindow *mw = qobject_cast<QMainWindow *>(parentWidget()->parentWidget());
-    setUsePopupMenu(!mw || static_cast<QToolBar *>(parentWidget())->isFloating() ||
-            expandedSize(mw->size()).height() >= mw->height());
+    QToolBar *tb = static_cast<QToolBar *>(parent());
+    QMainWindow *mw = qobject_cast<QMainWindow *>(tb->parent());
+    Qt::Orientation o = tb->orientation();
+    setUsePopupMenu(!mw || tb->isFloating() || perp(o, expandedSize(mw->size())) >= perp(o, mw->size()));
 }
 
 void QToolBarLayout::addItem(QLayoutItem*)
@@ -228,6 +233,8 @@ Qt::Orientations QToolBarLayout::expandingDirections() const
     if (dirty)
         updateGeomArray();
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return Qt::Orientations(0);
     Qt::Orientation o = tb->orientation();
     return expanding ? Qt::Orientations(o) : Qt::Orientations(0);
 }
@@ -235,6 +242,8 @@ Qt::Orientations QToolBarLayout::expandingDirections() const
 bool QToolBarLayout::movable() const
 {
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return false;
     QMainWindow *win = qobject_cast<QMainWindow*>(tb->parentWidget());
     return tb->isMovable() && win != 0;
 }
@@ -247,6 +256,8 @@ void QToolBarLayout::updateGeomArray() const
     QToolBarLayout *that = const_cast<QToolBarLayout*>(this);
 
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return;
     QStyle *style = tb->style();
     QStyleOptionToolBar opt;
     tb->initStyleOption(&opt);
@@ -345,6 +356,8 @@ static bool defaultWidgetAction(QToolBarItem *item)
 void QToolBarLayout::setGeometry(const QRect &rect)
 {
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return;
     QStyle *style = tb->style();
     QStyleOptionToolBar opt;
     tb->initStyleOption(&opt);
@@ -411,6 +424,8 @@ bool QToolBarLayout::layoutActions(const QSize &size)
     QList<QWidget*> showWidgets, hideWidgets;
 
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return false;
     QStyle *style = tb->style();
     QStyleOptionToolBar opt;
     tb->initStyleOption(&opt);
@@ -553,6 +568,8 @@ QSize QToolBarLayout::expandedSize(const QSize &size) const
         updateGeomArray();
 
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return QSize(0, 0);
     QMainWindow *win = qobject_cast<QMainWindow*>(tb->parentWidget());
     Qt::Orientation o = tb->orientation();
     QStyle *style = tb->style();
@@ -636,15 +653,12 @@ void QToolBarLayout::setExpanded(bool exp)
     extension->setChecked(expanded);
 
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return;
     if (QMainWindow *win = qobject_cast<QMainWindow*>(tb->parentWidget())) {
         animating = true;
         QMainWindowLayout *layout = qobject_cast<QMainWindowLayout*>(win->layout());
         if (expanded) {
-            // In this case the expansion of the tool bar shows up underneath the central
-            // widget (because of the clipping), so make sure the tool bar is native as well.
-            const QWidget *centralWidget = win->centralWidget();
-            if (centralWidget && centralWidget->internalWinId() && !tb->internalWinId())
-                tb->setAttribute(Qt::WA_NativeWindow);
             tb->raise();
         } else {
             QList<int> path = layout->layoutState.indexOf(tb);
@@ -677,6 +691,8 @@ QToolBarItem *QToolBarLayout::createItem(QAction *action)
     bool standardButtonWidget = false;
     QWidget *widget = 0;
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
+    if (!tb)
+        return (QToolBarItem *)0;
 
     if (QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>(action)) {
         widget = widgetAction->requestWidget(tb);

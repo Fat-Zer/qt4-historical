@@ -161,7 +161,7 @@ namespace Phonon
         {
             InputPin sink = BackendNode::pins(m_filter, PINDIR_INPUT).first();
             OutputPin source;
-            if (FAILED(sink->ConnectedTo(&source))) {
+            if (FAILED(sink->ConnectedTo(source.pparam()))) {
                 return; //it must be connected to work
             }
 

@@ -472,7 +472,7 @@ namespace Phonon
             HRESULT hr = sample->GetTime(&start, &stop);
 
             ComPointer<IReferenceClock> clock;
-            GetSyncSource(&clock);
+            GetSyncSource(clock.pparam());
             if (SUCCEEDED(hr) && state() == State_Running && clock) {
                 REFERENCE_TIME current;
                 clock->GetTime(&current);

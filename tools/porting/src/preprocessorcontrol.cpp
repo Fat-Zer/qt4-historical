@@ -77,11 +77,12 @@ QString IncludeFiles::quoteLookup(const QString &currentFile,
                                   const QString &includeFile) const
 {
     //if includeFile is absolute, check if it exists
-    if(QDir::isAbsolutePath(includeFile))
+    if (QDir::isAbsolutePath(includeFile)) {
         if(QFile::exists(includeFile))
             return includeFile;
         else
             return QString();
+    }
 
     //If currentFile is not an absolute file path, make it one by
     //prepending m_baspath
@@ -108,11 +109,12 @@ QString IncludeFiles::quoteLookup(const QString &currentFile,
 QString IncludeFiles::angleBracketLookup(const QString &includeFile) const
 {
     //if includeFile is absolute, check if it exists
-    if(QDir::isAbsolutePath(includeFile))
+    if (QDir::isAbsolutePath(includeFile)) {
         if(QFile::exists(includeFile))
             return includeFile;
         else
             return QString();
+    }
 
     return searchIncludePaths(includeFile);
 }

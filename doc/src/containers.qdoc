@@ -349,7 +349,7 @@
 
     \snippet doc/src/snippets/code/doc.src.containers.qdoc 4
 
-    If want just want to modify the value of an existing item, we can
+    If we just want to modify the value of an existing item, we can
     use \l{QMutableListIterator::setValue()}{setValue()}. In the code
     below, we replace any value larger than 128 with 128:
 

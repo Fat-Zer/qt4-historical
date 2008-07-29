@@ -1830,33 +1830,40 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
 
         if(ekind == kEventMouseDown) {
             qt_mac_no_click_through_mode = false;
-            if(!widget) {
-                const short windowPart = qt_mac_window_at(where.h, where.v, 0);
-                if(windowPart == inMenuBar) {
-                    QMacBlockingFunction block;
-                    MenuSelect(where); //allow menu tracking
-                }
-            } else if(!(GetCurrentKeyModifiers() & cmdKey)) {
+            const short windowPart = qt_mac_window_at(where.h, where.v, 0);
+            // Menubar always wins.
+            if(windowPart == inMenuBar) {
+                QMacBlockingFunction block;
+                MenuSelect(where); //allow menu tracking
+            }
+
+            if (widget && !(GetCurrentKeyModifiers() & cmdKey)) {
                 extern bool qt_isGenuineQWidget(const QWidget *); // qwidget_mac.cpp
                 QWidget *window = widget->window();
                 bool genuineQtWidget = qt_isGenuineQWidget(widget);  // the widget, not the window.
                 window->raise();
-                if(window->windowType() != Qt::Desktop
-                   && window->windowType() != Qt::Popup && !qt_mac_is_macsheet(window)
-                   && (window->isModal() || !qobject_cast<QDockWidget *>(window))
-                   && (!genuineQtWidget
-                       || (genuineQtWidget && (!window->isActiveWindow()
-                               || !IsWindowActive(qt_mac_window_for(window)))))) {
-                   window->activateWindow();
-                   if(!qt_mac_can_clickThrough(widget)) {
-                       qt_mac_no_click_through_mode = true;
-                       handled_event = false;
+
+                bool needActivate = (window->windowType() != Qt::Desktop)
+                                     && (window->windowType() != Qt::Popup)
+                                     && !qt_mac_is_macsheet(window);
+                if (needActivate && (!window->isModal() && qobject_cast<QDockWidget *>(window)))
+                    needActivate = false;
+
+                if (genuineQtWidget && needActivate)
+                    needActivate = !window->isActiveWindow()
+                                    || !IsWindowActive(qt_mac_window_for(window));
+
+                if (needActivate) {
+                    window->activateWindow();
+                    if (!qt_mac_can_clickThrough(widget)) {
+                        qt_mac_no_click_through_mode = true;
+                        handled_event = false;
 #if defined(DEBUG_MOUSE_MAPS)
-                       qDebug("Bail out early due to qt_mac_canClickThrough %s::%s", widget->metaObject()->className(),
-                              widget->objectName().toLocal8Bit().constData());
+                        qDebug("Bail out early due to qt_mac_canClickThrough %s::%s", widget->metaObject()->className(),
+                                widget->objectName().toLocal8Bit().constData());
 #endif
-                       break;
-                   }
+                        break;
+                    }
                 }
             }
 

@@ -122,7 +122,7 @@ namespace QPatternist
              typename ListType = QList<InputType> >
     class ListIteratorPlatform : public QAbstractXmlForwardIterator<OutputType>
     {
-        /* This declaration is a workaround for a set of GCC version on OS X,
+        /* This declaration is a workaround for a set of GCC versions on OS X,
          * amongst others powerpc-apple-darwin8-gcc-4.0.1 (GCC) 4.0.1. In
          * DeduplicateIterator, it fails to see the protected inheritance. */
         friend class DeduplicateIterator;
@@ -180,6 +180,11 @@ namespace QPatternist
              typename ListType = QList<T> >
     class ListIterator : public ListIteratorPlatform<T, T, ListIterator<T, ListType>, ListType>
     {
+	/*
+	 * This declaration is needed for MSVC 2005, 14.00.50727.42 for 80x86.
+	 */
+	friend class IteratorVector;
+
         using ListIteratorPlatform<T, T, ListIterator<T, ListType>, ListType>::m_list;
 
         static inline QVector<T> toVector(const QVector<T> &vector)

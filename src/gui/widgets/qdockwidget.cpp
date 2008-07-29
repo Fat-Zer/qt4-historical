@@ -323,6 +323,17 @@ QSize QDockWidgetLayout::sizeHint() const
     return sizeFromContent(content, w->isFloating());
 }
 
+QSize QDockWidgetLayout::maximumSize() const
+{
+    if (item_list[Content] != 0) {
+        const QSize content = item_list[Content]->maximumSize();
+        return sizeFromContent(content, parentWidget()->isWindow());
+    } else {
+        return parentWidget()->maximumSize();
+    }
+
+}
+
 QSize QDockWidgetLayout::minimumSize() const
 {
     QDockWidget *w = qobject_cast<QDockWidget*>(parentWidget());
@@ -491,14 +502,6 @@ void QDockWidgetLayout::setGeometry(const QRect &geometry)
             item->setGeometry(r);
         }
     }
-
-    QLayoutItem *item = item_list[Content];
-    if (item != 0 && q->isFloating()) {
-        QSize s = sizeFromContent(item->maximumSize(), true);
-        q->setMaximumSize(s);
-    } else {
-        q->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    }
 }
 
 void QDockWidgetLayout::setVerticalTitleBar(bool b)
@@ -521,24 +524,30 @@ QDockWidgetItem::QDockWidgetItem(QDockWidget *dockWidget)
 
 QSize QDockWidgetItem::minimumSize() const
 {
-    QSize widgetMin(0, 0);
-    if (QLayoutItem *item = dockWidgetChildItem())
-        widgetMin = item->minimumSize();
-    return dockWidgetLayout()->sizeFromContent(widgetMin, false);
+    if (QLayoutItem *item = dockWidgetChildItem()) {
+        return dockWidgetLayout()->sizeFromContent(item->minimumSize(), false)
+            .expandedTo( QWidgetItem::minimumSize() );
+    } else {
+        return QWidgetItem::minimumSize();
+    }
 }
 
 QSize QDockWidgetItem::maximumSize() const
 {
-    if (QLayoutItem *item = dockWidgetChildItem())
+    if (QLayoutItem *item = dockWidgetChildItem()) {
         return dockWidgetLayout()->sizeFromContent(item->maximumSize(), false);
-    return QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    } else {
+        return QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    }
 }
 
 QSize QDockWidgetItem::sizeHint() const
 {
-    if (QLayoutItem *item = dockWidgetChildItem())
+    if (QLayoutItem *item = dockWidgetChildItem()) {
         return dockWidgetLayout()->sizeFromContent(item->sizeHint(), false);
-    return minimumSize();
+    } else {
+        return QWidgetItem::sizeHint();
+    }
 }
 
 /******************************************************************************
@@ -550,6 +559,7 @@ void QDockWidgetPrivate::init()
     Q_Q(QDockWidget);
 
     QDockWidgetLayout *layout = new QDockWidgetLayout(q);
+    layout->setSizeConstraint(QLayout::SetMaximumSize);
 
     QAbstractButton *button = new QDockWidgetTitleButton(q);
     button->setObjectName(QLatin1String("qt_dockwidget_floatbutton"));
@@ -1171,6 +1181,12 @@ QWidget *QDockWidget::widget() const
 /*!
     Sets the widget for the dock widget to \a widget.
 
+    If the dock widget is visible when \a widget is added, you must
+    \l{QWidget::}{show()} it explicitly. 
+
+    Note that you must add the layout of the \a widget before you call
+    this function; if not, the \a widget will not be visible.
+
     \sa widget()
 */
 void QDockWidget::setWidget(QWidget *widget)
@@ -1215,6 +1231,7 @@ QDockWidget::DockWidgetFeatures QDockWidget::features() const
     A floating dock widget is presented to the user as an independent
     window "on top" of its parent QMainWindow, instead of being
     docked in the QMainWindow.
+
 
     \sa isWindow()
 */

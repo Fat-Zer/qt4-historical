@@ -53,9 +53,11 @@
 #include "assistant.h"
 #include "textedit.h"
 
+// ![0]
 MainWindow::MainWindow()
 {
     assistant = new Assistant;
+// ![0]
     textViewer = new TextEdit;
     textViewer->setContents(QLibraryInfo::location(QLibraryInfo::ExamplesPath)
             + QLatin1String("/help/simpletextviewer/documentation/intro.html"));
@@ -66,12 +68,16 @@ MainWindow::MainWindow()
 
     setWindowTitle(tr("Simple Text Viewer"));
     resize(750, 400);
+// ![1]
 }
+//! [1]
 
+//! [2]
 void MainWindow::closeEvent(QCloseEvent *)
 {
     delete assistant;
 }
+//! [2]
 
 void MainWindow::about()
 {
@@ -81,10 +87,12 @@ void MainWindow::about()
                           "own application."));
 }
 
+//! [3]
 void MainWindow::showDocumentation()
 {
     assistant->showDocumentation("index.html");    
 }
+//! [3]
 
 void MainWindow::open()
 {
@@ -92,11 +100,13 @@ void MainWindow::open()
     dialog.exec();
 }
 
+//! [4]
 void MainWindow::createActions()
 {
     assistantAct = new QAction(tr("Help Contents"), this);
     assistantAct->setShortcut(tr("F1"));
     connect(assistantAct, SIGNAL(triggered()), this, SLOT(showDocumentation()));
+//! [4]
 
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O"));
@@ -115,7 +125,9 @@ void MainWindow::createActions()
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+//! [5]
 }
+//! [5]
 
 void MainWindow::createMenus()
 {

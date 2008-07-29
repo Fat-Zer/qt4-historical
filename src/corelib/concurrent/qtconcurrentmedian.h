@@ -88,8 +88,8 @@ public:
         // is when the new value is on then other side of the median
         // compared to the current value at the index.
         const T currentIndexValue = values[currentIndex];
-        if (currentIndexValue > currentMedian && currentMedian > value ||
-            currentMedian > currentIndexValue && value > currentMedian) {
+        if ((currentIndexValue > currentMedian && currentMedian > value)
+            || (currentMedian > currentIndexValue && value > currentMedian)) {
             dirty = true;
         }
 

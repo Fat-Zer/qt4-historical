@@ -1555,6 +1555,8 @@ QDataStream &operator>>(QDataStream &ds, QLocale &l)
     This product includes software developed by the University of
     California, Berkeley and its contributors.
 
+    QLocale's data is based on Common Locale Data Repository v1.4.
+
     \sa QString::arg(), QString::toInt(), QString::toDouble()
 */
 
@@ -2065,8 +2067,8 @@ static const QLocalePrivate *dataPointerHelper(quint16 index)
 static quint16 localePrivateIndex(const QLocalePrivate *p)
 {
 #ifndef QT_NO_SYSTEMLOCALE
-    Q_ASSERT(p >= locale_data && p - locale_data < locale_data_size
-                || p != 0 && p == system_lp);
+    Q_ASSERT((p >= locale_data && p - locale_data < locale_data_size)
+             || (p != 0 && p == system_lp));
     quint16 index = p == system_lp ? locale_data_size : p - locale_data;
 #else
     Q_ASSERT(p >= locale_data && p - locale_data < locale_data_size);
@@ -6862,7 +6864,7 @@ static char *_qdtoa( NEEDS_VOLATILE double d, int mode, int ndigits, int *decpt,
         ++*s++;
     }
     else {
-        while(*--s == '0');
+        while(*--s == '0') {}
         s++;
     }
  ret:

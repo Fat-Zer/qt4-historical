@@ -437,8 +437,8 @@ void QPrinterPrivate::addToManualSetList(QPrintEngine::PrintEnginePropertyKey ke
   */
 
 /*!
-
   \enum QPrinter::PaperSize
+  \since 4.4
 
   This enum type specifies what paper size QPrinter should use.
   QPrinter does not check that the paper size is available; it just
@@ -539,7 +539,8 @@ void QPrinterPrivate::addToManualSetList(QPrintEngine::PrintEnginePropertyKey ke
 */
 
 /*!
- \enum QPrinter::Unit
+  \enum QPrinter::Unit
+  \since 4.4
 
   This enum type is used to specify the measurement unit for page and
   paper sizes.
@@ -602,6 +603,8 @@ QPrinter::QPrinter(PrinterMode mode)
 }
 
 /*!
+    \since 4.4
+
     Creates a new printer object with the given \a printer and \a mode.
 */
 QPrinter::QPrinter(const QPrinterInfo& printer, PrinterMode mode)
@@ -804,10 +807,13 @@ void QPrinter::setPrinterName(const QString &name)
 
 
 /*!
+  \since 4.4
+
   Returns true if the printer currently selected is a valid printer
-  in the system, or a pdf/ps printer; otherwise returns false.
+  in the system, or a pure PDF/PostScript printer; otherwise returns false.
 
   To detect other failures check the output of QPainter::begin() or QPainter::nextPage().
+
   \snippet doc/src/snippets/printing-qprinter/errors.cpp 0
 
   \sa setPrinterName()
@@ -858,19 +864,23 @@ QString QPrinter::outputFileName() const
 }
 
 /*!
-  Sets the name of the output file to \a fileName.
+    Sets the name of the output file to \a fileName.
 
-  Setting a null or empty name (0 or "") disables printing to a file. Setting a
-  non-empty name enables printing to a file.
+    Setting a null or empty name (0 or "") disables printing to a file.
+    Setting a non-empty name enables printing to a file.
 
-  This can change the value of outputFormat().  If the file name has the suffix
-  ".ps" then PostScript is automatically selected as output format. If the file
-  name has the ".pdf" suffix PDF is generated.  QPrinter will use Qt's
-  cross-platform PostScript or PDF print engines respectively. If you can
-  produce this format natively, for example Mac OS X can generate PDF's from
-  its print engine, set the output format back to NativeFormat.
+    This can change the value of outputFormat().  If the file name has the
+    suffix ".ps" then PostScript is automatically selected as output format.
+    If the file name has the ".pdf" suffix PDF is generated. If the file name
+    has a suffix other than ".ps" and ".pdf", the output format used is the
+    one set with setOutputFormat().
 
-  \sa outputFileName() setOutputToFile() setOutputFormat()
+    QPrinter uses Qt's cross-platform PostScript or PDF print engines
+    respectively. If you can produce this format natively, for example
+    Mac OS X can generate PDF's from its print engine, set the output format
+    back to NativeFormat.
+
+    \sa outputFileName() setOutputToFile() setOutputFormat()
 */
 
 void QPrinter::setOutputFileName(const QString &fileName)
@@ -1409,11 +1419,20 @@ bool QPrinter::fontEmbeddingEnabled() const
 
 /*!
     \enum QPrinter::DuplexMode
+    \since 4.4
 
-    \value DuplexNone       no duplex printing, single sided only.
-    \value DuplexAuto
-    \value DuplexLongSide
-    \value DuplexShortSide
+    This enum is used to indicate whether printing will occur on one or both sides
+    of each sheet of paper (simplex or duplex printing).
+
+    \value DuplexNone       Single sided (simplex) printing only.
+    \value DuplexAuto       The printer's default setting is used to determine whether
+                            duplex printing is used.
+    \value DuplexLongSide   Both sides of each sheet of paper are used for printing.
+                            The paper is turned over its longest edge before the second
+                            side is printed 
+    \value DuplexShortSide  Both sides of each sheet of paper are used for printing.
+                            The paper is turned over its shortest edge before the second
+                            side is printed 
 */
 
 /*!

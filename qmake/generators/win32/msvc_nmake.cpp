@@ -299,7 +299,7 @@ void NmakeMakefileGenerator::writeBuildRulesPart(QTextStream &t)
     if(!project->isEmpty("QMAKE_PRE_LINK"))
         t << "\n\t" <<var("QMAKE_PRE_LINK");
     if(project->isActiveConfig("staticlib")) {
-        t << "\n\t" << "$(LIB) /OUT:$(DESTDIR_TARGET) @<<" << "\n\t  "
+        t << "\n\t" << "$(LIB) $(LIBFLAGS) /OUT:$(DESTDIR_TARGET) @<<" << "\n\t  "
           << "$(OBJECTS)";
     } else {
         t << "\n\t" << "$(LINK) $(LFLAGS) /OUT:$(DESTDIR_TARGET) @<< " << "\n\t  "

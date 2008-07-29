@@ -252,6 +252,9 @@
     These classes are provided by \l{The Graphics View Framework} for interactive
     applications and are part of a larger collection of classes related to
     \l{Multimedia, Graphics and Printing}.
+
+    \note These classes are part of the \l{Qt Open Source Edition} and
+    \l{Qt Commercial Editions}{Desktop Light Edition} for commercial users.
 */
 
 /*!
@@ -493,6 +496,44 @@
     \warning Do not copy an implicitly shared container (QMap,
     QVector, etc.) while you are iterating over it using an non-const
     \l{STL-style iterator}.
+*/
+
+/*!
+    \group ssl
+    \ingroup groups
+
+    \title Secure Sockets Layer (SSL) Classes
+    \brief Classes for secure communication over network sockets.
+    \keyword SSL
+
+    The classes below provide support for secure network communication using
+    the Secure Sockets Layer (SSL) protocol, using the \l{OpenSSL Toolkit} to
+    perform encryption and protocol handling.
+
+    See the \l{General Qt Requirements} page for information about the
+    versions of OpenSSL that are known to work with Qt.
+
+    \note Due to import and export restrictions in some parts of the world, we
+    are unable to supply the OpenSSL Toolkit with Qt packages. Developers wishing
+    to use SSL communication in their deployed applications should either ensure
+    that their users have the appropriate libraries installed, or they should
+    consult a suitably qualified legal professional to ensure that applications
+    using code from the OpenSSL project are correctly certified for import
+    and export in relevant regions of the world.
+
+    When the QtNetwork module is built with SSL support, the library is linked
+    against OpenSSL in a way that requires OpenSSL license compliance.
+    \if defined(opensourceedition)
+    Developers using Qt licensed under the GNU General Public License (either
+    version 2 or version 3) can redistribute their applications and libraries
+    under the terms of the GPL or any of the licenses listed in the
+    \l{Trolltech GPL Exception Version 1.2} and may additionally invoke the
+    \l{GNU General Public License (GPL)#Additional Exception for OpenSSL}
+    {Additional Exception for OpenSSL} to redistribute code which uses OpenSSL.
+    However, please note that this exception only grants additional permissions
+    with respect to the license under which Qt is provided; it does not exempt
+    developers from the import/export restrictions mentioned above.
+    \endif
 */
 
 /*!

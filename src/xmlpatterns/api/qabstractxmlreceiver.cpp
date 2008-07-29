@@ -146,6 +146,10 @@ QT_BEGIN_NAMESPACE
    their parent is either a \e {Document Node} or an \e {Element
    Node}.
 
+   \o \e {Comment Nodes} do not have children, and
+   their parent is either a \e {Document Node} or an \e {Element
+   Node}.
+
   \endlist
 
   The \e sequence of \e nodes and \e {atomic values} is sent to
@@ -305,10 +309,10 @@ QAbstractXmlReceiver::~QAbstractXmlReceiver()
   the \a value must not contain the string "?>". In the above
   example, the \a value is \e{type="test/xsl" href="formatter.xsl}.
 
-  Genrally, use of processing instructions should be avoided,
+  Generally, use of processing instructions should be avoided,
   because they are not namespace aware and in many contexts
   are stripped out anyway. Processing instructions can often
-  be replaced with elements from a custom namespace."
+  be replaced with elements from a custom namespace.
  */
 
 /*!
@@ -323,24 +327,22 @@ QAbstractXmlReceiver::~QAbstractXmlReceiver()
 /*!
   \fn virtual void QAbstractXmlReceiver::namespaceBinding(const QXmlName &name)
 
-  This callback is called when a namespace binding
-  is in scope of an element.
-
-  A namespace is defined by a URI. In the \l {QXmlName}
-  \a name, the value of \l {QXmlName::namespaceUri()} is that URI. The value
-  of \l {QXmlName::prefix()} is the prefix that the URI is bound to. The local name
-  is insignificant and can be an arbitrary value.
+  This callback is called when a namespace binding is in scope of an
+  element. A namespace is defined by a URI. In the \l {QXmlName}
+  \a name, the value of \l {QXmlName::namespaceUri()} is that URI. The
+  value of \l {QXmlName::prefix()} is the prefix that the URI is bound
+  to. The local name is insignificant and can be an arbitrary value.
  */
 
 /*!
   \internal
 
-   Treats \a outputItem as an node and calls the appropriate function,
-   such as attribute() or comment(), depending on its
+   Treats \a outputItem as a node and calls the appropriate function,
+   e.g., attribute() or comment(), depending on its
    QXmlNodeModelIndex::NodeKind.
 
-   This a helper function sub-classes can use to multi-plex Nodes received
-   via item().
+   This is a helper function that subclasses can use to multiplex
+   Nodes received via item().
  */
 void QAbstractXmlReceiver::sendAsNode(const QPatternist::Item &outputItem)
 {
@@ -406,19 +408,18 @@ void QAbstractXmlReceiver::sendAsNode(const QPatternist::Item &outputItem)
    This function may be called instead of characters() if, and only if,
    \a value consists only of whitespace.
 
-   The caller gurantees that \a value, is not empty.
+   The caller gurantees that \a value is not empty.
 
-   By whitespace is meant a sequence of characters that are either
-   spaces, tabs, or the two new line characters, in any order. In
-   other words, the whole of Unicode's whitespace category is not
-   considered whitespace.
+   \e Whitespace refers to a sequence of characters that are either
+   spaces, tabs, or newlines, in any order. In other words, not all
+   the Unicode whitespace category is considered whitespace here.
 
-   However, there's no guarantee or requirement that whitespaceOnly()
-   is called for text nodes containing whitespace only, characters()
+   However, there is no guarantee or requirement that whitespaceOnly()
+   is called for text nodes containing whitespace only. characters()
    may be called just as well. This is why the default implementation
    for whitespaceOnly() calls characters().
 
-   @see characters()
+   \sa characters()
  */
 void QAbstractXmlReceiver::whitespaceOnly(const QStringRef &value)
 {

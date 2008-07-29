@@ -251,9 +251,10 @@ void QHelpContentProvider::run()
     m_rootItem = new QHelpContentItem(QString(), QString(), 0);
     m_rootItems.enqueue(m_rootItem);
     QStringList atts = m_filterAttributes;
+    const QStringList fileNames = m_helpEngine->orderedFileNameList;
     m_mutex.unlock();
     
-    foreach (QString dbFileName, m_helpEngine->fileNameReaderMap.keys()) {
+    foreach (QString dbFileName, fileNames) {
         m_mutex.lock();
         if (m_abort) {
             m_abort = false;

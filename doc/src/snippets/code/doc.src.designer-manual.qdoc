@@ -9,92 +9,90 @@ CONFIG += uitools
 
 
 //! [2]
-    void on_<widget name>_<signal name>(<signal parameters>);
+void on_<widget name>_<signal name>(<signal parameters>);
 //! [2]
 
 
 //! [3]
-    CONFIG += release
+CONFIG += release
 //! [3]
 
 
 //! [4]
-    target.path = $$[QT_INSTALL_PLUGINS]/designer
-    INSTALLS += target
+target.path = $$[QT_INSTALL_PLUGINS]/designer
+INSTALLS += target
 //! [4]
 
 
 //! [5]
-    QT += script
+QT += script
 //! [5]
 
 
 //! [6]
-            widget.text = 'Hi - I was built ' + new Date().toString();
+widget.text = 'Hi - I was built ' + new Date().toString();
 //! [6]
 
 
 //! [7]
-    class MyExtension: public QObject,
-                       public QdesignerContainerExtension
-    {
-        Q_OBJECT
-        Q_INTERFACE(QDesignerContainerExtension)
+class MyExtension: public QObject,
+                   public QdesignerContainerExtension
+{
+    Q_OBJECT
+    Q_INTERFACE(QDesignerContainerExtension)
 
-        ...
-    }
+    ...
+}
 //! [7]
 
 
 //! [8]
-        QObject *ANewExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            if (iid != Q_TYPEID(QDesignerContainerExtension))
-                return 0;
+QObject *ANewExtensionFactory::createExtension(QObject *object,
+        const QString &iid, QObject *parent) const
+{
+    if (iid != Q_TYPEID(QDesignerContainerExtension))
+        return 0;
 
-            if (MyCustomWidget *widget = qobject_cast<MyCustomWidget*>
-                    (object))
-                return new MyContainerExtension(widget, parent);
+    if (MyCustomWidget *widget = qobject_cast<MyCustomWidget*>
+            (object))
+        return new MyContainerExtension(widget, parent);
 
-            return 0;
-        }
+    return 0;
+}
 //! [8]
 
 
 //! [9]
-        QObject *AGeneralExtensionFactory::createExtension(QObject *object,
-                const QString &iid, QObject *parent) const
-        {
-            MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object);
+QObject *AGeneralExtensionFactory::createExtension(QObject *object,
+        const QString &iid, QObject *parent) const
+{
+    MyCustomWidget *widget = qobject_cast<MyCustomWidget*>(object);
 
-            if (widget && (iid == Q_TYPEID(QDesignerTaskMenuExtension))) {
-                 return new MyTaskMenuExtension(widget, parent);
+    if (widget && (iid == Q_TYPEID(QDesignerTaskMenuExtension))) {
+         return new MyTaskMenuExtension(widget, parent);
 
-            } else if (widget && (iid == Q_TYPEID(QDesignerContainerExtension))) {
-                return new MyContainerExtension(widget, parent);
+    } else if (widget && (iid == Q_TYPEID(QDesignerContainerExtension))) {
+        return new MyContainerExtension(widget, parent);
 
-            } else {
-                return 0;
-            }
-        }
+    } else {
+        return 0;
+    }
+}
 //! [9]
 
 
 //! [10]
-    void MyPlugin::initialize(QDesignerFormEditorInterface *formEditor)
-    {
-        if (initialized)
-            return;
+void MyPlugin::initialize(QDesignerFormEditorInterface *formEditor)
+{
+    if (initialized)
+        return;
 
-        QExtensionManager *manager = formEditor->extensionManager();
-        Q_ASSERT(manager != 0);
+    QExtensionManager *manager = formEditor->extensionManager();
+    Q_ASSERT(manager != 0);
 
-        manager->registerExtensions(new MyExtensionFactory(manager),
-                                    Q_TYPEID(QDesignerTaskMenuExtension));
+    manager->registerExtensions(new MyExtensionFactory(manager),
+                                Q_TYPEID(QDesignerTaskMenuExtension));
 
-        initialized = true;
-    }
+    initialized = true;
+}
 //! [10]
-
-

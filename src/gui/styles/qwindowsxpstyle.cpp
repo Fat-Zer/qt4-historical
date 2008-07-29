@@ -3799,7 +3799,7 @@ QPixmap QWindowsXPStyle::standardPixmap(StandardPixmap standardPixmap, const QSt
                 if (theme.isValid()) {
                     SIZE sz;
                     pGetThemePartSize(theme.handle(), 0, theme.partId, theme.stateId, 0, TS_TRUE, &sz);
-                    return QStyle::standardIcon(standardPixmap, option, widget).pixmap(QSize(sz.cx, sz.cy));
+                    return QIcon(QWindowsStyle::standardPixmap(standardPixmap, option, widget)).pixmap(QSize(sz.cx, sz.cy));
                 }
             }
         }

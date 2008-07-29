@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/winsystem.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/winsystem.qdoc -->
 <head>
   <title>Qt 4.4: Window System Specific Notes</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -26,51 +26,7 @@
 <h2>Qt/X11</h2>
 <p>When compiling for this platform, the macro <tt>Q_WS_X11</tt> is defined.</p>
 <p><i>Not documented here. Please contact Trolltech Technical Support if you have queries.</i></p>
-<p align="center"><img src="images/dependencies.png" alt="Qt/X11 Dependencies" /></p>    <style type="text/css" id="colorstyles">
-     #QtGuiColor { background-color: #98fd00; color: black }
-     #QtCoreColor { background-color: #9c9cff; color: black }
-     #DefaultColor { background-color: #f6f6dc; color: black }
-     #FreetypeColor { background-color: #e6e6fa; color: black }
-     #GLColor { background-color: #ffc0cb; color: black }
-     #PthreadColor { background-color: #bdb76b; color: black }
-     #OptionalColor { background-color: #cae1ff; color: black }
-     #SMColor { background-color: #c2fafa; color: black }
-     #MiscColor { background-color: #f0f9ff; color: black }
-     #GlibColor { background-color: #b3b3b3; color: black }
-    </style>
-    <p><table width="90%" align="center" cellpadding="2" cellspacing="1" border="0">
-<thead><tr valign="top" class="qt-style"><th>Name</th><th>Library</th><th>Notes</th><th>Configuration options    <tr id="QtGuiColor">
-    <td>QtGui</td><td>libQtGui</td><td>QtGui</td>
-    </tr><tr id="QtCoreColor">
-    <td> QtCore </td><td> libQtCore </td><td> QtCore (non-user interface features)</td>
-    </tr><tr id="OptionalColor">
-    <td> XRender </td><td> libXrender </td><td> X Rendering Extension; used for anti-aliasing</td><td><tt>-xrender</tt> or auto-detected</td>
-    </tr><tr id="OptionalColor">
-    <td> Xrandr </td><td> libXrandr </td><td> X Resize and Rotate Extension</td><td><tt>-xrandr</tt> or auto-detected</td>
-    </tr><tr id="OptionalColor">
-    <td> Xcursor </td><td> libXcursor </td><td> X Cursor Extension</td><td><tt>-xcursor</tt> or auto-detected</td>
-    </tr><tr id="OptionalColor">
-    <td> Xfixes </td><td> libXfixes </td><td> X Fixes Extension</td><td><tt>-xfixes</tt> or auto-detected</td>
-    </tr><tr id="OptionalColor">
-    <td> Xinerama </td><td> libXinerama </td><td> Multi-head support</td><td><tt>-xinerama</tt> or auto-detected</td>
-    </tr><tr id="DefaultColor">
-    <td> Xt </td><td> libXext </td><td> Xt Intrinsics</td>
-    </tr><tr id="DefaultColor">
-    <td> Xext </td><td> libXext </td><td> X Extensions</td>
-    </tr><tr id="DefaultColor">
-    <td> X11 </td><td> libX11 </td><td> X Window System</td>
-    </tr><tr id="SMColor">
-    <td> SM </td><td> libSM </td><td> X Session Management</td><td><tt>-sm</tt> or auto-detected</td>
-    </tr><tr id="SMColor">
-    <td> ICE </td><td> libICE </td><td> Inter-Client Exchange</td><td><tt>-sm</tt> or auto-detected</td>
-    </tr><tr id="GlibColor">
-    <td> glib </td><td> libglib-2.0 </td><td> Common event loop handling</td><td><tt>-glib</tt> or auto-detected</td>
-    </tr><tr id="PthreadColor">
-    <td> pthread </td><td> libpthread </td><td> Multithreading</td>
-    </tr>
-    </th></tr></thead>
-</table></p>
-<p><b>Note:</b> You must compile with XRender support to get alpha transparency support for pixmaps and images.</p>
+<p>See the <a href="requirements-x11.html">Qt/X11 Requirements</a> page for more information about the libraries required to build Qt with as many features as possible.</p>
 <a name="win"></a><a name="qt-windows"></a>
 <h2>Qt/Windows</h2>
 <p>When compiling for this platform, the macro <tt>Q_WS_WIN</tt> is defined.</p>
@@ -89,6 +45,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

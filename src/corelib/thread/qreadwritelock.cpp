@@ -95,7 +95,9 @@ QT_BEGIN_NAMESPACE
     \sa QReadLocker, QWriteLocker, QMutex, QSemaphore
 */
 
-/*! \enum QReadWriteLock::RecursionMode
+/*! 
+    \enum QReadWriteLock::RecursionMode
+    \since 4.4
 
     \value Recursive In this mode, a thread can lock the same
     QReadWriteLock multiple times and the mutex won't be unlocked
@@ -117,6 +119,8 @@ QReadWriteLock::QReadWriteLock()
 { }
 
 /*!
+    \since 4.4
+
     Constructs a QReadWriteLock object in the given \a recursionMode.
 
     \sa lockForRead(), lockForWrite(), RecursionMode

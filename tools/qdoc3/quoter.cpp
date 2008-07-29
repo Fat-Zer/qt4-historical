@@ -239,6 +239,9 @@ QString Quoter::quoteSnippet(const Location &docLocation, const QString &identif
             int dIndex = lastLine.indexOf(delimiter);
             if (dIndex > 0) {
                 QString leading = lastLine.left(dIndex);
+                dIndex = leading.indexOf(comment);
+                if (dIndex != -1)
+                    leading = leading.left(dIndex);
                 if (!leading.trimmed().isEmpty())
                     t += leading;
             }

@@ -11,9 +11,67 @@
 <context>
     <name>BookmarkDialog</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkdialog.cpp" line="113"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="254"/>
         <source>Bookmarks</source>
         <translation>Zakładki</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="19"/>
+        <source>Add Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="29"/>
+        <source>Bookmark:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="36"/>
+        <source>Add in Folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="65"/>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="93"/>
+        <source>New Folder</source>
+        <translation type="unfinished">Nowy katalog</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="191"/>
+        <source>Delete Folder</source>
+        <translation type="unfinished">Usuń katalog</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="192"/>
+        <source>Rename Folder</source>
+        <translation type="unfinished">Zmień nazwę katalogu</translation>
+    </message>
+</context>
+<context>
+    <name>BookmarkManager</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="582"/>
+        <source>Bookmarks</source>
+        <translation type="unfinished">Zakładki</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="618"/>
+        <source>Remove</source>
+        <translation type="unfinished">Usuń</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="620"/>
+        <source>You are going to delete a Folder, this will also&lt;br&gt;remove it&apos;s content. Are you sure to continue?</source>
+        <translation type="unfinished">Zamierzasz usunąć katalog co spowoduje również usunięcie jego zawartości. Czy chcesz kontynuować?</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="734"/>
+        <source>New Folder</source>
+        <translation type="unfinished">Nowy katalog</translation>
     </message>
 </context>
 <context>
@@ -21,93 +79,103 @@
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="198"/>
         <source>Bookmarks</source>
-        <translation>Zakładki</translation>
+        <translation type="obsolete">Zakładki</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="165"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="419"/>
         <source>Remove</source>
         <translation>Usuń</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="167"/>
         <source>You are going to delete a Folder, this will also&lt;br&gt;remove it&apos;s content. Are you sure to continue?</source>
-        <translation>Zamierzasz usunąć katalog co spowoduje również usunięcie jego zawartości. Czy chcesz kontynuować?</translation>
+        <translation type="obsolete">Zamierzasz usunąć katalog co spowoduje również usunięcie jego zawartości. Czy chcesz kontynuować?</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="286"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="345"/>
         <source>Delete Folder</source>
         <translation>Usuń katalog</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="287"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="346"/>
         <source>Rename Folder</source>
         <translation>Zmień nazwę katalogu</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="289"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="348"/>
         <source>Show Bookmark</source>
         <translation>Pokaż zakładkę</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="290"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="349"/>
         <source>Show Bookmark in New Tab</source>
         <translation>Pokaż zakładkę w nowej karcie</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="292"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="352"/>
         <source>Delete Bookmark</source>
         <translation>Usuń zakładkę</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="293"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="353"/>
         <source>Rename Bookmark</source>
         <translation>Zmień nazwę zakładki</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="390"/>
+        <source>Search for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="411"/>
+        <source>Add</source>
+        <translation type="unfinished">Dodaj</translation>
     </message>
 </context>
 <context>
     <name>CentralWidget</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="163"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="164"/>
         <source>Add new page</source>
         <translation>Dodaj nową stronę</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="172"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="173"/>
         <source>Close current page</source>
         <translation>Zamknij bieżącą stronę</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="401"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="435"/>
         <source>Print Document</source>
         <translation>Wydrukuj dokument</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="521"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="565"/>
         <source>unknown</source>
         <translation>nieznany</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="596"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="640"/>
         <source>Add New Page</source>
         <translation>Dodaj nową stronę</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="597"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="641"/>
         <source>Close This Page</source>
         <translation>Zamknij tą stronę</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="598"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="642"/>
         <source>Close Other Pages</source>
         <translation>Zamknij inne strony</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="600"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="644"/>
         <source>Add Bookmark for this Page...</source>
         <translation>Dodaj zakładkę dla tej strony...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="822"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="866"/>
         <source>Search</source>
         <translation>Wyszukaj</translation>
     </message>
@@ -115,12 +183,12 @@
 <context>
     <name>ContentWindow</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/contentwindow.cpp" line="99"/>
+        <location filename="../tools/assistant/tools/assistant/contentwindow.cpp" line="113"/>
         <source>Open Link</source>
         <translation>Otwórz odsyłacz</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/contentwindow.cpp" line="100"/>
+        <location filename="../tools/assistant/tools/assistant/contentwindow.cpp" line="114"/>
         <source>Open Link in New Tab</source>
         <translation>Otwórz odsyłacz w nowej karcie</translation>
     </message>
@@ -219,12 +287,12 @@
         <translation>&lt;title&gt;Błąd 404...&lt;/title&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h1&gt;Strona nie może być znaleziona&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="357"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="364"/>
         <source>Copy &amp;Link Location</source>
         <translation>Skopiuj &amp;odsyłacz</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="360"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="367"/>
         <source>Open Link in New Tab<byte value="x9"/>Ctrl+LMB</source>
         <translation>Otwórz odsyłacz w nowej karcie<byte value="x9"/>Ctrl+LMB</translation>
     </message>
@@ -356,32 +424,32 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="432"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="424"/>
         <source>Index</source>
         <translation>Indeks</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="430"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="422"/>
         <source>Contents</source>
         <translation>Spis treści</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="434"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="426"/>
         <source>Bookmarks</source>
         <translation>Zakładki</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="436"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="428"/>
         <source>Search</source>
         <translation>Wyszukaj</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="793"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="773"/>
         <source>Qt Assistant</source>
         <translation>Qt Assistant</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="280"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="272"/>
         <source>Unfiltered</source>
         <translation>Nieprzefiltrowany</translation>
     </message>
@@ -391,52 +459,52 @@
         <translation type="obsolete">Plik</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="362"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="354"/>
         <source>Page Set&amp;up...</source>
         <translation>&amp;Ustawienia strony...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="363"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="355"/>
         <source>Print Preview...</source>
         <translation>Podgląd wydruku...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="364"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="356"/>
         <source>&amp;Print...</source>
         <translation>Wy&amp;drukuj...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="367"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="359"/>
         <source>CTRL+P</source>
         <translation>CTRL+P</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="371"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="363"/>
         <source>New &amp;Tab</source>
         <translation>Nowa kar&amp;ta</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="372"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="364"/>
         <source>CTRL+T</source>
         <translation>CTRL+T</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="373"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="365"/>
         <source>&amp;Close Tab</source>
         <translation>&amp;Zamknij kartę</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="374"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="366"/>
         <source>CTRL+W</source>
         <translation>CTRL+W</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="376"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="368"/>
         <source>&amp;Quit</source>
         <translation>Za&amp;kończ</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="377"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="369"/>
         <source>CTRL+Q</source>
         <translation>CTRL+Q</translation>
     </message>
@@ -446,47 +514,47 @@
         <translation type="obsolete">Edycja</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="381"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="373"/>
         <source>&amp;Copy selected Text</source>
         <translation>S&amp;kopiuj zaznaczony tekst</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="385"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="377"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="388"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="380"/>
         <source>&amp;Find in Text...</source>
         <translation>Znajdź w &amp;tekście...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="392"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="384"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="395"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="387"/>
         <source>Find &amp;Next</source>
         <translation>Znajdź &amp;następny</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="397"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="389"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="400"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="392"/>
         <source>Find &amp;Previous</source>
         <translation>Znajdź &amp;poprzedni</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="402"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="394"/>
         <source>Shift+F3</source>
         <translation>Shift+F3</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="406"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="398"/>
         <source>Preferences...</source>
         <translation>Ustawienia...</translation>
     </message>
@@ -496,52 +564,52 @@
         <translation type="obsolete">Widok</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="410"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="402"/>
         <source>Zoom &amp;in</source>
         <translation>Po&amp;większ</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="414"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="406"/>
         <source>Ctrl++</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="416"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="408"/>
         <source>Zoom &amp;out</source>
         <translation>Po&amp;mniejsz</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="420"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="412"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="422"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="414"/>
         <source>Normal &amp;Size</source>
         <translation>Normalny &amp;rozmiar</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="426"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="418"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="431"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="423"/>
         <source>ALT+C</source>
         <translation>ALT+C</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="433"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="425"/>
         <source>ALT+I</source>
         <translation>ALT+I</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="435"/>
         <source>ALT+B</source>
-        <translation>ALT+B</translation>
+        <translation type="obsolete">ALT+B</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="437"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="429"/>
         <source>ALT+S</source>
         <translation>ALT+S</translation>
     </message>
@@ -551,59 +619,54 @@
         <translation type="obsolete">Nawigacja</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="440"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="432"/>
         <source>&amp;Home</source>
         <translation>Strona &amp;startowa</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="442"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="434"/>
         <source>Ctrl+Home</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="446"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="438"/>
         <source>&amp;Back</source>
         <translation>&amp;Wstecz</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="453"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="445"/>
         <source>&amp;Forward</source>
         <translation>W &amp;przód</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="460"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="452"/>
         <source>Sync with Table of Contents</source>
         <translation>Znajdź bieżącą stronę w spisie treści</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="467"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="459"/>
         <source>Next Page</source>
         <translation>Następna strona</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="468"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="460"/>
         <source>Ctrl+Alt+Right</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="470"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="462"/>
         <source>Previous Page</source>
         <translation>Poprzednia strona</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="472"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="464"/>
         <source>Ctrl+Alt+Left</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="475"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="467"/>
         <source>Add Bookmark...</source>
         <translation>Dodaj zakładkę...</translation>
-    </message>
-    <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="476"/>
-        <source>CTRL+B</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="478"/>
@@ -611,138 +674,148 @@
         <translation type="obsolete">Pomoc</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="479"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="471"/>
         <source>About...</source>
         <translation>Informacje o programie...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="482"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="474"/>
         <source>Navigation Toolbar</source>
         <translation>Pasek do nawigacji</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="553"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="543"/>
         <source>Toolbars</source>
         <translation>Paski narzędzi</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="568"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="558"/>
         <source>Filter Toolbar</source>
         <translation>Pasek filtrowania</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="570"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="560"/>
         <source>Filtered by:</source>
         <translation>Przefiltrowane przez:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="591"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="581"/>
         <source>Address Toolbar</source>
         <translation>Pasek adresu</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="595"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="585"/>
         <source>Address:</source>
         <translation>Adres:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="707"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="691"/>
         <source>Could not find the associated content item.</source>
         <translation>Nie można znaleźć skojarzonego elementu zawartości.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="768"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="748"/>
         <source>Open Source Edition</source>
         <translation>Edycja Open Source</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="772"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="752"/>
         <source>This version of Qt Assistant is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.</source>
         <translation>Ta wersja Qt Assistant jest częścią wydania Qt Open Source, przeznaczonego do tworzenia aplikacji Open Source. Qt zawiera obszerny zestaw bibliotek wykorzystywanych do pisania przenośnych aplikacji.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="781"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="761"/>
         <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="796"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="776"/>
         <source>About %1</source>
         <translation>Informacje o %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="914"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="894"/>
         <source>Updating search index</source>
         <translation>Uaktualnianie indeksu wyszukiwawczego</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="301"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="293"/>
         <source>Looking for Qt Documentation...</source>
         <translation>Szukanie dokumentacji Qt...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="504"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="496"/>
         <source>&amp;Window</source>
         <translation>&amp;Okno</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="506"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="498"/>
         <source>Minimize</source>
         <translation>Zminimalizuj</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="507"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="499"/>
         <source>Ctrl+M</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="508"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="500"/>
         <source>Zoom</source>
         <translation>Powiększenie</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="955"/>
         <source>Add</source>
-        <translation>Dodaj</translation>
+        <translation type="obsolete">Dodaj</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="963"/>
         <source>Remove</source>
-        <translation>Usuń</translation>
+        <translation type="obsolete">Usuń</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="775"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="755"/>
         <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://trolltech.com/company/about/businessmodel&quot;&gt;http://trolltech.com/company/about/businessmodel&lt;/a&gt; for an overview of Qt licensing.</source>
         <translation>Aby móc tworzyć przy pomocy Qt własne aplikacje bez publikowania kodu (closed source) potrzebujesz wydania komercyjnego. Opis sposobów licencjonowania Qt znajduje się na stronie &lt;a href=&quot;http://www.trolltech.com/company/model.html&quot;&gt;www.trolltech.com/company/model.html&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="360"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="352"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="380"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="372"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="409"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="401"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="439"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="431"/>
         <source>&amp;Go</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="474"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="466"/>
         <source>&amp;Bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="478"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="470"/>
         <source>&amp;Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="427"/>
+        <source>ALT+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="468"/>
+        <source>CTRL+D</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -769,7 +842,7 @@
         <translation>Przestrzeń nazw %1 jest już zarejestrowana!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/preferencesdialog.cpp" line="364"/>
+        <location filename="../tools/assistant/tools/assistant/preferencesdialog.cpp" line="365"/>
         <source>Use custom settings</source>
         <translation>Użyj własnych ustawień</translation>
     </message>
@@ -872,7 +945,7 @@
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkwidget.cpp" line="43"/>
         <source>New Folder</source>
-        <translation>Nowy katalog</translation>
+        <translation type="obsolete">Nowy katalog</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="81"/>
@@ -880,7 +953,7 @@
         <translation>Podany plik z kolekcją nie istnieje!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="197"/>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="85"/>
         <source>Missing collection file!</source>
         <translation>Brak pliku z kolekcją!</translation>
     </message>
@@ -920,12 +993,12 @@
         <translation>Nieznana opcja: %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="226"/>
+        <location filename="../tools/assistant/tools/assistant/cmdlineparser.cpp" line="223"/>
         <source>Qt Assistant</source>
         <translation>Qt Assistant</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/main.cpp" line="52"/>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="57"/>
         <source>Could not register documentation file
 %1
 
@@ -938,12 +1011,12 @@ Powód:
 %2</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/main.cpp" line="55"/>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="60"/>
         <source>Documentation successfully registered.</source>
         <translation>Dokumentacja poprawnie zarejestrowana.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/main.cpp" line="62"/>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="67"/>
         <source>Could not unregister documentation file
 %1
 
@@ -956,14 +1029,19 @@ Powód:
 %2</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/main.cpp" line="65"/>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="70"/>
         <source>Documentation successfully unregistered.</source>
         <translation>Dokumentacja poprawnie wyrejestrowana.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/main.cpp" line="75"/>
+        <location filename="../tools/assistant/tools/assistant/main.cpp" line="81"/>
         <source>The specified collection file could not be read!</source>
         <translation>Podany plik z kolekcją nie może być odczytany!</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="535"/>
+        <source>Bookmark</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

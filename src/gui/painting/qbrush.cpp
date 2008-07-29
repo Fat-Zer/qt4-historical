@@ -267,6 +267,27 @@ struct QGradientBrushData : public QBrushData
     \sa Qt::BrushStyle, QPainter, QColor
 */
 
+#ifndef QT_NO_THREAD
+// Special deleter that only deletes if the ref-count goes to zero
+template <>
+class QGlobalStaticDeleter<QBrushData>
+{
+public:
+    QGlobalStatic<QBrushData> &globalStatic;
+    QGlobalStaticDeleter(QGlobalStatic<QBrushData> &_globalStatic)
+        : globalStatic(_globalStatic)
+    { }
+
+    inline ~QGlobalStaticDeleter()
+    {
+        if (!globalStatic.pointer->ref.deref())
+            delete globalStatic.pointer;
+        globalStatic.pointer = 0;
+        globalStatic.destroyed = true;
+    }
+};
+#endif
+
 Q_GLOBAL_STATIC_WITH_INITIALIZER(QBrushData, nullBrushInstance,
                                  {
                                      x->ref = 1;
@@ -722,7 +743,7 @@ QImage QBrush::textureImage() const
     Sets the brush image to \a image. The style is set to
     Qt::TexturePattern.
 
-    Note the current brush color will \i not have any affect on
+    Note the current brush color will \e not have any affect on
     monochrome images, as opposed to calling setTexture() with a
     QBitmap. If you want to change the color of monochrome image
     brushes, either convert the image to QBitmap with \c
@@ -924,12 +945,20 @@ QDebug operator<<(QDebug dbg, const QBrush &b)
 
 QDataStream &operator<<(QDataStream &s, const QBrush &b)
 {
-    s << (quint8)b.style() << b.color();
+    quint8 style = (quint8) b.style();
+    bool gradient_style = false;
+
+    if (style == Qt::LinearGradientPattern || style == Qt::RadialGradientPattern
+        || style == Qt::ConicalGradientPattern)
+        gradient_style = true;
+
+    if (s.version() < QDataStream::Qt_4_0 && gradient_style)
+        style = Qt::NoBrush;
+
+    s << style << b.color();
     if (b.style() == Qt::TexturePattern) {
         s << b.texture();
-    } else if (b.style() == Qt::LinearGradientPattern
-               || b.style() == Qt::RadialGradientPattern
-               || b.style() == Qt::ConicalGradientPattern) {
+    } else if (s.version() >= QDataStream::Qt_4_0 && gradient_style) {
         const QGradient *gradient = b.gradient();
         int type_as_int = int(gradient->type());
         s << type_as_int;

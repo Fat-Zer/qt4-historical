@@ -153,15 +153,15 @@ void QOpenUrlHandlerRegistry::handlerDestroyed(QObject *handler)
 */
 
 /*!
-    Opens the given \a url in the appropriate web browser for the user's desktop
+    Opens the given \a url in the appropriate Web browser for the user's desktop
     environment, and returns true if successful; otherwise returns false.
 
-    If the URL is a reference to a local file (i.e. the URL scheme is "file") then
-    it will be opened with a suitable application instead of a web browser.
+    If the URL is a reference to a local file (i.e., the URL scheme is "file") then
+    it will be opened with a suitable application instead of a Web browser.
 
     If a \c mailto URL is specified, the user's e-mail client will be used to open a
     composer window containing the options specified in the URL, similar to the way
-    \c mailto links are handled by a web browser.
+    \c mailto links are handled by a Web browser.
 
     For example, the following URL contains a recipient (\c{user@foo.com}), a
     subject (\c{Test}), and a message body (\c{Just a test}):
@@ -219,7 +219,7 @@ bool QDesktopServices::openUrl(const QUrl &url)
     Note that the handler will always be called from within the same thread that
     calls QDesktopServices::openUrl().
 
-    \sa openUrl()
+    \sa openUrl(), unsetUrlHandler()
 */
 void QDesktopServices::setUrlHandler(const QString &scheme, QObject *receiver, const char *method)
 {
@@ -238,12 +238,56 @@ void QDesktopServices::setUrlHandler(const QString &scheme, QObject *receiver, c
 }
 
 /*!
-    Removes a previously set url handler for the specified \a scheme.
+    Removes a previously set URL handler for the specified \a scheme.
+
+    \sa setUrlHandler()
 */
 void QDesktopServices::unsetUrlHandler(const QString &scheme)
 {
     setUrlHandler(scheme, 0, 0);
 }
+
+/*!
+    \enum QDesktopServices::StandardLocation
+    \since 4.4
+
+    This enum describes the different locations that can be queried
+    by QDesktopServices::storageLocation and QDesktopServices::displayName.
+
+    \value DesktopLocation Returns the users desktop.
+    \value DocumentsLocation Returns the users document.
+    \value FontsLocation Returns the users fonts.
+    \value ApplicationsLocation Returns the users applications.
+    \value MusicLocation Returns the users music.
+    \value MoviesLocation Returns the users movies.
+    \value PicturesLocation Returns the users pictures.
+    \value TempLocation Returns the system's temporary directory.
+    \value HomeLocation Returns the user's home directory.
+    \value DataLocation Returns a directory location where persistent application
+           data can be stored.  QCoreApplication::applicationName and
+           QCoreApplication::organizationName should be set to work
+           on all platforms.
+
+    \sa storageLocation() displayName()
+*/
+
+/*!
+    \fn QString QDesktopServices::storageLocation(StandardLocation type)
+    \since 4.4
+
+    Returns the default system directory where files of \a type belong, or an empty string
+    if the location cannot be determined.
+
+    \note The storage location returned can be a directory that does not exist; i.e., it
+    may need to be created by the system or the user.
+*/
+
+/*!
+    \fn QString QDesktopServices::displayName(StandardLocation type)
+
+    Returns a localized display name for the given location \a type or
+    an empty QString if no relevant location can be found.
+*/
 
 QT_END_NAMESPACE
 

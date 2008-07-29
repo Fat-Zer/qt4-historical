@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
   <title>Qt 4.4: QAbstractItemModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -240,7 +240,7 @@
 <p>See also <a href="qabstractitemmodel.html#persistentIndexList">persistentIndexList</a>() and <a href="qabstractitemmodel.html#changePersistentIndex">changePersistentIndex</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/columnCount" />
 <h3 class="fn"><a name="columnCount"></a>int QAbstractItemModel::columnCount ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns the number of columns for the children of the given <i>parent</i>. When the parent is valid it means that rowCount is returning the number of children of parent.</p>
+<p>Returns the number of columns for the children of the given <i>parent</i>.</p>
 <p>In most subclasses, the number of columns is independent of the <i>parent</i>. For example:</p>
 <pre> int DomModel::columnCount(const QModelIndex &amp;<span class="comment">/*parent*/</span>) const
  {
@@ -280,6 +280,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/data" />
 <h3 class="fn"><a name="data"></a><a href="qvariant.html">QVariant</a> QAbstractItemModel::data ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, int <i>role</i> = Qt::DisplayRole ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the data stored under the given <i>role</i> for the item referred to by the <i>index</i>.</p>
+<p><b>Note:</b> If you do not have a value to return, return an <b>empty</b> QVariant() instead of returning 0.</p>
 <p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, <a href="qabstractitemmodel.html#setData">setData</a>(), and <a href="qabstractitemmodel.html#headerData">headerData</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/dataChanged" />
 <h3 class="fn"><a name="dataChanged"></a>void QAbstractItemModel::dataChanged ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>topLeft</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>bottomRight</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -532,6 +533,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

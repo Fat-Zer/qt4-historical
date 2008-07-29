@@ -61,6 +61,7 @@
 
     \reentrant
     \ingroup io
+    \ingroup ssl
     \module network
 
     QSslError provides a simple API for managing errors during QSslSocket's
@@ -148,6 +149,8 @@ QSslError::~QSslError()
 }
 
 /*!
+    \since 4.4
+
     Assigns the contents of \a other to this error.
 */
 QSslError &QSslError::operator=(const QSslError &other)
@@ -157,6 +160,8 @@ QSslError &QSslError::operator=(const QSslError &other)
 }
 
 /*!
+    \since 4.4
+
     Returns true if this error is equal to \a other; otherwise returns false.
 */
 bool QSslError::operator==(const QSslError &other) const
@@ -167,6 +172,7 @@ bool QSslError::operator==(const QSslError &other) const
 
 /*!
     \fn bool QSslError::operator!=(const QSslError &other) const
+    \since 4.4
 
     Returns true if this error is not equal to \a other; otherwise returns
     false.

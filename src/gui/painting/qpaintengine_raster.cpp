@@ -87,9 +87,6 @@
 #  include <private/qt_mac_p.h>
 #  include <private/qpixmap_mac_p.h>
 #  include <private/qpaintengine_mac_p.h>
-#  if Q_BYTE_ORDER == Q_BIG_ENDIAN
-#    define BITMAPS_ARE_MSB
-#  endif
 #elif defined(Q_WS_QWS)
 #  if !defined(QT_NO_FREETYPE)
 #    include <private/qfontengine_ft_p.h>
@@ -136,7 +133,8 @@ static bool qt_enable_16bit_colors = false;
 
 #define QT_FAST_SPANS
 
-static const qreal aliasedCoordinateDelta = 0.5 - 1e-6;
+// use the same rounding as in qrasterizer.cpp (6 bit fixed point)
+static const qreal aliasedCoordinateDelta = 0.5 - 0.015625;
 
 /********************************************************************************
  * Span functions
@@ -216,6 +214,10 @@ static const QRectF boundingRect(const QPointF *points, int pointCount)
 class QFTOutlineMapper
 {
 public:
+    QFTOutlineMapper()
+        : m_round_coords(false)
+    {
+    }
 
     /*!
       Sets up the matrix to be used for conversion. This also
@@ -230,6 +232,7 @@ public:
         m_m21 = m.m21();
         m_m22 = m.m22();
         m_m23 = m.m23();
+        m_m33 = m.m33();
         m_dx = m.dx();
         m_dy = m.dy();
         m_txop = txop;
@@ -347,6 +350,10 @@ public:
         return outline();
     }
 
+    void setCoordinateRounding(bool coordinateRounding) {
+        m_round_coords = coordinateRounding;
+    }
+
 public:
     QDataBuffer<QPainterPath::ElementType> m_element_types;
     QDataBuffer<QPointF> m_elements;
@@ -372,10 +379,14 @@ public:
     qreal m_m21;
     qreal m_m22;
     qreal m_m23;
+    qreal m_m33;
     qreal m_dx;
     qreal m_dy;
 
     bool m_valid;
+
+private:
+    bool m_round_coords;
 };
 
 void QFTOutlineMapper::endOutline()
@@ -383,7 +394,7 @@ void QFTOutlineMapper::endOutline()
     closeSubpath();
 
     int element_count = m_elements.size();
-    const QPointF *elements;
+    QPointF *elements;
 
     // Transform the outline
     if (m_txop == QTransform::TxNone) {
@@ -406,18 +417,42 @@ void QFTOutlineMapper::endOutline()
                                           m_m22 * e.y() + m_m12 * e.x() + m_dy);
             }
         } else {
+            QPainterPath path;
             for (int i=0; i<m_elements.size(); ++i) {
-                const QPointF &e = m_elements.at(i);
-                qreal x = m_m11 * e.x() + m_m21 * e.y() + m_dx;
-                qreal y = m_m22 * e.y() + m_m12 * e.x() + m_dy;
-                qreal w = m_m13*e.x() + m_m23*e.y() + 1.;
-                w = 1/w;
-                x *= w;
-                y *= w;
-                m_elements_dev << QPointF(x, y);
+                switch (m_element_types.at(i)) {
+                case QPainterPath::MoveToElement:
+                    path.moveTo(m_elements.at(i));
+                    break;
+                case QPainterPath::LineToElement:
+                    path.lineTo(m_elements.at(i));
+                    break;
+                case QPainterPath::CurveToElement:
+                    path.cubicTo(m_elements.at(i), m_elements.at(i+1), m_elements.at(i+2));
+                    i += 2;
+                    break;
+                default:
+                    Q_ASSERT(false);
+                    break;
+                }
             }
+            path = QTransform(m_m11, m_m12, m_m13, m_m21, m_m22, m_m23, m_dx, m_dy, m_m33).map(path);
+            uint old_txop = m_txop;
+            m_txop = QTransform::TxNone;
+            if (path.isEmpty())
+                m_valid = false;
+            else
+                convertPath(path);
+            m_txop = old_txop;
+            return;
         }
         elements = m_elements_dev.data();
+    }
+
+    if (m_round_coords) {
+        // round coordinates to match outlines drawn with drawLine_midpoint_i
+        for (int i = 0; i < m_elements.size(); ++i)
+            elements[i] = QPointF(qFloor(elements[i].x() + aliasedCoordinateDelta),
+                                  qFloor(elements[i].y() + aliasedCoordinateDelta));
     }
 
     controlPointRect = boundingRect(elements, element_count);
@@ -1222,7 +1257,7 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
         } else if (pen_style != Qt::NoPen) {
             if (!d->dashStroker)
                 d->dashStroker = new QDashStroker(&d->basicStroker);
-            if (penWidth == 0) {
+            if (d->pen.isCosmetic()) {
                 d->dashStroker->setClipRect(d->deviceRect);
             } else {
                 QRectF clipRect = d->matrix.inverted().mapRect(QRectF(d->deviceRect));
@@ -1350,6 +1385,7 @@ void QRasterPaintEnginePrivate::updateMatrixData(QSpanData *spanData, const QBru
             spanData->m21 = 0;
             spanData->m22 = 1;
             spanData->m23 = 0;
+            spanData->m33 = 1;
             spanData->dx = -m.dx();
             spanData->dy = -m.dy();
             spanData->txop = txop;
@@ -1399,7 +1435,7 @@ void QRasterPaintEngine::updateClipRegion(const QRegion &r, Qt::ClipOperation op
         if (!sysClip.isEmpty())
             d->clipRegion &= sysClip;
 
-        if (!d->clipRegion.isEmpty())
+        if (!d->clipRegion.isEmpty()) {
             if (d->clipRegion.numRects() == 1) {
                 d->setClipRect(d->clipRegion.boundingRect());
                 return;
@@ -1410,6 +1446,7 @@ void QRasterPaintEngine::updateClipRegion(const QRegion &r, Qt::ClipOperation op
                 return;
             }
 #endif
+        }
     }
 
     QPainterPath p;
@@ -1721,6 +1758,28 @@ void QRasterPaintEngine::drawRects(const QRectF *rects, int rectCount)
     }
 }
 
+void QRasterPaintEnginePrivate::strokeProjective(const QPainterPath &path)
+{
+    QPainterPathStroker pathStroker;
+    pathStroker.setWidth(pen.width() == 0 ? qreal(1) : pen.width());
+    pathStroker.setCapStyle(pen.capStyle());
+    pathStroker.setJoinStyle(pen.joinStyle());
+    pathStroker.setMiterLimit(pen.miterLimit());
+    pathStroker.setDashOffset(pen.dashOffset());
+
+    if (pen.style() == Qt::CustomDashLine)
+        pathStroker.setDashPattern(pen.dashPattern());
+    else
+        pathStroker.setDashPattern(pen.style());
+
+    outlineMapper->setMatrix(QTransform(), QTransform::TxNone);
+    const QPainterPath stroke = pen.isCosmetic()
+        ? pathStroker.createStroke(matrix.map(path))
+        : matrix.map(pathStroker.createStroke(path));
+    rasterize(outlineMapper->convertPath(stroke), penData.blend, &penData, rasterBuffer);
+    outlineMapper->setMatrix(matrix, txop);
+}
+
 /*!
     \reimp
 */
@@ -1745,22 +1804,26 @@ void QRasterPaintEngine::drawPath(const QPainterPath &path)
         return;
 
     {
-        Q_ASSERT(d->stroker);
-        d->outlineMapper->beginOutline(Qt::WindingFill);
-
-        if (d->pen.isCosmetic()) {
-            d->outlineMapper->setMatrix(QTransform(), QTransform::TxNone);
-            d->stroker->strokePath(path, d->outlineMapper, d->matrix);
+        if (d->matrix.type() >= QTransform::TxProject) {
+            d->strokeProjective(path);
         } else {
-            d->outlineMapper->setMatrix(d->matrix, d->txop);
-            d->stroker->strokePath(path, d->outlineMapper, QTransform());
-        }
-        d->outlineMapper->endOutline();
+            Q_ASSERT(d->stroker);
+            d->outlineMapper->beginOutline(Qt::WindingFill);
 
-        ProcessSpans blend = d->getPenFunc(d->outlineMapper->controlPointRect,
-                                           &d->penData);
-        d->rasterize(d->outlineMapper->outline(), blend, &d->penData, d->rasterBuffer);
-        d->outlineMapper->setMatrix(d->matrix, d->txop);
+            if (d->pen.isCosmetic()) {
+                d->outlineMapper->setMatrix(QTransform(), QTransform::TxNone);
+                d->stroker->strokePath(path, d->outlineMapper, d->matrix);
+            } else {
+                d->outlineMapper->setMatrix(d->matrix, d->txop);
+                d->stroker->strokePath(path, d->outlineMapper, QTransform());
+            }
+            d->outlineMapper->endOutline();
+
+            ProcessSpans blend = d->getPenFunc(d->outlineMapper->controlPointRect,
+                    &d->penData);
+            d->rasterize(d->outlineMapper->outline(), blend, &d->penData, d->rasterBuffer);
+            d->outlineMapper->setMatrix(d->matrix, d->txop);
+        }
     }
 
 }
@@ -1874,8 +1937,11 @@ void QRasterPaintEngine::drawPolygon(const QPointF *points, int pointCount, Poly
     Q_ASSERT(pointCount >= 2);
 
     // Do the fill
-    if (d->brushData.blend && mode != PolylineMode)
+    if (d->brushData.blend && mode != PolylineMode) {
+        d->outlineMapper->setCoordinateRounding(d->penData.blend && d->fast_pen && d->pen.brush().isOpaque());
         fillPolygon(points, pointCount, mode);
+        d->outlineMapper->setCoordinateRounding(false);
+    }
 
     // Do the outline...
     if (d->penData.blend) {
@@ -1939,25 +2005,35 @@ void QRasterPaintEngine::drawPolygon(const QPointF *points, int pointCount, Poly
             }
 
         } else {
-            // fallback case for complex or transformed pens.
-            d->outlineMapper->beginOutline(Qt::WindingFill);
-            if (d->pen.isCosmetic()) {
-                d->outlineMapper->setMatrix(QTransform(),
-                                            QTransform::TxNone);
-                d->stroker->strokePolygon(points, pointCount, needs_closing,
-                                          d->outlineMapper, d->matrix);
+            if (d->matrix.type() >= QTransform::TxProject) {
+                QPainterPath path;
+                path.moveTo(points[0]);
+                for (int i = 1; i < pointCount; ++i)
+                    path.lineTo(points[i]);
+                if (needs_closing)
+                    path.closeSubpath();
+                d->strokeProjective(path);
             } else {
+                // fallback case for complex or transformed pens.
+                d->outlineMapper->beginOutline(Qt::WindingFill);
+                if (d->pen.isCosmetic()) {
+                    d->outlineMapper->setMatrix(QTransform(),
+                            QTransform::TxNone);
+                    d->stroker->strokePolygon(points, pointCount, needs_closing,
+                            d->outlineMapper, d->matrix);
+                } else {
+                    d->outlineMapper->setMatrix(d->matrix, d->txop);
+                    d->stroker->strokePolygon(points, pointCount, needs_closing,
+                            d->outlineMapper, QTransform());
+                }
+                d->outlineMapper->endOutline();
+
+                ProcessSpans penBlend = d->getPenFunc(d->outlineMapper->controlPointRect,
+                        &d->penData);
+                d->rasterize(d->outlineMapper->outline(), penBlend, &d->penData, d->rasterBuffer);
+
                 d->outlineMapper->setMatrix(d->matrix, d->txop);
-                d->stroker->strokePolygon(points, pointCount, needs_closing,
-                                          d->outlineMapper, QTransform());
             }
-            d->outlineMapper->endOutline();
-
-            ProcessSpans penBlend = d->getPenFunc(d->outlineMapper->controlPointRect,
-                                                  &d->penData);
-            d->rasterize(d->outlineMapper->outline(), penBlend, &d->penData, d->rasterBuffer);
-
-            d->outlineMapper->setMatrix(d->matrix, d->txop);
         }
     }
 
@@ -1986,6 +2062,7 @@ void QRasterPaintEngine::drawPolygon(const QPoint *points, int pointCount, Polyg
     if (d->brushData.blend && mode != PolylineMode) {
 
         // Compose polygon fill..,
+        d->outlineMapper->setCoordinateRounding(d->penData.blend != 0);
         d->outlineMapper->beginOutline(mode == WindingMode ? Qt::WindingFill : Qt::OddEvenFill);
         d->outlineMapper->moveTo(*points);
         const QPoint *p = points;
@@ -1999,6 +2076,7 @@ void QRasterPaintEngine::drawPolygon(const QPoint *points, int pointCount, Polyg
         ProcessSpans brushBlend = d->getBrushFunc(d->outlineMapper->controlPointRect,
                                                   &d->brushData);
         d->rasterize(d->outlineMapper->outline(), brushBlend, &d->brushData, d->rasterBuffer);
+        d->outlineMapper->setCoordinateRounding(false);
     }
 
     // Do the outline...
@@ -2243,11 +2321,15 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
 #ifdef QT_FAST_SPANS
         if (d->tx_noshear || d->txop == QTransform::TxScale) {
             d->initializeRasterizer(&textureData);
-            d->rasterizer.setAntialiased(d->antialiased || d->bilinear);
+            const bool aa = d->antialiased || d->bilinear;
+            d->rasterizer.setAntialiased(aa);
+
+            const QPointF offs = aa ? QPointF() : QPointF(aliasedCoordinateDelta, aliasedCoordinateDelta);
 
             const QRectF &rect = r.normalized();
-            const QPointF a = d->matrix.map((rect.topLeft() + rect.bottomLeft()) * 0.5f);
-            const QPointF b = d->matrix.map((rect.topRight() + rect.bottomRight()) * 0.5f);
+            const QPointF a = d->matrix.map((rect.topLeft() + rect.bottomLeft()) * 0.5f) - offs;
+            const QPointF b = d->matrix.map((rect.topRight() + rect.bottomRight()) * 0.5f) - offs;
+
             if (d->tx_noshear)
                 d->rasterizer.rasterizeLine(a, b, rect.height() / rect.width());
             else
@@ -2258,9 +2340,15 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
         bool wasAntialiased = d->antialiased;
         if (!d->antialiased)
             d->antialiased = d->bilinear;
+        const qreal offs = d->antialiased ? qreal(0) : aliasedCoordinateDelta;
         QPainterPath path;
         path.addRect(r);
+        QTransform m = d->matrix;
+        d->matrix = QTransform(m.m11(), m.m12(), m.m13(),
+                               m.m21(), m.m22(), m.m23(),
+                               m.m31() - offs, m.m32() - offs, m.m33());
         fillPath(path, &textureData);
+        d->matrix = m;
         d->antialiased = wasAntialiased;
     } else {
         textureData.dx = -(r.x() + d->matrix.dx()) + sr.x();
@@ -3121,8 +3209,15 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
     QCoreGraphicsPaintEngine pe;
     reinterpret_cast<QRasterPaintEngine *>(&pe)->state = state;
     pe.begin(&pd);
-    pe.setDirty(QPaintEngine::DirtyFlags(QPaintEngine::AllDirty & ~QPaintEngine::DirtyHints));
+    pe.setDirty(QPaintEngine::DirtyFlags(QPaintEngine::AllDirty 
+                                         & ~(QPaintEngine::DirtyHints 
+                                             | QPaintEngine::DirtyClipPath 
+                                             | QPaintEngine::DirtyClipRegion
+                                             | QPaintEngine::DirtyClipEnabled)));
     pe.updateState(*state);
+    QPainterPath clipPath = painter()->clipPath();
+    if (painter()->hasClipping() && !clipPath.isEmpty())
+        pe.updateClipPath(clipPath, Qt::ReplaceClip);
     pe.drawTextItem(p, textItem);
     pe.end();
 
@@ -3198,7 +3293,7 @@ void QRasterPaintEngine::drawPoints(const QPointF *points, int pointCount)
                 if (count > 0) {
                     const QT_FT_Span &last = array[count - 1];
                     // spans must be sorted on y (primary) and x (secondary)
-                    if (y < last.y || y == last.y && x < last.x) {
+                    if (y < last.y || (y == last.y && x < last.x)) {
                         d->penData.blend(count, array.constData(), &d->penData);
                         count = 0;
                     }
@@ -3361,12 +3456,19 @@ void QRasterPaintEngine::drawEllipse(const QRectF &rect)
     if (!d->brushData.blend && !d->penData.blend)
         return;
 
+    if (d->matrix.type() >= QTransform::TxProject) {
+        QPainterPath path;
+        path.addEllipse(rect);
+        drawPath(path);
+        return;
+    }
+
     const QRectF r = d->matrix.mapRect(rect);
     ProcessSpans penBlend = d->getPenFunc(r, &d->penData);
     ProcessSpans brushBlend = d->getBrushFunc(r, &d->brushData);
 
-    if ((d->pen.style() == Qt::SolidLine && d->fast_pen
-         || d->pen.style() == Qt::NoPen && !d->antialiased)
+    if (((d->pen.style() == Qt::SolidLine && d->fast_pen)
+         || (d->pen.style() == Qt::NoPen && !d->antialiased))
 #ifdef FLOATING_POINT_BUGGY_OR_NO_FPU
         && qMax(r.width(), r.height()) < 128 // integer math breakdown
 #endif
@@ -3543,14 +3645,10 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
 
     int x_offset = xmin - qRound(pos.x());
 
-#if defined (BITMAPS_ARE_MSB)
     QImage::Format format = image.format();
-#endif
     for (int y = ymin; y < ymax; ++y) {
         const uchar *src = image.scanLine(y - qRound(pos.y()));
-#if defined (BITMAPS_ARE_MSB)
         if (format == QImage::Format_MonoLSB) {
-#endif
             for (int x = 0; x < xmax - xmin; ++x) {
                 int src_x = x + x_offset;
                 uchar pixel = src[src_x >> 3];
@@ -3576,7 +3674,6 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                     }
                 }
             }
-#if defined (BITMAPS_ARE_MSB)
         } else {
             for (int x = 0; x < xmax - xmin; ++x) {
                 int src_x = x + x_offset;
@@ -3604,7 +3701,6 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                 }
             }
         }
-#endif
     }
     if (n) {
         fg->blend(n, spans, fg);
@@ -4968,7 +5064,7 @@ void QSpanData::init(QRasterBuffer *rb, QRasterPaintEngine *pe)
     type = None;
     txop = 0;
     bilinear = false;
-    m11 = m22 = 1.;
+    m11 = m22 = m33 = 1.;
     m12 = m13 = m21 = m23 = dx = dy = 0.;
 }
 
@@ -5132,6 +5228,7 @@ void QSpanData::setupMatrix(const QTransform &matrix, int bilin)
     m21 = inv.m21();
     m22 = inv.m22();
     m23 = inv.m23();
+    m33 = inv.m33();
     dx = inv.dx();
     dy = inv.dy();
     txop = inv.type();
@@ -5247,7 +5344,7 @@ static void draw_text_item_win(const QPointF &_pos, const QTextItemInt &ti, HDC 
             glyphs++;
         }
     } else {
-        bool fast = !has_kerning;
+        bool fast = !has_kerning && !(ti.flags & QTextItem::RightToLeft);
         for(int i = 0; i < ti.num_glyphs; i++) {
             if (glyphs[i].offset.x != 0 || glyphs[i].offset.y != 0 || glyphs[i].justification.space_18d6 != 0
                 || glyphs[i].attributes.dontPrint) {
@@ -5886,7 +5983,7 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
                 ++x;
 
                 const bool skip = x < 0 || y < 0;
-                Q_ASSERT(skip || x < devRect.width() && y < devRect.height());
+                Q_ASSERT(skip || (x < devRect.width() && y < devRect.height()));
                 if (inDash && !skip) {
                     if (current == NSPANS) {
                         span_func(NSPANS, spans, data);
@@ -5931,7 +6028,7 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
                 ++x;
 
                 const bool skip = x < 0 || y > y1;
-                Q_ASSERT(skip || x < devRect.width() && y < devRect.height());
+                Q_ASSERT(skip || (x < devRect.width() && y < devRect.height()));
                 if (inDash && !skip) {
                     if (current == NSPANS) {
                         span_func(NSPANS, spans, data);
@@ -6016,7 +6113,7 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
                 }
                 ++y;
                 const bool skip = x < 0 || y < 0;
-                Q_ASSERT(skip || x < devRect.width() && y < devRect.height());
+                Q_ASSERT(skip || (x < devRect.width() && y < devRect.height()));
                 if (inDash && !skip) {
                     if (current == NSPANS) {
                         span_func(NSPANS, spans, data);
@@ -6054,7 +6151,7 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
                 }
                 ++y;
                 const bool skip = y < 0 || x > x1;
-                Q_ASSERT(skip || x >= 0 && x < devRect.width() && y < devRect.height());
+                Q_ASSERT(skip || (x >= 0 && x < devRect.width() && y < devRect.height()));
                 if (inDash && !skip) {
                     if (current == NSPANS) {
                         span_func(NSPANS, spans, data);

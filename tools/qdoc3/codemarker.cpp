@@ -113,7 +113,7 @@ CodeMarker *CodeMarker::markerForFileName( const QString& fileName )
 {
     CodeMarker *defaultMarker = markerForLanguage( defaultLang );
     int dot = -1;
-    while ((dot = fileName.indexOf(QLatin1Char('.'), dot + 1)) != -1) {
+    while ((dot = fileName.lastIndexOf(QLatin1Char('.'), dot)) != -1) {
 	QString ext = fileName.mid( dot + 1 );
 	if ( defaultMarker != 0 && defaultMarker->recognizeExtension(ext) )
 	    return defaultMarker;
@@ -123,6 +123,7 @@ CodeMarker *CodeMarker::markerForFileName( const QString& fileName )
 		return *m;
 	    ++m;
 	}
+        --dot;
     }
     return defaultMarker;
 }

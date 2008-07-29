@@ -89,19 +89,16 @@ QVFbView::QVFbView(int id, int w, int h, int d, Rotation r, QWidget *parent)
           viewdepth(d), viewFormat(DefaultFormat), rsh(0), gsh(0), bsh(0), rmax(15), gmax(15), bmax(15),
         contentsWidth(w), contentsHeight(h), gred(1.0), ggreen(1.0), gblue(1.0),
         gammatable(0), refreshRate(30), animation(0),
-        hzm(1.0), vzm(1.0), mView(0),
+        hzm(0.0), vzm(0.0), mView(0),
         emulateTouchscreen(false), emulateLcdScreen(false), rotation(r)
 {
-    int _w = (rotation & 0x1) ? h : w;
-    int _h = (rotation & 0x1) ? w : h;
-
     switch(qvfb_protocol) {
     default:
     case 0:
-        mView = new QShMemViewProtocol(id, QSize(_w, _h), d, this);
+        mView = new QShMemViewProtocol(id, QSize(w, h), d, this);
         break;
     case 1:
-        mView = new QMMapViewProtocol(id, QSize(_w, _h), d, this);
+        mView = new QMMapViewProtocol(id, QSize(w, h), d, this);
         break;
     }
 
@@ -113,7 +110,7 @@ QVFbView::QVFbView(int id, int w, int h, int d, Rotation r, QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NoSystemBackground);
 
-    resize(contentsWidth, contentsHeight);
+    setZoom(1.0,1.0);
 
     setGamma(1.0,1.0,1.0);
     mView->setRate(30);
@@ -215,12 +212,12 @@ int QVFbView::displayId() const
 
 int QVFbView::displayWidth() const
 {
-    return ((int)rotation & 0x01) ? mView->height() : mView->width();
+    return mView->width();
 }
 
 int QVFbView::displayHeight() const
 {
-    return ((int)rotation & 0x01) ? mView->width(): mView->height();
+    return mView->height();
 }
 
 int QVFbView::displayDepth() const
@@ -247,13 +244,26 @@ void QVFbView::setZoom(double hz, double vz)
 
         contentsWidth = int(displayWidth()*hz);
         contentsHeight = int(displayHeight()*vz);
+        if (rotation & 1)
+            qSwap(contentsWidth,contentsHeight);
         resize(contentsWidth, contentsHeight);
 
-	updateGeometry();
-	qApp->sendPostedEvents();
-	topLevelWidget()->adjustSize();
-	update();
+        if (isVisible()) {
+            updateGeometry();
+            qApp->sendPostedEvents();
+            topLevelWidget()->adjustSize();
+            update();
+        }
     }
+}
+
+void QVFbView::setRotation(QVFbView::Rotation r)
+{
+    rotation = r;
+    // Force update...
+    double ohzm = hzm;
+    hzm=0.0;
+    setZoom(ohzm,vzm);
 }
 
 static QRect mapToDevice(const QRect &r, const QSize &s, QVFbView::Rotation rotation)
@@ -267,25 +277,30 @@ static QRect mapToDevice(const QRect &r, const QSize &s, QVFbView::Rotation rota
     switch (rotation) {
     case QVFbView::Rot90:
         return QRect(
-            QPoint(y1, w - x1 - 1),
-            QPoint(y2, w - x2 - 1));
+            QPoint(y1, w - x1),
+            QPoint(y2, w - x2)).normalized();
     case QVFbView::Rot180:
         return QRect(
-            QPoint(w - x1 - 1, h - y1 - 1),
-            QPoint(w - x2 - 1, h - y2 - 1));
+            QPoint(w - x1, h - y1),
+            QPoint(w - x2, h - y2)).normalized();
     case QVFbView::Rot270:
         return QRect(
-            QPoint(h - y1 - 1, x1),
-            QPoint(h - y2 - 1, x2));
+            QPoint(h - y1, x1),
+            QPoint(h - y2, x2)).normalized();
     default:
         break;
     }
     return r;
 }
 
+static QRect mapFromDevice(const QRect &r, const QSize &s, QVFbView::Rotation rotation)
+{
+    return mapToDevice(r,s,QVFbView::Rotation(4-(int)rotation));
+}
+
 void QVFbView::sendMouseData(const QPoint &pos, int buttons, int wheel)
 {
-    QPoint p = mapToDevice(QRect(pos,QSize(1,1)), QSize(displayWidth(), displayHeight()), rotation).topLeft();
+    QPoint p = mapToDevice(QRect(pos,QSize(1,1)), QSize(int(width()/hzm), int(height()/vzm)), rotation).topLeft();
     mView->sendMouseData(p, buttons, wheel);
 }
 
@@ -308,7 +323,7 @@ void QVFbView::refreshDisplay(const QRect &r)
     }
     if (!r.isNull()) {
         if (hzm == 1.0 && vzm == 1.0) // hw: workaround for 4.3.1
-            update(r);
+            update(mapFromDevice(r, QSize(displayWidth(), displayHeight()), rotation));
         else
             update();
     }
@@ -653,7 +668,7 @@ void QVFbView::drawScreen(const QRect &rect)
 
 void QVFbView::paintEvent(QPaintEvent *e)
 {
-    drawScreen(e->rect());
+    drawScreen(mapToDevice(e->rect(),QSize(int(width()/hzm), int(height()/vzm)),rotation));
 }
 
 void QVFbView::mousePressEvent(QMouseEvent *e)

@@ -78,7 +78,7 @@ static void printArg(const QVariant &v)
         else if (arg.currentSignature() == QLatin1String("a{sv}"))
             printArg(qdbus_cast<QVariantMap>(arg));
         else
-            printf("qdbus: I don't know how to display an argument of type '%s'",
+            printf("qdbus: I don't know how to display an argument of type '%s'\n",
                    qPrintable(arg.currentSignature()));
     } else {
         printf("%s\n", qPrintable(v.toString()));

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/util/qundostack.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/util/qundostack.cpp -->
 <head>
   <title>Qt 4.4: QUndoStack Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -161,12 +161,12 @@
 <pre>     stack.beginMacro(&quot;insert red text&quot;);
      stack.push(new InsertText(document, idx, text));
      stack.push(new SetColor(document, idx, text.length(), Qt::red));
-     stack.endMacro(); // indexChanged() is emitted</pre>
+     stack.endMacro(); <span class="comment">// indexChanged() is emitted</span></pre>
 <p>This code is equivalent to:</p>
-<pre>     QUndoCommand *insertRed = new QUndoCommand(); // an empty command
+<pre>     QUndoCommand *insertRed = new QUndoCommand(); <span class="comment">// an empty command</span>
      insertRed-&gt;setText(&quot;insert red text&quot;);
 
-     new InsertText(document, idx, text, insertRed); // becomes child of insertRed
+     new InsertText(document, idx, text, insertRed); <span class="comment">// becomes child of insertRed</span>
      new SetColor(document, idx, text.length(), Qt::red, insertRed);
 
      stack.push(insertRed);</pre>
@@ -208,6 +208,7 @@
 <h3 class="fn"><a name="command"></a>const <a href="qundocommand.html">QUndoCommand</a> * QUndoStack::command ( int <i>index</i> ) const</h3>
 <p>Returns a const pointer to the command at <i>index</i>.</p>
 <p>This function returns a const pointer, because modifying a command, once it has been pushed onto the stack and executed, almost always causes corruption of the state of the document, if the command is later undone or redone.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qundocommand.html#child">QUndoCommand::child</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoStack/count" />
 <h3 class="fn"><a name="count"></a>int QUndoStack::count () const</h3>
@@ -292,6 +293,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

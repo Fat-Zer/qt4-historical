@@ -1715,8 +1715,8 @@ bool QXmlStreamReaderPrivate::parse()
                     QStringRef namespacePrefix = symString(attribute.key);
                     QStringRef namespaceUri = symString(attribute.value);
                     attributeStack.pop();
-                    if ((namespacePrefix == QLatin1String("xml")
-                         ^ namespaceUri == QLatin1String("http://www.w3.org/XML/1998/namespace"))
+                    if (((namespacePrefix == QLatin1String("xml"))
+                         ^ (namespaceUri == QLatin1String("http://www.w3.org/XML/1998/namespace")))
                         || namespaceUri == QLatin1String("http://www.w3.org/2000/xmlns/")
                         || namespaceUri.isEmpty()
                         || namespacePrefix == QLatin1String("xmlns"))

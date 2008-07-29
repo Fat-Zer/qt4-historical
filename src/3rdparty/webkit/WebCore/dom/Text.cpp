@@ -53,7 +53,7 @@ Text::~Text()
 {
 }
 
-Text *Text::splitText(unsigned offset, ExceptionCode& ec)
+Text *Text::splitText(const unsigned offset, ExceptionCode& ec)
 {
     ec = 0;
 

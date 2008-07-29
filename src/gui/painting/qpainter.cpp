@@ -4565,6 +4565,11 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
     if (sh <= 0)
         sh = pm.height() - sy;
 
+    if (w < 0)
+        w = sw;
+    if (h < 0)
+        h = sh;
+
     if (sx < 0) {
         qreal w_ratio = sx * w/sw;
         x -= w_ratio;
@@ -4594,12 +4599,6 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
         sh -= delta;
         h -= h_ratio;
     }
-
-
-    if (w < 0)
-        w = sw;
-    if (h < 0)
-        h = sh;
 
     if (w == 0 || h == 0 || sw <= 0 || sh <= 0)
         return;
@@ -4777,6 +4776,11 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
     if (sh <= 0)
         sh = image.height() - sy;
 
+    if (w < 0)
+        w = sw;
+    if (h < 0)
+        h = sh;
+
     if (sx < 0) {
         qreal w_ratio = sx * w/sw;
         x -= w_ratio;
@@ -4806,12 +4810,6 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
         sh -= delta;
         h -= h_ratio;
     }
-
-
-    if (w < 0)
-        w = sw;
-    if (h < 0)
-        h = sh;
 
     if (w == 0 || h == 0 || sw <= 0 || sh <= 0)
         return;
@@ -6365,13 +6363,15 @@ void QPainter::drawCubicBezier(const QPolygon &a, int index)
 
 struct QPaintDeviceRedirection
 {
-    QPaintDeviceRedirection() : device(0), replacement(0) {}
+    QPaintDeviceRedirection() : device(0), replacement(0), internalWidgetRedirectionIndex(-1) {}
     QPaintDeviceRedirection(const QPaintDevice *device, QPaintDevice *replacement,
-                            const QPoint& offset)
-        : device(device), replacement(replacement), offset(offset) { }
+                            const QPoint& offset, int internalWidgetRedirectionIndex)
+        : device(device), replacement(replacement), offset(offset),
+          internalWidgetRedirectionIndex(internalWidgetRedirectionIndex) { }
     const QPaintDevice *device;
     QPaintDevice *replacement;
     QPoint offset;
+    int internalWidgetRedirectionIndex;
     bool operator==(const QPaintDevice *pdev) const { return device == pdev; }
     Q_DUMMY_COMPARISON_OPERATOR(QPaintDeviceRedirection)
 };
@@ -6404,11 +6404,18 @@ void QPainter::setRedirected(const QPaintDevice *device,
 {
     Q_ASSERT(device != 0);
 
+    bool hadInternalWidgetRedirection = false;
     if (device->devType() == QInternal::Widget) {
         const QWidgetPrivate *widgetPrivate = static_cast<const QWidget *>(device)->d_func();
         // This is the case when the widget is in a paint event.
-        if (widgetPrivate->redirectDev)
+        if (widgetPrivate->redirectDev) {
+            // Remove internal redirection and put it back into the global redirection list.
+            QPoint oldOffset;
+            QPaintDevice *oldReplacement = widgetPrivate->redirected(&oldOffset);
             const_cast<QWidgetPrivate *>(widgetPrivate)->restoreRedirected();
+            setRedirected(device, oldReplacement, oldOffset);
+            hadInternalWidgetRedirection = true;
+        }
     }
 
     QPoint roffset;
@@ -6417,9 +6424,9 @@ void QPainter::setRedirected(const QPaintDevice *device,
     QMutexLocker locker(globalRedirectionsMutex());
     QPaintDeviceRedirectionList *redirections = globalRedirections();
     Q_ASSERT(redirections != 0);
-    *redirections += QPaintDeviceRedirection(device, rdev ? rdev : replacement, offset + roffset);
+    *redirections += QPaintDeviceRedirection(device, rdev ? rdev : replacement, offset + roffset,
+                                             hadInternalWidgetRedirection ? redirections->size() - 1 : -1);
 }
-
 
 /*!
     \threadsafe
@@ -6437,7 +6444,19 @@ void QPainter::restoreRedirected(const QPaintDevice *device)
     Q_ASSERT(redirections != 0);
     for (int i = redirections->size()-1; i >= 0; --i) {
         if (redirections->at(i) == device) {
+            const int internalWidgetRedirectionIndex = redirections->at(i).internalWidgetRedirectionIndex;
             redirections->removeAt(i);
+            // Restore the internal widget redirection, i.e. remove it from the global
+            // redirection list and put it back into QWidgetPrivate. The index is only set when
+            // someone call QPainter::setRedirected in a widget's paint event and we internally
+            // have a redirection set (typically set in QWidgetPrivate::drawWidget).
+            if (internalWidgetRedirectionIndex >= 0) {
+                Q_ASSERT(internalWidgetRedirectionIndex < redirections->size());
+                const QPaintDeviceRedirection &redirectionDevice = redirections->at(internalWidgetRedirectionIndex);
+                QWidget *widget = static_cast<QWidget *>(const_cast<QPaintDevice *>(device));
+                widget->d_func()->setRedirected(redirectionDevice.replacement, redirectionDevice.offset);
+                redirections->removeAt(internalWidgetRedirectionIndex);
+            }
             return;
         }
     }

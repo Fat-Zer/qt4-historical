@@ -2326,11 +2326,24 @@ without having to write code themselves.
                                      called and return the result of this test.
     \endtable
 
-    If the custom widget does not provide a reasonable size hint, it is necessary
-    to specify a default geometry in the string returned by the \c domXml() function
-    in your subclass. For example, the \c AnalogClockPlugin
-    provided by the \l{designer/customwidgetplugin}{Custom Widget Plugin} example,
-    defines a default widgetgeometry in the following way:
+    \section2 Notes on the \c{domXml()} Function
+
+    The \c{domXml()} function returns a \c{.ui} file snippet that is used by
+    \QD's widget factory to create a custom widget and its applicable
+    properties.
+
+    Since Qt 4.4, \QD's widget box allows for a complete UI file describing
+    \bold one custom widget. The UI file can be loaded using the \c{<ui>} tag.
+    Specifying the <ui> tag allows for adding the <customwidget> element
+    that contains additional information for custom widgets. The \c{<widget>}
+    tag is sufficient if no additional information is required
+
+    If the custom widget does not provide a reasonable size hint, it is
+    necessary to specify a default geometry in the string returned by the
+    \c domXml() function in your subclass. For example, the
+    \c AnalogClockPlugin provided by the \l{designer/customwidgetplugin}
+    {Custom Widget Plugin} example, defines a default widgetgeometry in the
+    following way:
 
     \dots
     \snippet examples/designer/customwidgetplugin/customwidgetplugin.cpp 11
@@ -2341,6 +2354,12 @@ without having to write code themselves.
     can still be used by other widgets in the form. This feature is used to hide
     widgets that should not be explicitly created by the user, but which are
     required by other widgets.
+
+    If you would like to use a container widget that is not a subclass of
+    the containers provided in \QD, but the container is still based on the
+    notion of \e{Current Page}, you need to provide a container extension and
+    tell \QD which method to use to add the pages. This can be done using the
+    \c{<addpagemethod>} XML tag.
 
     \section1 Plugin Requirements
 

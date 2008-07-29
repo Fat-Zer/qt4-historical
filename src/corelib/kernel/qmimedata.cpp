@@ -113,13 +113,13 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Ty
     // provide more conversion possiblities than just what QVariant provides
 
     // URLs can be lists as well...
-    if (type == QVariant::Url && data.type() == QVariant::List
-        || type == QVariant::List && data.type() == QVariant::Url)
+    if ((type == QVariant::Url && data.type() == QVariant::List)
+        || (type == QVariant::List && data.type() == QVariant::Url))
         return data;
 
     // images and pixmaps are interchangeable
-    if (type == QVariant::Pixmap && data.type() == QVariant::Image
-        || type == QVariant::Image && data.type() == QVariant::Pixmap)
+    if ((type == QVariant::Pixmap && data.type() == QVariant::Image)
+        || (type == QVariant::Image && data.type() == QVariant::Pixmap))
         return data;
 
     if (data.type() == QVariant::ByteArray) {
@@ -610,6 +610,8 @@ void QMimeData::clear()
 }
 
 /*!
+    \since 4.4
+
     Removes the data entry for \a mimeType in the object.
 */
 void QMimeData::removeFormat(const QString &mimeType)

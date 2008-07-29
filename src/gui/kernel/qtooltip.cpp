@@ -102,6 +102,9 @@ QT_BEGIN_NAMESPACE
     display, isVisible() returns true and text() the currently visible
     text.
 
+    \note Tool tips use the inactive color group of QPalette, because tool
+    tips are not active windows.
+
     \sa QWidget::toolTip, QAction::toolTip, {Tool Tips Example}
 */
 
@@ -435,6 +438,8 @@ void QToolTip::showText(const QPoint &pos, const QString &text, QWidget *w)
 
 
 /*!
+  \since 4.4
+
   Returns true if this tooltip is currently shown.
 
   \sa showText()
@@ -445,6 +450,8 @@ bool QToolTip::isVisible()
 }
 
 /*!
+  \since 4.4
+
   Returns the tooltip text, if a tooltip is visible, or an
   empty string if a tooltip is not visible.
  */
@@ -460,6 +467,9 @@ Q_GLOBAL_STATIC(QPalette, tooltip_palette)
 
 /*!
     Returns the palette used to render tooltips.
+
+    \note Tool tips use the inactive color group of QPalette, because tool
+    tips are not active windows.
 */
 QPalette QToolTip::palette()
 {
@@ -480,6 +490,9 @@ QFont QToolTip::font()
     \since 4.2
 
     Sets the \a palette used to render tooltips.
+
+    \note Tool tips use the inactive color group of QPalette, because tool
+    tips are not active windows.
 */
 void QToolTip::setPalette(const QPalette &palette)
 {

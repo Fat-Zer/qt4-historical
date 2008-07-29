@@ -187,7 +187,7 @@
      p.setPen(Qt::black);
      p.drawRect(r);
      p.drawText(rect(), Qt::AlignLeft|Qt::AlignTop, text);
- #endif <span class="comment">//</span> DEBUG_SIZEHINTS
+ #endif <span class="comment">// DEBUG_SIZEHINTS</span>
  }
 
  static QSpinBox *createSpinBox(int value, QWidget *parent, int max = 1000)
@@ -426,7 +426,7 @@
      } else {
          floatableAction-&gt;setChecked(features() &amp; QDockWidget::DockWidgetFloatable);
          floatingAction-&gt;setChecked(isWindow());
-         <span class="comment">//</span> done after floating, to get 'floatable' correctly initialized
+         <span class="comment">// done after floating, to get 'floatable' correctly initialized</span>
          movableAction-&gt;setChecked(features() &amp; QDockWidget::DockWidgetMovable);
          verticalTitleBarAction
              -&gt;setChecked(features() &amp; QDockWidget::DockWidgetVerticalTitleBar);
@@ -471,8 +471,8 @@
      splitVMenu-&gt;clear();
      QList&lt;ColorSwatch*&gt; dock_list = qFindChildren&lt;ColorSwatch*&gt;(mainWindow);
      foreach (ColorSwatch *dock, dock_list) {
-<span class="comment"> //</span>        if (!dock-&gt;isVisible() || dock-&gt;isFloating())
-<span class="comment"> //</span>            continue;
+<span class="comment"> //        if (</span>!dock-&gt;isVisible() || dock-&gt;isFloating())
+<span class="comment"> //            continue;</span>
          tabMenu-&gt;addAction(dock-&gt;objectName());
          splitHMenu-&gt;addAction(dock-&gt;objectName());
          splitVMenu-&gt;addAction(dock-&gt;objectName());
@@ -603,6 +603,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

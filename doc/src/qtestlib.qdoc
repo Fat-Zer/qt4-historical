@@ -531,6 +531,9 @@
     QLineEdit. Then we simulate writing "hello world" in the line edit
     using the \l QTest::keyClicks() function.
 
+    \note The widget must also be shown in order to correctly test keyboard
+    shortcuts.
+
     QTest::keyClicks() simulates clicking a sequence of keys on a
     widget. Optionally, a keyboard modifier can be specified as well
     as a delay (in milliseconds) of the test after each key click. In

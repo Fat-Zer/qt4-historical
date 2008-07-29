@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/sql/q3sqlpropertymap.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/sql/q3sqlpropertymap.cpp -->
 <head>
   <title>Qt 4.4: Q3SqlPropertyMap Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -49,24 +49,24 @@
      Q3SqlForm        *myForm = new Q3SqlForm(this);
      MyEditor myEditor(this);
 
-     // Set the Q3SqlForm's record buffer to the update buffer of
-     // a pre-existing Q3SqlCursor called 'cur'.
+     <span class="comment">// Set the Q3SqlForm's record buffer to the update buffer of</span>
+     <span class="comment">// a pre-existing Q3SqlCursor called 'cur'.</span>
      myForm-&gt;setRecord(cur-&gt;primeUpdate());
 
-     // Install the customized map
+     <span class="comment">// Install the customized map</span>
      myMap-&gt;insert(&quot;MyEditor&quot;, &quot;content&quot;);
-     myForm-&gt;installPropertyMap(myMap); // myForm now owns myMap
+     myForm-&gt;installPropertyMap(myMap); <span class="comment">// myForm now owns myMap</span>
      ...
-     // Insert a field into the form that uses a myEditor to edit the
-     // field 'somefield'
+     <span class="comment">// Insert a field into the form that uses a myEditor to edit the</span>
+     <span class="comment">// field 'somefield'</span>
      myForm-&gt;insert(&amp;myEditor, &quot;somefield&quot;);
 
-     // Update myEditor with the value from the mapped database field
+     <span class="comment">// Update myEditor with the value from the mapped database field</span>
      myForm-&gt;readFields();
      ...
-     // Let the user edit the form
+     <span class="comment">// Let the user edit the form</span>
      ...
-     // Update the database fields with the values in the form
+     <span class="comment">// Update the database fields with the values in the form</span>
      myForm-&gt;writeFields();
      ...</pre>
 <p>You can also replace the global Q3SqlPropertyMap that is used by default. (Bear in mind that Q3SqlPropertyMap takes ownership of the new default map.)</p>
@@ -121,6 +121,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

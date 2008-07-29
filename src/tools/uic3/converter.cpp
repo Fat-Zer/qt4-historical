@@ -484,7 +484,7 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget, bool implicitIncludes)
             customWidget->setElementHeader(domHeader);
             if (warnHeaderGeneration) {
                 const QString msg = QString::fromUtf8("Warning: generated header '%1' for class '%2'.").arg(header).arg(customClass);
-                qWarning(msg.toUtf8().constData());
+                qWarning("%s", qPrintable(msg));
             }
         }
         ui_customwidget_list.append(customWidget);

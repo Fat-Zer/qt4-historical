@@ -62,6 +62,8 @@ QT_USE_NAMESPACE
   Q_IMPORT_PLUGIN(qsqlite)
 #endif
 
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -73,7 +75,10 @@ int main(int argc, char *argv[])
         return -1;
 
     if (cmd.registerRequest() != CmdLineParser::None) {
-        QHelpEngineCore help(cmd.collectionFile());
+        QString colFile = cmd.collectionFile();
+        if (colFile.isEmpty())
+            colFile = MainWindow::defaultHelpCollectionFileName();
+        QHelpEngineCore help(colFile);
         help.setupData();
         if (cmd.registerRequest() == CmdLineParser::Register) {
             if (!help.registerDocumentation(cmd.helpFile())) {
@@ -96,6 +101,7 @@ int main(int argc, char *argv[])
                     false);
             }
         }
+        help.setCustomValue(QLatin1String("DocUpdate"), true);
         return 0;
     }
 
@@ -107,27 +113,32 @@ int main(int argc, char *argv[])
             return -1;
         }
         QString fileName = QFileInfo(cmd.collectionFile()).fileName();
-        QString dir = he.customValue(QLatin1String("CacheDirectory"),
-            QString()).toString();
+        QString dir = MainWindow::collectionFileDirectory(false,
+            he.customValue(QLatin1String("CacheDirectory"), QString()).toString());
 
-        QString dataDir = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-        if (dataDir.isEmpty()) {
-            if (dir.isEmpty())
-                dir = QDir::homePath() + QDir::separator() + QLatin1String(".assistant");
-            else
-                dir = QDir::homePath() + QLatin1String("/.") + QDir::cleanPath(dir);
-        } else {
-            if (dir.isEmpty())
-                dir = dataDir + QLatin1String("/Trolltech/Assistant");
-            else
-                dir = dataDir + QDir::separator() + dir;
-        }
-                
         QFileInfo fi(dir + QDir::separator() + fileName);
         if (!fi.exists()
             && !he.copyCollectionFile(fi.absoluteFilePath())) {
             cmd.showMessage(he.error(), true);                
             return -1;
+        }
+
+        if (he.customValue(QLatin1String("DocUpdate"), false).toBool()) {
+            QStringList registeredDocs = he.registeredDocumentations();
+            QHelpEngineCore userHelpEngine(fi.absoluteFilePath());
+            if (userHelpEngine.setupData()) {
+                QStringList userDocs = userHelpEngine.registeredDocumentations();
+                foreach (const QString &doc, registeredDocs) {
+                    if (!userDocs.contains(doc))
+                        userHelpEngine.registerDocumentation(he.documentationFileName(doc));
+                }
+                foreach (const QString &doc, userDocs) {
+                    if (!registeredDocs.contains(doc)
+                        && !doc.startsWith(QLatin1String("com.trolltech.com.assistantinternal_")))
+                        userHelpEngine.unregisterDocumentation(doc);
+                }
+                he.removeCustomValue(QLatin1String("DocUpdate"));
+            }
         }
         cmd.setCollectionFile(fi.absoluteFilePath());
     }

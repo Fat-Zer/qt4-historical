@@ -64,6 +64,7 @@
 
     \reentrant
     \ingroup io
+    \ingroup ssl
     \module network
 
     QSslSocket establishes a secure, encrypted TCP connection you can
@@ -184,6 +185,7 @@
 
 /*!
     \enum QSslSocket::PeerVerifyMode
+    \since 4.4
 
     Describes the peer verification modes for QSslSocket. The default mode is
     AutoVerifyPeer, which selects an appropriate mode depending on the
@@ -233,6 +235,7 @@
 
 /*!
     \fn QSslSocket::encryptedBytesWritten(qint64 written)
+    \since 4.4
 
     This signal is emitted when QSslSocket writes its encrypted data to the
     network. The \a written parameter contains the number of bytes that were
@@ -243,7 +246,8 @@
 
 /*!
     \fn void QSslSocket::peerVerifyError(const QSslError &error)
-    
+    \since 4.4
+
     QSslSocket can emit this signal several times during the SSL handshake,
     before encryption has been established, to indicate that an error has
     occurred while establishing the identity of the peer. The \a error is
@@ -278,6 +282,8 @@
     
     Note: You cannot use Qt::QueuedConnection when connecting to this signal,
     or calling QSslSocket::ignoreSslErrors() will have no effect.
+
+    \sa peerVerifyError()
 */
 
 #include "qsslcipher.h"
@@ -503,6 +509,8 @@ void QSslSocket::setProtocol(QSsl::SslProtocol protocol)
 }
 
 /*!
+    \since 4.4
+
     Returns the socket's verify mode. This mode mode decides whether
     QSslSocket should request a certificate from the peer (i.e., the client
     requests a certificate from the server, or a server requesting a
@@ -521,6 +529,8 @@ QSslSocket::PeerVerifyMode QSslSocket::peerVerifyMode() const
 }
 
 /*!
+    \since 4.4
+
     Sets the socket's verify mode to \a mode. This mode decides whether
     QSslSocket should request a certificate from the peer (i.e., the client
     requests a certificate from the server, or a server requesting a
@@ -542,6 +552,8 @@ void QSslSocket::setPeerVerifyMode(QSslSocket::PeerVerifyMode mode)
 }
 
 /*!
+    \since 4.4
+
     Returns the maximum number of certificates in the peer's certificate chain
     to be checked during the SSL handshake phase, or 0 (the default) if no
     maximum depth has been set, indicating that the whole certificate chain
@@ -559,6 +571,8 @@ int QSslSocket::peerVerifyDepth() const
 }
 
 /*!
+    \since 4.4
+
     Sets the maximum number of certificates in the peer's certificate chain to
     be checked during the SSL handshake phase, to \a depth. Setting a depth of
     0 means that no maximum depth is set, indicating that the whole
@@ -608,6 +622,8 @@ qint64 QSslSocket::bytesToWrite() const
 }
 
 /*!
+    \since 4.4
+
     Returns the number of encrypted bytes that are awaiting decryption.
     Normally, this function will return 0 because QSslSocket decrypts its
     incoming data as soon as it can.
@@ -621,6 +637,8 @@ qint64 QSslSocket::encryptedBytesAvailable() const
 }
 
 /*!
+    \since 4.4
+
     Returns the number of encrypted bytes that are waiting to be written to
     the network.
 */
@@ -697,6 +715,8 @@ bool QSslSocket::flush()
 }
 
 /*!
+    \since 4.4
+
     Sets the size of QSslSocket's internal read buffer to be \a size bytes. 
 */
 void QSslSocket::setReadBufferSize(qint64 size)
@@ -732,6 +752,8 @@ void QSslSocket::abort()
 }
 
 /*!
+    \since 4.4
+
     Returns the socket's SSL configuration state. The default SSL
     configuration of a socket is to use the default ciphers,
     default CA certificates, no local private key or certificate.
@@ -755,6 +777,8 @@ QSslConfiguration QSslSocket::sslConfiguration() const
 }
 
 /*!
+    \since 4.4
+
     Sets the socket's SSL configuration to be the contents of \a configuration.
     This function sets the local certificate, the ciphers, the private key and the CA
     certificates to those stored in \a configuration.
@@ -1342,24 +1366,38 @@ bool QSslSocket::waitForReadyRead(int msecs)
     if (d->mode == UnencryptedMode && !d->autoStartHandshake)
         return d->plainSocket->waitForReadyRead(msecs);
 
-    int oldReadBufferSize = d->readBuffer.size();
-    
+    // This function must return true if and only if readyRead() *was* emitted.
+    // So we initialize "readyReadEmitted" to false and check if it was set to true.
+    // waitForReadyRead() could be called recursively, so we can't use the same variable
+    // (the inner waitForReadyRead() may fail, but the outer one still succeeded)
+    bool readyReadEmitted = false;
+    bool *previousReadyReadEmittedPointer = d->readyReadEmittedPointer;
+    d->readyReadEmittedPointer = &readyReadEmitted;
+
     QTime stopWatch;
     stopWatch.start();
 
     if (!d->connectionEncrypted) {
         // Wait until we've entered encrypted mode, or until a failure occurs.
-        if (!waitForEncrypted(msecs))
+        if (!waitForEncrypted(msecs)) {
+            d->readyReadEmittedPointer = previousReadyReadEmittedPointer;
             return false;
-    }
-
-    while (d->plainSocket->waitForReadyRead(qt_timeout_value(msecs, stopWatch.elapsed()))) {
-        if (d->readBuffer.size() != oldReadBufferSize) {
-            // If the read buffer has grown, readyRead() must have been emitted.
-            return true;
         }
     }
-    return false;
+
+    if (!d->writeBuffer.isEmpty()) {
+        // empty our cleartext write buffer first
+        d->transmit();
+    }
+
+    // test readyReadEmitted first because either operation above
+    // (waitForEncrypted or transmit) may have set it
+    while (!readyReadEmitted &&
+           d->plainSocket->waitForReadyRead(qt_timeout_value(msecs, stopWatch.elapsed()))) {
+    }
+
+    d->readyReadEmittedPointer = previousReadyReadEmittedPointer;
+    return readyReadEmitted;
 }
 
 /*!
@@ -1381,8 +1419,10 @@ bool QSslSocket::waitForBytesWritten(int msecs)
         if (!waitForEncrypted(msecs))
             return false;
     }
-    if (!d->writeBuffer.isEmpty())
+    if (!d->writeBuffer.isEmpty()) {
+        // empty our cleartext write buffer first
         d->transmit();
+    }
 
     return d->plainSocket->waitForBytesWritten(qt_timeout_value(msecs, stopWatch.elapsed()));
 }
@@ -1564,7 +1604,7 @@ void QSslSocket::connectToHostImplementation(const QString &hostName, quint16 po
         d->plainSocket->setProxy(proxy());
 #endif
     }
-    setOpenMode(openMode);
+    QIODevice::open(openMode);
     d->plainSocket->connectToHost(hostName, port, openMode);
     d->cachedSocketDescriptor = d->plainSocket->socketDescriptor();
 }
@@ -1657,7 +1697,7 @@ qint64 QSslSocket::writeData(const char *data, qint64 len)
     \internal
 */
 QSslSocketPrivate::QSslSocketPrivate()
-    : initialized(false), plainSocket(0)
+    : initialized(false), readyReadEmittedPointer(0), plainSocket(0)
 {
     QSslConfigurationPrivate::deepCopyDefaultConfiguration(&configuration);
 }
@@ -1854,8 +1894,10 @@ void QSslSocketPrivate::createPlainSocket(QIODevice::OpenMode openMode)
     q->connect(plainSocket, SIGNAL(bytesWritten(qint64)),
                q, SLOT(_q_bytesWrittenSlot(qint64)),
                Qt::DirectConnection);
+#ifndef QT_NO_NETWORKPROXY
     q->connect(plainSocket, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
                q, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
+#endif
 
     readBuffer.clear();
     writeBuffer.clear();
@@ -1962,6 +2004,8 @@ void QSslSocketPrivate::_q_readyReadSlot()
     qDebug() << "QSslSocket::_q_readyReadSlot() -" << plainSocket->bytesAvailable() << "bytes available";
 #endif
     if (mode == QSslSocket::UnencryptedMode) {
+        if (readyReadEmittedPointer)
+            *readyReadEmittedPointer = true;
         emit q->readyRead();
         return;
     }

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qmainwindow.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qmainwindow.cpp -->
 <head>
   <title>Qt 4.4: QMainWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -280,7 +280,7 @@
 <li>QToolBars in this toolbar area are not movable and you cannot drag other toolbars to it</li>
 <li>Toolbar breaks are not respected or preserved</li>
 <li>Any custom widgets in the toolbar will not be shown if the toolbar becomes too small (only actions will be shown)</li>
-<li>If you call <a href="qwidget.html#showFullScreen">showFullScreen</a>() on the main window, the <a href="porting4.html#qtoolbar">QToolbar</a> will disappear since it is considered to be part of the title bar. You can work around this by doing the following by turning off the unified toolbar before you call showFullScrenn() and restore the value after you call <a href="qwidget.html#showNormal">showNormal</a>().</li>
+<li>If you call <a href="qwidget.html#showFullScreen">showFullScreen</a>() on the main window, the <a href="porting4.html#qtoolbar">QToolbar</a> will disappear since it is considered to be part of the title bar. You can work around this by turning off the unified toolbar before you call <a href="qwidget.html#showFullScreen">showFullScreen</a>() and restore the value after you call <a href="qwidget.html#showNormal">showNormal</a>().</li>
 </ul>
 <p>Setting this back to false will remove these restrictions.</p>
 <p>The <a href="qt.html#WidgetAttribute-enum">Qt::WA_MacBrushedMetal</a> attribute takes precedence over this property.</p>
@@ -351,6 +351,8 @@
 <a name="//apple_ref/cpp/instm/QMainWindow/menuBar" />
 <h3 class="fn"><a name="menuBar"></a><a href="qmenubar.html">QMenuBar</a> * QMainWindow::menuBar () const</h3>
 <p>Returns the menu bar for the main window. This function creates and returns an empty menu bar if the menu bar does not exist.</p>
+<p>If you want all windows in a Mac application to share one menu bar, don't use this function to create it, because the menu bar created here will have this <a href="qmainwindow.html">QMainWindow</a> as its parent. Instead, you must create a menu bar that does not have a parent, which you can then share among all the Mac windows. Create a parent-less menu bar this way:</p>
+<pre>         QMenuBar *menuBar = new QMenuBar(0);</pre>
 <p>See also <a href="qmainwindow.html#setMenuBar">setMenuBar</a>().</p>
 <a name="//apple_ref/cpp/instm/QMainWindow/menuWidget" />
 <h3 class="fn"><a name="menuWidget"></a><a href="qwidget.html">QWidget</a> * QMainWindow::menuWidget () const</h3>
@@ -368,6 +370,7 @@
 <p>Removes a toolbar break previously inserted before the toolbar specified by <i>before</i>.</p>
 <a name="//apple_ref/cpp/instm/QMainWindow/restoreDockWidget" />
 <h3 class="fn"><a name="restoreDockWidget"></a>bool QMainWindow::restoreDockWidget ( <a href="qdockwidget.html">QDockWidget</a> * <i>dockwidget</i> )</h3>
+<p>Restores the state of <i>dockwidget</i> if it is created after the call to <a href="qmainwindow.html#restoreState">restoreState</a>(). Returns true if the state was restored; otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QMainWindow/restoreState" />
 <h3 class="fn"><a name="restoreState"></a>bool QMainWindow::restoreState ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>state</i>, int <i>version</i> = 0 )</h3>
 <p>Restores the <i>state</i> of this mainwindow's toolbars and dockwidgets. The <i>version</i> number is compared with that stored in <i>state</i>. If they do not match, the mainwindow's state is left unchanged, and this function returns <tt>false</tt>; otherwise, the state is restored, and this function returns <tt>true</tt>.</p>
@@ -434,6 +437,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

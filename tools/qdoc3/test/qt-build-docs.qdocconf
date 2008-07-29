@@ -8,11 +8,14 @@ project                 = Qt
 description             = Qt Reference Documentation
 url                     = http://doc.trolltech.com/4.4
 
-edition.Console         = QtCore QtNetwork QtSql QtXml QtScript QtTest
-edition.Desktop         = QtCore QtGui QtNetwork QtOpenGL QtSql QtSvg QtXml QtScript \
-                          QtDesigner QtAssistant Qt3Support QAxContainer \
+edition.Console.modules = QtCore QtDBus QtNetwork QtScript QtSql QtXml \
+                          QtXmlPatterns QtTest
+edition.Desktop.modules = QtCore QtDBus QtGui QtNetwork QtOpenGL QtScript QtSql QtSvg \
+                          QtWebKit QtXml QtXmlPatterns Qt3Support QtHelp \
+                          QtDesigner QtAssistant QAxContainer Phonon \
                           QAxServer QtUiTools QtTest QtDBus
-edition.DesktopLight    = QtCore QtGui Qt3SupportLight QtTest
+edition.DesktopLight.modules = QtCore QtDBus QtGui Qt3SupportLight QtTest
+edition.DesktopLight.groups       = -graphicsview-api
 
 qhp.projects            = Qt
 
@@ -32,13 +35,13 @@ qhp.Qt.extraFiles          = classic.css \
                              images/dynamiclayouts-example.png \
                              images/stylesheet-coffee-plastique.png                             
 
-qhp.Qt.filterAttributes    = qt 4.4.0 qtrefdoc
-qhp.Qt.customFilters.Qt.name = Qt 4.4.0
-qhp.Qt.customFilters.Qt.filterAttributes = qt 4.4.0
+qhp.Qt.filterAttributes    = qt 4.4.1 qtrefdoc
+qhp.Qt.customFilters.Qt.name = Qt 4.4.1
+qhp.Qt.customFilters.Qt.filterAttributes = qt 4.4.1
 qhp.Qt.subprojects         = classes overviews examples
 qhp.Qt.subprojects.classes.title = Classes
 qhp.Qt.subprojects.classes.indexTitle = Qt's Classes
-qhp.Qt.subprojects.classes.selectors = class
+qhp.Qt.subprojects.classes.selectors = class fake:headerfile
 qhp.Qt.subprojects.overviews.title = Overviews
 qhp.Qt.subprojects.overviews.indexTitle = All Overviews and HOWTOs
 qhp.Qt.subprojects.overviews.selectors = fake:page,group,module
@@ -91,8 +94,11 @@ excludedirs             = $QT_SOURCE_TREE/src/3rdparty/clucene \
                           $QT_SOURCE_TREE/doc/src/snippets
 
 sources.fileextensions  = "*.cpp *.qdoc"
+examples.fileextensions = "*.cpp *.h *.js *.xq *.svg *.xml *.ui *.qhp *.qhcp"
+
 exampledirs             = $QT_SOURCE_TREE/doc/src \
                           $QT_SOURCE_TREE/examples \
+                          $QT_SOURCE_TREE/examples/tutorials \
                           $QT_SOURCE_TREE \
                           $QT_SOURCE_TREE/qmake/examples
 imagedirs               = $QT_SOURCE_TREE/doc/src/images \

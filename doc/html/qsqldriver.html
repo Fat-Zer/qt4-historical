@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/sql/kernel/qsqldriver.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/sql/kernel/qsqldriver.cpp -->
 <head>
   <title>Qt 4.4: QSqlDriver Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -209,9 +209,9 @@
 <pre>     QSqlDatabase db = ...;
      QVariant v = db.driver()-&gt;handle();
      if (v.isValid() &amp;&amp; qstrcmp(v.typeName(), &quot;sqlite3*&quot;)==0) {
-         // v.data() returns a pointer to the handle
+         <span class="comment">// v.data() returns a pointer to the handle</span>
          sqlite3 *handle = *static_cast&lt;sqlite3 **&gt;(v.data());
-         if (handle != 0) { // check that it is not NULL
+         if (handle != 0) { <span class="comment">// check that it is not NULL</span>
              ...
          }
      }</pre>
@@ -244,6 +244,7 @@
 <a name="//apple_ref/cpp/instm/QSqlDriver/notification" />
 <h3 class="fn"><a name="notification"></a>void QSqlDriver::notification ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the database posts an event notification that the driver subscribes to. <i>name</i> identifies the event notification.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qsqldriver.html#subscribeToNotification">subscribeToNotification</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlDriver/open" />
 <h3 class="fn"><a name="open"></a>bool QSqlDriver::open ( const <a href="qstring.html">QString</a> &amp; <i>db</i>, const <a href="qstring.html">QString</a> &amp; <i>user</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>password</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>host</i> = QString(), int <i>port</i> = -1, const <a href="qstring.html">QString</a> &amp; <i>options</i> = QString() )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
@@ -332,6 +333,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

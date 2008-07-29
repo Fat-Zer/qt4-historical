@@ -72,6 +72,12 @@
 #include <QtCore/qurl.h>
 #include <QtCore/qvarlengtharray.h>
 
+static void initNetworkResources()
+{
+    // Initialize resources
+    Q_INIT_RESOURCE(network);
+}
+
 QT_BEGIN_NAMESPACE
 
 // Useful defines
@@ -388,6 +394,9 @@ bool QSslSocketPrivate::ensureInitialized()
     if (!q_initialized) {
         q_initialized = true;
 
+        // Initialize resources
+        initNetworkResources();
+
         // Initialize OpenSSL.
         q_CRYPTO_set_id_callback(id_function);
         q_CRYPTO_set_locking_callback(locking_function);
@@ -644,6 +653,9 @@ void QSslSocketBackendPrivate::transmit()
 #endif
                 char *ptr = readBuffer.reserve(readBytes);
                 ::memcpy(ptr, data.data(), readBytes);
+
+                if (readyReadEmittedPointer)
+                    *readyReadEmittedPointer = true;
                 emit q->readyRead();
                 transmitting = true;
                 continue;
@@ -743,6 +755,10 @@ bool QSslSocketBackendPrivate::testConnection()
     errorList << lastErrors;
     _q_sslErrorList()->mutex.unlock();
 
+    // Connection aborted during handshake phase.
+    if (q->state() != QAbstractSocket::ConnectedState)
+        return false;
+
     // Check if we're encrypted or not.
     if (result <= 0) {
         switch (q_SSL_get_error(ssl, result)) {
@@ -797,14 +813,23 @@ bool QSslSocketBackendPrivate::testConnection()
             }
             if (!matched) {
                 // No matches in common names or alternate names.
-                errors << QSslError(QSslError::HostNameMismatch);
+                QSslError error(QSslError::HostNameMismatch);
+                errors << error;
+                emit q->peerVerifyError(error);
+                if (q->state() != QAbstractSocket::ConnectedState)
+                    return false;
             }
         }
     } else {
         // No peer certificate presented. Report as error if the socket
         // expected one.
-        if (!dontVerifyPeer)
-            errors << QSslError(QSslError::NoPeerCertificate);
+        if (!dontVerifyPeer) {
+            QSslError error(QSslError::NoPeerCertificate);
+            errors << error;
+            emit q->peerVerifyError(error);
+            if (q->state() != QAbstractSocket::ConnectedState)
+                return false;
+        }
     }
 
     // Translate errors from the error list into QSslErrors.

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qmdisubwindow.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qmdisubwindow.cpp -->
 <head>
   <title>Qt 4.4: QMdiSubWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -103,6 +103,7 @@
 <p>By default, each QMdiSubWindow is visible inside the MDI area viewport when moved around, but it is also possible to specify transparent window movement and resizing behavior, where only the outline of a subwindow is updated during these operations. The <a href="qmdisubwindow.html#setOption">setOption</a>() function is used to enable this behavior.</p>
 <p>The <a href="qmdisubwindow.html#isShaded">isShaded</a>() function detects whether the subwindow is currently shaded (i.e&#x2e;, the window is collapsed so that only the title bar is visible). To enter shaded mode, call <a href="qmdisubwindow.html#showShaded">showShaded</a>(). QMdiSubWindow emits the <a href="qmdisubwindow.html#windowStateChanged">windowStateChanged</a>() signal whenever the window state has changed (e.g&#x2e;, when the window becomes minimized, or is restored). It also emits <a href="qmdisubwindow.html#aboutToActivate">aboutToActivate</a>() before it is activated.</p>
 <p>In keyboard-interactive mode, the windows are moved and resized with the keyboard. You can enter this mode through the system menu of the window. The <a href="qmdisubwindow.html#keyboardSingleStep-prop">keyboardSingleStep</a> and <a href="qmdisubwindow.html#keyboardPageStep-prop">keyboardPageStep</a> properties control the distance the widget is moved or resized for each keypress event. When shift is pressed down page step is used; otherwise single step is used.</p>
+<p>You can also change the active window with the keyboard. By pressing the control and tab keys at the same time, the next (using the current <a href="qmdiarea.html#WindowOrder-enum">WindowOrder</a>) subwindow will be activated. By pressing control, shift, and tab, you will activate the previous window. This is equivalent to calling <a href="qmdiarea.html#activateNextSubWindow">activateNextSubWindow()</a> and <a href="qmdiarea.html#activatePreviousSubWindow">activatePreviousSubWindow()</a>. Note that these shortcuts overrides global shortcuts, but not the <a href="qmdiarea.html">QMdiArea</a>s shortcuts.</p>
 <p>See also <a href="qmdiarea.html">QMdiArea</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -171,6 +172,7 @@
 <a name="//apple_ref/cpp/instm/QMdiSubWindow/mdiArea" />
 <h3 class="fn"><a name="mdiArea"></a><a href="qmdiarea.html">QMdiArea</a> * QMdiSubWindow::mdiArea () const</h3>
 <p>Returns the area containing this sub-window, or 0 if there is none.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qmdiarea.html#addSubWindow">QMdiArea::addSubWindow</a>().</p>
 <a name="//apple_ref/cpp/instm/QMdiSubWindow/setOption" />
 <h3 class="fn"><a name="setOption"></a>void QMdiSubWindow::setOption ( <a href="qmdisubwindow.html#SubWindowOption-enum">SubWindowOption</a> <i>option</i>, bool <i>on</i> = true )</h3>
@@ -217,6 +219,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -108,8 +108,13 @@ void WriteIncludes::acceptUI(DomUI *node)
 
     add(QLatin1String("QButtonGroup")); // ### only if it is really necessary
 
-    if (m_uic->hasExternalPixmap() && m_uic->pixmapFunction() == QLatin1String("qPixmapFromMimeSource"))
+    if (m_uic->hasExternalPixmap() && m_uic->pixmapFunction() == QLatin1String("qPixmapFromMimeSource")) {
+#ifdef QT_NO_QT3_SUPPORT
+        qWarning("Warning: The form file has external pixmaps or qPixmapFromMimeSource() set as a pixmap function. "
+                 "This requires Qt 3 support, which is disabled. The resulting code will not compile.");
+#endif
         add(QLatin1String("Q3MimeSourceFactory"));
+    }
 
     if (m_uic->databaseInfo()->connections().size()) {
         add(QLatin1String("QSqlDatabase"));
@@ -188,8 +193,9 @@ void WriteIncludes::insertIncludeForClass(const QString &className, QString head
         header = lowerClassName;
         header += QLatin1String(".h");
         if (warnHeaderGeneration) {
-            const QString msg =  QString::fromUtf8("Warning: generated header '%1' for class '%2'.").arg(header).arg(className);
-            qWarning(msg.toUtf8().constData());
+            qWarning("Warning: generated header '%s' for class '%s'.", qPrintable(header),
+                     qPrintable(className));
+
         }
 
         global = true;

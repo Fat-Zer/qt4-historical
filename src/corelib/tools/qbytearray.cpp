@@ -385,11 +385,15 @@ static const quint16 crc_tbl[16] = {
     0xc60c, 0xd68d, 0xe70e, 0xf78f
 };
 
-/*! \relates QByteArray
+/*! 
+    \relates QByteArray
 
     Returns the CRC-16 checksum of the first \a len bytes of \a data.
 
     The checksum is independent of the byte order (endianness).
+
+    \note This function is a 16-bit cache conserving (16 entry table)
+    implementation of the CRC-16-CCITT algorithm.
 */
 
 quint16 qChecksum(const char *data, uint len)
@@ -1384,6 +1388,10 @@ void QByteArray::expand(int i)
 
     This is the same as insert(0, \a ba).
 
+    Note: QByteArray is an \l{implicitly shared} class. Consequently,
+    if \e this is an empty QByteArray, then \e this will just share
+    the data held in \a ba. In this case, no copying of data is done.
+
     \sa append(), insert()
 */
 
@@ -1448,6 +1456,10 @@ QByteArray &QByteArray::prepend(char ch)
     because QByteArray preallocates extra space at the end of the
     character data so it can grow without reallocating the entire
     data each time.
+
+    Note: QByteArray is an \l{implicitly shared} class. Consequently,
+    if \e this is an empty QByteArray, then \e this will just share
+    the data held in \a ba. In this case, no copying of data is done.
 
     \sa operator+=(), prepend(), insert()
 */
@@ -3449,19 +3461,27 @@ QByteArray QByteArray::number(double n, char f, int prec)
 }
 
 /*!
-    Constructs a QByteArray that uses the first \a size characters in
-    the array \a data. The bytes in \a data are \e not copied. The
-    caller must be able to guarantee that \a data will not be deleted
-    or modified as long as the QByteArray (or an unmodified copy of
-    it) exists.
+    Constructs a QByteArray that uses the first \a size bytes of the
+    \a data array. The bytes are \e not copied. The QByteArray will
+    contain the \a data pointer. The caller guarantees that \a data
+    will not be deleted or modified as long as this QByteArray and any
+    copies of it exist that have not been modified. In other words,
+    because QByteArray is an \l{implicitly shared} class and the
+    instance returned by this function contains the \a data pointer,
+    the caller must not delete \a data or modify it directly as long
+    as the returned QByteArray and any copies exist. However,
+    QByteArray does not take ownership of \a data, so the QByteArray
+    destructor will never delete the raw \a data, even when the
+    last QByteArray referring to \a data is destroyed.
 
-    Any attempts to modify the QByteArray or copies of it will cause
-    it to create a deep copy of the data, ensuring that the raw data
-    isn't modified.
+    A subsequent attempt to modify the contents of the returned
+    QByteArray or any copy made from it will cause it to create a deep
+    copy of the \a data array before doing the modification. This
+    ensures that the raw \a data array itself will never be modified
+    by QByteArray.
 
-    Here's an example of how we can read data using a QDataStream on
-    raw data in memory without requiring to copy the data into a
-    QByteArray:
+    Here is an example of how to read data using a QDataStream on raw
+    data in memory without copying the raw data into a QByteArray:
 
     \snippet doc/src/snippets/code/src.corelib.tools.qbytearray.cpp 43
 
@@ -3469,8 +3489,8 @@ QByteArray QByteArray::number(double n, char f, int prec)
     null-terminated, unless the raw data contains a 0 character at
     position \a size. While that does not matter for QDataStream or
     functions like indexOf(), passing the byte array to a function
-    that accepts a \c{const char *} and expects it to be
-    '\\0'-terminated leads into trouble.
+    accepting a \c{const char *} expected to be '\\0'-terminated will
+    fail.
 
     \sa data(), constData()
 */
@@ -3741,9 +3761,9 @@ QByteArray QByteArray::toPercentEncoding(const QByteArray &exclude, const QByteA
 
     QByteArray include2 = include;
     if (percent != '%')                        // the default
-        if (percent >= 0x61 && percent <= 0x7A // ALPHA
-            || percent >= 0x41 && percent <= 0x5A // ALPHA
-            || percent >= 0x30 && percent <= 0x39 // DIGIT
+        if ((percent >= 0x61 && percent <= 0x7A) // ALPHA
+            || (percent >= 0x41 && percent <= 0x5A) // ALPHA
+            || (percent >= 0x30 && percent <= 0x39) // DIGIT
             || percent == 0x2D // -
             || percent == 0x2E // .
             || percent == 0x5F // _
@@ -3753,9 +3773,9 @@ QByteArray QByteArray::toPercentEncoding(const QByteArray &exclude, const QByteA
     if (include2.isEmpty()) {
         for (int i = 0; i < len; ++i) {
             unsigned char c = *inputData++;
-            if (c >= 0x61 && c <= 0x7A // ALPHA
-                || c >= 0x41 && c <= 0x5A // ALPHA
-                || c >= 0x30 && c <= 0x39 // DIGIT
+            if ((c >= 0x61 && c <= 0x7A) // ALPHA
+                || (c >= 0x41 && c <= 0x5A) // ALPHA
+                || (c >= 0x30 && c <= 0x39) // DIGIT
                 || c == 0x2D // -
                 || c == 0x2E // .
                 || c == 0x5F // _
@@ -3772,9 +3792,9 @@ QByteArray QByteArray::toPercentEncoding(const QByteArray &exclude, const QByteA
         const char * alsoEncode = include2.constData();
         for (int i = 0; i < len; ++i) {
             unsigned char c = *inputData++;
-            if ((c >= 0x61 && c <= 0x7A // ALPHA
-                || c >= 0x41 && c <= 0x5A // ALPHA
-                || c >= 0x30 && c <= 0x39 // DIGIT
+            if (((c >= 0x61 && c <= 0x7A) // ALPHA
+                || (c >= 0x41 && c <= 0x5A) // ALPHA
+                || (c >= 0x30 && c <= 0x39) // DIGIT
                 || c == 0x2D // -
                 || c == 0x2E // .
                 || c == 0x5F // _

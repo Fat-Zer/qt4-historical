@@ -185,7 +185,7 @@ public:
     AnimatedOperation animatedOperation;
     bool animationsEnabled;
 
-    inline bool storeExpanded(const QModelIndex &idx) {
+    inline bool storeExpanded(const QPersistentModelIndex &idx) {
         QList<QPersistentModelIndex>::iterator it;
         it = qLowerBound(expandedIndexes.begin(), expandedIndexes.end(), idx);
         if (it == expandedIndexes.end() || *it != idx) {
@@ -195,7 +195,7 @@ public:
         return false;
     }
 
-    inline bool isIndexExpanded(const QModelIndex idx) const {
+    inline bool isIndexExpanded(const QPersistentModelIndex idx) const {
         QList<QPersistentModelIndex>::const_iterator it;
         it = qBinaryFind(expandedIndexes.constBegin(), expandedIndexes.constEnd(), idx);
         return (it != expandedIndexes.constEnd());
@@ -204,7 +204,7 @@ public:
     // used when hiding and showing items
     QVector<QPersistentModelIndex> hiddenIndexes;
 
-    inline bool isRowHidden(const QModelIndex idx) const {
+    inline bool isRowHidden(const QPersistentModelIndex idx) const {
         QVector<QPersistentModelIndex>::const_iterator it;
         it = qBinaryFind(hiddenIndexes.constBegin(), hiddenIndexes.constEnd(), idx);
         return (it != hiddenIndexes.constEnd());

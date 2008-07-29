@@ -1,407 +1,407 @@
 //! [0]
-        void MyButton::paintEvent(QPaintEvent *)
-        {
-            QPainter painter(this);
-            drawButton(&painter);
-        }
+void MyButton::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    drawButton(&painter);
+}
 //! [0]
 
 
 //! [1]
-        ba.at(0) = 'X';
+ba.at(0) = 'X';
 //! [1]
 
 
 //! [2]
-        ba[0] = 'X';
+ba[0] = 'X';
 //! [2]
 
 
 //! [3]
-        if (!cache.insert(key, object))
-            delete object;
+if (!cache.insert(key, object))
+    delete object;
 //! [3]
 
 
 //! [4]
-        cache.insert(key, object);
+cache.insert(key, object);
 //! [4]
 
 
 //! [5]
-            Q3Cache<QWidget> cache;
-            cache.insert(widget->name(), widget);
-            ...
-            QWidget *foo = cache.take("foo");
-            if (foo)
-                foo->show();
+Q3Cache<QWidget> cache;
+cache.insert(widget->name(), widget);
+...
+QWidget *foo = cache.take("foo");
+if (foo)
+    foo->show();
 //! [5]
 
 
 //! [6]
-            typedef QWidget *QWidgetPtr;
-            QCache<QString, QWidgetPtr> cache;
-            cache.insert(widget->name(), new QWidgetPtr(widget));
-            ...
-            QWidgetPtr *ptr = cache.take("foo");
-            if (ptr) {
-                QWidget *foo = *ptr;
-                delete ptr;
-                foo->show();
-            }
+typedef QWidget *QWidgetPtr;
+QCache<QString, QWidgetPtr> cache;
+cache.insert(widget->name(), new QWidgetPtr(widget));
+...
+QWidgetPtr *ptr = cache.take("foo");
+if (ptr) {
+    QWidget *foo = *ptr;
+    delete ptr;
+    foo->show();
+}
 //! [6]
 
 
 //! [7]
-        painter.setBrush(palette().brush(QPalette::Text));
+painter.setBrush(palette().brush(QPalette::Text));
 //! [7]
 
 
 //! [8]
-        QByteArray ba("Hello");
-        ba.size();             // returns 5 (the '\0' is not counted)
-        ba.length();           // returns 5
-        ba.data()[5];          // returns '\0'
+QByteArray ba("Hello");
+ba.size();             // returns 5 (the '\0' is not counted)
+ba.length();           // returns 5
+ba.data()[5];          // returns '\0'
 //! [8]
 
 
 //! [9]
-        dict.replace(key, value);
+dict.replace(key, value);
 //! [9]
 
 
 //! [10]
-        delete hash.take(key);
-        hash.insert(key, value);
+delete hash.take(key);
+hash.insert(key, value);
 //! [10]
 
 
 //! [11]
-        dict.remove(key, value);
+dict.remove(key, value);
 //! [11]
 
 
 //! [12]
-        delete hash.take(key);
+delete hash.take(key);
 //! [12]
 
 
 //! [13]
-        dict.clear();
+dict.clear();
 //! [13]
 
 
 //! [14]
-        while (!hash.isEmpty()) {
-            T *value = *hash.begin();
-            hash.erase(hash.begin());
-            delete value;
-        }
+while (!hash.isEmpty()) {
+    T *value = *hash.begin();
+    hash.erase(hash.begin());
+    delete value;
+}
 //! [14]
 
 
 //! [15]
-        qDeleteAll(hash);
-        hash.clear();
+qDeleteAll(hash);
+hash.clear();
 //! [15]
 
 
 //! [16]
-        Q3DictIterator<QWidget> i(dict);
-        while (i.current() != 0) {
-            do_something(i.currentKey(), i.current());
-            ++i;
-        }
+Q3DictIterator<QWidget> i(dict);
+while (i.current() != 0) {
+    do_something(i.currentKey(), i.current());
+    ++i;
+}
 //! [16]
 
 
 //! [17]
-        QHashIterator<QString, QWidget *> i(hash);
-        while (i.hasNext()) {
-            i.next();                   // must come first
-            do_something(i.key(), i.value());
-        }
+QHashIterator<QString, QWidget *> i(hash);
+while (i.hasNext()) {
+    i.next();                   // must come first
+    do_something(i.key(), i.value());
+}
 //! [17]
 
 
 //! [18]
-        QList<QWidget *> myWidgets = qFindChildren<QWidget *>(myParent);
+QList<QWidget *> myWidgets = qFindChildren<QWidget *>(myParent);
 //! [18]
 
 
 //! [19]
-        list.replace(index, value);
+list.replace(index, value);
 //! [19]
 
 
 //! [20]
-        delete list[index];
-        list[index] = value;
+delete list[index];
+list[index] = value;
 //! [20]
 
 
 //! [21]
-        list.removeFirst();
+list.removeFirst();
 //! [21]
 
 
 //! [22]
-        delete list.takeFirst();
+delete list.takeFirst();
 //! [22]
 
 
 //! [23]
-        list.removeLast();
+list.removeLast();
 //! [23]
 
 
 //! [24]
-        delete list.takeLast();
+delete list.takeLast();
 //! [24]
 
 
 //! [25]
-        list.remove(index);
+list.remove(index);
 //! [25]
 
 
 //! [26]
-        delete list.takeAt(index);
+delete list.takeAt(index);
 //! [26]
 
 
 //! [27]
-        list.remove(value);
+list.remove(value);
 //! [27]
 
 
 //! [28]
-        int i = list.indexOf(value);
-        if (i != -1)
-            delete list.takeAt(i);
+int i = list.indexOf(value);
+if (i != -1)
+    delete list.takeAt(i);
 //! [28]
 
 
 //! [29]
-        list.remove();
+list.remove();
 //! [29]
 
 
 //! [30]
-        QMutableListIterator<T *> i;
-        ...
-        delete i.value();
-        i.remove();
+QMutableListIterator<T *> i;
+...
+delete i.value();
+i.remove();
 //! [30]
 
 
 //! [31]
-        list.clear();
+list.clear();
 //! [31]
 
 
 //! [32]
-        while (!list.isEmpty())
-            delete list.takeFirst();
+while (!list.isEmpty())
+    delete list.takeFirst();
 //! [32]
 
 
 //! [33]
-        qDeleteAll(list);
-        list.clear();
+qDeleteAll(list);
+list.clear();
 //! [33]
 
 
 //! [34]
-        QPtrList<QWidget> list;
-        ...
-        while (list.current() != 0) {
-            do_something(list.current());
-            list.next();
-        }
+QPtrList<QWidget> list;
+...
+while (list.current() != 0) {
+    do_something(list.current());
+    list.next();
+}
 //! [34]
 
 
 //! [35]
-        QList<QWidget *> list;
-        ...
-        QListIterator<QWidget *> i(list);
-        while (i.hasNext())
-            do_something(i.next());
+QList<QWidget *> list;
+...
+QListIterator<QWidget *> i(list);
+while (i.hasNext())
+    do_something(i.next());
 //! [35]
 
 
 //! [36]
-        QPtrList<QWidget> list;
-        ...
-        QPtrListIterator<QWidget> i;
-        while (i.current() != 0) {
-            do_something(i.current());
-            i.next();
-        }
+QPtrList<QWidget> list;
+...
+QPtrListIterator<QWidget> i;
+while (i.current() != 0) {
+    do_something(i.current());
+    i.next();
+}
 //! [36]
 
 
 //! [37]
-        QList<QWidget *> list;
-        ...
-        QListIterator<QWidget *> i(list);
-        while (i.hasNext())
-            do_something(i.next());
+QList<QWidget *> list;
+...
+QListIterator<QWidget *> i(list);
+while (i.hasNext())
+    do_something(i.next());
 //! [37]
 
 
 //! [38]
-        queue.dequeue();
+queue.dequeue();
 //! [38]
 
 
 //! [39]
-        delete queue.dequeue();
+delete queue.dequeue();
 //! [39]
 
 
 //! [40]
-        queue.remove();
+queue.remove();
 //! [40]
 
 
 //! [41]
-        delete queue.dequeue();
+delete queue.dequeue();
 //! [41]
 
 
 //! [42]
-        queue.clear();
+queue.clear();
 //! [42]
 
 
 //! [43]
-        while (!queue.isEmpty())
-            delete queue.dequeue();
+while (!queue.isEmpty())
+    delete queue.dequeue();
 //! [43]
 
 
 //! [44]
-        qDeleteAll(queue);
-        queue.clear();
+qDeleteAll(queue);
+queue.clear();
 //! [44]
 
 
 //! [45]
-        stack.pop();
+stack.pop();
 //! [45]
 
 
 //! [46]
-        delete stack.pop();
+delete stack.pop();
 //! [46]
 
 
 //! [47]
-        stack.remove();
+stack.remove();
 //! [47]
 
 
 //! [48]
-        delete stack.pop();
+delete stack.pop();
 //! [48]
 
 
 //! [49]
-        stack.clear();
+stack.clear();
 //! [49]
 
 
 //! [50]
-        while (!stack.isEmpty())
-            delete stack.pop();
+while (!stack.isEmpty())
+    delete stack.pop();
 //! [50]
 
 
 //! [51]
-        qDeleteAll(stack);
-        stack.clear();
+qDeleteAll(stack);
+stack.clear();
 //! [51]
 
 
 //! [52]
-        vect.insert(i, ptr);
+vect.insert(i, ptr);
 //! [52]
 
 
 //! [53]
-        delete vect[i];
-        vect[i] = ptr;
+delete vect[i];
+vect[i] = ptr;
 //! [53]
 
 
 //! [54]
-        vect.remove(i);
+vect.remove(i);
 //! [54]
 
 
 //! [55]
-        delete vect[i];
-        vect[i] = 0;
+delete vect[i];
+vect[i] = 0;
 //! [55]
 
 
 //! [56]
-        T *ptr = vect.take(i);
+T *ptr = vect.take(i);
 //! [56]
 
 
 //! [57]
-        T *ptr = vect[i];
-        vect[i] = 0;
+T *ptr = vect[i];
+vect[i] = 0;
 //! [57]
 
 
 //! [58]
-        vect.resize(n)
+vect.resize(n)
 //! [58]
 
 
 //! [59]
-        while (n > vect.size())
-            vect.append(0);
-        while (n < vect.size() {
-            T *ptr = vect.last();
-            vect.remove(vect.size() - 1);
-            delete ptr;
-        }
+while (n > vect.size())
+    vect.append(0);
+while (n < vect.size() {
+    T *ptr = vect.last();
+    vect.remove(vect.size() - 1);
+    delete ptr;
+}
 //! [59]
 
 
 //! [60]
-        vect.clear();
+vect.clear();
 //! [60]
 
 
 //! [61]
-        for (int i = 0; i < vect.size(); ++i)
-            T *ptr = vect[i];
-            vect[i] = 0;
-            delete ptr;
-        }
+for (int i = 0; i < vect.size(); ++i)
+    T *ptr = vect[i];
+    vect[i] = 0;
+    delete ptr;
+}
 //! [61]
 
 
 //! [62]
-        qDeleteAll(vect);
-        vect.clear();
+qDeleteAll(vect);
+vect.clear();
 //! [62]
 
 
 //! [63]
-        struct Shared
-        {
-            Shared() : count(1) {}
-            void ref() { ++count; }
-            bool deref() { return !--count; }
-            uint count;
-        };
+struct Shared
+{
+    Shared() : count(1) {}
+    void ref() { ++count; }
+    bool deref() { return !--count; }
+    uint count;
+};
 //! [63]
 
 //! [63a]
@@ -451,20 +451,18 @@ doc.documentLayout()->draw(painter, context);
 //! [63b]
 
 //! [64]
-        QString greeting = "Hello";
-        const char *badData = greeting.toAscii().constData(); // data is invalid
-        QByteArray asciiData = greeting.toAscii();
-        const char *goodData = asciiData.constData();
+QString greeting = "Hello";
+const char *badData = greeting.toAscii().constData(); // data is invalid
+QByteArray asciiData = greeting.toAscii();
+const char *goodData = asciiData.constData();
 //! [64]
 
 
 //! [65]
-        str.at(0) = 'X';
+str.at(0) = 'X';
 //! [65]
 
 
 //! [66]
-        str[0] = 'X';
+str[0] = 'X';
 //! [66]
-
-

@@ -731,6 +731,8 @@ bool QAbstractSpinBox::event(QEvent *event)
         }
         break;
 #endif
+    case QEvent::InputMethod:
+        return d->edit->event(event);
     default:
         break;
     }
@@ -1612,7 +1614,7 @@ QVariant QAbstractSpinBoxPrivate::bound(const QVariant &val, const QVariant &old
             v = ((wasMax && !wrapped && steps > 0) || (steps < 0 && !wasMin && wrapped))
                 ? minimum : maximum;
         } else if (wrapped && (maxcmp > 0 || mincmp < 0)) {
-            v = (wasMax && steps > 0 || (!wasMin && steps < 0)) ? minimum : maximum;
+            v = ((wasMax && steps > 0) || (!wasMin && steps < 0)) ? minimum : maximum;
         } else if (mincmp < 0) {
             v = (!wasMax && !wasMin ? minimum : maximum);
         }

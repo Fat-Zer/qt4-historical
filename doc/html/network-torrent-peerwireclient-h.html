@@ -105,12 +105,12 @@
      void setPeer(TorrentPeer *peer);
      TorrentPeer *peer() const;
 
-     <span class="comment">//</span> State
+     <span class="comment">// State</span>
      inline PeerWireState peerWireState() const { return pwState; }
      QBitArray availablePieces() const;
      QList&lt;TorrentBlock&gt; incomingBlocks() const;
 
-     <span class="comment">//</span> Protocol
+     <span class="comment">// Protocol</span>
      void chokePeer();
      void unchokePeer();
      void sendInterested();
@@ -122,7 +122,7 @@
      void cancelRequest(int piece, int offset, int length);
      void sendBlock(int piece, int offset, const QByteArray &amp;data);
 
-     <span class="comment">//</span> Rate control
+     <span class="comment">// Rate control</span>
      qint64 writeToSocket(qint64 bytes);
      qint64 readFromSocket(qint64 bytes);
      qint64 downloadSpeed() const;
@@ -168,7 +168,7 @@
      void socketStateChanged(QAbstractSocket::SocketState state);
 
  private:
-     <span class="comment">//</span> Data waiting to be read/written
+     <span class="comment">// Data waiting to be read/written</span>
      QByteArray incomingBuffer;
      QByteArray outgoingBuffer;
 
@@ -194,25 +194,25 @@
          CancelPacket = 8
      };
 
-     <span class="comment">//</span> State
+     <span class="comment">// State</span>
      PeerWireState pwState;
      bool receivedHandShake;
      bool gotPeerId;
      bool sentHandShake;
      int nextPacketLength;
 
-     <span class="comment">//</span> Upload/download speed records
+     <span class="comment">// Upload/download speed records</span>
      qint64 uploadSpeedData[8];
      qint64 downloadSpeedData[8];
      int transferSpeedTimer;
 
-     <span class="comment">//</span> Timeout handling
+     <span class="comment">// Timeout handling</span>
      int timeoutTimer;
      int pendingRequestTimer;
      bool invalidateTimeout;
      int keepAliveTimer;
 
-     <span class="comment">//</span> Checksum, peer ID and set of available pieces
+     <span class="comment">// Checksum, peer ID and set of available pieces</span>
      QByteArray infoHash;
      QByteArray peerIdString;
      QBitArray peerPieces;
@@ -228,6 +228,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

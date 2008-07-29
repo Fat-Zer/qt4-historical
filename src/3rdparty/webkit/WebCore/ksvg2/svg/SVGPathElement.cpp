@@ -272,7 +272,7 @@ void SVGPathElement::parseMappedAttribute(MappedAttribute* attr)
         ExceptionCode ec;
         pathSegList()->clear(ec);
         if (!parseSVG(attr->value(), true))
-            document()->accessSVGExtensions()->reportError("Problem parsing d=\"" + attr->value() + "\"");
+            document()->accessSVGExtensions()->reportError(String("Problem parsing d=\"") + attr->value() + String("\""));
     } else if (attr->name() == SVGNames::pathLengthAttr) {
         m_pathLength = attr->value().toFloat();
         if (m_pathLength < 0.0f)

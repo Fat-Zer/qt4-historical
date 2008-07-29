@@ -396,11 +396,14 @@ QAElement::QAElement(const QAElement &element)
 }
 
 QAElement::QAElement(HIObjectRef object, int child)
-:elementRef(AXUIElementCreateWithHIObjectAndIdentifier(object, child))
 {
-    CFRetain(object);
+    if (object == 0) {
+        elementRef = 0; // Create invalid QAElement.
+    } else {
+        elementRef = AXUIElementCreateWithHIObjectAndIdentifier(object, child);
+        CFRetain(object);
+    }
 }
-
 
 QAElement::~QAElement()
 {
@@ -768,6 +771,7 @@ public:
     QItemViewInterfaceFactory(const QAInterface &interface)
     : m_interface(interface), object(interface.hiObject())
     {
+        CFRetain(object);
         columnCount = 0;
         if (QTableView * tableView = qobject_cast<QTableView *>(interface.parent().object())) {
             if (tableView->model())
@@ -777,6 +781,11 @@ public:
         }
     }
     
+    ~QItemViewInterfaceFactory()
+    {
+        CFRelease(object);
+    }
+
     QAInterface interface(UInt64 identifier)
     {
         if (identifier == 0)
@@ -1611,6 +1620,9 @@ static OSStatus handleOrientationAttribute(EventHandlerCallRef next_ref, EventRe
 */
 static OSStatus handleSplitterContentsAttribute(EventHandlerCallRef next_ref, EventRef event, const QAInterface &interface, QCFString nextOrPrev)
 {
+    if (interface.isValid() == false || interface.role() != QAccessible::Grip)
+        return eventNotHandledErr;
+
     const QAInterface parent = interface.parent();
     if (parent.isValid() == false)
         return CallNextEventHandler(next_ref, event);

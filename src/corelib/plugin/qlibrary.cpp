@@ -62,6 +62,7 @@
 #endif // NO_ERROR_H
 #include <qdebug.h>
 #include <qvector.h>
+#include <qdir.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -613,15 +614,36 @@ bool QLibraryPrivate::isPlugin(QSettings *settings)
 #endif
         {
             bool temporary_load = false;
-            if (!pHnd)
+#ifdef Q_OS_WIN
+            HMODULE hTempModule = 0;
+#endif
+            if (!pHnd) {
+#ifdef Q_OS_WIN
+                hTempModule = ::LoadLibraryExW((wchar_t*)QDir::toNativeSeparators(fileName).utf16(), 0, DONT_RESOLVE_DLL_REFERENCES);
+                //### optimization: for Win98, and WinMe we should call load_sys, 
+                //since they don't support the DONT_RESOLVE_DLL_REFERENCES flag.
+#else
                 temporary_load =  load_sys();
+#endif
+            }
 #  ifdef Q_CC_BOR
             typedef const char * __stdcall (*QtPluginQueryVerificationDataFunction)();
 #  else
             typedef const char * (*QtPluginQueryVerificationDataFunction)();
 #  endif
+#ifdef Q_OS_WIN
+            QtPluginQueryVerificationDataFunction qtPluginQueryVerificationDataFunction = hTempModule 
+                ? (QtPluginQueryVerificationDataFunction)
+#ifdef Q_OS_WINCE
+                    ::GetProcAddressW(hTempModule, L"qt_plugin_query_verification_data")
+#else
+                    ::GetProcAddress(hTempModule, "qt_plugin_query_verification_data")
+#endif
+                : (QtPluginQueryVerificationDataFunction) resolve("qt_plugin_query_verification_data");
+#else
             QtPluginQueryVerificationDataFunction qtPluginQueryVerificationDataFunction =
                 (QtPluginQueryVerificationDataFunction) resolve("qt_plugin_query_verification_data");
+#endif
 
             if (!qtPluginQueryVerificationDataFunction
                 || !qt_parse_pattern(qtPluginQueryVerificationDataFunction(), &qt_version, &debug, &key)) {
@@ -632,6 +654,15 @@ bool QLibraryPrivate::isPlugin(QSettings *settings)
             } else {
                 success = true;
             }
+#ifdef Q_OS_WIN
+            if (hTempModule) {
+                BOOL ok = ::FreeLibrary(hTempModule);
+                if (ok) {
+                    hTempModule = 0;
+                }
+
+            }
+#endif
         }
 
         QStringList queried;
@@ -894,6 +925,8 @@ void QLibrary::setFileNameAndVersion(const QString &fileName, int verNum)
 }
 
 /*!
+    \since 4.4
+
     Sets the fileName property and full version number to \a fileName
     and \a version respectively.
     The \a version parameter is ignored on Windows.
@@ -981,6 +1014,7 @@ void *QLibrary::resolve(const QString &fileName, int verNum, const char *symbol)
 
 /*!
     \overload
+    \since 4.4
 
     Loads the library \a fileName with full version number \a version and
     returns the address of the exported symbol \a symbol.

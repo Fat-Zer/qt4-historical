@@ -1,5 +1,5 @@
 #! [0] #! [1]
-CONFIG      += designer plugin debug_and_release
+CONFIG      += designer plugin
 #! [0]
 TARGET      = $$qtLibraryTarget($$TARGET)
 #! [2]

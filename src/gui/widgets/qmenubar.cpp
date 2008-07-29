@@ -599,17 +599,25 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     Different platforms have different requirements for the appearance
     of menu bars and their behavior when the user interacts with them.
     For example, Windows systems are often configured so that the
-    underlined character mnemonics that indicate keyboard shortcuts for
-    items in the menu bar are only shown when the \gui{Alt} key is
+    underlined character mnemonics that indicate keyboard shortcuts
+    for items in the menu bar are only shown when the \gui{Alt} key is
     pressed.
 
     \table
-    \row \o \inlineimage plastique-menubar.png A menu bar shown in the Plastique widget style.
-    \o The \l{QPlastiqueStyle}{Plastique widget style}, like most other styles,
-    handles the \gui{Help} menu in the same way as it handles any other menu.
-    \row \o \inlineimage motif-menubar.png A menu bar shown in the Motif widget style.
-    \o The \l{QMotifStyle}{Motif widget style} treats \gui{Help} menus in a
-    special way, placing them at right-hand end of the menu bar.
+    
+    \row \o \inlineimage plastique-menubar.png A menu bar shown in the
+    Plastique widget style.
+
+    \o The \l{QPlastiqueStyle}{Plastique widget style}, like most
+    other styles, handles the \gui{Help} menu in the same way as it
+    handles any other menu.
+
+    \row \o \inlineimage motif-menubar.png A menu bar shown in the
+    Motif widget style.
+
+    \o The \l{QMotifStyle}{Motif widget style} treats \gui{Help} menus
+    in a special way, placing them at right-hand end of the menu bar.
+
     \endtable
 
     \section1 QMenuBar on Qt/Mac
@@ -642,33 +650,42 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
             created to call QApplication::quit()
     \endtable
 
-    You can override this behavior by using the QAction::menuRole() property.
+    You can override this behavior by using the QAction::menuRole()
+    property.
 
-    If you wish to make all windows in a Mac application share the
-    same menu bar, you need to create a menu bar that does not have a
-    parent. The menu bar is created like this:
+    If you want all windows in a Mac application to share one menu
+    bar, you must create a menu bar that does not have a parent.
+    Create a parent-less menu bar this way:
 
     \snippet doc/src/snippets/code/src.gui.widgets.qmenubar.cpp 1
 
-    \bold{Note:} The text used for the application name in the menu bar is
-    obtained from the value set in the \c{Info.plist} file in the application's
-    bundle. See \l{Deploying an Application on Qt/Mac} for more information.
+    \bold{Note:} Do \e{not} call QMainWindow::menuBar() to create the
+    shared menu bar, because that menu bar will have the QMainWindow
+    as its parent. That menu bar would only be displayed for the
+    parent QMainWindow.
+
+    \bold{Note:} The text used for the application name in the menu
+    bar is obtained from the value set in the \c{Info.plist} file in
+    the application's bundle. See \l{Deploying an Application on
+    Qt/Mac} for more information.
 
     \section1 QMenuBar on Qt/CE
 
-    QMenuBar on Qt/CE is a wrapper for using the system-wide menu bar, similar to the Mac.
-    This feature is activated for Windows Mobile and integrates QMenuBar with the native
-    soft keys. The left soft key can be controlled with QMenuBar::setDefaultAction() and the
+    QMenuBar on Qt/CE is a wrapper for using the system-wide menu bar,
+    similar to the Mac.  This feature is activated for Windows Mobile
+    and integrates QMenuBar with the native soft keys. The left soft
+    key can be controlled with QMenuBar::setDefaultAction() and the
     right soft key can be used to access the menu bar.
 
-    The hovered() signal is not supported for the native menu integration. Also, it is not possible
-    to display an icon in a native menu on Windows Mobile.
+    The hovered() signal is not supported for the native menu
+    integration. Also, it is not possible to display an icon in a
+    native menu on Windows Mobile.
 
     \section1 Examples
 
-    The \l{mainwindows/menus}{Menus} example shows how to use QMenuBar and QMenu.
-    The other \l{Qt Examples#Main Windows}{main window application examples}
-    also provide menus using these classes.
+    The \l{mainwindows/menus}{Menus} example shows how to use QMenuBar
+    and QMenu.  The other \l{Qt Examples#Main Windows}{main window
+    application examples} also provide menus using these classes.
 
     \sa QMenu, QShortcut, QAction,
         {http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html}{Introduction to Apple Human Interface Guidelines},
@@ -1174,7 +1191,7 @@ void QMenuBar::mouseMoveEvent(QMouseEvent *e)
     d->mouseDown = e->buttons() & Qt::LeftButton;
     QAction *action = d->actionAt(e->pos());
     bool popupState = d->popupState || d->mouseDown;
-    if(action && d->isVisible(action) || !popupState)
+    if ((action && d->isVisible(action)) || !popupState)
         d->setCurrentAction(action, popupState);
 }
 
@@ -1771,6 +1788,8 @@ QWidget *QMenuBar::cornerWidget(Qt::Corner corner) const
 }
 
 /*!
+  \since 4.4
+
   Sets the default action to \a act.
 
   The default action is assigned to the left soft key. The menu is assigned

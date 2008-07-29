@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/painting/qprinter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/painting/qprinter.cpp -->
 <head>
   <title>Qt 4.4: QPrinter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -160,13 +160,15 @@
 <a name="//apple_ref/cpp/econst/QPrinter/DuplexLongSide" />
 <a name="//apple_ref/cpp/econst/QPrinter/DuplexShortSide" />
 <h3 class="fn"><a name="DuplexMode-enum"></a>enum QPrinter::DuplexMode</h3>
+<p>This enum is used to indicate whether printing will occur on one or both sides of each sheet of paper (simplex or duplex printing).</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QPrinter::DuplexNone</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">no duplex printing, single sided only.</td></tr>
-<tr><td valign="top"><tt>QPrinter::DuplexAuto</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">&nbsp;</td></tr>
-<tr><td valign="top"><tt>QPrinter::DuplexLongSide</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">&nbsp;</td></tr>
-<tr><td valign="top"><tt>QPrinter::DuplexShortSide</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>QPrinter::DuplexNone</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Single sided (simplex) printing only.</td></tr>
+<tr><td valign="top"><tt>QPrinter::DuplexAuto</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The printer's default setting is used to determine whether duplex printing is used.</td></tr>
+<tr><td valign="top"><tt>QPrinter::DuplexLongSide</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Both sides of each sheet of paper are used for printing. The paper is turned over its longest edge before the second side is printed</td></tr>
+<tr><td valign="top"><tt>QPrinter::DuplexShortSide</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Both sides of each sheet of paper are used for printing. The paper is turned over its shortest edge before the second side is printed</td></tr>
 </table></p>
+<p>This enum was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/tag/QPrinter/Orientation" />
 <a name="//apple_ref/cpp/econst/QPrinter/Portrait" />
 <a name="//apple_ref/cpp/econst/QPrinter/Landscape" />
@@ -273,6 +275,7 @@
 <tr><td valign="top"><tt>QPrinter::Custom</tt></td><td align="center" valign="top"><tt>30</tt></td><td valign="top">Unknown, or a user defined size.</td></tr>
 </table></p>
 <p>With setFullPage(false) (the default), the metrics will be a bit smaller; how much depends on the printer in use.</p>
+<p>This enum was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/tag/QPrinter/PaperSource" />
 <a name="//apple_ref/cpp/econst/QPrinter/Auto" />
 <a name="//apple_ref/cpp/econst/QPrinter/Cassette" />
@@ -368,6 +371,7 @@
 <tr><td valign="top"><tt>QPrinter::DevicePixel</tt></td><td align="center" valign="top"><tt>6</tt></td></tr>
 </table></p>
 <p>Note the difference between Point and DevicePixel. The Point unit is defined to be 1/72th of an inch, while the DevicePixel unit is resolution dependant and is based on the actual pixels, or dots, on the printer.</p>
+<p>This enum was introduced in Qt 4.4.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QPrinter/QPrinter" />
@@ -375,6 +379,7 @@
 <p>Creates a new printer object with the given <i>mode</i>.</p>
 <h3 class="fn"><a name="QPrinter-2"></a>QPrinter::QPrinter ( const <a href="qprinterinfo.html">QPrinterInfo</a> &amp; <i>printer</i>, <a href="qprinter.html#PrinterMode-enum">PrinterMode</a> <i>mode</i> = ScreenResolution )</h3>
 <p>Creates a new printer object with the given <i>printer</i> and <i>mode</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QPrinter/~QPrinter" />
 <h3 class="fn"><a name="dtor.QPrinter"></a>QPrinter::~QPrinter ()</h3>
 <p>Destroys the printer object and frees any allocated resources. If the printer is destroyed while a print job is in progress this may or may not affect the print job.</p>
@@ -435,13 +440,13 @@
 <p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QPrinter/isValid" />
 <h3 class="fn"><a name="isValid"></a>bool QPrinter::isValid () const</h3>
-<p>Returns true if the printer currently selected is a valid printer in the system, or a pdf/ps printer; otherwise returns false.</p>
+<p>Returns true if the printer currently selected is a valid printer in the system, or a pure PDF/PostScript printer; otherwise returns false.</p>
 <p>To detect other failures check the output of <a href="qpainter.html#begin">QPainter::begin</a>() or QPainter::nextPage().</p>
 <pre>     QPrinter printer;
      printer.setOutputFormat(QPrinter::PdfFormat);
      printer.setOutputFileName(&quot;/foobar/nonwritable.pdf&quot;);
      QPainter painter;
-     if (! painter.begin(&amp;printer)) { <span class="comment">//</span> failed to open file
+     if (! painter.begin(&amp;printer)) { <span class="comment">// failed to open file</span>
          qWarning(&quot;failed to open file, is it writable?&quot;);
          return 1;
      }
@@ -452,6 +457,7 @@
      }
      painter.drawText(10, 10, &quot;Test 2&quot;);
      painter.end();</pre>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qprinter.html#setPrinterName">setPrinterName</a>().</p>
 <a name="//apple_ref/cpp/instm/QPrinter/newPage" />
 <h3 class="fn"><a name="newPage"></a>bool QPrinter::newPage ()</h3>
@@ -624,7 +630,8 @@
 <h3 class="fn"><a name="setOutputFileName"></a>void QPrinter::setOutputFileName ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )</h3>
 <p>Sets the name of the output file to <i>fileName</i>.</p>
 <p>Setting a null or empty name (0 or &quot;&quot;) disables printing to a file. Setting a non-empty name enables printing to a file.</p>
-<p>This can change the value of <a href="qprinter.html#outputFormat">outputFormat</a>(). If the file name has the suffix &quot;.ps&quot; then PostScript is automatically selected as output format. If the file name has the &quot;.pdf&quot; suffix PDF is generated. <a href="qprinter.html">QPrinter</a> will use Qt's cross-platform PostScript or PDF print engines respectively. If you can produce this format natively, for example Mac OS X can generate PDF's from its print engine, set the output format back to <a href="qprinter.html#OutputFormat-enum">NativeFormat</a>.</p>
+<p>This can change the value of <a href="qprinter.html#outputFormat">outputFormat</a>(). If the file name has the suffix &quot;.ps&quot; then PostScript is automatically selected as output format. If the file name has the &quot;.pdf&quot; suffix PDF is generated. If the file name has a suffix other than &quot;.ps&quot; and &quot;.pdf&quot;, the output format used is the one set with <a href="qprinter.html#setOutputFormat">setOutputFormat</a>().</p>
+<p><a href="qprinter.html">QPrinter</a> uses Qt's cross-platform PostScript or PDF print engines respectively. If you can produce this format natively, for example Mac OS X can generate PDF's from its print engine, set the output format back to <a href="qprinter.html#OutputFormat-enum">NativeFormat</a>.</p>
 <p>See also <a href="qprinter.html#outputFileName">outputFileName</a>(), <a href="qprinter-qt3.html#setOutputToFile">setOutputToFile</a>(), and <a href="qprinter.html#setOutputFormat">setOutputFormat</a>().</p>
 <a name="//apple_ref/cpp/instm/QPrinter/setOutputFormat" />
 <h3 class="fn"><a name="setOutputFormat"></a>void QPrinter::setOutputFormat ( <a href="qprinter.html#OutputFormat-enum">OutputFormat</a> <i>format</i> )</h3>
@@ -715,6 +722,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

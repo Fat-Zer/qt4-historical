@@ -595,8 +595,8 @@ int Q3ProgressDialog::progress() const
 
 void Q3ProgressDialog::setProgress(int progress)
 {
-    if (progress == bar()->progress() ||
-         bar()->progress() == -1 && progress == bar()->totalSteps())
+    if (progress == bar()->progress()
+        || (bar()->progress() == -1 && progress == bar()->totalSteps()))
         return;
 
     bar()->setProgress(progress);

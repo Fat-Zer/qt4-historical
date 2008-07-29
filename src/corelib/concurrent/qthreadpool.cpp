@@ -42,15 +42,9 @@
 ****************************************************************************/
 
 #include "qthreadpool.h"
+#include "qthreadpool_p.h"
 
 #ifndef QT_NO_THREAD
-
-#include <QMutex>
-#include <QQueue>
-#include <QSet>
-#include <QWaitCondition>
-
-#include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,39 +76,7 @@ public:
 /*
     QThreadPool private class.
 */
-class QThreadPoolPrivate : public QObjectPrivate
-{
-    Q_DECLARE_PUBLIC(QThreadPool)
-    friend class QThreadPoolThread;
 
-public:
-    QThreadPoolPrivate();
-
-    bool tryStart(QRunnable *task);
-    void enqueueTask(QRunnable *task, int priority = 0);
-    int activeThreadCount() const;
-
-    void tryToStartMoreThreads();
-    bool tooManyThreadsActive() const;
-
-    void startThread(QRunnable *runnable = 0);
-    void reset();
-    void waitForDone();
-
-    mutable QMutex mutex;
-    QWaitCondition runnableReady;
-    QSet<QThreadPoolThread *> allThreads;
-    QQueue<QThreadPoolThread *> expiredThreads;
-    QList<QPair<QRunnable *, int> > queue;
-    QWaitCondition noActiveThreads;
-
-    bool isExiting;
-    int expiryTimeout;
-    int maxThreadCount;
-    int reservedThreads;
-    int waitingThreads;
-    int activeThreads;
-};
 
 /*!\internal
 
@@ -330,6 +292,31 @@ void QThreadPoolPrivate::waitForDone()
     QMutexLocker locker(&mutex);
     while (!(queue.isEmpty() && activeThreads == 0))
         noActiveThreads.wait(locker.mutex());
+}
+
+/*! \internal
+    Pulls a runnable from the front queue and runs it in the current thread. Blocks
+    until the runnable has completed. Returns true if a runnable was found.
+*/
+bool QThreadPoolPrivate::startFrontRunnable()
+{
+    QMutexLocker locker(&mutex);
+    if (queue.isEmpty())
+        return false;
+
+    QRunnable *runnable = queue.takeFirst().first;
+    const bool autoDelete = runnable->autoDelete();
+    bool del = autoDelete && !--runnable->ref;
+
+    locker.unlock();
+    runnable->run();
+    locker.relock();
+
+    if (del) {
+        delete runnable;
+    }
+
+    return true;
 }
 
 /*!
@@ -582,6 +569,7 @@ void QThreadPool::waitForDone()
 {
     Q_D(QThreadPool);
     d->waitForDone();
+    d->reset();
 }
 
 QT_END_NAMESPACE

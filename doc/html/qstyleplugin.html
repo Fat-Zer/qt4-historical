@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/styles/qstyleplugin.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/styles/qstyleplugin.cpp -->
 <head>
   <title>Qt 4.4: QStylePlugin Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -58,7 +58,7 @@
 <p>Note that Qt destroys a plugin automatically when it is no longer used, so there is no need for calling the destructor explicitly.</p>
 <a name="//apple_ref/cpp/instm/QStylePlugin/create" />
 <h3 class="fn"><a name="create"></a><a href="qstyle.html">QStyle</a> * QStylePlugin::create ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Creates and returns a <a href="qstyle.html">QStyle</a> object for the given style <i>key</i>.</p>
+<p>Creates and returns a <a href="qstyle.html">QStyle</a> object for the given style <i>key</i>. If a plugin cannot create a style, it should return 0 instead.</p>
 <p>The style key is usually the class name of the required style. Note that the keys are case insensitive. For example:</p>
 <pre> QStringList MyStylePlugin::keys() const
  {
@@ -85,6 +85,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

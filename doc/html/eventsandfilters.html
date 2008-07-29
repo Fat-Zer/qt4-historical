@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/eventsandfilters.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/eventsandfilters.qdoc -->
 <head>
   <title>Qt 4.4: Events and Event Filters</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -39,9 +39,9 @@
 <pre> void MyCheckBox::mousePressEvent(QMouseEvent *event)
  {
      if (event-&gt;button() == Qt::LeftButton) {
-         <span class="comment">//</span> handle left mouse button here
+         <span class="comment">// handle left mouse button here</span>
      } else {
-         <span class="comment">//</span> pass on other buttons to base class
+         <span class="comment">// pass on other buttons to base class</span>
          QCheckBox::mousePressEvent(event);
      }
  }</pre>
@@ -53,12 +53,12 @@
      if (event-&gt;type() == QEvent::KeyPress) {
          QKeyEvent *ke = static_cast&lt;QKeyEvent *&gt;(event);
          if (ke-&gt;key() == Qt::Key_Tab) {
-             <span class="comment">//</span> special tab handling here
+             <span class="comment">// special tab handling here</span>
              return true;
          }
      } else if (event-&gt;type() == MyCustomEventType) {
          MyCustomEvent *myEvent = static_cast&lt;MyCustomEvent *&gt;(event);
-         <span class="comment">//</span> custom event handling here
+         <span class="comment">// custom event handling here</span>
          return true;
      }
 
@@ -75,7 +75,7 @@
      if (object == target &amp;&amp; event-&gt;type() == QEvent::KeyPress) {
          QKeyEvent *keyEvent = static_cast&lt;QKeyEvent *&gt;(event);
          if (keyEvent-&gt;key() == Qt::Key_Tab) {
-             <span class="comment">//</span> Special tab handling
+             <span class="comment">// Special tab handling</span>
              return true;
          } else
              return false;
@@ -95,6 +95,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

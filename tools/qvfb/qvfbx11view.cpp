@@ -225,6 +225,11 @@ void QVFbX11View::setZoom( double, double )
     // Zoom is not possible with Xnest.
 }
 
+void QVFbX11View::setRotation( Rotation )
+{
+    // Rotation is not possible with Xnest.
+}
+
 void QVFbX11View::startAnimation( const QString& )
 {
     // Animation is not supported.

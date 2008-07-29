@@ -958,7 +958,9 @@ void MediaPlayer::openUrl()
     QString sourceURL = settings.value("location").toString();
     sourceURL = QInputDialog::getText(this, tr("Open Location"), tr("Please enter a valid address here:"), QLineEdit::Normal, sourceURL);
     if (!sourceURL.isEmpty()) {
-        setFile(sourceURL);
+	    setWindowTitle(sourceURL.right(sourceURL.length() - sourceURL.lastIndexOf('/') - 1));
+	    m_MediaObject.setCurrentSource(Phonon::MediaSource(QUrl::fromEncoded(sourceURL.toUtf8())));
+	    m_MediaObject.play();
         settings.setValue("location", sourceURL);
     }
 }

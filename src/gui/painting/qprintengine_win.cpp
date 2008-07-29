@@ -1281,32 +1281,10 @@ void QWin32PrintEnginePrivate::fillPath_dev(const QPainterPath &path, const QCol
     DeleteObject(SelectObject(hdc, old_brush));
 }
 
-void QWin32PrintEnginePrivate::strokePath_dev(const QPainterPath &path, const QColor &color,
-                                              Qt::PenStyle penStyle)
+void QWin32PrintEnginePrivate::strokePath_dev(const QPainterPath &path, const QColor &color, qreal penWidth)
 {
     composeGdiPath(path);
-
-    int gdiPenStyle;
-    switch (penStyle)
-    {
-    case Qt::DashLine:
-        gdiPenStyle = PS_DASH;
-        break;
-    case Qt::DashDotLine:
-        gdiPenStyle = PS_DASHDOT;
-        break;
-    case Qt::DashDotDotLine:
-        gdiPenStyle = PS_DASHDOTDOT;
-        break;
-    case Qt::DotLine:
-        gdiPenStyle = PS_DOT;
-        break;
-    default:
-        gdiPenStyle = PS_SOLID;
-        break;
-    };
-
-    HPEN pen = CreatePen(gdiPenStyle, 0, RGB(color.red(), color.green(), color.blue()));
+    HPEN pen = CreatePen(PS_SOLID, qRound(penWidth), RGB(color.red(), color.green(), color.blue()));
     HGDIOBJ old_pen = SelectObject(hdc, pen);
     StrokePath(hdc);
     DeleteObject(SelectObject(hdc, old_pen));
@@ -1321,21 +1299,30 @@ void QWin32PrintEnginePrivate::fillPath(const QPainterPath &path, const QColor &
 void QWin32PrintEnginePrivate::strokePath(const QPainterPath &path, const QColor &color)
 {
     QPainterPathStroker stroker;
-    stroker.setDashPattern(pen.dashPattern());
-    stroker.setDashOffset(pen.dashOffset());
+    if (pen.style() == Qt::CustomDashLine) {
+        stroker.setDashPattern(pen.dashPattern());
+        stroker.setDashOffset(pen.dashOffset());
+    } else {
+        stroker.setDashPattern(pen.style());
+    }
     stroker.setCapStyle(pen.capStyle());
     stroker.setJoinStyle(pen.joinStyle());
     stroker.setMiterLimit(pen.miterLimit());
 
     QPainterPath stroke;
-
     qreal width = pen.widthF();
-    if (pen.isCosmetic()) {
-        // We do not support custom dash patterns for stroked paths with solid colored, cosmetic pens
-        strokePath_dev(path * matrix, color, pen.style());
+    if (pen.style() == Qt::SolidLine && (pen.isCosmetic() || matrix.type() < QTransform::TxScale)) {
+        strokePath_dev(path * matrix, color, width);
     } else {
         stroker.setWidth(width);
-        stroke = stroker.createStroke(path) * matrix;
+        if (pen.isCosmetic()) {
+            stroke = stroker.createStroke(path * matrix);
+        } else {
+            stroke = stroker.createStroke(path * painterMatrix);
+            QTransform stretch(stretch_x, 0, 0, stretch_y, origin_x, origin_y);
+            stroke = stroke * stretch;
+        }
+
         if (stroke.isEmpty())
             return;
 

@@ -589,9 +589,9 @@ QKeySequence::SequenceMatch QShortcutMap::matches(const QKeySequence &seq1,
         int userKey = seq1[i],
             sequenceKey = seq2[i];
         if ((userKey & Qt::Key_unknown) == Qt::Key_hyphen)
-            userKey = userKey & Qt::KeyboardModifierMask | Qt::Key_Minus;
+            userKey = (userKey & Qt::KeyboardModifierMask) | Qt::Key_Minus;
         if ((sequenceKey & Qt::Key_unknown) == Qt::Key_hyphen)
-            sequenceKey = sequenceKey & Qt::KeyboardModifierMask | Qt::Key_Minus;
+            sequenceKey = (sequenceKey & Qt::KeyboardModifierMask) | Qt::Key_Minus;
         if (userKey != sequenceKey)
             return QKeySequence::NoMatch;
     }

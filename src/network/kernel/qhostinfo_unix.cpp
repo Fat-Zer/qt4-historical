@@ -167,8 +167,19 @@ QHostInfo QHostInfoAgent::fromName(const QString &hostName)
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = PF_UNSPEC;
+# ifdef AI_ADDRCONFIG
+    hints.ai_flags = AI_ADDRCONFIG;
+# endif
 
     int result = getaddrinfo(hostName.toLatin1().constData(), 0, &hints, &res);
+# ifdef AI_ADDRCONFIG
+    if (result == EAI_BADFLAGS) {
+        // if the lookup failed with AI_ADDRCONFIG set, try again without it
+        hints.ai_flags = 0;
+        result = getaddrinfo(hostName.toLatin1().constData(), 0, &hints, &res);
+    }
+# endif
+
     if (result == 0) {
         addrinfo *node = res;
         QList<QHostAddress> addresses;
@@ -199,7 +210,6 @@ QHostInfo QHostInfoAgent::fromName(const QString &hostName)
         results.setAddresses(addresses);
         freeaddrinfo(res);
     } else if (result == EAI_NONAME
-               || result ==  EAI_FAIL
                || result ==  EAI_FAIL
 #ifdef EAI_NODATA
 	       // EAI_NODATA is deprecated in RFC 3493

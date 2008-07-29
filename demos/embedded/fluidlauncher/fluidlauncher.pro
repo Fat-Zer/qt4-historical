@@ -18,16 +18,14 @@ SOURCES += \
            pictureflow.cpp \
            slideshow.cpp
 
-embedded:
-{
+embedded{
     target.path = $$[QT_INSTALL_DEMOS]/embedded/fluidlauncher
     sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro *.html config.xml screenshots slides
     sources.path = $$[QT_INSTALL_DEMOS]/embedded/fluidlauncher
     INSTALLS += target sources
 }
 
-wince*:
-{
+wince*{
     QT += svg
 
     BUILD_DIR = release

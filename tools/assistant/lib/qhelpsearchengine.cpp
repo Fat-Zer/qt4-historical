@@ -216,10 +216,11 @@ private:
 
 /*!
     \class QHelpSearchQuery
+    \since 4.4
     \inmodule QtHelp
     \brief The QHelpSearchQuery class contains the field name and the associated 
     search term
-    
+
     The QHelpSearchQuery class contains the field name and the associated search 
     term. Depending on the field the search term might get split up into seperate
     terms to be parsed differently by the search engine.
@@ -259,6 +260,7 @@ private:
 
 /*!
     \class QHelpSearchEngine
+    \since 4.4
     \inmodule QtHelp
     \brief The QHelpSearchEngine class provides access to widgets reusable
     to integrate fulltext search as well as to index and search documentation.

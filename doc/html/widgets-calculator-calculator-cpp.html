@@ -80,49 +80,31 @@
      font.setPointSize(font.pointSize() + 8);
      display-&gt;setFont(font);
 
-     QColor digitColor(150, 205, 205);
-     QColor backspaceColor(225, 185, 135);
-     QColor memoryColor(100, 155, 155);
-     QColor operatorColor(155, 175, 195);
-
      for (int i = 0; i &lt; NumDigitButtons; ++i) {
-         digitButtons[i] = createButton(QString::number(i), digitColor,
-                                        SLOT(digitClicked()));
+         digitButtons[i] = createButton(QString::number(i), SLOT(digitClicked()));
      }
 
-     Button *pointButton = createButton(tr(&quot;.&quot;), digitColor, SLOT(pointClicked()));
-     Button *changeSignButton = createButton(tr(&quot;\261&quot;), digitColor, SLOT(changeSignClicked()));
+     Button *pointButton = createButton(tr(&quot;.&quot;), SLOT(pointClicked()));
+     Button *changeSignButton = createButton(tr(&quot;\261&quot;), SLOT(changeSignClicked()));
 
-     Button *backspaceButton = createButton(tr(&quot;Backspace&quot;), backspaceColor,
-                                    SLOT(backspaceClicked()));
-     Button *clearButton = createButton(tr(&quot;Clear&quot;), backspaceColor, SLOT(clear()));
-     Button *clearAllButton = createButton(tr(&quot;Clear All&quot;), backspaceColor.light(120),
-                                   SLOT(clearAll()));
+     Button *backspaceButton = createButton(tr(&quot;Backspace&quot;), SLOT(backspaceClicked()));
+     Button *clearButton = createButton(tr(&quot;Clear&quot;), SLOT(clear()));
+     Button *clearAllButton = createButton(tr(&quot;Clear All&quot;), SLOT(clearAll()));
 
-     Button *clearMemoryButton = createButton(tr(&quot;MC&quot;), memoryColor,
-                                      SLOT(clearMemory()));
-     Button *readMemoryButton = createButton(tr(&quot;MR&quot;), memoryColor, SLOT(readMemory()));
-     Button *setMemoryButton = createButton(tr(&quot;MS&quot;), memoryColor, SLOT(setMemory()));
-     Button *addToMemoryButton = createButton(tr(&quot;M+&quot;), memoryColor,
-                                      SLOT(addToMemory()));
+     Button *clearMemoryButton = createButton(tr(&quot;MC&quot;), SLOT(clearMemory()));
+     Button *readMemoryButton = createButton(tr(&quot;MR&quot;), SLOT(readMemory()));
+     Button *setMemoryButton = createButton(tr(&quot;MS&quot;), SLOT(setMemory()));
+     Button *addToMemoryButton = createButton(tr(&quot;M+&quot;), SLOT(addToMemory()));
 
-     Button *divisionButton = createButton(tr(&quot;\367&quot;), operatorColor,
-                                   SLOT(multiplicativeOperatorClicked()));
-     Button *timesButton = createButton(tr(&quot;\327&quot;), operatorColor,
-                                SLOT(multiplicativeOperatorClicked()));
-     Button *minusButton = createButton(tr(&quot;-&quot;), operatorColor,
-                                SLOT(additiveOperatorClicked()));
-     Button *plusButton = createButton(tr(&quot;+&quot;), operatorColor,
-                               SLOT(additiveOperatorClicked()));
+     Button *divisionButton = createButton(tr(&quot;\367&quot;), SLOT(multiplicativeOperatorClicked()));
+     Button *timesButton = createButton(tr(&quot;\327&quot;), SLOT(multiplicativeOperatorClicked()));
+     Button *minusButton = createButton(tr(&quot;-&quot;), SLOT(additiveOperatorClicked()));
+     Button *plusButton = createButton(tr(&quot;+&quot;), SLOT(additiveOperatorClicked()));
 
-     Button *squareRootButton = createButton(tr(&quot;Sqrt&quot;), operatorColor,
-                                     SLOT(unaryOperatorClicked()));
-     Button *powerButton = createButton(tr(&quot;x\262&quot;), operatorColor,
-                                SLOT(unaryOperatorClicked()));
-     Button *reciprocalButton = createButton(tr(&quot;1/x&quot;), operatorColor,
-                                     SLOT(unaryOperatorClicked()));
-     Button *equalButton = createButton(tr(&quot;=&quot;), operatorColor.light(120),
-                                SLOT(equalClicked()));
+     Button *squareRootButton = createButton(tr(&quot;Sqrt&quot;), SLOT(unaryOperatorClicked()));
+     Button *powerButton = createButton(tr(&quot;x\262&quot;), SLOT(unaryOperatorClicked()));
+     Button *reciprocalButton = createButton(tr(&quot;1/x&quot;), SLOT(unaryOperatorClicked()));
+     Button *equalButton = createButton(tr(&quot;=&quot;), SLOT(equalClicked()));
 
      QGridLayout *mainLayout = new QGridLayout;
      mainLayout-&gt;setSizeConstraint(QLayout::SetFixedSize);
@@ -357,11 +339,9 @@
      equalClicked();
      sumInMemory += display-&gt;text().toDouble();
  }
-
- Button *Calculator::createButton(const QString &amp;text, const QColor &amp;color,
-                                  const char *member)
+ Button *Calculator::createButton(const QString &amp;text, const char *member)
  {
-     Button *button = new Button(text, color);
+     Button *button = new Button(text);
      connect(button, SIGNAL(clicked()), this, member);
      return button;
  }
@@ -391,6 +371,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

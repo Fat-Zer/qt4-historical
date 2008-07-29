@@ -1334,7 +1334,7 @@ void QTessellator::tessellateConvex(const QPointF *points, int nPoints)
     Q27Dot5 cross = dLeft.x * dRight.y - dLeft.y * dRight.x;
 
     // flip direction if polygon is clockwise
-    if (cross < 0 || cross == 0 && dLeft.x > 0) {
+    if (cross < 0 || (cross == 0 && dLeft.x > 0)) {
         qSwap(left, right);
         dir = -1;
     }

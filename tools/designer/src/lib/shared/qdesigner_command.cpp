@@ -890,6 +890,9 @@ void ToolBoxCommand::removePage()
 
     m_widget->hide();
     m_widget->setParent(formWindow());
+    formWindow()->clearSelection();
+    formWindow()->selectWidget(m_toolBox, true);
+
 }
 
 void ToolBoxCommand::addPage()
@@ -899,6 +902,8 @@ void ToolBoxCommand::addPage()
     m_toolBox->setCurrentIndex(m_index);
 
     m_widget->show();
+    formWindow()->clearSelection();
+    formWindow()->selectWidget(m_toolBox, true);
 }
 
 // ---- MoveToolBoxPageCommand ----
@@ -1035,6 +1040,9 @@ void TabWidgetCommand::removePage()
     m_widget->hide();
     m_widget->setParent(formWindow());
     m_tabWidget->setCurrentIndex(qMin(m_index, m_tabWidget->count()));
+
+    formWindow()->clearSelection();
+    formWindow()->selectWidget(m_tabWidget, true);
 }
 
 void TabWidgetCommand::addPage()
@@ -1043,6 +1051,9 @@ void TabWidgetCommand::addPage()
     m_tabWidget->insertTab(m_index, m_widget, m_itemIcon, m_itemText);
     m_widget->show();
     m_tabWidget->setCurrentIndex(m_index);
+
+    formWindow()->clearSelection();
+    formWindow()->selectWidget(m_tabWidget, true);
 }
 
 // ---- DeleteTabPageCommand ----
@@ -1180,6 +1191,9 @@ void StackedWidgetCommand::removePage()
 
     m_widget->hide();
     m_widget->setParent(formWindow());
+
+    formWindow()->clearSelection();
+    formWindow()->selectWidget(m_stackedWidget, true);
 }
 
 void StackedWidgetCommand::addPage()
@@ -1188,6 +1202,9 @@ void StackedWidgetCommand::addPage()
 
     m_widget->show();
     m_stackedWidget->setCurrentIndex(m_index);
+
+    formWindow()->clearSelection();
+    formWindow()->selectWidget(m_stackedWidget, true);
 }
 
 // ---- MoveStackedWidgetCommand ----

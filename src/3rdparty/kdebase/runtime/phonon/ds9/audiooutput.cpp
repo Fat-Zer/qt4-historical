@@ -52,9 +52,7 @@ namespace Phonon
                 if (audio) {
                     const qreal currentVolume = newVolume * (m_currentIndex == i ? m_crossfadeProgress : 1-m_crossfadeProgress);
                     const qreal newDbVolume = (qMax(0., 1.-::log(::pow(currentVolume, -log10over20)))-1.) * 10000;
-                    HRESULT hr = audio->put_Volume(newDbVolume);
-                    Q_UNUSED(hr);
-                    Q_ASSERT(SUCCEEDED(hr));
+                    audio->put_Volume(newDbVolume);
                 }
             }
 
@@ -86,16 +84,7 @@ namespace Phonon
             for(int i = 0; i < m_filters.count(); ++i) {
                 Filter oldFilter = m_filters.at(i);
 
-                Filter newFilter;
-                ComPointer<IMoniker> mon = m_backend->getAudioOutputMoniker(newDevice);
-                if (mon) {
-                    HRESULT hr = mon->BindToObject(0, 0, IID_IBaseFilter, 
-                        reinterpret_cast<void**>(&newFilter));
-                    if (FAILED(hr)) {
-                        return false;
-                    }
-                }
-
+                Filter newFilter = m_backend->getAudioOutputFilter(newDevice);
 
                 if (m_mediaObject && oldFilter && newFilter) {
                     m_mediaObject->switchFilters(i, oldFilter, newFilter);

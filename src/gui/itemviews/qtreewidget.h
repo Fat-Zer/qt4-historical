@@ -375,7 +375,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current))
     Q_PRIVATE_SLOT(d_func(), void _q_sort())
     Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight))
-    Q_PRIVATE_SLOT(d_func(), void _q_itemsSorted())
     Q_PRIVATE_SLOT(d_func(), void _q_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected))
 };
 

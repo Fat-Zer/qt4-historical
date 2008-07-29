@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/deployment.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/deployment.qdoc -->
 <head>
   <title>Qt 4.4: Deploying an Application on Qt/X11</title>
   <link rel="contents" href="deployment.html" />
@@ -41,24 +41,24 @@
 <a name="building-qt-statically"></a>
 <h3>Building Qt Statically</h3>
 <p>To use this approach, you must start by installing a static version of the Qt library:</p>
-<pre>         cd /path/to/Qt
-         ./configure -static -prefix /path/to/Qt &lt;other parameters&gt;
-         make sub-src</pre>
+<pre> cd /path/to/Qt
+ ./configure -static -prefix /path/to/Qt &lt;other parameters&gt;
+ make sub-src</pre>
 <p>We specify the prefix so that we do not overwrite the existing Qt installation. The example above only builds the Qt libraries, i.e&#x2e; the examples and Qt Designer will not be built. When <tt>make</tt> is done, you will find the Qt libraries in the <tt>/path/to/Qt/lib</tt> directory.</p>
 <p>When linking your application against static Qt libraries, note that you might need to add more libraries to the <tt>LIBS</tt> line in your project file. For more information, see the <a href="#application-dependencies">Application Dependencies</a> section.</p>
 <a name="linking-the-application-to-the-static-version-of-qt"></a>
 <h3>Linking the Application to the Static Version of Qt</h3>
 <p>Once Qt is built statically, the next step is to regenerate the makefile and rebuild the application. First, we must go into the directory that contains the application:</p>
-<pre>         cd /path/to/Qt/examples/tools/plugandpaint</pre>
+<pre> cd /path/to/Qt/examples/tools/plugandpaint</pre>
 <p>Now run qmake to create a new makefile for the application, and do a clean build to create the statically linked executable:</p>
-<pre>         make clean
-         PATH=/path/to/Qt/bin:$PATH
-         export PATH
-         qmake -config release
-         make</pre>
+<pre> make clean
+ PATH=/path/to/Qt/bin:$PATH
+ export PATH
+ qmake -config release
+ make</pre>
 <p>You probably want to link against the release libraries, and you can specify this when invoking <tt>qmake</tt>. Note that we must set the path to the static Qt that we just built.</p>
 <p>To check that the application really links statically with Qt, run the <tt>ldd</tt> tool (available on most Unices):</p>
-<pre>         ldd ./application</pre>
+<pre> ldd ./application</pre>
 <p>Verify that the Qt libraries are not mentioned in the output.</p>
 <p>Now, provided that everything compiled and linked without any errors, we should have a <tt>plugandpaint</tt> file that is ready for deployment. One easy way to check that the application really can be run stand-alone is to copy it to a machine that doesn't have Qt or any Qt applications installed, and run it on that machine.</p>
 <p>Remember that if your application depends on compiler specific libraries, these must still be redistributed along with your application. For more information, see the <a href="#application-dependencies">Application Dependencies</a> section.</p>
@@ -72,16 +72,16 @@
 <a name="linking-the-application-to-qt-as-a-shared-library"></a>
 <h3>Linking the Application to Qt as a Shared Library</h3>
 <p>After ensuring that Qt is built as a shared library, we can build the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> application. First, we must go into the directory that contains the application:</p>
-<pre>         cd /path/to/Qt/examples/tools/plugandpaint</pre>
+<pre> cd /path/to/Qt/examples/tools/plugandpaint</pre>
 <p>Now run qmake to create a new makefile for the application, and do a clean build to create the dynamically linked executable:</p>
-<pre>         make clean
-         qmake -config release
-         make</pre>
+<pre> make clean
+ qmake -config release
+ make</pre>
 <p>This builds the core application, the following will build the plugins:</p>
-<pre>         cd ../plugandpaintplugins
-         make clean
-         qmake -config release
-         make</pre>
+<pre> cd ../plugandpaintplugins
+ make clean
+ qmake -config release
+ make</pre>
 <p>If everything compiled and linked without any errors, we will get a <tt>plugandpaint</tt> executable and the <tt>libpnp_basictools.so</tt> and <tt>libpnp_extrafilters.so</tt> plugin files.</p>
 <a name="creating-the-application-package"></a>
 <h3>Creating the Application Package</h3>
@@ -94,18 +94,18 @@
 <li>You can write a startup script for your application, where you modify the dynamic linker configuration (e.g&#x2e; adding your application's directory to the <tt>LD_LIBRARY_PATH</tt> environment variable).</li>
 </ul>
 <p>The disadvantage of the first approach is that the user must have super user privileges. The disadvantage of the second approach is that the user may not have privileges to install into the predetemined path. In either case, the users don't have the option of installing to their home directory. We recommend using the third approach since it is the most flexible. For example, a <tt>plugandpaint.sh</tt> script will look like this:</p>
-<pre>         #!/bin/sh
-         appname=`basename $0 | sed s,\.sh$,,`
-         dirname=`dirname $0`
-         if [ &quot;${dirname:0:1}&quot; != &quot;/&quot; ]; then
-         dirname=$PWD/$dirname
-         fi
-         LD_LIBRARY_PATH=$dirname
-         export LD_LIBRARY_PATH
-         $dirname/$appname $*</pre>
+<pre> #!/bin/sh
+ appname=`basename $0 | sed s,\.sh$,,`
+ dirname=`dirname $0`
+ if [ &quot;${dirname:0:1}&quot; != &quot;/&quot; ]; then
+ dirname=$PWD/$dirname
+ fi
+ LD_LIBRARY_PATH=$dirname
+ export LD_LIBRARY_PATH
+ $dirname/$appname $*</pre>
 <p>By running this script instead of the executable, you are sure that the Qt libraries will be found by the dynamic linker. Note that you only have to rename the script to use it with other applications.</p>
 <p>When looking for plugins, the application searches in a plugins subdirectory inside the directory of the application executable. Either you have to manually copy the plugins into the <tt>plugins</tt> directory, or you can set the <tt>DESTDIR</tt> in the plugins' project files:</p>
-<pre>         DESTDIR = /path/to/Qt/plugandpaint/plugins</pre>
+<pre> DESTDIR = /path/to/Qt/plugandpaint/plugins</pre>
 <p>An archive distributing all the Qt libraries, and all the plugins, required to run the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> application, would have to include the following files:</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Component</th><th colspan="2" rowspan=" 1">File Name</th></tr></thead>
@@ -120,13 +120,13 @@
 <p>Remember that if your application depends on compiler specific libraries, these must still be redistributed along with your application. For more information, see the <a href="#application-dependencies">Application Dependencies</a> section.</p>
 <p>To verify that the application now can be successfully deployed, you can extract this archive on a machine without Qt and without any compiler installed, and try to run it, i.e&#x2e; run the <tt>plugandpaint.sh</tt> script.</p>
 <p>An alternative to putting the plugins in the <tt>plugins</tt> subdirectory is to add a custom search path when you start your application using <a href="qcoreapplication.html#addLibraryPath">QApplication::addLibraryPath</a>() or <a href="qcoreapplication.html#setLibraryPaths">QApplication::setLibraryPaths</a>().</p>
-<pre>         qApp-&gt;addLibraryPath(&quot;/some/other/path&quot;);</pre>
+<pre> qApp-&gt;addLibraryPath(&quot;/some/other/path&quot;);</pre>
 <a name="application-dependencies"></a>
 <h2>Application Dependencies</h2>
 <a name="additional-libraries"></a>
 <h3>Additional Libraries</h3>
 <p>To find out which libraries your application depends on, run the <tt>ldd</tt> tool (available on most Unices):</p>
-<pre>         ldd ./application</pre>
+<pre> ldd ./application</pre>
 <p>This will list all the shared library dependencies for your application. Depending on configuration, these libraries must be redistributed along with your application. In particular, the standard C++ library must be redistributed if you're compiling your application with a compiler that is binary incompatible with the system compiler. When possible, the safest solution is to link against these libraries statically.</p>
 <p>You will probably want to link dynamically with the regular X11 libraries, since some implementations will try to open other shared libraries with <tt>dlopen()</tt>, and if this fails, the X11 library might cause your application to crash.</p>
 <p>It's also worth mentioning that Qt will look for certain X11 extensions, such as Xinerama and Xrandr, and possibly pull them in, including all the libraries that they link against. If you can't guarantee the presence of a certain extension, the safest approach is to disable it when configuring Qt (e.g&#x2e; <tt>./configure -no-xrandr</tt>).</p>
@@ -149,6 +149,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

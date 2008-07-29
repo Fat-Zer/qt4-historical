@@ -469,7 +469,8 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
 
     bool retVal = false;
     for (;;) {
-//        QApplicationPrivate::sendPostedEvents(0, 0, d->threadData);
+        QApplicationPrivate::sendPostedEvents(0, 0, d->threadData);
+
         if (d->activateTimers() > 0) //send null timers
             retVal = true;
 
@@ -505,7 +506,8 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
             ReleaseEvent(event);
         } while(!d->interrupt && GetNumEventsInQueue(GetMainEventQueue()) > 0);
 
-        bool canWait = (!retVal
+        bool canWait = (d->threadData->canWait
+                        && !retVal
                         && !d->interrupt
                         && (flags & QEventLoop::WaitForMoreEvents)
                         && !d->zero_timer_count);
@@ -638,9 +640,8 @@ Boolean QEventDispatcherMacPrivate::postedEventSourceEqualCallback(const void *i
     return info1 == info2;
 }
 
-void QEventDispatcherMacPrivate::postedEventsSourcePerformCallback(void *info)
+void QEventDispatcherMacPrivate::postedEventsSourcePerformCallback(void *)
 {
-    QApplicationPrivate::sendPostedEvents(0, 0, static_cast<QThreadData *>(info));
 }
 
 QEventDispatcherMac::~QEventDispatcherMac()

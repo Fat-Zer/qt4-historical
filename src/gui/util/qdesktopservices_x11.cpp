@@ -122,40 +122,6 @@ static bool launchWebBrowser(const QUrl &url)
 
 
 
-/*!
-    \enum QDesktopServices::StandardLocation
-    \since 4.4
-
-    This enum describes the different locations that can be queried
-    by QDesktopServices::storageLocation and QDesktopServices::displayName.
-
-    \value DesktopLocation Returns the users desktop.
-    \value DocumentsLocation Returns the users document.
-    \value FontsLocation Returns the users fonts.
-    \value ApplicationsLocation Returns the users applications.
-    \value MusicLocation Returns the users music.
-    \value MoviesLocation Returns the users movies.
-    \value PicturesLocation Returns the users pictures.
-    \value TempLocation Returns the system's temporary directory.
-    \value HomeLocation Returns the user's home directory.
-    \value DataLocation Returns a directory location where persistent application
-           data can be stored.  QCoreApplication::applicationName and
-           QCoreApplication::organizationName should be set to work
-           on all platforms.
-
-    \sa storageLocation() displayName()
-*/
-
-
-/*!
-    \fn QString QDesktopServices::storageLocation(StandardLocation type)
-    \since 4.4
-
-    Returns the default system directory where files of \a type belong or an empty string
-    if it is unable to determine the location.
-
-    Note: that storage location returned can be a directory that doesn't exists.
-  */
 QString QDesktopServices::storageLocation(StandardLocation type)
 {
     if (type == QDesktopServices::HomeLocation)
@@ -191,8 +157,8 @@ QString QDesktopServices::storageLocation(StandardLocation type)
                 QString key = lst.at(1);
                 QString value = lst.at(2);
                 if (value.length() > 2
-                    && value.left(1) == QLatin1String("\"")
-                    && value.right(1) == QLatin1String("\""))
+                    && value.startsWith(QLatin1String("\""))
+                    && value.endsWith(QLatin1String("\"")))
                     value = value.mid(1, value.length() - 2);
                 // Store the key and value: "DESKTOP", "$HOME/Desktop"
                 lines[key] = value;
@@ -253,12 +219,6 @@ QString QDesktopServices::storageLocation(StandardLocation type)
     return QString();
 }
 
-/*!
-    \fn QString QDesktopServices::displayName(const StandardLocation type)
-
-    Returns a localized display name for a location \a type or
-    an empty QString if it is unable to figure out.
-  */
 QString QDesktopServices::displayName(StandardLocation type)
 {
     Q_UNUSED(type);

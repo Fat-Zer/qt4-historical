@@ -219,10 +219,6 @@ void QFont::x11SetScreen(int screen)
     d->screen = screen;
 }
 
-/*!
-    Returns the window system handle to the font, for low-level
-    access. Using this function is \e not portable.
-*/
 Qt::HANDLE QFont::handle() const
 {
     QFontEngine *engine = d->engineForScript(QUnicodeTables::Common);
@@ -235,12 +231,6 @@ Qt::HANDLE QFont::handle() const
 }
 
 
-/*!
-  Returns the handle to the primary freetype face of the font. I font merging is not disabled a
-  QFont can contain several physical fonts.
-
-  Returns 0 if the font does not contains a freetype face.
-*/
 FT_Face QFont::freetypeFace() const
 {
 #ifndef QT_NO_FREETYPE
@@ -261,17 +251,6 @@ FT_Face QFont::freetypeFace() const
     return 0;
 }
 
-/*!
-    Returns the name of the font within the underlying window system.
-
-    Only on X11 when Qt was built without FontConfig support the XLFD (X Logical Font Description)
-    is returned; otherwise an empty string.
-
-    Using the return value of this function is usually \e not \e
-    portable.
-
-    \sa setRawName()
-*/
 QString QFont::rawName() const
 {
     QFontEngine *engine = d->engineForScript(QUnicodeTables::Common);
@@ -284,26 +263,6 @@ QString QFont::rawName() const
 }
 struct QtFontDesc;
 
-/*!
-    Sets a font by its system specific name. The function is
-    particularly useful under X, where system font settings (for
-    example X resources) are usually available in XLFD (X Logical Font
-    Description) form only. You can pass an XLFD as \a name to this
-    function.
-
-    A font set with setRawName() is still a full-featured QFont. It can
-    be queried (for example with italic()) or modified (for example with
-    setItalic()) and is therefore also suitable for rendering rich text.
-
-    If Qt's internal font database cannot resolve the raw name, the
-    font becomes a raw font with \a name as its family.
-
-    Note that the present implementation does not handle wildcards in
-    XLFDs well, and that font aliases (file \c fonts.alias in the font
-    directory on X11) are not supported.
-
-    \sa rawName(), setRawMode(), setFamily()
-*/
 void QFont::setRawName(const QString &name)
 {
     detach();
@@ -321,26 +280,11 @@ void QFont::setRawName(const QString &name)
     }
 }
 
-/*!
-    Returns the "last resort" font family name.
-
-    The current implementation tries a wide variety of common fonts,
-    returning the first one it finds. Is is possible that no family is
-    found in which case an empty string is returned.
-
-    \sa lastResortFont()
-*/
 QString QFont::lastResortFamily() const
 {
     return QString::fromLatin1("Helvetica");
 }
 
-/*!
-    Returns the family name that corresponds to the current style
-    hint.
-
-    \sa StyleHint styleHint() setStyleHint()
-*/
 QString QFont::defaultFamily() const
 {
     switch (d->request.styleHint) {
@@ -399,25 +343,6 @@ static bool fontExists(const QString &fontName)
     return count != 0;
 }
 
-/*!
-    Returns a "last resort" font name for the font matching algorithm.
-    This is used if the last resort family is not available. It will
-    always return a name, if necessary returning something like
-    "fixed" or "system".
-
-    The current implementation tries a wide variety of common fonts,
-    returning the first one it finds. The implementation may change
-    at any time, but this function will always return a string
-    containing something.
-
-    It is theoretically possible that there really isn't a
-    lastResortFont() in which case Qt will abort with an error
-    message. We have not been able to identify a case where this
-    happens. Please \link bughowto.html report it as a bug\endlink if
-    it does, preferably with a list of the fonts you have installed.
-
-    \sa lastResortFamily() rawName()
-*/
 QString QFont::lastResortFont() const
 {
     static QString last;

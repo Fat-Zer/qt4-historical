@@ -187,7 +187,7 @@
         <li><a href="i18n.html">Internationalization</a></li>
         <li><a href="plugins-howto.html">Plugin System</a></li>
         <li><a href="threads.html">Multithreaded Programming</a></li>
-        <li><a href="intro-to-dbus.html">Inter-process Communication</a></li>
+        <li><a href="ipc.html">Inter-Process Communication (IPC)</a></li>
         <li><a href="qtestlib-manual.html">Unit Testing Framework</a></li>
         </ul>
         </td>

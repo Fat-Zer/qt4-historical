@@ -134,16 +134,30 @@ public:
     { }
 
     QAInterface(QAccessibleInterface *interface, int child = 0)
-    : base(interface), m_cachedObject(interface->object()), child(child)
-    { }
+    {
+        if (interface == 0 || child > interface->childCount()) {
+           base = QAccessibleInterfaceWrapper(); 
+        } else {
+            base = QAccessibleInterfaceWrapper(interface);
+            m_cachedObject = interface->object();
+            this->child = child;
+        }
+    }
 
     QAInterface(QAccessibleInterfaceWrapper wrapper, int child = 0)
     :base(wrapper), m_cachedObject(wrapper.interface->object()), child(child)
     { }
 
     QAInterface(const QAInterface &other, int child)
-    :base(other.base), m_cachedObject(other.m_cachedObject), child(child)
-    { }
+    {
+        if (other.isValid() == false || child > other.childCount()) {
+           base = QAccessibleInterfaceWrapper();
+        } else {
+            base = other.base;
+            m_cachedObject = other.m_cachedObject;
+            this->child = child;
+        }
+    }
 
     bool operator==(const QAInterface &other) const;
     bool operator!=(const QAInterface &other) const;

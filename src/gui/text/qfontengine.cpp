@@ -636,6 +636,20 @@ QByteArray QFontEngine::getSfntTable(uint tag) const
     return table;
 }
 
+bool QFontEngine::stringToCMap(const QChar *str, int len, HB_Glyph *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const
+{
+    QVarLengthArray<QGlyphLayout> qglyphs(*nglyphs);
+    memset(qglyphs.data(), 0, qglyphs.size() * sizeof(QGlyphLayout));
+
+    if (!stringToCMap(str, len, qglyphs.data(), nglyphs, flags))
+        return false;
+
+    for (int i = 0; i < *nglyphs; ++i)
+        glyphs[i] = qglyphs[i].glyph;
+
+    return true;
+}
+
 #if defined(Q_WS_WIN) || defined(Q_WS_X11) || defined(Q_WS_QWS)
 static inline QFixed kerning(int left, int right, const QFontEngine::KernPair *pairs, int numPairs)
 {
@@ -865,7 +879,7 @@ quint32 QFontEngine::getTrueTypeGlyphIndex(const uchar *cmap, uint unicode)
         const unsigned char *ends = cmap + 14;
         quint16 endIndex = 0;
         int i = 0;
-        for (; i < segCountX2/2 && (endIndex = qFromBigEndian<quint16>(ends + 2*i)) < unicode; i++);
+        for (; i < segCountX2/2 && (endIndex = qFromBigEndian<quint16>(ends + 2*i)) < unicode; i++) {}
 
         const unsigned char *idx = ends + segCountX2 + 2 + 2*i;
         quint16 startIndex = qFromBigEndian<quint16>(idx);
@@ -1124,6 +1138,50 @@ bool QFontEngineMulti::stringToCMap(const QChar *str, int len,
             }
             // ensure we use metrics from the 1st font when we use the fallback image.
             if (!glyphs[glyph_pos].glyph)
+                glyphs[glyph_pos] = tmp;
+        }
+        if (surrogate)
+            ++i;
+        ++glyph_pos;
+    }
+
+    *nglyphs = ng;
+    return true;
+}
+
+bool QFontEngineMulti::stringToCMap(const QChar *str, int len, HB_Glyph *glyphs, int *nglyphs,
+                                    QTextEngine::ShaperFlags flags) const
+{
+    int ng = *nglyphs;
+    if (!engine(0)->stringToCMap(str, len, glyphs, &ng, flags))
+        return false;
+
+    int glyph_pos = 0;
+    for (int i = 0; i < len; ++i) {
+        bool surrogate = (str[i].unicode() >= 0xd800 && str[i].unicode() < 0xdc00 && i < len-1
+                          && str[i+1].unicode() >= 0xdc00 && str[i+1].unicode() < 0xe000);
+        if (glyphs[glyph_pos] == 0) {
+            HB_Glyph tmp = glyphs[glyph_pos];
+            for (int x = 1; x < engines.size(); ++x) {
+                QFontEngine *engine = engines.at(x);
+                if (!engine) {
+                    const_cast<QFontEngineMulti *>(this)->loadEngine(x);
+                    engine = engines.at(x);
+                }
+                Q_ASSERT(engine != 0);
+                if (engine->type() == Box)
+                    continue;
+                int num = 2;
+                engine->stringToCMap(str + i, surrogate ? 2 : 1, glyphs + glyph_pos, &num, flags);
+                Q_ASSERT(num == 1); // surrogates only give 1 glyph
+                if (glyphs[glyph_pos]) {
+                    // set the high byte to indicate which engine the glyph came from
+                    glyphs[glyph_pos] |= (x << 24);
+                    break;
+                }
+            }
+            // ensure we use metrics from the 1st font when we use the fallback image.
+            if (!glyphs[glyph_pos])
                 glyphs[glyph_pos] = tmp;
         }
         if (surrogate)

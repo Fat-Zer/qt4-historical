@@ -154,6 +154,26 @@ bool QTiffHandler::read(QImage *image)
         if (raster != 0) {
             if (TIFFReadRGBAImage(tiff, width, height, raster, 0)) {
                 tiffImage = QImage(width, height, QImage::Format_ARGB32);
+                uint32 resUnit = RESUNIT_NONE;
+                float resX = 0;
+                float resY = 0;
+                TIFFGetField(tiff, TIFFTAG_RESOLUTIONUNIT, &resUnit);
+                TIFFGetField(tiff, TIFFTAG_XRESOLUTION, &resX);
+                TIFFGetField(tiff, TIFFTAG_YRESOLUTION, &resY);
+                switch(resUnit) {
+                    case RESUNIT_CENTIMETER:
+                        tiffImage.setDotsPerMeterX(qRound(resX * 100));
+                        tiffImage.setDotsPerMeterY(qRound(resY * 100));
+                        break;
+                    case RESUNIT_INCH:
+                        tiffImage.setDotsPerMeterX(qRound(resX * (100 / 2.54)));
+                        tiffImage.setDotsPerMeterY(qRound(resY * (100 / 2.54)));		
+                        break;
+                    default:
+                        // do nothing as defaults have already
+						// been set within the QImage class
+                        break;
+                }
                 for (uint32 y=0; y<height; ++y)
                     convert32BitOrder(&raster[(height-y-1)*width], tiffImage.scanLine(y), width);
             }

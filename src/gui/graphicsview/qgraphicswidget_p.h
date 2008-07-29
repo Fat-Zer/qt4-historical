@@ -156,6 +156,8 @@ public:
         case Qt::WA_DeleteOnClose: bit = 4; break;
         case Qt::WA_NoSystemBackground: bit = 5; break;
         case Qt::WA_OpaquePaintEvent: bit = 6; break;
+        // ### Qt 4.5: Add this attribute
+        // case Qt::WA_SetPalette: bit = 7; break;
         default: break;
         }
         return bit;
@@ -179,6 +181,8 @@ public:
             return false;
         return (attributes & (1 << bit)) != 0;
     }
+    // ### Qt 4.5: Add one attribute
+    // quint32 attributes : 8;
     quint32 attributes : 7;
 
     // Focus
@@ -186,6 +190,8 @@ public:
     QGraphicsWidget *focusNext;
     QGraphicsWidget *focusPrev;
     QGraphicsWidget *focusChild;
+    void setFocusWidget();
+    void clearFocusWidget();
 
     // Windows
     Qt::WindowFlags windowFlags;

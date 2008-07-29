@@ -252,6 +252,12 @@
     This can be overcome by subclassing the problematic widgets, and
     implementing suitable sizeHint() and minimumSizeHint() functions.
 
+    In some cases, it is relevant when a layout is added to a widget.
+    When you set the widget of a QDockWidget or a QScrollArea (with
+    QDockWidget::setWidget() and QScrollArea::setWidget()), the layout
+    must already have been set on the widget. If not, the widget will
+    not be visible.
+
     \section1 Manual Layout
 
     If you are making a one-of-a-kind special layout, you can also

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qwidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qwidget.cpp -->
 <head>
   <title>Qt 4.4: QWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -1100,6 +1100,7 @@
 <p>If the window title is set at any point, then the window title takes precedence.</p>
 <p>Additionally, on Mac OS X, this has an added benefit that it sets the <a href="http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGWindows/chapter_17_section_3.html">proxy icon</a> for the window, assuming that the file path exists.</p>
 <p>If no file path is set, this function returns an empty string.</p>
+<p>This property was introduced in Qt 4.4.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString windowFilePath () const</b></li>
@@ -1353,6 +1354,8 @@
 <a name="//apple_ref/cpp/instm/QWidget/effectiveWinId" />
 <h3 class="fn"><a name="effectiveWinId"></a><a href="qwidget.html#WId-typedef">WId</a> QWidget::effectiveWinId () const</h3>
 <p>Returns the effective window system identifier of the widget, i.e&#x2e; the native parent's window system identifier.</p>
+<p><b>Note:</b> We recommend that you do not store this value as it is likely to change during run-time.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qwidget.html#nativeParentWidget">nativeParentWidget</a>().</p>
 <a name="//apple_ref/cpp/instm/QWidget/ensurePolished" />
 <h3 class="fn"><a name="ensurePolished"></a>void QWidget::ensurePolished () const</h3>
@@ -1662,6 +1665,7 @@
 <a name="//apple_ref/cpp/instm/QWidget/nativeParentWidget" />
 <h3 class="fn"><a name="nativeParentWidget"></a>QWidget * QWidget::nativeParentWidget () const</h3>
 <p>Returns the native parent for this widget, i.e&#x2e; the next ancestor widget that has a system identifier, or 0 if it does not have any native parent.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qwidget.html#effectiveWinId">effectiveWinId</a>().</p>
 <a name="//apple_ref/cpp/instm/QWidget/nextInFocusChain" />
 <h3 class="fn"><a name="nextInFocusChain"></a>QWidget * QWidget::nextInFocusChain () const</h3>
@@ -1673,6 +1677,8 @@
 <p>See also <a href="qwidget.html#windowFlags-prop">setWindowFlags</a>().</p>
 <a name="//apple_ref/cpp/instm/QWidget/paintEngine" />
 <h3 class="fn"><a name="paintEngine"></a><a href="qpaintengine.html">QPaintEngine</a> * QWidget::paintEngine () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns the widget's paint engine.</p>
+<p>Reimplemented from <a href="qpaintdevice.html#paintEngine">QPaintDevice</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/paintEvent" />
 <h3 class="fn"><a name="paintEvent"></a>void QWidget::paintEvent ( <a href="qpaintevent.html">QPaintEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler can be reimplemented in a subclass to receive paint events which are passed in the <i>event</i> parameter.</p>
@@ -1802,7 +1808,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This version only scrolls <i>r</i> and does not move the children of the widget.</p>
 <p>If <i>r</i> is empty or invalid, the result is undefined.</p>
-<p>See also <a href="qscrollarea.html">QScrollArea</a> and bitBlt().</p>
+<p>See also <a href="qscrollarea.html">QScrollArea</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/setAttribute" />
 <h3 class="fn"><a name="setAttribute"></a>void QWidget::setAttribute ( <a href="qt.html#WidgetAttribute-enum">Qt::WidgetAttribute</a> <i>attribute</i>, bool <i>on</i> = true )</h3>
 <p>Sets the attribute <i>attribute</i> on this widget if <i>on</i> is true; otherwise clears the attribute.</p>
@@ -1934,19 +1940,20 @@
 <p>If no style is set, the widget uses the application's style, <a href="qapplication.html#style">QApplication::style</a>() instead.</p>
 <p>Setting a widget's style has no effect on existing or future child widgets.</p>
 <p><b>Warning:</b> This function is particularly useful for demonstration purposes, where you want to show Qt's styling capabilities. Real applications should avoid it and use one consistent GUI style instead.</p>
+<p><b>Warning:</b> Qt style sheets are currently not supported for custom <a href="qstyle.html">QStyle</a> subclasses. We plan to address this in some future release.</p>
 <p>See also <a href="qwidget.html#style">style</a>(), <a href="qstyle.html">QStyle</a>, <a href="qapplication.html#style">QApplication::style</a>(), and <a href="qapplication.html#setStyle">QApplication::setStyle</a>().</p>
 <a name="//apple_ref/cpp/clm/QWidget/setTabOrder" />
 <h3 class="fn"><a name="setTabOrder"></a>void QWidget::setTabOrder ( QWidget * <i>first</i>, QWidget * <i>second</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Moves the <i>second</i> widget around the ring of focus widgets so that keyboard focus moves from the <i>first</i> widget to the <i>second</i> widget when the Tab key is pressed.</p>
 <p>Note that since the tab order of the <i>second</i> widget is changed, you should order a chain like this:</p>
-<pre>         setTabOrder(a, b); // a to b
-         setTabOrder(b, c); // a to b to c
-         setTabOrder(c, d); // a to b to c to d</pre>
+<pre>         setTabOrder(a, b); <span class="comment">// a to b</span>
+         setTabOrder(b, c); <span class="comment">// a to b to c</span>
+         setTabOrder(c, d); <span class="comment">// a to b to c to d</span></pre>
 <p><i>not</i> like this:</p>
-<pre>         // WRONG
-         setTabOrder(c, d); // c to d
-         setTabOrder(a, b); // a to b AND c to d
-         setTabOrder(b, c); // a to b to c, but not c to d</pre>
+<pre>         <span class="comment">// WRONG</span>
+         setTabOrder(c, d); <span class="comment">// c to d</span>
+         setTabOrder(a, b); <span class="comment">// a to b AND c to d</span>
+         setTabOrder(b, c); <span class="comment">// a to b to c, but not c to d</span></pre>
 <p>If <i>first</i> or <i>second</i> has a focus proxy, setTabOrder() correctly substitutes the proxy.</p>
 <p>See also <a href="qwidget.html#focusPolicy-prop">setFocusPolicy</a>(), <a href="qwidget.html#setFocusProxy">setFocusProxy</a>(), and <a href="focus.html">Keyboard Focus</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/setWindowRole" />
@@ -2074,6 +2081,7 @@
 <h3 class="fn"><a name="winId"></a><a href="qwidget.html#WId-typedef">WId</a> QWidget::winId () const</h3>
 <p>Returns the window system identifier of the widget.</p>
 <p>Portable in principle, but if you use it you are probably about to do something non-portable. Be careful.</p>
+<p><b>Note:</b> We recommend that you do not store this value as it is likely to change during run-time.</p>
 <p>See also <a href="qwidget.html#find">find</a>().</p>
 <a name="//apple_ref/cpp/instm/QWidget/window" />
 <h3 class="fn"><a name="window"></a>QWidget * QWidget::window () const</h3>
@@ -2132,6 +2140,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

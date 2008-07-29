@@ -91,7 +91,7 @@
          return;
      }
 
-     <span class="comment">//</span> Sum up all forces pushing this item away
+     <span class="comment">// Sum up all forces pushing this item away</span>
      qreal xvel = 0;
      qreal yvel = 0;
      foreach (QGraphicsItem *item, scene()-&gt;items()) {
@@ -109,7 +109,7 @@
          }
      }
 
-     <span class="comment">//</span> Now subtract all forces pulling items together
+     <span class="comment">// Now subtract all forces pulling items together</span>
      double weight = (edgeList.size() + 1) * 10;
      foreach (Edge *edge, edgeList) {
          QPointF pos;
@@ -204,6 +204,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -169,6 +169,7 @@ public:
     bool getSfntTableData(uint tag, uchar *buffer, uint *length) const;
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+    bool stringToCMap(const QChar *str, int len, HB_Glyph *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
     void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
 
     void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
@@ -223,6 +224,7 @@ public:
 private:
 #if !defined(QT_NO_FREETYPE)
     void ensureGlyphsLoaded(const QGlyphLayout *glyphs, int len);
+    void ensureGlyphsLoaded(const HB_Glyph *glyphs, int len);
     void loadGlyph(glyph_t glyph);
     bool lockFile();
     void unlockFile();

@@ -816,8 +816,8 @@ bool HTMLInputElement::appendFormData(FormDataList& encoding, bool multipart)
 
         case IMAGE:
             if (m_activeSubmit) {
-                encoding.appendData(name().isEmpty() ? "x" : (name() + ".x"), xPos);
-                encoding.appendData(name().isEmpty() ? "y" : (name() + ".y"), yPos);
+                encoding.appendData(name().isEmpty() ? String("x") : (name() + String(".x")), xPos);
+                encoding.appendData(name().isEmpty() ? String("y") : (name() + String(".y")), yPos);
                 if (!name().isEmpty() && !value().isEmpty())
                     encoding.appendData(name(), value());
                 return true;

@@ -76,7 +76,7 @@ namespace Phonon
             }
 
             //the following method first reinitialize their value to avoid mem leaks
-            T ** operator&()
+            T ** pparam()
             {
                 if (m_t) { 
                     m_t->Release();
@@ -85,7 +85,7 @@ namespace Phonon
                 return &m_t;
             }
 
-            bool operator==(const ComPointer<T> &other) const
+			bool operator==(const ComPointer<T> &other) const
             {
                 return m_t == other.m_t;
             }

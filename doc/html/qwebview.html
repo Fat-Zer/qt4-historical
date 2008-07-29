@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/3rdparty/webkit/WebKit/qt/Api/qwebview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/3rdparty/webkit/WebKit/qt/Api/qwebview.cpp -->
 <head>
   <title>Qt 4.4: QWebView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -124,7 +124,7 @@
 <p>The image below shows QWebView previewed in <i>Qt Designer</i> with the Trolltech website.</p>
 <p align="center"><img src="images/qwebview-url.png" /></p><p>A web site can be loaded onto QWebView with the <a href="qwebview.html#load">load</a>() function. Like all Qt Widgets, the <a href="qwidget.html#show">show</a>() function must be invoked in order to display QWebView. The snippet below illustrates this:</p>
 <pre>     QWebView *view = new QWebView(parent);
-     view-&gt;load(QUrl(&quot;http:<span class="comment">//</span>www.trolltech.com/&quot;));
+     view-&gt;load(QUrl(&quot;http:<span class="comment">//www.trolltech.com/&quot;));</span>
      view-&gt;show();</pre>
 <p>Alternatively, <a href="qwebview.html#url-prop">setUrl</a>() can also be used to load a web site. If you have the HTML content readily available, you can use <a href="qwebview.html#setHtml">setHtml</a>() instead.</p>
 <p>The <a href="qwebview.html#loadStarted">loadStarted</a>() signal is emitted when the view begins loading. The <a href="qwebview.html#loadProgress">loadProgress</a>() signal, on the other hand, is emitted whenever an element of the web view completes loading, such as an embedded image, a script, etc. Finally, the <a href="qwebview.html#loadFinished">loadFinished</a>() signal is emitted when the view has loaded completely. It's argument - either <tt>true</tt> or <tt>false</tt> - indicates load success or failure.</p>
@@ -136,8 +136,8 @@
 <a name="elements-of-qwebview"></a>
 <h3>Elements of QWebView</h3>
 <p>QWebView consists of other objects such as <a href="qwebframe.html">QWebFrame</a> and <a href="qwebpage.html">QWebPage</a>. The flowchart below shows these elements are related.</p>
-<p align="center"><img src="images/qwebview-diagram.png" /></p><p><b>Note:</b> It is possible to use <a href="qwebpage.html">QWebPage</a> and <a href="qwebframe.html">QWebFrame</a>, without using QWebView, if you do not require <a href="qwidget.html">QWidget</a> attributes.</p>
-<p>See also <a href="webkit-previewer.html">Previewer Example</a> and <a href="demos-browser.html">Browser</a>.</p>
+<p align="center"><img src="images/qwebview-diagram.png" /></p><p><b>Note:</b> It is possible to use <a href="qwebpage.html">QWebPage</a> and <a href="qwebframe.html">QWebFrame</a>, without using QWebView, if you do not require <a href="qwidget.html">QWidget</a> attributes. Nevertheless, <a href="qtwebkit.html">QtWebKit</a> depends on <a href="qtgui.html">QtGui</a>, so you should use a <a href="qapplication.html">QApplication</a> instead of <a href="qcoreapplication.html">QCoreApplication</a>.</p>
+<p>See also <a href="webkit-previewer.html">Previewer Example</a> and <a href="qtwebkit.html#browser">Browser</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <a name="//apple_ref/cpp/instm/QWebView/icon" />
@@ -147,7 +147,7 @@
 <ul>
 <li><div class="fn"/><b>QIcon icon () const</b></li>
 </ul>
-<p>See also <a href="qwebview.html#iconChanged">iconChanged</a>().</p>
+<p>See also <a href="qwebview.html#iconChanged">iconChanged</a>() and <a href="qwebsettings.html#iconForUrl">QWebSettings::iconForUrl</a>().</p>
 <a name="//apple_ref/cpp/instm/QWebView/isModified" />
 <h3 class="fn"><a name="modified-prop"></a>modified : const bool</h3>
 <p>This property holds whether the document was modified by the user.</p>
@@ -209,7 +209,7 @@
 <p>See also <a href="qwebview.html#forward">forward</a>() and <a href="qwebview.html#pageAction">pageAction</a>().</p>
 <a name="//apple_ref/cpp/instm/QWebView/createWindow" />
 <h3 class="fn"><a name="createWindow"></a>QWebView * QWebView::createWindow ( <a href="qwebpage.html#WebWindowType-enum">QWebPage::WebWindowType</a> <i>type</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This function is called whenever <a href="examples.html#webkit">WebKit</a> wants to create a new window of the given <i>type</i>, for example as a result of a JavaScript request to open a document in a new window.</p>
+<p>This function is called whenever WebKit wants to create a new window of the given <i>type</i>, for example as a result of a JavaScript request to open a document in a new window.</p>
 <p>See also <a href="qwebpage.html#createWindow">QWebPage::createWindow</a>().</p>
 <a name="//apple_ref/cpp/instm/QWebView/findText" />
 <h3 class="fn"><a name="findText"></a>bool QWebView::findText ( const <a href="qstring.html">QString</a> &amp; <i>subString</i>, <a href="qwebpage.html#FindFlag-enum">QWebPage::FindFlags</a> <i>options</i> = 0 )</h3>
@@ -287,7 +287,7 @@
 <h3 class="fn"><a name="setHtml"></a>void QWebView::setHtml ( const <a href="qstring.html">QString</a> &amp; <i>html</i>, const <a href="qurl.html">QUrl</a> &amp; <i>baseUrl</i> = QUrl() )</h3>
 <p>Sets the content of the web view to the specified <i>html</i>.</p>
 <p>External objects referenced in the HTML document are located relative to <i>baseUrl</i>.</p>
-<p>When using this method, <a href="examples.html#webkit">WebKit</a> assumes that external resources such as JavaScript programs or style sheets are encoded in UTF-8 unless otherwise specified. For example, the encoding of an external script can be specified through the charset attribute of the HTML script tag. Alternatively, the encoding can also be specified by the web server.</p>
+<p>When using this method, WebKit assumes that external resources such as JavaScript programs or style sheets are encoded in UTF-8 unless otherwise specified. For example, the encoding of an external script can be specified through the charset attribute of the HTML script tag. Alternatively, the encoding can also be specified by the web server.</p>
 <p>See also <a href="qwebview.html#load">load</a>(), <a href="qwebview.html#setContent">setContent</a>(), and <a href="qwebframe.html#toHtml">QWebFrame::toHtml</a>().</p>
 <a name="//apple_ref/cpp/instm/QWebView/setPage" />
 <h3 class="fn"><a name="setPage"></a>void QWebView::setPage ( <a href="qwebpage.html">QWebPage</a> * <i>page</i> )</h3>
@@ -327,6 +327,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

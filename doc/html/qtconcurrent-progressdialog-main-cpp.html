@@ -78,31 +78,31 @@
  {
      QApplication app(argc, argv);
 
-     <span class="comment">//</span> Prepare the vector.
+     <span class="comment">// Prepare the vector.</span>
      QVector&lt;int&gt; vector;
      for (int i = 0; i &lt; iterations; ++i)
          vector.append(i);
 
-     <span class="comment">//</span> Create a progress dialog.
+     <span class="comment">// Create a progress dialog.</span>
      QProgressDialog dialog;
      dialog.setLabelText(QString(&quot;Progressing using %1 thread(s)...&quot;).arg(QThread::idealThreadCount()));
 
-     <span class="comment">//</span> Create a QFutureWatcher and conncect signals and slots.
+     <span class="comment">// Create a QFutureWatcher and conncect signals and slots.</span>
      QFutureWatcher&lt;void&gt; futureWatcher;
      QObject::connect(&amp;futureWatcher, SIGNAL(finished()), &amp;dialog, SLOT(reset()));
      QObject::connect(&amp;dialog, SIGNAL(canceled()), &amp;futureWatcher, SLOT(cancel()));
      QObject::connect(&amp;futureWatcher, SIGNAL(progressRangeChanged(int, int)), &amp;dialog, SLOT(setRange(int, int)));
      QObject::connect(&amp;futureWatcher, SIGNAL(progressValueChanged(int)), &amp;dialog, SLOT(setValue(int)));
 
-     <span class="comment">//</span> Start the computation.
+     <span class="comment">// Start the computation.</span>
      futureWatcher.setFuture(QtConcurrent::map(vector, spin));
 
-     <span class="comment">//</span> Display the dialog and start the event loop.
+     <span class="comment">// Display the dialog and start the event loop.</span>
      dialog.exec();
 
      futureWatcher.waitForFinished();
 
-     <span class="comment">//</span> Query the future to check if was canceled.
+     <span class="comment">// Query the future to check if was canceled.</span>
      qDebug() &lt;&lt; &quot;Canceled?&quot; &lt;&lt; futureWatcher.future().isCanceled();
  }
 
@@ -118,6 +118,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

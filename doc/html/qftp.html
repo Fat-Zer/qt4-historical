@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/network/access/qftp.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/access/qftp.cpp -->
 <head>
   <title>Qt 4.4: QFtp Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -109,11 +109,11 @@
 <p>If an error occurs during the execution of one of the commands in a sequence of commands, all the pending commands (i.e&#x2e; scheduled, but not yet executed commands) are cleared and no signals are emitted for them.</p>
 <p>Some commands, e.g&#x2e; <a href="qftp.html#list">list</a>(), emit additional signals to report their results.</p>
 <p>Example: If you want to download the INSTALL file from Trolltech's FTP server, you would write this:</p>
-<pre>     ftp-&gt;connectToHost(&quot;ftp.trolltech.com&quot;);  // id == 1
-     ftp-&gt;login();                             // id == 2
-     ftp-&gt;cd(&quot;qt&quot;);                            // id == 3
-     ftp-&gt;get(&quot;INSTALL&quot;);                      // id == 4
-     ftp-&gt;close();                             // id == 5</pre>
+<pre>     ftp-&gt;connectToHost(&quot;ftp.trolltech.com&quot;);  <span class="comment">// id == 1</span>
+     ftp-&gt;login();                             <span class="comment">// id == 2</span>
+     ftp-&gt;cd(&quot;qt&quot;);                            <span class="comment">// id == 3</span>
+     ftp-&gt;get(&quot;INSTALL&quot;);                      <span class="comment">// id == 4</span>
+     ftp-&gt;close();                             <span class="comment">// id == 5</span></pre>
 <p>For this example the following sequence of signals is emitted (with small variations, depending on network traffic, etc.):</p>
 <pre>     start(1)
      stateChanged(HostLookup)
@@ -459,6 +459,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

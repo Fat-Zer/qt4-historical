@@ -69,7 +69,7 @@ void SVGPolyElement::parseMappedAttribute(MappedAttribute* attr)
         points()->clear(ec);
         if (!parsePoints(value) && !m_ignoreAttributeChanges) {
             points()->clear(ec);
-            document()->accessSVGExtensions()->reportError("Problem parsing points=\"" + value + "\"");
+            document()->accessSVGExtensions()->reportError(String("Problem parsing points=\"") + value + String("\""));
         }
     } else {
         if (SVGTests::parseMappedAttribute(attr))

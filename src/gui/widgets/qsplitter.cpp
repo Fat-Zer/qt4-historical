@@ -1585,18 +1585,18 @@ QList<int> QSplitter::sizes() const
 }
 
 /*!
-    Sets the size parameters to the values given in the \a list. If
-    the splitter is horizontal, the values set the widths of each
-    widget going from left to right. If the splitter is vertical, the
-    values set the heights of each widget going from top to bottom.
-    Extra values in the \a list are ignored.
+    Sets the size parameters to the values given in the \a list.
+    The available space is divided according to the weights specified in
+    the list.
+
+    If the splitter is horizontal, the values set the widths of each
+    widget, from left to right based on the given weight. If the
+    splitter is vertical, the heights of each widget is set, from top
+    to bottom. Extra values in the \a list are ignored.
 
     If \a list contains too few values, the result is undefined but
-    the program will still be well-behaved.
-
-    The values in \a list should be the height or width (depending on
-    orientation()) that the widgets should be resized to. If you specify
-    a size of 0, the widget will be invisible.
+    the program will still be well-behaved. If you specify a size of 0,
+    the widget will be invisible.
 
     \sa sizes()
 */

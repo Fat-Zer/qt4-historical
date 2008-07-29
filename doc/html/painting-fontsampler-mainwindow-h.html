@@ -80,13 +80,13 @@
      void on_printAction_triggered();
      void on_printPreviewAction_triggered();
      void on_unmarkAction_triggered();
-     void printPage(int index, QPainter &amp;painter, QPrinter &amp;printer);
+     void printDocument(QPrinter *printer);
+     void printPage(int index, QPainter *painter, QPrinter *printer);
      void showFont(QTreeWidgetItem *item);
      void updateStyles(QTreeWidgetItem *item, int column);
 
  private:
      QMap&lt;QString, StyleItems&gt; currentPageMap();
-     bool setupPrinter(QPrinter &amp;printer);
      void markUnmarkFonts(Qt::CheckState state);
      void setupFontTree();
 
@@ -100,6 +100,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

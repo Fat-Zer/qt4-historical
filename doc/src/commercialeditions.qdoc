@@ -82,29 +82,34 @@
     commercial editions:
 
     \table 75%
-    \header \o Features                      \o{3,1} Editions
-    \header \o                               \o Qt Console \o Qt Desktop Light \o Qt Desktop
-    \row    \o \l{QtCore}{Qt Core classes}   \o \bold{X}   \o \bold{X}         \o \bold{X}
-    \row    \o \l{QtGui}{Qt GUI classes}     \o            \o \bold{X}         \o \bold{X}
-    \row    \o \l{QtNetwork}{Networking}     \o \bold{X}   \o                  \o \bold{X}
-    \row    \o \l{QtOpenGL}{OpenGL}          \o            \o                  \o \bold{X}
-    \row    \o \l{QtScript}{Scripting}       \o \bold{X}   \o                  \o \bold{X}
-    \row    \o \l{QtSql}{Database/SQL}       \o \bold{X}   \o                  \o \bold{X}
-    \row    \o \l{QtSvg}{SVG}                \o            \o                  \o \bold{X}
-    \row    \o \l{QtXml}{XML}                \o \bold{X}   \o                  \o \bold{X}
-    \row    \o \l{Qt3Support}{Qt 3 Support}  \o            \o \bold{(X)}       \o \bold{X}
-    \row    \o \l{QtAssistant}{Help system}  \o            \o                  \o \bold{X}
-    \row    \o \l{QtDesigner}{\QD extension classes}
-                                             \o            \o                  \o \bold{X}
-    \row    \o \l{QtTest}{Unit testing framework}
-                                             \o \bold{X}   \o \bold{X}         \o \bold{X}
-    \row    \o \l{QtUiTools}{Run-time form handling}
-                                             \o            \o                  \o \bold{X}
-    \row    \o \l{ActiveQt}                  \o            \o                  \o \bold{X}
+    \header \o{1,2} Features                                      \o{3,1} Editions
+    \header                                                       \o Qt Console \o Qt Desktop Light \o Qt Desktop
+    \row    \o \l{QtCore}{Qt Core classes (QtCore)}               \o \bold{X}   \o \bold{X}         \o \bold{X}
+    \row    \o \l{QtGui}{Qt GUI classes (QtGui)}                  \o            \o \bold{(X)}       \o \bold{X}
+    \row    \o \l{Graphics View Classes} (part of QtGui)          \o            \o                  \o \bold{X}
+    \row    \o \l{QtNetwork}{Networking (QtNetwork)}              \o \bold{X}   \o                  \o \bold{X}
+    \row    \o \l{QtOpenGL}{OpenGL (QtOpenGL)}                    \o            \o                  \o \bold{X}
+    \row    \o \l{QtScript}{Scripting (QtScript)}                 \o \bold{X}   \o                  \o \bold{X}
+    \row    \o \l{QtSql}{Database/SQL (QtSql)}                    \o \bold{X}   \o                  \o \bold{X}
+    \row    \o \l{QtSvg}{SVG (QtSvg)}                             \o            \o                  \o \bold{X}
+    \row    \o \l{QtWebKit}{WebKit integration (QtWebKit)}        \o            \o                  \o \bold{X}
+    \row    \o \l{QtXml}{XML (QtXml)}                             \o \bold{X}   \o                  \o \bold{X}
+    \row    \o \l{QtXmlPatterns}{XQuery and XPath (QtXmlPatterns)}\o \bold{X}   \o                  \o \bold{X}
+    \row    \o \l{Qt3Support}{Qt 3 Support (Qt3Support)}          \o            \o \bold{(X)}       \o \bold{X}
+    \row    \o \l{QtHelp}{Help system (QtHelp)}                   \o            \o                  \o \bold{X}
+    \row    \o \l{QtDBus}{D-Bus IPC support (QtDBus)}             \o \bold{X}   \o \bold{X}         \o \bold{X}
+    \row    \o \l{QtDesigner}{\QD extension classes (QtDesigner)} \o            \o                  \o \bold{X}
+    \row    \o \l{QtTest}{Unit testing framework (QtTest)}        \o \bold{X}   \o \bold{X}         \o \bold{X}
+    \row    \o \l{QtUiTools}{Run-time form handling (QtUiTools)}  \o            \o                  \o \bold{X}
+    \row    \o \l{Phonon Module}{Phonon Multimedia Framework}     \o            \o                  \o \bold{X}
+    \row    \o \l{ActiveQt}                                       \o            \o                  \o \bold{<X>}
     \endtable
 
-    \bold{(X)} The Qt Desktop Light Edition contains selected classes from the Qt3Support
-    module corresponding to the functionality available in the Qt 3 Professional Edition.
+    \bold{(X)} The Qt Desktop Light Edition contains selected classes from the QtGui and
+    Qt3Support modules corresponding to the functionality available in the Qt 3 Professional
+    Edition.
+
+    \bold{<X>} The ActiveQt module is only available on Windows.
 
     Lists of the classes available in each edition are available on the
     following pages:

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/musicplayerexample.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/musicplayerexample.qdoc -->
 <head>
   <title>Qt 4.4: Music Player Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -193,7 +193,7 @@
      albumItem-&gt;setFlags(albumItem-&gt;flags() ^ Qt::ItemIsEditable);
      QTableWidgetItem *yearItem = new QTableWidgetItem(metaData.value(&quot;DATE&quot;));
      yearItem-&gt;setFlags(yearItem-&gt;flags() ^ Qt::ItemIsEditable);</pre>
-<p>When <tt>metaStateChanged()</tt> is invoked, <tt>metaInformationProvider</tt> has resolved the meta data for its current source. A <a href="phonon-mediaobject.html">MediaObject</a> will do this before entering <a href="phonon.html#State-enum">StoppedState</a>. Note that we could also have used the metaDataChanged() signal for this purpose.</p>
+<p>When <tt>metaStateChanged()</tt> is invoked, <tt>metaInformationProvider</tt> has resolved the meta data for its current source. A <a href="phonon-mediaobject.html">MediaObject</a> will do this before entering <a href="phonon.html#State-enum">StoppedState</a>. Note that we could also have used the <a href="phonon-mediaobject.html#metaDataChanged">metaDataChanged()</a> signal for this purpose.</p>
 <p>Some of the meta data is then chosen to be displayed in the music table. A file might not contain the meta data requested, in which case an empty string is returned.</p>
 <pre>     if (musicTable-&gt;selectedItems().isEmpty()) {
          musicTable-&gt;selectRow(0);
@@ -239,6 +239,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

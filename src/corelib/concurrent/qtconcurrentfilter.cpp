@@ -44,6 +44,7 @@
 /*!
     \headerfile <QtConcurrentFilter>
     \title Concurrent Filter and Filter-Reduce
+    \ingroup threading
 
     \brief The <QtConcurrentFilter> header provides concurrent Filter and
     Filter-Reduce.
@@ -147,7 +148,7 @@
     \snippet doc/src/snippets/code/src.corelib.concurrent.qtconcurrentfilter.cpp 8
 
     \section2 Using Function Objects
-    
+
     QtConcurrent::filter(), QtConcurrent::filtered(), and
     QtConcurrent::filteredReduced() accept function objects, which can be used to
     add state to a function call. The result_type typedef must define the 
@@ -251,4 +252,82 @@
     QtConcurrent::UnorderedReduce. If \a reduceOptions is
     QtConcurrent::OrderedReduce, the \a reduceFunction is called in the order
     of the original sequence.
+*/
+
+/*!
+  \fn void QtConcurrent::blockingFilter(Sequence &sequence, FilterFunction filterFunction)
+
+  Calls \a filterFunction once for each item in \a sequence. If
+  \a filterFunction returns true, the item is kept in \a sequence;
+  otherwise, the item is removed from \a sequence.
+
+  \note This function will block until all items in the sequence have been processed.
+*/
+
+/*!
+  \fn Sequence QtConcurrent::blockingFiltered(const Sequence &sequence, FilterFunction filterFunction)
+
+  Calls \a filterFunction once for each item in \a sequence and returns a
+  new Sequence of kept items. If \a filterFunction returns true, a copy of
+  the item is put in the new Sequence. Otherwise, the item will \e not
+  appear in the new Sequence.
+
+  \note This function will block until all items in the sequence have been processed.
+
+  \sa filtered()
+*/
+
+/*!
+  \fn Sequence QtConcurrent::blockingFiltered(ConstIterator begin, ConstIterator end, FilterFunction filterFunction)
+
+  Calls \a filterFunction once for each item from \a begin to \a end and
+  returns a new Sequence of kept items. If \a filterFunction returns true, a
+  copy of the item is put in the new Sequence. Otherwise, the item will
+  \e not appear in the new Sequence.
+
+  \note This function will block until the iterator reaches the end of the
+  sequence being processed.
+
+  \sa filtered()
+*/
+
+/*!
+  \fn T QtConcurrent::blockingFilteredReduced(const Sequence &sequence, FilterFunction filterFunction, ReduceFunction reduceFunction, QtConcurrent::ReduceOptions reduceOptions)
+
+  Calls \a filterFunction once for each item in \a sequence. If
+  \a filterFunction returns true for an item, that item is then passed to
+  \a reduceFunction. In other words, the return value is the result of
+  \a reduceFunction for each item where \a filterFunction returns true.
+
+  Note that while \a filterFunction is called concurrently, only one thread
+  at a time will call \a reduceFunction. The order in which \a reduceFunction
+  is called is undefined if \a reduceOptions is
+  QtConcurrent::UnorderedReduce. If \a reduceOptions is
+  QtConcurrent::OrderedReduce, \a reduceFunction is called in the order of
+  the original sequence.
+
+  \note This function will block until all items in the sequence have been processed.
+
+  \sa filteredReduced()
+*/
+
+/*!
+  \fn T QtConcurrent::blockingFilteredReduced(ConstIterator begin, ConstIterator end, FilterFunction filterFunction, ReduceFunction reduceFunction, QtConcurrent::ReduceOptions reduceOptions)
+
+  Calls \a filterFunction once for each item from \a begin to \a end. If
+  \a filterFunction returns true for an item, that item is then passed to
+  \a reduceFunction. In other words, the return value is the result of
+  \a reduceFunction for each item where \a filterFunction returns true.
+
+  Note that while \a filterFunction is called concurrently, only one thread
+  at a time will call \a reduceFunction. The order in which
+  \a reduceFunction is called is undefined if \a reduceOptions is
+  QtConcurrent::UnorderedReduce. If \a reduceOptions is
+  QtConcurrent::OrderedReduce, the \a reduceFunction is called in the order
+  of the original sequence.
+
+  \note This function will block until the iterator reaches the end of the
+  sequence being processed.
+
+  \sa filteredReduced()
 */

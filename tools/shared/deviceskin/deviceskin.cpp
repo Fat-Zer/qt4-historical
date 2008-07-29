@@ -340,8 +340,8 @@ bool DeviceSkinParameters::read(QTextStream &ts, ReadMode rm, QString *errorMess
         }
     }
     if (i != nareas) {
-	const QString message = DeviceSkin::tr("Mismatch in number of areas, expected %1, got %2.").arg(nareas).arg(i);
-	qWarning(message.toUtf8().constData());
+        qWarning() << DeviceSkin::tr("Mismatch in number of areas, expected %1, got %2.")
+                      .arg(nareas).arg(i);
     }
     if (debugDeviceSkin)
 	qDebug() << *this;
@@ -384,7 +384,6 @@ DeviceSkin::DeviceSkin(const DeviceSkinParameters &parameters,  QWidget *p ) :
     m_secondaryView(0),
     buttonPressed(false),
     buttonIndex(0),
-    zoom(1.0),
     cursorw(0),
     joydown(0),
     t_skinkey(new QTimer(this)),
@@ -418,9 +417,7 @@ void DeviceSkin::calcRegions()
 	QPolygon xa(m_parameters.buttonAreas[i].area.count());
 	int n = m_parameters.buttonAreas[i].area.count();
 	for (int p=0; p<n; p++) {
-	    xa.setPoint(p,
-		int(m_parameters.buttonAreas[i].area[p].x()*zoom),
-		int(m_parameters.buttonAreas[i].area[p].y()*zoom));
+	    xa.setPoint(p,transform.map(m_parameters.buttonAreas[i].area[p]));
 	}
 	if ( n == 2 ) {
 	    buttonRegions[i] = QRegion(xa.boundingRect());
@@ -445,13 +442,13 @@ void DeviceSkin::loadImages()
     if (hasCursorImage)
 	icurs =  m_parameters.skinCursor;
 
-    if ( zoom != int(zoom) ) {
-	iup = iup.scaled(int(iup.width()*zoom),int(iup.height()*zoom), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-	idown = idown.scaled(int(idown.width()*zoom),int(idown.height()*zoom), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    if (!transform.isIdentity()) {
+	iup = iup.transformed(transform, Qt::SmoothTransformation);
+	idown = idown.transformed(transform, Qt::SmoothTransformation);
 	if (hasClosedImage)
-	    iclosed = iclosed.scaled(int(idown.width()*zoom),int(idown.height()*zoom), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	    iclosed = iclosed.transformed(transform, Qt::SmoothTransformation);
 	if (hasCursorImage)
-	    icurs = icurs.scaled(int(idown.width()*zoom),int(idown.height()*zoom), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	    icurs = icurs.transformed(transform, Qt::SmoothTransformation);
     }
     const Qt::ImageConversionFlags conv = Qt::ThresholdAlphaDither|Qt::AvoidDither;
     skinImageUp = QPixmap::fromImage(iup);
@@ -460,17 +457,6 @@ void DeviceSkin::loadImages()
 	skinImageClosed = QPixmap::fromImage(iclosed, conv);
     if (hasCursorImage)
 	skinCursor = QPixmap::fromImage(icurs, conv);
-
-    if ( zoom == int(zoom) ) {
-	QMatrix scale;
-	scale = scale.scale(zoom,zoom);
-	skinImageUp = skinImageUp.transformed(scale);
-	skinImageDown = skinImageDown.transformed(scale);
-	if (hasClosedImage)
-	    skinImageClosed = skinImageClosed.transformed(scale);
-	if (hasCursorImage)
-	    skinCursor = skinCursor.transformed(scale);
-    }
 
     setFixedSize( skinImageUp.size() );
     if (!skinImageUp.mask())
@@ -496,14 +482,21 @@ DeviceSkin::~DeviceSkin( )
     delete cursorw;
 }
 
-void DeviceSkin::setZoom( double z )
+void DeviceSkin::setTransform( const QMatrix& wm )
 {
-    zoom = z;
+    transform = QImage::trueMatrix(wm,m_parameters.skinImageUp.width(),m_parameters.skinImageUp.height());
     calcRegions();
     loadImages();
-    if ( m_view )
-	m_view->move( int(m_parameters.screenRect.x()*zoom), int(m_parameters.screenRect.y()*zoom) );
+    if ( m_view ) {
+        QPoint p = transform.map(QPolygon(m_parameters.screenRect)).boundingRect().topLeft();
+	m_view->move(p);
+    }
     updateSecondaryScreen();
+}
+
+void DeviceSkin::setZoom( double z )
+{
+    setTransform(QMatrix().scale(z,z));
 }
 
 void DeviceSkin::updateSecondaryScreen()
@@ -514,14 +507,14 @@ void DeviceSkin::updateSecondaryScreen()
         if (m_parameters.backScreenRect.isNull()) {
             m_secondaryView->hide();
         } else {
-            m_secondaryView->move( int(m_parameters.backScreenRect.x()*zoom), int(m_parameters.backScreenRect.y()*zoom) );
+            m_secondaryView->move(transform.map(QPolygon(m_parameters.backScreenRect)).boundingRect().topLeft());
             m_secondaryView->show();
         }
     } else {
         if (m_parameters.closedScreenRect.isNull()) {
             m_secondaryView->hide();
         } else {
-            m_secondaryView->move( int(m_parameters.closedScreenRect.x()*zoom), int(m_parameters.closedScreenRect.y()*zoom) );
+            m_secondaryView->move(transform.map(QPolygon(m_parameters.closedScreenRect)).boundingRect().topLeft());
             m_secondaryView->show();
         }
     }
@@ -531,7 +524,7 @@ void DeviceSkin::setView( QWidget *v )
 {
     m_view = v;
     m_view->setFocus();
-    m_view->move( int(m_parameters.screenRect.x()*zoom), int(m_parameters.screenRect.y()*zoom) );
+    m_view->move(transform.map(QPolygon(m_parameters.screenRect)).boundingRect().topLeft());
     if ( cursorw )
 	cursorw->setView(v);
 }
@@ -797,7 +790,7 @@ CursorWindow::CursorWindow(const QImage &img, QPoint hot, QWidget* sk)
 #endif
     QPixmap p;
     p = QPixmap::fromImage(img);
-    if ( !p.mask() )
+    if (!p.mask()) {
 	if ( img.hasAlphaChannel() ) {
 	    QBitmap bm;
 	    bm = QPixmap::fromImage(img.createAlphaMask());
@@ -807,6 +800,7 @@ CursorWindow::CursorWindow(const QImage &img, QPoint hot, QWidget* sk)
 	    bm = QPixmap::fromImage(img.createHeuristicMask());
 	    p.setMask( bm );
 	}
+    }
     QPalette palette;
     palette.setBrush(backgroundRole(), QBrush(p));
     setPalette(palette);

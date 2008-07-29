@@ -217,6 +217,10 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     The documentation for the \l{widgets/styles}{Styles} example
     covers this topic in more detail.
 
+    \warning Qt style sheets are currently not supported for custom QStyle
+    subclasses. We plan to address this in some future release.
+
+
     \section1 Using a Custom Style
 
     There are several ways of using a custom style in a Qt
@@ -224,7 +228,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     QApplication::setStyle() static function before creating the
     QApplication object:
 
-    \snippet doc/src/snippets/customstyle/main.cpp using a custom style
+    \snippet snippets/customstyle/main.cpp using a custom style
 
     You can call QApplication::setStyle() at any time, but by calling
     it before the constructor, you ensure that the user's preference,
@@ -277,19 +281,38 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     \section1 Styles in Item Views
 
     The painting of items in views is performed by a delegate. Qt's
-    default delegate, QStyledItemDelegate, uses the style to draw
-    check box indicators, and for calculating bounding rectangles
-    of items, and their sub-elements for the various kind of item
-    \l{Qt::ItemDataRole}{data roles} for the datatypes the
-    QStyledItemDelegate supports. Please see the \l{Model/View
-    Programming} for more info on item data roles.
+    default delegate, QStyledItemDelegate, is also used for for calculating bounding
+    rectangles of items, and their sub-elements for the various kind
+    of item \l{Qt::ItemDataRole}{data roles}
+    QStyledItemDelegate supports. See the QStyledItemDelegate class
+    description to find out which datatypes and roles are supported. You
+    can read more about item data roles in \l{Model/View Programming}.
 
-    To fully customize the look and feel in an item view or add
-    support for drawing of new datatypes, it is necessary to create a
-    custom delegate. But if you only need to support the datatypes
-    implemented by the default delegate, a custom style does not need
-    an accompanying delegate. The QStyledItemDelegate class
-    description gives more information on custom delegates.
+    When QStyledItemDelegate paints its items, it draws
+    CE_ItemViewItem, and calculates their size with CT_ItemViewItem.
+    Note also that it uses SE_ItemViewItemText to set the size of
+    editors. When implementing a style to customize drawing of item
+    views, you need to check the implementation of QCommonStyle (and
+    any other subclasses from which your style
+    inherits). This way, you find out which and how
+    other style elements are painted, and you can then reimplement the
+    painting of elements that should be drawn differently.
+
+    We include a small example where we customize the drawing of item
+    backgrounds.
+
+    \snippet doc/src/snippets/customviewstyle.cpp 0
+
+    The primitive element PE_PanelItemViewItem is responsible for
+    painting the background of items, and is called from
+    \l{QCommonStyle}'s implementation of CE_ItemViewItem.
+
+    To add support for drawing of new datatypes and item data roles,
+    it is necessary to create a custom delegate. But if you only
+    need to support the datatypes implemented by the default
+    delegate, a custom style does not need an accompanying
+    delegate. The QStyledItemDelegate class description gives more
+    information on custom delegates.
 
     The drawing of item view headers is also done by the style, giving
     control over size of header items and row and column sizes. 

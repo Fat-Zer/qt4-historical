@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: MediaSource Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">MediaSource Class Reference<br /><span class="small-subtitle">(Phonon::MediaSource)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The MediaSource class provides multimedia data for media objects. <a href="#details">More...</a></p>
-<p>This class was introduced in Qt 4.4.</p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-mediasource-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -53,14 +53,14 @@
 <p>The media source knows how fetch its data from several sources, e.g&#x2e;, from files, a <a href="qiodevice.html">QIODevice</a>, or a CD. The possible source types are described by the Type enum. The type of the source is set by the media source itself, and is dependent on the constructor used to create it. Note that it is possible to provide data from any source by implementing a <a href="qiodevice.html">QIODevice</a>.</p>
 <p>The class has several functions to acquire information about the source it manages, e.g&#x2e;, <a href="phonon-mediasource.html#fileName">fileName</a>(), <a href="phonon-mediasource.html#url">url</a>(), and diskType(). The return from these functions are dependent on the <a href="phonon-mediasource.html#type">type</a>() of the media source.</p>
 <p>Normally, a programmer does not need to be concerned with media sources. It's constructors are implicit, so one can, for instance, send an URL or filename directly to the constructors of the <a href="phonon-mediaobject.html">MediaObject</a>.</p>
-<pre>     MediaObject m;
-     QString fileName(&quot;/home/foo/bar.ogg&quot;);
-     QUrl url(&quot;http://www.example.com/stream.mp3&quot;);
-     QBuffer *someBuffer;
-     m.setCurrentSource(fileName);
-     m.setCurrentSource(url);
-     m.setCurrentSource(someBuffer);
-     m.setCurrentSource(Phonon::Cd);</pre>
+<pre> MediaObject m;
+ QString fileName(&quot;/home/foo/bar.ogg&quot;);
+ QUrl url(&quot;http://www.example.com/stream.mp3&quot;);
+ QBuffer *someBuffer;
+ m.setCurrentSource(fileName);
+ m.setCurrentSource(url);
+ m.setCurrentSource(someBuffer);
+ m.setCurrentSource(Phonon::Cd);</pre>
 <p>A MediaSource object cannot be reused for another multimedia source. It is possible to play the same source again, and also stop and start a non-seekable media source, such as a radio stream, with the same MediaSource object.</p>
 <a name="qt-backends"></a>
 <h3>Qt Backends</h3>
@@ -149,6 +149,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

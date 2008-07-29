@@ -1223,7 +1223,16 @@ void VcprojGenerator::initDeploymentTool()
     // C-runtime deployment
     QString runtime = project->values("QT_CE_C_RUNTIME").join(QLatin1String(" "));
     if (!runtime.isEmpty() && (runtime != QLatin1String("no"))) {
-        QString runtimeVersion = QLatin1String(project->isActiveConfig("debug") ? "msvcr80d.dll" : "msvcr80.dll");
+        QString runtimeVersion = QLatin1String("msvcr");
+        const QString mkspec = project->values("QMAKESPEC").first();
+        if (mkspec.endsWith("2008"))
+            runtimeVersion.append("90");
+        else
+            runtimeVersion.append("80");
+        if (project->isActiveConfig("debug"))
+            runtimeVersion.append("d");
+        runtimeVersion.append(".dll");
+
         if (runtime == "yes") {
             // Auto-find C-runtime
             QString vcInstallDir = qgetenv("VCINSTALLDIR");

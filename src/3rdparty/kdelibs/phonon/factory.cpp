@@ -114,6 +114,7 @@ bool FactoryPrivate::createBackend()
             }
             foreach (const QString &pluginName, dir.entryList(QDir::Files)) {
                 QPluginLoader pluginLoader(libPath + pluginName);
+                pluginLoader.setLoadHints(QLibrary::ExportExternalSymbolsHint);
                 if (!pluginLoader.load()) {
                     pDebug() << Q_FUNC_INFO << "  load failed:"
                              << pluginLoader.errorString();

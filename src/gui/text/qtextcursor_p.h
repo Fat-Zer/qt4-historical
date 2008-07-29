@@ -104,6 +104,8 @@ public:
     void setBlockFormat(const QTextBlockFormat &format, QTextDocumentPrivate::FormatChangeMode changeMode);
     void setCharFormat(const QTextCharFormat &format, QTextDocumentPrivate::FormatChangeMode changeMode);
 
+    void aboutToRemoveCell(int from, int to);
+
     QTextDocumentPrivate *priv;
     qreal x;
     int position;

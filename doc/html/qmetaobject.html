@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/kernel/qmetaobject.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qmetaobject.cpp -->
 <head>
   <title>Qt 4.4: QMetaObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -94,7 +94,7 @@
          {
              Q_OBJECT
              Q_CLASSINFO(&quot;author&quot;, &quot;Sabrina Schweinsteiger&quot;)
-             Q_CLASSINFO(&quot;url&quot;, &quot;http://doc.moosesoft.co.uk/1.0/&quot;)
+             Q_CLASSINFO(&quot;url&quot;, &quot;http:<span class="comment">//doc.moosesoft.co.uk/1.0/&quot;)</span>
 
          public:
              ...
@@ -202,7 +202,12 @@
 <p>See also <a href="qmetaobject.html#methodCount">methodCount</a>(), <a href="qmetaobject.html#methodOffset">methodOffset</a>(), and <a href="qmetaobject.html#indexOfMethod">indexOfMethod</a>().</p>
 <a name="//apple_ref/cpp/instm/QMetaObject/methodCount" />
 <h3 class="fn"><a name="methodCount"></a>int QMetaObject::methodCount () const</h3>
-<p>Returns the number of methods in this class. These include signals and slots.</p>
+<p>Returns the number of methods in this class, including the number of properties provided by each base class. These include signals and slots as well as normal member functions.</p>
+<p>Use code like the following to obtain a <a href="qstringlist.html">QStringList</a> containing the methods specific to a given class:</p>
+<pre> const QMetaObject* metaObject = obj-&gt;metaObject();
+ QStringList methods;
+ for(int i = metaObject-&gt;methodOffset(); i &lt; metaObject-&gt;methodCount(); ++i)
+     methods &lt;&lt; QString::fromLatin1(metaObject-&gt;property(i).signature());</pre>
 <p>See also <a href="qmetaobject.html#method">method</a>(), <a href="qmetaobject.html#methodOffset">methodOffset</a>(), and <a href="qmetaobject.html#indexOfMethod">indexOfMethod</a>().</p>
 <a name="//apple_ref/cpp/instm/QMetaObject/methodOffset" />
 <h3 class="fn"><a name="methodOffset"></a>int QMetaObject::methodOffset () const</h3>
@@ -220,7 +225,7 @@
 <p>See <a href="qmetaobject.html#normalizedSignature">QMetaObject::normalizedSignature</a>() for a description on how Qt normalizes.</p>
 <p>Example:</p>
 <pre>     QByteArray normType = QMetaObject::normalizedType(&quot; int    const  *&quot;);
-     // normType is now &quot;const int*&quot;</pre>
+     <span class="comment">// normType is now &quot;const int*&quot;</span></pre>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qmetaobject.html#normalizedSignature">normalizedSignature</a>().</p>
 <a name="//apple_ref/cpp/instm/QMetaObject/property" />
@@ -229,7 +234,12 @@
 <p>See also <a href="qmetaobject.html#propertyCount">propertyCount</a>(), <a href="qmetaobject.html#propertyOffset">propertyOffset</a>(), and <a href="qmetaobject.html#indexOfProperty">indexOfProperty</a>().</p>
 <a name="//apple_ref/cpp/instm/QMetaObject/propertyCount" />
 <h3 class="fn"><a name="propertyCount"></a>int QMetaObject::propertyCount () const</h3>
-<p>Returns the number of properties in this class.</p>
+<p>Returns the number of properties in this class, including the number of properties provided by each base class.</p>
+<p>Use code like the following to obtain a <a href="qstringlist.html">QStringList</a> containing the properties specific to a given class:</p>
+<pre> const QMetaObject* metaObject = obj-&gt;metaObject();
+ QStringList properties;
+ for(int i = metaObject-&gt;propertyOffset(); i &lt; metaObject-&gt;propertyCount(); ++i)
+     properties &lt;&lt; QString::fromLatin1(metaObject-&gt;property(i).name());</pre>
 <p>See also <a href="qmetaobject.html#property">property</a>(), <a href="qmetaobject.html#propertyOffset">propertyOffset</a>(), and <a href="qmetaobject.html#indexOfProperty">indexOfProperty</a>().</p>
 <a name="//apple_ref/cpp/instm/QMetaObject/propertyOffset" />
 <h3 class="fn"><a name="propertyOffset"></a>int QMetaObject::propertyOffset () const</h3>
@@ -259,6 +269,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

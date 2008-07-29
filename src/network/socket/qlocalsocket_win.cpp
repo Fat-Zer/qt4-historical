@@ -388,7 +388,7 @@ bool QLocalSocket::setSocketDescriptor(quintptr socketDescriptor,
 {
     Q_D(QLocalSocket);
     d->readBuffer.clear();
-    setOpenMode(openMode);
+    QIODevice::open(openMode);
     d->handle = (int*)socketDescriptor;
     d->state = socketState;
     emit stateChanged(d->state);

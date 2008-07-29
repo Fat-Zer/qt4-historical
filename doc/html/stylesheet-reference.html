@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/stylesheet.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/stylesheet.qdoc -->
 <head>
   <title>Qt 4.4: Qt Style Sheets Reference</title>
   <link rel="prev" href="stylesheet-customizing.html" />
@@ -174,7 +174,7 @@
 <p>See <a href="stylesheet-examples.html#customizing-qtreeview">Customizing QTreeView</a> for an example to style the branches.</p>
 </td></tr>
 <tr valign="top" class="even"><td><a href="qtreewidget.html">QTreeWidget</a> <a name="qtreewidget-widget"></a></td><td>See <a href="#qtreeview-widget">QTreeView</a>.</td></tr>
-<tr valign="top" class="odd"><td><a href="qwidget.html">QWidget</a> <a name="qwidget-widget"></a></td><td>Supports only the <a href="#background-prop">background</a>, <a href="#background-clip-prop">backgorund-clip</a> and <a href="#background-origin-prop">background-origin</a> properties.<p>If you subclass from <a href="qwidget.html">QWidget</a>, you need to provide a paintEvent for your custom <a href="qwidget.html">QWidget</a> as below:</p>
+<tr valign="top" class="odd"><td><a href="qwidget.html">QWidget</a> <a name="qwidget-widget"></a></td><td>Supports only the <a href="#background-prop">background</a>, <a href="#background-clip-prop">background-clip</a> and <a href="#background-origin-prop">background-origin</a> properties.<p>If you subclass from <a href="qwidget.html">QWidget</a>, you need to provide a paintEvent for your custom <a href="qwidget.html">QWidget</a> as below:</p>
 <pre>                void CustomWidget::paintEvent(QPaintEvent *)
                 {
                     QStyleOption opt;
@@ -343,9 +343,10 @@
 <pre>                 QPushButton { color: red }</pre>
 <p>See also <a href="#background-prop">background</a> and <a href="#selection-color-prop">selection-color</a>.</p>
 </td></tr>
-<tr valign="top" class="odd"><td><b><tt>dialogbuttonbox-buttons-have-icons</tt></b></td><td><a href="#boolean">Boolean</a></td><td>Whether the buttons in a <a href="qdialogbuttonbox.html">QDialogButtonBox</a> show icons<p>If this property is set to true, the buttons of a <a href="qdialogbuttonbox.html">QDialogButtonBox</a> show icons.</p>
+<tr valign="top" class="odd"><td><b><tt>dialogbuttonbox-buttons-have-icons</tt></b></td><td><a href="#boolean">Boolean</a></td><td>Whether the buttons in a <a href="qdialogbuttonbox.html">QDialogButtonBox</a> show icons<p>If this property is set to 1, the buttons of a <a href="qdialogbuttonbox.html">QDialogButtonBox</a> show icons; if it is set to 0, the icons are not shown.</p>
 <p>See the <a href="#list-of-icons">List of Icons</a> section for information on how to set icons.</p>
-<pre>             QDialogButtonBox { dialogbuttonbox-buttons-have-icons: true; }</pre>
+<pre>             QDialogButtonBox { dialogbuttonbox-buttons-have-icons: 1; }</pre>
+<p><b>Note:</b> Styles defining this property must be applied before the <a href="qdialogbuttonbox.html">QDialogButtonBox</a> is created; this means that you must apply the style to the parent widget or to the application itself.</p>
 </td></tr>
 <tr valign="top" class="even"><td><b><tt>font</tt></b> <a name="font-prop"></a></td><td><a href="#font">Font</a></td><td>Shorthand notation for setting the text's font. Equivalent to specifying <tt>font-family</tt>, <tt>font-size</tt>, <tt>font-style</tt>, and/or <tt>font-weight</tt>.<p>This property is supported by all widgets that respect the <a href="qwidget.html#font-prop">QWidget::font</a>.</p>
 <p>If this property is not set, the default is the <a href="qwidget.html#font-prop">QWidget::font</a>.</p>
@@ -625,6 +626,7 @@
          QLabel { border-color: rgb(100%, 0%, 0%) }      / * opaque red * /
          QLabel { border-color: hsv(60, 255, 255) }      / * opaque yellow * /
          QLabel { border-color: hsva(240, 255, 255, 75%) }      / * 75% blue * /</pre>
+<p><b>Note:</b> The RGB colors allowed are the same as those allowed with CSS 2.1, as listed <a href="http://www.w3.org/TR/CSS21/syndata.html#color-units">here</a>.</p>
 </td></tr>
 <tr valign="top" class="even"><td><b>Font</b> <a name="font"></a></td><td>(<a href="#font-style">Font Style</a> | <a href="#font-weight">Font Weight</a>){0,2} <a href="#font-size">Font Size</a> String</td><td>Shorthand font property.</td></tr>
 <tr valign="top" class="odd"><td><b>Font <a name="font-size"></a> Size</b></td><td><a href="#length">Length</a></td><td>The size of a font.</td></tr>
@@ -804,6 +806,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

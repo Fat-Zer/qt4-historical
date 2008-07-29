@@ -58,6 +58,7 @@
 
 #include <private/qfont_p.h>
 #include <private/qfontengine_p.h>
+#include <private/qnumeric_p.h>
 #include <private/qpainter_p.h>
 #include <private/qpainterpath_p.h>
 #include <private/qpixmap_mac_p.h>
@@ -265,15 +266,15 @@ CGColorSpaceRef QCoreGraphicsPaintEngine::macDisplayColorSpace(const QWidget *wi
         return colorSpace;
 
     CMError err = CMGetProfileByAVID((CMDisplayIDType)displayID, &displayProfile);
-    if (err != noErr) {
-        if (widget) {
-            return macDisplayColorSpace(0); // fall back on main display
-        } else {
-            return 0; // we're screwed
-        }
+    if (err == noErr) {
+        colorSpace = CGColorSpaceCreateWithPlatformColorSpace(displayProfile);
+    } else if (widget) {
+        return macDisplayColorSpace(0); // fall back on main display    
     }
 
-    colorSpace = CGColorSpaceCreateWithPlatformColorSpace(displayProfile);
+    if (colorSpace == 0)
+        colorSpace = CGColorSpaceCreateDeviceRGB();
+
     m_displayColorSpaceHash.insert(displayID, colorSpace);
     CMCloseProfile(displayProfile);
     if (!m_postRoutineRegistered) {
@@ -581,10 +582,11 @@ QCoreGraphicsPaintEngine::updateState(const QPaintEngineState &state)
         else
             updateClipPath(QPainterPath(), Qt::NoClip);
     }
-    if(flags & DirtyClipPath)
+    if(flags & DirtyClipPath) {
         updateClipPath(state.clipPath(), state.clipOperation());
-    if(flags & DirtyClipRegion)
+    } else if(flags & DirtyClipRegion) {
         updateClipRegion(state.clipRegion(), state.clipOperation());
+    }
     if(flags & DirtyHints)
         updateRenderHints(state.renderHints());
     if (flags & DirtyCompositionMode)
@@ -652,6 +654,12 @@ QCoreGraphicsPaintEngine::updateMatrix(const QTransform &transform)
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
+    
+    if (qt_is_nan(transform.m11()) || qt_is_nan(transform.m12()) || qt_is_nan(transform.m13()) 
+	|| qt_is_nan(transform.m21()) || qt_is_nan(transform.m22()) || qt_is_nan(transform.m23()) 
+	|| qt_is_nan(transform.m31()) || qt_is_nan(transform.m32()) || qt_is_nan(transform.m33()))
+	return;
+    
     d->current.transform = transform;
     d->setTransform(transform.isIdentity() ? 0 : &transform);
     d->complexXForm = (transform.m11() != 1 || transform.m22() != 1
@@ -892,8 +900,8 @@ void QCoreGraphicsPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, co
             const int sx = qRound(sr.x()), sy = qRound(sr.y()), sw = qRound(sr.width()), sh = qRound(sr.height());
             const QMacPixmapData *pmData = static_cast<const QMacPixmapData*>(pm.data);
             quint32 *pantherData = pmData->pixels + (sy * pm.width() + sx);
-            QCFType<CGDataProviderRef> provider = CGDataProviderCreateWithData(0, pantherData, sw*sh*sizeof(uint), 0);
-            image = CGImageCreate(sw, sh, 8, 32, pm.width() * sizeof(uint),
+            QCFType<CGDataProviderRef> provider = CGDataProviderCreateWithData(0, pantherData, sw*sh*pmData->bytesPerRow, 0);
+            image = CGImageCreate(sw, sh, 8, 32, pmData->bytesPerRow,
                                   macGenericColorSpace(),
                                   kCGImageAlphaPremultipliedFirst, provider, 0, 0,
                                   kCGRenderingIntentDefault);
@@ -983,7 +991,7 @@ void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, con
             // Make another CGImage based on the part that we need.
             const uchar *pantherData = image->scanLine(sy) + sx * sizeof(uint);
             QCFType<CGDataProviderRef> dataProvider = CGDataProviderCreateWithData(0, pantherData,
-                                                                                   sw * sh * sizeof(uint), 0);
+                                                                                   sw * sh * image->bytesPerLine(), 0);
             cgimage = CGImageCreate(sw, sh, 8, 32, image->bytesPerLine(),
                                     macGenericColorSpace(),
                     CGImageGetAlphaInfo(cgimage), dataProvider, 0, false, kCGRenderingIntentDefault);
@@ -1054,12 +1062,15 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
 void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem &item)
 {
     Q_D(QCoreGraphicsPaintEngine);
+
+    if (d->current.transform.type() == QTransform::TxProject
 #ifndef QMAC_NATIVE_GRADIENTS
-    if(painter()->pen().brush().gradient()) { //Just let the base engine "emulate" the gradient
+        || painter()->pen().brush().gradient()  //Just let the base engine "emulate" the gradient
+#endif
+        ) {
         QPaintEngine::drawTextItem(pos, item);
         return;
     }
-#endif
 
     if (state->compositionMode() == QPainter::CompositionMode_Destination)
         return;
@@ -1491,6 +1502,7 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
         CGContextSetFillColorSpace(hd, fill_colorspace);
 
         CGAffineTransform xform = CGContextGetCTM(hd);
+        xform = CGAffineTransformConcat(qt_mac_convert_transform_to_cg(brush.transform()), xform);
         xform = CGAffineTransformTranslate(xform, offset.x(), offset.y());
 
         CGPatternCallbacks callbks;

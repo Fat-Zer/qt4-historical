@@ -163,8 +163,8 @@
      if (!fileName.contains(QLatin1String(&quot;countries.txt&quot;)))
          return new QStringListModel(words, completer);
 
-     <span class="comment">//</span> The last two chars of the countries.txt file indicate the country
-     <span class="comment">//</span> symbol. We put that in column 2 of a standard item model
+     <span class="comment">// The last two chars of the countries.txt file indicate the country</span>
+     <span class="comment">// symbol. We put that in column 2 of a standard item model</span>
      QStandardItemModel *m = new QStandardItemModel(words.count(), 2, completer);
      for (int i = 0; i &lt; words.count(); ++i) {
          QModelIndex countryIdx = m-&gt;index(i, 0);
@@ -204,21 +204,21 @@
      switch (modelCombo-&gt;currentIndex()) {
      default:
      case 0:
-         { <span class="comment">//</span> Unsorted QDirModel
+         { <span class="comment">// Unsorted QDirModel</span>
              QDirModel *dirModel = new QDirModel(completer);
              completer-&gt;setModel(dirModel);
              contentsLabel-&gt;setText(tr(&quot;Enter file path&quot;));
          }
          break;
      case 1:
-         { <span class="comment">//</span> DirModel that shows full paths
+         { <span class="comment">// DirModel that shows full paths</span>
              DirModel *dirModel = new DirModel(completer);
              completer-&gt;setModel(dirModel);
              contentsLabel-&gt;setText(tr(&quot;Enter file path&quot;));
          }
          break;
      case 2:
-         { <span class="comment">//</span> Country List
+         { <span class="comment">// Country List</span>
              completer-&gt;setModel(modelFromFile(&quot;:/resources/countries.txt&quot;));
              QTreeView *treeView = new QTreeView;
              completer-&gt;setPopup(treeView);
@@ -231,7 +231,7 @@
          }
          break;
      case 3:
-         { <span class="comment">//</span> Word list
+         { <span class="comment">// Word list</span>
              completer-&gt;setModel(modelFromFile(&quot;:/resources/wordlist.txt&quot;));
              completer-&gt;setModelSorting(QCompleter::CaseInsensitivelySortedModel);
              contentsLabel-&gt;setText(tr(&quot;Enter a word&quot;));
@@ -255,6 +255,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

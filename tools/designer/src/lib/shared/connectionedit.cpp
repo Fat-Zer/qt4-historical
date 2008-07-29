@@ -512,7 +512,7 @@ void Connection::updateKneeList()
         }
     } else {
         if (r.height() < sr.height() + tr.height()) {
-            if (s.y() >= tr.top() && s.y() <= tr.bottom() || t.y() >= sr.bottom() || t.y() <= sr.top()) {
+            if ((s.y() >= tr.top() && s.y() <= tr.bottom()) || (t.y() >= sr.bottom() || t.y() <= sr.top())) {
 /*
                 +--------+
                 |        |   +--------+
@@ -552,7 +552,7 @@ void Connection::updateKneeList()
                 m_knee_list.append(QPoint(t.x(), s.y()));
             }
         } else if (r.width() < sr.width() + tr.width()) {
-            if (s.x() >= tr.left() && s.x() <= tr.right() || t.x() >= sr.right() || t.x() <= sr.left()) {
+            if ((s.x() >= tr.left() && s.x() <= tr.right()) || t.x() >= sr.right() || t.x() <= sr.left()) {
 /*
                 +--------+
                 |        |

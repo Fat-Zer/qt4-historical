@@ -163,7 +163,7 @@ static int _gettemp(char *path, int *doopen, int domkdir, int slen)
 				break;
 			if (*trv == '/') {
 				*trv = '\0';
-#if defined (Q_OS_WIN)
+#if defined (Q_OS_WIN) && !defined(Q_OS_WINCE)
                                 if (trv - path == 2 && path[1] == ':') {
                                     // Special case for Windows drives
                                     // (e.g., "C:" => "C:\").
@@ -388,6 +388,10 @@ QTemporaryFilePrivate::~QTemporaryFilePrivate()
     Reopening a QTemporaryFile after calling close() is safe. For as long as
     the QTemporaryFile object itself is not destroyed, the unique temporary
     file will exist and be kept open internally by QTemporaryFile.
+
+    The file name of the temporary file can be found by calling fileName().
+    Note that this is only defined while the file is open; the function returns
+    an empty string before the file is opened and after it is closed.
 
     A temporary file will have some static part of the name and some part that
     is calculated to be unique. The default filename qt_temp will be placed

@@ -274,7 +274,7 @@
      m_renderer = new PathDeformRenderer(this, smallScreen);
      m_renderer-&gt;setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-     <span class="comment">//</span> Layouts
+     <span class="comment">// Layouts</span>
      QHBoxLayout *mainLayout = new QHBoxLayout(this);
      mainLayout-&gt;addWidget(m_renderer);
 
@@ -340,8 +340,8 @@
      m_intensity = 100;
      m_smallScreen = smallScreen;
 
-<span class="comment"> //</span>     m_fpsTimer.start(1000, this);
-<span class="comment"> //</span>     m_fpsCounter = 0;
+<span class="comment"> //     m_fpsTimer.start(1000, this);</span>
+<span class="comment"> //     m_fpsCounter = 0;</span>
 
      generateLensPixmap();
  }
@@ -426,12 +426,12 @@
      m_animated = animated;
 
      if (m_animated) {
-<span class="comment"> //</span>         m_fpsTimer.start(1000, this);
-<span class="comment"> //</span>         m_fpsCounter = 0;
+<span class="comment"> //         m_fpsTimer.start(1000, this);</span>
+<span class="comment"> //         m_fpsCounter = 0;</span>
          m_repaintTimer.start(25, this);
          m_repaintTracker.start();
      } else {
-<span class="comment"> //</span>         m_fpsTimer.stop();
+<span class="comment"> //         m_fpsTimer.stop();</span>
          m_repaintTimer.stop();
      }
  }
@@ -483,12 +483,12 @@
              QApplication::syncX();
          }
      }
-<span class="comment"> //</span>     else if (e-&gt;timerId() == m_fpsTimer.timerId()) {
-<span class="comment"> //</span>         printf(&quot;fps: %d\n&quot;, m_fpsCounter);
-<span class="comment"> //</span>         emit frameRate(m_fpsCounter);
-<span class="comment"> //</span>         m_fpsCounter = 0;
+<span class="comment"> //     else if (e-&gt;timerId() == m_fpsTimer.timerId()) {</span>
+<span class="comment"> //         printf(&quot;fps: %d\n&quot;, m_fpsCounter);</span>
+<span class="comment"> //         emit frameRate(m_fpsCounter);</span>
+<span class="comment"> //         m_fpsCounter = 0;</span>
 
-<span class="comment"> //</span>     }
+<span class="comment"> //     }</span>
  }
 
  void PathDeformRenderer::mousePressEvent(QMouseEvent *e)
@@ -502,7 +502,7 @@
 
      m_mousePress = e-&gt;pos();
 
-     <span class="comment">//</span> If we're not running in small screen mode, always assume we're dragging
+     <span class="comment">// If we're not running in small screen mode, always assume we're dragging</span>
      m_mouseDrag = !m_smallScreen;
 
      mouseMoveEvent(e);
@@ -655,6 +655,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

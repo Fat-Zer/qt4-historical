@@ -61,6 +61,7 @@
 
     \reentrant
     \ingroup io
+    \ingroup ssl
     \module network
 
     QSslKey provides a simple API for managing keys.

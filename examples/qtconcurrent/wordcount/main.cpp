@@ -48,6 +48,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QTime>
+#include <QApplication>
 #include <QDebug>
 
 #include <qtconcurrentmap.h>
@@ -122,8 +123,9 @@ void reduce(WordCount &result, const WordCount &w)
     }
 }
 
-int main()
+int main(int argc, char** argv)
 {
+    QApplication app(argc, argv);
     qDebug() << "finding files...";
     QStringList files = findFiles("../../", QStringList() << "*.cpp" << "*.h");
     qDebug() << files.count() << "files";

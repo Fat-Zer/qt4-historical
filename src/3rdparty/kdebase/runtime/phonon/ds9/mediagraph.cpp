@@ -44,6 +44,37 @@ namespace Phonon
 {
     namespace DS9
     {
+        //description of a connection
+        struct GraphConnection
+        {
+            Filter output;
+            int outputOffset;
+            Filter input;
+            int inputOffset;
+        };
+
+        static QList<GraphConnection> getConnections(Filter source)
+        {
+            QList<GraphConnection> ret;
+            int outOffset = 0;
+            foreach(OutputPin output, BackendNode::pins(source, PINDIR_OUTPUT)) {
+                InputPin input;
+                if (output->ConnectedTo(input.pparam()) == S_OK) {
+                    PIN_INFO info;
+                    input->QueryPinInfo(&info);
+                    Filter current(info.pFilter);
+                    if (current) {
+                        //this is a valid connection
+                        const int inOffset = BackendNode::pins(current, PINDIR_INPUT).indexOf(input);
+                        const GraphConnection connection = {source, outOffset, current, inOffset};
+                        ret += connection;
+                        ret += getConnections(current); //get subsequent connections
+                    }
+                }
+                outOffset++;
+            }
+            return ret;
+        }
 
         class QAMMediaType : public AM_MEDIA_TYPE
         {
@@ -67,15 +98,13 @@ namespace Phonon
             m_mediaSeeking = ComPointer<IMediaSeeking>(m_graph, IID_IMediaSeeking);
             Q_ASSERT(m_mediaSeeking);
 
-            m_mediaObject->workerThread()->addGraphForEventManagement(m_graph);
-
             HRESULT hr = m_graph->AddFilter(m_fakeSource, L"Fake Source");
             if (m_mediaObject->catchComError(hr)) {
                 return;
             }
 
-            connect(mo->workerThread(), SIGNAL(asyncRenderFinished(quint16, HRESULT, QSet<Filter>, bool)),
-                SLOT(finishLoading(quint16, HRESULT, QSet<Filter>, bool)));
+            connect(mo->workerThread(), SIGNAL(asyncRenderFinished(quint16, HRESULT, Graph)),
+                SLOT(finishLoading(quint16, HRESULT, Graph)));
 
             connect(mo->workerThread(), SIGNAL(asyncSeekingFinished(quint16, qint64)),
                 SLOT(finishSeeking(quint16, qint64)));
@@ -116,7 +145,7 @@ namespace Phonon
             OutputPin connected;
             {
                 InputPin pin = BackendNode::pins(oldFilter, PINDIR_INPUT).first();
-                pin->ConnectedTo(&connected);
+                pin->ConnectedTo(connected.pparam());
             }
 
             m_graph->RemoveFilter(oldFilter);
@@ -203,9 +232,9 @@ namespace Phonon
         {
             QSet<Filter> ret;
             ComPointer<IEnumFilters> enumFilters;
-            graph->EnumFilters(&enumFilters);
+            graph->EnumFilters(enumFilters.pparam());
             Filter current;
-            while( enumFilters && enumFilters->Next(1, &current, 0) == S_OK) {
+            while( enumFilters && enumFilters->Next(1, current.pparam(), 0) == S_OK) {
                 ret += current;
             }
             return ret;
@@ -406,14 +435,14 @@ namespace Phonon
             bool ret = false;
 
             OutputPin output;
-            if (SUCCEEDED(in->ConnectedTo(&output))) {
+            if (SUCCEEDED(in->ConnectedTo(output.pparam()))) {
 
                 if (output == out) {
                     //we need a simple disconnection
                     ret = SUCCEEDED(out->Disconnect()) && SUCCEEDED(in->Disconnect());
                 } else {
                     InputPin in2;
-                    if (SUCCEEDED(out->ConnectedTo(&in2))) {
+                    if (SUCCEEDED(out->ConnectedTo(in2.pparam()))) {
                         PIN_INFO info;
                         in2->QueryPinInfo(&info);
                         Filter tee(info.pFilter);
@@ -447,7 +476,7 @@ namespace Phonon
                                 int connections = 0;
                                 foreach (OutputPin out, BackendNode::pins(tee, PINDIR_OUTPUT)) {
                                     InputPin p;
-                                    if ( SUCCEEDED(out->ConnectedTo(&p))) {
+                                    if ( SUCCEEDED(out->ConnectedTo(p.pparam()))) {
                                         connections++;
                                     }
                                 }
@@ -471,7 +500,7 @@ namespace Phonon
 
             ///The management of the creation of the Tees is done here (this is the only place where we call IPin::Connect
             InputPin inPin;
-            if (SUCCEEDED(out->ConnectedTo(&inPin))) {
+            if (SUCCEEDED(out->ConnectedTo(inPin.pparam()))) {
 
                 //the fake source has another mechanism for the connection
                 if (BackendNode::pins(m_fakeSource, PINDIR_OUTPUT).contains(out)) {
@@ -487,7 +516,7 @@ namespace Phonon
                 if (clsid == CLSID_InfTee) {
                     //there is already a Tee (namely 'filter') in use
                     foreach(OutputPin pin, BackendNode::pins(filter, PINDIR_OUTPUT)) {
-                        if (VFW_E_NOT_CONNECTED == pin->ConnectedTo(&inPin)) {
+                        if (VFW_E_NOT_CONNECTED == pin->ConnectedTo(inPin.pparam())) {
                             return SUCCEEDED(pin->Connect(newIn, 0));
                         }
                     }
@@ -678,18 +707,25 @@ namespace Phonon
             }
         }
 
-        void MediaGraph::finishLoading(quint16 workId, HRESULT hr, QSet<Filter> newlyCreated, bool isSeekable)
+        void MediaGraph::finishLoading(quint16 workId, HRESULT hr, Graph graph)
         {
             if (m_renderId == workId) {
                 m_renderId = 0;
-                m_isSeekable = isSeekable;
-                m_result = reallyFinishLoading(hr, newlyCreated);
+
+				//let's determine if the graph is seekable
+				{
+					ComPointer<IMediaSeeking> mediaSeeking(graph, IID_IMediaSeeking);
+					DWORD caps = AM_SEEKING_CanSeekAbsolute;
+                    m_isSeekable = mediaSeeking && SUCCEEDED(mediaSeeking->CheckCapabilities(&caps));
+				}
+
+                m_result = reallyFinishLoading(hr, graph);
                 emit loadingFinished(this);
             }
         }
 
 
-        HRESULT MediaGraph::reallyFinishLoading(HRESULT hr, const QSet<Filter> &newlyCreated)
+        HRESULT MediaGraph::reallyFinishLoading(HRESULT hr, const Graph &graph)
         {
             if (FAILED(hr)) {
                 return hr;
@@ -698,13 +734,9 @@ namespace Phonon
             //we keep the source and all the way down to the decoders
             QSet<Filter> keptFilters;
 
-            foreach(const Filter &filter, newlyCreated) {
-                //let's add all the filters
-                hr = m_graph->AddFilter(filter, 0);
-                if (FAILED(hr)) {
-                    return hr;
-                }
+			const QSet<Filter> allFilters = getAllFilters(graph);
 
+            foreach(const Filter &filter, allFilters) {
                 if (isSourceFilter(filter)) {
                     m_realSource = filter; //save the source filter
                     if (!m_demux ) {
@@ -725,23 +757,65 @@ namespace Phonon
                 keptFilters += getFilterChain(m_demux, decoder);
             }
 
-            //now we need to decide what are the filters we want to keep
-            //usually these are the demuxer and the decoders
-            //the ones that are kept are added to the graph
+            const QSet<Filter> removedFilters = allFilters - keptFilters;
+            foreach(const Filter &filter, removedFilters) {
+                graph->RemoveFilter(filter);
+            }
 
-            foreach(const Filter &filter, newlyCreated - keptFilters) {
-                //this will also remove the connections to the 'dead" filters
-                hr = m_graph->RemoveFilter(filter);
-                if (FAILED(hr)) {
-                    return hr;
+
+            //let's transfer the nodes from the current graph to the new one
+            QList<GraphConnection> connections; //we store the connections that need to be restored
+
+
+            // First get all the sink nodes (nodes with no input connected)
+            foreach(const Filter &filter, getAllFilters()) {
+                bool isSink = true;
+                foreach(InputPin pin, BackendNode::pins(filter, PINDIR_INPUT)) {
+                    OutputPin out;
+                    if (pin->ConnectedTo(out.pparam()) != VFW_E_NOT_CONNECTED) {
+                        isSink = false;
+                    }
+                }
+
+                if (isSink) {
+                    connections += getConnections(filter);
+                    //we can now transfer the filter itself
+                    m_graph->RemoveFilter(filter);
+                    graph->AddFilter(filter, 0);
                 }
             }
+
+
+            //let's reestablish the connections
+            foreach(GraphConnection connection, connections) {
+                //check if we shoud transfer the sink node
+                FILTER_INFO info;
+                connection.input->QueryFilterInfo(&info);
+                if (info.pGraph != graph) {
+                    if (info.pGraph) {
+                        info.pGraph->RemoveFilter(connection.input);
+                        info.pGraph->Release();
+                    }
+                    graph->AddFilter(connection.input, 0);
+                }
+
+                const OutputPin output = BackendNode::pins(connection.output, PINDIR_OUTPUT).at(connection.outputOffset);
+                const InputPin input   = BackendNode::pins(connection.input, PINDIR_INPUT).at(connection.inputOffset);
+                HRESULT hr = output->Connect(input, 0);
+                Q_ASSERT( SUCCEEDED(hr));
+            }
+
+            m_mediaObject->workerThread()->replaceGraphForEventManagement(graph, m_graph);
+            m_graph = graph;
+            //let's update the interfaces
+            m_mediaControl = ComPointer<IMediaControl>(m_graph, IID_IMediaControl);
+            m_mediaSeeking = ComPointer<IMediaSeeking>(m_graph, IID_IMediaSeeking);
 
             //we need to do something smart to detect if the streams are unencoded
             if (m_demux) {
                 foreach(const OutputPin out, BackendNode::pins(m_demux, PINDIR_OUTPUT)) {
                     InputPin pin;
-                    if (out->ConnectedTo(&pin) == VFW_E_NOT_CONNECTED) {
+                    if (out->ConnectedTo(pin.pparam()) == VFW_E_NOT_CONNECTED) {
                         m_decoderPins += out; //unconnected outputs can be decoded outputs
                     }
                 }
@@ -761,7 +835,7 @@ namespace Phonon
                 InputPin pin = BackendNode::pins(current, PINDIR_INPUT).first();
                 current = Filter();
                 OutputPin output;
-                if (pin->ConnectedTo(&output) == S_OK) {
+                if (pin->ConnectedTo(output.pparam()) == S_OK) {
                     PIN_INFO info;
                     if (SUCCEEDED(output->QueryPinInfo(&info)) && info.pFilter) {
                         current = Filter(info.pFilter); //this will take care of releasing the interface pFilter
@@ -1002,7 +1076,7 @@ namespace Phonon
             hr = StgCreateDocfile(reinterpret_cast<const wchar_t *>(filepath.utf16()),
                 STGM_CREATE | STGM_TRANSACTED | STGM_READWRITE |
                 STGM_SHARE_EXCLUSIVE,
-                0, &storage);
+                0, storage.pparam());
 
             if (FAILED(hr)) {
                 return hr;
@@ -1012,7 +1086,7 @@ namespace Phonon
             ComPointer<IStream> stream;
             hr = storage->CreateStream(wszStreamName,
                 STGM_WRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
-                0, 0, &stream);
+                0, 0, stream.pparam());
 
             if (FAILED(hr)) {
                 return hr;

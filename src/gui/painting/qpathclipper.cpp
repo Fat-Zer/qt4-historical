@@ -107,8 +107,8 @@ private:
 
 bool QIntersectionFinder::beziersIntersect(const QBezier &one, const QBezier &two) const
 {
-    return one.pt1() == two.pt1() && one.pt2() == two.pt2() && one.pt3() == two.pt3() && one.pt4() == two.pt4()
-           || one.pt1() == two.pt4() && one.pt2() == two.pt3() && one.pt3() == two.pt2() && one.pt4() == two.pt1()
+    return (one.pt1() == two.pt1() && one.pt2() == two.pt2() && one.pt3() == two.pt3() && one.pt4() == two.pt4())
+           || (one.pt1() == two.pt4() && one.pt2() == two.pt3() && one.pt3() == two.pt2() && one.pt4() == two.pt1())
            || QBezier::findIntersections(one, two, 0);
 }
 
@@ -122,6 +122,18 @@ bool QIntersectionFinder::linesIntersect(const QLineF &a, const QLineF &b) const
 
     if (p1 == p2 || q1 == q2)
         return false;
+
+    const bool p1_equals_q1 = (p1 == q1);
+    const bool p2_equals_q2 = (p2 == q2);
+
+    if (p1_equals_q1 && p2_equals_q2)
+        return true;
+
+    const bool p1_equals_q2 = (p1 == q2);
+    const bool p2_equals_q1 = (p2 == q1);
+
+    if (p1_equals_q2 && p2_equals_q1)
+        return true;
 
     const QPointF pDelta = p2 - p1;
     const QPointF qDelta = q2 - q1;
@@ -138,7 +150,7 @@ bool QIntersectionFinder::linesIntersect(const QLineF &a, const QLineF &b) const
             const qreal tq1 = dot(pDelta, q1 - p1);
             const qreal tq2 = dot(pDelta, q2 - p1);
 
-            if (tq1 > 0 && tq1 < dp || tq2 > 0 && tq2 < dp)
+            if ((tq1 > 0 && tq1 < dp) || (tq2 > 0 && tq2 < dp))
                 return true;
 
             const qreal dq = dot(qDelta, qDelta);
@@ -146,12 +158,17 @@ bool QIntersectionFinder::linesIntersect(const QLineF &a, const QLineF &b) const
             const qreal tp1 = dot(qDelta, p1 - q1);
             const qreal tp2 = dot(qDelta, p2 - q1);
 
-            if (tp1 > 0 && tp1 < dq || tp2 > 0 && tp2 < dq)
+            if ((tp1 > 0 && tp1 < dq) || (tp2 > 0 && tp2 < dq))
                 return true;
         }
 
         return false;
     }
+
+    // if the lines are not parallel and share a common end point, then they
+    // don't intersect
+    if (p1_equals_q1 || p1_equals_q2 || p2_equals_q1 || p2_equals_q2)
+        return false;
 
     const qreal invPar = 1 / par;
 
@@ -169,8 +186,8 @@ bool QIntersectionFinder::linesIntersect(const QLineF &a, const QLineF &b) const
 
 void QIntersectionFinder::intersectBeziers(const QBezier &one, const QBezier &two, QVector<QPair<qreal, qreal> > &t, QDataBuffer<QIntersection> &intersections)
 {
-    if (one.pt1() == two.pt1() && one.pt2() == two.pt2() && one.pt3() == two.pt3() && one.pt4() == two.pt4() ||
-        one.pt1() == two.pt4() && one.pt2() == two.pt3() && one.pt3() == two.pt2() && one.pt4() == two.pt1()) {
+    if ((one.pt1() == two.pt1() && one.pt2() == two.pt2() && one.pt3() == two.pt3() && one.pt4() == two.pt4())
+        || (one.pt1() == two.pt4() && one.pt2() == two.pt3() && one.pt3() == two.pt2() && one.pt4() == two.pt1())) {
 
         return;
     }
@@ -216,6 +233,18 @@ void QIntersectionFinder::intersectLines(const QLineF &a, const QLineF &b, QData
     const QPointF q2 = b.p2();
 
     if (p1 == p2 || q1 == q2)
+        return;
+
+    const bool p1_equals_q1 = (p1 == q1);
+    const bool p2_equals_q2 = (p2 == q2);
+
+    if (p1_equals_q1 && p2_equals_q2)
+        return;
+
+    const bool p1_equals_q2 = (p1 == q2);
+    const bool p2_equals_q1 = (p2 == q1);
+
+    if (p1_equals_q2 && p2_equals_q1)
         return;
 
     const QPointF pDelta = p2 - p1;
@@ -273,6 +302,12 @@ void QIntersectionFinder::intersectLines(const QLineF &a, const QLineF &b, QData
 
         return;
     }
+
+    // if the lines are not parallel and share a common end point, then they
+    // don't intersect
+    if (p1_equals_q1 || p1_equals_q2 || p2_equals_q1 || p2_equals_q2)
+        return;
+
 
     const qreal tp = (qDelta.y() * (q1.x() - p1.x()) -
                       qDelta.x() * (q1.y() - p1.y())) / par;
@@ -510,7 +545,7 @@ private:
 };
 
 template <typename T>
-static void traverseTree(QKdPointTree::Node &node, T &t, int depth = 0)
+void qTraverseKdPointTree(QKdPointTree::Node &node, T &t, int depth = 0)
 {
     QKdPointTree::Traversal status = t(node, depth);
 
@@ -518,10 +553,10 @@ static void traverseTree(QKdPointTree::Node &node, T &t, int depth = 0)
     const bool traverseLeft = (status == QKdPointTree::TraverseBoth || status == QKdPointTree::TraverseLeft);
 
     if (traverseLeft && node.left)
-        traverseTree<T>(*node.left, t, depth + 1);
+        QT_PREPEND_NAMESPACE(qTraverseKdPointTree<T>)(*node.left, t, depth + 1);
 
     if (traverseRight && node.right)
-        traverseTree<T>(*node.right, t, depth + 1);
+        QT_PREPEND_NAMESPACE(qTraverseKdPointTree<T>)(*node.right, t, depth + 1);
 }
 
 static inline qreal component(const QPointF &point, unsigned int i)
@@ -634,7 +669,7 @@ void QPathSegments::mergePoints()
 
         for (int i = 0; i < points(); ++i) {
             QKdPointFinder finder(i, *this, tree);
-            traverseTree<QKdPointFinder>(*tree.rootNode(), finder);
+            QT_PREPEND_NAMESPACE(qTraverseKdPointTree<QKdPointFinder>)(*tree.rootNode(), finder);
 
             Q_ASSERT(finder.result() != -1);
 
@@ -780,7 +815,7 @@ static bool isLine(const QBezier &bezier)
     if (bezier.pt1() == bezier.pt4())
         return equal_1_2 || equal_3_4;
 
-    return equal_1_2 && equal_3_4 || equal_1_2 && equal_2_3 || equal_2_3 && equal_3_4;
+    return (equal_1_2 && equal_3_4) || (equal_1_2 && equal_2_3) || (equal_2_3 && equal_3_4);
 }
 
 void QPathSegments::setPath(const QPainterPath &path)
@@ -918,7 +953,7 @@ static inline QPointF tangentAt(const QWingedEdge &list, int vi, int ei)
     if (ep->bezier) {
         normal = ep->bezier->derivedAt(t);
 
-        if (normal == QPointF())
+        if (qFuzzyCompare(normal.x() + 1, 1) && qFuzzyCompare(normal.y() + 1, 1))
             normal = ep->bezier->secondDerivedAt(t);
     } else {
         const QPointF a = *list.vertex(ep->first);
@@ -1048,7 +1083,7 @@ QWingedEdge::TraversalStatus QWingedEdge::findInsertStatus(int vi, int ei) const
 #endif
 
         if (!(qFuzzyCompare(d2 + 1, 1) && isLeftOf(*this, vi, status.edge, ei))
-            && (d2 < d || qFuzzyCompare(d2, d) && isLeftOf(*this, vi, status.edge, position))) {
+            && (d2 < d || (qFuzzyCompare(d2, d) && isLeftOf(*this, vi, status.edge, position)))) {
             position = status.edge;
             d = d2;
         }
@@ -1129,8 +1164,8 @@ static int commonEdge(const QWingedEdge &list, int a, int b)
     do {
         const QPathEdge *ep = list.edge(status.edge);
 
-        if (ep->first == a && ep->second == b ||
-            ep->first == b && ep->second == a)
+        if ((ep->first == a && ep->second == b)
+            || (ep->first == b && ep->second == a))
             return status.edge;
 
         status = list.next(status);
@@ -1199,10 +1234,10 @@ int QWingedEdge::addEdge(int fi, int si, const QBezier *bezier, qreal t0, qreal 
         QPointF aTangent = bezier->derivedAt(t0);
         QPointF bTangent = -bezier->derivedAt(t1);
 
-        if (aTangent == QPointF())
+        if (qFuzzyCompare(aTangent.x() + 1, 1) && qFuzzyCompare(aTangent.y() + 1, 1))
             aTangent = bezier->secondDerivedAt(t0);
 
-        if (bTangent == QPointF())
+        if (qFuzzyCompare(bTangent.x() + 1, 1) && qFuzzyCompare(bTangent.y() + 1, 1))
             bTangent = bezier->secondDerivedAt(t1);
 
         ep->angle = computeAngle(aTangent);
@@ -1394,7 +1429,7 @@ static void add(QPainterPath &path, const QWingedEdge &list, int edge, QPathEdge
     do {
         const QPathEdge *ep = list.edge(status.edge);
 
-        if (ep->bezier != bezier || bezier && t0 != ep->t1 && t1 != ep->t0) {
+        if (ep->bezier != bezier || (bezier && t0 != ep->t1 && t1 != ep->t0)) {
             if (bezier) {
                 QBezier sub = bezier->bezierOnInterval(t0, t1);
 
@@ -1883,7 +1918,7 @@ bool QWingedEdge::isInside(qreal x, qreal y) const
         QPointF a = *vertex(ep->first);
         QPointF b = *vertex(ep->second);
 
-        if (a.y() < y && b.y() > y || a.y() > y && b.y() < y) {
+        if ((a.y() < y && b.y() > y) || (a.y() > y && b.y() < y)) {
             if (ep->bezier) {
                 qreal maxX = qMax(a.x(), qMax(b.x(), qMax(ep->bezier->x2, ep->bezier->x3)));
                 qreal minX = qMin(a.x(), qMin(b.x(), qMin(ep->bezier->x2, ep->bezier->x3)));
@@ -1917,7 +1952,7 @@ static QVector<QCrossingEdge> findCrossings(const QWingedEdge &list, qreal y)
         QPointF a = *list.vertex(edge->first);
         QPointF b = *list.vertex(edge->second);
 
-        if (a.y() < y && b.y() > y || a.y() > y && b.y() < y) {
+        if ((a.y() < y && b.y() > y) || (a.y() > y && b.y() < y)) {
             if (edge->bezier) {
                 const qreal t = edge->bezier->tForY(edge->t0, edge->t1, y);
                 const qreal intersection = edge->bezier->pointAt(t).x();

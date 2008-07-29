@@ -111,27 +111,30 @@ Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::isFetchAndAddWaitFree()
 #include <ia64intrin.h>
 
 inline bool QBasicAtomicInt::testAndSetRelaxed(int expectedValue, int newValue)
-
-    return (static_cast<int>(_InterlockedCompareExchange(&static_cast<unsigned int>(_q_value),
-                                                         newValue,
-                                                         expectedValue))
-            == expectedValue);
+{
+    register int expectedValueCopy = expectedValue;
+    return (static_cast<int>(_InterlockedCompareExchange(&_q_value, 
+							 newValue, 
+							 expectedValueCopy))
+	    == expectedValue);
 }
 
 inline bool QBasicAtomicInt::testAndSetAcquire(int expectedValue, int newValue)
 {
-    return (static_cast<int>(_InterlockedCompareExchange_acq(&static_cast<unsigned int>(_q_value),
-                                                             newValue,
-                                                             expectedValue))
-            == expectedValue);
+    register int expectedValueCopy = expectedValue;
+    return (static_cast<int>(_InterlockedCompareExchange_acq(reinterpret_cast<volatile uint *>(&_q_value), 
+							     newValue, 
+							     expectedValueCopy)) 
+	    == expectedValue);
 }
 
 inline bool QBasicAtomicInt::testAndSetRelease(int expectedValue, int newValue)
 {
-    return (static_cast<int>(_InterlockedCompareExchange_rel(&static_cast<unsigned int>(_q_value),
-                                                             newValue,
-                                                             expectedValue))
-            == expectedValue);
+    register int expectedValueCopy = expectedValue;
+    return (static_cast<int>(_InterlockedCompareExchange_rel(reinterpret_cast<volatile uint *>(&_q_value), 
+							     newValue, 
+							     expectedValueCopy)) 
+	    == expectedValue);
 }
 
 inline bool QBasicAtomicInt::testAndSetOrdered(int expectedValue, int newValue)
@@ -143,26 +146,37 @@ inline bool QBasicAtomicInt::testAndSetOrdered(int expectedValue, int newValue)
 template <typename T>
 Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::testAndSetRelaxed(T *expectedValue, T *newValue)
 {
-    return _InterlockedCompareExchangePointer(reinterpret_cast<void * volatile*>(ptr),
-                                              newval, expected) == expected;
+    register T *expectedValueCopy = expectedValue;
+    return (_InterlockedCompareExchangePointer(reinterpret_cast<void * volatile*>(&_q_value), 
+					       newValue, 
+					       expectedValueCopy)
+	    == expectedValue);
 }
 
 template <typename T>
 Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::testAndSetAcquire(T *expectedValue, T *newValue)
 {
-    return (_InterlockedCompareExchange64_acq(&reinterpret_cast<quintptr>(_q_value),
-                                              quintptr(newValue),
-                                              quintptr(expectedValue))
-            == quintptr(expected));
+    union {
+        volatile void *x;
+        volatile unsigned long *p;
+    };
+    x = &_q_value;
+    register T *expectedValueCopy = expectedValue;
+    return (_InterlockedCompareExchange64_acq(p, quintptr(newValue), quintptr(expectedValueCopy)) 
+	    == quintptr(expectedValue));
 }
 
 template <typename T>
 Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::testAndSetRelease(T *expectedValue, T *newValue)
 {
-    return (_InterlockedCompareExchange64_rel(&reinterpret_cast<quintptr>(_q_value),
-                                              quintptr(newValue),
-                                              quintptr(expectedValue))
-            == quintptr(expected));
+    union {
+        volatile void *x;
+        volatile unsigned long *p;
+    };
+    x = &_q_value;
+    register T *expectedValueCopy = expectedValue;
+    return (_InterlockedCompareExchange64_rel(p, quintptr(newValue), quintptr(expectedValueCopy))
+	    == quintptr(expectedValue));
 }
 
 template <typename T>

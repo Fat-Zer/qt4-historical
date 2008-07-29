@@ -285,11 +285,12 @@ void Q3ActionPrivate::update(uint upd)
         if (upd & Visibility)
             mi->popup->setItemVisible(mi->id, visible);
 
-        if (upd & Icons)
+        if (upd & Icons) {
             if (icon)
                 mi->popup->changeItem(mi->id, *icon, t);
             else
                 mi->popup->changeItem(mi->id, QIcon(), t);
+        }
         if (upd & EverythingElse) {
             mi->popup->changeItem(mi->id, t);
             if (!whatsthis.isEmpty())

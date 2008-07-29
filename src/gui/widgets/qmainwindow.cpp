@@ -428,6 +428,15 @@ void QMainWindow::setToolButtonStyle(Qt::ToolButtonStyle toolButtonStyle)
     Returns the menu bar for the main window. This function creates
     and returns an empty menu bar if the menu bar does not exist.
 
+    If you want all windows in a Mac application to share one menu
+    bar, don't use this function to create it, because the menu bar
+    created here will have this QMainWindow as its parent.  Instead,
+    you must create a menu bar that does not have a parent, which you
+    can then share among all the Mac windows. Create a parent-less
+    menu bar this way:
+
+    \snippet doc/src/snippets/code/src.gui.widgets.qmenubar.cpp 1
+
     \sa setMenuBar()
 */
 QMenuBar *QMainWindow::menuBar() const
@@ -465,7 +474,8 @@ void QMainWindow::setMenuBar(QMenuBar *menuBar)
             if (cornerWidget)
                 menuBar->setCornerWidget(cornerWidget, Qt::TopRightCorner);
         }
-        delete oldMenuBar;
+        oldMenuBar->hide();
+        oldMenuBar->deleteLater();
     }
     d->layout->setMenuBar(menuBar);
 }
@@ -493,8 +503,10 @@ QWidget *QMainWindow::menuWidget() const
 void QMainWindow::setMenuWidget(QWidget *menuBar)
 {
     Q_D(QMainWindow);
-    if (d->layout->menuBar() && d->layout->menuBar() != menuBar)
-        delete d->layout->menuBar();
+    if (d->layout->menuBar() && d->layout->menuBar() != menuBar) {
+        d->layout->menuBar()->hide();
+        d->layout->menuBar()->deleteLater();
+    }
     d->layout->setMenuBar(menuBar);
 }
 #endif // QT_NO_MENUBAR
@@ -530,8 +542,10 @@ QStatusBar *QMainWindow::statusBar() const
 void QMainWindow::setStatusBar(QStatusBar *statusbar)
 {
     Q_D(QMainWindow);
-    if (d->layout->statusBar() && d->layout->statusBar() != statusbar)
-        delete d->layout->statusBar();
+    if (d->layout->statusBar() && d->layout->statusBar() != statusbar) {
+        d->layout->statusBar()->hide();
+        d->layout->statusBar()->deleteLater();
+    }
     d->layout->setStatusBar(statusbar);
 }
 #endif // QT_NO_STATUSBAR
@@ -556,8 +570,10 @@ QWidget *QMainWindow::centralWidget() const
 void QMainWindow::setCentralWidget(QWidget *widget)
 {
     Q_D(QMainWindow);
-    if (d->layout->centralWidget() && d->layout->centralWidget() != widget)
-        delete d->layout->centralWidget();
+    if (d->layout->centralWidget() && d->layout->centralWidget() != widget) {
+        d->layout->centralWidget()->hide();
+        d->layout->centralWidget()->deleteLater();
+    }
     d->layout->setCentralWidget(widget);
 }
 
@@ -930,6 +946,12 @@ void QMainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget
 #endif
 }
 
+/*!
+    Restores the state of \a dockwidget if it is created after the call
+    to restoreState(). Returns true if the state was restored; otherwise
+    returns false.
+*/
+
 bool QMainWindow::restoreDockWidget(QDockWidget *dockwidget)
 {
     return d_func()->layout->restoreDockWidget(dockwidget);
@@ -1271,11 +1293,9 @@ bool QMainWindow::event(QEvent *event)
     \i Toolbar breaks are not respected or preserved
     \i Any custom widgets in the toolbar will not be shown if the toolbar becomes too small
       (only actions will be shown)
-    \i If you call showFullScreen() on the main window, the QToolbar will
-       disappear since it is considered to be part of the title bar. You can work
-       around this by doing the following by turning off the unified toolbar
-       before you call showFullScrenn() and restore the value after you call
-       showNormal().
+    \i If you call showFullScreen() on the main window, the QToolbar will disappear since it is
+       considered to be part of the title bar. You can work around this by turning off the unified
+       toolbar before you call showFullScreen() and restore the value after you call showNormal().
     \endlist
 
     Setting this back to false will remove these restrictions.

@@ -703,7 +703,7 @@ static const uint * QT_FASTCALL fetchTransformed(uint *buffer, const Operator *,
 
         qreal fx = data->m21 * cy + data->m11 * cx + data->dx;
         qreal fy = data->m22 * cy + data->m12 * cx + data->dy;
-        qreal fw = data->m23 * cy + data->m13 * cx + 1;
+        qreal fw = data->m23 * cy + data->m13 * cx + data->m33;
 
         while (b < end) {
             const qreal iw = fw == 0 ? 1 : 1 / fw;
@@ -776,7 +776,7 @@ static const uint * QT_FASTCALL fetchTransformedTiled(uint *buffer, const Operat
 
         qreal fx = data->m21 * cy + data->m11 * cx + data->dx;
         qreal fy = data->m22 * cy + data->m12 * cx + data->dy;
-        qreal fw = data->m23 * cy + data->m13 * cx + 1;
+        qreal fw = data->m23 * cy + data->m13 * cx + data->m33;
 
         while (b < end) {
             const qreal iw = fw == 0 ? 1 : 1 / fw;
@@ -870,7 +870,7 @@ static const uint * QT_FASTCALL fetchTransformedBilinear(uint *buffer, const Ope
 
         qreal fx = data->m21 * cy + data->m11 * cx + data->dx;
         qreal fy = data->m22 * cy + data->m12 * cx + data->dy;
-        qreal fw = data->m23 * cy + data->m13 * cx + 1;
+        qreal fw = data->m23 * cy + data->m13 * cx + data->m33;
 
         while (b < end) {
             const qreal iw = fw == 0 ? 1 : 1 / fw;
@@ -990,7 +990,7 @@ static const uint * QT_FASTCALL fetchTransformedBilinearTiled(uint *buffer, cons
 
         qreal fx = data->m21 * cy + data->m11 * cx + data->dx;
         qreal fy = data->m22 * cy + data->m12 * cx + data->dy;
-        qreal fw = data->m23 * cy + data->m13 * cx + 1;
+        qreal fw = data->m23 * cy + data->m13 * cx + data->m33;
 
         while (b < end) {
             const qreal iw = fw == 0 ? 1 : 1 / fw;
@@ -1321,7 +1321,7 @@ static const uint * QT_FASTCALL fetchLinearGradient(uint *buffer, const Operator
             }
         }
     } else { // fall back to float math here as well
-        qreal rw = data->m23 * y + data->m13 * x + 1.;
+        qreal rw = data->m23 * y + data->m13 * x + data->m33;
         while (buffer < end) {
             qreal x = rx/rw;
             qreal y = ry/rw;
@@ -1372,7 +1372,7 @@ static const uint * QT_FASTCALL fetchLinearGradient(uint *buffer, const Operator
             }
         }
     } else {
-        qreal rw = data->m23 * y + data->m13 * x + 1.;
+        qreal rw = data->m23 * y + data->m13 * x + data->m33;
         while (buffer < end) {
             qreal x = rx/rw;
             qreal y = ry/rw;
@@ -1439,7 +1439,7 @@ static const uint * QT_FASTCALL fetchRadialGradient(uint *buffer, const Operator
         }
     } else {
         qreal rw = data->m23 * (y + 0.5)
-                   + 1. + data->m13 * (x + 0.5);
+                   + data->m33 + data->m13 * (x + 0.5);
         if (!rw)
             rw = 1;
         while (buffer < end) {
@@ -1489,7 +1489,7 @@ static const uint * QT_FASTCALL fetchConicalGradient(uint *buffer, const Operato
         }
     } else {
         qreal rw = data->m23 * (y + 0.5)
-                   + 1. + data->m13 * (x + 0.5);
+                   + data->m33 + data->m13 * (x + 0.5);
         if (!rw)
             rw = 1;
         while (buffer < end) {
@@ -3379,7 +3379,7 @@ static inline void madd_4(DST *dest, const quint32 alpha, const SRC *src)
 
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
 template <>
-static inline void madd_4(qargb8565 *dest, const quint32 a, const qargb8565 *src)
+inline void madd_4(qargb8565 *dest, const quint32 a, const qargb8565 *src)
 {
     Q_ASSERT((quintptr(dest) & 0x3) == 0);
     Q_ASSERT((quintptr(src) & 0x3) == 0);
@@ -3399,7 +3399,7 @@ static inline void madd_4(qargb8565 *dest, const quint32 a, const qargb8565 *src
         t = ((((x & 0x0007e0ff) * a8) >> 5) & 0x0007e0ff) + (y & 0x0007c0f8);
 
         // r0,b0
-        t |= ((((x & 0x00f81f00) * a8) >> 5) & 0x00f81f000) + (y & 0x00f81f00);
+        t |= ((((x & 0x00f81f00) * a8) >> 5) & 0x00f81f00) + (y & 0x00f81f00);
 
         a8 = (a >> 16) & 0xff;
 
@@ -3451,7 +3451,7 @@ static inline void madd_4(qargb8565 *dest, const quint32 a, const qargb8565 *src
         t |= ((((x & 0x07e0ff00) * a8) >> 5) & 0x07e0ff00) + (y & 0x07c0f800);
 
         // r3,b3
-        t |= (((x & 0xf81f0000) >> 5) * a8) + (y & 0xf81f0000);
+        t |= ((((x & 0xf81f0000) >> 5) * a8) & 0xf81f0000)+ (y & 0xf81f0000);
 
         dest32[2] = t;
     }
@@ -3460,7 +3460,7 @@ static inline void madd_4(qargb8565 *dest, const quint32 a, const qargb8565 *src
 
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
 template <>
-static inline void madd_4(qargb8555 *dest, const quint32 a, const qargb8555 *src)
+inline void madd_4(qargb8555 *dest, const quint32 a, const qargb8555 *src)
 {
     Q_ASSERT((quintptr(dest) & 0x3) == 0);
     Q_ASSERT((quintptr(src) & 0x3) == 0);
@@ -3480,7 +3480,7 @@ static inline void madd_4(qargb8555 *dest, const quint32 a, const qargb8555 *src
         t = ((((x & 0x0003e0ff) * a8) >> 5) & 0x0003e0ff) + (y & 0x0003e0f8);
 
         // r0,b0
-        t |= ((((x & 0x007c1f00) * a8) >> 5) & 0x007c1f000) + (y & 0x007c1f00);
+        t |= ((((x & 0x007c1f00) * a8) >> 5) & 0x007c1f00) + (y & 0x007c1f00);
 
         a8 = (a >> 16) & 0xff;
 
@@ -3532,7 +3532,7 @@ static inline void madd_4(qargb8555 *dest, const quint32 a, const qargb8555 *src
         t |= ((((x & 0x03e0ff00) * a8) >> 5) & 0x03e0ff00) + (y & 0x03e0f800);
 
         // r3,b3
-        t |= (((x & 0x7c1f0000) >> 5) * a8) + (y & 0x7c1f0000);
+        t |= ((((x & 0x7c1f0000) >> 5) * a8) & 0x7c1f0000)+ (y & 0x7c1f0000);
 
         dest32[2] = t;
     }
@@ -3923,15 +3923,15 @@ inline void interpolate_pixel_4(qargb8565 *dest, const qargb8565 *src,
 
         {
             // rgb2
-            quint16 x16 = ((x >> 16) & 0x0000ff00) | (src32[2] & 0x000000ff);
-            quint16 y16 = ((y >> 16) & 0x0000ff00) | (dest32[2] & 0x000000ff);
+            quint16 x16 = (x >> 24) | ((src32[2] & 0x000000ff) << 8);
+            quint16 y16 = (y >> 24) | ((dest32[2] & 0x000000ff) << 8);
             quint16 t16;
 
             t16 = (((x16 & 0xf81f) * a8 + (y16 & 0xf81f) * ia8) >> 5) & 0xf81f;
             t16 |= (((x16 & 0x07e0) * a8 + (y16 & 0x07e0) * ia8) >> 5) & 0x07e0;
 
             // rg2
-            t |= ((t16 & 0xff00) << 16);
+            t |= ((t16 & 0x00ff) << 24);
 
             dest32[1] = t;
 
@@ -3939,7 +3939,7 @@ inline void interpolate_pixel_4(qargb8565 *dest, const qargb8565 *src,
             y = dest32[2];
 
             // gb2
-            t = (t16 & 0x00ff);
+            t = (t16 >> 8);
         }
     }
     {
@@ -4430,9 +4430,6 @@ void blendUntransformed_dest24(DST *dest, const SRC *src,
         }
 
         while (length >= 4) {
-            Q_ASSERT((long(dest) & 3) == 0);
-            Q_ASSERT((long(src) & 3) == 0);
-
             blend_sourceOver_4(dest, src);
             length -= 4;
             src += 4;
@@ -4490,7 +4487,7 @@ static void blendUntransformed(int count, const QSpan *spans, void *userData)
                 const SRC *src = (SRC*)data->texture.scanLine(sy) + sx;
                 if (!SRC::hasAlpha() && coverage == 255) {
                     qt_memconvert<DST, SRC>(dest, src, length);
-                } else if (sizeof(DST) == 3 && length >= 3 &&
+                } else if (sizeof(DST) == 3 && sizeof(SRC) == 3 && length >= 3 &&
                            (quintptr(dest) & 3) == (quintptr(src) & 3))
                 {
                     blendUntransformed_dest24(dest, src, coverage, length);
@@ -5011,7 +5008,7 @@ static void blendTiled(int count, const QSpan *spans, void *userData)
             const SRC *src = (SRC*)data->texture.scanLine(sy) + sx;
             if (!SRC::hasAlpha() && coverage == 255) {
                 qt_memconvert<DST, SRC>(dest, src, l);
-            } else if (sizeof(DST) == 3 && length >= 4 &&
+            } else if (sizeof(DST) == 3 && sizeof(SRC) == 3 && length >= 4 &&
                        (quintptr(dest) & 3) == (quintptr(src) & 3))
             {
                 blendUntransformed_dest24(dest, src, coverage, l);
@@ -5164,7 +5161,7 @@ static void blend_tiled_rgb444(int count, const QSpan *spans, void *userData)
                                           Q_TEMPLATE_ENUM_CALL(SpanMethod, RegularSpans));
 }
 
-#endif // Q_WS_QWS
+#else // not Q_WS_QWS
 
 static void blend_tiled_rgb16(int count, const QSpan *spans, void *userData)
 {
@@ -5288,6 +5285,7 @@ static void blend_tiled_rgb16(int count, const QSpan *spans, void *userData)
         ++spans;
     }
 }
+#endif // Q_WS_QWS
 
 template <SpanMethod spanMethod>
 static void blend_transformed_bilinear_argb(int count, const QSpan *spans, void *userData
@@ -5402,7 +5400,7 @@ static void blend_transformed_bilinear_argb(int count, const QSpan *spans, void 
 
             qreal x = data->m21 * cy + data->m11 * cx + data->dx;
             qreal y = data->m22 * cy + data->m12 * cx + data->dy;
-            qreal w = data->m23 * cy + data->m13 * cx + 1;
+            qreal w = data->m23 * cy + data->m13 * cx + data->m33;
 
             int length = spans->len;
             const int coverage = (data->texture.const_alpha * spans->coverage) >> 8;
@@ -5586,7 +5584,7 @@ static void blend_transformed_bilinear_tiled_argb(int count, const QSpan *spans,
 
             qreal x = data->m21 * cy + data->m11 * cx + data->dx;
             qreal y = data->m22 * cy + data->m12 * cx + data->dy;
-            qreal w = data->m23 * cy + data->m13 * cx + 1;
+            qreal w = data->m23 * cy + data->m13 * cx + data->m33;
 
             int length = spans->len;
             const int coverage = (spans->coverage * data->texture.const_alpha) >> 8;
@@ -5744,7 +5742,7 @@ static void blend_transformed_argb(int count, const QSpan *spans, void *userData
 
             qreal x = data->m21 * cy + data->m11 * cx + data->dx;
             qreal y = data->m22 * cy + data->m12 * cx + data->dy;
-            qreal w = data->m23 * cy + data->m13 * cx + 1;
+            qreal w = data->m23 * cy + data->m13 * cx + data->m33;
 
             int length = spans->len;
             const int coverage = (spans->coverage * data->texture.const_alpha) >> 8;
@@ -5872,7 +5870,7 @@ static void blend_transformed_tiled_argb(int count, const QSpan *spans, void *us
 
             qreal x = data->m21 * cy + data->m11 * cx + data->dx;
             qreal y = data->m22 * cy + data->m12 * cx + data->dy;
-            qreal w = data->m23 * cy + data->m13 * cx + 1;
+            qreal w = data->m23 * cy + data->m13 * cx + data->m33;
 
             const int coverage = (spans->coverage * data->texture.const_alpha) >> 8;
             int length = spans->len;
@@ -6610,6 +6608,17 @@ DrawHelper qDrawHelperCallback[QImage::NImageFormats] =
 };
 #endif // Q_WS_QWS
 
+#if defined(Q_CC_MSVC) && !defined(_MIPS_)
+template <class DST, class SRC>
+inline void qt_memfill_template(DST *dest, SRC color, int count)
+{
+    const DST c = qt_colorConvert<DST, SRC>(color, 0);
+    while (count--)
+        *dest++ = c;
+}
+
+#else
+
 template <class DST, class SRC>
 inline void qt_memfill_template(DST *dest, SRC color, int count)
 {
@@ -6650,6 +6659,7 @@ inline void qt_memfill_template(quint16 *dest, quint16 value, int count)
     if (count & 0x1)
         dest[count - 1] = value;
 }
+#endif
 
 static void qt_memfill_quint16(quint16 *dest, quint16 color, int count)
 {

@@ -82,6 +82,12 @@
     The convenience function subWindowList() returns a list of all
     subwindows. This information could be used in a popup menu
     containing a list of windows, for example.
+    
+    The subwindows are sorted by the the current
+    \l{QMdiArea::}{WindowOrder}. This is used for the subWindowList()
+    and for activateNextSubWindow() and acivatePreviousSubWindow().
+    Also, it is used when cascading or tiling the windows with
+    cascadeSubWindows() and tileSubWindows().
 
     \omit
         // does this still hold?
@@ -550,9 +556,6 @@ QPoint MinOverlapPlacer::place(const QSize &size, const QList<QRect> &rects,
 
 
 #ifndef QT_NO_TABBAR
-/*!
-    \internal
-*/
 class QMdiAreaTabBar : public QTabBar
 {
 public:
@@ -893,7 +896,7 @@ void QMdiAreaPrivate::rearrange(Rearranger *rearranger)
 
     QList<QWidget *> widgets;
     const bool reverseList = rearranger->type() == Rearranger::RegularTiler;
-    const QList<QMdiSubWindow *> subWindows = subWindowList(QMdiArea::StackingOrder, reverseList);
+    const QList<QMdiSubWindow *> subWindows = subWindowList(activationOrder, reverseList);
     QSize minSubWindowSize;
     foreach (QMdiSubWindow *child, subWindows) {
         if (!sanityCheck(child, "QMdiArea::rearrange") || !child->isVisible())
@@ -979,7 +982,7 @@ void QMdiAreaPrivate::activateCurrentWindow()
     QMdiSubWindow *current = q_func()->currentSubWindow();
     if (current && !isExplicitlyDeactivated(current)) {
         current->d_func()->activationEnabled = true;
-        current->d_func()->setActive(true);
+        current->d_func()->setActive(true, /*changeFocus=*/false);
     }
 }
 
@@ -1383,6 +1386,19 @@ QMdiAreaPrivate::subWindowList(QMdiArea::WindowOrder order, bool reversed) const
 /*!
     \internal
 */
+void QMdiAreaPrivate::disconnectSubWindow(QObject *subWindow)
+{
+    if (!subWindow)
+        return;
+
+    Q_Q(QMdiArea);
+    QObject::disconnect(subWindow, 0, q, 0);
+    subWindow->removeEventFilter(q);
+}
+
+/*!
+    \internal
+*/
 QMdiSubWindow *QMdiAreaPrivate::nextVisibleSubWindow(int increaseFactor, QMdiArea::WindowOrder order,
                                                      int removedIndex, int fromIndex) const
 {
@@ -1477,6 +1493,7 @@ void QMdiAreaPrivate::highlightNextSubWindow(int increaseFactor)
 
 /*!
     \internal
+    \since 4.4
 */
 void QMdiAreaPrivate::setViewMode(QMdiArea::ViewMode mode)
 {
@@ -1895,8 +1912,6 @@ QMdiSubWindow *QMdiArea::addSubWindow(QWidget *widget, Qt::WindowFlags windowFla
     QWidget *childFocus = widget->focusWidget();
     QMdiSubWindow *child = qobject_cast<QMdiSubWindow *>(widget);
 
-    const bool wasNativeViewport = d->viewport->internalWinId() != 0;
-
     // Widget is already a QMdiSubWindow
     if (child) {
         if (d->childWindows.indexOf(child) != -1) {
@@ -1910,15 +1925,6 @@ QMdiSubWindow *QMdiArea::addSubWindow(QWidget *widget, Qt::WindowFlags windowFla
         child->setAttribute(Qt::WA_DeleteOnClose);
         child->setWidget(widget);
         Q_ASSERT(child->testAttribute(Qt::WA_DeleteOnClose));
-    }
-
-    // Enforce native sub-window if other sub-windows are native.
-    if (wasNativeViewport) {
-        child->setAttribute(Qt::WA_NativeWindow);
-    // We just added a native sub-window, which means all other sub-windows must be native.
-    } else if (d->viewport->internalWinId() || widget->testAttribute(Qt::WA_NativeWindow)) {
-        foreach (QMdiSubWindow *subWindow, d->childWindows)
-            subWindow->setAttribute(Qt::WA_NativeWindow);
     }
 
     if (childFocus)
@@ -1952,6 +1958,7 @@ void QMdiArea::removeSubWindow(QWidget *widget)
             qWarning("QMdiArea::removeSubWindow: window is not inside workspace");
             return;
         }
+        d->disconnectSubWindow(child);
         d->childWindows.removeAll(child);
         d->indicesToActivatedChildren.removeAll(index);
         d->updateActiveWindow(index, d->active == child);
@@ -2274,6 +2281,7 @@ bool QMdiArea::viewportEvent(QEvent *event)
                     if (mdiChild && mdiChild->isMaximized())
                         d->showActiveWindowMaximized = true;
                 }
+                d->disconnectSubWindow(child);
                 const bool activeRemoved = i == d->indicesToActivatedChildren.at(0);
                 d->childWindows.removeAt(i);
                 d->indicesToActivatedChildren.removeAll(i);
@@ -2381,7 +2389,7 @@ bool QMdiArea::event(QEvent *event)
         }
         break;
     case QEvent::Hide:
-        d->setActive(d->active, false);
+        d->setActive(d->active, false, false);
         d->setChildActivationEnabled(false);
         break;
 #ifndef QT_NO_TABBAR
@@ -2462,7 +2470,7 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
             && isVisible() && !window()->isMinimized()) {
             d->activateCurrentWindow();
         } else if (event->type() == QEvent::ApplicationDeactivate && d->active) {
-            d->setActive(d->active, false);
+            d->setActive(d->active, false, false);
         }
         return QAbstractScrollArea::eventFilter(object, event);
     }

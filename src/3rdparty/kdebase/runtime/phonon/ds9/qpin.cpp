@@ -278,7 +278,7 @@ namespace Phonon
                 ComPointer<IMemInputPin> input(pin, IID_IMemInputPin);
                 if (input) {
                     ComPointer<IMemAllocator> alloc;
-                    input->GetAllocator(&alloc);
+                    input->GetAllocator(alloc.pparam());
                     if (alloc) {
                         //be default we take the allocator from the input pin
                         //we have no reason to force using our own

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/testlib/qtestcase.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/testlib/qtestcase.cpp -->
 <head>
   <title>Qt 4.4: QTest Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -173,7 +173,7 @@
 <pre>     void MyTestClass::cleanup()
      {
          if (qstrcmp(currentTestFunction(), &quot;myDatabaseTest&quot;) == 0) {
-             // clean up all database connections
+             <span class="comment">// clean up all database connections</span>
              closeAllDatabases();
          }
      }</pre>
@@ -283,6 +283,7 @@
 <h3 class="fn"><a name="qExec-2"></a>int QTest::qExec ( <a href="qobject.html">QObject</a> * <i>testObject</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>arguments</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Behaves identically to qExec(<a href="qobject.html">QObject</a> *, int, char**) but takes a <a href="qstringlist.html">QStringList</a> of <i>arguments</i> instead of a <tt>char**</tt> list.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QTest/qSleep" />
 <h3 class="fn"><a name="qSleep"></a>void QTest::qSleep ( int <i>ms</i> )</h3>
 <p>Sleeps for <i>ms</i> milliseconds, blocking execution of the test. qSleep() will not do any event processing and leave your test unresponsive. Network communication might time out while sleeping. Use <a href="qtest.html#qWait">qWait</a>() to do non-blocking sleeping.</p>
@@ -356,6 +357,7 @@
 <h3 class="fn"><a name="toString-14"></a>char * QTest::toString ( const <a href="qurl.html">QUrl</a> &amp; <i>url</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a textual representation of the given <i>url</i>.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <h3 class="fn"><a name="toString-15"></a>char * QTest::toString ( const <a href="qpointf.html">QPointF</a> &amp; <i>point</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a textual representation of the given <i>point</i>.</p>
@@ -462,7 +464,7 @@
 <pre>     #ifdef Q_WS_X11
          QTEST_MAIN(MyX11Test)
      #else
-         // do nothing on non-X11 platforms
+         <span class="comment">// do nothing on non-X11 platforms</span>
          QTEST_NOOP_MAIN
      #endif</pre>
 <p>See also <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>().</p>
@@ -487,6 +489,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1495,6 +1495,7 @@ void XMLTokenizer::resumeParsing()
 #ifndef USE_QXMLSTREAM
         && m_pendingCallbacks->isEmpty())
 #else
+        && !m_parserPaused && !m_pendingScript
         )
 #endif
         end();

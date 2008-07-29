@@ -41,4 +41,5 @@ HEADERS += \
 # private headers
 HEADERS += \
         concurrent/qfutureinterface_p.h \
-        concurrent/qfuturewatcher_p.h
+        concurrent/qfuturewatcher_p.h \
+        concurrent/qthreadpool_p.h

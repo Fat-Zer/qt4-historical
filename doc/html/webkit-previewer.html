@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/previewer.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/previewer.qdoc -->
 <head>
   <title>Qt 4.4: Previewer Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -54,7 +54,7 @@
 <p>The <tt>on_previewButton_clicked()</tt> is a slot corresponding to the <tt>previewButton</tt>'s <a href="qabstractbutton.html#clicked">clicked()</a> signal. When the <tt>previewButton</tt> is clicked, we extract the contents of <tt>plainTextEdit</tt>, and then invoke the <a href="qwebview.html#setHtml">setHtml()</a> function to display our contents as HTML.</p>
 <pre> void Previewer::on_previewButton_clicked()
  {
-     <span class="comment">//</span> Update the contents in web viewer
+     <span class="comment">// Update the contents in web viewer</span>
      QString text = plainTextEdit-&gt;toPlainText();
      webView-&gt;setHtml(text);
  }</pre>
@@ -146,7 +146,7 @@
  {
      QString fileName = QFileDialog::getOpenFileName(this);
      if (!fileName.isEmpty()) {
-         <span class="comment">//</span> read from file
+         <span class="comment">// read from file</span>
          QFile file(fileName);
 
          if (!file.open(QIODevice::ReadOnly)) {
@@ -158,7 +158,7 @@
          QTextStream out(&amp;file);
          QString output = out.readAll();
 
-         <span class="comment">//</span> display contents
+         <span class="comment">// display contents</span>
          centralWidget-&gt;plainTextEdit-&gt;setPlainText(output);
      }
  }</pre>
@@ -167,7 +167,7 @@
  {
      bool ok;
      QString url = QInputDialog::getText(this, tr(&quot;Enter a URL&quot;),
-                   tr(&quot;URL:&quot;), QLineEdit::Normal, &quot;http:<span class="comment">//</span>&quot;, &amp;ok);
+                   tr(&quot;URL:&quot;), QLineEdit::Normal, &quot;http:<span class="comment">//&quot;, &amp;ok);</span>
 
      if (ok &amp;&amp; !url.isEmpty()) {
          centralWidget-&gt;webView-&gt;setUrl(url);
@@ -180,7 +180,7 @@
      QString fileName = QFileDialog::getSaveFileName(this);
 
      if (!fileName.isEmpty()) {
-         <span class="comment">//</span> save to file
+         <span class="comment">// save to file</span>
          QFile file(fileName);
 
          if (!file.open(QIODevice::WriteOnly)) {
@@ -223,6 +223,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

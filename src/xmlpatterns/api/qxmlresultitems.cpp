@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
   \class QXmlResultItems
-  \brief The QXmlResultItems class iterates through the results of evaluating a query.
+  \brief The QXmlResultItems class iterates through the results of evaluating an XQuery in QXmlQuery.
   \reentrant
   \since 4.4
   \ingroup xml-tools

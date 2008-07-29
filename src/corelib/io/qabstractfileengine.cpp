@@ -740,8 +740,11 @@ bool QAbstractFileEngine::atEnd() const
 }
 
 /*!
-    maps \a size bytes of the file into memory starting at \a offset.  Returns
-    a pointer to the memory or 0 if there is an error.
+    \since 4.4
+
+    Maps \a size bytes of the file into memory starting at \a offset.
+    Returns a pointer to the memory if successful; otherwise returns false
+    if, for example, an error occurs.
 
     This function bases its behavior on calling extension() with
     MapExtensionOption. If the engine does not support this extension, 0 is
@@ -765,7 +768,10 @@ uchar *QAbstractFileEngine::map(qint64 offset, qint64 size, QFile::MemoryMapFlag
 }
 
 /*!
-    unmaps the memory \a address.  Returns true if the unmap succeeds; false otherwise.
+    \since 4.4
+
+    Unmaps the memory \a address.  Returns true if the unmap succeeds; otherwise
+    returns false.
 
     This function bases its behavior on calling extension() with
     UnMapExtensionOption. If the engine does not support this extension, false is

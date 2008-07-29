@@ -243,6 +243,11 @@ QClipboard::~QClipboard()
 // text handling is done directly in qclipboard_qws, for now
 
 /*!
+    \fn bool QClipboard::event(QEvent *e)
+    \reimp
+*/
+
+/*!
     \overload
 
     Returns the clipboard text in subtype \a subtype, or an empty string

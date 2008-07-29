@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/xml/sax/qxml.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/xml/sax/qxml.cpp -->
 <head>
   <title>Qt 4.4: QXmlSimpleReader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -26,7 +26,8 @@
 <ul>
 <li><div class="fn"/><b><a href="qxmlsimplereader.html#QXmlSimpleReader">QXmlSimpleReader</a></b> ()</li>
 <li><div class="fn"/>virtual <b><a href="qxmlsimplereader.html#dtor.QXmlSimpleReader">~QXmlSimpleReader</a></b> ()</li>
-<li><div class="fn"/>virtual bool <b><a href="qxmlsimplereader.html#parse">parse</a></b> ( const QXmlInputSource * <i>input</i>, bool <i>incremental</i> )</li>
+<li><div class="fn"/>virtual bool <b><a href="qxmlsimplereader.html#parse">parse</a></b> ( const QXmlInputSource * <i>input</i> )</li>
+<li><div class="fn"/>virtual bool <b><a href="qxmlsimplereader.html#parse-3">parse</a></b> ( const QXmlInputSource * <i>input</i>, bool <i>incremental</i> )</li>
 <li><div class="fn"/>virtual bool <b><a href="qxmlsimplereader.html#parseContinue">parseContinue</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qxmlsimplereader.html#setFeature">setFeature</a></b> ( const QString &amp; <i>name</i>, bool <i>enable</i> )</li>
 </ul>
@@ -76,7 +77,7 @@
  }</pre>
 <p>Aspects of the parsing behavior can be adapted using <a href="qxmlsimplereader.html#setFeature">setFeature</a>() and <a href="qxmlreader.html#setProperty">setProperty</a>(). For example, the following code could be used to enable reporting of namespace prefixes to the content handler:</p>
 <p>QXmlSimpleReader is not reentrant. If you want to use the class in threaded code, lock the code using QXmlSimpleReader with a locking mechanism, such as a <a href="qmutex.html">QMutex</a>.</p>
-<pre>         xmlReader.setFeature(&quot;http://xml.org/sax/features/namespace-prefixes&quot;, true);</pre>
+<pre>         xmlReader.setFeature(&quot;http:<span class="comment">//xml.org/sax/features/namespace-prefixes&quot;, true);</span></pre>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QXmlSimpleReader/QXmlSimpleReader" />
@@ -86,7 +87,11 @@
 <h3 class="fn"><a name="dtor.QXmlSimpleReader"></a>QXmlSimpleReader::~QXmlSimpleReader ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the simple XML reader.</p>
 <a name="//apple_ref/cpp/instm/QXmlSimpleReader/parse" />
-<h3 class="fn"><a name="parse"></a>bool QXmlSimpleReader::parse ( const <a href="qxmlinputsource.html">QXmlInputSource</a> * <i>input</i>, bool <i>incremental</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="parse"></a>bool QXmlSimpleReader::parse ( const <a href="qxmlinputsource.html">QXmlInputSource</a> * <i>input</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Reads an XML document from <i>input</i> and parses it in one pass (non-incrementally). Returns true if the parsing was successful; otherwise returns false.</p>
+<p>Reimplemented from <a href="qxmlreader.html#parse">QXmlReader</a>.</p>
+<h3 class="fn"><a name="parse-3"></a>bool QXmlSimpleReader::parse ( const <a href="qxmlinputsource.html">QXmlInputSource</a> * <i>input</i>, bool <i>incremental</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an XML document from <i>input</i> and parses it. Returns true if the parsing is completed successfully; otherwise returns false, indicating that an error occurred.</p>
 <p>If <i>incremental</i> is false, this function will return false if the XML file is not read completely. The parsing cannot be continued in this case.</p>
 <p>If <i>incremental</i> is true, the parser does not return false if it reaches the end of the <i>input</i> before reaching the end of the XML file. Instead, it stores the state of the parser so that parsing can be continued later when more data is available. In such a case, you can use the function <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>() to continue with parsing. This class stores a pointer to the input source <i>input</i> and the <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>() function tries to read from that input source. Therefore, you should not delete the input source <i>input</i> until you no longer need to call <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>().</p>
@@ -116,6 +121,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

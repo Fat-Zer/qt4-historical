@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/text/qtextdocument.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/text/qtextdocument.cpp -->
 <head>
   <title>Qt 4.4: QTextDocument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -362,13 +362,13 @@
 <p>Adds the resource <i>resource</i> to the resource cache, using <i>type</i> and <i>name</i> as identifiers. <i>type</i> should be a value from <a href="qtextdocument.html#ResourceType-enum">QTextDocument::ResourceType</a>.</p>
 <p>For example, you can add an image as a resource in order to reference it from within the document:</p>
 <pre>     document-&gt;addResource(QTextDocument::ImageResource,
-         QUrl(&quot;mydata:<span class="comment">//</span>image.png&quot;), QVariant(image));</pre>
+         QUrl(&quot;mydata:<span class="comment">//image.png&quot;), QVariant(image));</span></pre>
 <p>The image can be inserted into the document using the <a href="qtextcursor.html">QTextCursor</a> API:</p>
 <pre>     QTextImageFormat imageFormat;
-     imageFormat.setName(&quot;mydata:<span class="comment">//</span>image.png&quot;);
+     imageFormat.setName(&quot;mydata:<span class="comment">//image.png&quot;);</span>
      cursor.insertImage(imageFormat);</pre>
 <p>Alternatively, you can insert images using the HTML <tt>img</tt> tag:</p>
-<pre>     editor-&gt;append(&quot;&lt;img src=\&quot;mydata:<span class="comment">//</span>image.png\&quot; /&gt;&quot;);</pre>
+<pre>     editor-&gt;append(&quot;&lt;img src=\&quot;mydata:<span class="comment">//image.png\&quot; /&gt;&quot;);</span></pre>
 <a name="//apple_ref/cpp/instm/QTextDocument/adjustSize" />
 <h3 class="fn"><a name="adjustSize"></a>void QTextDocument::adjustSize ()</h3>
 <p>Adjusts the document to a reasonable size.</p>
@@ -590,6 +590,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

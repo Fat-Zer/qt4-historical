@@ -251,9 +251,9 @@
   SQL support is integrated with Qt's model/view architecture, making it easier
   to provide GUI integration for your database applications.
 
-  \section1 \l{Qt Examples#Qt Assistant}{Qt Assistant}
+  \section1 \l{Qt Examples#Help System}{Help System}
 
-  \l{Qt Examples#Qt Assistant}{\inlineimage assistant-examples.png
+  \l{Qt Examples#Help System}{\inlineimage assistant-examples.png
   }
 
   Support for interactive help is provided by the Qt Assistant application.
@@ -298,6 +298,28 @@
 
   These examples demonstrate the fundamental aspects of scripting applications
   with Qt.
+
+  \section1 \l{Qt Examples#Phonon Multimedia Framework}{Phonon Multimedia Framework}
+
+  \l{Qt Examples#Phonon Multimedia Framework}{\inlineimage phonon-examples.png
+  }
+
+  The Phonon Multimedia Framework brings multimedia support to Qt applications.
+
+  The examples and demonstrations provided show how to play music and movies
+  using the Phonon API.
+
+  \section1 \l{Qt Examples#WebKit}{WebKit}
+
+  \l{Qt Examples#WebKit}{\inlineimage webkit-examples.png
+  }
+
+  Qt provides an integrated Web browser component based on WebKit, the popular
+  open source browser engine.
+
+  These examples and demonstrations show a range of different uses for WebKit,
+  from displaying Web pages within a Qt user interface to an implementation of
+  a basic function Web browser.
 
   \section1 \l{Qt Examples#Qt for Embedded Linux}{Qt for Embedded Linux}
 

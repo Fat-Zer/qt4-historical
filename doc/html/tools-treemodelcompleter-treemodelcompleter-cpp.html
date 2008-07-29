@@ -94,7 +94,7 @@
          return QCompleter::pathFromIndex(index);
      }
 
-     <span class="comment">//</span> navigate up and accumulate data
+     <span class="comment">// navigate up and accumulate data</span>
      QStringList dataList;
      for (QModelIndex i = index; i.isValid(); i = i.parent()) {
          dataList.prepend(model()-&gt;data(i, completionRole()).toString());
@@ -106,6 +106,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

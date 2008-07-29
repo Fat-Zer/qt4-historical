@@ -334,6 +334,8 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
     }
 #ifdef QT_KEYPAD_NAVIGATION
     lastKeypadScrollValue = vbar->value();
+    emit q->highlighted(QUrl());
+    emit q->highlighted(QString());
 #endif
 
 #ifndef QT_NO_CURSOR
@@ -563,6 +565,12 @@ void QTextBrowserPrivate::restoreHistoryEntry(const HistoryEntry entry)
 #ifdef QT_KEYPAD_NAVIGATION
     lastKeypadScrollValue = vbar->value();
     prevFocus = control->textCursor();
+
+    Q_Q(QTextBrowser);
+    const QString href = prevFocus.charFormat().anchorHref();
+    QUrl url = resolveUrl(href);
+    emit q->highlighted(url);
+    emit q->highlighted(url.toString());
 #endif
 }
 
@@ -1045,9 +1053,10 @@ void QTextBrowser::paintEvent(QPaintEvent *e)
 }
 
 /*!
-    This function is called when the document is loaded. The \a type
-    indicates the type of resource to be loaded. For each image in
-    the document, this function is called once.
+    This function is called when the document is loaded and for
+    each image in the document. The \a type indicates the type of resource
+    to be loaded. An invalid QVariant is returned if the resource cannot be
+    loaded.
 
     The default implementation ignores \a type and tries to locate
     the resources by interpreting \a name as a file name. If it is
@@ -1078,7 +1087,6 @@ QVariant QTextBrowser::loadResource(int /*type*/, const QUrl &name)
         data = f.readAll();
         f.close();
     } else {
-        qWarning("QTextBrowser: Cannot open '%s' for reading", name.toString().toLocal8Bit().data());
         return QVariant();
     }
 

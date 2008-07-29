@@ -1454,7 +1454,7 @@ void QCommonStyle::drawControl(ControlElement element, const QStyleOption *opt,
             }
             // Arrow type always overrules and is always shown
             bool hasArrow = toolbutton->features & QStyleOptionToolButton::Arrow;
-            if ((!hasArrow && toolbutton->icon.isNull()) && !toolbutton->text.isEmpty()
+            if (((!hasArrow && toolbutton->icon.isNull()) && !toolbutton->text.isEmpty())
                 || toolbutton->toolButtonStyle == Qt::ToolButtonTextOnly) {
                 int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
                 if (!styleHint(SH_UnderlineShortcut, opt, widget))
@@ -2095,12 +2095,12 @@ void QCommonStyle::drawControl(ControlElement element, const QStyleOption *opt,
                     cg = QPalette::Inactive;
 
                 if (vopt->state & QStyle::State_Selected) {
-                    p->setPen(QPen(vopt->palette.brush(cg, QPalette::HighlightedText),0));
+                    p->setPen(vopt->palette.color(cg, QPalette::HighlightedText));
                 } else {
-                    p->setPen(QPen(vopt->palette.brush(cg, QPalette::Text),0));
+                    p->setPen(vopt->palette.color(cg, QPalette::Text));
                 }
                 if (vopt->state & QStyle::State_Editing) {
-                    p->setPen(QPen(vopt->palette.brush(cg, QPalette::Text),0));
+                    p->setPen(vopt->palette.color(cg, QPalette::Text));
                     p->drawRect(textRect.adjusted(0, 0, -1, -1));
                 }
 
@@ -2388,6 +2388,7 @@ QRect QCommonStyle::subElementRect(SubElement sr, const QStyleOption *opt,
         if (const QStyleOptionTabWidgetFrame *twf
                 = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(opt)) {
             r.setSize(twf->tabBarSize);
+            const uint alingMask = Qt::AlignLeft | Qt::AlignRight | Qt::AlignHCenter;
             switch (twf->shape) {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
@@ -2396,12 +2397,12 @@ QRect QCommonStyle::subElementRect(SubElement sr, const QStyleOption *opt,
                 r.setWidth(qMin(r.width(), twf->rect.width()
                                             - twf->leftCornerWidgetSize.width()
                                             - twf->rightCornerWidgetSize.width()));
-                switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
+                switch (styleHint(SH_TabBar_Alignment, twf, widget) & alingMask) {
                 default:
                 case Qt::AlignLeft:
                     r.moveTopLeft(QPoint(twf->leftCornerWidgetSize.width(), 0));
                     break;
-                case Qt::AlignCenter:
+                case Qt::AlignHCenter:
                     r.moveTopLeft(QPoint(twf->rect.center().x() - qRound(r.width() / 2.0f)
                                          + (twf->leftCornerWidgetSize.width() / 2)
                                          - (twf->rightCornerWidgetSize.width() / 2), 0));
@@ -2418,13 +2419,13 @@ QRect QCommonStyle::subElementRect(SubElement sr, const QStyleOption *opt,
                 r.setWidth(qMin(r.width(), twf->rect.width()
                                             - twf->leftCornerWidgetSize.width()
                                             - twf->rightCornerWidgetSize.width()));
-                switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
+                switch (styleHint(SH_TabBar_Alignment, twf, widget) & alingMask) {
                 default:
                 case Qt::AlignLeft:
                     r.moveTopLeft(QPoint(twf->leftCornerWidgetSize.width(),
                                          twf->rect.height() - twf->tabBarSize.height()));
                     break;
-                case Qt::AlignCenter:
+                case Qt::AlignHCenter:
                     r.moveTopLeft(QPoint(twf->rect.center().x() - qRound(r.width() / 2.0f)
                                          + (twf->leftCornerWidgetSize.width() / 2)
                                          - (twf->rightCornerWidgetSize.width() / 2),
@@ -2443,13 +2444,13 @@ QRect QCommonStyle::subElementRect(SubElement sr, const QStyleOption *opt,
                 r.setHeight(qMin(r.height(), twf->rect.height()
                                             - twf->leftCornerWidgetSize.height()
                                             - twf->rightCornerWidgetSize.height()));
-                switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
+                switch (styleHint(SH_TabBar_Alignment, twf, widget) & alingMask) {
                 default:
                 case Qt::AlignLeft:
                     r.moveTopLeft(QPoint(twf->rect.width() - twf->tabBarSize.width(),
                                          twf->leftCornerWidgetSize.height()));
                     break;
-                case Qt::AlignCenter:
+                case Qt::AlignHCenter:
                     r.moveTopLeft(QPoint(twf->rect.width() - twf->tabBarSize.width(),
                                          twf->rect.center().y() - r.height() / 2));
                     break;
@@ -2462,15 +2463,15 @@ QRect QCommonStyle::subElementRect(SubElement sr, const QStyleOption *opt,
                 break;
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-                r.setHeight(qMin(r.height(), twf->rect.height())
+                r.setHeight(qMin(r.height(), twf->rect.height()
                                              - twf->leftCornerWidgetSize.height()
-                                             - twf->rightCornerWidgetSize.height());
-                switch (styleHint(SH_TabBar_Alignment, twf, widget)) {
+                                             - twf->rightCornerWidgetSize.height()));
+                switch (styleHint(SH_TabBar_Alignment, twf, widget) & alingMask) {
                 default:
                 case Qt::AlignLeft:
                     r.moveTopLeft(QPoint(0, twf->leftCornerWidgetSize.height()));
                     break;
-                case Qt::AlignCenter:
+                case Qt::AlignHCenter:
                     r.moveTopLeft(QPoint(0, twf->rect.center().y() - r.height() / 2));
                     break;
                 case Qt::AlignRight:
@@ -2882,13 +2883,13 @@ void QCommonStyle::drawComplexControl(ComplexControl cc, const QStyleOptionCompl
                             p->drawLine(pos, 0, pos, tickOffset - 2);
                         if (ticks & QSlider::TicksBelow)
                             p->drawLine(pos, tickOffset + thickness + 1, pos,
-                                        tickOffset + thickness + 1 + available - 2);
+                                        slider->rect.height()-1);
                     } else {
                         if (ticks & QSlider::TicksAbove)
                             p->drawLine(0, pos, tickOffset - 2, pos);
                         if (ticks & QSlider::TicksBelow)
                             p->drawLine(tickOffset + thickness + 1, pos,
-                                        tickOffset + thickness + 1 + available - 2, pos);
+                                        slider->rect.width()-1, pos);
                     }
                     // in the case where maximum is max int
                     int nextInterval = v + interval;

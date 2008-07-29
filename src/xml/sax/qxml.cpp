@@ -101,6 +101,7 @@ static const signed char cltSq      = 13; // '
 static const signed char cltUnknown = 14;
 
 // Hack for letting QDom know where the skipped entity occurred
+// ### Qt5: the use of this variable means the code isn't reentrant.
 bool qt_xml_skipped_entity_in_content;
 
 // character lookup table
@@ -694,6 +695,7 @@ public:
 
 /*!
     \class QXmlNamespaceSupport
+    \since 4.4
     \reentrant
     \brief The QXmlNamespaceSupport class is a helper class for XML
     readers which want to include namespace support.
@@ -1379,9 +1381,9 @@ QChar QXmlInputSource::next()
     the data returned by data(). This is useful if you want to use the
     input source for more than one parse.
 
-    In the case that the underlying data source is a QIODevice, it is not
-    seeked to the beginning. Call QIODevice::seek(0) on the device to
-    reverse it to the beginning.
+    \note In the case that the underlying data source is a QIODevice,
+    the current position in the device is not automatically set to the
+    start of input. Call QIODevice::seek(0) on the device to do this.
 
     \sa next()
 */
@@ -1593,7 +1595,7 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
             uchar ch1 = data.at(0);
             uchar ch2 = data.at(1);
 
-            if (ch1 == 0xfe && ch2 == 0xff || ch1 == 0xff && ch2 == 0xfe)
+            if ((ch1 == 0xfe && ch2 == 0xff) || (ch1 == 0xff && ch2 == 0xfe))
                 mib = 1015; // UTF-16 with byte order mark
             else if (ch1 == 0x3c && ch2 == 0x00)
                 mib = 1014; // UTF-16LE
@@ -3360,7 +3362,8 @@ bool QXmlSimpleReader::parse(const QXmlInputSource& input)
 }
 
 /*!
-    \reimp
+    Reads an XML document from \a input and parses it in one pass (non-incrementally).
+    Returns true if the parsing was successful; otherwise returns false.
 */
 bool QXmlSimpleReader::parse(const QXmlInputSource* input)
 {

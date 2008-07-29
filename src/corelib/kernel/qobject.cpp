@@ -1271,7 +1271,7 @@ bool QObject::eventFilter(QObject * /* watched */, QEvent * /* event */)
 
 /*!
     If \a block is true, signals emitted by this object are blocked
-    (i.e., emitting a signal will not invoke anything connected to it). 
+    (i.e., emitting a signal will not invoke anything connected to it).
 	If \a block is false, no such blocking will occur.
 
     The return value is the previous value of signalsBlocked().
@@ -2258,8 +2258,14 @@ int QObject::receivers(const char *signal) const
         Q_D(const QObject);
         QMutexLocker locker(&d->threadData->mutex);
         if (d->connectionLists) {
-            if (signal_index < d->connectionLists->count())
-                receivers = d->connectionLists->at(signal_index).count();
+            if (signal_index < d->connectionLists->count()) {
+                const QObjectPrivate::ConnectionList &connectionList =
+                    d->connectionLists->at(signal_index);
+                for (int i = 0; i < connectionList.count(); ++i) {
+                    const QObjectPrivate::Connection &c = connectionList.at(i);
+                    receivers += c.receiver ? 1 : 0;
+                }
+            }
         }
     }
     return receivers;
@@ -3299,6 +3305,10 @@ void QObject::dumpObjectInfo()
             const QObjectPrivate::ConnectionList &connectionList = d->connectionLists->at(signal_index);
             for (int i = 0; i < connectionList.count(); ++i) {
                 const QObjectPrivate::Connection &c = connectionList.at(i);
+                if (!c.receiver) {
+                    qDebug("\t  <Disconnected receiver>");
+                    continue;
+                }
                 const QMetaObject *receiverMetaObject = c.receiver->metaObject();
                 const QMetaMethod method = receiverMetaObject->method(c.method);
                 qDebug("\t  --> %s::%s %s",
@@ -3308,7 +3318,7 @@ void QObject::dumpObjectInfo()
             }
         }
     } else {
-	qDebug( "\t<None>" );
+        qDebug( "\t<None>" );
     }
 
     // now look for connections where this object is the receiver
@@ -3565,6 +3575,45 @@ QDebug operator<<(QDebug dbg, const QObject *o) {
     \snippet doc/src/snippets/signalsandslots/signalsandslots.h 3
 
     \sa {Meta-Object System}, {Signals and Slots}, {Qt's Property System}
+*/
+
+/*!
+    \macro Q_SIGNALS
+    \relates QObject
+
+    Use this macro to replace the \c signals keyword in class
+    declarations, when you want to use Qt Signals and Slots with a
+    \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
+
+    The macro is normally used when \c no_keywords is specified with
+    the \c CONFIG variable in the \c .pro file, but it can be used
+    even when \c no_keywords is \e not specified.
+*/
+
+/*!
+    \macro Q_SLOTS
+    \relates QObject
+
+    Use this macro to replace the \c slots keyword in class
+    declarations, when you want to use Qt Signals and Slots with a
+    \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
+
+    The macro is normally used when \c no_keywords is specified with
+    the \c CONFIG variable in the \c .pro file, but it can be used
+    even when \c no_keywords is \e not specified.
+*/
+
+/*!
+    \macro Q_EMIT
+    \relates QObject
+
+    Use this macro to replace the \c emit keyword for emitting
+    signals, when you want to use Qt Signals and Slots with a
+    \l{3rd Party Signals and Slots} {3rd party signal/slot mechanism}.
+
+    The macro is normally used when \c no_keywords is specified with
+    the \c CONFIG variable in the \c .pro file, but it can be used
+    even when \c no_keywords is \e not specified.
 */
 
 /*!

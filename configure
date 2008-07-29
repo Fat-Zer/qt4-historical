@@ -162,8 +162,8 @@ if [ -f "$relpath"/LICENSE.Qtopia ]; then
     Licensee="Qtopia"
     Edition="Qtopia"
     QT_EDITION="QT_EDITION_DESKTOP"
-elif [ -f "$relpath"/LICENSE.QPL -o -f "$relpath"/LICENSE.GPL2 -o -f "$relpath"/LICENSE.GPL3 ]; then
-    # Open Source edition - may only be used under the terms of the QPL or GPL.
+elif [ -f "$relpath"/LICENSE.GPL2 -o -f "$relpath"/LICENSE.GPL3 ]; then
+    # Open Source edition - may only be used under the terms of the GPL.
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
     [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
     Licensee="Open Source"
@@ -420,7 +420,7 @@ else
         ;;
     esac
     if [ '!' -f "$outpath/LICENSE" ]; then
-        echo "The LICENSE, LICENSE.QPL, or LICENSE.GPL2 file shipped with"
+        echo "The LICENSE, LICENSE.GPL2, or LICENSE.GPL3 file shipped with"
         echo "this software has disappeared."
         echo
         echo "Sorry, you are not licensed to use this software."
@@ -512,13 +512,14 @@ CFG_FONTCONFIG=auto
 CFG_QWS_FREETYPE=auto
 CFG_LIBFREETYPE=auto
 CFG_SQL_AVAILABLE=
-QT_DEFAULT_BUILD_PARTS="libs tools examples demos docs"
+QT_DEFAULT_BUILD_PARTS="libs tools examples demos docs translations"
 CFG_BUILD_PARTS=""
 CFG_NOBUILD_PARTS=""
 CFG_RELEASE_QMAKE=no
 CFG_PHONON=auto
 CFG_SVG=yes
 CFG_WEBKIT=auto # (yes|no|auto)
+CFG_ASSISTANT_WEBKIT=no
 
 CFG_GFX_AVAILABLE="linuxfb transformed qvfb vnc multiscreen"
 CFG_GFX_ON="linuxfb multiscreen"
@@ -535,6 +536,8 @@ if [ "$Edition" = "Trolltech" ]; then
     CFG_KBD_ON="${CFG_KBD_ON} um"
 fi
 
+CFG_ARCH=
+CFG_HOST_ARCH=
 CFG_KBD_PLUGIN_AVAILABLE=
 CFG_KBD_PLUGIN=
 CFG_KBD_OFF=
@@ -744,7 +747,7 @@ while [ "$#" -gt 0 ]; do
         VAL=no
         ;;
     #Qt style yes options
-        -incremental|-qvfb|-profile|-shared|-static|-sm|-xinerama|-xshape|-tablet|-reduce-exports|-pch|-separate-debug-info|-stl|-freetype|-xcursor|-xfixes|-xrandr|-xrender|-fontconfig|-xkb|-nis|-qdbus|-dbus|-dbus-linked|-glib|-gstreamer|-cups|-iconv|-largefile|-h|-help|-v|-verbose|-debug|-release|-fast|-opengl|-accessibility|-confirm-license|-gnumake|-framework|-qt3support|-debug-and-release|-exceptions|-universal|-prefix-install|-silent|-armfpa|-optimized-qmake|-dwarf2|-reduce-relocations|-sse|-openssl|-openssl-linked|-xmlpatterns|-phonon|-svg|-webkit)
+        -incremental|-qvfb|-profile|-shared|-static|-sm|-xinerama|-xshape|-tablet|-reduce-exports|-pch|-separate-debug-info|-stl|-freetype|-xcursor|-xfixes|-xrandr|-xrender|-fontconfig|-xkb|-nis|-qdbus|-dbus|-dbus-linked|-glib|-gstreamer|-cups|-iconv|-largefile|-h|-help|-v|-verbose|-debug|-release|-fast|-opengl|-accessibility|-confirm-license|-gnumake|-framework|-qt3support|-debug-and-release|-exceptions|-universal|-prefix-install|-silent|-armfpa|-optimized-qmake|-dwarf2|-reduce-relocations|-sse|-openssl|-openssl-linked|-xmlpatterns|-phonon|-svg|-webkit|-assistant-webkit)
         VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
         VAL=yes
         ;;
@@ -802,12 +805,12 @@ while [ "$#" -gt 0 ]; do
             VAL=$1
         fi
         ;;
-    -*-endian)
-        VAR=endian
-        VAL=`echo $1 | sed "s,^-\(.*\)-.*,\1,"`
-        ;;
     -host-*-endian)
         VAR=host_endian
+        VAL=`echo $1 | sed "s,^-.*-\(.*\)-.*,\1,"`
+        ;;
+    -*-endian)
+        VAR=endian
         VAL=`echo $1 | sed "s,^-\(.*\)-.*,\1,"`
         ;;
     -qtnamespace)
@@ -1075,11 +1078,11 @@ while [ "$#" -gt 0 ]; do
         if [ "$PLATFORM_MAC" = "yes" ]; then
             CFG_MAC_ARCHS="$CFG_MAC_ARCHS $VAL"
         else
-            ARCH=$VAL
+            CFG_ARCH=$VAL
         fi
         ;;
     host-arch)
-        HOST_ARCH=$VAL
+        CFG_HOST_ARCH=$VAL
         ;;
     universal)
         if [ "$PLATFORM_MAC" = "yes" ] && [ "$VAL" = "yes" ]; then
@@ -1570,6 +1573,17 @@ while [ "$#" -gt 0 ]; do
             fi
         fi
         ;;
+    assistant-webkit)
+        if [ "$VAL" = "yes" ]; then
+            CFG_ASSISTANT_WEBKIT="yes"
+        else
+            if [ "$VAL" = "no" ]; then
+                CFG_ASSISTANT_WEBKIT="no"
+            else
+                UNKNOWN_OPT=yes
+            fi
+        fi
+        ;;
     confirm-license)
         if [ "$VAL" = "yes" ]; then
             OPT_CONFIRM_LICENSE="$VAL"
@@ -1775,6 +1789,12 @@ if [ "$CFG_QCONFIG" != "full" ] && [ "$CFG_QT3SUPPORT" = "yes" ]; then
     CFG_QT3SUPPORT="no"
 fi
 
+if [ "$CFG_ASSISTANT_WEBKIT" = "yes" ] && [ "$CFG_WEBKIT" = "no" ]; then
+    echo "Warning: WebKit cannot be used in Qt Assistant, since the Qt WebKit module"
+    echo "won't be built with the current configuration."
+    CFG_ASSISTANT_WEBKIT="no"
+fi
+
 #-------------------------------------------------------------------------------
 # build tree initialization
 #-------------------------------------------------------------------------------
@@ -1914,7 +1934,7 @@ fi
 
 # symlink fonts to be able to run application from build directory
 if [ "$PLATFORM_QWS" = "yes" ] && [ ! -e "${outpath}/lib/fonts" ]; then
-    if [ "$PLATFORM" != "$XPLATFORM" ]; then
+    if [ "$PLATFORM" = "$XPLATFORM" ]; then
         mkdir -p "${outpath}/lib"
         ln -s "${relpath}/dist/embedded-linux/lib/fonts" "${outpath}/lib/fonts"
     fi
@@ -1990,8 +2010,8 @@ if [ "$CFG_EMBEDDED" != "no" ]; then
         fi
         if [ -z "$XPLATFORM" ]; then
             if [ "$CFG_EMBEDDED" = "auto" ]; then
-                if [ -n "$ARCH" ]; then
-                    CFG_EMBEDDED=$ARCH
+                if [ -n "$CFG_ARCH" ]; then
+                    CFG_EMBEDDED=$CFG_ARCH
                 else
                     case "$UNAME_MACHINE" in
                     *86)
@@ -2265,8 +2285,8 @@ if [ "$OPT_VERBOSE" = "yes" ]; then
     echo "Determining system architecture... ($UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_MACHINE)"
 fi
 
-if [ "$CFG_EMBEDDED" != "no" -a "$CFG_EMBEDDED" != "auto" ] && [ -n "$ARCH" ]; then
-    if [ "$ARCH" != "$CFG_EMBEDDED" ]; then
+if [ "$CFG_EMBEDDED" != "no" -a "$CFG_EMBEDDED" != "auto" ] && [ -n "$CFG_ARCH" ]; then
+    if [ "$CFG_ARCH" != "$CFG_EMBEDDED" ]; then
         echo ""
         echo "You have specified a target architecture with -embedded and -arch."
         echo "The two architectures you have specified are different, so we can"
@@ -2276,12 +2296,12 @@ if [ "$CFG_EMBEDDED" != "no" -a "$CFG_EMBEDDED" != "auto" ] && [ -n "$ARCH" ]; t
     fi
 fi
 
-if [ -z "${HOST_ARCH}" ]; then
+if [ -z "${CFG_HOST_ARCH}" ]; then
     case "$UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_MACHINE" in
     IRIX*:*:*)
-        HOST_ARCH=`uname -p`
+        CFG_HOST_ARCH=`uname -p`
         if [ "$OPT_VERBOSE" = "yes" ]; then
-            echo "    SGI ($HOST_ARCH)"
+            echo "    SGI ($CFG_HOST_ARCH)"
         fi
         ;;
     SunOS:5*:*)
@@ -2290,7 +2310,7 @@ if [ -z "${HOST_ARCH}" ]; then
             if [ "$OPT_VERBOSE" = "yes" ]; then
                 echo "    Sun SPARC (sparc)"
             fi
-            HOST_ARCH=sparc
+            CFG_HOST_ARCH=sparc
             ;;
         i86pc)
 	    case "$PLATFORM" in
@@ -2298,13 +2318,13 @@ if [ -z "${HOST_ARCH}" ]; then
                 if [ "$OPT_VERBOSE" = "yes" ]; then
 	            echo "    64-bit AMD 80x86 (x86_64)"
                 fi
-                HOST_ARCH=x86_64
+                CFG_HOST_ARCH=x86_64
                 ;;
 	    *)
                 if [ "$OPT_VERBOSE" = "yes" ]; then
 	            echo "    32-bit Intel 80x86 (i386)"
                 fi
-                HOST_ARCH=i386
+                CFG_HOST_ARCH=i386
                 ;;
             esac
         esac
@@ -2322,128 +2342,128 @@ if [ -z "${HOST_ARCH}" ]; then
                 fi
                 ;;
         esac
-        HOST_ARCH=macosx
+        CFG_HOST_ARCH=macosx
         ;;
     AIX:*:00????????00)
         if [ "$OPT_VERBOSE" = "yes" ]; then
         echo "    64-bit IBM PowerPC (powerpc)"
         fi
-        HOST_ARCH=powerpc
+        CFG_HOST_ARCH=powerpc
         ;;
     HP-UX:*:9000*)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    HP PA-RISC (parisc)"
         fi
-        HOST_ARCH=parisc
+        CFG_HOST_ARCH=parisc
         ;;
     *:*:i?86)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    32-bit Intel 80x86 (i386)"
         fi
-        HOST_ARCH=i386
+        CFG_HOST_ARCH=i386
         ;;
     *:*:x86_64|*:*:amd64)
         if [ "$PLATFORM" = "linux-g++-32" -o "$PLATFORM" = "linux-icc-32" ]; then
             if [ "$OPT_VERBOSE" = "yes" ]; then
                 echo "    32 bit on 64-bit AMD 80x86 (i386)"
             fi
-            HOST_ARCH=i386
+            CFG_HOST_ARCH=i386
         else
             if [ "$OPT_VERBOSE" = "yes" ]; then
                 echo "    64-bit AMD 80x86 (x86_64)"
             fi
-            HOST_ARCH=x86_64
+            CFG_HOST_ARCH=x86_64
         fi
         ;;
     *:*:ppc)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    32-bit PowerPC (powerpc)"
         fi
-        HOST_ARCH=powerpc
+        CFG_HOST_ARCH=powerpc
         ;;
     *:*:ppc64)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    64-bit PowerPC (powerpc)"
         fi
-        HOST_ARCH=powerpc
+        CFG_HOST_ARCH=powerpc
         ;;
     *:*:s390*)
     	if [ "$OPT_VERBOSE" = "yes" ]; then
     	    echo "    IBM S/390 (s390)"
     	fi
-    	HOST_ARCH=s390
+    	CFG_HOST_ARCH=s390
     	;;
     *:*:arm*)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    ARM (arm)"
         fi
-        HOST_ARCH=arm
+        CFG_HOST_ARCH=arm
         ;;
     Linux:*:sparc*)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    Linux on SPARC"
         fi
-        HOST_ARCH=sparc
+        CFG_HOST_ARCH=sparc
         ;;
     *:*:*)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    Trying '$UNAME_MACHINE'..."
         fi
-        HOST_ARCH="$UNAME_MACHINE"
+        CFG_HOST_ARCH="$UNAME_MACHINE"
         ;;
     esac
 fi
 
 if [ "$PLATFORM" != "$XPLATFORM" -a "$CFG_EMBEDDED" != "no" ]; then
-    if [ -n "$ARCH" ]; then
-        CFG_EMBEDDED=$ARCH
+    if [ -n "$CFG_ARCH" ]; then
+        CFG_EMBEDDED=$CFG_ARCH
     fi
 
     case "$CFG_EMBEDDED" in
     x86)
-        ARCH=i386
+        CFG_ARCH=i386
         ;;
     x86_64)
-        ARCH=x86_64
+        CFG_ARCH=x86_64
         ;;
     ipaq|sharp)
-        ARCH=arm
+        CFG_ARCH=arm
         ;;
     *)
-        ARCH="$CFG_EMBEDDED"
+        CFG_ARCH="$CFG_EMBEDDED"
         ;;
     esac
-elif [ "$PLATFORM_MAC" = "yes" ] || [ -z "$ARCH" ]; then
-    ARCH=$HOST_ARCH
+elif [ "$PLATFORM_MAC" = "yes" ] || [ -z "$CFG_ARCH" ]; then
+    CFG_ARCH=$CFG_HOST_ARCH
 fi
 
-if [ -d "$relpath/src/corelib/arch/$ARCH" ]; then
+if [ -d "$relpath/src/corelib/arch/$CFG_ARCH" ]; then
     if [ "$OPT_VERBOSE" = "yes" ]; then
-        echo "    '$ARCH' is supported"
+        echo "    '$CFG_ARCH' is supported"
     fi
 else
     if [ "$OPT_VERBOSE" = "yes" ]; then
-        echo "    '$ARCH' is unsupported, using 'generic'"
+        echo "    '$CFG_ARCH' is unsupported, using 'generic'"
     fi
-    ARCH=generic
+    CFG_ARCH=generic
 fi
-if [ "$HOST_ARCH" != "$ARCH" ]; then
-    if [ -d "$relpath/src/corelib/arch/$HOST_ARCH" ]; then
+if [ "$CFG_HOST_ARCH" != "$CFG_ARCH" ]; then
+    if [ -d "$relpath/src/corelib/arch/$CFG_HOST_ARCH" ]; then
         if [ "$OPT_VERBOSE" = "yes" ]; then
-            echo "    '$HOST_ARCH' is supported"
+            echo "    '$CFG_HOST_ARCH' is supported"
         fi
     else
         if [ "$OPT_VERBOSE" = "yes" ]; then
-            echo "    '$HOST_ARCH' is unsupported, using 'generic'"
+            echo "    '$CFG_HOST_ARCH' is unsupported, using 'generic'"
         fi
-        HOST_ARCH=generic
+        CFG_HOST_ARCH=generic
     fi
 fi
 
 if [ "$OPT_VERBOSE" = "yes" ]; then
-    echo "System architecture: '$ARCH'"
+    echo "System architecture: '$CFG_ARCH'"
     if [ "$PLATFORM_QWS" = "yes" ]; then
-	echo "Host architecture: '$HOST_ARCH'"
+	echo "Host architecture: '$CFG_HOST_ARCH'"
     fi
 fi
 
@@ -2635,7 +2655,7 @@ if [ -z "$QT_INSTALL_PREFIX" ]; then
     elif [ "$PLATFORM_QWS" = "yes" ]; then
         QT_INSTALL_PREFIX="/usr/local/Trolltech/QtEmbedded-${QT_VERSION}"
         if [ "$PLATFORM" != "$XPLATFORM" ]; then
-            QT_INSTALL_PREFIX="${QT_INSTALL_PREFIX}-${ARCH}"
+            QT_INSTALL_PREFIX="${QT_INSTALL_PREFIX}-${CFG_ARCH}"
         fi
     else
         QT_INSTALL_PREFIX="/usr/local/Trolltech/Qt-${QT_VERSION}" # the default install prefix is /usr/local/Trolltech/Qt-$QT_VERSION
@@ -2823,6 +2843,7 @@ Usage:  $relconf [-prefix <dir>] [-prefix-install] [-bindir <dir>] [-libdir <dir
         [-qtnamespace <namespace>] [-separate-debug-info] [-armfpa]
         [-no-optimized-qmake] [-optimized-qmake] [-no-xmlpatterns] [-xmlpatterns]
         [-no-phonon] [-phonon] [-no-svg] [-svg] [-no-webkit] [-webkit]
+        [-no-assistant-webkit] [-assistant-webkit]
 
         [additional platform specific options (see below)]
 
@@ -2959,6 +2980,11 @@ fi
     -no-webkit ......... Do not build the WebKit module.
  +  -webkit ............ Build the WebKit module.
                          WebKit is built if a decent C++ compiler is used.
+                         
+ *  -no-assistant-webkit Do not use WebKit as the html rendering engine in
+                         Assistant.
+    -assistant-webkit    Use WebKit as html rendering engine in Assistant.
+                         This is only available if the WebKit module is built.
 
     -platform target ... The operating system and compiler you are building
                          on ($PLATFORM).
@@ -3395,18 +3421,16 @@ elif [ "$Edition" = "OpenSource" ]; then
             echo "You are licensed to use this software under the terms of"
             echo "the GNU General Public License (GPL) versions 2 or 3."
             echo
-            affix="the"
+            affix="either"
         elif [ "$PLATFORM_MAC" = "yes" ]; then
             echo "You are licensed to use this software under the terms of"
             echo "the GNU General Public License (GPL) versions 2 or 3."
             echo
-            affix="the"
+            affix="either"
         elif [ "$PLATFORM_X11" = "yes" ]; then
-            echo "You are licensed to use this software under the terms of either"
-            echo "the Q Public License (QPL) or the GNU General Public License (GPL)"
-	    echo "versions 2 or 3"
+            echo "You are licensed to use this software under the terms of"
+            echo "the GNU General Public License (GPL) versions 2 or 3."
             echo
-            [ "$OPT_CONFIRM_LICENSE" = "no" ] && echo "Type 'Q' to view the Q Public License."
             affix="either"
         fi
         if [ "$OPT_CONFIRM_LICENSE" = "yes" ]; then
@@ -3436,10 +3460,6 @@ elif [ "$Edition" = "OpenSource" ]; then
             more "$relpath/LICENSE.GPL2"
         elif [ "$acceptance" = "3" ]; then
             more "$relpath/LICENSE.GPL3"
-        elif [ "$acceptance" = "Q" -o "$acceptance" = "q" ]; then
-            if [ "$PLATFORM_QWS" != "yes" ]; then
-                more "$relpath/LICENSE.QPL"
-            fi
         fi
     done
 elif [ "$Edition" = "Preview" ]; then
@@ -3639,19 +3659,29 @@ esac
 #-------------------------------------------------------------------------------
 [ -d "$outpath/src/corelib/global" ] || mkdir -p "$outpath/src/corelib/global"
 
-LICENSE_USER_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_lcnsuser=$Licensee" "\\0"`
-LICENSE_PRODUCTS_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_lcnsprod=$Edition" "\\0"`
-PREFIX_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_prfxpath=$QT_INSTALL_PREFIX" "\\0"`
-DOCUMENTATION_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_docspath=$QT_INSTALL_DOCS" "\\0"`
-HEADERS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_hdrspath=$QT_INSTALL_HEADERS" "\\0"`
-LIBRARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_libspath=$QT_INSTALL_LIBS" "\\0"`
-BINARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_binspath=$QT_INSTALL_BINS" "\\0"`
-PLUGINS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_plugpath=$QT_INSTALL_PLUGINS" "\\0"`
-DATA_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_datapath=$QT_INSTALL_DATA" "\\0"`
-TRANSLATIONS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_trnspath=$QT_INSTALL_TRANSLATIONS" "\\0"`
-SETTINGS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_stngpath=$QT_INSTALL_SETTINGS" "\\0"`
-EXAMPLES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_xmplpath=$QT_INSTALL_EXAMPLES" "\\0"`
-DEMOS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_demopath=$QT_INSTALL_DEMOS" "\\0"`
+PADDING="\\0"
+
+if [ "$PLATFORM_MAC" = "yes" ]; then
+    case $UNAME_RELEASE in
+    9.*)
+        PADDING="\\\\0"
+        ;;
+    esac
+fi
+
+LICENSE_USER_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_lcnsuser=$Licensee" "$PADDING"`
+LICENSE_PRODUCTS_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_lcnsprod=$Edition" "$PADDING"`
+PREFIX_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_prfxpath=$QT_INSTALL_PREFIX" "$PADDING"`
+DOCUMENTATION_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_docspath=$QT_INSTALL_DOCS" "$PADDING"`
+HEADERS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_hdrspath=$QT_INSTALL_HEADERS" "$PADDING"`
+LIBRARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_libspath=$QT_INSTALL_LIBS" "$PADDING"`
+BINARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_binspath=$QT_INSTALL_BINS" "$PADDING"`
+PLUGINS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_plugpath=$QT_INSTALL_PLUGINS" "$PADDING"`
+DATA_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_datapath=$QT_INSTALL_DATA" "$PADDING"`
+TRANSLATIONS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_trnspath=$QT_INSTALL_TRANSLATIONS" "$PADDING"`
+SETTINGS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_stngpath=$QT_INSTALL_SETTINGS" "$PADDING"`
+EXAMPLES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_xmplpath=$QT_INSTALL_EXAMPLES" "$PADDING"`
+DEMOS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_demopath=$QT_INSTALL_DEMOS" "$PADDING"`
 
 cat > "$outpath/src/corelib/global/qconfig.cpp.new" <<EOF
 /* License Info */
@@ -3660,17 +3690,17 @@ static const char qt_configure_licensed_products_str [256 + 12] = "$LICENSE_PROD
 EOF
 
 if [ ! -z "$QT_HOST_PREFIX" ]; then
-    HOSTPREFIX_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_prfxpath=$QT_HOST_PREFIX" "\\0"`
-    HOSTDOCUMENTATION_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_docspath=$QT_HOST_PREFIX/doc" "\\0"`
-    HOSTHEADERS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_hdrspath=$QT_HOST_PREFIX/include" "\\0"`
-    HOSTLIBRARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_libspath=$QT_HOST_PREFIX/lib" "\\0"`
-    HOSTBINARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_binspath=$QT_HOST_PREFIX/bin" "\\0"`
-    HOSTPLUGINS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_plugpath=$QT_HOST_PREFIX/plugins" "\\0"`
-    HOSTDATA_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_datapath=$QT_HOST_PREFIX" "\\0"`
-    HOSTTRANSLATIONS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_trnspath=$QT_HOST_PREFIX/translations" "\\0"`
-    HOSTSETTINGS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_stngpath=$QT_INSTALL_SETTINGS" "\\0"`
-    HOSTEXAMPLES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_xmplpath=$QT_INSTALL_EXAMPLES" "\\0"`
-    HOSTDEMOS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_demopath=$QT_INSTALL_DEMOS" "\\0"`
+    HOSTPREFIX_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_prfxpath=$QT_HOST_PREFIX" "$PADDING"`
+    HOSTDOCUMENTATION_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_docspath=$QT_HOST_PREFIX/doc" "$PADDING"`
+    HOSTHEADERS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_hdrspath=$QT_HOST_PREFIX/include" "$PADDING"`
+    HOSTLIBRARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_libspath=$QT_HOST_PREFIX/lib" "$PADDING"`
+    HOSTBINARIES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_binspath=$QT_HOST_PREFIX/bin" "$PADDING"`
+    HOSTPLUGINS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_plugpath=$QT_HOST_PREFIX/plugins" "$PADDING"`
+    HOSTDATA_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_datapath=$QT_HOST_PREFIX" "$PADDING"`
+    HOSTTRANSLATIONS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_trnspath=$QT_HOST_PREFIX/translations" "$PADDING"`
+    HOSTSETTINGS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_stngpath=$QT_INSTALL_SETTINGS" "$PADDING"`
+    HOSTEXAMPLES_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_xmplpath=$QT_INSTALL_EXAMPLES" "$PADDING"`
+    HOSTDEMOS_PATH_STR=`"$relpath/config.tests/unix/padstring" 268 "qt_demopath=$QT_INSTALL_DEMOS" "$PADDING"`
 
     cat >> "$outpath/src/corelib/global/qconfig.cpp.new" <<EOF
 
@@ -3889,7 +3919,11 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
             done
         fi
         if [ "$PLATFORM_MAC" = "yes" ]; then
-            echo "export MACOSX_DEPLOYMENT_TARGET = 10.3" >>"$mkfile"
+            if [ "$PLATFORM" = "macx-icc" ]; then
+                echo "export MACOSX_DEPLOYMENT_TARGET = 10.4" >>"$mkfile"
+	    else
+                echo "export MACOSX_DEPLOYMENT_TARGET = 10.3" >>"$mkfile"
+	    fi
             echo "CARBON_LFLAGS =-framework ApplicationServices" >>"$mkfile"
             echo "CARBON_CFLAGS =-fconstant-cfstrings" >>"$mkfile"
             EXTRA_LFLAGS="$EXTRA_LFLAGS \$(CARBON_LFLAGS)"
@@ -4672,6 +4706,8 @@ if [ "$PLATFORM_X11" = "yes" -o "$PLATFORM_QWS" = "yes" ]; then
                 CFG_GSTREAMER=no
             fi
         fi
+    elif [ "$CFG_GLIB" = "no" ]; then
+	CFG_GSTREAMER=no
     fi
 
     if [ "$CFG_PHONON" != "no" ]; then
@@ -5382,6 +5418,12 @@ fi
 #
 canBuildPatternist="yes"
 canBuildWebKit="yes"
+
+# WebKit requires stdint.h
+if ! "$unixtests/compile.test" "$XQMAKESPEC" "$QMAKE_CONFIG" $OPT_VERBOSE "$relpath" "$outpath" config.tests/unix/stdint "Stdint" $L_FLAGS $I_FLAGS $l_FLAGS; then
+    canBuildWebKit="no"
+fi
+
 case "$XPLATFORM" in
     *-g++*)
 	# Check gcc's version
@@ -5457,6 +5499,10 @@ if [ "$CFG_WEBKIT" = "yes" ]; then
 else
     CFG_WEBKIT="no"
     QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_WEBKIT"
+fi
+
+if [ "$CFG_ASSISTANT_WEBKIT" = "yes" ]; then
+    QT_CONFIG="$QT_CONFIG assistant_webkit"    
 fi
 
 if [ "$CFG_EXCEPTIONS" = "no" ]; then
@@ -5625,7 +5671,7 @@ if [ "$QT_CROSS_COMPILE" = "yes" ]; then
     # extract the operating system from the XPLATFORM
     TARGET_OPERATING_SYSTEM=`echo $XPLATFORM | cut -f 2- -d/ | cut -f -1 -d-`
     # when cross-compiling, don't include build-host information (build key is target specific)
-    QT_BUILD_KEY="$CFG_USER_BUILD_KEY $ARCH $TARGET_OPERATING_SYSTEM $COMPILER $BUILD_OPTIONS"
+    QT_BUILD_KEY="$CFG_USER_BUILD_KEY $CFG_ARCH $TARGET_OPERATING_SYSTEM $COMPILER $BUILD_OPTIONS"
 else
     QT_BUILD_KEY="$CFG_USER_BUILD_KEY $UNAME_MACHINE $UNAME_SYSTEM $COMPILER $BUILD_OPTIONS"
 fi
@@ -5703,7 +5749,7 @@ if [ "$CFG_DOUBLEFORMAT" != "normal" ]; then
 EOF
 fi
 if [ "$CFG_ARMFPA" = "yes" ]; then
-    if [ "$ARCH" != "$HOST_ARCH" ]; then
+    if [ "$CFG_ARCH" != "$CFG_HOST_ARCH" ]; then
 	cat >>"$outpath/src/corelib/global/qconfig.h.new" <<EOF
 #ifndef QT_BOOTSTRAPPED
 # define QT_ARMFPA
@@ -5714,14 +5760,14 @@ EOF
     fi
 fi
 
-ARCH_STR=`echo $ARCH | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
-HOST_ARCH_STR=`echo $HOST_ARCH | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
+CFG_ARCH_STR=`echo $CFG_ARCH | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
+CFG_HOST_ARCH_STR=`echo $CFG_HOST_ARCH | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
 cat >>"$outpath/src/corelib/global/qconfig.h.new" <<EOF
 /* Machine Architecture */
 #ifndef QT_BOOTSTRAPPED
-# define QT_ARCH_${ARCH_STR}
+# define QT_ARCH_${CFG_ARCH_STR}
 #else
-# define QT_ARCH_${HOST_ARCH_STR}
+# define QT_ARCH_${CFG_HOST_ARCH_STR}
 #endif
 EOF
 
@@ -5964,7 +6010,7 @@ fi
 cat >>"$QTCONFIG.tmp" <<EOF
 #configuration
 CONFIG += $QTCONFIG_CONFIG
-QT_ARCH = $ARCH
+QT_ARCH = $CFG_ARCH
 QT_EDITION = $Edition
 QT_CONFIG += $QT_CONFIG
 
@@ -6133,9 +6179,9 @@ else
     echo "Building on:   $PLATFORM"
     echo "Building for:  $XPLATFORM"
 fi
-echo "Architecture:  $ARCH"
+echo "Architecture:  $CFG_ARCH"
 if [ "$PLATFORM_QWS" = "yes" ]; then
-    echo "Host architecture: $HOST_ARCH"
+    echo "Host architecture: $CFG_HOST_ARCH"
 fi
 
 if [ -n "$PLATFORM_NOTES" ]; then
@@ -6176,10 +6222,11 @@ echo "QtXmlPatterns module  $CFG_XMLPATTERNS"
 echo "Phonon module ....... $CFG_PHONON"
 echo "SVG module .......... $CFG_SVG"
 echo "WebKit module ....... $CFG_WEBKIT"
+echo "WebKit in Assistant   $CFG_ASSISTANT_WEBKIT"
 echo "STL support ......... $CFG_STL"
 echo "PCH support ......... $CFG_PRECOMPILE"
 echo "MMX/3DNOW/SSE/SSE2..  ${CFG_MMX}/${CFG_3DNOW}/${CFG_SSE}/${CFG_SSE2}"
-if [ "${ARCH}" = "arm" ]; then
+if [ "${CFG_ARCH}" = "arm" ]; then
     echo "iWMMXt support ...... ${CFG_IWMMXT}"
 fi
 echo "IPv6 support ........ $CFG_IPV6"
@@ -6542,7 +6589,7 @@ fi
 #-------------------------------------------------------------------------------
 # check for platforms that we don't yet know about
 #-------------------------------------------------------------------------------
-if [ "$ARCH" = "generic" ]; then
+if [ "$CFG_ARCH" = "generic" ]; then
 cat <<EOF
 
         NOTICE: Atomic operations are not yet supported for this

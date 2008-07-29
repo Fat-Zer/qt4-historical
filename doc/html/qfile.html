@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/io/qfile.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qfile.cpp -->
 <head>
   <title>Qt 4.4: QFile Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -157,6 +157,9 @@
 <a name="signals"></a>
 <h3>Signals</h3>
 <p>Unlike other <a href="qiodevice.html">QIODevice</a> implementations, such as <a href="qtcpsocket.html">QTcpSocket</a>, QFile does not emit the <a href="qiodevice.html#aboutToClose">aboutToClose</a>(), <a href="qiodevice.html#bytesWritten">bytesWritten</a>(), or <a href="qiodevice.html#readyRead">readyRead</a>() signals. This implementation detail means that QFile is not suitable for reading and writing certain types of files, such as device files on Unix platforms.</p>
+<a name="platform-specific-issues"></a>
+<h3>Platform Specific Issues</h3>
+<p>File permissions are handled differently on Linux/Mac OS X and Windows. In a non writeable directory on Linux, files cannot be created. This is not always the case on Windows, where, for instance, the 'My Documents' directory usually is not writable, but it is still possible to create files in it.</p>
 <p>See also <a href="qtextstream.html">QTextStream</a>, <a href="qdatastream.html">QDataStream</a>, <a href="qfileinfo.html">QFileInfo</a>, <a href="qdir.html">QDir</a>, and <a href="resources.html">The Qt Resource System</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -215,6 +218,7 @@
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFile::NoOptions</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No options.</td></tr>
 </table></p>
+<p>This enum was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/tag/QFile/Permission" />
 <a name="//apple_ref/cpp/econst/QFile/ReadOwner" />
 <a name="//apple_ref/cpp/econst/QFile/WriteOwner" />
@@ -358,7 +362,7 @@
          {
              QFile file;
              file.open(stderr, QIODevice::WriteOnly);
-             file.write(msg, qstrlen(msg));        // write to stderr
+             file.write(msg, qstrlen(msg));        <span class="comment">// write to stderr</span>
              file.close();
          }</pre>
 <p>When a <a href="qfile.html">QFile</a> is opened using this function, <a href="qiodevice.html#close">close</a>() does not actually close the file, but only flushes it.</p>
@@ -432,7 +436,7 @@
          QDir::setCurrent(&quot;/tmp&quot;);
          file.setFileName(&quot;readme.txt&quot;);
          QDir::setCurrent(&quot;/home&quot;);
-         file.open(QIODevice::ReadOnly);      // opens &quot;/home/readme.txt&quot; under Unix</pre>
+         file.open(QIODevice::ReadOnly);      <span class="comment">// opens &quot;/home/readme.txt&quot; under Unix</span></pre>
 <p>Note that the directory separator &quot;/&quot; works for all operating systems supported by Qt.</p>
 <p>See also <a href="qfile.html#fileName">fileName</a>(), <a href="qfileinfo.html">QFileInfo</a>, and <a href="qdir.html">QDir</a>.</p>
 <a name="//apple_ref/cpp/instm/QFile/setPermissions" />
@@ -472,6 +476,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

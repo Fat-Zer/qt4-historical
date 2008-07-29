@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/tools/assistant/compat/lib/qassistantclient.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/tools/assistant/compat/lib/qassistantclient.cpp -->
 <head>
   <title>Qt 4.4: QAssistantClient Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -81,9 +81,9 @@
              return;
          }
 
-         // show index page
+         <span class="comment">// show index page</span>
          QTextStream str(process);
-         str &lt;&lt; QLatin1String(&quot;SetSource qthelp://mycompany.com/doc/index.html&quot;)
+         str &lt;&lt; QLatin1String(&quot;SetSource qthelp:<span class="comment">//mycompany.com/doc/index.html&quot;)</span>
              &lt;&lt; QLatin1Char('\0') &lt;&lt; endl;
      }</pre>
 <p><i>For a complete example using the Qt Assistant remotely, see the <a href="help-remotecontrol.html">Remote Control</a> example.</i></p>
@@ -98,8 +98,8 @@
 <p>Qt Assistant's documentation set can be altered using the command line arguments that are passed to the application when it is launched. When started without any options, Qt Assistant displays a default set of documentation. When Qt is installed, the default documentation set in Qt Assistant contains the Qt reference documentation as well as the tools that come with Qt, such as <i>Qt Designer</i> and <tt>qmake</tt>.</p>
 <p>Use the <a href="qassistantclient.html#setArguments">setArguments</a>() function to specify the command line arguments. You can add or remove documentation from Qt Assistant by adding and removing the relevant content files: The command line arguments are <tt>-addContentFile file.dcf</tt> and <tt>-removeContentFile file.dcf</tt> respectively. You can make Qt Assistant run customized documentation sets that are separate from the Qt documentation, by specifying a profile: <tt>-profile myapplication.adp</tt>. The profile format can also be used to alter several of Qt Assistant's properties such as its title and startpage.</p>
 <p>The Documentation Content File (<tt>.dcf</tt>) and Qt Assistant Documentation Profile (<tt>.adp</tt>) formats are documented in the <a href="assistant-manual.html">Qt Assistant Manual</a>.</p>
-<p>For a complete example using the QAssistantClient class, see the <a href="assistant-simpletextviewer.html">Simple Text Viewer</a> example. The example shows how you can make Qt Assistant act as a customized help tool for your application using the QAssistantClient class combined with a Qt Assistant Document Profile.</p>
-<p>See also <a href="assistant-manual.html">Qt Assistant Manual</a> and <a href="assistant-simpletextviewer.html">Simple Text Viewer Example</a>.</p>
+<p>For a complete example using the QAssistantClient class, see the Simple Text Viewer example. The example shows how you can make Qt Assistant act as a customized help tool for your application using the QAssistantClient class combined with a Qt Assistant Document Profile.</p>
+<p>See also <a href="assistant-manual.html">Qt Assistant Manual</a> and <a href="help-simpletextviewer.html">Simple Text Viewer Example</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <a name="//apple_ref/cpp/instm/QAssistantClient/isOpen" />
@@ -113,7 +113,7 @@
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QAssistantClient/QAssistantClient" />
 <h3 class="fn"><a name="QAssistantClient"></a>QAssistantClient::QAssistantClient ( const <a href="qstring.html">QString</a> &amp; <i>path</i>, <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs an assistant client with the given <i>parent</i>. The <i>path</i> specifies the path to the Qt Assistant executable. If <i>path</i> is an empty string the system path (<tt>%PATH%</tt> or <tt>$PATH</tt>) is used.</p>
+<p>Constructs an assistant client with the specified <i>parent</i>. For systems other than Mac OS, <i>path</i> specifies the path to the Qt Assistant executable. For Mac OS, <i>path</i> specifies a directory containing a valid assistant.app bundle. If <i>path</i> is the empty string, the system path (<tt>%PATH%</tt> or <tt>$PATH</tt>) is used.</p>
 <a name="//apple_ref/cpp/instm/QAssistantClient/~QAssistantClient" />
 <h3 class="fn"><a name="dtor.QAssistantClient"></a>QAssistantClient::~QAssistantClient ()</h3>
 <p>Destroys the assistant client object.</p>
@@ -141,7 +141,7 @@
 <h3 class="fn"><a name="setArguments"></a>void QAssistantClient::setArguments ( const <a href="qstringlist.html">QStringList</a> &amp; <i>arguments</i> )</h3>
 <p>Sets the command line <i>arguments</i> that are passed to Qt Assistant when it is launched.</p>
 <p>The command line arguments can be used to alter Qt Assistant's documentation set. When started without any options, Qt Assistant displays a default set of documentation. When Qt is installed, the default documentation set in Qt Assistant contains the Qt reference documentation as well as the tools that come with Qt, such as Qt Designer and qmake.</p>
-<p>See also <a href="assistant-manual.html#customizing-qt-assistant">Customizing Qt Assistant</a>.</p>
+<p>See also Customizing Qt Assistant.</p>
 <a name="//apple_ref/cpp/instm/QAssistantClient/showPage" />
 <h3 class="fn"><a name="showPage"></a>void QAssistantClient::showPage ( const <a href="qstring.html">QString</a> &amp; <i>page</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Brings Qt Assistant to the foreground showing the given <i>page</i>. The <i>page</i> parameter is a path to an HTML file (e.g&#x2e;, <a href="qlatin1string.html">QLatin1String</a>(&quot;/home/pasquale/superproduct/docs/html/intro.html&quot;)).</p>
@@ -151,6 +151,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

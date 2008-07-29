@@ -533,6 +533,22 @@ namespace qdesigner_internal
 
         return qname;
     }
+
+    // --------------- UpdateBlocker
+    UpdateBlocker::UpdateBlocker(QWidget *w) :
+        m_widget(w),
+        m_updatesEnabled(w->updatesEnabled())
+    {
+        if (m_updatesEnabled)
+            m_widget->setUpdatesEnabled(false);
+    }
+
+    UpdateBlocker::~UpdateBlocker()
+    {
+        if (m_updatesEnabled)
+            m_widget->setUpdatesEnabled(true);
+    }
+
 } // namespace qdesigner_internal
 
 QT_END_NAMESPACE

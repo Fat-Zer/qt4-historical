@@ -365,7 +365,7 @@ Value FunName::evaluate() const
         node = evaluationContext().node.get();
 
     const AtomicString& prefix = node->prefix();
-    return prefix.isEmpty() ? node->localName().domString() : prefix + ":" + node->localName();
+    return prefix.isEmpty() ? node->localName().domString() : prefix + String(":") + node->localName();
 }
 
 Value FunCount::evaluate() const

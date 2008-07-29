@@ -120,6 +120,7 @@ void QFSFileEnginePrivate::init()
 #ifdef Q_OS_WIN
     fileAttrib = INVALID_FILE_ATTRIBUTES;
     fileHandle = INVALID_HANDLE_VALUE;
+    cachedFd = -1;
 #endif
 #ifdef Q_USE_DEPRECATED_MAP_API
     fileMapHandle = INVALID_HANDLE_VALUE;
@@ -144,6 +145,7 @@ QString QFSFileEnginePrivate::canonicalized(const QString &path)
     QSet<QString> nonSymlinks;
     QSet<QString> known;
 
+    known.insert(path);
     do {
 #ifdef Q_OS_WIN
         // UNC, skip past the first two elements
@@ -154,10 +156,6 @@ QString QFSFileEnginePrivate::canonicalized(const QString &path)
         separatorPos = tmpPath.indexOf(slash, separatorPos + 1);
         QString prefix = separatorPos == -1 ? tmpPath : tmpPath.left(separatorPos);
         if (!nonSymlinks.contains(prefix)) {
-            if (known.contains(prefix))
-                return QString();
-            known.insert(prefix);
-
             fi.setFile(prefix);
             if (fi.isSymLink()) {
                 QString target = fi.symLinkTarget();
@@ -166,8 +164,12 @@ QString QFSFileEnginePrivate::canonicalized(const QString &path)
                         target.append(slash);
                     target.append(tmpPath.mid(separatorPos));
                 }
-                tmpPath = target;
+                tmpPath = QDir::cleanPath(target);
                 separatorPos = 0;
+
+                if (known.contains(tmpPath))
+                    return QString();
+                known.insert(tmpPath);
             } else {
                 nonSymlinks.insert(prefix);
             }

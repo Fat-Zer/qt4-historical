@@ -1470,7 +1470,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
 #endif // QT3_SUPPORT
 #ifndef QT_NO_MAINWINDOW
     case PE_PanelMenuBar:
-        if (widget && qobject_cast<const QMainWindow *>(widget->parentWidget())
+        if ((widget && qobject_cast<const QMainWindow *>(widget->parentWidget()))
 #ifdef QT3_SUPPORT
             || (widget && widget->parentWidget() && widget->parentWidget()->inherits("Q3MainWindow"))
 #endif
@@ -2588,10 +2588,10 @@ void QPlastiqueStyle::drawControl(ControlElement element, const QStyleOption *op
                     m.translate(rect.height(), 0.0);
                     m.rotate(90);
                 }
-                painter->setTransform(m);
+                painter->setTransform(m, true);
             }
 
-            double vc6_workaround = ((bar->progress - qint64(bar->minimum)) / double(qint64(bar->maximum) - qint64(bar->minimum))) * rect.width();
+            double vc6_workaround = ((bar->progress - qint64(bar->minimum)) / qMax(double(1.0), double(qint64(bar->maximum) - qint64(bar->minimum))) * rect.width());
             int progressIndicatorPos = int(vc6_workaround);
 
             bool flip = (!vertical && (((bar->direction == Qt::RightToLeft) && !inverted)
@@ -2652,13 +2652,13 @@ void QPlastiqueStyle::drawControl(ControlElement element, const QStyleOption *op
                 QTransform m;
                 m.translate(rect.height()-1, 0);
                 m.rotate(90.0);
-                painter->setTransform(m);
+                painter->setTransform(m, true);
             }
 
             int maxWidth = rect.width() - 4;
             int minWidth = 4;
             qint64 progress = qMax<qint64>(bar->progress, bar->minimum); // workaround for bug in QProgressBar
-            double vc6_workaround = ((progress - qint64(bar->minimum)) / double(qint64(bar->maximum) - qint64(bar->minimum))) * maxWidth;
+            double vc6_workaround = ((progress - qint64(bar->minimum)) / qMax(double(1.0), double(qint64(bar->maximum) - qint64(bar->minimum))) * maxWidth);
             int width = indeterminate ? maxWidth : qMax(int(vc6_workaround), minWidth);
             bool reverse = (!vertical && (bar->direction == Qt::RightToLeft)) || vertical;
             if (inverted)
@@ -5011,7 +5011,7 @@ QSize QPlastiqueStyle::sizeFromContents(ContentsType type, const QStyleOption *o
     case CT_SpinBox:
         // Make sure the size is odd
         newSize.setHeight(sizeFromContents(CT_LineEdit, option, size, widget).height());
-        newSize.rheight() -= (1 - newSize.rheight() & 1);
+        newSize.rheight() -= ((1 - newSize.rheight()) & 1);
         break;
 #endif
 #ifndef QT_NO_TOOLBUTTON

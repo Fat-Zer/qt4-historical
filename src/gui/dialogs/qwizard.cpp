@@ -3224,10 +3224,12 @@ bool QWizardPage::validatePage()
     The default implementation returns true if all \l{mandatory
     fields} are filled; otherwise, it returns false.
 
-    If you reimplement this function, make sure to emit
-    completeChanged() whenever the value of isComplete() changes, to
-    ensure that QWizard updates the enabled or disabled state of its
-    buttons.
+    If you reimplement this function, make sure to emit completeChanged(),
+    from the rest of your implementation, whenever the value of isComplete()
+    changes. This ensures that QWizard updates the enabled or disabled state of
+    its buttons. An example of the reimplementation is
+    available \l{http://doc.trolltech.com/qq/qq22-qwizard.html#validatebeforeitstoolate}
+    {here}. 
 
     \sa completeChanged(), isFinalPage()
 */

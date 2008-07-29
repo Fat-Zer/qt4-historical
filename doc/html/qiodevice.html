@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/io/qiodevice.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qiodevice.cpp -->
 <head>
   <title>Qt 4.4: QIODevice Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -245,7 +245,7 @@
 <p>See also <a href="qiodevice.html#openMode">openMode</a>() and <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a>.</p>
 <a name="//apple_ref/cpp/instm/QIODevice/open" />
 <h3 class="fn"><a name="open"></a>bool QIODevice::open ( <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>mode</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Opens the device and sets its <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> to <i>mode</i>. Returns true if successful; otherwise returns false.</p>
+<p>Opens the device and sets its <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> to <i>mode</i>. Returns true if successful; otherwise returns false. This function should be called from any reimplementations of open() or other functions that open the device.</p>
 <p>See also <a href="qiodevice.html#openMode">openMode</a>() and <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a>.</p>
 <a name="//apple_ref/cpp/instm/QIODevice/openMode" />
 <h3 class="fn"><a name="openMode"></a><a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> QIODevice::openMode () const</h3>
@@ -324,7 +324,7 @@
              char buf[1024];
              qint64 lineLength = file.readLine(buf, sizeof(buf));
              if (lineLength != -1) {
-                 // the line is available in buf
+                 <span class="comment">// the line is available in buf</span>
              }
          }</pre>
 <p>The newline character ('\n') is included in the buffer. If a newline is not encountered before maxSize - 1 bytes are read, a newline will not be inserted into the buffer. On windows newline characters are replaced with '\n'.</p>
@@ -362,7 +362,7 @@
 <p>See also <a href="qiodevice.html#errorString">errorString</a>().</p>
 <a name="//apple_ref/cpp/instm/QIODevice/setOpenMode" />
 <h3 class="fn"><a name="setOpenMode"></a>void QIODevice::setOpenMode ( <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>openMode</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>Sets the <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> of the device to <i>openMode</i>. Call this function to set the open mode when reimplementing <a href="qiodevice.html#open">open</a>().</p>
+<p>Sets the <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> of the device to <i>openMode</i>. Call this function to set the open mode if the flags change after the device has been opened.</p>
 <p>See also <a href="qiodevice.html#openMode">openMode</a>() and <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a>.</p>
 <a name="//apple_ref/cpp/instm/QIODevice/setTextModeEnabled" />
 <h3 class="fn"><a name="setTextModeEnabled"></a>void QIODevice::setTextModeEnabled ( bool <i>enabled</i> )</h3>
@@ -412,6 +412,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

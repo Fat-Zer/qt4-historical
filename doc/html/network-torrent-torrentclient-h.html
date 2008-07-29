@@ -132,7 +132,7 @@
      void setDumpedState(const QByteArray &amp;dumpedState);
      QByteArray dumpedState() const;
 
-     <span class="comment">//</span> Progress and stats for download feedback.
+     <span class="comment">// Progress and stats for download feedback.</span>
      qint64 progress() const;
      void setDownloadedBytes(qint64 bytes);
      qint64 downloadedBytes() const;
@@ -141,12 +141,12 @@
      int connectedPeerCount() const;
      int seedCount() const;
 
-     <span class="comment">//</span> Accessors for the tracker
+     <span class="comment">// Accessors for the tracker</span>
      QByteArray peerId() const;
      QByteArray infoHash() const;
      quint16 serverPort() const;
 
-     <span class="comment">//</span> State and error.
+     <span class="comment">// State and error.</span>
      State state() const;
      QString stateString() const;
      Error error() const;
@@ -177,13 +177,13 @@
      void timerEvent(QTimerEvent *event);
 
  private slots:
-     <span class="comment">//</span> File management
+     <span class="comment">// File management</span>
      void sendToPeer(int readId, int pieceIndex, int begin, const QByteArray &amp;data);
      void fullVerificationDone();
      void pieceVerified(int pieceIndex, bool ok);
      void handleFileError();
 
-     <span class="comment">//</span> Connection handling
+     <span class="comment">// Connection handling</span>
      void connectToPeers();
      QList&lt;TorrentPeer *&gt; weighedFreePeers() const;
      void setupOutgoingConnection();
@@ -196,7 +196,7 @@
      void peerWireBytesReceived(qint64 bytes);
      int blocksLeftForPiece(const TorrentPiece *piece) const;
 
-     <span class="comment">//</span> Scheduling
+     <span class="comment">// Scheduling</span>
      void scheduleUploads();
      void scheduleDownloads();
      void schedulePieceForClient(PeerWireClient *client);
@@ -205,11 +205,11 @@
      void peerChoked();
      void peerUnchoked();
 
-     <span class="comment">//</span> Tracker handling
+     <span class="comment">// Tracker handling</span>
      void addToPeerList(const QList&lt;TorrentPeer&gt; &amp;peerList);
      void trackerStopped();
 
-     <span class="comment">//</span> Progress
+     <span class="comment">// Progress</span>
      void updateProgress(int progress = -1);
 
  private:
@@ -222,6 +222,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

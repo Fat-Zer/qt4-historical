@@ -62,7 +62,7 @@
 
     \section1 Architecture
 
-    Phonon has tree basic concepts: media objects, sinks, and paths.
+    Phonon has three basic concepts: media objects, sinks, and paths.
     A media object manages a media source, for instance, a music file;
     it provides simple playback control, such as starting, stopping,
     and pausing the playback. A sink outputs the media from Phonon,

@@ -460,7 +460,8 @@ void InnerNode::removeChild( Node *child )
     structure.
 
     This function is only really useful if the class's module has not
-    been defined with an \inmodule command in the documentation.
+    been defined in the header file with a QT_MODULE macro or with an
+    \inmodule command in the documentation.
 */
 QString Node::moduleName() const
 {

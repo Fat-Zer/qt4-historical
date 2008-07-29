@@ -1109,60 +1109,30 @@ void QMacStylePrivate::drawTableHeader(const HIRect &outerBounds,
 
     p->translate(outerBounds.origin.x, outerBounds.origin.y);
 
-    if (QSysInfo::MacintoshVersion < QSysInfo::MV_10_4) {
-        QImage imageBuffer = buffer.toImage();
-        // Draw upper and lower border
-        p->drawImage(QRect(QRect(0, -skipTopBorder, buttonw - framew , frameh_n)), imageBuffer, QRect(framew, 0, 1, frameh_n));
-        p->drawImage(QRect(0, buttonh - frameh_s, buttonw - framew, frameh_s), imageBuffer, QRect(framew, imageBuffer.height() - frameh_s, 1, frameh_s));
-        // Draw upper and lower center blocks
-        p->drawImage(QRect(0, frameh_n - skipTopBorder, buttonw - framew, center - frameh_n + skipTopBorder), imageBuffer, QRect(framew, frameh_n, 1, 1));
-        p->drawImage(QRect(0, center, buttonw - framew, buttonh - center - frameh_s), imageBuffer, QRect(framew, imageBuffer.height() - frameh_s, 1, 1));
-        // Draw right center block borders
-        p->drawImage(QRect(buttonw - framew, frameh_n - skipTopBorder, framew, center - frameh_n), imageBuffer, QRect(imageBuffer.width() - framew, frameh_n, framew, 1));
-        p->drawImage(QRect(buttonw - framew, center, framew, buttonh - center - 1), imageBuffer, QRect(imageBuffer.width() - framew, imageBuffer.height() - frameh_s, framew, 1));
-        // Draw right corners
-        p->drawImage(QRect(buttonw - framew, -skipTopBorder, framew, frameh_n), imageBuffer, QRect(imageBuffer.width() - framew, 0, framew, frameh_n));
-        p->drawImage(QRect(buttonw - framew, buttonh - frameh_s, framew, frameh_s), imageBuffer, QRect(imageBuffer.width() - framew, imageBuffer.height() - frameh_s, framew, frameh_s));
-        // Draw center transition block
-        p->drawImage(QRect(0, center - qRound(transh / 2.0f), buttonw - framew, imageBuffer.height() - frameh_n - frameh_s), imageBuffer, QRect(framew, frameh_n + 1, 1, transh));
-        // Draw right center transition block border
-        p->drawImage(QRect(buttonw - framew, center - qRound(transh / 2.0f), framew, imageBuffer.height() - frameh_n - frameh_s), imageBuffer, QRect(imageBuffer.width() - framew, frameh_n + 1, framew, transh));
-        if (drawLeftBorder){
-            // Draw left center block borders
-            p->drawImage(QRect(0, frameh_n - skipTopBorder, framew, center - frameh_n + skipTopBorder), imageBuffer, QRect(0, frameh_n, framew, 1));
-            p->drawImage(QRect(0, center, framew, buttonh - center - 1), imageBuffer, QRect(0, imageBuffer.height() - frameh_s, framew, 1));
-            // Draw left corners
-            p->drawImage(QRect(0, -skipTopBorder, framew, frameh_n), imageBuffer, QRect(0, 0, framew, frameh_n));
-            p->drawImage(QRect(0, buttonh - frameh_s, framew, frameh_s), imageBuffer, QRect(0, imageBuffer.height() - frameh_s, framew, frameh_s));
-            // Draw left center transition block border
-            p->drawImage(QRect(0, center - qRound(transh / 2.0f), framew, imageBuffer.height() - frameh_n - frameh_s), imageBuffer, QRect(0, frameh_n + 1, framew, transh));
-        }
-    } else {
-        p->drawPixmap(QRect(QRect(0, -skipTopBorder, buttonw - framew , frameh_n)), buffer, QRect(framew, 0, 1, frameh_n));
-        p->drawPixmap(QRect(0, buttonh - frameh_s, buttonw - framew, frameh_s), buffer, QRect(framew, buffer.height() - frameh_s, 1, frameh_s));
-        // Draw upper and lower center blocks
-        p->drawPixmap(QRect(0, frameh_n - skipTopBorder, buttonw - framew, center - frameh_n + skipTopBorder), buffer, QRect(framew, frameh_n, 1, 1));
-        p->drawPixmap(QRect(0, center, buttonw - framew, buttonh - center - frameh_s), buffer, QRect(framew, buffer.height() - frameh_s, 1, 1));
-        // Draw right center block borders
-        p->drawPixmap(QRect(buttonw - framew, frameh_n - skipTopBorder, framew, center - frameh_n), buffer, QRect(buffer.width() - framew, frameh_n, framew, 1));
-        p->drawPixmap(QRect(buttonw - framew, center, framew, buttonh - center - 1), buffer, QRect(buffer.width() - framew, buffer.height() - frameh_s, framew, 1));
-        // Draw right corners
-        p->drawPixmap(QRect(buttonw - framew, -skipTopBorder, framew, frameh_n), buffer, QRect(buffer.width() - framew, 0, framew, frameh_n));
-        p->drawPixmap(QRect(buttonw - framew, buttonh - frameh_s, framew, frameh_s), buffer, QRect(buffer.width() - framew, buffer.height() - frameh_s, framew, frameh_s));
-        // Draw center transition block
-        p->drawPixmap(QRect(0, center - qRound(transh / 2.0f), buttonw - framew, buffer.height() - frameh_n - frameh_s), buffer, QRect(framew, frameh_n + 1, 1, transh));
-        // Draw right center transition block border
-        p->drawPixmap(QRect(buttonw - framew, center - qRound(transh / 2.0f), framew, buffer.height() - frameh_n - frameh_s), buffer, QRect(buffer.width() - framew, frameh_n + 1, framew, transh));
-        if (drawLeftBorder){
-            // Draw left center block borders
-            p->drawPixmap(QRect(0, frameh_n - skipTopBorder, framew, center - frameh_n + skipTopBorder), buffer, QRect(0, frameh_n, framew, 1));
-            p->drawPixmap(QRect(0, center, framew, buttonh - center - 1), buffer, QRect(0, buffer.height() - frameh_s, framew, 1));
-            // Draw left corners
-            p->drawPixmap(QRect(0, -skipTopBorder, framew, frameh_n), buffer, QRect(0, 0, framew, frameh_n));
-            p->drawPixmap(QRect(0, buttonh - frameh_s, framew, frameh_s), buffer, QRect(0, buffer.height() - frameh_s, framew, frameh_s));
-            // Draw left center transition block border
-            p->drawPixmap(QRect(0, center - qRound(transh / 2.0f), framew, buffer.height() - frameh_n - frameh_s), buffer, QRect(0, frameh_n + 1, framew, transh));
-        }
+    p->drawPixmap(QRect(QRect(0, -skipTopBorder, buttonw - framew , frameh_n)), buffer, QRect(framew, 0, 1, frameh_n));
+    p->drawPixmap(QRect(0, buttonh - frameh_s, buttonw - framew, frameh_s), buffer, QRect(framew, buffer.height() - frameh_s, 1, frameh_s));
+    // Draw upper and lower center blocks
+    p->drawPixmap(QRect(0, frameh_n - skipTopBorder, buttonw - framew, center - frameh_n + skipTopBorder), buffer, QRect(framew, frameh_n, 1, 1));
+    p->drawPixmap(QRect(0, center, buttonw - framew, buttonh - center - frameh_s), buffer, QRect(framew, buffer.height() - frameh_s, 1, 1));
+    // Draw right center block borders
+    p->drawPixmap(QRect(buttonw - framew, frameh_n - skipTopBorder, framew, center - frameh_n), buffer, QRect(buffer.width() - framew, frameh_n, framew, 1));
+    p->drawPixmap(QRect(buttonw - framew, center, framew, buttonh - center - 1), buffer, QRect(buffer.width() - framew, buffer.height() - frameh_s, framew, 1));
+    // Draw right corners
+    p->drawPixmap(QRect(buttonw - framew, -skipTopBorder, framew, frameh_n), buffer, QRect(buffer.width() - framew, 0, framew, frameh_n));
+    p->drawPixmap(QRect(buttonw - framew, buttonh - frameh_s, framew, frameh_s), buffer, QRect(buffer.width() - framew, buffer.height() - frameh_s, framew, frameh_s));
+    // Draw center transition block
+    p->drawPixmap(QRect(0, center - qRound(transh / 2.0f), buttonw - framew, buffer.height() - frameh_n - frameh_s), buffer, QRect(framew, frameh_n + 1, 1, transh));
+    // Draw right center transition block border
+    p->drawPixmap(QRect(buttonw - framew, center - qRound(transh / 2.0f), framew, buffer.height() - frameh_n - frameh_s), buffer, QRect(buffer.width() - framew, frameh_n + 1, framew, transh));
+    if (drawLeftBorder){
+        // Draw left center block borders
+        p->drawPixmap(QRect(0, frameh_n - skipTopBorder, framew, center - frameh_n + skipTopBorder), buffer, QRect(0, frameh_n, framew, 1));
+        p->drawPixmap(QRect(0, center, framew, buttonh - center - 1), buffer, QRect(0, buffer.height() - frameh_s, framew, 1));
+        // Draw left corners
+        p->drawPixmap(QRect(0, -skipTopBorder, framew, frameh_n), buffer, QRect(0, 0, framew, frameh_n));
+        p->drawPixmap(QRect(0, buttonh - frameh_s, framew, frameh_s), buffer, QRect(0, buffer.height() - frameh_s, framew, frameh_s));
+        // Draw left center transition block border
+        p->drawPixmap(QRect(0, center - qRound(transh / 2.0f), framew, buffer.height() - frameh_n - frameh_s), buffer, QRect(0, frameh_n + 1, framew, transh));
     }
 
     p->translate(-outerBounds.origin.x, -outerBounds.origin.y);
@@ -1976,6 +1946,18 @@ void QMacStyle::polish(QWidget* w)
             pal.setBrush(QPalette::All, QPalette::Button, background);
             w->setPalette(pal);
             w->setAttribute(Qt::WA_SetPalette, false);
+        }
+    }
+
+    // Adjust the lineedit of the editable combo box 
+    if (QSysInfo::MacintoshVersion == QSysInfo::MV_10_3) {
+        if (QLineEdit *lineEdit = qobject_cast<QLineEdit *>(w)) {
+            if (qobject_cast<QComboBox *>(lineEdit->parentWidget())
+                    && !lineEdit->testAttribute(Qt::WA_SetFont)) {
+                QFont font = lineEdit->font();
+                font.setPointSize(font.pointSize() - 1);
+                lineEdit->setFont(font);
+            }
         }
     }
 
@@ -5545,8 +5527,7 @@ QSize QMacStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
         case CT_PushButton:
             if (const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(opt)) {
                 if (btn->features & QStyleOptionButton::CommandLinkButton) {
-                    QWindowsStyle::sizeFromContents(ct, opt, sz, widget);
-                    break;
+                    return QWindowsStyle::sizeFromContents(ct, opt, sz, widget);
                 }
             }
 

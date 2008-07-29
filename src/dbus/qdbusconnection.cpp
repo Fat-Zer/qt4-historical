@@ -556,6 +556,11 @@ bool QDBusConnection::disconnect(const QString &service, const QString &path, co
     using the \a signature variable. The function will then verify
     that this signature can be delivered to the slot specified by \a
     slot and return false otherwise.
+
+    \note This function verifies that the signal signature matches the
+          slot's parameters, but it does not verify that the actual
+          signal exists with the given signature in the remote
+          service.
 */
 bool QDBusConnection::connect(const QString &service, const QString &path, const QString& interface,
                               const QString &name, const QString &signature,

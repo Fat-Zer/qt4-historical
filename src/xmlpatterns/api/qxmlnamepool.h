@@ -56,12 +56,12 @@ QT_MODULE(XmlPatterns)
 namespace QPatternist
 {
     class NamePool;
-};
+}
 
 namespace QPatternistSDK
 {
     class Global;
-};
+}
 
 class QXmlQueryPrivate;
 class QXmlName;

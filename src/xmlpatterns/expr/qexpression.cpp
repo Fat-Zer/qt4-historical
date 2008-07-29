@@ -262,6 +262,9 @@ Expression::Ptr Expression::constantPropagate(const StaticContext::Ptr &context)
 {
     Q_ASSERT(context);
 
+    /* Optimization: We rewrite literals to literals here, which is pointless.
+     * Maybe we should have a property which says "doesn't disable elimination
+     * but don't eliminate me." */
     if(staticType()->cardinality().allowsMany())
     {
         Item::Iterator::Ptr it(evaluateSequence(context->dynamicContext()));
@@ -279,9 +282,9 @@ Expression::Ptr Expression::constantPropagate(const StaticContext::Ptr &context)
             case 0:
                 return EmptySequence::create(this, context);
             case 1:
-                return Expression::Ptr(new Literal(result.first()));
+                return rewrite(Expression::Ptr(new Literal(result.first())), context);
             default:
-                return Expression::Ptr(new LiteralSequence(result));
+                return rewrite(Expression::Ptr(new LiteralSequence(result)), context);
         }
     }
     else
@@ -289,7 +292,7 @@ Expression::Ptr Expression::constantPropagate(const StaticContext::Ptr &context)
         const Item item(evaluateSingleton(context->dynamicContext()));
 
         if(item)
-            return Expression::Ptr(new Literal(item));
+            return rewrite(Expression::Ptr(new Literal(item)), context);
         else
             return EmptySequence::create(this, context);
     }

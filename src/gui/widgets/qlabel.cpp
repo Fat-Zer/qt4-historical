@@ -106,7 +106,7 @@ QT_BEGIN_NAMESPACE
 
     A QLabel is often used as a label for an interactive widget. For
     this use QLabel provides a useful mechanism for adding an
-    mnemonic (see QKeysequence) that will set the keyboard focus to
+    mnemonic (see QKeySequence) that will set the keyboard focus to
     the other widget (called the QLabel's "buddy"). For example:
     \snippet doc/src/snippets/code/src.gui.widgets.qlabel.cpp 1
 
@@ -701,7 +701,7 @@ int QLabel::heightForWidth(int w) const
 
     Specifies whether QLabel should automatically open links using
     QDesktopServices::openUrl() instead of emitting the
-    anchorClicked() signal.
+    linkActivated() signal.
 
     \bold{Note:} The textInteractionFlags set on the label need to include
     either LinksAccessibleByMouse or LinksAccessibleByKeyboard.
@@ -1082,7 +1082,7 @@ void QLabelPrivate::updateLabel()
     The buddy mechanism is only available for QLabels that contain
     text in which one character is prefixed with an ampersand,
     '&'.  This character is set as the shortcut key. See the \l
-    {QShortcut#mnemonic}{QShortcut} documentation for details (to
+    QKeySequence::mnemonic documentation for details (to
     display an actual ampersand, use '&&').
 
     In a dialog, you might create two data entry widgets and a label

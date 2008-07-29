@@ -76,15 +76,15 @@
 //! [8]
     // squeeze all strings in a QStringList
     QStringList strings = ...;
-    QFuture<void> = QtConcurrent::map(strings, &QString::squeeze());
+    QFuture<void> squeezedStrings = QtConcurrent::map(strings, &QString::squeeze);
 
     // swap the rgb values of all pixels on a list of images
     QList<QImage> images = ...;
-    QFuture<QImage> bgrImages = QtConcurrent::mapped(images, &QImage::rgbSwapped());
+    QFuture<QImage> bgrImages = QtConcurrent::mapped(images, &QImage::rgbSwapped);
 
     // create a set of the lengths of all strings in a list
     QStringList strings = ...;
-    QFuture<QSet<int> > wordLengths = QtConcurrent::mappedReduced(string, &QString::length(), &QSet<int>::insert);
+    QFuture<QSet<int> > wordLengths = QtConcurrent::mappedReduced(string, &QString::length, &QSet<int>::insert);
 //! [8]
 
 
@@ -94,7 +94,7 @@
     // compute the average length of a list of strings
     extern void computeAverage(int &average, int length);
     QStringList strings = ...;
-    QFuture<int> averageWordLength = QtConcurrent::mappedReduced(strings, &QString::length(), computeAverage);
+    QFuture<int> averageWordLength = QtConcurrent::mappedReduced(strings, &QString::length, computeAverage);
 
     // create a set of the color distribution of all images in a list
     extern int colorDistribution(const QImage &string);
@@ -135,7 +135,7 @@
         {
             return image.scaled(m_size, m_size);
         }
- 
+
         int m_size;
     };
 

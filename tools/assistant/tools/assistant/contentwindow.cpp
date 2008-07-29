@@ -64,8 +64,6 @@ ContentWindow::ContentWindow(QHelpEngine *helpEngine)
 	m_contentWidget = m_helpEngine->contentWidget();
 	connect(m_contentWidget, SIGNAL(linkActivated(const QUrl&)),
 		this, SIGNAL(linkActivated(const QUrl&)));
-    connect(m_contentWidget, SIGNAL(clicked(const QModelIndex&)),
-        this, SLOT(itemClicked(const QModelIndex&)));
     layout->setMargin(4);
 	layout->addWidget(m_contentWidget);
 
@@ -76,6 +74,8 @@ ContentWindow::ContentWindow(QHelpEngine *helpEngine)
         qobject_cast<QHelpContentModel*>(m_contentWidget->model());
     connect(contentModel, SIGNAL(contentsCreated()),
         this, SLOT(expandTOC()));
+
+    m_contentWidget->viewport()->installEventFilter(this);
 }
 
 ContentWindow::~ContentWindow()
@@ -119,6 +119,20 @@ void ContentWindow::keyPressEvent(QKeyEvent *e)
     if (e->key() == Qt::Key_Escape)
         MainWindow::activateCurrentCentralWidgetTab();
 }
+
+bool ContentWindow::eventFilter(QObject* o, QEvent *e)
+{
+    if (m_contentWidget && o == m_contentWidget->viewport() && e->type()
+        == QEvent::MouseButtonRelease) {
+        QMouseEvent *me = static_cast<QMouseEvent*>(e);
+        if (m_contentWidget->indexAt(me->pos()).isValid()
+            && me->button() == Qt::LeftButton) {
+                itemClicked(m_contentWidget->currentIndex());
+        }
+    }
+    return QWidget::eventFilter(o,e);
+}        
+
 
 void ContentWindow::showContextMenu(const QPoint &pos)
 {

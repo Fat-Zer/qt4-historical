@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qsplitter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qsplitter.cpp -->
 <head>
   <title>Qt 4.4: QSplitter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -251,9 +251,9 @@
 <p>Displays a rubber band at position <i>pos</i>. If <i>pos</i> is negative, the rubber band is removed.</p>
 <a name="//apple_ref/cpp/instm/QSplitter/setSizes" />
 <h3 class="fn"><a name="setSizes"></a>void QSplitter::setSizes ( const <a href="qlist.html">QList</a>&lt;int&gt; &amp; <i>list</i> )</h3>
-<p>Sets the size parameters to the values given in the <i>list</i>. If the splitter is horizontal, the values set the widths of each widget going from left to right. If the splitter is vertical, the values set the heights of each widget going from top to bottom. Extra values in the <i>list</i> are ignored.</p>
-<p>If <i>list</i> contains too few values, the result is undefined but the program will still be well-behaved.</p>
-<p>The values in <i>list</i> should be the height or width (depending on <a href="qsplitter.html#orientation-prop">orientation</a>()) that the widgets should be resized to. If you specify a size of 0, the widget will be invisible.</p>
+<p>Sets the size parameters to the values given in the <i>list</i>. The available space is divided according to the weights specified in the list.</p>
+<p>If the splitter is horizontal, the values set the widths of each widget, from left to right based on the given weight. If the splitter is vertical, the heights of each widget is set, from top to bottom. Extra values in the <i>list</i> are ignored.</p>
+<p>If <i>list</i> contains too few values, the result is undefined but the program will still be well-behaved. If you specify a size of 0, the widget will be invisible.</p>
 <p>See also <a href="qsplitter.html#sizes">sizes</a>().</p>
 <a name="//apple_ref/cpp/instm/QSplitter/setStretchFactor" />
 <h3 class="fn"><a name="setStretchFactor"></a>void QSplitter::setStretchFactor ( int <i>index</i>, int <i>stretch</i> )</h3>
@@ -289,6 +289,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

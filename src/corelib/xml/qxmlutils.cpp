@@ -261,8 +261,8 @@ bool QXmlUtils::isChar(const QChar c)
     return c.unicode() == 0x0009
            || c.unicode() == 0x000A
            || c.unicode() == 0x000D
-           || c.unicode() >= 0x0020 && c.unicode() <= 0xD7FF
-           || c.unicode() >= 0xE000 && c.unicode() <= 0xFFFD;
+           || (c.unicode() >= 0x0020 && c.unicode() <= 0xD7FF)
+           || (c.unicode() >= 0xE000 && c.unicode() <= 0xFFFD);
 }
 
 /*!
@@ -306,9 +306,9 @@ bool QXmlUtils::isPublicID(const QString &candidate)
     {
         const ushort cp = candidate.at(i).unicode();
 
-        if (cp >= 'a' && cp <= 'z'
-            || cp >= 'A' && cp <= 'Z'
-            || cp >= '0' && cp <= '9')
+        if ((cp >= 'a' && cp <= 'z')
+            || (cp >= 'A' && cp <= 'Z')
+            || (cp >= '0' && cp <= '9'))
         {
             continue;
         }

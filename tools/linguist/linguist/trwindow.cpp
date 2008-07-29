@@ -1850,10 +1850,10 @@ bool TrWindow::danger(const MessageItem *m, bool verbose)
     m_errorsView->clear();
 
     if (m_ui.actionAccelerators->isChecked()) {
-        bool sk = source.contains(Qt::Key_Ampersand);
+        bool sk = !QKeySequence::mnemonic(source).isEmpty();
         bool tk = true;
         for (int i = 0; i < translations.count() && tk; ++i) {
-            tk &= bool(translations[i].contains(Qt::Key_Ampersand));
+            tk &= !QKeySequence::mnemonic(translations[i]).isEmpty();
         }
 
         if (!sk && tk) {

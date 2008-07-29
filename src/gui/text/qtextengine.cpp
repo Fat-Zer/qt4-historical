@@ -61,13 +61,9 @@
 
 QT_BEGIN_NAMESPACE
 
-// ----------------------------------------------------------------------------
-//
-// The BiDi algorithm
-//
-// ----------------------------------------------------------------------------
-
 namespace {
+// Helper class used in QTextEngine::itemize
+// keep it out here to allow us to keep supporting various compilers.
 class Itemizer {
 public:
     Itemizer(const QString &string, const QScriptAnalysis *analysis, QScriptItemArray &items)
@@ -82,6 +78,8 @@ public:
         delete m_splitter;
     }
 
+    /// generate the script items
+    /// The caps parameter is used to choose the algoritm of splitting text and assiging roles to the textitems
     void generate(int start, int length, QFont::Capitalization caps)
     {
         if ((int)caps == (int)QFont::SmallCaps)
@@ -209,6 +207,12 @@ private:
 }
 
 
+// ----------------------------------------------------------------------------
+//
+// The BiDi algorithm
+//
+// ----------------------------------------------------------------------------
+
 #define BIDI_DEBUG 0
 #if (BIDI_DEBUG >= 1)
 QT_BEGIN_INCLUDE_NAMESPACE
@@ -282,7 +286,6 @@ struct QBidiControl {
     unsigned int level;
     bool override;
 };
-
 
 
 static void appendItems(QScriptAnalysis *analysis, int &start, int &stop, const QBidiControl &control, QChar::Direction dir)
@@ -810,30 +813,21 @@ QT_BEGIN_INCLUDE_NAMESPACE
 
 QT_END_INCLUDE_NAMESPACE
 
+// ask the font engine to find out which glyphs (as an index in the specific font) to use for the text in one item.
 static bool stringToGlyphs(HB_ShaperItem *item, HB_Glyph *itemGlyphs, QFontEngine *fontEngine)
 {
     int nGlyphs = item->num_glyphs;
-    QVarLengthArray<QGlyphLayout> qglyphs(nGlyphs);
-    memset(qglyphs.data(), 0, qglyphs.size() * sizeof(QGlyphLayout));
 
     QTextEngine::ShaperFlags shaperFlags(QTextEngine::GlyphIndicesOnly);
     if (item->item.bidiLevel % 2)
         shaperFlags |= QTextEngine::RightToLeft;
 
-    bool result = fontEngine->stringToCMap(reinterpret_cast<const QChar *>(item->string + item->item.pos),
-                                           item->item.length,
-                                           qglyphs.data(), &nGlyphs,
-                                           shaperFlags);
+    bool result = fontEngine->stringToCMap(reinterpret_cast<const QChar *>(item->string + item->item.pos), item->item.length, itemGlyphs, &nGlyphs, shaperFlags);
     item->num_glyphs = nGlyphs;
-    if (!result)
-        return false;
-
-    for (hb_uint32 i = 0; i < item->num_glyphs; ++i)
-        itemGlyphs[i] = qglyphs[i].glyph;
-
-    return true;
+    return result;
 }
 
+// shape all the items that intersect with the line, taking tab widths into account to find out what text actually fits in the line.
 void QTextEngine::shapeLine(const QScriptLine &line)
 {
     QFixed x;
@@ -1105,6 +1099,7 @@ void QTextEngine::shapeTextWithCE(int item) const
 }
 #endif
 
+/// take the item from layoutData->items and 
 void QTextEngine::shapeTextWithHarfbuzz(int item) const
 {
     QScriptItem &si = layoutData->items[item];
@@ -1125,7 +1120,7 @@ void QTextEngine::shapeTextWithHarfbuzz(int item) const
     entire_shaper_item.item.bidiLevel = si.analysis.bidiLevel;
     entire_shaper_item.glyphIndicesPresent = false;
 
-    HB_UChar16 upperCased[256];
+    HB_UChar16 upperCased[256]; // XXX what about making this 4096, so we don't have to extend it ever.
     if (si.analysis.flags == QScriptAnalysis::SmallCaps || si.analysis.flags == QScriptAnalysis::Uppercase
             || si.analysis.flags == QScriptAnalysis::Lowercase) {
         HB_UChar16 *uc = upperCased;
@@ -1163,6 +1158,7 @@ void QTextEngine::shapeTextWithHarfbuzz(int item) const
         }
     }
 
+    // split up the item into parts that come from different font engines.
     QVarLengthArray<int> itemBoundaries(2);
     // k * 2 entries, array[k] == index in string, array[k + 1] == index in glyphs
     itemBoundaries[0] = entire_shaper_item.item.pos;
@@ -1188,7 +1184,8 @@ void QTextEngine::shapeTextWithHarfbuzz(int item) const
 
     int initial_glyph_pos = 0;
     int glyph_pos = 0;
-    for (int k = 0; k < itemBoundaries.size(); k += 2) {
+    // for each item shape using harfbuzz and store the results in our layoutData's glyphs array.
+    for (int k = 0; k < itemBoundaries.size(); k += 2) { // for the +2, see the comment at the definition of itemBoundaries
 
         HB_ShaperItem shaper_item = entire_shaper_item;
 
@@ -1196,7 +1193,7 @@ void QTextEngine::shapeTextWithHarfbuzz(int item) const
         if (k < itemBoundaries.size() - 3) {
             shaper_item.item.length = itemBoundaries[k + 2] - shaper_item.item.pos;
             shaper_item.num_glyphs = itemBoundaries[k + 3] - itemBoundaries[k + 1];
-        } else {
+        } else { // last combo in the list, avoid out of bounds access.
             shaper_item.item.length -= shaper_item.item.pos - entire_shaper_item.item.pos;
             shaper_item.num_glyphs -= itemBoundaries[k + 1];
         }
@@ -1247,10 +1244,11 @@ void QTextEngine::shapeTextWithHarfbuzz(int item) const
 
 //          qDebug("    .. num_glyphs=%d, used=%d, item.num_glyphs=%d", num_glyphs, used, shaper_item.num_glyphs);
 
-        } while (!qShapeItem(&shaper_item));
+        } while (!qShapeItem(&shaper_item)); // this does the actual shaping via harfbuzz.
 
         QGlyphLayout *g = glyphs(&si) + glyph_pos;
 
+        // copy the shaped data into our internal glyphs structure (in LayoutData->glyphPtr)
         for (hb_uint32 i = 0; i < shaper_item.num_glyphs; ++i) {
             g[i].glyph = shaper_item.glyphs[i] | (engineIdx << 24);
             g[i].advance.x = QFixed::fromFixed(shaper_item.advances[i]);
@@ -1589,6 +1587,15 @@ glyph_metrics_t QTextEngine::boundingBox(int from,  int len) const
         if (pos + len > from) {
             if (!si->num_glyphs)
                 shape(i);
+
+            if (si->analysis.flags == QScriptAnalysis::Object) {
+                gm.width += si->width;
+                continue;
+            } else if (si->analysis.flags == QScriptAnalysis::Tab) {
+                gm.width += calculateTabWidth(i, gm.width);
+                continue;
+            }
+
             unsigned short *logClusters = this->logClusters(si);
             QGlyphLayout *glyphs = this->glyphs(si);
 

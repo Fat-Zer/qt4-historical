@@ -70,6 +70,7 @@ TRANSLATOR qdesigner_internal::FormWindow
 #include <spacer_widget_p.h>
 #include <invisible_widget_p.h>
 #include <layoutinfo_p.h>
+#include <qdesigner_objectinspector_p.h>
 #include <connectionedit_p.h>
 #include <actionprovider_p.h>
 #include <ui4_p.h>
@@ -87,6 +88,7 @@ TRANSLATOR qdesigner_internal::FormWindow
 #include <QtCore/QBuffer>
 #include <QtCore/QTimer>
 #include <QtGui/QMenu>
+#include <QtGui/QAction>
 #include <QtGui/QClipboard>
 #include <QtGui/QUndoGroup>
 #include <QtGui/QScrollArea>
@@ -203,6 +205,7 @@ WidgetSelection *FormWindow::Selection::addWidget(FormWindow* fw, QWidget *w)
     WidgetSelection *rc = m_usedSelections.value(w);
     if (rc != 0) {
         rc->show();
+        rc->updateActive();
         return rc;
     }
     // find a free one in the pool
@@ -300,10 +303,10 @@ void FormWindow::Selection::show(QWidget *w)
 // ------------------------ FormWindow
 FormWindow::FormWindow(FormEditor *core, QWidget *parent, Qt::WindowFlags flags) :
     FormWindowBase(parent, flags),
+    m_mouseState(NoMouseState),
     m_core(core),
     m_selection(new Selection),
     m_widgetStack(new FormWindowWidgetStack(this)),
-    m_dblClicked(false),
     m_contextMenuPosition(-1, -1)
 {
     setLayout(m_widgetStack->layout());
@@ -417,7 +420,6 @@ void FormWindow::init()
 
     m_mainContainer = 0;
     m_currentWidget = 0;
-    m_drawRubber = false;
 
     connect(m_commandHistory, SIGNAL(indexChanged(int)), this, SLOT(updateDirty()));
     connect(m_commandHistory, SIGNAL(indexChanged(int)), this, SIGNAL(changed()));
@@ -473,6 +475,7 @@ void FormWindow::setMainContainer(QWidget *w)
     if (QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(core()->extensionManager(), m_mainContainer)) {
         sheet->setVisible(sheet->indexOf(QLatin1String("windowTitle")), true);
         sheet->setVisible(sheet->indexOf(QLatin1String("windowIcon")), true);
+        sheet->setVisible(sheet->indexOf(QLatin1String("windowModality")), true);
         sheet->setVisible(sheet->indexOf(QLatin1String("windowFilePath")), true);
         // ### generalize
     }
@@ -497,9 +500,38 @@ QWidget *FormWindow::findTargetContainer(QWidget *widget) const
     return mainContainer();
 }
 
+static inline void clearObjectInspectorSelection(const QDesignerFormEditorInterface *core)
+{
+    if (QDesignerObjectInspector *oi = qobject_cast<QDesignerObjectInspector *>(core->objectInspector()))
+        oi->clearSelection();
+}
+
+// Find a parent of a desired selection state
+static QWidget *findSelectedParent(QDesignerFormWindowInterface *fw, const QWidget *w, bool selected)
+{
+    const QDesignerFormWindowCursorInterface *cursor = fw->cursor();
+    QWidget *mainContainer = fw->mainContainer();
+    for (QWidget *p = w->parentWidget(); p && p != mainContainer; p = p->parentWidget())
+        if (fw->isManaged(p))
+            if (cursor->isWidgetSelected(p) == selected)
+                return p;
+    return 0;
+}
+
+// Click selection: When clicked within an already
+// selected hierarchy, attempt to select the parent
+void FormWindow::handleClickSelection(QWidget *managedWidget)
+{
+    if (!isWidgetSelected(managedWidget)) {
+        clearSelection(false);
+        selectWidget(managedWidget);
+        raiseChildSelections(managedWidget);
+    }
+}
+
 bool FormWindow::handleMousePressEvent(QWidget * widget, QWidget *managedWidget, QMouseEvent *e)
 {
-    m_dblClicked = false;
+    m_mouseState = NoMouseState;
     m_startPos = QPoint();
     e->accept();
 
@@ -508,46 +540,44 @@ bool FormWindow::handleMousePressEvent(QWidget * widget, QWidget *managedWidget,
     if (core()->formWindowManager()->activeFormWindow() != this)
         core()->formWindowManager()->setActiveFormWindow(this);
 
-    if (e->buttons() != Qt::LeftButton)
+    const Qt::MouseButtons buttons = e->buttons();
+    if (buttons != Qt::LeftButton && buttons != Qt::MidButton)
         return true;
 
     m_startPos = mapFromGlobal(e->globalPos());
 
-    const bool inLayout = LayoutInfo::isWidgetLaidout(m_core, managedWidget);
-
-    const bool selected = isWidgetSelected(managedWidget);
-
     if (debugFormWindow)
-        qDebug() << "handleMousePressEvent:" <<  widget << ',' << managedWidget << " inLayout=" << inLayout << " selected=" << selected;
-    // if the dragged widget is not in a layout, raise it
-    if (inLayout == false) {
-        if (selected)
-            selectWidget(managedWidget, true);
-    }
+        qDebug() << "handleMousePressEvent:" <<  widget << ',' << managedWidget;
 
-    if (isMainContainer(managedWidget) == true) { // press was on the formwindow
+    if (buttons == Qt::MidButton || isMainContainer(managedWidget) == true) { // press was on the formwindow
+        clearObjectInspectorSelection(m_core);  // We might have a toolbar or non-widget selected in the object inspector.
         clearSelection(false);
 
-        m_drawRubber = true;
+        m_mouseState = MouseDrawRubber;
         m_currRect = QRect();
         startRectDraw(mapFromGlobal(e->globalPos()), this, Rubber);
         return true;
     }
+    if (buttons != Qt::LeftButton)
+        return true;
 
+    const bool selected = isWidgetSelected(managedWidget);
     if (e->modifiers() == Qt::ShiftModifier) {
         // shift-click - toggle selection state of widget
         selectWidget(managedWidget, !selected);
         return true;
     }
-
-    QWidget *current = managedWidget;
-
-    if (!selected)
-        clearSelection(false);
-
-    selectWidget(current);
-    raiseChildSelections(current);
-
+    /* Normally, we want to be able to click /select-on-press to drag away
+     * the widget in the next step. However, in the case of a widget which
+     * itself or whose parent is selected, we defer the selection to the
+     * release event.
+     * This is to prevent children being dragged away from layouts
+     * when their layouts are selected and one wants to move the layout. */
+    if (selected || findSelectedParent(this, managedWidget, true)) {
+        m_mouseState = MouseDeferredSelection;
+    } else {
+        handleClickSelection(managedWidget);
+    }
     return true;
 }
 
@@ -572,16 +602,18 @@ static bool canDragWidgetInLayout(const QDesignerFormEditorInterface *core, QWid
 bool FormWindow::handleMouseMoveEvent(QWidget *, QWidget *, QMouseEvent *e)
 {
     e->accept();
-
-    if (e->buttons() != Qt::LeftButton || m_startPos.isNull())
+    if (m_startPos.isNull())
         return true;
 
     const QPoint pos = mapFromGlobal(e->globalPos());
 
-    if (m_drawRubber == true) {
+    if (m_mouseState == MouseDrawRubber) { // Rubber band with left/middle mouse
         continueRectDraw(pos, this, Rubber);
         return true;
     }
+
+    if (e->buttons() != Qt::LeftButton)
+        return true;
 
     const Qt::KeyboardModifiers moveParentModifiers = (Qt::ShiftModifier|Qt::ControlModifier);
     const bool moveParentLayout = moveParentModifiers == (e->modifiers() & moveParentModifiers);
@@ -592,6 +624,7 @@ bool FormWindow::handleMouseMoveEvent(QWidget *, QWidget *, QMouseEvent *e)
         return true;
     }
 
+    m_mouseState = MouseMoveDrag;
     const bool blocked = blockSelectionChanged(true);
 
     QWidgetList sel = selectedWidgets();
@@ -660,28 +693,43 @@ bool FormWindow::handleMouseMoveEvent(QWidget *, QWidget *, QMouseEvent *e)
 
 bool FormWindow::handleMouseReleaseEvent(QWidget *w, QWidget *mw, QMouseEvent *e)
 {
-    if (m_dblClicked) {
-        m_dblClicked = false;
-        return true;
-    }
+    const MouseState oldState = m_mouseState;
+    m_mouseState = NoMouseState;
+
     if (debugFormWindow)
-        qDebug() << "handleMousePressEvent:" << w << ',' << mw;
+        qDebug() << "handleMouseeleaseEvent:" << w << ',' << mw << "state=" << oldState;
+
+    if (oldState == MouseDoubleClicked)
+        return true;
 
     e->accept();
 
-    if (m_drawRubber) { // we were drawing a rubber selection
+    switch (oldState) {
+    case MouseDrawRubber: {  // we were drawing a rubber selection
         endRectDraw(); // get rid of the rectangle
-
         const bool blocked = blockSelectionChanged(true);
         selectWidgets(); // select widgets which intersect the rect
         blockSelectionChanged(blocked);
-
-        m_drawRubber = false;
+    }
+        break;
+    // Deferred select: Select the child here unless the parent was moved.
+    case MouseDeferredSelection:
+        handleClickSelection(mw);
+        break;
+    default:
+        break;
     }
 
     m_startPos = QPoint();
 
-    emitSelectionChanged(); // inform about selection changes
+    switch (e->button()) {
+    case Qt::LeftButton:
+    case Qt::RightButton:
+        emitSelectionChanged(); // inform about selection changes (left or context menu)
+        break;
+    default:
+        break;
+    }
 
     return true;
 }
@@ -867,7 +915,7 @@ void FormWindow::updateSelection(QWidget *w)
 
 QWidget *FormWindow::designerWidget(QWidget *w) const
 {
-    while (w && !isMainContainer(w) && !isManaged(w) || isCentralWidget(w))
+    while ((w && !isMainContainer(w) && !isManaged(w)) || isCentralWidget(w))
         w = w->parentWidget();
 
     return w;
@@ -1328,14 +1376,15 @@ QRect FormWindow::applyValue(const QRect &rect, int val, int key, bool size) con
 void FormWindow::handleArrowKeyEvent(int key, Qt::KeyboardModifiers modifiers)
 {
     bool startMacro = false;
-    QDesignerFormWindowCursorInterface *c = cursor();
+    const QDesignerFormWindowCursorInterface *c = cursor();
     if (!c->hasSelection())
         return;
 
-    QList<QWidget *> selection;
+    QWidgetList selection;
 
     // check if a laid out widget is selected
-    for (int index = 0; index < c->selectedWidgetCount(); ++index) {
+    const int count = c->selectedWidgetCount();
+    for (int index = 0; index < count; ++index) {
         QWidget *w = c->selectedWidget(index);
         if (!LayoutInfo::isWidgetLaidout(m_core, w))
             selection.append(w);
@@ -1556,6 +1605,7 @@ void FormWindow::paste()
 // Construct DomUI from clipboard (paste) and determine number of widgets/actions.
 static inline DomUI *domUIFromClipboard(int *widgetCount, int *actionCount)
 {
+    *widgetCount = *actionCount = 0;
     const QString clipboardText = qApp->clipboard()->text();
     if (clipboardText.isEmpty() || clipboardText.indexOf(QLatin1Char('<')) == -1)
         return 0;
@@ -1878,12 +1928,19 @@ void FormWindow::lowerWidgets()
     endCommand();
 }
 
-bool FormWindow::handleMouseButtonDblClickEvent(QWidget *, QWidget *managedWidget, QMouseEvent *e)
+bool FormWindow::handleMouseButtonDblClickEvent(QWidget *w, QWidget *managedWidget, QMouseEvent *e)
 {
+    if (debugFormWindow)
+        qDebug() << "handleMouseButtonDblClickEvent:" << w << ',' << managedWidget << "state=" << m_mouseState;
+
     e->accept();
 
-    emit activated(managedWidget);
-    m_dblClicked = true;
+    // Might be out of sync due cycling of the parent selection
+    // In that case, do nothing
+    if (isWidgetSelected(managedWidget))
+        emit activated(managedWidget);
+
+    m_mouseState = MouseDoubleClicked;
     return true;
 }
 
@@ -1900,6 +1957,7 @@ QMenu *FormWindow::initializePopupMenu(QWidget *managedWidget)
     const bool selected = isWidgetSelected(managedWidget);
     bool update = false;
     if (selected == false) {
+        clearObjectInspectorSelection(m_core); // We might have a toolbar or non-widget selected in the object inspector.
         clearSelection(false);
         update = trySelectWidget(managedWidget, true);
         raiseChildSelections(managedWidget); // raise selections and select widget
@@ -1955,9 +2013,7 @@ bool FormWindow::handleContextMenu(QWidget *, QWidget *managedWidget, QContextMe
 
 void FormWindow::setContents(QIODevice *dev)
 {
-    const bool saved = updatesEnabled();
-
-    setUpdatesEnabled(false);
+    UpdateBlocker ub(this);
     clearSelection();
     m_selection->clearSelectionPool();
     m_insertedWidgets.clear();
@@ -1971,8 +2027,6 @@ void FormWindow::setContents(QIODevice *dev)
     QWidget *w = r.load(dev, this);
     setMainContainer(w);
     emit changed();
-
-    setUpdatesEnabled(saved);
 }
 
 void FormWindow::setContents(const QString &contents)
@@ -2208,20 +2262,29 @@ void FormWindow::simplifySelection(QWidgetList *sel) const
     // We want to remove those whose parent widget is also in the
     // selection (because the child widgets are contained by
     // their parent, they shouldn't be in the selection --
-    // they are "implicitly" selected)
+    // they are "implicitly" selected).
+    QWidget *mainC = mainContainer(); // Quick check for main container first
+    if (sel->contains(mainC)) {
+        sel->clear();
+        sel->push_back(mainC);
+        return;
+    }
     typedef QVector<QWidget *> WidgetVector;
     WidgetVector toBeRemoved;
     toBeRemoved.reserve(sel->size());
     const QWidgetList::const_iterator scend = sel->constEnd();
     for (QWidgetList::const_iterator it = sel->constBegin(); it != scend; ++it) {
         QWidget *child = *it;
-        QWidget *w = child;
-
-        while (w->parentWidget() && sel->contains(w->parentWidget()))
-            w = w->parentWidget();
-
-        if (w != child)
-            toBeRemoved.append(child);
+        for (QWidget *w = child; true ; ) { // Is any of the parents also selected?
+            QWidget *parent = w->parentWidget();
+            if (!parent || parent == mainC)
+                break;
+            if (sel->contains(parent)) {
+                toBeRemoved.append(child);
+                break;
+            }
+            w = parent;
+         }
     }
     // Now we can actually remove the widgets that were marked
     // for removal in the previous pass.

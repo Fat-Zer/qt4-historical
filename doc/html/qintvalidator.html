@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/widgets/qvalidator.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qvalidator.cpp -->
 <head>
   <title>Qt 4.4: QIntValidator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -62,7 +62,7 @@
 <pre>     QValidator *validator = new QIntValidator(100, 999, this);
      QLineEdit *edit = new QLineEdit(this);
 
-     // the edit lineedit will only accept integers between 100 and 999
+     <span class="comment">// the edit lineedit will only accept integers between 100 and 999</span>
      edit-&gt;setValidator(validator);</pre>
 <p>Below we present some examples of validators. In practice they would normally be associated with a widget as in the example above.</p>
 <pre>     QString str;
@@ -70,23 +70,23 @@
      QIntValidator v(100, 999, this);
 
      str = &quot;1&quot;;
-     v.validate(str, pos);     // returns Intermediate
+     v.validate(str, pos);     <span class="comment">// returns Intermediate</span>
      str = &quot;12&quot;;
-     v.validate(str, pos);     // returns Intermediate
+     v.validate(str, pos);     <span class="comment">// returns Intermediate</span>
 
      str = &quot;123&quot;;
-     v.validate(str, pos);     // returns Acceptable
+     v.validate(str, pos);     <span class="comment">// returns Acceptable</span>
      str = &quot;678&quot;;
-     v.validate(str, pos);     // returns Acceptable
+     v.validate(str, pos);     <span class="comment">// returns Acceptable</span>
 
      str = &quot;1234&quot;;
-     v.validate(str, pos);     // returns Invalid
+     v.validate(str, pos);     <span class="comment">// returns Invalid</span>
      str = &quot;-123&quot;;
-     v.validate(str, pos);     // returns Invalid
+     v.validate(str, pos);     <span class="comment">// returns Invalid</span>
      str = &quot;abc&quot;;
-     v.validate(str, pos);     // returns Invalid
+     v.validate(str, pos);     <span class="comment">// returns Invalid</span>
      str = &quot;12cm&quot;;
-     v.validate(str, pos);     // returns Invalid</pre>
+     v.validate(str, pos);     <span class="comment">// returns Invalid</span></pre>
 <p>The minimum and maximum values are set in one call with <a href="qintvalidator.html#setRange">setRange</a>(), or individually with <a href="qintvalidator.html#bottom-prop">setBottom</a>() and <a href="qintvalidator.html#top-prop">setTop</a>().</p>
 <p>QIntValidator uses its <a href="qvalidator.html#locale">locale</a>() to interpret the number. For example, in Arabic locales, QIntValidator will accept Arabic digits. In addition, QIntValidator is always guaranteed to accept a number formatted according to the &quot;C&quot; locale.</p>
 <p>See also <a href="qdoublevalidator.html">QDoubleValidator</a>, <a href="qregexpvalidator.html">QRegExpValidator</a>, and <a href="widgets-lineedits.html">Line Edits Example</a>.</p>
@@ -132,19 +132,19 @@
 <pre>     int pos = 0;
 
      s = &quot;abc&quot;;
-     v.validate(s, pos);    // returns Invalid
+     v.validate(s, pos);    <span class="comment">// returns Invalid</span>
 
      s = &quot;5&quot;;
-     v.validate(s, pos);    // returns Intermediate
+     v.validate(s, pos);    <span class="comment">// returns Intermediate</span>
 
      s = &quot;50&quot;;
-     v.validate(s, pos);    // returns Acceptable</pre>
+     v.validate(s, pos);    <span class="comment">// returns Acceptable</span></pre>
 <p>By default, the <i>pos</i> parameter is not used by this validator.</p>
 <p>Reimplemented from <a href="qvalidator.html#validate">QValidator</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

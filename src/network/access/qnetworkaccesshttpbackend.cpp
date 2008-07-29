@@ -94,7 +94,7 @@ QNetworkAccessHttpBackendFactory::create(QNetworkAccessManager::Operation op,
     return 0;
 }
 
-static QNetworkReply::NetworkError statusCodeFromHttp(int httpStatusCode)
+static QNetworkReply::NetworkError statusCodeFromHttp(int httpStatusCode, const QUrl &url)
 {
     QNetworkReply::NetworkError code;
     // we've got an error
@@ -123,8 +123,8 @@ static QNetworkReply::NetworkError statusCodeFromHttp(int httpStatusCode)
             // content error we did not handle above
             code = QNetworkReply::UnknownContentError;
         } else {
-            qWarning("QNetworkAccess: got HTTP status code %d which is not expected",
-                     httpStatusCode);
+            qWarning("QNetworkAccess: got HTTP status code %d which is not expected from url: \"%s\"",
+                     httpStatusCode, qPrintable(url.toString()));
             code = QNetworkReply::ProtocolFailure;
         }
     }
@@ -560,7 +560,7 @@ void QNetworkAccessHttpBackend::replyFinished()
         QString msg = QLatin1String(QT_TRANSLATE_NOOP("QNetworkReply",
                                                       "Error downloading %1 - server replied: %2"));
         msg = msg.arg(url().toString(), httpReply->reasonPhrase());
-        error(statusCodeFromHttp(httpReply->statusCode()), msg);
+        error(statusCodeFromHttp(httpReply->statusCode(), httpReply->url()), msg);
     }
     finished();
 }
@@ -593,7 +593,11 @@ void QNetworkAccessHttpBackend::replyHeaderChanged()
         // What do we do about the caching of the HTML note?
         // The response to a 303 MUST NOT be cached, while the response to
         // all of the others is cacheable if the headers indicate it to be
-        redirectionRequested(QUrl::fromEncoded(rawHeader("location")));
+        QByteArray header = rawHeader("location");
+        QUrl url = QUrl::fromEncoded(header);
+        if (!url.isValid())
+            url = QUrl(QLatin1String(header));
+        redirectionRequested(url);
     }
 
     metaDataChanged();

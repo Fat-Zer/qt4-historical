@@ -49,6 +49,7 @@ static const int QGRAPHICSSCENE_INDEXTIMER_TIMEOUT = 2000;
     number of 2D graphical items.
     \since 4.2
     \ingroup multimedia
+    \ingroup graphicsview-api
     \mainclass
 
     The class serves as a container for QGraphicsItems. It is used together
@@ -240,6 +241,9 @@ static const int QGRAPHICSSCENE_INDEXTIMER_TIMEOUT = 2000;
 #include <QtGui/qtooltip.h>
 #include <QtGui/qtransform.h>
 #include <private/qobject_p.h>
+#ifdef Q_WS_X11
+#include <private/qt_x11_p.h>
+#endif
 
 #include <math.h>
 
@@ -462,12 +466,12 @@ void QGraphicsScenePrivate::_q_updateIndex()
             int oldDepth = intmaxlog(lastItemCount);
             depth = intmaxlog(indexedItems.size());
             static const int slack = 100;
-            if (bspTree.leafCount() == 0 || oldDepth != depth && qAbs(lastItemCount - indexedItems.size()) > slack) {
+            if (bspTree.leafCount() == 0 || (oldDepth != depth && qAbs(lastItemCount - indexedItems.size()) > slack)) {
                 // ### Crude algorithm.
                 regenerateIndex = true;
             }
         }
-        
+
         // Regenerate the tree.
         if (regenerateIndex) {
             regenerateIndex = false;
@@ -983,6 +987,9 @@ void QGraphicsScenePrivate::installSceneEventFilter(QGraphicsItem *watched, QGra
 */
 bool QGraphicsScenePrivate::painterStateProtection(const QPainter *painter) const
 {
+    if (!(painter && painter->isActive()))
+        return false;
+
     // Detect if painter state protection is disabled.
     QPaintDevice *device = painter->paintEngine()->paintDevice();
     for (int i = 0; i < views.size(); ++i) {
@@ -1143,7 +1150,7 @@ void QGraphicsScenePrivate::mousePressEventHandler(QGraphicsSceneMouseEvent *mou
                                                 mouseEvent->widget());
     }
 
-    // Find closest window, activate and raise.
+    // Update window activation.
     QGraphicsWidget *newActiveWindow = windowForItem(cachedItemsUnderMouse.value(0));
     if (newActiveWindow != activeWindow)
         q->setActiveWindow(newActiveWindow);
@@ -1847,7 +1854,9 @@ QList<QGraphicsItem *> QGraphicsScene::collidingItems(const QGraphicsItem *item,
     Returns the topmost visible item at the specified \a position, or 0 if
     there are no items at this position.
 
-    \sa items(), collidingItems()
+    \note The topmost item is the one with the highest Z-value.
+
+    \sa items(), collidingItems(), QGraphicsItem::setZValue()
 */
 QGraphicsItem *QGraphicsScene::itemAt(const QPointF &pos) const
 {
@@ -1864,6 +1873,8 @@ QGraphicsItem *QGraphicsScene::itemAt(const QPointF &pos) const
 
     This convenience function is equivalent to calling \c
     {itemAt(QPointF(x, y))}.
+
+    \note The topmost item is the one with the highest Z-value.
 */
 
 /*!
@@ -2559,7 +2570,7 @@ void QGraphicsScene::removeItem(QGraphicsItem *item)
     // Reset the last mouse grabber item
     if (item == d->lastMouseGrabberItem)
         d->lastMouseGrabberItem = 0;
-    
+
     // Reenable selectionChanged() for individual items
     --d->selectionChanging;
 
@@ -2618,16 +2629,6 @@ void QGraphicsScene::setFocusItem(QGraphicsItem *item, Qt::FocusReason focusReas
     }
 
     if (d->focusItem) {
-        if (!item && d->focusItem->isWidget()) {
-            // Update focus child chain.
-            QGraphicsWidget *parent = static_cast<QGraphicsWidget *>(d->focusItem);
-            do {
-                if (parent->d_func()->focusChild != d->focusItem)
-                    break;
-                parent->d_func()->focusChild = 0;
-            } while ((parent = parent->parentWidget()));
-        }
-
         QFocusEvent event(QEvent::FocusOut, focusReason);
         d->lastFocusItem = d->focusItem;
         d->focusItem = 0;
@@ -2637,11 +2638,7 @@ void QGraphicsScene::setFocusItem(QGraphicsItem *item, Qt::FocusReason focusReas
     if (item) {
         if (item->isWidget()) {
             // Update focus child chain.
-            QGraphicsWidget *widget = static_cast<QGraphicsWidget *>(item);
-            QGraphicsWidget *parent = widget;
-            do {
-                parent->d_func()->focusChild = widget;
-            } while ((parent = parent->parentWidget()));
+            static_cast<QGraphicsWidget *>(item)->d_func()->setFocusWidget();
         }
 
         d->focusItem = item;
@@ -2822,6 +2819,7 @@ QVariant QGraphicsScene::inputMethodQuery(Qt::InputMethodQuery query) const
 }
 
 /*!
+    \fn void QGraphicsScene::update(const QRectF &rect)
     Schedules a redraw of the area \a rect on the scene.
 
     \sa sceneRect(), changed()
@@ -2850,10 +2848,11 @@ void QGraphicsScene::update(const QRectF &rect)
 
 /*!
     \fn void QGraphicsScene::update(qreal x, qreal y, qreal w, qreal h)
+    \overload
     \since 4.3
 
-    This convenience function is equivalent to calling update(QRectF(\a x, \a
-    y, \a w, \a h));
+    This function is equivalent to calling update(QRectF(\a x, \a y, \a w,
+    \a h));
 */
 
 /*!
@@ -3017,18 +3016,36 @@ bool QGraphicsScene::event(QEvent *event)
         break;
     case QEvent::WindowActivate: {
         if (!d->activationRefCount++) {
-            QGraphicsItem *nextFocusItem = d->focusItem ? d->focusItem : d->lastFocusItem;
-            if (nextFocusItem && nextFocusItem->isWidget())
-                setActiveWindow(static_cast<QGraphicsWidget *>(nextFocusItem));
-            else if (d->tabFocusFirst) {
-                setActiveWindow(d->tabFocusFirst);
+            // Notify all non-window widgets.
+            foreach (QGraphicsItem *item, items()) {
+                if (item->isWidget() && item->isVisible() && !item->isWindow() && !item->parentWidget()) {
+                    QEvent event(QEvent::WindowActivate);
+                    QApplication::sendEvent(static_cast<QGraphicsWidget *>(item), &event);
+                }
             }
+
+            // Restore window activation.
+            QGraphicsItem *nextFocusItem = d->focusItem ? d->focusItem : d->lastFocusItem;
+            if (nextFocusItem && nextFocusItem->window())
+                setActiveWindow(static_cast<QGraphicsWidget *>(nextFocusItem));
+            else if (d->tabFocusFirst && d->tabFocusFirst->isWindow())
+                setActiveWindow(d->tabFocusFirst);
         }
         break;
     }
     case QEvent::WindowDeactivate: {
-        if (!--d->activationRefCount)
+        if (!--d->activationRefCount) {
+            // Remove window activation.
             setActiveWindow(0);
+
+            // Notify all non-window widgets.
+            foreach (QGraphicsItem *item, items()) {
+                if (item->isWidget() && item->isVisible() && !item->isWindow() && !item->parentWidget()) {
+                    QEvent event(QEvent::WindowDeactivate);
+                    QApplication::sendEvent(static_cast<QGraphicsWidget *>(item), &event);
+                }
+            }
+        }
         break;
     }
     case QEvent::ApplicationFontChange: {
@@ -3047,6 +3064,11 @@ bool QGraphicsScene::event(QEvent *event)
     }
     case QEvent::PaletteChange:
         // Update the entire scene when the palette changes.
+        update();
+        break;
+    case QEvent::StyleChange:
+        // Reresolve all widgets' styles. Update all top-level widgets'
+        // geometries that do not have an explicit style set.
         update();
         break;
     case QEvent::Timer:
@@ -3265,7 +3287,7 @@ void QGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 void QGraphicsScene::focusInEvent(QFocusEvent *focusEvent)
 {
     Q_D(QGraphicsScene);
-    
+
     d->hasFocus = true;
     switch (focusEvent->reason()) {
     case Qt::TabFocusReason:
@@ -3380,7 +3402,7 @@ bool QGraphicsScenePrivate::dispatchHoverEvent(QGraphicsSceneHoverEvent *hoverEv
             break;
         }
     }
-    
+
     // Find the common ancestor item for the new topmost hoverItem and the
     // last item in the hoverItem list.
     QGraphicsItem *commonAncestorItem = (item && !hoverItems.isEmpty()) ? item->commonAncestorItem(hoverItems.last()) : 0;
@@ -3550,9 +3572,10 @@ void QGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     This event handler, for event \a mouseEvent, can be reimplemented
     in a subclass to receive mouse move events for the scene.
 
-    The default implementation depends on the mouse grabber state. If
-    there is a mouse grabber item, the event is sent to the mouse
-    grabber; otherwise, the event is ignored.
+    The default implementation depends on the mouse grabber state. If there is
+    a mouse grabber item, the event is sent to the mouse grabber.  If there
+    are any items that accept hover events at the current position, the event
+    is translated into a hover event and accepted; otherwise it's ignored.
 
     \sa QGraphicsItem::mousePressEvent(), QGraphicsItem::mouseReleaseEvent(),
     QGraphicsItem::mouseDoubleClickEvent(), QGraphicsItem::setAcceptedMouseButtons()
@@ -3769,7 +3792,7 @@ static void _q_paintItem(QGraphicsItem *item, QPainter *painter,
     if (windowOpacity < 1.0)
         painter->setOpacity(oldPainterOpacity * windowOpacity);
 
-    if (widgetItem->isWindow() && widgetItem->windowType() != Qt::Popup && widgetItem->windowType() != Qt::ToolTip 
+    if (widgetItem->isWindow() && widgetItem->windowType() != Qt::Popup && widgetItem->windowType() != Qt::ToolTip
         && !(widgetItem->windowFlags() & Qt::FramelessWindowHint)) {
         // ### Does not respect QGraphicsView::DontSavePainterState.
         painter->save();
@@ -3796,7 +3819,11 @@ void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painte
     QGraphicsItem::CacheMode cacheMode = QGraphicsItem::CacheMode(itemd->cacheMode);
 
     // Render directly, using no cache.
-    if (cacheMode == QGraphicsItem::NoCache) {
+    if (cacheMode == QGraphicsItem::NoCache
+#ifdef Q_WS_X11
+        || !X11->use_xrender
+#endif
+        ) {
         _q_paintItem(static_cast<QGraphicsWidget *>(item), painter, option, widget, true);
         return;
     }
@@ -3829,7 +3856,7 @@ void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painte
             pix.fill(Qt::transparent);
             exposed = brect;
         }
-        
+
         // Check for newly invalidated areas.
         if (!exposed.isNull()) {
             itemd->unsetExtra(QGraphicsItemPrivate::ExtraInvalidateRect);
@@ -3839,8 +3866,8 @@ void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painte
 
             QPainter pixmapPainter(&pix);
             // Fit the item's bounding rect into the pixmap's coordinates.
-	    pixmapPainter.setRenderHints(pixmapPainter.renderHints(), false);
-	    pixmapPainter.setRenderHints(painter->renderHints(), true);
+            pixmapPainter.setRenderHints(pixmapPainter.renderHints(), false);
+            pixmapPainter.setRenderHints(painter->renderHints(), true);
             pixmapPainter.scale(pix.width() / brect.width(),
                                 pix.height() / brect.height());
             pixmapPainter.translate(-brect.topLeft());
@@ -4033,6 +4060,8 @@ void QGraphicsScene::drawItems(QPainter *painter,
 }
 
 /*!
+    \since 4.4
+
     Finds a new widget to give the keyboard focus to, as appropriate for Tab
     and Shift+Tab, and returns true if it can find a new widget, or false if
     it cannot. If \a next is true, this function searches forward; if \a next
@@ -4042,7 +4071,6 @@ void QGraphicsScene::drawItems(QPainter *painter,
     provide fine-grained control over how tab focus passes inside your
     scene. The default implementation is based on the tab focus chain defined
     by QGraphicsWidget::setTabOrder().
-    
 */
 bool QGraphicsScene::focusNextPrevChild(bool next)
 {
@@ -4194,6 +4222,8 @@ void QGraphicsScene::itemUpdated(QGraphicsItem *item, const QRectF &rect)
 }
 
 /*!
+    \since 4.4
+
     Returns the scene's style, or the same as QApplication::style() if the
     scene has not been explicitly assigned a style.
 
@@ -4208,15 +4238,17 @@ QStyle *QGraphicsScene::style() const
 
 /*!
     \since 4.4
-    Sets the style of the scene to \a style. The scene's style defaults to
-    QApplication::style(), and serves as the default for all QGraphicsWidget
-    items in the scene.
+
+    Sets or replaces the style of the scene to \a style, and reparents the
+    style to this scene. Any previously assigned style is deleted. The scene's
+    style defaults to QApplication::style(), and serves as the default for all
+    QGraphicsWidget items in the scene.
 
     Changing the style, either directly by calling this function, or
     indirectly by calling QApplication::setStyle(), will automatically update
     the style for all widgets in the scene that do not have a style explicitly
     assigned to them.
-    
+
     If \a style is 0, QGraphicsScene will revert to QApplication::style().
 
     \sa style()
@@ -4227,14 +4259,29 @@ void QGraphicsScene::setStyle(QStyle *style)
     // ### This function, and the use of styles in general, is non-reentrant.
     if (style == d->style)
         return;
+
+    // Delete the old style,
     delete d->style;
-    d->style = style;
-    d->style->setParent(this);
-    update();
+    if ((d->style = style))
+        d->style->setParent(this);
+
+    // Notify the scene.
+    QEvent event(QEvent::StyleChange);
+    QApplication::sendEvent(this, &event);
+
+    // Notify all widgets that don't have a style explicitly set.
+    foreach (QGraphicsItem *item, items()) {
+        if (item->isWidget()) {
+            QGraphicsWidget *widget = static_cast<QGraphicsWidget *>(item);
+            if (!widget->testAttribute(Qt::WA_SetStyle))
+                QApplication::sendEvent(widget, &event);
+        }
+    }
 }
 
 /*!
     \property QGraphicsScene::font
+    \since 4.4
     \brief the scene's default font
 
     This property provides the scene's font. The scene font defaults to,
@@ -4289,6 +4336,7 @@ void QGraphicsScene::setFont(const QFont &font)
 
 /*!
     \property QGraphicsScene::palette
+    \since 4.4
     \brief the scene's default palette
 
     This property provides the scene's palette. The scene palette defaults to,
@@ -4342,6 +4390,8 @@ void QGraphicsScene::setPalette(const QPalette &palette)
 }
 
 /*!
+    \since 4.4
+
     Returns the current active window, or 0 if there is no window is currently
     active.
 
@@ -4364,50 +4414,59 @@ QGraphicsWidget *QGraphicsScene::activeWindow() const
 void QGraphicsScene::setActiveWindow(QGraphicsWidget *widget)
 {
     Q_D(QGraphicsScene);
-    if (widget == d->activeWindow)
-        return;
     if (widget && widget->scene() != this) {
         qWarning("QGraphicsScene::setActiveWindow: widget %p must be part of this scene",
                  widget);
         return;
     }
 
-    // Deactivate
+    // Activate the widget's window.
+    QGraphicsWidget *window = widget ? widget->window() : 0;
+    if (window == d->activeWindow)
+        return;
+
+    // Deactivate the last active window.
     if (d->activeWindow) {
+        if (QGraphicsWidget *fw = d->activeWindow->focusWidget()) {
+            // Remove focus from the current focus item.
+            if (fw == focusItem())
+                setFocusItem(0, Qt::ActiveWindowFocusReason);
+        }
+
         QEvent event(QEvent::WindowDeactivate);
         QApplication::sendEvent(d->activeWindow, &event);
     }
 
     // Update activate state.
-    d->activeWindow = widget;
+    d->activeWindow = window;
     QEvent event(QEvent::ActivationChange);
     QApplication::sendEvent(this, &event);
 
     // Activate
-    if (widget) {
+    if (window) {
         QEvent event(QEvent::WindowActivate);
-        QApplication::sendEvent(widget, &event);
+        QApplication::sendEvent(window, &event);
 
         QList<QGraphicsItem *> siblingWindows;
-        QGraphicsItem *parent = widget->parentItem();
+        QGraphicsItem *parent = window->parentItem();
         // Raise ### inefficient for toplevels
         foreach (QGraphicsItem *sibling, parent ? parent->children() : items()) {
-            if (sibling != widget && sibling->isWidget()
+            if (sibling != window && sibling->isWidget()
                 && static_cast<QGraphicsWidget *>(sibling)->isWindow()) {
                 siblingWindows << sibling;
             }
         }
 
         // Find the highest z value.
-        qreal z = widget->zValue();
+        qreal z = window->zValue();
         for (int i = 0; i < siblingWindows.size(); ++i)
             z = qMax(z, siblingWindows.at(i)->zValue());
-        
+
         // This will probably never overflow.
         const qreal litt = 0.001;
-        widget->setZValue(z + litt);
+        window->setZValue(z + litt);
 
-        if (QGraphicsWidget *focusChild = widget->focusWidget())
+        if (QGraphicsWidget *focusChild = window->focusWidget())
             focusChild->setFocus(Qt::ActiveWindowFocusReason);
     }
 }

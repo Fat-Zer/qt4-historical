@@ -2846,7 +2846,7 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
                                 ++lh;
                             linebot = y + lh / 2;
                             if (child.features & QStyleOptionQ3ListViewItem::Expandable
-                                || child.childCount > 0 && child.height > 0) {
+                                || (child.childCount > 0 && child.height > 0)) {
                                 // needs a box
                                 p->setPen(lv->palette.mid().color());
                                 p->drawRect(bx - 4, linebot - 4, 8, 8);
@@ -3033,11 +3033,12 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
             PrimitiveElement pe;
             bool enabled = opt->state & State_Enabled;
             if (sb->frame && (sb->subControls & SC_SpinBoxFrame)) {
+                QBrush editBrush = sb->palette.brush(QPalette::Base);
                 QRect r = subControlRect(CC_SpinBox, sb, SC_SpinBoxFrame, widget);
                 QPalette shadePal = sb->palette;
                 if (use2000style)
                     shadePal.setColor(QPalette::Midlight, shadePal.button().color());
-                qDrawWinPanel(p, r, shadePal, true);
+                qDrawWinPanel(p, r, shadePal, true, &editBrush);
             }
 
             QPalette shadePal(opt->palette);

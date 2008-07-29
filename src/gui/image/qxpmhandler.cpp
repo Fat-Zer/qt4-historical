@@ -1019,8 +1019,8 @@ static bool read_xpm_body(
         for (int i = state.size() - 1; i >= 0; --i)
             device->ungetChar(state[i]);
         char c;
-        while (device->getChar(&c) && c != ';');
-        while (device->getChar(&c) && c != '\n');
+        while (device->getChar(&c) && c != ';') {}
+        while (device->getChar(&c) && c != '\n') {}
     }
     return true;
 }

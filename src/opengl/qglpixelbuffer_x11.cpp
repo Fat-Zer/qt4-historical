@@ -113,7 +113,8 @@ static bool qt_resolve_pbuffer_extensions()
         qt_glXGetFBConfigAttrib = (_glXGetFBConfigAttrib) dlsym(handle, "glXGetFBConfigAttrib");
         qt_glXMakeContextCurrent = (_glXMakeContextCurrent) dlsym(handle, "glXMakeContextCurrent");
         dlclose(handle);
-    } else
+    }
+    if (!qt_glXChooseFBConfig)
 #endif
     {
         extern const QString qt_gl_library_name();

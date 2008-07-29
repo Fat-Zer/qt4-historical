@@ -379,12 +379,12 @@ QIcon QFileIconProvider::icon(const QFileInfo &info) const
 #else
     return d->getIcon(QStyle::SP_DriveHDIcon);
 #endif
-    if (info.isFile())
+    if (info.isFile()) {
         if (info.isSymLink())
             return d->getIcon(QStyle::SP_FileLinkIcon);
-        else {
+        else
             return d->getIcon(QStyle::SP_FileIcon);
-  }
+    }
   if (info.isDir()) {
     if (info.isSymLink()) {
       return d->getIcon(QStyle::SP_DirLinkIcon);

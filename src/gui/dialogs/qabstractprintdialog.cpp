@@ -90,7 +90,7 @@ QT_BEGIN_NAMESPACE
     printing \bold session and not which particular dialog should be a sheet
     or not.  Therefore, make sure this value matches between the page setup
     dialog and the print dialog or you can potentially end up in a modal loop that you can't break.
-    \value PrintShowPageSize  Show the page size + margings page only if this is enabled.
+    \value PrintShowPageSize  Show the page size + margins page only if this is enabled.
 */
 
 /*!

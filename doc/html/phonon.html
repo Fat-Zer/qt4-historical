@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon.qdoc -->
 <head>
   <title>Qt 4.4: Phonon Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -30,6 +30,7 @@
 <li><div class="fn"/>class <b><a href="phonon-effectparameter.html">EffectParameter</a></b></li>
 <li><div class="fn"/>class <b><a href="phonon-effectwidget.html">EffectWidget</a></b></li>
 <li><div class="fn"/>class <b><a href="phonon-globalconfig.html">GlobalConfig</a></b></li>
+<li><div class="fn"/>class <b><a href="phonon-mediacontroller.html">MediaController</a></b></li>
 <li><div class="fn"/>class <b><a href="phonon-medianode.html">MediaNode</a></b></li>
 <li><div class="fn"/>class <b><a href="phonon-mediaobject.html">MediaObject</a></b></li>
 <li><div class="fn"/>class <b><a href="phonon-mediasource.html">MediaSource</a></b></li>
@@ -82,10 +83,11 @@
 <h3> class <a href="phonon-effect.html">Effect</a></h3><p>The Effect class is used to transform audio streams. <a href="phonon-effect.html#details">More...</a></p>
 <h3> class <a href="phonon-effectparameter.html">EffectParameter</a></h3><p>The EffectParameter class describes one parameter of an effect. <a href="phonon-effectparameter.html#details">More...</a></p>
 <h3> class <a href="phonon-effectwidget.html">EffectWidget</a></h3><p>The EffectWidget class provides a widget to control the parameters of an Effect. <a href="phonon-effectwidget.html#details">More...</a></p>
-<h3> class <a href="phonon-globalconfig.html">GlobalConfig</a></h3><h3> class <a href="phonon-medianode.html">MediaNode</a></h3><p>The MediaNode class is the base class for all nodes in a media graph. <a href="phonon-medianode.html#details">More...</a></p>
+<h3> class <a href="phonon-globalconfig.html">GlobalConfig</a></h3><h3> class <a href="phonon-mediacontroller.html">MediaController</a></h3><p>The MediaController class controls optional features of a media file/device. <a href="phonon-mediacontroller.html#details">More...</a></p>
+<h3> class <a href="phonon-medianode.html">MediaNode</a></h3><p>The MediaNode class is the base class for all nodes in a media graph. <a href="phonon-medianode.html#details">More...</a></p>
 <h3> class <a href="phonon-mediaobject.html">MediaObject</a></h3><p>The MediaObject class provides an interface for media playback. <a href="phonon-mediaobject.html#details">More...</a></p>
 <h3> class <a href="phonon-mediasource.html">MediaSource</a></h3><p>The MediaSource class provides multimedia data for media objects. <a href="phonon-mediasource.html#details">More...</a></p>
-<h3> class <a href="phonon-objectdescription.html">ObjectDescription</a></h3><p>The Phonon::ObjectDescription class provides a generic interface to information about Phonon objects. <b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt; <a href="phonon-objectdescription.html#details">More...</a></p>
+<h3> class <a href="phonon-objectdescription.html">ObjectDescription</a></h3><p>The ObjectDescription class provides a generic interface to information about Phonon objects. <b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt; <a href="phonon-objectdescription.html#details">More...</a></p>
 <h3> class <a href="phonon-path.html">Path</a></h3><p>The Path class describes connections between media nodes. <a href="phonon-path.html#details">More...</a></p>
 <h3> class <a href="phonon-seekslider.html">SeekSlider</a></h3><p>The SeekSlider class provides a slider for seeking to positions in media streams. <a href="phonon-seekslider.html#details">More...</a></p>
 <h3> class <a href="phonon-videoplayer.html">VideoPlayer</a></h3><p>The VideoPlayer widget is used to perform playback of video. <a href="phonon-videoplayer.html#details">More...</a></p>
@@ -97,7 +99,8 @@
 <h3 class="fn"><a name="AudioOutputDevice-typedef"></a>typedef Phonon::AudioOutputDevice</h3>
 <p>This typedef of <a href="phonon-objectdescription.html">ObjectDescription</a> describes an audio output device, such as soundcards (with different drivers), sound servers, or other virtual outputs like playback on a different computer on the network.</p>
 <p>A list of available devices is given by the backend with Backendcapabilities::availableAudioOutputDevices()</p>
-<pre></pre>
+<pre>     QList&lt;Phonon::AudioOutputDevice&gt; audioOutputDevices =
+             Phonon::BackendCapabilities::availableAudioOutputDevices();</pre>
 <a name="//apple_ref/cpp/tdef/Phonon/AudioOutputDeviceModel" />
 <h3 class="fn"><a name="AudioOutputDeviceModel-typedef"></a>typedef Phonon::AudioOutputDeviceModel</h3>
 <p>provides an item view model containing available audio output devices.</p>
@@ -235,6 +238,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

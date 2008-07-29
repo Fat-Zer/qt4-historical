@@ -316,20 +316,25 @@ void **QListData::erase(void **xi)
 
 
     Internally, QList\<T\> is represented as an array of pointers to
-    items. (Exceptionally, if T is itself a pointer type or a basic
-    type that is no larger than a pointer, or if T is one of Qt's
-    \l{shared classes}, then QList\<T\> stores the items directly in
-    the pointer array.) For lists under a thousand items, this
-    representation allows for very fast insertions in the middle, in
-    addition to instantaneous index-based access. Furthermore,
-    operations like prepend() and append() are very fast, because
-    QList preallocates memory at both ends of its internal array. (See
-    \l{Algorithmic Complexity} for details.) Note, however, that for
-    unshared list items that are larger than a pointer, each append or
-    insert of a new item requires allocating the new item on the heap,
-    and this per item allocation might make QVector a better choice in
-    cases that do lots of appending or inserting, since QVector
-    allocates memory for its items in a single heap allocation.
+    items of type T. If T is itself a pointer type or a basic type
+    that is no larger than a pointer, or if T is one of Qt's \l{shared
+    classes}, then QList\<T\> stores the items directly in the pointer
+    array. For lists under a thousand items, this array representation
+    allows for very fast insertions in the middle, and it allows
+    index-based access. Furthermore, operations like prepend() and
+    append() are very fast, because QList preallocates memory at both
+    ends of its internal array. (See \l{Algorithmic Complexity} for
+    details.) Note, however, that for unshared list items that are
+    larger than a pointer, each append or insert of a new item
+    requires allocating the new item on the heap, and this per item
+    allocation might make QVector a better choice in cases that do
+    lots of appending or inserting, since QVector allocates memory for
+    its items in a single heap allocation.
+
+    Note that the internal array only ever gets bigger over the life
+    of the list. It never shrinks. The internal array is deallocated
+    by the destructor and by the assignment operator, when one list
+    is assigned to another.
 
     Here's an example of a QList that stores integers and
     a QList that stores QDate values:
@@ -405,14 +410,13 @@ void **QListData::erase(void **xi)
     Like the other container classes, QList provides \l{Java-style
     iterators} (QListIterator and QMutableListIterator) and
     \l{STL-style iterators} (QList::const_iterator and
-    QList::iterator). In practice, these are rarely used, because
-    you can use indexes into the QList. QList is implemented in such
-    a way that direct index-based access is just as fast as using
-    iterators.
+    QList::iterator). In practice, these are rarely used, because you
+    can use indexes into the QList. QList is implemented in such a way
+    that direct index-based access is just as fast as using iterators.
 
-    QList does \e not support inserting, prepending, appending or replacing
-    with references to its own values. Doing so will cause your application to
-    abort with an error message.
+    QList does \e not support inserting, prepending, appending or
+    replacing with references to its own values. Doing so will cause
+    your application to abort with an error message.
 
     To make QList as efficient as possible, its member functions don't
     validate their input before using it. Except for isEmpty(), member
@@ -646,6 +650,7 @@ void **QListData::erase(void **xi)
 
 /*!
     \fn bool QList::removeOne(const T &value)
+    \since 4.4
 
     Removes the first occurrence of \a value in the list and returns
     true on success; otherwise returns false.
@@ -680,9 +685,8 @@ void **QListData::erase(void **xi)
 /*! \fn T QList::takeFirst()
 
     Removes the first item in the list and returns it. This is the
-    same as takeAt(0). This is the same as takeAt(size() - 1). This
-    function assumes the list is not empty. To avoid failure, call
-    isEmpty() before calling this function.
+    same as takeAt(0). This function assumes the list is not empty. To
+    avoid failure, call isEmpty() before calling this function.
 
     This operation is very fast (\l{constant time}), because QList
     preallocates extra space on both sides of its internal buffer to

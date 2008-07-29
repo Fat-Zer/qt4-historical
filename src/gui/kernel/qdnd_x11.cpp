@@ -842,7 +842,7 @@ static void handle_xdnd_position(QWidget *w, const XEvent * xe, bool passive)
     if (!passive && checkEmbedded(c, xe))
         return;
 
-    if (!c || !c->acceptDrops() && (c->windowType() == Qt::Desktop))
+    if (!c || (!c->acceptDrops() && (c->windowType() == Qt::Desktop)))
         return;
 
     if (l[0] != qt_xdnd_dragsource_xid) {
@@ -850,9 +850,14 @@ static void handle_xdnd_position(QWidget *w, const XEvent * xe, bool passive)
         return;
     }
 
+    // timestamp from the source
     if (l[3] != 0) {
-        // timestamp from the source
-        qt_xdnd_target_current_time = X11->userTime = l[3];
+        // Some X server/client combination swallow the first 32 bit and
+        // interpret a set bit 31 as negative sign.
+        qt_xdnd_target_current_time = X11->userTime =
+            ((sizeof(Time) == 8 && xe->xclient.data.l[3] < 0)
+             ? uint(l[3])
+             : l[3]);
     }
 
     QDragManager *manager = QDragManager::self();
@@ -1129,9 +1134,14 @@ void QX11Data::xdndHandleDrop(QWidget *, const XEvent * xe, bool passive)
         return;
     }
 
+    // update the "user time" from the timestamp in the event.
     if (l[2] != 0) {
-        // update the "user time" from the timestamp in the event.
-        qt_xdnd_target_current_time = X11->userTime = l[2];
+        // Some X server/client combination swallow the first 32 bit and
+        // interpret a set bit 31 as negative sign.
+        qt_xdnd_target_current_time = X11->userTime =
+            ((sizeof(Time) == 8 && xe->xclient.data.l[2] < 0)
+             ? uint(l[2])
+             :  l[2]);
     }
 
     if (!passive) {
@@ -1700,21 +1710,22 @@ void QDragManager::drop()
 
 bool QX11Data::xdndHandleBadwindow()
 {
-    QDragManager *manager = QDragManager::self();
-    if (manager->object && qt_xdnd_current_target) {
-        qt_xdnd_current_target = 0;
-        qt_xdnd_current_proxy_target = 0;
-        manager->object->deleteLater();
-        manager->object = 0;
-        delete xdnd_data.deco;
-        xdnd_data.deco = 0;
-        return true;
+    if (qt_xdnd_current_target) {
+        QDragManager *manager = QDragManager::self();
+        if (manager->object) {
+            qt_xdnd_current_target = 0;
+            qt_xdnd_current_proxy_target = 0;
+            manager->object->deleteLater();
+            manager->object = 0;
+            delete xdnd_data.deco;
+            xdnd_data.deco = 0;
+            return true;
+        }
     }
     if (qt_xdnd_dragsource_xid) {
         qt_xdnd_dragsource_xid = 0;
         if (qt_xdnd_current_widget) {
-            QDragLeaveEvent e;
-            QApplication::sendEvent(qt_xdnd_current_widget, &e);
+            QApplication::postEvent(qt_xdnd_current_widget, new QDragLeaveEvent);
             qt_xdnd_current_widget = 0;
         }
         return true;

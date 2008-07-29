@@ -198,7 +198,7 @@
  {
      Q_UNUSED(rect);
 
-     <span class="comment">//</span> Shadow
+     <span class="comment">// Shadow</span>
      QRectF sceneRect = this-&gt;sceneRect();
      QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
      QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
@@ -207,7 +207,7 @@
      if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
          painter-&gt;fillRect(bottomShadow, Qt::darkGray);
 
-     <span class="comment">//</span> Fill
+     <span class="comment">// Fill</span>
      QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
      gradient.setColorAt(0, Qt::white);
      gradient.setColorAt(1, Qt::lightGray);
@@ -215,7 +215,7 @@
      painter-&gt;setBrush(Qt::NoBrush);
      painter-&gt;drawRect(sceneRect);
 
-     <span class="comment">//</span> Text
+     <span class="comment">// Text</span>
      QRectF textRect(sceneRect.left() + 4, sceneRect.top() + 4,
                      sceneRect.width() - 4, sceneRect.height() - 4);
      QString message(tr(&quot;Click and drag the nodes around, and zoom with the mouse &quot;
@@ -243,6 +243,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

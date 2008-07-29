@@ -2771,9 +2771,9 @@ void Q3Table::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
             Q3TableItem *itm = item(r, c);
             if (itm &&
                  (itm->colSpan() > 1 || itm->rowSpan() > 1)) {
-                bool goon = r == itm->row() && c == itm->col() ||
-                        r == rowfirst && c == itm->col() ||
-                        r == itm->row() && c == colfirst;
+                bool goon = (r == itm->row() && c == itm->col())
+                            || (r == rowfirst && c == itm->col())
+                            || (r == itm->row() && c == colfirst);
                 if (!goon)
                     continue;
                 rowp = rowPos(itm->row());
@@ -3631,7 +3631,7 @@ void Q3Table::contentsMousePressEventEx(QMouseEvent* e)
     } else if ((e->state() & ControlButton) == ControlButton) {
         setCurrentCell(tmpRow, tmpCol, false, true);
         if (selMode != NoSelection) {
-            if (selMode == Single || selMode == SingleRow && !isSelected(tmpRow, tmpCol, false))
+            if (selMode == Single || (selMode == SingleRow && !isSelected(tmpRow, tmpCol, false)))
                 clearSelection();
             if (!(selMode == SingleRow && isSelected(tmpRow, tmpCol, false))) {
                 currentSel = new Q3TableSelection();
@@ -3979,7 +3979,7 @@ bool Q3Table::eventFilter(QObject *o, QEvent *e)
             }
 
             if ((edMode == Replacing ||
-                   itm && itm->editType() == Q3TableItem::WhenCurrent) &&
+                   (itm && itm->editType() == Q3TableItem::WhenCurrent)) &&
                  (ke->key() == Key_Up || ke->key() == Key_Prior ||
                    ke->key() == Key_Home || ke->key() == Key_Down ||
                    ke->key() == Key_Next || ke->key() == Key_End ||
@@ -4174,7 +4174,7 @@ void Q3Table::keyPressEvent(QKeyEvent* e)
                 QWidget *w = beginEdit(tmpRow, tmpCol,
                                         itm ? itm->isReplaceable() : true);
                 if (w) {
-                    setEditMode((!itm || itm && itm->isReplaceable()
+                    setEditMode((!itm || (itm && itm->isReplaceable())
                                    ? Replacing : Editing), tmpRow, tmpCol);
                     QApplication::sendEvent(w, e);
                     return;
@@ -4673,7 +4673,7 @@ QRect Q3Table::cellGeometry(int row, int col) const
 {
     Q3TableItem *itm = item(row, col);
 
-    if (!itm || itm->rowSpan() == 1 && itm->colSpan() == 1)
+    if (!itm || (itm->rowSpan() == 1 && itm->colSpan() == 1))
         return QRect(columnPos(col), rowPos(row),
                       columnWidth(col), rowHeight(row));
 
@@ -5437,10 +5437,10 @@ void Q3Table::activateNextCell()
         firstCol++;
     int nextRow = curRow;
     int nextCol = curCol;
-    while (d->hiddenRows.find(++nextRow));
+    while (d->hiddenRows.find(++nextRow)) {}
     if (nextRow >= numRows()) {
         nextRow = firstRow;
-        while (d->hiddenCols.find(++nextCol));
+        while (d->hiddenCols.find(++nextCol)) {}
         if (nextCol >= numCols())
             nextCol = firstCol;
     }
@@ -6661,8 +6661,8 @@ void Q3TableHeader::paintEvent(QPaintEvent *e)
         }
         paintSection(&p, i, r);
         p.restore();
-        if (orientation() == Horizontal && r. right() >= e->rect().right() ||
-             orientation() == Vertical && r. bottom() >= e->rect().bottom())
+        if ((orientation() == Horizontal && r. right() >= e->rect().right())
+            || (orientation() == Vertical && r. bottom() >= e->rect().bottom()))
             return;
     }
     p.end();
@@ -6684,7 +6684,7 @@ void Q3TableHeader::paintSection(QPainter *p, int index, const QRect& fr)
         return;
 
    if (sectionState(index) != Selected ||
-         orientation() == Horizontal && isRowSelection(table->selectionMode())) {
+         (orientation() == Horizontal && isRowSelection(table->selectionMode()))) {
         Q3Header::paintSection(p, index, fr);
    } else {
        QStyleOptionHeader opt;
@@ -6776,10 +6776,9 @@ bool Q3TableHeader::doSelection(QMouseEvent *e)
 
     if (startPos == -1) {
          int secAt = sectionAt(p);
-        if ((e->state() & ControlButton) != ControlButton &&
-             (e->state() & ShiftButton) != ShiftButton ||
-             table->selectionMode() == Q3Table::Single ||
-             table->selectionMode() == Q3Table::SingleRow) {
+        if (((e->state() & ControlButton) != ControlButton && (e->state() & ShiftButton) != ShiftButton)
+            || table->selectionMode() == Q3Table::Single
+            || table->selectionMode() == Q3Table::SingleRow) {
             startPos = p;
             bool b = table->signalsBlocked();
             table->blockSignals(true);
@@ -6812,8 +6811,8 @@ bool Q3TableHeader::doSelection(QMouseEvent *e)
                 table->setCurrentCell(0, secAt);
             }
 
-            if (orientation() == Horizontal && table->isColumnSelected(secAt) ||
-                 orientation() == Vertical && table->isRowSelected(secAt)) {
+            if ((orientation() == Horizontal && table->isColumnSelected(secAt))
+                || (orientation() == Vertical && table->isRowSelected(secAt))) {
                 setSectionState(secAt, Selected);
             }
 

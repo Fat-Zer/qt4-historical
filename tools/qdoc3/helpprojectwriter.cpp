@@ -281,9 +281,23 @@ bool HelpProjectWriter::generateSection(HelpProject &project,
         case Node::Function:
             {
                 const FunctionNode *funcNode = static_cast<const FunctionNode *>(node);
+                
+                // Only insert keywords for non-constructors. Constructors are covered
+                // by the classes themselves.
+
                 if (funcNode->metaness() != FunctionNode::Ctor)
                     project.keywords.append(keywordDetails(node));
-                if (node->parent())
+
+                // Insert member status flags into the entries for the parent
+                // node of the function, or the node it is related to.
+                // Since parent nodes should have already been inserted into
+                // the set of files, we only need to ensure that related nodes
+                // are inserted.
+
+                if (node->relates()) {
+                    project.memberStatus[node->relates()].insert(node->status());
+                    project.files.insert(tree->fullDocumentLocation(node->relates()));
+                } else if (node->parent())
                     project.memberStatus[node->parent()].insert(node->status());
             }
             break;
@@ -465,6 +479,37 @@ void HelpProjectWriter::writeNode(HelpProject &project, QXmlStreamWriter &writer
             writer.writeStartElement("section");
             writer.writeAttribute("ref", href);
             writer.writeAttribute("title", fakeNode->fullTitle());
+
+            if (fakeNode->subType() == FakeNode::HeaderFile) {
+
+                // Write subsections for all members, obsolete members and Qt 3
+                // members.
+                if (!project.memberStatus[node].isEmpty()) {
+                    QString membersPath = href.left(href.size()-5) + "-members.html";
+                    writer.writeStartElement("section");
+                    writer.writeAttribute("ref", membersPath);
+                    writer.writeAttribute("title", tr("List of all members"));
+                    writer.writeEndElement(); // section
+                    project.files.insert(membersPath);
+                }
+                if (project.memberStatus[node].contains(Node::Compat)) {
+                    QString compatPath = href.left(href.size()-5) + "-qt3.html";
+                    writer.writeStartElement("section");
+                    writer.writeAttribute("ref", compatPath);
+                    writer.writeAttribute("title", tr("Qt 3 support members"));
+                    writer.writeEndElement(); // section
+                    project.files.insert(compatPath);
+                }
+                if (project.memberStatus[node].contains(Node::Obsolete)) {
+                    QString obsoletePath = href.left(href.size()-5) + "-obsolete.html";
+                    writer.writeStartElement("section");
+                    writer.writeAttribute("ref", obsoletePath);
+                    writer.writeAttribute("title", tr("Obsolete members"));
+                    writer.writeEndElement(); // section
+                    project.files.insert(obsoletePath);
+                }
+            }
+
             writer.writeEndElement(); // section
             }
             break;

@@ -51,8 +51,6 @@
 #include "text.h"
 #include "tree.h"
 
-#include "qdebug.h"
-
 QT_BEGIN_NAMESPACE
 
 static int insertTagAround(QString &result, int pos, int len, const QString &tagName,
@@ -692,8 +690,9 @@ QString CppCodeMarker::addMarkUp( const QString& protectedCode, const Node * /* 
     static QRegExp classX("[:,][ \n]*(?:p(?:ublic|r(?:otected|ivate))[ \n]+)?"
                           "([a-zA-Z_][a-zA-Z_0-9]*)");
     static QRegExp globalX("[\n{()=] *([a-zA-Z_][a-zA-Z_0-9]*)[ \n]*\\(");
-    static QRegExp comment("/(?:( )?\\*(?:[^*]+|\\*(?! /))*\\*\\1/|/[^\n]*)");
-    comment.setMinimal(true);
+    static QRegExp multiLineComment("/(?:( )?\\*(?:[^*]+|\\*(?! /))*\\*\\1/)");
+    multiLineComment.setMinimal(true);
+    static QRegExp singleLineComment("//(?!!)[^!\n]*");
     static QRegExp preprocessor("(?:^|\n)(#[ \t]*(?:include|if|elif|endif|error|pragma|define"
                                 "|warning)(?:(?:\\\\\n|\\n#)[^\n]*)*)");
     static QRegExp literals("&quot;(?:[^\\\\&]|\\\\[^\n]|&(?!quot;))*&quot;"
@@ -837,8 +836,32 @@ QString CppCodeMarker::addMarkUp( const QString& protectedCode, const Node * /* 
         comments.
     */
     pos = 0;
-    while ((pos = comment.indexIn(result, pos)) != -1) {
-        int len = comment.matchedLength();
+    while (pos != -1) {
+        int mlpos;
+        int slpos;
+        int len;
+        slpos = singleLineComment.indexIn(result, pos);
+        mlpos = multiLineComment.indexIn(result, pos);
+
+        if (slpos == -1 && mlpos == -1)
+            break;
+
+        if (slpos == -1) {
+            pos = mlpos;
+            len = multiLineComment.matchedLength();
+        } else if (mlpos == -1) {
+            pos = slpos;
+            len = singleLineComment.matchedLength();
+        } else {
+            if (slpos < mlpos) {
+                pos = slpos;
+                len = singleLineComment.matchedLength();
+            } else {
+                pos = mlpos;
+                len = multiLineComment.matchedLength();
+            }
+        }
+
         if (result.at(pos + 1) == QLatin1Char(' ')) {
             result.remove(pos + len - 2, 1);
             result.remove(pos + 1, 1);

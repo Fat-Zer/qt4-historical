@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/kernel/qobject.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qobject.cpp -->
 <head>
   <title>Qt 4.4: QObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QObject Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QObject class is the base class of all Qt objects. <a href="#details">More...</a></p>
-<pre> #include &lt;QObject&gt;</pre><p>Inherited by <a href="phonon-backendcapabilities-notifier.html">Phonon::BackendCapabilities::Notifier</a>, <a href="phonon-effect.html">Phonon::Effect</a>, <a href="phonon-factory-sender.html">Phonon::Factory::Sender</a>, <a href="phonon-globalconfig.html">Phonon::GlobalConfig</a>, <a href="phonon-mediaobject.html">Phonon::MediaObject</a>, <a href="q3accel.html" class="compat">Q3Accel</a>, <a href="q3action.html" class="compat">Q3Action</a>, <a href="q3canvas.html" class="compat">Q3Canvas</a>, <a href="q3dns.html" class="compat">Q3Dns</a>, <a href="q3dragobject.html" class="compat">Q3DragObject</a>, <a href="q3editorfactory.html" class="compat">Q3EditorFactory</a>, <a href="q3fileiconprovider.html" class="compat">Q3FileIconProvider</a>, <a href="q3networkoperation.html" class="compat">Q3NetworkOperation</a>, <a href="q3networkprotocol.html" class="compat">Q3NetworkProtocol</a>, <a href="q3process.html" class="compat">Q3Process</a>, <a href="q3serversocket.html" class="compat">Q3ServerSocket</a>, <a href="q3signal.html" class="compat">Q3Signal</a>, <a href="q3sqlform.html" class="compat">Q3SqlForm</a>, <a href="q3stylesheet.html" class="compat">Q3StyleSheet</a>, <a href="q3urloperator.html" class="compat">Q3UrlOperator</a>, <a href="q3whatsthis.html" class="compat">Q3WhatsThis</a>, <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>, <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="qabstractmessagehandler.html">QAbstractMessageHandler</a>, <a href="qabstracttextdocumentlayout.html">QAbstractTextDocumentLayout</a>, <a href="qabstracturiresolver.html">QAbstractUriResolver</a>, <a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a>, <a href="qaccessibleplugin.html">QAccessiblePlugin</a>, <a href="qaction.html">QAction</a>, <a href="qactiongroup.html">QActionGroup</a>, <a href="qassistantclient.html" class="obsolete">QAssistantClient</a>, <a href="qbuttongroup.html">QButtonGroup</a>, <a href="qclipboard.html">QClipboard</a>, <a href="qcompleter.html">QCompleter</a>, <a href="qcoreapplication.html">QCoreApplication</a>, <a href="qdatawidgetmapper.html">QDataWidgetMapper</a>, <a href="qdbusabstractadaptor.html">QDBusAbstractAdaptor</a>, <a href="qdbusabstractinterface.html">QDBusAbstractInterface</a>, <a href="qdbusserver.html">QDBusServer</a>, <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a>, <a href="qdesignerformwindowmanagerinterface.html">QDesignerFormWindowManagerInterface</a>, <a href="qdrag.html">QDrag</a>, <a href="qeventloop.html">QEventLoop</a>, <a href="qextensionfactory.html">QExtensionFactory</a>, <a href="qextensionmanager.html">QExtensionManager</a>, <a href="qfilesystemwatcher.html">QFileSystemWatcher</a>, <a href="qftp.html">QFtp</a>, <a href="qfuturewatcher.html">QFutureWatcher</a>, <a href="qgraphicsitemanimation.html">QGraphicsItemAnimation</a>, <a href="qgraphicsscene.html">QGraphicsScene</a>, <a href="qgraphicssvgitem.html">QGraphicsSvgItem</a>, <a href="qgraphicstextitem.html">QGraphicsTextItem</a>, <a href="qgraphicswidget.html">QGraphicsWidget</a>, <a href="qhelpenginecore.html">QHelpEngineCore</a>, <a href="qhelpsearchengine.html">QHelpSearchEngine</a>, <a href="qhttp.html">QHttp</a>, <a href="qiconengineplugin.html">QIconEnginePlugin</a>, <a href="qiconenginepluginv2.html">QIconEnginePluginV2</a>, <a href="qimageioplugin.html">QImageIOPlugin</a>, <a href="qinputcontext.html">QInputContext</a>, <a href="qinputcontextplugin.html">QInputContextPlugin</a>, <a href="qiodevice.html">QIODevice</a>, <a href="qitemselectionmodel.html">QItemSelectionModel</a>, <a href="qlayout.html">QLayout</a>, <a href="qlibrary.html">QLibrary</a>, <a href="qlocalserver.html">QLocalServer</a>, <a href="qmdi-controlcontainer.html">QMdi::ControlContainer</a>, <a href="qmimedata.html">QMimeData</a>, <a href="qmovie.html">QMovie</a>, <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a>, <a href="qnetworkcookiejar.html">QNetworkCookieJar</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, <a href="qpictureformatplugin.html" class="obsolete">QPictureFormatPlugin</a>, <a href="qpluginloader.html">QPluginLoader</a>, <a href="qscriptengine.html">QScriptEngine</a>, <a href="qscriptextensionplugin.html">QScriptExtensionPlugin</a>, <a href="qsessionmanager.html">QSessionManager</a>, <a href="qsettings.html">QSettings</a>, <a href="qsharedmemory.html">QSharedMemory</a>, <a href="qshortcut.html">QShortcut</a>, <a href="qsignalmapper.html">QSignalMapper</a>, <a href="qsignalspy.html">QSignalSpy</a>, <a href="qsocketnotifier.html">QSocketNotifier</a>, <a href="qsound.html">QSound</a>, <a href="qsqldriver.html">QSqlDriver</a>, <a href="qsqldriverplugin.html">QSqlDriverPlugin</a>, <a href="qstyle.html">QStyle</a>, <a href="qstyleplugin.html">QStylePlugin</a>, <a href="qsvgrenderer.html">QSvgRenderer</a>, <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a>, <a href="qsystemtrayicon.html">QSystemTrayIcon</a>, <a href="qtcpserver.html">QTcpServer</a>, <a href="qtextcodecplugin.html">QTextCodecPlugin</a>, <a href="qtextdocument.html">QTextDocument</a>, <a href="qtextobject.html">QTextObject</a>, <a href="qthread.html">QThread</a>, <a href="qthreadpool.html">QThreadPool</a>, <a href="qtimeline.html">QTimeLine</a>, <a href="qtimer.html">QTimer</a>, <a href="qtranslator.html">QTranslator</a>, <a href="quiloader.html">QUiLoader</a>, <a href="qundogroup.html">QUndoGroup</a>, <a href="qundostack.html">QUndoStack</a>, <a href="qvalidator.html">QValidator</a>, <a href="qwebframe.html">QWebFrame</a>, <a href="qwebhistoryinterface.html">QWebHistoryInterface</a>, <a href="qwebpage.html">QWebPage</a>, <a href="qwebpluginfactory.html">QWebPluginFactory</a>, <a href="qwidget.html">QWidget</a>, <a href="webcore-frameloaderclientqt.html">WebCore::FrameLoaderClientQt</a>, </p>
+<pre> #include &lt;QObject&gt;</pre><p>Inherited by <a href="phonon-audiooutput.html">Phonon::AudioOutput</a>, <a href="phonon-backendcapabilities-notifier.html">Phonon::BackendCapabilities::Notifier</a>, <a href="phonon-effect.html">Phonon::Effect</a>, <a href="phonon-globalconfig.html">Phonon::GlobalConfig</a>, <a href="phonon-mediacontroller.html">Phonon::MediaController</a>, <a href="phonon-mediaobject.html">Phonon::MediaObject</a>, <a href="q3accel.html" class="compat">Q3Accel</a>, <a href="q3action.html" class="compat">Q3Action</a>, <a href="q3canvas.html" class="compat">Q3Canvas</a>, <a href="q3dns.html" class="compat">Q3Dns</a>, <a href="q3dragobject.html" class="compat">Q3DragObject</a>, <a href="q3editorfactory.html" class="compat">Q3EditorFactory</a>, <a href="q3fileiconprovider.html" class="compat">Q3FileIconProvider</a>, <a href="q3networkoperation.html" class="compat">Q3NetworkOperation</a>, <a href="q3networkprotocol.html" class="compat">Q3NetworkProtocol</a>, <a href="q3process.html" class="compat">Q3Process</a>, <a href="q3serversocket.html" class="compat">Q3ServerSocket</a>, <a href="q3signal.html" class="compat">Q3Signal</a>, <a href="q3sqlform.html" class="compat">Q3SqlForm</a>, <a href="q3stylesheet.html" class="compat">Q3StyleSheet</a>, <a href="q3urloperator.html" class="compat">Q3UrlOperator</a>, <a href="q3whatsthis.html" class="compat">Q3WhatsThis</a>, <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>, <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="qabstractmessagehandler.html">QAbstractMessageHandler</a>, <a href="qabstracttextdocumentlayout.html">QAbstractTextDocumentLayout</a>, <a href="qabstracturiresolver.html">QAbstractUriResolver</a>, <a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a>, <a href="qaccessibleplugin.html">QAccessiblePlugin</a>, <a href="qaction.html">QAction</a>, <a href="qactiongroup.html">QActionGroup</a>, <a href="qassistantclient.html" class="obsolete">QAssistantClient</a>, <a href="qbuttongroup.html">QButtonGroup</a>, <a href="qclipboard.html">QClipboard</a>, <a href="qcompleter.html">QCompleter</a>, <a href="qcoreapplication.html">QCoreApplication</a>, <a href="qdatawidgetmapper.html">QDataWidgetMapper</a>, <a href="qdbusabstractadaptor.html">QDBusAbstractAdaptor</a>, <a href="qdbusabstractinterface.html">QDBusAbstractInterface</a>, <a href="qdbusserver.html">QDBusServer</a>, <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a>, <a href="qdesignerformwindowmanagerinterface.html">QDesignerFormWindowManagerInterface</a>, <a href="qdrag.html">QDrag</a>, <a href="qeventloop.html">QEventLoop</a>, <a href="qextensionfactory.html">QExtensionFactory</a>, <a href="qextensionmanager.html">QExtensionManager</a>, <a href="qfilesystemwatcher.html">QFileSystemWatcher</a>, <a href="qftp.html">QFtp</a>, <a href="qfuturewatcher.html">QFutureWatcher</a>, <a href="qgraphicsitemanimation.html">QGraphicsItemAnimation</a>, <a href="qgraphicsscene.html">QGraphicsScene</a>, <a href="qgraphicssvgitem.html">QGraphicsSvgItem</a>, <a href="qgraphicstextitem.html">QGraphicsTextItem</a>, <a href="qgraphicswidget.html">QGraphicsWidget</a>, <a href="qhelpenginecore.html">QHelpEngineCore</a>, <a href="qhelpsearchengine.html">QHelpSearchEngine</a>, <a href="qhttp.html">QHttp</a>, <a href="qiconengineplugin.html">QIconEnginePlugin</a>, <a href="qiconenginepluginv2.html">QIconEnginePluginV2</a>, <a href="qimageioplugin.html">QImageIOPlugin</a>, <a href="qinputcontext.html">QInputContext</a>, <a href="qinputcontextplugin.html">QInputContextPlugin</a>, <a href="qiodevice.html">QIODevice</a>, <a href="qitemselectionmodel.html">QItemSelectionModel</a>, <a href="qlayout.html">QLayout</a>, <a href="qlibrary.html">QLibrary</a>, <a href="qlocalserver.html">QLocalServer</a>, <a href="qmimedata.html">QMimeData</a>, <a href="qmovie.html">QMovie</a>, <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a>, <a href="qnetworkcookiejar.html">QNetworkCookieJar</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, <a href="qpictureformatplugin.html" class="obsolete">QPictureFormatPlugin</a>, <a href="qpluginloader.html">QPluginLoader</a>, <a href="qscriptengine.html">QScriptEngine</a>, <a href="qscriptextensionplugin.html">QScriptExtensionPlugin</a>, <a href="qsessionmanager.html">QSessionManager</a>, <a href="qsettings.html">QSettings</a>, <a href="qsharedmemory.html">QSharedMemory</a>, <a href="qshortcut.html">QShortcut</a>, <a href="qsignalmapper.html">QSignalMapper</a>, <a href="qsignalspy.html">QSignalSpy</a>, <a href="qsocketnotifier.html">QSocketNotifier</a>, <a href="qsound.html">QSound</a>, <a href="qsqldriver.html">QSqlDriver</a>, <a href="qsqldriverplugin.html">QSqlDriverPlugin</a>, <a href="qstyle.html">QStyle</a>, <a href="qstyleplugin.html">QStylePlugin</a>, <a href="qsvgrenderer.html">QSvgRenderer</a>, <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a>, <a href="qsystemtrayicon.html">QSystemTrayIcon</a>, <a href="qtcpserver.html">QTcpServer</a>, <a href="qtextcodecplugin.html">QTextCodecPlugin</a>, <a href="qtextdocument.html">QTextDocument</a>, <a href="qtextobject.html">QTextObject</a>, <a href="qthread.html">QThread</a>, <a href="qthreadpool.html">QThreadPool</a>, <a href="qtimeline.html">QTimeLine</a>, <a href="qtimer.html">QTimer</a>, <a href="qtranslator.html">QTranslator</a>, <a href="quiloader.html">QUiLoader</a>, <a href="qundogroup.html">QUndoGroup</a>, <a href="qundostack.html">QUndoStack</a>, <a href="qvalidator.html">QValidator</a>, <a href="qwebframe.html">QWebFrame</a>, <a href="qwebhistoryinterface.html">QWebHistoryInterface</a>, <a href="qwebpage.html">QWebPage</a>, <a href="qwebpluginfactory.html">QWebPluginFactory</a>, and <a href="qwidget.html">QWidget</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>, except <a href="qobject.html#connect">connect</a>(), <a href="qobject.html#connect-2">connect</a>(), <a href="qobject.html#disconnect">disconnect</a>(), and <a href="qobject.html#disconnect-2">disconnect</a>().</p>
 <ul>
 <li><a href="qobject-members.html">List of all members, including inherited members</a></li>
@@ -34,7 +34,7 @@
 <li><div class="fn"/>virtual <b><a href="qobject.html#dtor.QObject">~QObject</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qobject.html#blockSignals">blockSignals</a></b> ( bool <i>block</i> )</li>
 <li><div class="fn"/>const QObjectList &amp; <b><a href="qobject.html#children">children</a></b> () const</li>
-<li><div class="fn"/>bool <b><a href="qobject.html#connect-2">connect</a></b> ( const QObject * <i>sender</i>, const char * <i>signal</i>, const char * <i>method</i>, Qt::ConnectionType <i>type</i> = Qt::AutoCompatConnection ) const</li>
+<li><div class="fn"/>bool <b><a href="qobject.html#connect-2">connect</a></b> ( const QObject * <i>sender</i>, const char * <i>signal</i>, const char * <i>method</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection ) const</li>
 <li><div class="fn"/>bool <b><a href="qobject.html#disconnect-2">disconnect</a></b> ( const char * <i>signal</i> = 0, const QObject * <i>receiver</i> = 0, const char * <i>method</i> = 0 )</li>
 <li><div class="fn"/>bool <b><a href="qobject.html#disconnect-3">disconnect</a></b> ( const QObject * <i>receiver</i>, const char * <i>method</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qobject.html#dumpObjectInfo">dumpObjectInfo</a></b> ()</li>
@@ -75,7 +75,7 @@
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
 <ul>
-<li><div class="fn"/>bool <b><a href="qobject.html#connect">connect</a></b> ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i>, Qt::ConnectionType <i>type</i> = Qt::AutoCompatConnection )</li>
+<li><div class="fn"/>bool <b><a href="qobject.html#connect">connect</a></b> ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection )</li>
 <li><div class="fn"/>bool <b><a href="qobject.html#disconnect">disconnect</a></b> ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i> )</li>
 <li><div class="fn"/>const QMetaObject <b><a href="qobject.html#staticMetaObject-var">staticMetaObject</a></b></li>
 <li><div class="fn"/>QString <b><a href="qobject.html#tr">tr</a></b> ( const char * <i>sourceText</i>, const char * <i>comment</i> = 0, int <i>n</i> = -1 )</li>
@@ -105,11 +105,14 @@
 <h3>Macros</h3>
 <ul>
 <li><div class="fn"/><b><a href="qobject.html#Q_CLASSINFO">Q_CLASSINFO</a></b> (  <i>Name</i>,  <i>Value</i> )</li>
+<li><div class="fn"/><b><a href="qobject.html#Q_EMIT">Q_EMIT</a></b></li>
 <li><div class="fn"/><b><a href="qobject.html#Q_ENUMS">Q_ENUMS</a></b> ( ... )</li>
 <li><div class="fn"/><b><a href="qobject.html#Q_FLAGS">Q_FLAGS</a></b> ( ... )</li>
 <li><div class="fn"/><b><a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a></b> ( ... )</li>
 <li><div class="fn"/><b><a href="qobject.html#Q_OBJECT">Q_OBJECT</a></b></li>
 <li><div class="fn"/><b><a href="qobject.html#Q_PROPERTY">Q_PROPERTY</a></b> ( ... )</li>
+<li><div class="fn"/><b><a href="qobject.html#Q_SIGNALS">Q_SIGNALS</a></b></li>
+<li><div class="fn"/><b><a href="qobject.html#Q_SLOTS">Q_SLOTS</a></b></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -187,7 +190,7 @@
 <p>Note that the list order changes when <a href="qwidget.html">QWidget</a> children are <a href="qwidget.html#raise">raised</a> or <a href="qwidget.html#lower">lowered</a>. A widget that is raised becomes the last object in the list, and a widget that is lowered becomes the first object in the list.</p>
 <p>See also <a href="qobject.html#findChild">findChild</a>(), <a href="qobject.html#findChildren">findChildren</a>(), <a href="qobject.html#parent">parent</a>(), and <a href="qobject.html#setParent">setParent</a>().</p>
 <a name="//apple_ref/cpp/clm/QObject/connect" />
-<h3 class="fn"><a name="connect"></a>bool QObject::connect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i>, <a href="qt.html#ConnectionType-enum">Qt::ConnectionType</a> <i>type</i> = Qt::AutoCompatConnection )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="connect"></a>bool QObject::connect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i>, <a href="qt.html#ConnectionType-enum">Qt::ConnectionType</a> <i>type</i> = Qt::AutoConnection )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Creates a connection of the given <i>type</i> from the <i>signal</i> in the <i>sender</i> object to the <i>method</i> in the <i>receiver</i> object. Returns true if the connection succeeds; otherwise returns false.</p>
 <p>You must use the <tt>SIGNAL()</tt> and <tt>SLOT()</tt> macros when specifying the <i>signal</i> and the <i>method</i>, for example:</p>
 <pre>         QLabel *label = new QLabel;
@@ -195,7 +198,7 @@
          QObject::connect(scrollBar, SIGNAL(valueChanged(int)),
                           label,  SLOT(setNum(int)));</pre>
 <p>This example ensures that the label always displays the current scroll bar value. Note that the signal and slots parameters must not contain any variable names, only the type. E.g&#x2e; the following would not work and return false:</p>
-<pre>         // WRONG
+<pre>         <span class="comment">// WRONG</span>
          QObject::connect(scrollBar, SIGNAL(valueChanged(int value)),
                           label, SLOT(setNum(int value)));</pre>
 <p>A signal can also be connected to another signal:</p>
@@ -230,7 +233,7 @@
 <p>call <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() to register the data type before you establish the connection.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qobject.html#disconnect">disconnect</a>(), <a href="qobject.html#sender">sender</a>(), and <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>().</p>
-<h3 class="fn"><a name="connect-2"></a>bool QObject::connect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const char * <i>method</i>, <a href="qt.html#ConnectionType-enum">Qt::ConnectionType</a> <i>type</i> = Qt::AutoCompatConnection ) const</h3>
+<h3 class="fn"><a name="connect-2"></a>bool QObject::connect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const char * <i>method</i>, <a href="qt.html#ConnectionType-enum">Qt::ConnectionType</a> <i>type</i> = Qt::AutoConnection ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Connects <i>signal</i> from the <i>sender</i> object to this object's <i>method</i>.</p>
 <p>Equivalent to connect(<i>sender</i>, <i>signal</i>, <tt>this</tt>, <i>method</i>, <i>type</i>).</p>
@@ -242,7 +245,7 @@
 <p>This virtual function is called when something has been connected to <i>signal</i> in this object.</p>
 <p>If you want to compare <i>signal</i> with a specific signal, use <a href="qlatin1string.html">QLatin1String</a> and the <tt>SIGNAL()</tt> macro as follows:</p>
 <pre>         if (QLatin1String(signal) == SIGNAL(valueChanged(int))) {
-             // signal is valueChanged(int)
+             <span class="comment">// signal is valueChanged(int)</span>
          }</pre>
 <p>If the signal contains multiple parameters or parameters that contain spaces, call <a href="qmetaobject.html#normalizedSignature">QMetaObject::normalizedSignature</a>() on the result of the <tt>SIGNAL()</tt> macro.</p>
 <p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, it might be useful when you need to perform expensive initialization only if something is connected to a signal.</p>
@@ -359,7 +362,7 @@
                      return false;
                  }
              } else {
-                 // pass the event on to the parent class
+                 <span class="comment">// pass the event on to the parent class</span>
                  return QMainWindow::eventFilter(obj, event);
              }
          }</pre>
@@ -394,15 +397,15 @@
 <p>Returns true if this object is an instance of a class that inherits <i>className</i> or a <a href="qobject.html">QObject</a> subclass that inherits <i>className</i>; otherwise returns false.</p>
 <p>A class is considered to inherit itself.</p>
 <p>Example:</p>
-<pre>         QTimer *timer = new QTimer;         // QTimer inherits QObject
-         timer-&gt;inherits(&quot;QTimer&quot;);          // returns true
-         timer-&gt;inherits(&quot;QObject&quot;);         // returns true
-         timer-&gt;inherits(&quot;QAbstractButton&quot;); // returns false
+<pre>         QTimer *timer = new QTimer;         <span class="comment">// QTimer inherits QObject</span>
+         timer-&gt;inherits(&quot;QTimer&quot;);          <span class="comment">// returns true</span>
+         timer-&gt;inherits(&quot;QObject&quot;);         <span class="comment">// returns true</span>
+         timer-&gt;inherits(&quot;QAbstractButton&quot;); <span class="comment">// returns false</span>
 
-         // QLayout inherits QObject and QLayoutItem
+         <span class="comment">// QLayout inherits QObject and QLayoutItem</span>
          QLayout *layout = new QLayout;
-         layout-&gt;inherits(&quot;QObject&quot;);        // returns true
-         layout-&gt;inherits(&quot;QLayoutItem&quot;);    // returns false</pre>
+         layout-&gt;inherits(&quot;QObject&quot;);        <span class="comment">// returns true</span>
+         layout-&gt;inherits(&quot;QLayoutItem&quot;);    <span class="comment">// returns false</span></pre>
 <p>(<a href="qlayoutitem.html">QLayoutItem</a> is not a <a href="qobject.html">QObject</a>.)</p>
 <p>Consider using qobject_cast&lt;Type *&gt;(object) instead. The method is both faster and safer.</p>
 <p>See also <a href="qobject.html#metaObject">metaObject</a>() and <a href="qobject.html#qobject_cast">qobject_cast</a>().</p>
@@ -429,7 +432,7 @@
                  qDebug(&quot;Ate key press %d&quot;, keyEvent-&gt;key());
                  return true;
              } else {
-                 // standard event processing
+                 <span class="comment">// standard event processing</span>
                  return QObject::eventFilter(obj, event);
              }
          }</pre>
@@ -461,9 +464,9 @@
 <p>If you have no pointer to an actual object instance but still want to access the meta-object of a class, you can use <a href="qobject.html#staticMetaObject-var">staticMetaObject</a>.</p>
 <p>Example:</p>
 <pre>         QObject *obj = new QPushButton;
-         obj-&gt;metaObject()-&gt;className();             // returns &quot;QPushButton&quot;
+         obj-&gt;metaObject()-&gt;className();             <span class="comment">// returns &quot;QPushButton&quot;</span>
 
-         QPushButton::staticMetaObject.className();  // returns &quot;QPushButton&quot;</pre>
+         QPushButton::staticMetaObject.className();  <span class="comment">// returns &quot;QPushButton&quot;</span></pre>
 <p>See also <a href="qobject.html#staticMetaObject-var">staticMetaObject</a>.</p>
 <a name="//apple_ref/cpp/instm/QObject/moveToThread" />
 <h3 class="fn"><a name="moveToThread"></a>void QObject::moveToThread ( <a href="qthread.html">QThread</a> * <i>targetThread</i> )</h3>
@@ -492,7 +495,7 @@
 <p>When calling this function, you can use the <tt>SIGNAL()</tt> macro to pass a specific signal:</p>
 <pre>         if (receivers(SIGNAL(valueChanged(QByteArray))) &gt; 0) {
              QByteArray data;
-             get_the_value(&amp;data);       // expensive operation
+             get_the_value(&amp;data);       <span class="comment">// expensive operation</span>
              emit valueChanged(data);
          }</pre>
 <p>As the code snippet above illustrates, you can use this function to avoid emitting a signal that nobody listens to.</p>
@@ -547,9 +550,9 @@
          MyObject::MyObject(QObject *parent)
              : QObject(parent)
          {
-             startTimer(50);     // 50-millisecond timer
-             startTimer(1000);   // 1-second timer
-             startTimer(60000);  // 1-minute timer
+             startTimer(50);     <span class="comment">// 50-millisecond timer</span>
+             startTimer(1000);   <span class="comment">// 1-second timer</span>
+             startTimer(60000);  <span class="comment">// 1-minute timer</span>
          }
 
          void MyObject::timerEvent(QTimerEvent *event)
@@ -614,10 +617,10 @@
 <p>The meta-object information is required by the signal/slot connection mechanism and the property system. The <a href="qobject.html#inherits">inherits</a>() function also makes use of the meta-object.</p>
 <p>If you have a pointer to an object, you can use <a href="qobject.html#metaObject">metaObject</a>() to retrieve the meta-object associated with that object.</p>
 <p>Example:</p>
-<pre>         QPushButton::staticMetaObject.className();  // returns &quot;QPushButton&quot;
+<pre>         QPushButton::staticMetaObject.className();  <span class="comment">// returns &quot;QPushButton&quot;</span>
 
          QObject *obj = new QPushButton;
-         obj-&gt;metaObject()-&gt;className();             // returns &quot;QPushButton&quot;</pre>
+         obj-&gt;metaObject()-&gt;className();             <span class="comment">// returns &quot;QPushButton&quot;</span></pre>
 <p>See also <a href="qobject.html#metaObject">metaObject</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
@@ -641,13 +644,13 @@
 <p>The class T must inherit (directly or indirectly) <a href="qobject.html">QObject</a> and be declared with the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro.</p>
 <p>A class is considered to inherit itself.</p>
 <p>Example:</p>
-<pre>         QObject *obj = new QTimer;          // QTimer inherits QObject
+<pre>         QObject *obj = new QTimer;          <span class="comment">// QTimer inherits QObject</span>
 
          QTimer *timer = qobject_cast&lt;QTimer *&gt;(obj);
-         // timer == (QObject *)obj
+         <span class="comment">// timer == (QObject *)obj</span>
 
          QAbstractButton *button = qobject_cast&lt;QAbstractButton *&gt;(obj);
-         // button == 0</pre>
+         <span class="comment">// button == 0</span></pre>
 <p>The qobject_cast() function behaves similarly to the standard C++ <tt>dynamic_cast()</tt>, with the advantages that it doesn't require RTTI support and it works across dynamic library boundaries.</p>
 <p>qobject_cast() can also be used in conjunction with interfaces; see the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> example for details.</p>
 <p><b>Warning:</b> If T isn't declared with the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro, this function's return value is undefined.</p>
@@ -663,12 +666,16 @@
          {
              Q_OBJECT
              Q_CLASSINFO(&quot;Author&quot;, &quot;Pierre Gendron&quot;)
-             Q_CLASSINFO(&quot;URL&quot;, &quot;http://www.my-organization.qc.ca&quot;)
+             Q_CLASSINFO(&quot;URL&quot;, &quot;http:<span class="comment">//www.my-organization.qc.ca&quot;)</span>
 
          public:
              ...
          };</pre>
 <p>See also <a href="qmetaobject.html#classInfo">QMetaObject::classInfo</a>().</p>
+<a name="//apple_ref/cpp/macro//Q_EMIT" />
+<h3 class="fn"><a name="Q_EMIT"></a>Q_EMIT</h3>
+<p>Use this macro to replace the <tt>emit</tt> keyword for emitting signals, when you want to use Qt Signals and Slots with a <a href="signalsandslots.html#3rd-party-signals-and-slots">3rd party signal/slot mechanism</a>.</p>
+<p>The macro is normally used when <tt>no_keywords</tt> is specified with the <tt>CONFIG</tt> variable in the <tt>.pro</tt> file, but it can be used even when <tt>no_keywords</tt> is <i>not</i> specified.</p>
 <a name="//apple_ref/cpp/macro//Q_ENUMS" />
 <h3 class="fn"><a name="Q_ENUMS"></a>Q_ENUMS ( ... )</h3>
 <p>This macro registers one or several enum types to the meta-object system.</p>
@@ -752,10 +759,18 @@
 <pre>         Q_PROPERTY(QString title READ title WRITE setTitle USER true)</pre>
 <p>For more details about how to use this macro, and a more detailed example of its use, see the discussion on <a href="properties.html">Qt's Property System</a>.</p>
 <p>See also <a href="properties.html">Qt's Property System</a>.</p>
+<a name="//apple_ref/cpp/macro//Q_SIGNALS" />
+<h3 class="fn"><a name="Q_SIGNALS"></a>Q_SIGNALS</h3>
+<p>Use this macro to replace the <tt>signals</tt> keyword in class declarations, when you want to use Qt Signals and Slots with a <a href="signalsandslots.html#3rd-party-signals-and-slots">3rd party signal/slot mechanism</a>.</p>
+<p>The macro is normally used when <tt>no_keywords</tt> is specified with the <tt>CONFIG</tt> variable in the <tt>.pro</tt> file, but it can be used even when <tt>no_keywords</tt> is <i>not</i> specified.</p>
+<a name="//apple_ref/cpp/macro//Q_SLOTS" />
+<h3 class="fn"><a name="Q_SLOTS"></a>Q_SLOTS</h3>
+<p>Use this macro to replace the <tt>slots</tt> keyword in class declarations, when you want to use Qt Signals and Slots with a <a href="signalsandslots.html#3rd-party-signals-and-slots">3rd party signal/slot mechanism</a>.</p>
+<p>The macro is normally used when <tt>no_keywords</tt> is specified with the <tt>CONFIG</tt> variable in the <tt>.pro</tt> file, but it can be used even when <tt>no_keywords</tt> is <i>not</i> specified.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

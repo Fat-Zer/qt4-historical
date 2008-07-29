@@ -196,10 +196,11 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
 */
 
 /*!
-    Constructs an assistant client with the given \a parent.
-    The \a path specifies the path to the Qt Assistant executable.
-    If \a path is an empty string the system path (\c{%PATH%} or \c $PATH)
-    is used.
+  Constructs an assistant client with the specified \a parent. For
+  systems other than Mac OS, \a path specifies the path to the Qt
+  Assistant executable. For Mac OS, \a path specifies a directory
+  containing a valid assistant.app bundle. If \a path is the empty
+  string, the system path (\c{%PATH%} or \c $PATH) is used.
 */
 QAssistantClient::QAssistantClient( const QString &path, QObject *parent )
     : QObject( parent ), host ( QLatin1String("localhost") )

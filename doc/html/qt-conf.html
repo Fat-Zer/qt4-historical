@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qt-conf.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qt-conf.qdoc -->
 <head>
   <title>Qt 4.4: Using qt.conf</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -39,16 +39,16 @@
 </table></p>
 <p>Absolute paths are used as specified in the <tt>qt.conf</tt> file. All paths are relative to the <tt>Prefix</tt>. On Windows and X11, the <tt>Prefix</tt> is relative to the directory containing the application executable (<a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>()). On Mac OS X, the <tt>Prefix</tt> is relative to the <tt>Contents</tt> in the application bundle. For example, <tt>application.app/Contents/plugins/</tt> is the default location for loading Qt plugins.</p>
 <p>For example, a <tt>qt.conf</tt> file could contain the following:</p>
-<pre>         [Paths]
-         Prefix = /some/path
-         Translations = i18n</pre>
+<pre> [Paths]
+ Prefix = /some/path
+ Translations = i18n</pre>
 <p>Subgroups of the <tt>Paths</tt> group may be used to specify locations for specific versions of the Qt libraries. Such subgroups are of the form <tt>Paths/x.y.z</tt>, where x is the major version of the Qt libraries, y the minor, and z the patch level. The subgroup that most closely matches the current Qt version is used. If no subgroup matches, the <tt>Paths</tt> group is used as the fallback. The minor and patch level values may be omitted, in which case they default to zero.</p>
 <p>For example, given the following groups:</p>
-<pre>     Paths
-     Paths/4
-     Paths/4.1
-     Paths/4.2.5
-     Paths/6</pre>
+<pre> Paths
+ Paths/4
+ Paths/4.1
+ Paths/4.2.5
+ Paths/6</pre>
 <p>The current version will be matched as shown:</p>
 <ul>
 <li>4.0&#x2e;1 matches <tt>Paths/4</tt></li>
@@ -61,6 +61,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

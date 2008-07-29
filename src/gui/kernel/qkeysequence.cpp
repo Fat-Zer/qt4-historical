@@ -726,11 +726,12 @@ QList<QKeySequence> QKeySequence::keyBindings(StandardKey key)
     QList <QKeySequence> list;
     for (uint i = 0; i < QKeySequencePrivate::numberOfKeyBindings ; ++i) {
         QKeyBinding keyBinding = QKeySequencePrivate::keyBindings[i];
-        if (keyBinding.standardKey == key && (keyBinding.platform & platform))
+        if (keyBinding.standardKey == key && (keyBinding.platform & platform)) {
             if (keyBinding.priority > 0) 
                 list.prepend(QKeySequence(QKeySequencePrivate::keyBindings[i].shortcut));    
             else 
                 list.append(QKeySequence(QKeySequencePrivate::keyBindings[i].shortcut));    
+        }
     }
     return list;
 }

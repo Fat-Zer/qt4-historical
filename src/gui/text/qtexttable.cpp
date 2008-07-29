@@ -582,11 +582,11 @@ QTextTableCell QTextTable::cellAt(int position) const
         d->update();
 
     uint pos = (uint)position;
-    const QTextDocumentPrivate::FragmentMap &m = d->pieceTable->fragmentMap();
-    if (position < 0 || m.position(d->fragment_start) >= pos || m.position(d->fragment_end) < pos)
+    const QTextDocumentPrivate::FragmentMap &map = d->pieceTable->fragmentMap();
+    if (position < 0 || map.position(d->fragment_start) >= pos || map.position(d->fragment_end) < pos)
         return QTextTableCell();
 
-    QFragmentFindHelper helper(position, m);
+    QFragmentFindHelper helper(position, map);
     QList<int>::ConstIterator it = qLowerBound(d->cells.begin(), d->cells.end(), helper);
     if (it != d->cells.begin())
         --it;
@@ -619,13 +619,13 @@ void QTextTable::resize(int rows, int cols)
     if (d->dirty)
         d->update();
 
-    d->pieceTable->beginEditBlock();
-
     int nRows = this->rows();
     int nCols = this->columns();
 
     if (rows == nRows && cols == nCols)
 	return;
+
+    d->pieceTable->beginEditBlock();
 
     if (nCols < cols)
         insertColumns(nCols, cols - nCols);
@@ -752,6 +752,12 @@ void QTextTable::insertColumns(int pos, int num)
 
     QTextTableFormat tfmt = format();
     tfmt.setColumns(tfmt.columns()+num);
+    QVector<QTextLength> columnWidths = tfmt.columnWidthConstraints();
+    if (! columnWidths.isEmpty()) {
+        for (int i = num; i > 0; --i)
+            columnWidths.insert(pos, columnWidths[qMax(0, pos-1)]);
+    }
+    tfmt.setColumnWidthConstraints (columnWidths);
     QTextObject::setFormat(tfmt);
 
 //     qDebug() << "-------- end insertCols" << pos << num;
@@ -791,9 +797,15 @@ void QTextTable::removeRows(int pos, int num)
         return;
     }
 
+    p->aboutToRemoveCell(cellAt(pos, 0).firstPosition(), cellAt(pos + num - 1, d->nCols - 1).lastPosition());
+
+    QList<int> touchedCells;
     for (int r = pos; r < pos + num; ++r) {
         for (int c = 0; c < d->nCols; ++c) {
             int cell = d->grid[r*d->nCols + c];
+            if (touchedCells.contains(cell))
+                continue;
+            touchedCells << cell;
             QTextDocumentPrivate::FragmentIterator it(&p->fragmentMap(), cell);
             QTextCharFormat fmt = collection->charFormat(it->format);
             int span = fmt.tableCellRowSpan();
@@ -803,10 +815,8 @@ void QTextTable::removeRows(int pos, int num)
             } else {
                 // remove cell
                 int index = d->cells.indexOf(cell) + 1;
-                if (index > 0) {
-                    int f_end = index < d->cells.size() ? d->cells.at(index) : d->fragment_end;
-                    p->remove(it.position(), p->fragmentMap().position(f_end) - it.position());
-                }
+                int f_end = index < d->cells.size() ? d->cells.at(index) : d->fragment_end;
+                p->remove(it.position(), p->fragmentMap().position(f_end) - it.position());
             }
         }
     }
@@ -849,9 +859,15 @@ void QTextTable::removeColumns(int pos, int num)
         return;
     }
 
+    p->aboutToRemoveCell(cellAt(0, pos).firstPosition(), cellAt(d->nRows - 1, pos + num - 1).lastPosition());
+
+    QList<int> touchedCells;
     for (int r = 0; r < d->nRows; ++r) {
         for (int c = pos; c < pos + num; ++c) {
             int cell = d->grid[r*d->nCols + c];
+            if (touchedCells.contains(cell))
+                continue;
+            touchedCells << cell;
             QTextDocumentPrivate::FragmentIterator it(&p->fragmentMap(), cell);
             QTextCharFormat fmt = collection->charFormat(it->format);
             int span = fmt.tableCellColumnSpan();
@@ -869,6 +885,11 @@ void QTextTable::removeColumns(int pos, int num)
 
     QTextTableFormat tfmt = format();
     tfmt.setColumns(tfmt.columns()-num);
+    QVector<QTextLength> columnWidths = tfmt.columnWidthConstraints();
+    if (columnWidths.count() > pos) {
+        columnWidths.remove(pos, num);
+        tfmt.setColumnWidthConstraints (columnWidths);
+    }
     QTextObject::setFormat(tfmt);
 
     p->endEditBlock();

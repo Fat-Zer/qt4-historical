@@ -132,24 +132,6 @@ public:
             : m_top(-1), m_left(-1), m_bottom(-1), m_right(-1) { }
         Span(int row, int column, int rowCount, int columnCount)
             : m_top(row), m_left(column), m_bottom(row+rowCount-1), m_right(column+columnCount-1) { }
-        bool operator<(const Span &other) const
-        {
-            if (m_top < other.m_top)
-                return true;
-            if (m_top == other.m_top) {
-                if (m_bottom < other.m_bottom)
-                    return true;
-                if (m_bottom == other.m_bottom) {
-                    if (m_left < other.m_left)
-                        return true;
-                    if (m_left == other.m_left) {
-                        if (m_right < other.m_right)
-                            return true;
-                    }
-                }
-            }
-            return false;
-        }
         inline int top() const { return m_top; }
         inline int left() const { return m_left; }
         inline int bottom() const { return m_bottom; }

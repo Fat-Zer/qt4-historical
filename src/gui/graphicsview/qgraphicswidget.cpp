@@ -70,6 +70,7 @@ QT_BEGIN_NAMESPACE
     items in a QGraphicsScene.
     \since 4.4
     \ingroup multimedia
+    \ingroup graphicsview-api
 
     QGraphicsWidget is an extended base item that provides extra functionality
     over QGraphicsItem. It is similar to QWidget in many ways:
@@ -111,9 +112,9 @@ QT_BEGIN_NAMESPACE
                 \o All widget attributes are supported.
     \row      \o A top-level item's style defaults to QGraphicsScene::style
                 \o A top-level widget's style defaults to QApplication::style
-    \row      \o Graphics View provides a custom DnD framework, different
+    \row      \o Graphics View provides a custom drag and drop framework, different
                     from QWidget.
-                \o Standard DnD framework.
+                \o Standard drag and drop framework.
     \row      \o Widget items do not support modality.
                 \o Full modality support.
     \endtable
@@ -213,9 +214,9 @@ QGraphicsWidget::~QGraphicsWidget()
     d->focusNext = this;
     d->focusPrev = this;
 
-    delete d->layout;
-
     clearFocus();
+
+    delete d->layout;
 }
 
 /*!
@@ -835,7 +836,7 @@ void QGraphicsWidget::setFont(const QFont &font)
     When a widget's palette changes, it resolves its entries against its
     parent widget, or if it doesn't have a parent widget, it resolves against
     the scene. It then sends itself a \l{QEvent::PaletteChange}{PaletteChange}
-    event, and notifies all its descendents so they can resolve their palettes
+    event, and notifies all its descendants so they can resolve their palettes
     as well.
 
     \sa QApplication::palette(), QGraphicsScene::palette, QPalette::resolve()
@@ -848,6 +849,9 @@ QPalette QGraphicsWidget::palette() const
 void QGraphicsWidget::setPalette(const QPalette &palette)
 {
     Q_D(QGraphicsWidget);
+    // ### Qt 4.5: Add this attribute and fix the d->resolvePalette() function
+    // to respect it.
+    // setAttribute(Qt::WA_SetPalette, palette.resolve() != 0);
     d->palette = palette;
     d->resolvePalette();
 }
@@ -1045,6 +1049,8 @@ bool QGraphicsWidget::windowFrameEvent(QEvent *event)
 }
 
 /*!
+    \since 4.4
+
     Returns the window frame section at position \a pos, or
     Qt::NoWindowFrameSection if there is no window frame section at this
     position.
@@ -1242,6 +1248,9 @@ bool QGraphicsWidget::event(QEvent *event)
 void QGraphicsWidget::changeEvent(QEvent *event)
 {
     switch (event->type()) {
+    case QEvent::StyleChange:
+        // ### Don't unset if the margins are explicitly set.
+        unsetWindowFrameMargins();
     case QEvent::FontChange:
         update();
         updateGeometry();
@@ -1517,18 +1526,22 @@ void QGraphicsWidget::setWindowFlags(Qt::WindowFlags wFlags)
 }
 
 /*!
-    Returns true if this widget's window is the active window.
+    Returns true if this widget's window is in the active window, or if the
+    widget does not have a window but is in an active scene (i.e., a scene
+    that currently has focus).
 
     The active window is the window that either contains a child widget that
     currently has input focus, or that itself has input focus.
+
+    \sa QGraphicsScene::activeWindow(), QGraphicsScene::setActiveWindow()
 */
 bool QGraphicsWidget::isActiveWindow() const
 {
     Q_D(const QGraphicsWidget);
     if (!d->scene)
         return false;
-    const QGraphicsWidget *w = isWindow() ? this : window();
-    return w && d->scene->activeWindow() == w;
+    const QGraphicsWidget *w = window();
+    return (!w && d->scene->d_func()->activationRefCount) || (w && d->scene->activeWindow() == w);
 }
 
 /*!
@@ -1586,9 +1599,9 @@ void QGraphicsWidget::setFocusPolicy(Qt::FocusPolicy policy)
 }
 
 /*!
-    If this widget, a child or descendent of this widget currently has input
+    If this widget, a child or descendant of this widget currently has input
     focus, this function will return a pointer to that widget. If
-    no descendent has input focus, 0 is returned.
+    no descendant has input focus, 0 is returned.
 
     \sa QWidget::focusWidget()
 */

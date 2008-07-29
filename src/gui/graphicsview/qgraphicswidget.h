@@ -211,6 +211,8 @@ private:
     friend class QGraphicsScene;
     friend class QGraphicsScenePrivate;
     friend class QGraphicsView;
+    friend class QGraphicsItem;
+    friend class QGraphicsItemPrivate;
     friend class QGraphicsLayout;
     friend class QWidget;
     friend class QApplication;

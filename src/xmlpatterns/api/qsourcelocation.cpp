@@ -52,16 +52,16 @@ QT_BEGIN_NAMESPACE
   \class QSourceLocation
   \reentrant
   \since 4.4
-  \brief The QSourceLocation class is used to identify a location in a resource, using a URI, line number and column number.
+  \brief The QSourceLocation class identifies a location in a resource by URI, line, and column.
   \ingroup xml-tools
 
-  QSourceLocation is a simple value based class that has three properties, uri(),
-  line(), and column(), that together identifies a certain point in a resource, such
-  as a file or an in-memory document.
+  QSourceLocation is a simple value based class that has three
+  properties, uri(), line(), and column(), that, taken together,
+  identify a certain point in a resource, e.g., a file or an in-memory
+  document.
 
-  line() and column() refer to character count(not for instance byte count) and they both starts
-  from 1, as opposed to 0.
-
+  line() and column() refer to character counts (not byte counts), and
+  they both start from 1, as opposed to 0.
  */
 
 /*!
@@ -69,31 +69,28 @@ QT_BEGIN_NAMESPACE
 
    For a default constructed QSourceLocation(), isNull() returns \c true.
  */
-QSourceLocation::QSourceLocation() : m_line(-1)
-                                   , m_column(-1)
+QSourceLocation::QSourceLocation() : m_line(-1), m_column(-1)
 {
 }
 
 /*!
-  Constructs a QSourceLocation instance that is a copy of \a other.
+  Constructs a QSourceLocation that is a copy of \a other.
  */
-QSourceLocation::QSourceLocation(const QSourceLocation &other) : m_line(other.m_line)
-                                                               , m_column(other.m_column)
-                                                               , m_uri(other.m_uri)
+QSourceLocation::QSourceLocation(const QSourceLocation &other)
+  : m_line(other.m_line), m_column(other.m_column), m_uri(other.m_uri)
 {
 }
 
 /*!
  Constructs a QSourceLocation with URI \a u, line \a l and column \a c.
  */
-QSourceLocation::QSourceLocation(const QUrl &u, int l, int c) : m_line(l)
-                                                              , m_column(c)
-                                                              , m_uri(u)
+QSourceLocation::QSourceLocation(const QUrl &u, int l, int c)
+  : m_line(l), m_column(c), m_uri(u)
 {
 }
 
 /*!
-  Destructs this QSourceLocation instance.
+  Destructor.
  */
 QSourceLocation::~QSourceLocation()
 {
@@ -102,10 +99,11 @@ QSourceLocation::~QSourceLocation()
 /*!
   Returns true if this QSourceLocation is identical to \a other.
 
-  Two QSourceLocation instances are equal if their uri(), line() and column()
-  are equal.
+  Two QSourceLocation instances are equal if their uri(), line() and
+  column() are equal.
 
-  QSourceLocation instances that isNull() returns true for, are considered equal.
+  QSourceLocation instances for which isNull() returns true are
+  considered equal.
  */
 bool QSourceLocation::operator==(const QSourceLocation &other) const
 {
@@ -115,7 +113,8 @@ bool QSourceLocation::operator==(const QSourceLocation &other) const
 }
 
 /*!
-  Returns the opposite of applying operator==() for this QXmlName and \a other.
+  Returns the opposite of applying operator==() for this QXmlName
+  and \a other.
  */
 bool QSourceLocation::operator!=(const QSourceLocation &other) const
 {
@@ -138,12 +137,9 @@ QSourceLocation &QSourceLocation::operator=(const QSourceLocation &other)
 }
 
 /*!
- Returns the current column number. The column number refers to the count
- of characters, not bytes.
-
- The first column has number 1, not 0.
-
- The default value is -1, signalling that the column number is unknown.
+  Returns the current column number. The column number refers to the
+  count of characters, not bytes. The first column is column 1, not 0.
+  The default value is -1, indicating the column number is unknown.
  */
 qint64 QSourceLocation::column() const
 {
@@ -151,8 +147,8 @@ qint64 QSourceLocation::column() const
 }
 
 /*!
- Sets the column number to \a newColumn. 0 is an invalid column number. The
- first column number is 1.
+  Sets the column number to \a newColumn. 0 is an invalid column
+  number. The first column number is 1.
  */
 void QSourceLocation::setColumn(qint64 newColumn)
 {
@@ -162,11 +158,8 @@ void QSourceLocation::setColumn(qint64 newColumn)
 }
 
 /*!
- Returns the current line number.
-
- The first line number is 1, not 0.
-
- The default value is -1, signalling that the line number is unknown.
+  Returns the current line number. The first line number is 1, not 0.
+  The default value is -1, indicating the line number is unknown.
  */
 qint64 QSourceLocation::line() const
 {
@@ -174,7 +167,8 @@ qint64 QSourceLocation::line() const
 }
 
 /*!
- Sets the line number to \a newLine.
+  Sets the line number to \a newLine. 0 is an invalid line
+  number. The first line number is 1.
  */
 void QSourceLocation::setLine(qint64 newLine)
 {
@@ -182,8 +176,9 @@ void QSourceLocation::setLine(qint64 newLine)
 }
 
 /*!
-  Returns the resource that this QSourceLocation refers to. For instance,
-  this could be a file on the local file system, if the URI scheme is \c file.
+  Returns the resource that this QSourceLocation refers to. For
+  example, the resource could be a file in the local file system,
+  if the URI scheme is \c file.
  */
 QUrl QSourceLocation::uri() const
 {
@@ -191,7 +186,7 @@ QUrl QSourceLocation::uri() const
 }
 
 /*!
- Sets the URI to \a newUri.
+  Sets the URI to \a newUri.
  */
 void QSourceLocation::setUri(const QUrl &newUri)
 {
@@ -200,6 +195,7 @@ void QSourceLocation::setUri(const QUrl &newUri)
 
 /*!
   \relates QSourceLocation
+  \since 4.4
 
   Prints \a sourceLocation to the debug stream \a debug.
  */
@@ -218,11 +214,11 @@ QDebug operator<<(QDebug debug, const QSourceLocation &sourceLocation)
 #endif
 
 /*!
- Returns \c true if this QSourceLocation doesn't identify anything.
+  Returns \c true if this QSourceLocation doesn't identify anything.
 
- For instance, for a default constructed QSourceLocation this function
- returns \c true. The same applies for any other QSourceLocation whose uri()
- is invalid.
+  For a default constructed QSourceLocation, this function returns \c
+  true. The same applies for any other QSourceLocation whose uri() is
+  invalid.
  */
 bool QSourceLocation::isNull() const
 {
@@ -230,7 +226,9 @@ bool QSourceLocation::isNull() const
 }
 
 /*!
-  Computes a hash key for the QSourceLocation \a location.
+ \since 4.4
+
+ Computes a hash key for the QSourceLocation \a location.
 
  \relates QSourceLocation
  */

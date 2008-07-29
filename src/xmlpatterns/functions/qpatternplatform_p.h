@@ -109,20 +109,6 @@ namespace QPatternist
         typedef QFlags<Flag> Flags;
 
         /**
-         * Enum telling whether the flags, pattern, or both
-         * have been compiled at compile time.
-         */
-        enum PreCompiledPart
-        {
-            NoPart          = 0,
-            OnlyPattern     = 1,
-            OnlyFlags       = 2,
-            FlagsAndPattern = OnlyPattern | OnlyFlags
-
-        };
-        typedef QFlags<PreCompiledPart> PreCompiledParts;
-
-        /**
          * @short This constructor is protected, because this class is supposed to be sub-classed.
          *
          * @param flagsPosition an index position specifying the operand containing the pattern
@@ -147,6 +133,20 @@ namespace QPatternist
         inline int captureCount() const;
 
     private:
+        /**
+         * Enum telling whether the flags, pattern, or both
+         * have been compiled at compile time.
+         */
+        enum PreCompiledPart
+        {
+            NoPart          = 0,
+            PatternPrecompiled     = 1,
+            FlagsPrecompiled       = 2,
+            FlagsAndPattern = PatternPrecompiled | FlagsPrecompiled
+
+        };
+        typedef QFlags<PreCompiledPart> PreCompiledParts;
+
         Q_DISABLE_COPY(PatternPlatform)
 
         Flags parseFlags(const QString &flags,
@@ -168,7 +168,7 @@ namespace QPatternist
 
     inline int PatternPlatform::captureCount() const
     {
-        if((m_compiledParts & OnlyPattern) == OnlyPattern)
+        if(m_compiledParts.testFlag(PatternPrecompiled))
             return m_pattern.numCaptures();
         else
             return -1;

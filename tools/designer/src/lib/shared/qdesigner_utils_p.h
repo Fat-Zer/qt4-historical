@@ -311,6 +311,21 @@ QDESIGNER_SHARED_EXPORT bool runUIC(const QString &fileName, UIC_Mode mode, QByt
 // Find a suitable variable name for a class.
 QDESIGNER_SHARED_EXPORT QString qtify(const QString &name);
 
+/* UpdateBlocker: Blocks the updates of the widget passed on while in scope.
+ * Does nothing if the incoming widget already has updatesEnabled==false
+ * which is important to avoid side-effects when putting it into QStackedLayout. */
+
+class QDESIGNER_SHARED_EXPORT UpdateBlocker {
+    Q_DISABLE_COPY(UpdateBlocker)
+
+public:
+    UpdateBlocker(QWidget *w);
+    ~UpdateBlocker();
+
+private:
+    QWidget *m_widget;
+    const bool m_updatesEnabled;
+};
 
 namespace Utils {
 

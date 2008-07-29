@@ -354,6 +354,16 @@ void QHttpSetHostRequest::start(QHttp *http)
     http->d_func()->hostName = hostName;
     http->d_func()->port = port;
     http->d_func()->mode = mode;
+
+#ifdef QT_NO_OPENSSL
+    if (mode == QHttp::ConnectionModeHttps) {
+        // SSL requested but no SSL support compiled in
+        http->d_func()->finishedWithError(QLatin1String(QT_TRANSLATE_NOOP("QHttp", "HTTPS connection requested but SSL support not compiled in")),
+                          QHttp::UnknownError);
+        return;
+    }
+#endif
+
     http->d_func()->finishedWithSuccess();
 }
 
@@ -1215,6 +1225,11 @@ public:
     obtained using method(), path(), majorVersion() and
     minorVersion().
 
+    Note that the request-URI must be in the format expected by the
+    HTTP server. That is, all reserved characters must be encoded in
+    %HH (where HH are two hexadecimal digits). See
+    QUrl::toPercentEncoding() for more information.
+
     Important inherited functions: setValue() and value().
 
     \sa QHttpResponseHeader QHttp
@@ -1231,7 +1246,9 @@ QHttpRequestHeader::QHttpRequestHeader()
 
 /*!
     Constructs a HTTP request header for the method \a method, the
-    request-URI \a path and the protocol-version \a majorVer and \a minorVer.
+    request-URI \a path and the protocol-version \a majorVer and \a
+    minorVer. The \a path argument must be properly encoded for an
+    HTTP request.
 */
 QHttpRequestHeader::QHttpRequestHeader(const QString &method, const QString &path, int majorVer, int minorVer)
     : QHttpHeader(*new QHttpRequestHeaderPrivate)
@@ -1286,7 +1303,8 @@ QHttpRequestHeader::QHttpRequestHeader(const QString &str)
 /*!
     This function sets the request method to \a method, the
     request-URI to \a path and the protocol-version to \a majorVer and
-    \a minorVer.
+    \a minorVer. The \a path argument must be properly encoded for an
+    HTTP request.
 
     \sa method() path() majorVersion() minorVersion()
 */
@@ -1423,7 +1441,7 @@ QString QHttpRequestHeader::toString() const
 
     To make an HTTP request you must set up suitable HTTP headers. The
     following example demonstrates, how to request the main HTML page
-    from the Trolltech home page (i.e. the URL
+    from the Trolltech home page (i.e., the URL
     \c http://www.trolltech.com/index.html):
 
     \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 2
@@ -1985,7 +2003,7 @@ void QHttp::clearPendingRequests()
     Sets the HTTP server that is used for requests to \a hostName on
     port \a port.
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2009,7 +2027,7 @@ int QHttp::setHost(const QString &hostName, quint16 port)
     If port is 0, it will use the default port for the \a mode used
     (80 for Http and 443 fopr Https).
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2022,6 +2040,10 @@ int QHttp::setHost(const QString &hostName, quint16 port)
 */
 int QHttp::setHost(const QString &hostName, ConnectionMode mode, quint16 port)
 {
+#ifdef QT_NO_OPENSSL
+    if (mode == ConnectionModeHttps)
+        qWarning("QHttp::setHost: HTTPS connection requested but SSL support not compiled in");
+#endif
     Q_D(QHttp);
     if (port == 0)
         port = (mode == ConnectionModeHttp) ? 80 : 443;
@@ -2035,7 +2057,7 @@ int QHttp::setHost(const QString &hostName, ConnectionMode mode, quint16 port)
     QHttp does not take ownership of the socket, and will not delete \a
     socket when destroyed.
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2059,7 +2081,7 @@ int QHttp::setSocket(QTcpSocket *socket)
     This function sets the user name \a userName and password \a
     password for web pages that require authentication.
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2125,8 +2147,10 @@ int QHttp::setProxy(const QNetworkProxy &proxy)
     Sends a get request for \a path to the server set by setHost() or
     as specified in the constructor.
 
-    \a path must be an absolute path like \c /index.html or an
-    absolute URI like \c http://www.trolltech.com/index.html.
+    \a path must be a absolute path like \c /index.html or an
+    absolute URI like \c http://www.trolltech.com/index.html and
+    must be encoded with either QUrl::toPercentEncoding() or
+    QUrl::encodedPath().
 
     If the IO device \a to is 0 the readyRead() signal is emitted
     every time new content data is available to read.
@@ -2136,7 +2160,9 @@ int QHttp::setProxy(const QNetworkProxy &proxy)
     pointer is valid for the duration of the operation (it is safe to
     delete it when the requestFinished() signal is emitted).
 
-    The function does not block and returns immediately. The request
+    \section1 Request Processing
+
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2145,7 +2171,8 @@ int QHttp::setProxy(const QNetworkProxy &proxy)
     emitted. When it is finished the requestFinished() signal is
     emitted.
 
-    \sa setHost() post() head() request() requestStarted() requestFinished() done()
+    \sa setHost(), post(), head(), request(), requestStarted(),
+    requestFinished(), done()
 */
 int QHttp::get(const QString &path, QIODevice *to)
 {
@@ -2160,7 +2187,9 @@ int QHttp::get(const QString &path, QIODevice *to)
     as specified in the constructor.
 
     \a path must be an absolute path like \c /index.html or an
-    absolute URI like \c http://www.trolltech.com/index.html.
+    absolute URI like \c http://www.trolltech.com/index.html and
+    must be encoded with either QUrl::toPercentEncoding() or
+    QUrl::encodedPath().
 
     The incoming data comes via the \a data IO device.
 
@@ -2172,7 +2201,7 @@ int QHttp::get(const QString &path, QIODevice *to)
     pointer is valid for the duration of the operation (it is safe to
     delete it when the requestFinished() signal is emitted).
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2211,7 +2240,7 @@ int QHttp::post(const QString &path, const QByteArray &data, QIODevice *to)
     \a path must be an absolute path like \c /index.html or an
     absolute URI like \c http://www.trolltech.com/index.html.
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2246,7 +2275,7 @@ int QHttp::head(const QString &path)
     pointer is valid for the duration of the operation (it is safe to
     delete it when the requestFinished() signal is emitted).
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2284,7 +2313,7 @@ int QHttp::request(const QHttpRequestHeader &header, const QByteArray &data, QIO
     connection to the HTTP server if the response header requires it
     to do so.
 
-    The function does not block and returns immediately. The request
+    The function does not block; instead, it returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
     function returns a unique identifier which is passed by
     requestStarted() and requestFinished().
@@ -2373,7 +2402,7 @@ void QHttpPrivate::_q_slotSendRequest()
 
 #ifndef QT_NO_OPENSSL
     QSslSocket *sslSocket = qobject_cast<QSslSocket *>(socket);
-    if (sslSocket || mode == QHttp::ConnectionModeHttps)
+    if (mode == QHttp::ConnectionModeHttps || (sslSocket && sslSocket->isEncrypted()))
         sslInUse = true;
 #endif
 
@@ -2716,6 +2745,8 @@ void QHttpPrivate::_q_slotReadyRead()
 
             if (!repost)
                 emit q->responseHeaderReceived(response);
+            if (state == QHttp::Unconnected || state == QHttp::Closing)
+                return;
         } else {
             // Restore the state, the next incoming data will be treated as if
             // we never say the 100 response.

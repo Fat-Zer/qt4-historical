@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/io/qdir.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qdir.cpp -->
 <head>
   <title>Qt 4.4: QDir Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -128,8 +128,8 @@
 <h3>Navigation and Directory Operations</h3>
 <p>A directory's path can be obtained with the <a href="qdir.html#pathx">path</a>() function, and a new path set with the <a href="qdir.html#setPath">setPath</a>() function. The absolute path to a directory is found by calling <a href="qdir.html#absolutePath">absolutePath</a>().</p>
 <p>The name of a directory is found using the <a href="qdir.html#dirName">dirName</a>() function. This typically returns the last element in the absolute path that specifies the location of the directory. However, it can also return &quot;.&quot; if the QDir represents the current directory.</p>
-<pre>     QDir(&quot;Documents/Letters/Applications&quot;).dirName() // &quot;Applications&quot;
-     QDir().dirName()                                 // &quot;.&quot;</pre>
+<pre>     QDir(&quot;Documents/Letters/Applications&quot;).dirName() <span class="comment">// &quot;Applications&quot;</span>
+     QDir().dirName()                                 <span class="comment">// &quot;.&quot;</span></pre>
 <p>The path for a directory can also be changed with the <a href="qdir.html#cd">cd</a>() and <a href="qdir.html#cdUp">cdUp</a>() functions, both of which operate like familiar shell commands. When <a href="qdir.html#cd">cd</a>() is called with the name of an existing directory, the QDir object changes directory so that it represents that directory instead. The <a href="qdir.html#cdUp">cdUp</a>() function changes the directory of the QDir object so that it refers to its parent directory; i.e&#x2e; cd(&quot;..&quot;) is equivalent to <a href="qdir.html#cdUp">cdUp</a>().</p>
 <p>Directories can be created with <a href="qdir.html#mkdir">mkdir</a>(), renamed with <a href="qdir.html#rename">rename</a>(), and removed with <a href="qdir.html#rmdir">rmdir</a>().</p>
 <p>You can test for the presence of a directory with a given name by using <a href="qdir.html#exists">exists</a>(), and the properties of a directory can be tested with <a href="qdir.html#isReadable">isReadable</a>(), <a href="qdir.html#isAbsolute">isAbsolute</a>(), <a href="qdir.html#isRelative">isRelative</a>(), and <a href="qdir.html#isRoot">isRoot</a>().</p>
@@ -172,11 +172,11 @@
              qWarning(&quot;Cannot find the example directory&quot;);</pre>
 <p>(We could also use the static convenience function <a href="qfile.html#exists">QFile::exists</a>().)</p>
 <p>Traversing directories and reading a file:</p>
-<pre>         QDir dir = QDir::root();                 // &quot;/&quot;
-         if (!dir.cd(&quot;tmp&quot;)) {                    // &quot;/tmp&quot;
+<pre>         QDir dir = QDir::root();                 <span class="comment">// &quot;/&quot;</span>
+         if (!dir.cd(&quot;tmp&quot;)) {                    <span class="comment">// &quot;/tmp&quot;</span>
              qWarning(&quot;Cannot find the \&quot;/tmp\&quot; directory&quot;);
          } else {
-             QFile file(dir.filePath(&quot;ex1.txt&quot;)); // &quot;/tmp/ex1.txt&quot;
+             QFile file(dir.filePath(&quot;ex1.txt&quot;)); <span class="comment">// &quot;/tmp/ex1.txt&quot;</span>
              if (!file.open(QIODevice::ReadWrite))
                  qWarning(&quot;Cannot create the file %s&quot;, file.name());
          }</pre>
@@ -259,6 +259,7 @@
 <a name="//apple_ref/cpp/econst/QDir/Size" />
 <a name="//apple_ref/cpp/econst/QDir/Type" />
 <a name="//apple_ref/cpp/econst/QDir/Unsorted" />
+<a name="//apple_ref/cpp/econst/QDir/NoSort" />
 <a name="//apple_ref/cpp/econst/QDir/DirsFirst" />
 <a name="//apple_ref/cpp/econst/QDir/DirsLast" />
 <a name="//apple_ref/cpp/econst/QDir/Reversed" />
@@ -266,7 +267,6 @@
 <a name="//apple_ref/cpp/econst/QDir/LocaleAware" />
 <a name="//apple_ref/cpp/econst/QDir/SortByMask" />
 <a name="//apple_ref/cpp/econst/QDir/DefaultSort" />
-<a name="//apple_ref/cpp/econst/QDir/NoSort" />
 <a name="//apple_ref/cpp/tdef/QDir/SortFlags" />
 <h3 class="flags"><a name="SortFlag-enum"></a>enum QDir::SortFlag<br />flags QDir::SortFlags</h3>
 <p>This enum describes the sort options available to <a href="qdir.html">QDir</a>, e.g&#x2e; for <a href="qdir.html#entryList">entryList</a>() and <a href="qdir.html#entryInfoList">entryInfoList</a>(). The sort value is specified by OR-ing together values from the following list:</p>
@@ -277,6 +277,7 @@
 <tr><td valign="top"><tt>QDir::Size</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Sort by file size.</td></tr>
 <tr><td valign="top"><tt>QDir::Type</tt></td><td align="center" valign="top"><tt>0x80</tt></td><td valign="top">Sort by file type (extension).</td></tr>
 <tr><td valign="top"><tt>QDir::Unsorted</tt></td><td align="center" valign="top"><tt>0x03</tt></td><td valign="top">Do not sort.</td></tr>
+<tr><td valign="top"><tt>QDir::NoSort</tt></td><td align="center" valign="top"><tt>-1</tt></td><td valign="top">Not sorted by default.</td></tr>
 <tr><td valign="top"><tt>QDir::DirsFirst</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">Put the directories first, then the files.</td></tr>
 <tr><td valign="top"><tt>QDir::DirsLast</tt></td><td align="center" valign="top"><tt>0x20</tt></td><td valign="top">Put the files first, then the directories.</td></tr>
 <tr><td valign="top"><tt>QDir::Reversed</tt></td><td align="center" valign="top"><tt>0x08</tt></td><td valign="top">Reverse the sort order.</td></tr>
@@ -325,15 +326,15 @@
 <p>Returns the canonical path, i.e&#x2e; a path without symbolic links or redundant &quot;.&quot; or &quot;..&quot; elements.</p>
 <p>On systems that do not have symbolic links this function will always return the same string that <a href="qdir.html#absolutePath">absolutePath</a>() returns. If the canonical path does not exist (normally due to dangling symbolic links) canonicalPath() returns an empty string.</p>
 <p>Example:</p>
-<pre>         QString bin = &quot;/local/bin&quot;;         // where /local/bin is a symlink to /usr/bin
+<pre>         QString bin = &quot;/local/bin&quot;;         <span class="comment">// where /local/bin is a symlink to /usr/bin</span>
          QDir binDir(bin);
          QString canonicalBin = binDir.canonicalPath();
-         // canonicalBin now equals &quot;/usr/bin&quot;
+         <span class="comment">// canonicalBin now equals &quot;/usr/bin&quot;</span>
 
-         QString ls = &quot;/local/bin/ls&quot;;       // where ls is the executable &quot;ls&quot;
+         QString ls = &quot;/local/bin/ls&quot;;       <span class="comment">// where ls is the executable &quot;ls&quot;</span>
          QDir lsDir(ls);
          QString canonicalLs = lsDir.canonicalPath();
-         // canonicalLS now equals &quot;/usr/bin/ls&quot;.</pre>
+         <span class="comment">// canonicalLS now equals &quot;/usr/bin/ls&quot;.</span></pre>
 <p>See also <a href="qdir.html#pathx">path</a>(), <a href="qdir.html#absolutePath">absolutePath</a>(), <a href="qdir.html#exists">exists</a>(), <a href="qdir.html#cleanPath">cleanPath</a>(), <a href="qdir.html#dirName">dirName</a>(), and <a href="qdir.html#absoluteFilePath">absoluteFilePath</a>().</p>
 <a name="//apple_ref/cpp/instm/QDir/cd" />
 <h3 class="fn"><a name="cd"></a>bool QDir::cd ( const <a href="qstring.html">QString</a> &amp; <i>dirName</i> )</h3>
@@ -514,8 +515,8 @@
 <pre>         QDir dir(&quot;/home/bob&quot;);
          QString s;
 
-         s = dir.relativeFilePath(&quot;images/file.jpg&quot;);     // s is &quot;images/file.jpg&quot;
-         s = dir.relativeFilePath(&quot;/home/mary/file.txt&quot;); // s is &quot;../mary/file.txt&quot;</pre>
+         s = dir.relativeFilePath(&quot;images/file.jpg&quot;);     <span class="comment">// s is &quot;images/file.jpg&quot;</span>
+         s = dir.relativeFilePath(&quot;/home/mary/file.txt&quot;); <span class="comment">// s is &quot;../mary/file.txt&quot;</span></pre>
 <p>See also <a href="qdir.html#absoluteFilePath">absoluteFilePath</a>(), <a href="qdir.html#filePath">filePath</a>(), and <a href="qdir.html#canonicalPath">canonicalPath</a>().</p>
 <a name="//apple_ref/cpp/instm/QDir/remove" />
 <h3 class="fn"><a name="remove"></a>bool QDir::remove ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )</h3>
@@ -587,8 +588,8 @@
 <pre>         QDir::setSearchPaths(&quot;icons&quot;, QStringList(QDir::homePath() + &quot;/images&quot;));
          QDir::setSearchPaths(&quot;docs&quot;, QStringList(&quot;:/embeddedDocuments&quot;));
          ...
-         QPixmap pixmap(&quot;icons:undo.png&quot;); // will look for undo.png in QDir::homePath() + &quot;/images&quot;
-         QFile file(&quot;docs:design.odf&quot;); // will look in the :/embeddedDocuments resource path</pre>
+         QPixmap pixmap(&quot;icons:undo.png&quot;); <span class="comment">// will look for undo.png in QDir::homePath() + &quot;/images&quot;</span>
+         QFile file(&quot;docs:design.odf&quot;); <span class="comment">// will look in the :/embeddedDocuments resource path</span></pre>
 <p>File name prefix must be at least 2 characters long to avoid conflicts with Windows drive letters.</p>
 <p>Search paths may contain paths to <a href="resources.html">The Qt Resource System</a>.</p>
 <p>This function was introduced in Qt 4.3.</p>
@@ -624,7 +625,7 @@
 <h3 class="fn"><a name="operator-not-eq"></a>bool QDir::operator!= ( const QDir &amp; <i>dir</i> ) const</h3>
 <p>Returns true if directory <i>dir</i> and this directory have different paths or different sort or filter settings; otherwise returns false.</p>
 <p>Example:</p>
-<pre>         // The current directory is &quot;/usr/local&quot;
+<pre>         <span class="comment">// The current directory is &quot;/usr/local&quot;</span>
          QDir d1(&quot;/usr/local/bin&quot;);
          QDir d2(&quot;bin&quot;);
          if (d1 != d2)
@@ -636,7 +637,7 @@
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QDir::operator== ( const QDir &amp; <i>dir</i> ) const</h3>
 <p>Returns true if directory <i>dir</i> and this directory have the same path and their sort and filter settings are the same; otherwise returns false.</p>
 <p>Example:</p>
-<pre>         // The current directory is &quot;/usr/local&quot;
+<pre>         <span class="comment">// The current directory is &quot;/usr/local&quot;</span>
          QDir d1(&quot;/usr/local/bin&quot;);
          QDir d2(&quot;bin&quot;);
          if (d1 == d2)
@@ -679,6 +680,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

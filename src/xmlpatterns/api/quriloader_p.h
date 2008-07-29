@@ -101,7 +101,7 @@ namespace QPatternist
     private:
     };
 #endif
-};
+}
 
 QT_END_NAMESPACE
 

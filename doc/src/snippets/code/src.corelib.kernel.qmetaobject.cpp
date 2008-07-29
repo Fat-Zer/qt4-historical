@@ -51,3 +51,17 @@
 //! [5]
 
 
+//! [propertyCount]
+const QMetaObject* metaObject = obj->metaObject();
+QStringList properties;
+for(int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i)
+    properties << QString::fromLatin1(metaObject->property(i).name());
+//! [propertyCount]
+
+
+//! [methodCount]
+const QMetaObject* metaObject = obj->metaObject();
+QStringList methods;
+for(int i = metaObject->methodOffset(); i < metaObject->methodCount(); ++i)
+    methods << QString::fromLatin1(metaObject->property(i).signature());
+//! [methodCount]

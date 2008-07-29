@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: ObjectDescription Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -15,8 +15,8 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">ObjectDescription Class Reference<br /><span class="small-subtitle">(Phonon::ObjectDescription)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
-<p>The Phonon::ObjectDescription class provides a generic interface to information about Phonon objects. <b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt; <a href="#details">More...</a></p>
-<p>This class was introduced in Qt 4.4.</p>
+<p>The ObjectDescription class provides a generic interface to information about Phonon objects. <b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt; <a href="#details">More...</a></p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-objectdescription-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -44,12 +44,26 @@
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
-<p>The Phonon::ObjectDescription class provides a generic interface to information about Phonon objects. <b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt;</p>
+<p>The ObjectDescription class provides a generic interface to information about Phonon objects. <b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt;</p>
 <p>Phonon currently uses this class to describe audio effects and audio output devices - using the typedefs <a href="phonon-objectdescription.html#AudioOutputDevice-typedef">AudioOutputDevice</a> and <a href="phonon-objectdescription.html#EffectDescription-typedef">EffectDescription</a>.</p>
 <p>The class gives a <a href="phonon-objectdescription.html#description">description</a>() and a <a href="phonon-objectdescription.html#name">name</a>() of the object, both of which are strings appropriate for end users of a Phonon application. Objects of the same <a href="phonon-objectdescription.html#ObjectDescriptionType-enum">type</a> is uniquely identified by an <a href="phonon-objectdescription.html#index">index</a>().</p>
 <p>You can also check whether the device or effect described is <a href="phonon-objectdescription.html#isValid">valid</a>. This does not guarantee that the device or effect functions as expected, but that the ObjectDescription describes an existing device or effect.</p>
 <p>Audio output devices and effect descriptions are used to select the audio output device to be used for playback and to create effects; we show examples of this in the snippet below. The available descriptions can be fetched with <a href="phonon-backendcapabilities.html#availableAudioOutputDevices">availableAudioOutputDevices()</a> and <a href="phonon-backendcapabilities.html#availableAudioEffects">availableAudioEffects()</a> static functions in the <a href="phonon-backendcapabilities.html">Phonon::BackendCapabilities</a> namespace</p>
-<pre></pre>
+<pre>     QList&lt;Phonon::EffectDescription&gt; effectDescriptions =
+             Phonon::BackendCapabilities::availableAudioEffects();
+
+     QList&lt;Phonon::AudioOutputDevice&gt; audioOutputDevices =
+             Phonon::BackendCapabilities::availableAudioOutputDevices();
+
+     foreach (Phonon::EffectDescription effectDescription, effectDescriptions) {
+         Phonon::Effect *effect = new Phonon::Effect(effectDescription);
+
+         <span class="comment">// ... Do something with the effect, like insert it into a media graph</span>
+     }
+
+     Phonon::AudioOutput *audioOutput = new Phonon::AudioOutput;
+
+     audioOutput-&gt;setOutputDevice(audioOutputDevices[0]);</pre>
 <p>Other types of ObjectDescriptions might be possible in the future, e.g&#x2e;, descriptions of audio capture devices, such as microphones.</p>
 <p>See also <a href="phonon-objectdescription.html#AudioOutputDevice-typedef">Phonon::AudioOutputDevice</a>, <a href="phonon-objectdescription.html#EffectDescription-typedef">Phonon::EffectDescription</a>, and <a href="phonon-capabilities.html">Capabilities Example</a>.</p>
 <hr />
@@ -100,7 +114,8 @@
 <h3 class="fn"><a name="AudioOutputDevice-typedef"></a>typedef Phonon::AudioOutputDevice</h3>
 <p>This typedef of <a href="phonon-objectdescription.html">ObjectDescription</a> describes an audio output device, such as soundcards (with different drivers), sound servers, or other virtual outputs like playback on a different computer on the network.</p>
 <p>A list of available devices is given by the backend with Backendcapabilities::availableAudioOutputDevices()</p>
-<pre></pre>
+<pre>     QList&lt;Phonon::AudioOutputDevice&gt; audioOutputDevices =
+             Phonon::BackendCapabilities::availableAudioOutputDevices();</pre>
 <a name="//apple_ref/cpp/tdef/Phonon/EffectDescription" />
 <h3 class="fn"><a name="EffectDescription-typedef"></a>typedef Phonon::EffectDescription</h3>
 <p>EffectDescription gives a description of an <a href="phonon-overview.html#processors">audio effect</a>. It is a typedef of the <a href="phonon-objectdescription.html">ObjectDescription</a> class. Please see its class description for details.</p>
@@ -120,6 +135,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

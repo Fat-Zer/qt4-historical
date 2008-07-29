@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/kernel/qcoreapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qcoreapplication.cpp -->
 <head>
   <title>Qt 4.4: QCoreApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -243,6 +243,7 @@
 <a name="//apple_ref/cpp/clm/QCoreApplication/applicationPid" />
 <h3 class="fn"><a name="applicationPid"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QCoreApplication::applicationPid ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the current process ID for the application.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/clm/QCoreApplication/arguments" />
 <h3 class="fn"><a name="arguments"></a><a href="qstringlist.html">QStringList</a> QCoreApplication::arguments ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of command-line arguments.</p>
@@ -446,8 +447,8 @@
 
          void init_ptr()
          {
-             global_ptr = new int[100];      // allocate data
-             qAddPostRoutine(cleanup_ptr);   // delete later
+             global_ptr = new int[100];      <span class="comment">// allocate data</span>
+             qAddPostRoutine(cleanup_ptr);   <span class="comment">// delete later</span>
          }</pre>
 <p>Note that for an application- or module-wide cleanup, qAddPostRoutine() is often not suitable. For example, if the program is split into dynamically loaded modules, the relevant module may be unloaded long before the <a href="qapplication.html">QApplication</a> destructor is called.</p>
 <p>For modules and libraries, using a reference-counted initialization manager or Qt's parent-child deletion mechanism may be better. Here is an example of a private class that uses the parent-child mechanism to call a cleanup function at the right time:</p>
@@ -463,14 +464,14 @@
 
              ~MyPrivateInitStuff()
              {
-                 // cleanup goes here
+                 <span class="comment">// cleanup goes here</span>
              }
 
          private:
              MyPrivateInitStuff(QObject *parent)
                  : QObject(parent)
              {
-                 // initialization goes here
+                 <span class="comment">// initialization goes here</span>
              }
 
              MyPrivateInitStuff *p;
@@ -501,6 +502,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

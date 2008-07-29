@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qmake-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qmake-manual.qdoc -->
 <head>
   <title>Qt 4.4: qmake Platform Notes</title>
   <link rel="prev" href="qmake-running.html" />
@@ -47,7 +47,7 @@
 <h3>Using Frameworks</h3>
 <p><tt>qmake</tt> is able to automatically generate build rules for linking against frameworks in the standard framework directory on Mac OS X, located at <tt>/Library/Frameworks/</tt>.</p>
 <p>Directories other than the standard framework directory need to be specified to the build system, and this is achieved by appending linker options to the <a href="qmake-variable-reference.html#qmake-lflags">QMAKE_LFLAGS</a> variable, as shown in the following example:</p>
-<pre>         QMAKE_LFLAGS += -L/path/to/framework/directory/</pre>
+<pre>         QMAKE_LFLAGS += -F/path/to/framework/directory/</pre>
 <p>The framework itself is linked in by appending the <tt>-framework</tt> options and the name of the framework to the <a href="qmake-variable-reference.html#libs">LIBS</a> variable:</p>
 <pre>         LIBS += -framework TheFramework</pre>
 <a name="creating-frameworks"></a>
@@ -81,7 +81,7 @@
 <p>Developers using Visual Studio to write Qt applications can use the Visual Studio integration facilities provided with the <a href="commercialeditions.html">Qt Commercial Editions</a> and do not need to worry about how project dependencies are managed.</p>
 <p>However, some developers may need to import an existing <tt>qmake</tt> project into Visual Studio. <tt>qmake</tt> is able to take a project file and create a Visual Studio project that contains all the necessary information required by their development environment. This is achieved by setting the <tt>qmake</tt> <a href="qmake-variable-reference.html#template">project template</a> to either <tt>vcapp</tt> (for application projects) or <tt>vclib</tt> (for library projects).</p>
 <p>This can also be set using a command line option; for example:</p>
-<pre>     qmake -t vcapp</pre>
+<pre>     qmake -tp vc</pre>
 <p>Each time you update the project file, you need to run <tt>qmake</tt> to generate an updated Visual Studio project.</p>
 <a name="visual-studio-2005-manifest-files"></a>
 <h3>Visual Studio 2005 Manifest Files</h3>
@@ -100,6 +100,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

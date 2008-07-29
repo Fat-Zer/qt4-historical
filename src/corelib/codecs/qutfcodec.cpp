@@ -123,7 +123,7 @@ QByteArray QUtf8Codec::convertFromUnicode(const QChar *uc, int len, ConverterSta
                         *cursor++ = 0x80 | (((uchar) (u >> 12)) & 0x3f);
                     }
                 } else {
-                    *cursor++ = 0xe0 | ((uchar) (u >> 12)) & 0x3f;
+                    *cursor++ = 0xe0 | (((uchar) (u >> 12)) & 0x3f);
                 }
                 *cursor++ = 0x80 | (((uchar) (u >> 6)) & 0x3f);
             }

@@ -103,7 +103,7 @@ namespace QPatternist
         QIODevice *const m_source;
         QTimer m_timeout;
     };
-};
+}
 
 QT_END_NAMESPACE
 

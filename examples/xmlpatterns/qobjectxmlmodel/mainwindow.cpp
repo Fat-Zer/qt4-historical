@@ -112,7 +112,7 @@ MainWindow::MainWindow()
             QFile queryFile(":/queries/statisticsInHTML.xq");
             queryFile.open(QIODevice::ReadOnly);
             htmlQueryEdit->setPlainText(QString::fromUtf8(queryFile.readAll()));
-            htmlOutput->setHtml(output);
+            htmlOutput->setHtml(QString(output));
         }
     }
 }

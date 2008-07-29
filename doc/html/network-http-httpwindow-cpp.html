@@ -66,9 +66,9 @@
      : QDialog(parent)
  {
  #ifndef QT_NO_OPENSSL
-     urlLineEdit = new QLineEdit(&quot;https:<span class="comment">//</span>&quot;);
+     urlLineEdit = new QLineEdit(&quot;https:<span class="comment">//&quot;);</span>
  #else
-     urlLineEdit = new QLineEdit(&quot;http:<span class="comment">//</span>&quot;);
+     urlLineEdit = new QLineEdit(&quot;http:<span class="comment">//&quot;);</span>
  #endif
 
      urlLabel = new QLabel(tr(&quot;&amp;URL:&quot;));
@@ -214,12 +214,12 @@
  void HttpWindow::readResponseHeader(const QHttpResponseHeader &amp;responseHeader)
  {
      switch (responseHeader.statusCode()) {
-     case 200:                   <span class="comment">//</span> Ok
-     case 301:                   <span class="comment">//</span> Moved Permanently
-     case 302:                   <span class="comment">//</span> Found
-     case 303:                   <span class="comment">//</span> See Other
-     case 307:                   <span class="comment">//</span> Temporary Redirect
-         <span class="comment">//</span> these are not error conditions
+     case 200:                   <span class="comment">// Ok</span>
+     case 301:                   <span class="comment">// Moved Permanently</span>
+     case 302:                   <span class="comment">// Found</span>
+     case 303:                   <span class="comment">// See Other</span>
+     case 307:                   <span class="comment">// Temporary Redirect</span>
+         <span class="comment">// these are not error conditions</span>
          break;
 
      default:
@@ -281,6 +281,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

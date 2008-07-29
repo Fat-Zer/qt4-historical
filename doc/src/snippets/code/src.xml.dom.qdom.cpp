@@ -151,7 +151,7 @@
     while(!n.isNull()) {
         QDomElement e = n.toElement(); // try to convert the node to an element.
         if(!e.isNull()) {
-            cout << e.tagName() << endl; // the node really is an element.
+            cout << qPrintable(e.tagName()) << endl; // the node really is an element.
         }
         n = n.nextSibling();
     }

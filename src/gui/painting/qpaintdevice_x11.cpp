@@ -51,113 +51,12 @@
 
 QT_BEGIN_NAMESPACE
 
-/*!
-    \class QPaintDevice
-    \brief The QPaintDevice class is the base class of objects that
-    can be painted.
-
-    \ingroup multimedia
-
-    A paint device is an abstraction of a two-dimensional space that
-    can be drawn using a QPainter.  Its default coordinate system has
-    its origin located at the top-left position. X increases to the
-    right and Y increases downwards. The unit is one pixel.
-
-    The drawing capabilities of QPaintDevice are currently implemented
-    by the QWidget, QImage, QPixmap, QGLPixelBuffer, QPicture, and
-    QPrinter subclasses.
-
-    To implement support for a new backend, you must derive from
-    QPaintDevice and reimplement the virtual paintEngine() function to
-    tell QPainter which paint engine should be used to draw on this
-    particular device. Note that you also must create a corresponding
-    paint engine to be able to draw on the device, i.e derive from
-    QPaintEngine and reimplement its virtual functions.
-
-    \warning Qt requires that a QApplication object exists before
-    any paint devices can be created. Paint devices access window
-    system resources, and these resources are not initialized before
-    an application object is created.
-
-    The QPaintDevice class provides several functions returning the
-    various device metrics: The depth() function returns its bit depth
-    (number of bit planes). The height() function returns its height
-    in default coordinate system units (e.g. pixels for QPixmap and
-    QWidget) while heightMM() returns the height of the device in
-    millimeters. Similiarily, the width() and widthMM() functions
-    return the width of the device in default coordinate system units
-    and in millimeters, respectively. Alternatively, the protected
-    metric() function can be used to retrieve the metric information
-    by specifying the desired PaintDeviceMetric as argument.
-
-    The logicalDpiX() and logicalDpiY() functions return the
-    horizontal and vertical resolution of the device in dots per
-    inch. The physicalDpiX() and physicalDpiY() functions also return
-    the resolution of the device in dots per inch, but note that if
-    the logical and vertical resolution differ, the corresponding
-    QPaintEngine must handle the mapping. Finally, the numColors()
-    function returns the number of different colors available for the
-    paint device.
-
-    \sa QPaintEngine, QPainter, {The Coordinate System}, {The Paint
-    System}
-*/
-
-/*!
-    \enum QPaintDevice::PaintDeviceMetric
-
-    Describes the various metrics of a paint device.
-
-    \value PdmWidth The width of the paint device in default
-    coordinate system units (e.g. pixels for QPixmap and QWidget). See
-    also width().
-
-    \value PdmHeight The height of the paint device in default
-    coordinate system units (e.g. pixels for QPixmap and QWidget). See
-    also height().
-
-    \value PdmWidthMM The width of the paint device in millimeters. See
-    also widthMM().
-
-    \value PdmHeightMM  The height of the paint device in millimeters. See
-    also heightMM().
-
-    \value PdmNumColors The number of different colors available for
-    the paint device. See also numColors().
-
-    \value PdmDepth The bit depth (number of bit planes) of the paint
-    device. See also depth().
-
-    \value PdmDpiX The horizontal resolution of the device in dots per
-    inch. See also logicalDpiX().
-
-    \value PdmDpiY  The vertical resolution of the device in dots per inch. See
-    also logicalDpiY().
-
-    \value PdmPhysicalDpiX The horizontal resolution of the device in
-    dots per inch. See also physicalDpiX().
-
-    \value PdmPhysicalDpiY The vertical resolution of the device in
-    dots per inch. See also physicalDpiY().
-
-    \sa metric()
-*/
-
-/*!
-    Constructs a paint device. This constructor can be invoked only from
-    subclasses of QPaintDevice.
-*/
-
 QPaintDevice::QPaintDevice()
 {
     painters = 0;
 }
 
 extern void qt_painter_removePaintDevice(QPaintDevice *); //qpainter.cpp
-
-/*!
-    Destroys the paint device and frees window system resources.
-*/
 
 QPaintDevice::~QPaintDevice()
 {
@@ -166,35 +65,6 @@ QPaintDevice::~QPaintDevice()
                   "painted");
     qt_painter_removePaintDevice(this);
 }
-
-/*!
-    \fn int QPaintDevice::devType() const
-
-    \internal
-
-    Returns the device type identifier, which is QInternal::Widget
-    if the device is a QWidget, QInternal::Pixmap if it's a
-    QPixmap, QInternal::Printer if it's a QPrinter,
-    QInternal::Picture if it's a QPicture, or
-    QInternal::UnknownDevice in other cases.
-*/
-
-/*!
-    \fn bool QPaintDevice::paintingActive() const
-
-    Returns true if the device is currently being painted on, i.e. someone has
-    called QPainter::begin() but not yet called QPainter::end() for
-    this device; otherwise returns false.
-
-    \sa QPainter::isActive()
-*/
-
-/*!
-    \fn QPaintEngine *QPaintDevice::paintEngine() const
-
-    Returns a pointer to the paint engine used for drawing on the
-    device.
-*/
 
 /*! \internal
 
@@ -227,14 +97,6 @@ const Q_GUI_EXPORT QX11Info *qt_x11Info(const QPaintDevice *pd)
         return &static_cast<const QPixmap *>(pd)->x11Info();
     return 0;
 }
-
-/*!
-    \fn int QPaintDevice::metric(PaintDeviceMetric metric) const
-
-    Returns the metric information for  the given paint device \a metric.
-
-    \sa PaintDeviceMetric
-*/
 
 int QPaintDevice::metric(PaintDeviceMetric) const
 {
@@ -571,108 +433,5 @@ int QPaintDevice::x11AppDpiY(int screen)
 }
 #endif
 
-
-/*!
-    \fn int QPaintDevice::width() const
-
-    Returns the width of the paint device in default coordinate system
-    units (e.g. pixels for QPixmap and QWidget).
-
-    \sa widthMM()
-*/
-
-/*!
-    \fn int QPaintDevice::height() const
-
-    Returns the height of the paint device in default coordinate
-    system units (e.g. pixels for QPixmap and QWidget).
-
-    \sa heightMM()
-*/
-
-/*!
-    \fn int QPaintDevice::widthMM() const
-
-    Returns the width of the paint device in millimeters.
-
-    \sa width()
-*/
-
-/*!
-    \fn int QPaintDevice::heightMM() const
-
-    Returns the height of the paint device in millimeters.
-
-    \sa height()
-*/
-
-/*!
-    \fn int QPaintDevice::numColors() const
-
-    Returns the number of different colors available for the paint
-    device. Since this value is an int, it will not be sufficient to represent
-    the number of colors on 32 bit displays, in this case INT_MAX is
-    returned instead.
-*/
-
-/*!
-    \fn int QPaintDevice::depth() const
-
-    Returns the bit depth (number of bit planes) of the paint device.
-*/
-
-/*!
-    \fn int QPaintDevice::logicalDpiX() const
-
-    Returns the horizontal resolution of the device in dots per inch,
-    which is used when computing font sizes. For X11, this is usually
-    the same as could be computed from widthMM().
-
-    Note that if the logicalDpiX() doesn't equal the physicalDpiX(),
-    the corresponding QPaintEngine must handle the resolution mapping.
-
-    \sa logicalDpiY(), physicalDpiX()
-*/
-
-/*!
-    \fn int QPaintDevice::logicalDpiY() const
-
-    Returns the vertical resolution of the device in dots per inch,
-    which is used when computing font sizes. For X11, this is usually
-    the same as could be computed from heightMM().
-
-    Note that if the logicalDpiY() doesn't equal the physicalDpiY(),
-    the corresponding QPaintEngine must handle the resolution mapping.
-
-    \sa  logicalDpiX(), physicalDpiY()
-*/
-
-/*!
-    \fn int QPaintDevice::physicalDpiX() const
-
-    Returns the horizontal resolution of the device in dots per inch.
-    For example, when printing, this resolution refers to the physical
-    printer's resolution. The logical DPI on the other hand, refers to
-    the resolution used by the actual paint engine.
-
-    Note that if the physicalDpiX() doesn't equal the logicalDpiX(),
-    the corresponding QPaintEngine must handle the resolution mapping.
-
-    \sa  physicalDpiY(),  logicalDpiX()
-*/
-
-/*!
-    \fn int QPaintDevice::physicalDpiY() const
-
-    Returns the horizontal resolution of the device in dots per inch.
-    For example, when printing, this resolution refers to the physical
-    printer's resolution. The logical DPI on the other hand, refers to
-    the resolution used by the actual paint engine.
-
-    Note that if the physicalDpiY() doesn't equal the logicalDpiY(),
-    the corresponding QPaintEngine must handle the resolution mapping.
-
-    \sa  physicalDpiX(),  logicalDpiY()
-*/
 
 QT_END_NAMESPACE

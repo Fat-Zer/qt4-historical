@@ -1314,7 +1314,7 @@ void QtAbstractPropertyBrowserPrivate::createBrowserIndexes(QtProperty *property
         while (itIndex.hasNext()) {
             QtBrowserItem *idx = itIndex.next();
             QtBrowserItem *parentIdx = idx->parent();
-            if (parentProperty && parentIdx && parentIdx->property() == parentProperty || (!parentProperty && !parentIdx))
+            if ((parentProperty && parentIdx && parentIdx->property() == parentProperty) || (!parentProperty && !parentIdx))
                 parentToAfter[idx->parent()] = idx;
         }
     } else if (parentProperty) {
@@ -1375,7 +1375,7 @@ void QtAbstractPropertyBrowserPrivate::removeBrowserIndexes(QtProperty *property
     while (itIndex.hasNext()) {
         QtBrowserItem *idx = itIndex.next();
         QtBrowserItem *parentIdx = idx->parent();
-        if (parentProperty && parentIdx && parentIdx->property() == parentProperty || (!parentProperty && !parentIdx))
+        if ((parentProperty && parentIdx && parentIdx->property() == parentProperty) || (!parentProperty && !parentIdx))
             toRemove.append(idx);
     }
 

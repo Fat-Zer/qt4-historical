@@ -2341,9 +2341,10 @@ bool QFontDatabasePrivate::isApplicationFont(const QString &fileName)
 
     The function returns -1 if the font could not be loaded.
 
-    Currently only TrueType fonts and TrueType font collections are supported.
+    Currently only TrueType fonts, TrueType font collections, and OpenType fonts are
+    supported.
 
-    \bold{Note:} Adding application fonts on Unix/X11 platforms without fontconfig is
+    \note Adding application fonts on Unix/X11 platforms without fontconfig is
     currently not supported.
 
     \sa addApplicationFontFromData(), applicationFontFamilies(), removeApplicationFont()
@@ -2423,7 +2424,8 @@ QStringList QFontDatabase::applicationFontFamilies(int id)
     \sa removeApplicationFont(), addApplicationFont(), addApplicationFontFromData()
 */
 
-/*! \fn bool QFontDatabase::supportsThreadedFontRendering()
+/*! 
+    \fn bool QFontDatabase::supportsThreadedFontRendering()
     \since 4.4
 
     Returns true if font rendering is supported outside the GUI

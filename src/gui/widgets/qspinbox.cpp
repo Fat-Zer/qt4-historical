@@ -458,7 +458,7 @@ QString QSpinBox::textFromValue(int value) const
 {
     Q_D(const QSpinBox);
     QString str = locale().toString(value);
-    if (qAbs(value) >= 1000) {
+    if (qAbs(value) >= 1000 || value == INT_MIN) {
         str.remove(d->thousand);
     }
 

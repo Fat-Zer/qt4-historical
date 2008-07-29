@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/qtopiacore-displaymanagement.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtopiacore-displaymanagement.qdoc -->
 <head>
   <title>Qt 4.4: Qt for Embedded Linux Display Management</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -19,19 +19,20 @@
 <p>Contents:</p>
 <ul><li><a href="#available-drivers">Available Drivers</a></li>
 <li><a href="#specifying-a-driver">Specifying a Driver</a></li>
+<li><a href="#subdrivers-and-multiple-drivers">Subdrivers and Multiple Drivers</a></li>
 </ul>
 <a name="available-drivers"></a>
 <h2>Available Drivers</h2>
 <p><a href="qt-embedded.html">Qt for Embedded Linux</a> provides drivers for the Linux framebuffer, the virtual framebuffer, transformed screens, VNC servers and multi screens. Run the <tt>configure</tt> script to list the available drivers:</p>
-<pre>         ./configure -help</pre>
+<pre> ./configure -help</pre>
 <p>In the default Qt configuration, only an unaccelerated Linux framebuffer driver (<tt>/dev/fb0</tt>) is enabled. The various drivers can be enabled and disabled using the <tt>configure</tt> script. For example:</p>
-<pre>         ./configure -qt-gfx-transformed</pre>
+<pre> ./configure -qt-gfx-transformed</pre>
 <p>Custom screen drivers can be implemented by subclassing the QScreen class and creating a screen driver plugin (derived from the QScreenDriverPlugin class). The default implementation of the QScreenDriverFactory class will automatically detect the plugin, loading the driver into the server application at run-time.</p>
 <a name="specifying-a-driver"></a>
 <h2>Specifying a Driver</h2>
 <p>To specify which driver to use, set the <a href="qt-embedded-envvars.html#qws-display">QWS_DISPLAY</a> environment variable. For example (if the current shell is bash, ksh, zsh or sh):</p>
-<pre>         export QWS_DISPLAY=&quot;&lt;driver&gt;[:&lt;driver specific options&gt;]...
-                  [:&lt;display num&gt;]&quot;</pre>
+<pre> export QWS_DISPLAY=&quot;&lt;driver&gt;[:&lt;driver specific options&gt;]...
+          [:&lt;display num&gt;]&quot;</pre>
 <p>The valid values for the <tt>&lt;driver&gt;</tt> argument are <tt>LinuxFb</tt>, <tt>QVFb</tt>, <tt>VNC</tt>, <tt>Transformed</tt>, <tt>Multi</tt> and keys identifying custom drivers, and the <tt>&lt;display num&gt;</tt> argument is used to separate screens that are using the same screen driver and to enable multiple displays (see the <a href="qt-embedded-running.html">Running Qt for Embedded Linux Applications</a> documentation for more details). The driver specific options are described in the table below.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Driver Specific Option</th><th>Available For</th><th>Description</th></tr></thead>
@@ -46,14 +47,15 @@
 <tr valign="top" class="odd"><td><tt>offset=&lt;x,y&gt;</tt></td><td>Multi</td><td>Specifies the coordinates of a subscreens top-left corner (by default 0,0).</td></tr>
 </table></p>
 <p>The <a href="qt-embedded-envvars.html#qws-display">QWS_DISPLAY</a> environment variable can also be set using the <tt>-display</tt> option when running an application. For example:</p>
-<pre>         myApplication -display &quot;&lt;driver&gt;[:&lt;driver specific options&gt;]...
-                  [:&lt;display num&gt;]&quot;</pre>
-<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<thead><tr valign="top" class="qt-style"><th>Subdrivers</th></tr></thead>
-<tr valign="top" class="odd"><td>The VNC, Transformed and Multi screen drivers depend on subdrivers. The general syntax for specifying a driver is as follows:<pre>         export QWS_DISPLAY=&quot;&lt;driver&gt;[:&lt;subdriver&gt;][:&lt;subdriver options&gt;]...
-                 [ :&lt;display num&gt;]&quot;</pre>
+<pre> myApplication -display &quot;&lt;driver&gt;[:&lt;driver specific options&gt;]...
+          [:&lt;display num&gt;]&quot;</pre>
+<a name="subdrivers-and-multiple-drivers"></a>
+<h2>Subdrivers and Multiple Drivers</h2>
+<p>The VNC, Transformed and Multi screen drivers depend on subdrivers. The general syntax for specifying a driver is as follows:</p>
+<pre> export QWS_DISPLAY=&quot;&lt;driver&gt;[:&lt;subdriver&gt;][:&lt;subdriver options&gt;]...
+         [ :&lt;display num&gt;]&quot;</pre>
 <p>In the case of subdrivers, it is important to add a space between each subdriver and before the display number to separate the various drivers and displays. Note that <tt>Multi</tt> screen drivers can have several subdrivers. For example:</p>
-<pre>         export QWS_DISPLAY=&quot;Multi: QVFb:0 QVFb:offset=640,0:1 :2&quot;</pre>
+<pre> export QWS_DISPLAY=&quot;Multi: QVFb:0 QVFb:offset=640,0:1 :2&quot;</pre>
 <p>Note also that the VNC screen driver defaults to a virtual screen driver if no subdriver is specified. In this case the VNC driver accepts a few additional (optional) arguments specifying the size and depth of the default virtual screen:</p>
 <ul>
 <li><tt>size=&lt;width x height&gt;</tt></li>
@@ -62,15 +64,14 @@
 <li><tt>mmWidth=&lt;physical width in millimeters&gt;</tt></li>
 </ul>
 <p>Example running the VNC screen driver with a virtual screen of size 720x480 with 32 bits per pixel:</p>
-<pre>         export QWS_DISPLAY=&quot;VNC:size=720x480:depth=32&quot;</pre>
+<pre> export QWS_DISPLAY=&quot;VNC:size=720x480:depth=32&quot;</pre>
 <p>Example running the VNC screen driver on top of the Linux framebuffer driver:</p>
-<pre>         export QWS_DISPLAY=&quot;VNC:LinuxFb&quot;</pre>
-</td></tr>
-</table></p>
+<pre> export QWS_DISPLAY=&quot;VNC:LinuxFb&quot;</pre>
+<p>In this last example, Qt is using two screen drivers simultaneously, displaying output on both the device's screen and across a network on VNC client displays.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -448,7 +448,7 @@ namespace QPatternist
     {
         return node.stringValue(); // This can be improved a lot.
     }
-};
+}
 
     inline QXmlName QXmlNodeModelIndex::name() const
     {

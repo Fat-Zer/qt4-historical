@@ -93,7 +93,7 @@
  GLWidget::GLWidget(QWidget *parent)
    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
  {
-     <span class="comment">//</span> create the pbuffer
+     <span class="comment">// create the pbuffer</span>
      pbuffer = new QGLPixelBuffer(QSize(512, 512), format(), this);
      timerId = startTimer(20);
      setWindowTitle(tr(&quot;OpenGL pbuffers&quot;));
@@ -140,24 +140,24 @@
 
  void GLWidget::paintGL()
  {
-     <span class="comment">//</span> draw a spinning cube into the pbuffer..
+     <span class="comment">// draw a spinning cube into the pbuffer..</span>
      pbuffer-&gt;makeCurrent();
      glBindTexture(GL_TEXTURE_2D, cubeTexture);
      glCallList(pbufferList);
      glFlush();
 
-     <span class="comment">//</span> rendering directly to a texture is not supported on X11 and
-     <span class="comment">//</span> some Windows implementations, unfortunately
+     <span class="comment">// rendering directly to a texture is not supported on X11 and</span>
+     <span class="comment">// some Windows implementations, unfortunately</span>
      if (!hasDynamicTextureUpdate)
          pbuffer-&gt;updateDynamicTexture(dynamicTexture);
 
-     <span class="comment">//</span> ..and use the pbuffer contents as a texture when rendering the
-     <span class="comment">//</span> background and the bouncing cubes
+     <span class="comment">// ..and use the pbuffer contents as a texture when rendering the</span>
+     <span class="comment">// background and the bouncing cubes</span>
      makeCurrent();
      glBindTexture(GL_TEXTURE_2D, dynamicTexture);
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-     <span class="comment">//</span> draw the background
+     <span class="comment">// draw the background</span>
      glMatrixMode(GL_MODELVIEW);
      glPushMatrix();
      glLoadIdentity();
@@ -182,7 +182,7 @@
      glMatrixMode(GL_MODELVIEW);
      glPopMatrix();
 
-     <span class="comment">//</span> draw the bouncing cubes
+     <span class="comment">// draw the bouncing cubes</span>
      drawCube(0, 0.0f, 1.5f, 2.5f, 1.5f);
      drawCube(1, 1.0f, 2.0f, 2.5f, 2.0f);
      drawCube(2, 2.0f, 3.5f, 2.5f, 2.5f);
@@ -229,7 +229,7 @@
 
  void GLWidget::initPbuffer()
  {
-     <span class="comment">//</span> set up the pbuffer context
+     <span class="comment">// set up the pbuffer context</span>
      pbuffer-&gt;makeCurrent();
      initCommon();
 
@@ -246,7 +246,7 @@
      {
          glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-         <span class="comment">//</span> draw cube background
+         <span class="comment">// draw cube background</span>
          glPushMatrix();
          glLoadIdentity();
          glTranslatef(0.5f, 0.5f, -2.0f);
@@ -259,7 +259,7 @@
          glEnable(GL_TEXTURE_2D);
          glPopMatrix();
 
-         <span class="comment">//</span> draw cube
+         <span class="comment">// draw cube</span>
          glTranslatef(0.5f, 0.5f, 0.5f);
          glRotatef(3.0f, 1.0f, 1.0f, 1.0f);
          glTranslatef(-0.5f, -0.5f, -0.5f);
@@ -267,10 +267,10 @@
          glDrawArrays(GL_QUADS, 0, 24);
      }
      glEndList();
-     <span class="comment">//</span> generate a texture that has the same size/format as the pbuffer
+     <span class="comment">// generate a texture that has the same size/format as the pbuffer</span>
      dynamicTexture = pbuffer-&gt;generateDynamicTexture();
 
-     <span class="comment">//</span> bind the dynamic texture to the pbuffer - this is a no-op under X11
+     <span class="comment">// bind the dynamic texture to the pbuffer - this is a no-op under X11</span>
      hasDynamicTextureUpdate = pbuffer-&gt;bindToDynamicTexture(dynamicTexture);
      makeCurrent();
  }</pre>
@@ -278,6 +278,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

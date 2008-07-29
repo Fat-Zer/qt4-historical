@@ -223,9 +223,6 @@ CmdLineParser::Result CmdLineParser::parse(const QStringList &arguments)
         }
     }
 
-    if (m_register != None && m_collectionFile.isEmpty())
-        error = QObject::tr("Missing collection file!");
-
     if (!error.isEmpty()) {
         showMessage(error + QLatin1String("\n\n\n") + m_helpMessage, true);
         return Error;

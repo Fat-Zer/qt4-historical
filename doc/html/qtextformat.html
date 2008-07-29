@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/text/qtextformat.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/text/qtextformat.cpp -->
 <head>
   <title>Qt 4.4: QTextFormat Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -254,7 +254,7 @@
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextFormat::FontFamily</tt></td><td align="center" valign="top"><tt>0x2000</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontPointSize</tt></td><td align="center" valign="top"><tt>0x2001</tt></td><td valign="top">&nbsp;</td></tr>
-<tr><td valign="top"><tt>QTextFormat::FontSizeIncrement</tt></td><td align="center" valign="top"><tt>FontSizeAdjustment</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>QTextFormat::FontSizeAdjustment</tt></td><td align="center" valign="top"><tt>0x2002</tt></td><td valign="top">Specifies the change in size given to the fontsize already set using FontPointSize or FontPixelSize.</td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontWeight</tt></td><td align="center" valign="top"><tt>0x2003</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontItalic</tt></td><td align="center" valign="top"><tt>0x2004</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontUnderline</tt></td><td align="center" valign="top"><tt>0x2005</tt></td><td valign="top"><i>This property has been deprecated.</i> Use QTextFormat::TextUnderlineStyle instead.</td></tr>
@@ -499,13 +499,14 @@
 <a name="//apple_ref/cpp/instm/QTextFormat/toTableCellFormat" />
 <h3 class="fn"><a name="toTableCellFormat"></a><a href="qtexttablecellformat.html">QTextTableCellFormat</a> QTextFormat::toTableCellFormat () const</h3>
 <p>Returns this format as a table cell format.</p>
+<p>This function was introduced in Qt 4.4.</p>
 <a name="//apple_ref/cpp/instm/QTextFormat/toTableFormat" />
 <h3 class="fn"><a name="toTableFormat"></a><a href="qtexttableformat.html">QTextTableFormat</a> QTextFormat::toTableFormat () const</h3>
 <p>Returns this format as a table format.</p>
 <a name="//apple_ref/cpp/instm/QTextFormat/type" />
 <h3 class="fn"><a name="type"></a>int QTextFormat::type () const</h3>
 <p>Returns the type of this format.</p>
-<p>See also <a href="qtextformat.html#ObjectTypes-enum">ObjectTypes</a>.</p>
+<p>See also <a href="qtextformat.html#FormatType-enum">FormatType</a>.</p>
 <a name="//apple_ref/cpp/instm/QTextFormat/operator QVariant" />
 <h3 class="fn"><a name="operator-QVariant"></a>QTextFormat::operator QVariant () const</h3>
 <p>Returns the text format as a <a href="qvariant.html">QVariant</a></p>
@@ -522,6 +523,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

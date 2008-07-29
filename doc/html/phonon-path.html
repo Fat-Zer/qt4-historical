@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: Path Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Path Class Reference<br /><span class="small-subtitle">(Phonon::Path)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The Path class describes connections between media nodes. <a href="#details">More...</a></p>
-<p>This class was introduced in Qt 4.4.</p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-path-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -50,16 +50,16 @@
 <p>You create a path between two media nodes using the static <a href="phonon-path.html#createPath">Phonon::createPath</a>() function, which takes two nodes as arguments. The first argument will send the media stream to the second. Please refer to the class description of the individual media nodes and the Phonon <a href="phonon-overview.html">overview</a> to see which nodes can be connected to each other.</p>
 <p>Paths are also used to insert audio <a href="phonon-effect.html">Effect</a>s between two media nodes. The effect will then alter the stream on the path. Notice that <a href="phonon-effect.html">Effect</a>s also are media nodes, but that <a href="phonon-path.html#insertEffect">insertEffect</a>() - instead of <a href="phonon-path.html#createPath">Phonon::createPath</a>() - is used to insert them into the media graph.</p>
 <p>The following code example shows how create a path between two media nodes and insert an effect on that path.</p>
-<pre>     MediaObject *media = new MediaObject;
-     AudioOutput *output = new AudioOutput(Phonon::MusicCategory);
-     Path path = Phonon::createPath(media, output);
-     Q_ASSERT(path.isValid()); // for this simple case the path should always be
-                               //valid - there are unit tests to ensure it
-     // insert an effect
-     QList&lt;EffectDescription&gt; effectList = BackendCapabilities::availableAudioEffects();
-     if (!effectList.isEmpty()) {
-         Effect *effect = path.insertEffect(effectList.first());
-     }</pre>
+<pre> MediaObject *media = new MediaObject;
+ AudioOutput *output = new AudioOutput(Phonon::MusicCategory);
+ Path path = Phonon::createPath(media, output);
+ Q_ASSERT(path.isValid()); // for this simple case the path should always be
+                           //valid - there are unit tests to ensure it
+ // insert an effect
+ QList&lt;EffectDescription&gt; effectList = BackendCapabilities::availableAudioEffects();
+ if (!effectList.isEmpty()) {
+     Effect *effect = path.insertEffect(effectList.first());
+ }</pre>
 <p><b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt;</p>
 <p>See also <a href="phonon-medianode.html">Phonon::MediaNode</a>, <a href="phonon-mediaobject.html">Phonon::MediaObject</a>, <a href="phonon-audiooutput.html">Phonon::AudioOutput</a>, and <a href="phonon-videowidget.html">Phonon::VideoWidget</a>.</p>
 <hr />
@@ -145,6 +145,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

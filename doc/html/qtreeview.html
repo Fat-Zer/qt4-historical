@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/itemviews/qtreeview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qtreeview.cpp -->
 <head>
   <title>Qt 4.4: QTreeView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -113,7 +113,6 @@
 <li><div class="fn"/>void <b><a href="qtreeview.html#expandToDepth">expandToDepth</a></b> ( int <i>depth</i> )</li>
 <li><div class="fn"/>void <b><a href="qtreeview.html#hideColumn">hideColumn</a></b> ( int <i>column</i> )</li>
 <li><div class="fn"/>void <b><a href="qtreeview.html#resizeColumnToContents">resizeColumnToContents</a></b> ( int <i>column</i> )</li>
-<li><div class="fn"/>virtual void <b><a href="qtreeview.html#selectAll">selectAll</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qtreeview.html#showColumn">showColumn</a></b> ( int <i>column</i> )</li>
 </ul>
 <ul>
@@ -236,7 +235,7 @@
 <h3 class="fn"><a name="animated-prop"></a>animated : bool</h3>
 <p>This property holds whether animations are enabled.</p>
 <p>If this property is true the treeview will animate expandsion and collasping of branches. If this property is false, the treeview will expand or collapse branches immediately without showing the animation.</p>
-<p>This property was introduced in Qt Qt 4.2.</p>
+<p>This property was introduced in Qt 4.2.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isAnimated () const</b></li>
@@ -258,6 +257,7 @@
 <h3 class="fn"><a name="expandsOnDoubleClick-prop"></a>expandsOnDoubleClick : bool</h3>
 <p>This property holds whether the items can be expanded by double-clicking.</p>
 <p>This property holds whether the user can expand and collapse items by double-clicking. The default value is true.</p>
+<p>This property was introduced in Qt 4.4.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool expandsOnDoubleClick () const</b></li>
@@ -313,7 +313,7 @@
 <p>This property holds whether sorting is enabled.</p>
 <p>If this property is true, sorting is enabled for the tree; if the property is false, sorting is not enabled. The default value is false.</p>
 <p><b>Note:</b> In order to avoid performance issues, it is recommended that sorting is enabled <i>after</i> inserting the items into the tree. Alternatively, you could also insert the items into a list before inserting the items into the tree.</p>
-<p>This property was introduced in Qt Qt 4.2.</p>
+<p>This property was introduced in Qt 4.2.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isSortingEnabled () const</b></li>
@@ -336,6 +336,7 @@
 <h3 class="fn"><a name="wordWrap-prop"></a>wordWrap : bool</h3>
 <p>This property holds the item text word-wrapping policy.</p>
 <p>If this property is true then the item text is wrapped where necessary at word-breaks; otherwise it is not wrapped at all. This property is false by default.</p>
+<p>Note that even if wrapping is enabled, the cell will not be expanded to fit all text. Ellipsis will be inserted according to the current <a href="qabstractitemview.html#textElideMode-prop">textElideMode</a>.</p>
 <p>This property was introduced in Qt 4.3.</p>
 <p>Access functions:</p>
 <ul>
@@ -489,10 +490,6 @@
 <h3 class="fn"><a name="scrollTo"></a>void QTreeView::scrollTo ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, <a href="qabstractitemview.html#ScrollHint-enum">ScrollHint</a> <i>hint</i> = EnsureVisible )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Scroll the contents of the tree view until the given model item <i>index</i> is visible. The <i>hint</i> parameter specifies more precisely where the item should be located after the operation. If any of the parents of the model item are collapsed, they will be expanded to ensure that the model item is visible.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#scrollTo">QAbstractItemView</a>.</p>
-<a name="//apple_ref/cpp/instm/QTreeView/selectAll" />
-<h3 class="fn"><a name="selectAll"></a>void QTreeView::selectAll ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>Selects all the items in the underlying model.</p>
-<p>Reimplemented from <a href="qabstractitemview.html#selectAll">QAbstractItemView</a>.</p>
 <a name="//apple_ref/cpp/instm/QTreeView/setColumnHidden" />
 <h3 class="fn"><a name="setColumnHidden"></a>void QTreeView::setColumnHidden ( int <i>column</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>column</i> is hidden, otherwise the <i>column</i> is shown.</p>
@@ -558,6 +555,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -290,7 +290,7 @@ static void create_wm_client_leader()
 /*!
    \internal
    Update the X11 cursor of the widget w.
-   \a force is true if this function is called from dispatchEnterLeave, it means that the 
+   \a force is true if this function is called from dispatchEnterLeave, it means that the
    mouse is actually directly under this widget.
  */
 void qt_x11_enforce_cursor(QWidget * w, bool force)
@@ -303,9 +303,14 @@ void qt_x11_enforce_cursor(QWidget * w, bool force)
         lastUnderMouse = w;
     } else if (lastUnderMouse && lastUnderMouse->effectiveWinId() == w->effectiveWinId()) {
         w = lastUnderMouse;
+    } else if (!w->internalWinId()) {
+        return; //the mouse is not under this widget, and it's not native, so don't change it
     }
 
-    if (w->isWindow() || w->testAttribute(Qt::WA_SetCursor) || !w->internalWinId()) {
+    while (!w->internalWinId() && w->parentWidget() && !w->isWindow() && !w->testAttribute(Qt::WA_SetCursor))
+        w = w->parentWidget();
+
+    if (w->isWindow() || w->testAttribute(Qt::WA_SetCursor)) {
         QCursor *oc = QApplication::overrideCursor();
         if (oc) {
             XDefineCursor(X11->display, w->effectiveWinId(), oc->handle());
@@ -812,18 +817,6 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
 #endif
 }
 
-/*!
-    Frees up window system resources. Destroys the widget window if \a
-    destroyWindow is true.
-
-    destroy() calls itself recursively for all the child widgets,
-    passing \a destroySubWindows for the \a destroyWindow parameter.
-    To have more control over destruction of subwidgets, destroy
-    subwidgets selectively first.
-
-    This function is usually called from the QWidget destructor.
-*/
-
 void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
 {
     Q_D(QWidget);
@@ -970,11 +963,17 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
                 } else if (!w->isWindow()) {
                     w->d_func()->invalidateBuffer(w->rect());
                     if (w->internalWinId()) {
-                        if (!q->internalWinId()) {
-                            w->d_func()->setParent_sys(q, w->data->window_flags);
+                        if (w->testAttribute(Qt::WA_NativeWindow)) {
+                            QWidget *nativeParentWidget = w->nativeParentWidget();
+                            // Qt::WA_NativeWindow ensures that we always have a nativeParentWidget
+                            Q_ASSERT(nativeParentWidget != 0);
+                            QPoint p = w->mapTo(nativeParentWidget, QPoint());
+                            XReparentWindow(X11->display,
+                                            w->internalWinId(),
+                                            nativeParentWidget->internalWinId(),
+                                            p.x(), p.y());
                         } else {
-                            XReparentWindow(X11->display, w->internalWinId(), q->internalWinId(),
-                                            w->geometry().x(), w->geometry().y());
+                            w->d_func()->setParent_sys(q, w->data->window_flags);
                         }
                     }
                 } else if (isTransient(w)) {
@@ -1016,13 +1015,6 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
 #endif
 }
 
-/*!
-    Translates the widget coordinate \a pos to global screen
-    coordinates. For example, \c{mapToGlobal(QPoint(0,0))} would give
-    the global coordinates of the top-left pixel of the widget.
-
-    \sa mapFromGlobal() mapTo() mapToParent()
-*/
 
 QPoint QWidget::mapToGlobal(const QPoint &pos) const
 {
@@ -1041,12 +1033,6 @@ QPoint QWidget::mapToGlobal(const QPoint &pos) const
     return QPoint(x, y);
 }
 
-/*!
-    Translates the global screen coordinate \a pos to widget
-    coordinates.
-
-    \sa mapToGlobal() mapFrom() mapFromParent()
-*/
 
 QPoint QWidget::mapFromGlobal(const QPoint &pos) const
 {
@@ -1267,31 +1253,6 @@ void QWidgetPrivate::setWindowIconText_sys(const QString &iconText)
 }
 
 
-/*!
-    Grabs the mouse input.
-
-    This widget receives all mouse events until releaseMouse() is
-    called; other widgets get no mouse events at all. Keyboard
-    events are not affected. Use grabKeyboard() if you want to grab
-    that.
-
-    \warning Bugs in mouse-grabbing applications very often lock the
-    terminal. Use this function with extreme caution, and consider
-    using the \c -nograb command line option while debugging.
-
-    It is almost never necessary to grab the mouse when using Qt, as
-    Qt grabs and releases it sensibly. In particular, Qt grabs the
-    mouse when a mouse button is pressed and keeps it until the last
-    button is released.
-
-    Note that only visible widgets can grab mouse input. If
-    isVisible() returns false for a widget, that widget cannot call
-    grabMouse().
-
-    \sa releaseMouse() grabKeyboard() releaseKeyboard() grabKeyboard()
-    focusWidget()
-*/
-
 void QWidget::grabMouse()
 {
     if (isVisible() && !qt_nograb()) {
@@ -1322,19 +1283,6 @@ void QWidget::grabMouse()
     }
 }
 
-/*!
-    \overload
-
-    Grabs the mouse input and changes the cursor shape.
-
-    The cursor will assume shape \a cursor (for as long as the mouse
-    focus is grabbed) and this widget will be the only one to receive
-    mouse events until releaseMouse() is called().
-
-    \warning Grabbing the mouse might lock the terminal.
-
-    \sa releaseMouse(), grabKeyboard(), releaseKeyboard(), setCursor()
-*/
 
 void QWidget::grabMouse(const QCursor &cursor)
 {
@@ -1365,11 +1313,6 @@ void QWidget::grabMouse(const QCursor &cursor)
     }
 }
 
-/*!
-    Releases the mouse grab.
-
-    \sa grabMouse(), grabKeyboard(), releaseKeyboard()
-*/
 
 void QWidget::releaseMouse()
 {
@@ -1380,23 +1323,6 @@ void QWidget::releaseMouse()
     }
 }
 
-/*!
-    Grabs the keyboard input.
-
-    This widget receives all keyboard events until releaseKeyboard()
-    is called; other widgets get no keyboard events at all. Mouse
-    events are not affected. Use grabMouse() if you want to grab that.
-
-    The focus widget is not affected, except that it doesn't receive
-    any keyboard events. setFocus() moves the focus as usual, but the
-    new focus widget receives keyboard events only after
-    releaseKeyboard() is called.
-
-    If a different widget is currently grabbing keyboard input, that
-    widget's grab is released first.
-
-    \sa releaseKeyboard() grabMouse() releaseMouse() focusWidget()
-*/
 
 void QWidget::grabKeyboard()
 {
@@ -1409,11 +1335,6 @@ void QWidget::grabKeyboard()
     }
 }
 
-/*!
-    Releases the keyboard grab.
-
-    \sa grabKeyboard(), grabMouse(), releaseMouse()
-*/
 
 void QWidget::releaseKeyboard()
 {
@@ -1424,56 +1345,17 @@ void QWidget::releaseKeyboard()
 }
 
 
-/*!
-    Returns the widget that is currently grabbing the mouse input.
-
-    If no widget in this application is currently grabbing the mouse,
-    0 is returned.
-
-    \sa grabMouse(), keyboardGrabber()
-*/
-
 QWidget *QWidget::mouseGrabber()
 {
     return QWidgetPrivate::mouseGrabber;
 }
 
-/*!
-    Returns the widget that is currently grabbing the keyboard input.
-
-    If no widget in this application is currently grabbing the
-    keyboard, 0 is returned.
-
-    \sa grabMouse(), mouseGrabber()
-*/
 
 QWidget *QWidget::keyboardGrabber()
 {
     return QWidgetPrivate::keyboardGrabber;
 }
 
-/*!
-    Sets the top-level widget containing this widget to be the active
-    window.
-
-    An active window is a visible top-level window that has the
-    keyboard input focus.
-
-    This function performs the same operation as clicking the mouse on
-    the title bar of a top-level window. On X11, the result depends on
-    the Window Manager. If you want to ensure that the window is
-    stacked on top as well you should also call raise(). Note that the
-    window must be visible, otherwise activateWindow() has no effect.
-
-    On Windows, if you are calling this when the application is not
-    currently the active one then it will not make it the active
-    window.  It will change the color of the taskbar entry to indicate
-    that the window has changed in some way. This is because Microsoft
-    do not allow an application to interrupt what the user is currently
-    doing in another application.
-
-    \sa isActiveWindow(), window(), show()
-*/
 
 void QWidget::activateWindow()
 {
@@ -2024,8 +1906,6 @@ void QWidgetPrivate::raise_sys()
     Q_ASSERT(q->testAttribute(Qt::WA_WState_Created));
     if (q->internalWinId())
         XRaiseWindow(X11->display, q->internalWinId());
-    if(!q->isWindow())
-        invalidateBuffer(q->rect());
 }
 
 void QWidgetPrivate::lower_sys()
@@ -2532,13 +2412,6 @@ void QWidgetPrivate::scroll_sys(int dx, int dy, const QRect &r)
     qt_insert_sip(q, dx, dy); // #### ignores r
 }
 
-/*!
-    Internal implementation of the virtual QPaintDevice::metric()
-    function.
-
-    \a m is the metric to get.
-*/
-
 int QWidget::metric(PaintDeviceMetric m) const
 {
     Q_D(const QWidget);
@@ -2614,20 +2487,6 @@ void QWidgetPrivate::registerDropSite(bool on)
     Q_UNUSED(on);
 }
 
-/*!
-    \overload
-
-    Causes only the parts of the widget which overlap \a region to be
-    visible. If the region includes pixels outside the rect() of the
-    widget, window system controls in that area may or may not be
-    visible, depending on the platform.
-
-    Note that this effect can be slow if the region is particularly
-    complex.
-
-    \sa windowOpacity
-*/
-
 void QWidget::setMask(const QRegion& region)
 {
     Q_D(QWidget);
@@ -2659,30 +2518,6 @@ void QWidget::setMask(const QRegion& region)
     }
 #endif
 }
-
-/*!
-    Causes only the pixels of the widget for which \a bitmap has a
-    corresponding 1 bit to be visible. If the region includes pixels
-    outside the rect() of the widget, window system controls in that
-    area may or may not be visible, depending on the platform.
-
-    Note that this effect can be slow if the region is particularly
-    complex.
-
-    The following code shows how an image with an alpha channel can be
-    used to generate a mask for a widget:
-
-    \snippet doc/src/snippets/widget-mask/main.cpp 0
-
-    The label shown by this code is masked using the image it contains,
-    giving the appearance that an irregularly-shaped image is being drawn
-    directly onto the screen.
-
-    Masked widgets receive mouse events only on their visible
-    portions.
-
-    \sa clearMask(), windowOpacity(), {Shaped Clock Example}
-*/
 
 void QWidget::setMask(const QBitmap &bitmap)
 {
@@ -2719,12 +2554,6 @@ void QWidget::setMask(const QBitmap &bitmap)
     }
 #endif
 }
-
-/*!
-    Removes any mask set by setMask().
-
-    \sa setMask()
-*/
 
 void QWidget::clearMask()
 {

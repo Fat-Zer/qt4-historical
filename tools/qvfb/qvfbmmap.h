@@ -51,6 +51,7 @@ class QVFbHeader;
 class QTimer;
 class QMMapViewProtocol : public QVFbViewProtocol
 {
+    Q_OBJECT
 public:
     QMMapViewProtocol(int display_id, const QSize &size, int depth, QObject *parent = 0);
     ~QMMapViewProtocol();

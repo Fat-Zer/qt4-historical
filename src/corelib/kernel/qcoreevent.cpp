@@ -303,7 +303,7 @@ QEvent::~QEvent()
     \fn void QEvent::accept()
 
     Sets the accept flag of the event object, the equivalent of
-    callign setAccepted(true).
+    calling setAccepted(true).
 
     Setting the accept parameter indicates that the event receiver
     wants the event. Unwanted events might be propagated to the parent

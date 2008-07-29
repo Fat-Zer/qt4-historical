@@ -59,7 +59,6 @@
  #include &lt;QtGui&gt;
 
  #include &quot;mainwindow.h&quot;
- #include &quot;previewdialog.h&quot;
 
  MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -184,7 +183,7 @@
 
      if (parent) {
 
-         <span class="comment">//</span> Only count style items.
+         <span class="comment">// Only count style items.</span>
          if (state == Qt::Checked)
              ++markedCount;
          else
@@ -192,7 +191,7 @@
 
          if (state == Qt::Checked &amp;&amp;
              parent-&gt;checkState(0) == Qt::Unchecked) {
-             <span class="comment">//</span> Mark parent items when child items are checked.
+             <span class="comment">// Mark parent items when child items are checked.</span>
              parent-&gt;setCheckState(0, Qt::Checked);
 
          } else if (state == Qt::Unchecked &amp;&amp;
@@ -205,7 +204,7 @@
                      break;
                  }
              }
-             <span class="comment">//</span> Unmark parent items when all child items are unchecked.
+             <span class="comment">// Unmark parent items when all child items are unchecked.</span>
              if (!marked)
                  parent-&gt;setCheckState(0, Qt::Unchecked);
          }
@@ -217,8 +216,8 @@
                  ++number;
          }
 
-         <span class="comment">//</span> Mark/unmark all child items when marking/unmarking top-level
-         <span class="comment">//</span> items.
+         <span class="comment">// Mark/unmark all child items when marking/unmarking top-level</span>
+         <span class="comment">// items.</span>
          if (state == Qt::Checked &amp;&amp; number == 0) {
              for (row = 0; row &lt; item-&gt;childCount(); ++row) {
                  if (item-&gt;child(row)-&gt;checkState(0) == Qt::Unchecked)
@@ -244,38 +243,44 @@
          return;
 
      QPrinter printer(QPrinter::HighResolution);
-     if (!setupPrinter(printer))
+     QPrintDialog dialog(&amp;printer, this);
+     if (dialog.exec() != QDialog::Accepted)
          return;
 
      int from = printer.fromPage();
      int to = printer.toPage();
-     if (from &lt;= 0 &amp;&amp; to &lt;= 0) {
-         from = 1;
-         to = pageMap.keys().count();
-     }
+     if (from &lt;= 0 &amp;&amp; to &lt;= 0)
+         printer.setFromTo(1, pageMap.keys().count());
 
-     QProgressDialog progress(tr(&quot;Printing font samples...&quot;), tr(&quot;&amp;Cancel&quot;),
+     printDocument(&amp;printer);
+ }
+
+ void MainWindow::printDocument(QPrinter *printer)
+ {
+     printer-&gt;setFromTo(1, pageMap.count());
+
+     QProgressDialog progress(tr(&quot;Preparing font samples...&quot;), tr(&quot;&amp;Cancel&quot;),
                               0, pageMap.count(), this);
      progress.setWindowModality(Qt::ApplicationModal);
-     progress.setWindowTitle(tr(&quot;Printing&quot;));
-     progress.setMinimum(from - 1);
-     progress.setMaximum(to);
+     progress.setWindowTitle(tr(&quot;Font Sampler&quot;));
+     progress.setMinimum(printer-&gt;fromPage() - 1);
+     progress.setMaximum(printer-&gt;toPage());
 
      QPainter painter;
-     painter.begin(&amp;printer);
+     painter.begin(printer);
      bool firstPage = true;
 
-     for (int index = from - 1; index &lt; to; ++index) {
+     for (int page = printer-&gt;fromPage(); page &lt;= printer-&gt;toPage(); ++page) {
 
          if (!firstPage)
-             printer.newPage();
+             printer-&gt;newPage();
 
          qApp-&gt;processEvents();
          if (progress.wasCanceled())
              break;
 
-         printPage(index, painter, printer);
-         progress.setValue(index + 1);
+         printPage(page - 1, &amp;painter, printer);
+         progress.setValue(page);
          firstPage = false;
      }
 
@@ -289,15 +294,10 @@
      if (pageMap.count() == 0)
          return;
 
-     QPrinter printer;
-
-     PreviewDialog preview(printer, this);
-     connect(&amp;preview,
-         SIGNAL(pageRequested(int, QPainter &amp;, QPrinter &amp;)),
-         this, SLOT(printPage(int, QPainter &amp;, QPrinter &amp;)),
-         Qt::DirectConnection);
-
-     preview.setNumberOfPages(pageMap.keys().count());
+     QPrinter printer(QPrinter::HighResolution);
+     QPrintPreviewDialog preview(&amp;printer, this);
+     connect(&amp;preview, SIGNAL(paintRequested(QPrinter *)),
+             this, SLOT(printDocument(QPrinter *)));
      preview.exec();
  }
 
@@ -324,21 +324,12 @@
      return pageMap;
  }
 
- bool MainWindow::setupPrinter(QPrinter &amp;printer)
- {
-     QPrintDialog dialog(&amp;printer, this);
-     if (dialog.exec() == QDialog::Accepted)
-         return true;
-     else
-         return false;
- }
-
- void MainWindow::printPage(int index, QPainter &amp;painter, QPrinter &amp;printer)
+ void MainWindow::printPage(int index, QPainter *painter, QPrinter *printer)
  {
      QString family = pageMap.keys()[index];
      StyleItems items = pageMap[family];
 
-     <span class="comment">//</span> Find the dimensions of the text on each page.
+     <span class="comment">// Find the dimensions of the text on each page.</span>
      qreal width = 0.0;
      qreal height = 0.0;
      foreach (QTreeWidgetItem *item, items) {
@@ -346,10 +337,10 @@
          int weight = item-&gt;data(0, Qt::UserRole).toInt();
          bool italic = item-&gt;data(0, Qt::UserRole + 1).toBool();
 
-         <span class="comment">//</span> Calculate the maximum width and total height of the text.
+         <span class="comment">// Calculate the maximum width and total height of the text.</span>
          foreach (int size, sampleSizes) {
              QFont font(family, size, weight, italic);
-             font = QFont(font, painter.device());
+             font = QFont(font, painter-&gt;device());
              QFontMetricsF fontMetrics(font);
              QRectF rect = fontMetrics.boundingRect(
              QString(&quot;%1 %2&quot;).arg(family).arg(style));
@@ -358,18 +349,18 @@
          }
      }
 
-     qreal xScale = printer.pageRect().width() / width;
-     qreal yScale = printer.pageRect().height() / height;
+     qreal xScale = printer-&gt;pageRect().width() / width;
+     qreal yScale = printer-&gt;pageRect().height() / height;
      qreal scale = qMin(xScale, yScale);
 
-     qreal remainingHeight = printer.pageRect().height()/scale - height;
+     qreal remainingHeight = printer-&gt;pageRect().height()/scale - height;
      qreal spaceHeight = (remainingHeight/4.0) / (items.count() + 1);
      qreal interLineHeight = (remainingHeight/4.0) / (sampleSizes.count() * items.count());
 
-     painter.save();
-     painter.translate(printer.pageRect().width()/2.0, printer.pageRect().height()/2.0);
-     painter.scale(scale, scale);
-     painter.setBrush(QBrush(Qt::black));
+     painter-&gt;save();
+     painter-&gt;translate(printer-&gt;pageRect().width()/2.0, printer-&gt;pageRect().height()/2.0);
+     painter-&gt;scale(scale, scale);
+     painter-&gt;setBrush(QBrush(Qt::black));
 
      qreal x = -width/2.0;
      qreal y = -height/2.0 - remainingHeight/4.0 + spaceHeight;
@@ -379,28 +370,28 @@
          int weight = item-&gt;data(0, Qt::UserRole).toInt();
          bool italic = item-&gt;data(0, Qt::UserRole + 1).toBool();
 
-         <span class="comment">//</span> Draw each line of text.
+         <span class="comment">// Draw each line of text.</span>
          foreach (int size, sampleSizes) {
              QFont font(family, size, weight, italic);
-             font = QFont(font, painter.device());
+             font = QFont(font, painter-&gt;device());
              QFontMetricsF fontMetrics(font);
              QRectF rect = fontMetrics.boundingRect(QString(&quot;%1 %2&quot;).arg(
                            font.family()).arg(style));
              y += rect.height();
-             painter.setFont(font);
-             painter.drawText(QPointF(x, y),
+             painter-&gt;setFont(font);
+             painter-&gt;drawText(QPointF(x, y),
                               QString(&quot;%1 %2&quot;).arg(family).arg(style));
              y += interLineHeight;
          }
          y += spaceHeight;
      }
 
-     painter.restore();
+     painter-&gt;restore();
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

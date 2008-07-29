@@ -165,6 +165,8 @@ QMacInputContext::cleanup()
 OSStatus
 QMacInputContext::globalEventProcessor(EventHandlerCallRef, EventRef event, void *)
 {
+    QScopedLoopLevelCounter loopLevelCounter(QApplicationPrivate::instance()->threadData);
+
     SRefCon refcon = 0;
     GetEventParameter(event, kEventParamTextInputSendRefCon, typeRefCon, 0,
                       sizeof(refcon), 0, &refcon);

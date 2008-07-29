@@ -74,7 +74,6 @@ QT_BEGIN_NAMESPACE
     \sa QPushButton QRadioButton
 */
 
-
 /*!
     \property QCommandLinkButton::description
     \brief A descriptive label to complement the button text
@@ -82,6 +81,16 @@ QT_BEGIN_NAMESPACE
     Setting this property will set a descriptive text on the
     button, complementing the text label. This will usually
     be displayed in a smaller font than the primary text.
+*/
+
+/*!
+    \property QCommandLinkButton::flat
+    \brief This property determines whether the button is displayed as a flat
+    panel or with a border.
+
+    By default, this property is set to false.
+
+    \sa QPushButton::flat
 */
 
 class QCommandLinkButtonPrivate : public QPushButtonPrivate

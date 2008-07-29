@@ -117,26 +117,26 @@
      if (validItems == 0)
          return QModelIndex();
 
-     <span class="comment">//</span> Transform the view coordinates into contents widget coordinates.
+     <span class="comment">// Transform the view coordinates into contents widget coordinates.</span>
      int wx = point.x() + horizontalScrollBar()-&gt;value();
      int wy = point.y() + verticalScrollBar()-&gt;value();
 
      if (wx &lt; totalSize) {
          double cx = wx - totalSize/2;
-         double cy = totalSize/2 - wy; <span class="comment">//</span> positive cy for items above the center
+         double cy = totalSize/2 - wy; <span class="comment">// positive cy for items above the center</span>
 
-         <span class="comment">//</span> Determine the distance from the center point of the pie chart.
+         <span class="comment">// Determine the distance from the center point of the pie chart.</span>
          double d = pow(pow(cx, 2) + pow(cy, 2), 0.5);
 
          if (d == 0 || d &gt; pieSize/2)
              return QModelIndex();
 
-         <span class="comment">//</span> Determine the angle of the point.
+         <span class="comment">// Determine the angle of the point.</span>
          double angle = (180 / M_PI) * acos(cx/d);
          if (cy &lt; 0)
              angle = 360 - angle;
 
-         <span class="comment">//</span> Find the relevant slice of the pie.
+         <span class="comment">// Find the relevant slice of the pie.</span>
          double startAngle = 0.0;
 
          for (int row = 0; row &lt; model()-&gt;rowCount(rootIndex()); ++row) {
@@ -166,7 +166,7 @@
                  if (listItem == validRow)
                      return model()-&gt;index(row, 0, rootIndex());
 
-                 <span class="comment">//</span> Update the list index that corresponds to the next valid row.
+                 <span class="comment">// Update the list index that corresponds to the next valid row.</span>
                  validRow++;
              }
          }
@@ -190,8 +190,8 @@
      if (!index.isValid())
          return QRect();
 
-     <span class="comment">//</span> Check whether the index's row is in the list of rows represented
-     <span class="comment">//</span> by slices.
+     <span class="comment">// Check whether the index's row is in the list of rows represented</span>
+     <span class="comment">// by slices.</span>
      QModelIndex valueIndex;
 
      if (index.column() != 1)
@@ -339,7 +339,7 @@
      painter.fillRect(event-&gt;rect(), background);
      painter.setPen(foreground);
 
-     <span class="comment">//</span> Viewport rectangles
+     <span class="comment">// Viewport rectangles</span>
      QRect pieRect = QRect(margin, margin, pieSize, pieSize);
      QPoint keyPoint = QPoint(totalSize - horizontalScrollBar()-&gt;value(),
                               margin - verticalScrollBar()-&gt;value());
@@ -480,8 +480,8 @@
 
  void PieView::setSelection(const QRect &amp;rect, QItemSelectionModel::SelectionFlags command)
  {
-     <span class="comment">//</span> Use content widget coordinates because we will use the itemRegion()
-     <span class="comment">//</span> function to check for intersections.
+     <span class="comment">// Use content widget coordinates because we will use the itemRegion()</span>
+     <span class="comment">// function to check for intersections.</span>
 
      QRect contentsRect = rect.translated(
                              horizontalScrollBar()-&gt;value(),
@@ -581,6 +581,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

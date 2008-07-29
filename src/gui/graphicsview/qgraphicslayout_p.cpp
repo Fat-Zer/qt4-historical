@@ -85,6 +85,10 @@ void QGraphicsLayoutPrivate::reparentChildWidgets(QGraphicsWidget *mw)
     //bool mwVisible = mw && mw->isVisible();
     for (int i = 0; i < n; ++i) {
         QGraphicsLayoutItem *item = q->itemAt(i);
+        if (!item) {
+            // Skip stretch items
+            continue;
+        }
         if (item->isLayout()) {
             QGraphicsLayout *l = static_cast<QGraphicsLayout*>(item);
             l->d_func()->reparentChildWidgets(mw);
@@ -155,7 +159,7 @@ static bool removeWidgetFromLayout(QGraphicsLayout *lay, QGraphicsWidget *wid)
 
     QGraphicsLayoutItem *child;
     for (int i = 0; (child = lay->itemAt(i)); ++i) {
-        if (child->isLayout()) {
+        if (child && child->isLayout()) {
             if (removeWidgetFromLayout(static_cast<QGraphicsLayout*>(child), wid))
                 return true;
         } else if (child == wid) {

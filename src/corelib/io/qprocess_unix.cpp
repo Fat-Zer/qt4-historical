@@ -577,6 +577,10 @@ inline pid_t qt_fork()
 #endif
 }
 
+#ifdef Q_OS_MAC
+Q_GLOBAL_STATIC(QMutex, cfbundleMutex);
+#endif
+
 void QProcessPrivate::startProcess()
 {
     Q_Q(QProcess);
@@ -628,8 +632,13 @@ void QProcessPrivate::startProcess()
         QCFType<CFURLRef> url = CFURLCreateWithFileSystemPath(0,
                                                           QCFString(fileInfo.absoluteFilePath()),
                                                           kCFURLPOSIXPathStyle, true);
-        QCFType<CFBundleRef> bundle = CFBundleCreate(0, url);
-        url = CFBundleCopyExecutableURL(bundle);
+        {
+            // CFBundle is not reentrant, since CFBundleCreate might return a reference
+            // to a cached bundle object. Protect the bundle calls with a mutex lock.
+            QMutexLocker lock(cfbundleMutex());
+            QCFType<CFBundleRef> bundle = CFBundleCreate(0, url);
+            url = CFBundleCopyExecutableURL(bundle);
+        }
         if (url) {
             QCFString str = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
             encodedProgramName += "/Contents/MacOS/" + static_cast<QString>(str).toUtf8();

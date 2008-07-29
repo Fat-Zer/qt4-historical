@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/moc.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/moc.qdoc -->
 <head>
   <title>Qt 4.4: Using the Meta-Object Compiler (moc)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -71,21 +71,21 @@
 <p>We recommend using Trolltech's makefile generation tool, <a href="qmake-manual.html#qmake">qmake</a>, for building your makefiles. This tool generates a makefile that does all the necessary <tt>moc</tt> handling.</p>
 <p>If you want to create your makefiles yourself, here are some tips on how to include moc handling.</p>
 <p>For <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> class declarations in header files, here is a useful makefile rule if you only use GNU make:</p>
-<pre>         moc_%.cpp: %.h
-                 moc $(DEFINES) $(INCPATH) $&lt; -o $@</pre>
+<pre> moc_%.cpp: %.h
+         moc $(DEFINES) $(INCPATH) $&lt; -o $@</pre>
 <p>If you want to write portably, you can use individual rules of the following form:</p>
-<pre>         moc_foo.cpp: foo.h
-                 moc $(DEFINES) $(INCPATH) $&lt; -o $@</pre>
+<pre> moc_foo.cpp: foo.h
+         moc $(DEFINES) $(INCPATH) $&lt; -o $@</pre>
 <p>You must also remember to add <tt>moc_foo.cpp</tt> to your <tt>SOURCES</tt> (substitute your favorite name) variable and <tt>moc_foo.o</tt> or <tt>moc_foo.obj</tt> to your <tt>OBJECTS</tt> variable.</p>
 <p>Both examples assume that <tt>$(DEFINES)</tt> and <tt>$(INCPATH)</tt> expand to the define and include path options that are passed to the C++ compiler. These are required by <tt>moc</tt> to preprocess the source files.</p>
 <p>While we prefer to name our C++ source files <tt>.cpp</tt>, you can use any other extension, such as <tt>.C</tt>, <tt>.cc</tt>, <tt>.CC</tt>, <tt>.cxx</tt>, and <tt>.c++</tt>, if you prefer.</p>
 <p>For <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> class declarations in implementation (<tt>.cpp</tt>) files, we suggest a makefile rule like this:</p>
-<pre>         foo.o: foo.moc
+<pre> foo.o: foo.moc
 
-         foo.moc: foo.cpp
-                 moc $(DEFINES) $(INCPATH) -i $&lt; -o $@</pre>
+ foo.moc: foo.cpp
+         moc $(DEFINES) $(INCPATH) -i $&lt; -o $@</pre>
 <p>This guarantees that make will run the moc before it compiles <tt>foo.cpp</tt>. You can then put</p>
-<pre>         #include &quot;foo.moc&quot;</pre>
+<pre> #include &quot;foo.moc&quot;</pre>
 <p>at the end of <tt>foo.cpp</tt>, where all the classes declared in that file are fully known.</p>
 <a name="command-line-options"></a>
 <h2>Command-Line Options</h2>
@@ -105,9 +105,9 @@
 <tr valign="top" class="odd"><td><tt>-v</tt></td><td>Display <tt>moc</tt>'s version number.</td></tr>
 </table></p>
 <p>You can explicitly tell the moc not to parse parts of a header file. <tt>moc</tt> defines the preprocessor symbol <tt>Q_MOC_RUN</tt>. Any code surrounded by</p>
-<pre>         #ifndef Q_MOC_RUN
-             ...
-         #endif</pre>
+<pre> #ifndef Q_MOC_RUN
+     ...
+ #endif</pre>
 <p>is skipped by the <tt>moc</tt>.</p>
 <a name="diagnostics"></a>
 <h2>Diagnostics</h2>
@@ -116,93 +116,93 @@
 <a name="limitations"></a>
 <h2>Limitations</h2>
 <p><tt>moc</tt> does not handle all of C++. The main problem is that class templates cannot have signals or slots. Here is an example:</p>
-<pre>         class SomeTemplate&lt;int&gt; : public QFrame
-         {
-             Q_OBJECT
-             ...
+<pre> class SomeTemplate&lt;int&gt; : public QFrame
+ {
+     Q_OBJECT
+     ...
 
-         signals:
-             void mySignal(int);
-         };</pre>
+ signals:
+     void mySignal(int);
+ };</pre>
 <p>Another limitation is that moc does not expand macros, so you for example cannot use a macro to declare a signal/slot or use one to define a base class for a <a href="qobject.html">QObject</a>.</p>
 <p>Less importantly, the following constructs are illegal. All of them have alternatives which we think are usually better, so removing these limitations is not a high priority for us.</p>
 <a name="multiple-inheritance-requires-qobject-to-be-first"></a>
 <h3>Multiple Inheritance Requires QObject to Be First</h3>
 <p>If you are using multiple inheritance, <tt>moc</tt> assumes that the first inherited class is a subclass of <a href="qobject.html">QObject</a>. Also, be sure that only the first inherited class is a <a href="qobject.html">QObject</a>.</p>
-<pre>         // correct
-         class SomeClass : public QObject, public OtherClass
-         {
-             ...
-         };</pre>
+<pre> // correct
+ class SomeClass : public QObject, public OtherClass
+ {
+     ...
+ };</pre>
 <p>Virtual inheritance with <a href="qobject.html">QObject</a> is <i>not</i> supported.</p>
 <a name="function-pointers-cannot-be-signal-or-slot-parameters"></a>
 <h3>Function Pointers Cannot Be Signal or Slot Parameters</h3>
 <p>In most cases where you would consider using function pointers as signal or slot parameters, we think inheritance is a better alternative. Here is an example of illegal syntax:</p>
-<pre>         class SomeClass : public QObject
-         {
-             Q_OBJECT
+<pre> class SomeClass : public QObject
+ {
+     Q_OBJECT
 
-         public slots:
-             void apply(void (*apply)(List *, void *), char *); // WRONG
-         };</pre>
+ public slots:
+     void apply(void (*apply)(List *, void *), char *); // WRONG
+ };</pre>
 <p>You can work around this restriction like this:</p>
-<pre>         typedef void (*ApplyFunction)(List *, void *);
+<pre> typedef void (*ApplyFunction)(List *, void *);
 
-         class SomeClass : public QObject
-         {
-             Q_OBJECT
+ class SomeClass : public QObject
+ {
+     Q_OBJECT
 
-         public slots:
-             void apply(ApplyFunction, char *);
-         };</pre>
+ public slots:
+     void apply(ApplyFunction, char *);
+ };</pre>
 <p>It may sometimes be even better to replace the function pointer with inheritance and virtual functions.</p>
 <a name="enums-and-typedefs-must-be-fully-qualified-for-signal-and-slot-parameters"></a>
 <h3>Enums and Typedefs Must Be Fully Qualified for Signal and Slot Parameters</h3>
 <p>When checking the signatures of its arguments, <a href="qobject.html#connect">QObject::connect</a>() compares the data types literally. Thus, <a href="qt.html#AlignmentFlag-enum">Alignment</a> and <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> are treated as two distinct types. To work around this limitation, make sure to fully qualify the data types when declaring signals and slots, and when establishing connections. For example:</p>
-<pre>         class MyClass : public QObject
-         {
-             Q_OBJECT
+<pre> class MyClass : public QObject
+ {
+     Q_OBJECT
 
-             enum Error {
-                 ConnectionRefused,
-                 RemoteHostClosed,
-                 UnknownError
-             };
+     enum Error {
+         ConnectionRefused,
+         RemoteHostClosed,
+         UnknownError
+     };
 
-         signals:
-             void stateChanged(MyClass::Error error);
-         };</pre>
+ signals:
+     void stateChanged(MyClass::Error error);
+ };</pre>
 <a name="type-macros-cannot-be-used-for-signal-and-slot-parameters"></a>
 <h3>Type Macros Cannot Be Used for Signal and Slot Parameters</h3>
 <p>Since <tt>moc</tt> doesn't expand <tt>#define</tt>s, type macros that take an argument will not work in signals and slots. Here is an illegal example:</p>
-<pre>         #ifdef ultrix
-         #define SIGNEDNESS(a) unsigned a
-         #else
-         #define SIGNEDNESS(a) a
-         #endif
+<pre> #ifdef ultrix
+ #define SIGNEDNESS(a) unsigned a
+ #else
+ #define SIGNEDNESS(a) a
+ #endif
 
-         class Whatever : public QObject
-         {
-             Q_OBJECT
+ class Whatever : public QObject
+ {
+     Q_OBJECT
 
-         signals:
-             void someSignal(SIGNEDNESS(int));
-         };</pre>
+ signals:
+     void someSignal(SIGNEDNESS(int));
+ };</pre>
 <p>A macro without parameters will work.</p>
 <a name="nested-classes-cannot-have-signals-or-slots"></a>
 <h3>Nested Classes Cannot Have Signals or Slots</h3>
 <p>Here's an example of the offending construct:</p>
-<pre>         class A
-         {
-         public:
-             class B
-             {
-                 Q_OBJECT
+<pre> class A
+ {
+ public:
+     class B
+     {
+         Q_OBJECT
 
-             public slots:   // WRONG
-                 void b();
-             };
-         };</pre>
+     public slots:   // WRONG
+         void b();
+     };
+ };</pre>
 <a name="signal-slot-return-types-cannot-be-references"></a>
 <h3>Signal/Slot return types cannot be references</h3>
 <p>Signals and slots can have return types, but signals or slots returning references will be treated as returning void.</p>
@@ -214,6 +214,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

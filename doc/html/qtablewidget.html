@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/itemviews/qtablewidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qtablewidget.cpp -->
 <head>
   <title>Qt 4.4: QTableWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -248,6 +248,7 @@
 <a name="//apple_ref/cpp/instm/QTableWidget/cellWidget" />
 <h3 class="fn"><a name="cellWidget"></a><a href="qwidget.html">QWidget</a> * QTableWidget::cellWidget ( int <i>row</i>, int <i>column</i> ) const</h3>
 <p>Returns the widget displayed in the cell in the given <i>row</i> and <i>column</i>.</p>
+<p><b>Note:</b> The table takes ownership of the widget.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qtablewidget.html#setCellWidget">setCellWidget</a>().</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/clear" />
@@ -295,7 +296,7 @@
 <p>Finds items that matches the <i>text</i> using the given <i>flags</i>.</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/horizontalHeaderItem" />
 <h3 class="fn"><a name="horizontalHeaderItem"></a><a href="qtablewidgetitem.html">QTableWidgetItem</a> * QTableWidget::horizontalHeaderItem ( int <i>column</i> ) const</h3>
-<p>Returns the horizontal header item for column <i>column</i>.</p>
+<p>Returns the horizontal header item for column, <i>column</i>, if one has been set; otherwise returns 0.</p>
 <p>See also <a href="qtablewidget.html#setHorizontalHeaderItem">setHorizontalHeaderItem</a>().</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/indexFromItem" />
 <h3 class="fn"><a name="indexFromItem"></a><a href="qmodelindex.html">QModelIndex</a> QTableWidget::indexFromItem ( <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -391,12 +392,13 @@
 <a name="//apple_ref/cpp/instm/QTableWidget/setCellWidget" />
 <h3 class="fn"><a name="setCellWidget"></a>void QTableWidget::setCellWidget ( int <i>row</i>, int <i>column</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Sets the <i>widget</i> to be displayed in the cell in the given <i>row</i> and <i>column</i>.</p>
+<p><b>Note:</b> The table takes ownership of the widget.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qtablewidget.html#cellWidget">cellWidget</a>().</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/setCurrentCell" />
 <h3 class="fn"><a name="setCurrentCell"></a>void QTableWidget::setCurrentCell ( int <i>row</i>, int <i>column</i> )</h3>
 <p>Sets the current cell to be the cell at position (<i>row</i>, <i>column</i>).</p>
-<p>Depending on the current selection mode, the cell may also be selected.</p>
+<p>Depending on the current <a href="qabstractitemview.html#SelectionMode-enum">selection mode</a>, the cell may also be selected.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qtablewidget.html#setCurrentItem">setCurrentItem</a>(), <a href="qtablewidget.html#currentRow">currentRow</a>(), and <a href="qtablewidget.html#currentColumn">currentColumn</a>().</p>
 <h3 class="fn"><a name="setCurrentCell-2"></a>void QTableWidget::setCurrentCell ( int <i>row</i>, int <i>column</i>, <a href="qitemselectionmodel.html#SelectionFlag-enum">QItemSelectionModel::SelectionFlags</a> <i>command</i> )</h3>
@@ -407,7 +409,7 @@
 <a name="//apple_ref/cpp/instm/QTableWidget/setCurrentItem" />
 <h3 class="fn"><a name="setCurrentItem"></a>void QTableWidget::setCurrentItem ( <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
 <p>Sets the current item to <i>item</i>.</p>
-<p>Depending on the current selection mode, the item may also be selected.</p>
+<p>Depending on the current <a href="qabstractitemview.html#SelectionMode-enum">selection mode</a>, the item may also be selected.</p>
 <p>See also <a href="qtablewidget.html#currentItem">currentItem</a>() and <a href="qtablewidget.html#setCurrentCell">setCurrentCell</a>().</p>
 <h3 class="fn"><a name="setCurrentItem-2"></a>void QTableWidget::setCurrentItem ( <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i>, <a href="qitemselectionmodel.html#SelectionFlag-enum">QItemSelectionModel::SelectionFlags</a> <i>command</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -479,6 +481,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -8,7 +8,7 @@ TEMPLATE = subdirs
 cross_compile: CONFIG += nostrip
 
 isEmpty(QT_BUILD_PARTS) { #defaults
-   QT_BUILD_PARTS = libs tools examples demos docs
+   QT_BUILD_PARTS = libs tools examples demos docs translations
 } else { #make sure the order makes sense
    contains(QT_BUILD_PARTS, tools) {
        QT_BUILD_PARTS -= tools
@@ -37,6 +37,8 @@ for(PROJECT, $$list($$lower($$unique(QT_BUILD_PARTS)))) {
        include(src/src.pro)
     } else:isEqual(PROJECT, docs) {
        contains(QT_BUILD_PARTS, tools):include(doc/doc.pri)
+    } else:isEqual(PROJECT, translations) {
+       contains(QT_BUILD_PARTS, tools):include(translations/translations.pri)
     } else:isEqual(PROJECT, qmake) {
 #      SUBDIRS += qmake
     } else {

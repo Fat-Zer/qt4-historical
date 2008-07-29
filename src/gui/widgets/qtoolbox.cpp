@@ -457,6 +457,7 @@ void QToolBoxPrivate::relayout()
     Q_Q(QToolBox);
     delete layout;
     layout = new QVBoxLayout(q);
+    layout->setMargin(0);
     for (QToolBoxPrivate::PageList::ConstIterator i = pageList.constBegin(); i != pageList.constEnd(); ++i) {
         layout->addWidget((*i).button);
         layout->addWidget((*i).sv);

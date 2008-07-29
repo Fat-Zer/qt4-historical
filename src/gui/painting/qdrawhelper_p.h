@@ -227,7 +227,7 @@ struct QSpanData
     BitmapBlitFunc bitmapBlit;
     AlphamapBlitFunc alphamapBlit;
     RectFillFunc fillRect;
-    qreal m11, m12, m13, m21, m22, m23, dx, dy;   // inverse xform matrix
+    qreal m11, m12, m13, m21, m22, m23, m33, dx, dy;   // inverse xform matrix
     enum Type {
         None,
         Solid,
@@ -1384,7 +1384,7 @@ template <typename SRC>
 static inline quint32 qt_convertToRgb(SRC color);
 
 template <>
-static inline quint32 qt_convertToRgb(quint32 color)
+inline quint32 qt_convertToRgb(quint32 color)
 {
     const int r = qRed(color) >> (8 - qrgb::len_red);
     const int g = qGreen(color) >> (8 - qrgb::len_green);
@@ -1399,7 +1399,7 @@ static inline quint32 qt_convertToRgb(quint32 color)
 }
 
 template <>
-static inline quint32 qt_convertToRgb(quint16 color)
+inline quint32 qt_convertToRgb(quint16 color)
 {
     return qt_convertToRgb(qt_colorConvert<quint32, quint16>(color, 0));
 }
@@ -1427,14 +1427,14 @@ private:
 } Q_PACKED;
 
 template <>
-static inline qrgb_generic16 qt_colorConvert(quint32 color, qrgb_generic16 dummy)
+inline qrgb_generic16 qt_colorConvert(quint32 color, qrgb_generic16 dummy)
 {
     Q_UNUSED(dummy);
     return qrgb_generic16(color);
 }
 
 template <>
-static inline qrgb_generic16 qt_colorConvert(quint16 color, qrgb_generic16 dummy)
+inline qrgb_generic16 qt_colorConvert(quint16 color, qrgb_generic16 dummy)
 {
     Q_UNUSED(dummy);
     return qrgb_generic16(qt_colorConvert<quint32, quint16>(color, 0));

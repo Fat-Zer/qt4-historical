@@ -70,7 +70,10 @@ public:
         : posChangeMode(NoMode),
           sizeChangeMode(NoMode),
           visibleChangeMode(NoMode),
-          enabledChangeMode(NoMode)
+          enabledChangeMode(NoMode),
+          styleChangeMode(NoMode),
+          paletteChangeMode(NoMode),
+          focusFromWidgetToProxy(0)
     { }
     void init();
     void sendWidgetMouseEvent(QGraphicsSceneMouseEvent *event);
@@ -79,8 +82,10 @@ public:
     void setWidget_helper(QWidget *widget, bool autoShow);
 
     QWidget *findFocusChild(QWidget *child, bool next) const;
-    void setSubFocusHelper(QWidget *widget, Qt::FocusReason reason);
     void removeSubFocusHelper(QWidget *widget, Qt::FocusReason reason);
+
+    // ### Qt 5: Remove. Workaround for reimplementation added after Qt 4.4.
+    QVariant inputMethodQueryHelper(Qt::InputMethodQuery query) const;
 
     void _q_removeWidgetSlot();
 
@@ -89,7 +94,7 @@ public:
 
     QPointer<QWidget> widget;
     QPointer<QWidget> lastWidgetUnderMouse;
-    QPointer<QWidget> buttonDown;
+    QPointer<QWidget> embeddedMouseGrabber;
 
     void updateWidgetGeometryFromProxy();
     void updateProxyGeometryFromWidget();
@@ -105,8 +110,9 @@ public:
     quint32 sizeChangeMode : 2;
     quint32 visibleChangeMode : 2;
     quint32 enabledChangeMode : 2;
-
-//    friend class QWidgetPrivate;
+    quint32 styleChangeMode : 2;
+    quint32 paletteChangeMode : 2;
+    quint32 focusFromWidgetToProxy : 1;
 };
 
 QT_END_NAMESPACE

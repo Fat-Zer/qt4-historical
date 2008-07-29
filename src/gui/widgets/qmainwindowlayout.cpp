@@ -68,6 +68,7 @@
 
 #include <qdebug.h>
 
+#include <private/qapplication_p.h>
 #include <private/qlayoutengine_p.h>
 #ifdef Q_WS_MAC
 #   include <private/qcore_mac_p.h>
@@ -621,7 +622,7 @@ bool QMainWindowLayoutState::checkFormat(QDataStream &stream, bool pre43)
             case QToolBarAreaLayout::ToolBarStateMarkerEx:
                 {
                     QList<QToolBar *> toolBars = findChildrenHelper<QToolBar*>(mainWindow);
-                    if (!toolBarAreaLayout.restoreState(stream, toolBars, marker, 
+                    if (!toolBarAreaLayout.restoreState(stream, toolBars, marker,
                         pre43 /*testing 4.3 format*/, true /*testing*/)) {
                             return false;
                     }
@@ -1020,6 +1021,8 @@ static const EventTypeSpec kToolbarEvents[] = {
 
 OSStatus QMainWindowLayout::qtmacToolbarDelegate(EventHandlerCallRef, EventRef event, void *data)
 {
+    QScopedLoopLevelCounter loopLevelCounter(QApplicationPrivate::instance()->threadData);
+
     QMainWindowLayout *mainWindowLayout = static_cast<QMainWindowLayout *>(data);
     OSStatus            result = eventNotHandledErr;
     CFMutableArrayRef   array;
@@ -2000,7 +2003,7 @@ QLayoutItem *QMainWindowLayout::unplug(QWidget *widget)
     }
 #endif
 
-    
+
     layoutState.unplug(path ,&savedState);
     savedState.fitLayout();
     currentGapPos = path;

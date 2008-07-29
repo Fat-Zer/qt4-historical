@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/collidingmice-example.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/examples/collidingmice-example.qdoc -->
 <head>
   <title>Qt 4.4: Colliding Mice Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -75,10 +75,10 @@
          angleToCenter = normalizeAngle((Pi - angleToCenter) + Pi / 2);
 
          if (angleToCenter &lt; Pi &amp;&amp; angleToCenter &gt; Pi / 4) {
-             <span class="comment">//</span> Rotate left
+             <span class="comment">// Rotate left</span>
              angle += (angle &lt; -Pi / 2) ? 0.25 : -0.25;
          } else if (angleToCenter &gt;= Pi &amp;&amp; angleToCenter &lt; (Pi + Pi / 2 + Pi / 4)) {
-             <span class="comment">//</span> Rotate right
+             <span class="comment">// Rotate right</span>
              angle += (angle &lt; Pi / 2) ? 0.25 : -0.25;
          }
      } else if (::sin(angle) &lt; 0) {
@@ -103,10 +103,10 @@
          angleToMouse = normalizeAngle((Pi - angleToMouse) + Pi / 2);
 
          if (angleToMouse &gt;= 0 &amp;&amp; angleToMouse &lt; Pi / 2) {
-             <span class="comment">//</span> Rotate right
+             <span class="comment">// Rotate right</span>
              angle += 0.5;
          } else if (angleToMouse &lt;= TwoPi &amp;&amp; angleToMouse &gt; (TwoPi - Pi / 2)) {
-             <span class="comment">//</span> Rotate left
+             <span class="comment">// Rotate left</span>
              angle -= 0.5;
          }
      }
@@ -138,29 +138,29 @@
 <p>The <a href="qgraphicsitem.html#boundingRect">boundingRect()</a> function defines the outer bounds of the item as a rectangle. Note that the Graphics View framework uses the bounding rectangle to determine whether the item requires redrawing, so all painting must be restricted inside this rectangle.</p>
 <pre> void Mouse::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
  {
-     <span class="comment">//</span> Body
+     <span class="comment">// Body</span>
      painter-&gt;setBrush(color);
      painter-&gt;drawEllipse(-10, -20, 20, 40);
 
-     <span class="comment">//</span> Eyes
+     <span class="comment">// Eyes</span>
      painter-&gt;setBrush(Qt::white);
      painter-&gt;drawEllipse(-10, -17, 8, 8);
      painter-&gt;drawEllipse(2, -17, 8, 8);
 
-     <span class="comment">//</span> Nose
+     <span class="comment">// Nose</span>
      painter-&gt;setBrush(Qt::black);
      painter-&gt;drawEllipse(QRectF(-2, -22, 4, 4));
 
-     <span class="comment">//</span> Pupils
+     <span class="comment">// Pupils</span>
      painter-&gt;drawEllipse(QRectF(-8.0 + mouseEyeDirection, -17, 4, 4));
      painter-&gt;drawEllipse(QRectF(4.0 + mouseEyeDirection, -17, 4, 4));
 
-     <span class="comment">//</span> Ears
+     <span class="comment">// Ears</span>
      painter-&gt;setBrush(scene()-&gt;collidingItems(this).isEmpty() ? Qt::darkYellow : Qt::red);
      painter-&gt;drawEllipse(-17, -12, 16, 16);
      painter-&gt;drawEllipse(1, -12, 16, 16);
 
-     <span class="comment">//</span> Tail
+     <span class="comment">// Tail</span>
      QPainterPath path(QPointF(0, 20));
      path.cubicTo(-5, 22, -5, 22, 0, 25);
      path.cubicTo(5, 27, 5, 32, 0, 30);
@@ -221,6 +221,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>

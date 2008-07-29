@@ -503,7 +503,7 @@ void QFSFileEnginePrivate::nativeInitFileName()
         nativeFilePath = QByteArray((const char *)path.utf16(), path.size() * 2 + 1);
     }, {
         QString path = fixIfRelativeUncPath(filePath);
-        nativeFilePath = win95Name(path).replace('/', '\\');        
+        nativeFilePath = win95Name(path).replace('/', '\\');
     });
 }
 
@@ -517,9 +517,9 @@ bool QFSFileEnginePrivate::nativeOpen(QIODevice::OpenMode openMode)
     // All files are opened in share mode (both read and write).
     DWORD shareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
 
-    // All files on Windows can be read; there's no such thing as an
-    // unreadable file. Add GENERIC_WRITE if WriteOnly is passed.
-    int accessRights = GENERIC_READ;
+    int accessRights = 0;
+    if (openMode & QIODevice::ReadOnly)
+        accessRights |= GENERIC_READ;
     if (openMode & QIODevice::WriteOnly)
         accessRights |= GENERIC_WRITE;
 
@@ -573,16 +573,22 @@ bool QFSFileEnginePrivate::nativeClose()
     }
 
     // Windows native mode.
+    bool ok = true;
     if ((fileHandle == INVALID_HANDLE_VALUE || !CloseHandle(fileHandle))
 #ifdef Q_USE_DEPRECATED_MAP_API
             && (fileMapHandle == INVALID_HANDLE_VALUE || !CloseHandle(fileMapHandle))
 #endif
         ) {
         q->setError(QFile::UnspecifiedError, qt_error_string());
-        return false;
+        ok = false;
     }
     fileHandle = INVALID_HANDLE_VALUE;
-    return true;
+
+    if (cachedFd != -1)
+        QT_CLOSE(cachedFd);
+    cachedFd = -1;
+
+    return ok;
 }
 
 /*
@@ -890,12 +896,16 @@ int QFSFileEnginePrivate::nativeHandle() const
     if (fh || fd != -1)
         return fh ? QT_FILENO(fh) : fd;
 #ifndef Q_OS_WINCE
+    if (cachedFd != -1)
+        return cachedFd;
+
     int flags = 0;
     if (openMode & QIODevice::Append)
         flags |= _O_APPEND;
     if (!(openMode & QIODevice::WriteOnly))
         flags |= _O_RDONLY;
-    return _open_osfhandle((intptr_t) fileHandle, flags);
+    cachedFd = _open_osfhandle((intptr_t) fileHandle, flags);
+    return cachedFd;
 #else
     return -1;
 #endif
@@ -1316,7 +1326,7 @@ QString QFSFileEngine::tempPath()
 
 /*!
     Returns the list of drives in the file system as a list of QFileInfo
-    objects. On unix, Mac OS X and Windows CE, only the root path is returned. 
+    objects. On unix, Mac OS X and Windows CE, only the root path is returned.
     On Windows, this function returns all drives (A:\, C:\, D:\, etc.).
 */
 QFileInfoList QFSFileEngine::drives()
@@ -1993,7 +2003,7 @@ bool QFSFileEngine::setPermissions(uint perms)
 bool QFSFileEngine::setSize(qint64 size)
 {
     Q_D(QFSFileEngine);
-    
+
     if (d->fileHandle != INVALID_HANDLE_VALUE || d->fd != -1) {
         // resize open file
         HANDLE fh = d->fileHandle;
@@ -2215,7 +2225,7 @@ bool QFSFileEnginePrivate::unmap(uchar *ptr)
         return false;
     }
     maps.remove(ptr);
-    
+
 #ifdef Q_USE_DEPRECATED_MAP_API
     mapHandleClose();
 #endif

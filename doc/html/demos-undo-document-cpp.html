@@ -381,7 +381,7 @@
          QRect rect = shape.rect();
          rect.adjust(1, 1, -resizeHandleWidth/2, -resizeHandleWidth/2);
 
-         <span class="comment">//</span> paint the shape
+         <span class="comment">// paint the shape</span>
          switch (shape.type()) {
              case Shape::Rectangle:
                  painter.drawRect(rect);
@@ -398,12 +398,12 @@
                  break;
          }
 
-         <span class="comment">//</span> paint the resize handle
+         <span class="comment">// paint the resize handle</span>
          painter.setPen(pal.text().color());
          painter.setBrush(Qt::white);
          painter.drawRect(shape.resizeHandle().adjusted(0, 0, -1, -1));
 
-         <span class="comment">//</span> paint the shape name
+         <span class="comment">// paint the shape name</span>
          painter.setBrush(pal.text());
          if (shape.type() == Shape::Triangle)
              rect.adjust(0, rect.height()/2, 0, 0);
@@ -463,6 +463,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
 </tr></table></div></address></body>
 </html>
