@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/opengl/qgl.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-mac-opensource-src-4.4.1/src/opengl/qgl.cpp -->
 <head>
   <title>Qt 4.4: QGLContext Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -57,12 +57,13 @@
 <ul>
 <li><div class="fn"/>virtual bool <b><a href="qglcontext.html#chooseContext">chooseContext</a></b> ( const QGLContext * <i>shareContext</i> = 0 )</li>
 <li><div class="fn"/>virtual void * <b><a href="qglcontext.html#chooseMacVisual">chooseMacVisual</a></b> ( GDHandle <i>handle</i> )</li>
-<li><div class="fn"/>virtual int <b><a href="qglcontext.html#choosePixelFormat">choosePixelFormat</a></b> ( void * <i>dummyPfd</i>, HDC <i>pdc</i> )</li>
+<li><div class="fn"/>virtual int <b><a href="qglcontext.html#choosePixelFormat">choosePixelFormat</a></b> ( void * <i>pfd</i>, HDC <i>pdc</i> )</li>
 <li><div class="fn"/>virtual void * <b><a href="qglcontext.html#chooseVisual">chooseVisual</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qglcontext.html#deviceIsPixmap">deviceIsPixmap</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qglcontext.html#initialized">initialized</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qglcontext.html#setInitialized">setInitialized</a></b> ( bool <i>on</i> )</li>
 <li><div class="fn"/>void <b><a href="qglcontext.html#setWindowCreated">setWindowCreated</a></b> ( bool <i>on</i> )</li>
+<li><div class="fn"/>virtual void * <b><a href="qglcontext.html#tryVisual">tryVisual</a></b> ( const QGLFormat &amp; <i>f</i>, int <i>bufDepth</i> = 1 )</li>
 <li><div class="fn"/>bool <b><a href="qglcontext.html#windowCreated">windowCreated</a></b> () const</li>
 </ul>
 <a name="details"></a>
@@ -113,15 +114,9 @@
 <p>The <i>handle</i> argument is always zero and is not used</p>
 <p>See also <a href="qglcontext.html#chooseContext">chooseContext</a>().</p>
 <a name="//apple_ref/cpp/instm/QGLContext/choosePixelFormat" />
-<h3 class="fn"><a name="choosePixelFormat"></a>int QGLContext::choosePixelFormat ( void * <i>dummyPfd</i>, HDC <i>pdc</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p><b>Win32 only:</b> This virtual function chooses a pixel format that matches the OpenGL <a href="qglcontext.html#setFormat">format</a>. Reimplement this function in a subclass if you need a custom context.</p>
-<p><b>Warning:</b> The <i>dummyPfd</i> pointer and <i>pdc</i> are used as a <tt>PIXELFORMATDESCRIPTOR*</tt>. We use <tt>void</tt> to avoid using Windows-specific types in our header files.</p>
-<p>See also <a href="qglcontext.html#chooseContext">chooseContext</a>().</p>
+<h3 class="fn"><a name="choosePixelFormat"></a>int QGLContext::choosePixelFormat ( void * <i>pfd</i>, HDC <i>pdc</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <a name="//apple_ref/cpp/instm/QGLContext/chooseVisual" />
 <h3 class="fn"><a name="chooseVisual"></a>void * QGLContext::chooseVisual ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p><b>X11 only:</b> This virtual function tries to find a visual that matches the format, reducing the demands if the original request cannot be met.</p>
-<p>The algorithm for reducing the demands of the format is quite simple-minded, so override this method in your subclass if your application has spcific requirements on visual selection.</p>
-<p>See also <a href="qglcontext.html#chooseContext">chooseContext</a>().</p>
 <a name="//apple_ref/cpp/instm/QGLContext/create" />
 <h3 class="fn"><a name="create"></a>bool QGLContext::create ( const QGLContext * <i>shareContext</i> = 0 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Creates the GL context. Returns true if it was successful in creating a valid GL rendering context on the paint device specified in the constructor; otherwise returns false (i.e&#x2e; the context is invalid).</p>
@@ -226,6 +221,8 @@
 <h3 class="fn"><a name="textureCacheLimit"></a>int QGLContext::textureCacheLimit ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the current texture cache limit in kilobytes.</p>
 <p>See also <a href="qglcontext.html#setTextureCacheLimit">setTextureCacheLimit</a>().</p>
+<a name="//apple_ref/cpp/instm/QGLContext/tryVisual" />
+<h3 class="fn"><a name="tryVisual"></a>void * QGLContext::tryVisual ( const <a href="qglformat.html">QGLFormat</a> &amp; <i>f</i>, int <i>bufDepth</i> = 1 )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <a name="//apple_ref/cpp/instm/QGLContext/windowCreated" />
 <h3 class="fn"><a name="windowCreated"></a>bool QGLContext::windowCreated () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns true if a window has been created for this context; otherwise returns false.</p>
