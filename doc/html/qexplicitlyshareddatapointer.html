@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qshareddata.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-x11-opensource-src-4.4.1/src/corelib/tools/qshareddata.cpp -->
 <head>
   <title>Qt 4.4: QExplicitlySharedDataPointer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QExplicitlySharedDataPointer" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -63,12 +62,10 @@
 <p>See also <a href="qshareddata.html">QSharedData</a> and <a href="qshareddatapointer.html">QSharedDataPointer</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QExplicitlySharedDataPointer/Type" />
 <h3 class="fn"><a name="Type-typedef"></a>typedef QExplicitlySharedDataPointer::Type</h3>
 <p>This is the type of the shared data object. The <i>d pointer</i> points to an object of this type.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/QExplicitlySharedDataPointer" />
 <h3 class="fn"><a name="QExplicitlySharedDataPointer"></a>QExplicitlySharedDataPointer::QExplicitlySharedDataPointer ()</h3>
 <p>Constructs a <a href="qexplicitlyshareddatapointer.html">QExplicitlySharedDataPointer</a> initialized with a null <i>d pointer</i>.</p>
 <h3 class="fn"><a name="QExplicitlySharedDataPointer-2"></a>QExplicitlySharedDataPointer::QExplicitlySharedDataPointer ( T * <i>sharedData</i> )</h3>
@@ -77,54 +74,42 @@
 <p>This standard copy constructor sets the <i>d pointer</i> of <i>this</i> to the <i>d pointer</i> in <i>other</i> and increments the reference count of the shared data object.</p>
 <h3 class="fn"><a name="QExplicitlySharedDataPointer-4"></a>QExplicitlySharedDataPointer::QExplicitlySharedDataPointer ( const QExplicitlySharedDataPointer&lt;X&gt; &amp; <i>other</i> )</h3>
 <p>This copy constructor is different in that it allows <i>other</i> to be a different type of explicitly shared data pointer but one that has a compatible shared data object. It performs a static cast of the <i>d pointer</i> in <i>other</i> and sets the <i>d pointer</i> of <i>this</i> to the converted <i>d pointer</i>. It increments the reference count of the shared data object.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/~QExplicitlySharedDataPointer" />
 <h3 class="fn"><a name="dtor.QExplicitlySharedDataPointer"></a>QExplicitlySharedDataPointer::~QExplicitlySharedDataPointer ()</h3>
 <p>Decrements the reference count of the shared data object. If the reference count becomes 0, the shared data object is deleted. <i>This</i> is then destroyed.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/constData" />
 <h3 class="fn"><a name="constData"></a>const T * QExplicitlySharedDataPointer::constData () const</h3>
 <p>Returns a const pointer to the shared data object.</p>
 <p>See also <a href="qexplicitlyshareddatapointer.html#data">data</a>().</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/data" />
 <h3 class="fn"><a name="data"></a>T * QExplicitlySharedDataPointer::data () const</h3>
 <p>Returns a pointer to the shared data object.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/detach" />
 <h3 class="fn"><a name="detach"></a>void QExplicitlySharedDataPointer::detach ()</h3>
 <p>If the shared data object's reference count is greater than 1, this function creates a deep copy of the shared data object and sets the <i>d pointer</i> of <i>this</i> to the copy.</p>
 <p>Because <a href="qexplicitlyshareddatapointer.html">QExplicitlySharedDataPointer</a> does not do the automatic <i>copy on write</i> operations that members of <a href="qshareddatapointer.html">QSharedDataPointer</a> do, detach() is <i>not</i> called automatically anywhere in the member functions of this class. If you find that you are calling detach() everywhere in your code, consider using <a href="qshareddatapointer.html">QSharedDataPointer</a> instead.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/reset" />
 <h3 class="fn"><a name="reset"></a>void QExplicitlySharedDataPointer::reset ()</h3>
 <p>Resets <i>this</i> to be null. i.e&#x2e;, this function sets the <i>d pointer</i> of <i>this</i> to 0, but first it decrements the reference count of the shared data object and deletes the shared data object if the reference count became 0.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/operator bool" />
 <h3 class="fn"><a name="operator-bool"></a>QExplicitlySharedDataPointer::operator bool () const</h3>
 <p>Returns true if the <i>d pointer</i> of <i>this</i> is <i>not</i> null.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/operator!" />
 <h3 class="fn"><a name="operator-not"></a>bool QExplicitlySharedDataPointer::operator! () const</h3>
 <p>Returns true if the <i>d pointer</i> of <i>this</i> is null.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/operator!=" />
 <h3 class="fn"><a name="operator-not-eq"></a>bool QExplicitlySharedDataPointer::operator!= ( const QExplicitlySharedDataPointer&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> and <i>this</i> do <i>not</i> have the same <i>d pointer</i>.</p>
 <h3 class="fn"><a name="operator-not-eq-2"></a>bool QExplicitlySharedDataPointer::operator!= ( const T * <i>ptr</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the <i>d pointer</i> of <i>this</i> is <i>not</i> <i>ptr</i>.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/operator*" />
 <h3 class="fn"><a name="operator-2a"></a>T &amp; QExplicitlySharedDataPointer::operator* ()</h3>
 <p>Provides access to the shared data object's members.</p>
 <h3 class="fn"><a name="operator-2a-2"></a>const T &amp; QExplicitlySharedDataPointer::operator* () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Provides const access to the shared data object's members.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/operator->" />
 <h3 class="fn"><a name="operator--gt"></a>T * QExplicitlySharedDataPointer::operator-&gt; ()</h3>
 <p>Provides access to the shared data object's members.</p>
 <h3 class="fn"><a name="operator--gt-2"></a>T * QExplicitlySharedDataPointer::operator-&gt; () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Provides const access to the shared data object's members.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QExplicitlySharedDataPointer&lt;T&gt; &amp; QExplicitlySharedDataPointer::operator= ( const QExplicitlySharedDataPointer&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Sets the <i>d pointer</i> of <i>this</i> to the <i>d pointer</i> of <i>other</i> and increments the reference count of the shared data object. The reference count of the old shared data object of <i>this</i> is decremented. If the reference count of the old shared data object becomes 0, the old shared data object is deleted.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>QExplicitlySharedDataPointer &amp; QExplicitlySharedDataPointer::operator= ( T * <i>sharedData</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the <i>d pointer</i> of <i>this</i> to <i>sharedData</i> and increments <i>sharedData</i>'s reference count. The reference count of the old shared data object of <i>this</i> is decremented. If the reference count of the old shared data object becomes 0, the old shared data object is deleted.</p>
-<a name="//apple_ref/cpp/instm/QExplicitlySharedDataPointer/operator==" />
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QExplicitlySharedDataPointer::operator== ( const QExplicitlySharedDataPointer&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> and <i>this</i> have the same <i>d pointer</i>.</p>
 <h3 class="fn"><a name="operator-eq-eq-2"></a>bool QExplicitlySharedDataPointer::operator== ( const T * <i>ptr</i> ) const</h3>

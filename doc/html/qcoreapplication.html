@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qcoreapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-x11-opensource-src-4.4.1/src/corelib/kernel/qcoreapplication.cpp -->
 <head>
   <title>Qt 4.4: QCoreApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QCoreApplication" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -47,7 +46,7 @@
 <li><div class="fn"/>bool <b><a href="qcoreapplication.html#filterEvent">filterEvent</a></b> ( void * <i>message</i>, long * <i>result</i> )</li>
 <li><div class="fn"/>virtual bool <b><a href="qcoreapplication.html#notify">notify</a></b> ( QObject * <i>receiver</i>, QEvent * <i>event</i> )</li>
 <li><div class="fn"/>EventFilter <b><a href="qcoreapplication.html#setEventFilter">setEventFilter</a></b> ( EventFilter <i>filter</i> )</li>
-<li><div class="fn"/>virtual bool <b><a href="qcoreapplication.html#winEventFilter">winEventFilter</a></b> ( MSG * <i>msg</i>, long * <i>result</i> )</li>
+<li><div class="fn"/>virtual bool <b><a href="qcoreapplication.html#winEventFilter">winEventFilter</a></b> ( MSG * <i>message</i>, long * <i>result</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
@@ -141,10 +140,6 @@
 <p>See also <a href="qapplication.html">QApplication</a>, <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>, <a href="qeventloop.html">QEventLoop</a>, <a href="threads-semaphores.html">Semaphores Example</a>, and <a href="threads-waitconditions.html">Wait Conditions Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QCoreApplication/Encoding" />
-<a name="//apple_ref/cpp/econst/QCoreApplication/CodecForTr" />
-<a name="//apple_ref/cpp/econst/QCoreApplication/UnicodeUTF8" />
-<a name="//apple_ref/cpp/econst/QCoreApplication/DefaultCodec" />
 <h3 class="fn"><a name="Encoding-enum"></a>enum QCoreApplication::Encoding</h3>
 <p>This enum type defines the 8-bit encoding of character string arguments to <a href="qcoreapplication.html#translate">translate</a>():</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -154,15 +149,12 @@
 <tr><td valign="top"><tt>QCoreApplication::DefaultCodec</tt></td><td align="center" valign="top"><tt>CodecForTr</tt></td><td valign="top">(Obsolete) Use CodecForTr instead.</td></tr>
 </table></p>
 <p>See also <a href="qobject.html#tr">QObject::tr</a>(), <a href="qobject.html#trUtf8">QObject::trUtf8</a>(), and <a href="qstring.html#fromUtf8">QString::fromUtf8</a>().</p>
-<a name="//apple_ref/cpp/tdef/QCoreApplication/EventFilter" />
 <h3 class="fn"><a name="EventFilter-typedef"></a>typedef QCoreApplication::EventFilter</h3>
 <p>A function with the following signature that can be used as an event filter:</p>
 <pre>         bool myEventFilter(void *message, long *result);</pre>
 <p>See also <a href="qcoreapplication.html#setEventFilter">setEventFilter</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/clm/QCoreApplication/applicationName" />
-<a name="//apple_ref/cpp/clm/QCoreApplication/setApplicationName" />
 <h3 class="fn"><a name="applicationName-prop"></a>applicationName : <a href="qstring.html">QString</a></h3>
 <p>This property holds the name of this application.</p>
 <p>The value is used by the <a href="qsettings.html">QSettings</a> class when it is constructed using the empty constructor. This saves having to repeat this information each time a <a href="qsettings.html">QSettings</a> object is created.</p>
@@ -172,8 +164,6 @@
 <li><div class="fn"/><b>void setApplicationName ( const QString &amp; <i>application</i> )</b></li>
 </ul>
 <p>See also <a href="qcoreapplication.html#organizationName-prop">organizationName</a>, <a href="qcoreapplication.html#organizationDomain-prop">organizationDomain</a>, and <a href="qcoreapplication.html#applicationVersion-prop">applicationVersion</a>.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/applicationVersion" />
-<a name="//apple_ref/cpp/clm/QCoreApplication/setApplicationVersion" />
 <h3 class="fn"><a name="applicationVersion-prop"></a>applicationVersion : <a href="qstring.html">QString</a></h3>
 <p>This property holds the version of this application.</p>
 <p>This property was introduced in Qt 4.4.</p>
@@ -183,8 +173,6 @@
 <li><div class="fn"/><b>void setApplicationVersion ( const QString &amp; <i>version</i> )</b></li>
 </ul>
 <p>See also <a href="qcoreapplication.html#applicationName-prop">applicationName</a>, <a href="qcoreapplication.html#organizationName-prop">organizationName</a>, and <a href="qcoreapplication.html#organizationDomain-prop">organizationDomain</a>.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/organizationDomain" />
-<a name="//apple_ref/cpp/clm/QCoreApplication/setOrganizationDomain" />
 <h3 class="fn"><a name="organizationDomain-prop"></a>organizationDomain : <a href="qstring.html">QString</a></h3>
 <p>This property holds the Internet domain of the organization that wrote this application.</p>
 <p>The value is used by the <a href="qsettings.html">QSettings</a> class when it is constructed using the empty constructor. This saves having to repeat this information each time a <a href="qsettings.html">QSettings</a> object is created.</p>
@@ -195,8 +183,6 @@
 <li><div class="fn"/><b>void setOrganizationDomain ( const QString &amp; <i>orgDomain</i> )</b></li>
 </ul>
 <p>See also <a href="qcoreapplication.html#organizationName-prop">organizationName</a>, <a href="qcoreapplication.html#applicationName-prop">applicationName</a>, and <a href="qcoreapplication.html#applicationVersion-prop">applicationVersion</a>.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/organizationName" />
-<a name="//apple_ref/cpp/clm/QCoreApplication/setOrganizationName" />
 <h3 class="fn"><a name="organizationName-prop"></a>organizationName : <a href="qstring.html">QString</a></h3>
 <p>This property holds the name of the organization that wrote this application.</p>
 <p>The value is used by the <a href="qsettings.html">QSettings</a> class when it is constructed using the empty constructor. This saves having to repeat this information each time a <a href="qsettings.html">QSettings</a> object is created.</p>
@@ -209,42 +195,34 @@
 <p>See also <a href="qcoreapplication.html#organizationDomain-prop">organizationDomain</a> and <a href="qcoreapplication.html#applicationName-prop">applicationName</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QCoreApplication/QCoreApplication" />
 <h3 class="fn"><a name="QCoreApplication"></a>QCoreApplication::QCoreApplication ( int &amp; <i>argc</i>, char ** <i>argv</i> )</h3>
 <p>Constructs a Qt kernel application. Kernel applications are applications without a graphical user interface. These type of applications are used at the console or as server processes.</p>
 <p>The <i>argc</i> and <i>argv</i> arguments are processed by the application, and made available in a more convenient form by the <a href="qcoreapplication.html#arguments">arguments</a>() function.</p>
 <p><b>Warning:</b> The data pointed to by <i>argc</i> and <i>argv</i> must stay valid for the entire lifetime of the <a href="qcoreapplication.html">QCoreApplication</a> object.</p>
-<a name="//apple_ref/cpp/instm/QCoreApplication/~QCoreApplication" />
 <h3 class="fn"><a name="dtor.QCoreApplication"></a>QCoreApplication::~QCoreApplication ()</h3>
 <p>Destroys the <a href="qcoreapplication.html">QCoreApplication</a> object.</p>
-<a name="//apple_ref/cpp/instm/QCoreApplication/aboutToQuit" />
 <h3 class="fn"><a name="aboutToQuit"></a>void QCoreApplication::aboutToQuit ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the application is about to quit the main event loop, e.g&#x2e; when the event loop level drops to zero. This may happen either after a call to <a href="qcoreapplication.html#quit">quit</a>() from inside the application or when the users shuts down the entire desktop session.</p>
 <p>The signal is particularly useful if your application has to do some last-second cleanup. Note that no user interaction is possible in this state.</p>
 <p>See also <a href="qcoreapplication.html#quit">quit</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/addLibraryPath" />
 <h3 class="fn"><a name="addLibraryPath"></a>void QCoreApplication::addLibraryPath ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Prepends <i>path</i> to the end of the library path list. If <i>path</i> is empty or already in the path list, the path list is not changed.</p>
 <p>The default path list consists of a single entry, the installation directory for plugins. The default installation directory for plugins is <tt>INSTALL/plugins</tt>, where <tt>INSTALL</tt> is the directory where Qt was installed.</p>
 <p>See also <a href="qcoreapplication.html#removeLibraryPath">removeLibraryPath</a>(), <a href="qcoreapplication.html#libraryPaths">libraryPaths</a>(), and <a href="qcoreapplication.html#setLibraryPaths">setLibraryPaths</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/applicationDirPath" />
 <h3 class="fn"><a name="applicationDirPath"></a><a href="qstring.html">QString</a> QCoreApplication::applicationDirPath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the directory that contains the application executable.</p>
 <p>For example, if you have installed Qt in the <tt>C:\Trolltech\Qt</tt> directory, and you run the <tt>regexp</tt> example, this function will return &quot;C:/Trolltech/Qt/examples/tools/regexp&quot;.</p>
 <p>On Mac OS X this will point to the directory actually containing the executable, which may be inside of an application bundle (if the application is bundled).</p>
 <p><b>Warning:</b> On Unix, this function assumes that argv[0] contains the file name of the executable (which it normally does). It also assumes that the current directory hasn't been changed by the application.</p>
 <p>See also <a href="qcoreapplication.html#applicationFilePath">applicationFilePath</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/applicationFilePath" />
 <h3 class="fn"><a name="applicationFilePath"></a><a href="qstring.html">QString</a> QCoreApplication::applicationFilePath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the file path of the application executable.</p>
 <p>For example, if you have installed Qt in the <tt>/usr/local/qt</tt> directory, and you run the <tt>regexp</tt> example, this function will return &quot;/usr/local/qt/examples/tools/regexp/regexp&quot;.</p>
 <p><b>Warning:</b> On Unix, this function assumes that argv[0] contains the file name of the executable (which it normally does). It also assumes that the current directory hasn't been changed by the application.</p>
 <p>See also <a href="qcoreapplication.html#applicationDirPath">applicationDirPath</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/applicationPid" />
 <h3 class="fn"><a name="applicationPid"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QCoreApplication::applicationPid ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the current process ID for the application.</p>
 <p>This function was introduced in Qt 4.4.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/arguments" />
 <h3 class="fn"><a name="arguments"></a><a href="qstringlist.html">QStringList</a> QCoreApplication::arguments ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of command-line arguments.</p>
 <p>arguments().at(0) is the program name, arguments().at(1) is the first argument, and arguments().last() is the last argument.</p>
@@ -252,45 +230,36 @@
 <p><b>Warning:</b> On Unix, this list is built from the argc and argv parameters passed to the constructor in the main() function. The string-data in argv is interpreted using <a href="qstring.html#fromLocal8Bit">QString::fromLocal8Bit</a>(); hence it is not possible to pass i.e&#x2e; Japanese command line arguments on a system that runs in a latin1 locale. Most modern Unix systems do not have this limitation, as they are Unicode based.</p>
 <p>On NT-based Windows, this limitation does not apply either. On Windows, the arguments() are not built from the contents of argv/argc, as the content does not support Unicode. Instead, the arguments() are constructed from the return value of <a href="http://msdn2.microsoft.com/en-us/library/ms683156(VS.85).aspx">GetCommandLine()</a>.</p>
 <p>This function was introduced in Qt 4.1.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/closingDown" />
 <h3 class="fn"><a name="closingDown"></a>bool QCoreApplication::closingDown ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns true if the application objects are being destroyed; otherwise returns false.</p>
 <p>See also <a href="qcoreapplication.html#startingUp">startingUp</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/exec" />
 <h3 class="fn"><a name="exec"></a>int QCoreApplication::exec ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Enters the main event loop and waits until <a href="qcoreapplication.html#exit">exit</a>() is called. Returns the value that was set to <a href="qcoreapplication.html#exit">exit</a>() (which is 0 if <a href="qcoreapplication.html#exit">exit</a>() is called via <a href="qcoreapplication.html#quit">quit</a>()).</p>
 <p>It is necessary to call this function to start event handling. The main event loop receives events from the window system and dispatches these to the application widgets.</p>
 <p>To make your application perform idle processing (i.e&#x2e; executing a special function whenever there are no pending events), use a <a href="qtimer.html">QTimer</a> with 0 timeout. More advanced idle processing schemes can be achieved using <a href="qcoreapplication.html#processEvents">processEvents</a>().</p>
 <p>See also <a href="qcoreapplication.html#quit">quit</a>(), <a href="qcoreapplication.html#exit">exit</a>(), <a href="qcoreapplication.html#processEvents">processEvents</a>(), and <a href="qapplication.html#exec">QApplication::exec</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/exit" />
 <h3 class="fn"><a name="exit"></a>void QCoreApplication::exit ( int <i>returnCode</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Tells the application to exit with a return code.</p>
 <p>After this function has been called, the application leaves the main event loop and returns from the call to <a href="qcoreapplication.html#exec">exec</a>(). The <a href="qcoreapplication.html#exec">exec</a>() function returns <i>returnCode</i>. If the event loop is not running, this function does nothing.</p>
 <p>By convention, a <i>returnCode</i> of 0 means success, and any non-zero value indicates an error.</p>
 <p>Note that unlike the C library function of the same name, this function <i>does</i> return to the caller -- it is event processing that stops.</p>
 <p>See also <a href="qcoreapplication.html#quit">quit</a>() and <a href="qcoreapplication.html#exec">exec</a>().</p>
-<a name="//apple_ref/cpp/instm/QCoreApplication/filterEvent" />
 <h3 class="fn"><a name="filterEvent"></a>bool QCoreApplication::filterEvent ( void * <i>message</i>, long * <i>result</i> )</h3>
 <p>Sends <i>message</i> through the event filter that was set by <a href="qcoreapplication.html#setEventFilter">setEventFilter</a>(). If no event filter has been set, this function returns false; otherwise, this function returns the result of the event filter function in the <i>result</i> parameter.</p>
 <p>See also <a href="qcoreapplication.html#setEventFilter">setEventFilter</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/flush" />
 <h3 class="fn"><a name="flush"></a>void QCoreApplication::flush ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Flushes the platform specific event queues.</p>
 <p>If you are doing graphical changes inside a loop that does not return to the event loop on asynchronous window systems like X11 or double buffered window systems like Mac OS X, and you want to visualize these changes immediately (e.g&#x2e; Splash Screens), call this function.</p>
 <p>See also <a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/hasPendingEvents" />
 <h3 class="fn"><a name="hasPendingEvents"></a>bool QCoreApplication::hasPendingEvents ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This function returns true if there are pending events; otherwise returns false. Pending events can be either from the window system or posted events using <a href="qcoreapplication.html#postEvent">postEvent</a>().</p>
 <p>See also <a href="qabstracteventdispatcher.html#hasPendingEvents">QAbstractEventDispatcher::hasPendingEvents</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/installTranslator" />
 <h3 class="fn"><a name="installTranslator"></a>void QCoreApplication::installTranslator ( <a href="qtranslator.html">QTranslator</a> * <i>translationFile</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Adds the translation file <i>translationFile</i> to the list of translation files to be used for translations.</p>
 <p>Multiple translation files can be installed. Translations are searched for in the last installed translation file on, back to the first installed translation file. The search stops as soon as a matching translation is found.</p>
 <p>See also <a href="qcoreapplication.html#removeTranslator">removeTranslator</a>(), <a href="qcoreapplication.html#translate">translate</a>(), and <a href="qtranslator.html#load">QTranslator::load</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/instance" />
 <h3 class="fn"><a name="instance"></a>QCoreApplication * QCoreApplication::instance ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a pointer to the application's <a href="qcoreapplication.html">QCoreApplication</a> (or <a href="qapplication.html">QApplication</a>) instance.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/libraryPaths" />
 <h3 class="fn"><a name="libraryPaths"></a><a href="qstringlist.html">QStringList</a> QCoreApplication::libraryPaths ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of paths that the application will search when dynamically loading libraries.</p>
 <p>Qt provides default library paths, but they can also be set using a <a href="qt-conf.html">qt.conf</a> file. Paths specified in this file will override default values.</p>
@@ -299,7 +268,6 @@
 <pre>         foreach (QString path, app.libraryPaths())
              do_something(path);</pre>
 <p>See also <a href="qcoreapplication.html#setLibraryPaths">setLibraryPaths</a>(), <a href="qcoreapplication.html#addLibraryPath">addLibraryPath</a>(), <a href="qcoreapplication.html#removeLibraryPath">removeLibraryPath</a>(), <a href="qlibrary.html">QLibrary</a>, and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
-<a name="//apple_ref/cpp/instm/QCoreApplication/notify" />
 <h3 class="fn"><a name="notify"></a>bool QCoreApplication::notify ( <a href="qobject.html">QObject</a> * <i>receiver</i>, <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sends <i>event</i> to <i>receiver</i>: <i>receiver</i>-&gt;event(<i>event</i>). Returns the value that is returned from the receiver's event handler.</p>
 <p>For certain types of events (e.g&#x2e; mouse and key events), the event will be propagated to the receiver's parent and so on up to the top-level object if the receiver is not interested in the event (i.e&#x2e;, it returns false).</p>
@@ -312,7 +280,6 @@
 <li>Installing an event filter on the object. Such an event filter gets all the events except Tab and Shift-Tab key presses.</li>
 </ol>
 <p>See also <a href="qobject.html#event">QObject::event</a>() and <a href="qobject.html#installEventFilter">installEventFilter</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/postEvent" />
 <h3 class="fn"><a name="postEvent"></a>void QCoreApplication::postEvent ( <a href="qobject.html">QObject</a> * <i>receiver</i>, <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Adds the event <i>event</i>, with the object <i>receiver</i> as the receiver of the event, to an event queue and returns immediately.</p>
 <p>The event must be allocated on the heap since the post event queue will take ownership of the event and delete it once it has been posted. It is <i>not safe</i> to modify or delete the event after it has been posted.</p>
@@ -329,7 +296,6 @@
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qcoreapplication.html#sendEvent">sendEvent</a>(), <a href="qcoreapplication.html#notify">notify</a>(), <a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents</a>(), and <a href="qt.html#EventPriority-enum">Qt::EventPriority</a>.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/processEvents" />
 <h3 class="fn"><a name="processEvents"></a>void QCoreApplication::processEvents ( <a href="qeventloop.html#ProcessEventsFlag-enum">QEventLoop::ProcessEventsFlags</a> <i>flags</i> = QEventLoop::AllEvents )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Processes all pending events for the calling thread according to the specified <i>flags</i> until there are no more events to process.</p>
 <p>You can call this function occasionally when your program is busy performing a long operation (e.g&#x2e; copying a file).</p>
@@ -344,7 +310,6 @@
 <p>Calling this function processes events only for the calling thread.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qcoreapplication.html#exec">exec</a>(), <a href="qtimer.html">QTimer</a>, and <a href="qeventloop.html#processEvents">QEventLoop::processEvents</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/quit" />
 <h3 class="fn"><a name="quit"></a>void QCoreApplication::quit ()&nbsp;&nbsp;<tt> [static slot]</tt></h3>
 <p>Tells the application to exit with return code 0 (success). Equivalent to calling QCoreApplication::exit(0).</p>
 <p>It's common to connect the <a href="qapplication.html#lastWindowClosed">QApplication::lastWindowClosed</a>() signal to quit(), and you also often connect e.g&#x2e; <a href="qabstractbutton.html#clicked">QAbstractButton::clicked</a>() or signals in <a href="qaction.html">QAction</a>, <a href="qmenu.html">QMenu</a>, or <a href="qmenubar.html">QMenuBar</a> to it.</p>
@@ -352,11 +317,9 @@
 <pre>         QPushButton *quitButton = new QPushButton(&quot;Quit&quot;);
          connect(quitButton, SIGNAL(clicked()), &amp;app, SLOT(quit()));</pre>
 <p>See also <a href="qcoreapplication.html#exit">exit</a>(), <a href="qcoreapplication.html#aboutToQuit">aboutToQuit</a>(), and <a href="qapplication.html#lastWindowClosed">QApplication::lastWindowClosed</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/removeLibraryPath" />
 <h3 class="fn"><a name="removeLibraryPath"></a>void QCoreApplication::removeLibraryPath ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes <i>path</i> from the library path list. If <i>path</i> is empty or not in the path list, the list is not changed.</p>
 <p>See also <a href="qcoreapplication.html#addLibraryPath">addLibraryPath</a>(), <a href="qcoreapplication.html#libraryPaths">libraryPaths</a>(), and <a href="qcoreapplication.html#setLibraryPaths">setLibraryPaths</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/removePostedEvents" />
 <h3 class="fn"><a name="removePostedEvents"></a>void QCoreApplication::removePostedEvents ( <a href="qobject.html">QObject</a> * <i>receiver</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes all events posted using <a href="qcoreapplication.html#postEvent">postEvent</a>() for <i>receiver</i>.</p>
 <p>The events are <i>not</i> dispatched, instead they are removed from the queue. You should never need to call this function. If you do call it, be aware that killing events may cause <i>receiver</i> to break one or more invariants.</p>
@@ -368,18 +331,15 @@
 <p>If <i>receiver</i> is null, the events of <i>eventType</i> are removed for all objects. If <i>eventType</i> is 0, all the events are removed for <i>receiver</i>.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/removeTranslator" />
 <h3 class="fn"><a name="removeTranslator"></a>void QCoreApplication::removeTranslator ( <a href="qtranslator.html">QTranslator</a> * <i>translationFile</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes the translation file <i>translationFile</i> from the list of translation files used by this application. (It does not delete the translation file from the file system.)</p>
 <p>See also <a href="qcoreapplication.html#installTranslator">installTranslator</a>(), <a href="qcoreapplication.html#translate">translate</a>(), and <a href="qobject.html#tr">QObject::tr</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/sendEvent" />
 <h3 class="fn"><a name="sendEvent"></a>bool QCoreApplication::sendEvent ( <a href="qobject.html">QObject</a> * <i>receiver</i>, <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sends event <i>event</i> directly to receiver <i>receiver</i>, using the <a href="qcoreapplication.html#notify">notify</a>() function. Returns the value that was returned from the event handler.</p>
 <p>The event is <i>not</i> deleted when the event has been sent. The normal approach is to create the event on the stack, for example:</p>
 <pre>         QMouseEvent event(QEvent::MouseButtonPress, pos, 0, 0, 0);
          QApplication::sendEvent(mainWindow, &amp;event);</pre>
 <p>See also <a href="qcoreapplication.html#postEvent">postEvent</a>() and <a href="qcoreapplication.html#notify">notify</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/sendPostedEvents" />
 <h3 class="fn"><a name="sendPostedEvents"></a>void QCoreApplication::sendPostedEvents ( <a href="qobject.html">QObject</a> * <i>receiver</i>, int <i>event_type</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Immediately dispatches all events which have been previously queued with <a href="qcoreapplication.html#postEvent">QCoreApplication::postEvent</a>() and which are for the object <i>receiver</i> and have the event type <i>event_type</i>.</p>
 <p>Events from the window system are <i>not</i> dispatched by this function, but by <a href="qcoreapplication.html#processEvents">processEvents</a>().</p>
@@ -389,31 +349,25 @@
 <h3 class="fn"><a name="sendPostedEvents-2"></a>void QCoreApplication::sendPostedEvents ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Dispatches all posted events, i.e&#x2e; empties the event queue.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/setAttribute" />
 <h3 class="fn"><a name="setAttribute"></a>void QCoreApplication::setAttribute ( <a href="qt.html#ApplicationAttribute-enum">Qt::ApplicationAttribute</a> <i>attribute</i>, bool <i>on</i> = true )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the attribute <i>attribute</i> if <i>on</i> is true; otherwise clears the attribute.</p>
 <p>One of the attributes that can be set with this method is <a href="qt.html#ApplicationAttribute-enum">Qt::AA_ImmediateWidgetCreation</a>. It tells Qt to create toplevel windows immediately. Normally, resources for widgets are allocated on demand to improve efficiency and minimize resource usage. Therefore, if it is important to minimize resource consumption, do not set this attribute.</p>
 <p>See also <a href="qcoreapplication.html#testAttribute">testAttribute</a>().</p>
-<a name="//apple_ref/cpp/instm/QCoreApplication/setEventFilter" />
 <h3 class="fn"><a name="setEventFilter"></a><a href="qcoreapplication.html#EventFilter-typedef">EventFilter</a> QCoreApplication::setEventFilter ( <a href="qcoreapplication.html#EventFilter-typedef">EventFilter</a> <i>filter</i> )</h3>
 <p>Sets the event filter <i>filter</i>. Returns a pointer to the filter function previously defined.</p>
 <p>The event filter is a function that is called for every message received in all threads. This does <i>not</i> include messages to objects that are not handled by Qt.</p>
 <p>The function can return true to stop the event to be processed by Qt, or false to continue with the standard event processing.</p>
 <p>Only one filter can be defined, but the filter can use the return value to call the previously set event filter. By default, no filter is set (i.e&#x2e;, the function returns 0).</p>
 <p>See also <a href="qobject.html#installEventFilter">installEventFilter</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/setLibraryPaths" />
 <h3 class="fn"><a name="setLibraryPaths"></a>void QCoreApplication::setLibraryPaths ( const <a href="qstringlist.html">QStringList</a> &amp; <i>paths</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the list of directories to search when loading libraries to <i>paths</i>. All existing paths will be deleted and the path list will consist of the paths given in <i>paths</i>.</p>
 <p>See also <a href="qcoreapplication.html#libraryPaths">libraryPaths</a>(), <a href="qcoreapplication.html#addLibraryPath">addLibraryPath</a>(), <a href="qcoreapplication.html#removeLibraryPath">removeLibraryPath</a>(), and <a href="qlibrary.html">QLibrary</a>.</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/startingUp" />
 <h3 class="fn"><a name="startingUp"></a>bool QCoreApplication::startingUp ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns true if an application object has not been created yet; otherwise returns false.</p>
 <p>See also <a href="qcoreapplication.html#closingDown">closingDown</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/testAttribute" />
 <h3 class="fn"><a name="testAttribute"></a>bool QCoreApplication::testAttribute ( <a href="qt.html#ApplicationAttribute-enum">Qt::ApplicationAttribute</a> <i>attribute</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns true if attribute <i>attribute</i> is set; otherwise returns false.</p>
 <p>See also <a href="qcoreapplication.html#setAttribute">setAttribute</a>().</p>
-<a name="//apple_ref/cpp/clm/QCoreApplication/translate" />
 <h3 class="fn"><a name="translate"></a><a href="qstring.html">QString</a> QCoreApplication::translate ( const char * <i>context</i>, const char * <i>sourceText</i>, const char * <i>comment</i>, <a href="qcoreapplication.html#Encoding-enum">Encoding</a> <i>encoding</i>, int <i>n</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the translation text for <i>sourceText</i>, by querying the installed translation files. The translation files are searched from the most recently installed file back to the first installed file.</p>
 <p><a href="qobject.html#tr">QObject::tr</a>() and <a href="qobject.html#trUtf8">QObject::trUtf8</a>() provide this functionality more conveniently.</p>
@@ -427,13 +381,9 @@
 <p>See also <a href="qobject.html#tr">QObject::tr</a>(), <a href="qcoreapplication.html#installTranslator">installTranslator</a>(), and <a href="qtextcodec.html#codecForTr">QTextCodec::codecForTr</a>().</p>
 <h3 class="fn"><a name="translate-2"></a><a href="qstring.html">QString</a> QCoreApplication::translate ( const char * <i>context</i>, const char * <i>sourceText</i>, const char * <i>comment</i> = 0, <a href="qcoreapplication.html#Encoding-enum">Encoding</a> <i>encoding</i> = CodecForTr )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QCoreApplication/winEventFilter" />
-<h3 class="fn"><a name="winEventFilter"></a>bool QCoreApplication::winEventFilter ( MSG * <i>msg</i>, long * <i>result</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>The message procedure calls this function for every message received. Reimplement this function if you want to process window messages <i>msg</i> that are not processed by Qt. If you don't want the event to be processed by Qt, then return true and set <i>result</i> to the value that the window procedure should return. Otherwise return false.</p>
-<p>It is only directly addressed messages that are filtered. To handle system wide messages, such as messages from a registered hot key, you need to install an event filter on the event dispatcher, which is returned from <a href="qabstracteventdispatcher.html#instance">QAbstractEventDispatcher::instance</a>().</p>
+<h3 class="fn"><a name="winEventFilter"></a>bool QCoreApplication::winEventFilter ( MSG * <i>message</i>, long * <i>result</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <hr />
 <h2>Related Non-Members</h2>
-<a name="//apple_ref/cpp/func//qAddPostRoutine" />
 <h3 class="fn"><a name="qAddPostRoutine"></a>void qAddPostRoutine ( QtCleanUpFunction <i>ptr</i> )</h3>
 <p>Adds a global routine that will be called from the <a href="qapplication.html">QApplication</a> destructor. This function is normally used to add cleanup routines for program-wide functionality.</p>
 <p>The function specified by <i>ptr</i> should take no arguments and should return nothing. For example:</p>
@@ -479,7 +429,6 @@
 <p>By selecting the right parent object, this can often be made to clean up the module's data at the right moment.</p>
 <hr />
 <h2>Macro Documentation</h2>
-<a name="//apple_ref/cpp/macro//Q_DECLARE_TR_FUNCTIONS" />
 <h3 class="fn"><a name="Q_DECLARE_TR_FUNCTIONS"></a>Q_DECLARE_TR_FUNCTIONS (  <i>context</i> )</h3>
 <p>The Q_DECLARE_TR_FUNCTIONS() macro declares and implements two translation functions, <tt>tr()</tt> and <tt>trUtf8()</tt>, with these signatures:</p>
 <pre>         static inline QString tr(const char *sourceText,
