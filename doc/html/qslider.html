@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qslider.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-embedded-linux-opensource-src-4.4.1/src/gui/widgets/qslider.cpp -->
 <head>
   <title>Qt 4.4: QSlider Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSlider" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -52,7 +51,7 @@
 <li><div class="fn"/>22 public functions inherited from <a href="qabstractslider.html#public-functions">QAbstractSlider</a></li>
 <li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>14 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
@@ -75,7 +74,6 @@
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 <li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
@@ -111,19 +109,6 @@
 <p>See also <a href="qscrollbar.html">QScrollBar</a>, <a href="qspinbox.html">QSpinBox</a>, <a href="qdial.html">QDial</a>, <a href="guibooks.html#fowler">GUI Design Handbook: Slider</a>, and <a href="widgets-sliders.html">Sliders Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QSlider/TickPosition" />
-<a name="//apple_ref/cpp/econst/QSlider/NoTicks" />
-<a name="//apple_ref/cpp/econst/QSlider/TicksBothSides" />
-<a name="//apple_ref/cpp/econst/QSlider/TicksAbove" />
-<a name="//apple_ref/cpp/econst/QSlider/TicksBelow" />
-<a name="//apple_ref/cpp/econst/QSlider/TicksLeft" />
-<a name="//apple_ref/cpp/econst/QSlider/TicksRight" />
-<a name="//apple_ref/cpp/econst/QSlider/NoMarks" />
-<a name="//apple_ref/cpp/econst/QSlider/Above" />
-<a name="//apple_ref/cpp/econst/QSlider/Left" />
-<a name="//apple_ref/cpp/econst/QSlider/Below" />
-<a name="//apple_ref/cpp/econst/QSlider/Right" />
-<a name="//apple_ref/cpp/econst/QSlider/Both" />
 <h3 class="fn"><a name="TickPosition-enum"></a>enum QSlider::TickPosition</h3>
 <p>This enum specifies where the tick marks are to be drawn relative to the slider's groove and the handle the user moves.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -137,20 +122,16 @@
 </table></p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSlider/tickInterval" />
-<a name="//apple_ref/cpp/instm/QSlider/setTickInterval" />
 <h3 class="fn"><a name="tickInterval-prop"></a>tickInterval : int</h3>
 <p>This property holds the interval between tickmarks.</p>
-<p>This is a value interval, not a pixel interval. If it is 0, the slider will choose between <a href="qabstractslider-qt3.html#lineStep">lineStep</a>() and <a href="qabstractslider.html#pageStep-prop">pageStep</a>().</p>
+<p>This is a value interval, not a pixel interval. If it is 0, the slider will choose between <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>() and <a href="qabstractslider.html#pageStep-prop">pageStep</a>().</p>
 <p>The default value is 0.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int tickInterval () const</b></li>
 <li><div class="fn"/><b>void setTickInterval ( int <i>ti</i> )</b></li>
 </ul>
-<p>See also <a href="qslider.html#tickPosition-prop">tickPosition</a>, <a href="qabstractslider-qt3.html#lineStep">lineStep</a>(), and <a href="qabstractslider.html#pageStep-prop">pageStep</a>().</p>
-<a name="//apple_ref/cpp/instm/QSlider/tickPosition" />
-<a name="//apple_ref/cpp/instm/QSlider/setTickPosition" />
+<p>See also <a href="qslider.html#tickPosition-prop">tickPosition</a>, <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(), and <a href="qabstractslider.html#pageStep-prop">pageStep</a>().</p>
 <h3 class="fn"><a name="tickPosition-prop"></a>tickPosition : <a href="qslider.html#TickPosition-enum">TickPosition</a></h3>
 <p>This property holds the tickmark position for this slider.</p>
 <p>The valid values are described by the <a href="qslider.html#TickPosition-enum">QSlider::TickPosition</a> enum.</p>
@@ -163,15 +144,12 @@
 <p>See also <a href="qslider.html#tickInterval-prop">tickInterval</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSlider/QSlider" />
 <h3 class="fn"><a name="QSlider"></a>QSlider::QSlider ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a vertical slider with the given <i>parent</i>.</p>
 <h3 class="fn"><a name="QSlider-2"></a>QSlider::QSlider ( <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a slider with the given <i>parent</i>. The <i>orientation</i> parameter determines whether the slider is horizontal or vertical; the valid values are <a href="qt.html#Orientation-enum">Qt::Vertical</a> and <a href="qt.html#Orientation-enum">Qt::Horizontal</a>.</p>
-<a name="//apple_ref/cpp/instm/QSlider/~QSlider" />
 <h3 class="fn"><a name="dtor.QSlider"></a>QSlider::~QSlider ()</h3>
 <p>Destroys this slider.</p>
-<a name="//apple_ref/cpp/instm/QSlider/initStyleOption" />
 <h3 class="fn"><a name="initStyleOption"></a>void QSlider::initStyleOption ( <a href="qstyleoptionslider.html">QStyleOptionSlider</a> * <i>option</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Initialize <i>option</i> with the values from this <a href="qslider.html">QSlider</a>. This method is useful for subclasses when they need a <a href="qstyleoptionslider.html">QStyleOptionSlider</a>, but don't want to fill in all the information themselves.</p>
 <p>See also <a href="qstyleoption.html#initFrom">QStyleOption::initFrom</a>().</p>

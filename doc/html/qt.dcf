@@ -216,6 +216,12 @@
         <keyword ref="qtextedit-extraselection.html#format-var">format</keyword>
         <section ref="qtextedit-extraselection-members.html" title="List of all members"/>
     </section>
+    <section ref="qabstractfontengine-fixedpoint.html" title="FixedPoint Class Reference">
+        <keyword ref="qabstractfontengine-fixedpoint.html">FixedPoint</keyword>
+        <keyword ref="qabstractfontengine-fixedpoint.html#x-var">x</keyword>
+        <keyword ref="qabstractfontengine-fixedpoint.html#y-var">y</keyword>
+        <section ref="qabstractfontengine-fixedpoint-members.html" title="List of all members"/>
+    </section>
     <section ref="qtextlayout-formatrange.html" title="FormatRange Class Reference">
         <keyword ref="qtextlayout-formatrange.html">FormatRange</keyword>
         <keyword ref="qtextlayout-formatrange.html#format-var">format</keyword>
@@ -227,6 +233,15 @@
         <keyword ref="phonon-globalconfig.html">GlobalConfig</keyword>
         <keyword ref="phonon-globalconfig.html#HideAdvancedDevicesOverride-enum">HideAdvancedDevicesOverride</keyword>
         <section ref="phonon-globalconfig-members.html" title="List of all members"/>
+    </section>
+    <section ref="qabstractfontengine-glyphmetrics.html" title="GlyphMetrics Class Reference">
+        <keyword ref="qabstractfontengine-glyphmetrics.html">GlyphMetrics</keyword>
+        <keyword ref="qabstractfontengine-glyphmetrics.html#advance-var">advance</keyword>
+        <keyword ref="qabstractfontengine-glyphmetrics.html#height-var">height</keyword>
+        <keyword ref="qabstractfontengine-glyphmetrics.html#width-var">width</keyword>
+        <keyword ref="qabstractfontengine-glyphmetrics.html#x-var">x</keyword>
+        <keyword ref="qabstractfontengine-glyphmetrics.html#y-var">y</keyword>
+        <section ref="qabstractfontengine-glyphmetrics-members.html" title="List of all members"/>
     </section>
     <section ref="qhash-iterator.html" title="iterator Class Reference">
         <keyword ref="qhash-iterator.html">iterator</keyword>
@@ -332,6 +347,11 @@
         <keyword ref="qtextframe-iterator.html#operator-eq">operator=</keyword>
         <keyword ref="qtextframe-iterator.html#operator-eq-eq">operator==</keyword>
         <section ref="qtextframe-iterator-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsserver-keyboardfilter.html" title="KeyboardFilter Class Reference">
+        <keyword ref="qwsserver-keyboardfilter.html">KeyboardFilter</keyword>
+        <keyword ref="qwsserver-keyboardfilter.html#filter">filter</keyword>
+        <section ref="qwsserver-keyboardfilter-members.html" title="List of all members"/>
     </section>
     <section ref="qabstractfileengine-mapextensionoption.html" title="MapExtensionOption Class Reference">
         <keyword ref="qabstractfileengine-mapextensionoption.html">MapExtensionOption</keyword>
@@ -741,6 +761,42 @@
         <keyword ref="qabstractfileengineiterator.html#next">next</keyword>
         <keyword ref="qabstractfileengineiterator.html#pathx">path</keyword>
         <section ref="qabstractfileengineiterator-members.html" title="List of all members"/>
+    </section>
+    <section ref="qabstractfontengine.html" title="QAbstractFontEngine Class Reference">
+        <keyword ref="qabstractfontengine.html">QAbstractFontEngine</keyword>
+        <keyword ref="qabstractfontengine.html#Capability-enum">Capability</keyword>
+        <keyword ref="qabstractfontengine.html#Capability-enum">Capabilities</keyword>
+        <keyword ref="qabstractfontengine.html#Capability-enum">QAbstractFontEngine::CanOutlineGlyphs</keyword>
+        <keyword ref="qabstractfontengine.html#Capability-enum">QAbstractFontEngine::CanRenderGlyphs_Mono</keyword>
+        <keyword ref="qabstractfontengine.html#Capability-enum">QAbstractFontEngine::CanRenderGlyphs</keyword>
+        <keyword ref="qabstractfontengine.html#Capability-enum">QAbstractFontEngine::CanRenderGlyphs_Gray</keyword>
+        <keyword ref="qabstractfontengine.html#Fixed-typedef">Fixed</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">FontProperty</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::UnderlinePosition</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::Descent</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::LineThickness</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::MaxCharWidth</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::OutlineGlyphsHint</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::AverageCharWidth</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::XHeight</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::Ascent</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::GlyphCount</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::MinRightBearing</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::Leading</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::CacheGlyphsHint</keyword>
+        <keyword ref="qabstractfontengine.html#FontProperty-enum">QAbstractFontEngine::MinLeftBearing</keyword>
+        <keyword ref="qabstractfontengine.html#TextShapingFlag-enum">TextShapingFlag</keyword>
+        <keyword ref="qabstractfontengine.html#TextShapingFlag-enum">TextShapingFlags</keyword>
+        <keyword ref="qabstractfontengine.html#TextShapingFlag-enum">QAbstractFontEngine::RightToLeft</keyword>
+        <keyword ref="qabstractfontengine.html#TextShapingFlag-enum">QAbstractFontEngine::ReturnDesignMetrics</keyword>
+        <keyword ref="qabstractfontengine.html#addGlyphOutlinesToPath">addGlyphOutlinesToPath</keyword>
+        <keyword ref="qabstractfontengine.html#capabilities">capabilities</keyword>
+        <keyword ref="qabstractfontengine.html#convertStringToGlyphIndices">convertStringToGlyphIndices</keyword>
+        <keyword ref="qabstractfontengine.html#fontProperty">fontProperty</keyword>
+        <keyword ref="qabstractfontengine.html#getGlyphAdvances">getGlyphAdvances</keyword>
+        <keyword ref="qabstractfontengine.html#glyphMetrics">glyphMetrics</keyword>
+        <keyword ref="qabstractfontengine.html#renderGlyph">renderGlyph</keyword>
+        <section ref="qabstractfontengine-members.html" title="List of all members"/>
     </section>
     <section ref="qabstractformbuilder.html" title="QAbstractFormBuilder Class Reference">
         <keyword ref="qabstractformbuilder.html">QAbstractFormBuilder</keyword>
@@ -1791,7 +1847,6 @@
         <keyword ref="qapplication.html#palette">palette</keyword>
         <keyword ref="qapplication.html#qwsDecoration">qwsDecoration</keyword>
         <keyword ref="qapplication.html#qwsEventFilter">qwsEventFilter</keyword>
-        <keyword ref="qapplication.html#qwsProcessEvent">qwsProcessEvent</keyword>
         <keyword ref="qapplication.html#qwsSetCustomColors">qwsSetCustomColors</keyword>
         <keyword ref="qapplication.html#qwsSetDecoration">qwsSetDecoration</keyword>
         <keyword ref="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</keyword>
@@ -1815,6 +1870,8 @@
         <keyword ref="qapplication.html#topLevelWidgets">topLevelWidgets</keyword>
         <keyword ref="qapplication.html#type">type</keyword>
         <keyword ref="qapplication.html#widgetAt">widgetAt</keyword>
+        <keyword ref="qapplication.html#winFocus">winFocus</keyword>
+        <keyword ref="qapplication.html#winMouseButtonUp">winMouseButtonUp</keyword>
         <keyword ref="qapplication.html#x11EventFilter">x11EventFilter</keyword>
         <keyword ref="qapplication.html#x11ProcessEvent">x11ProcessEvent</keyword>
         <keyword ref="qapplication.html#qApp">qApp</keyword>
@@ -2521,6 +2578,8 @@
         <keyword ref="qcolor.html#qRed">qRed</keyword>
         <keyword ref="qcolor.html#qRgb">qRgb</keyword>
         <keyword ref="qcolor.html#qRgba">qRgba</keyword>
+        <keyword ref="qcolor.html#operator-lt-lt">operator&lt;&lt;</keyword>
+        <keyword ref="qcolor.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qcolor-members.html" title="List of all members"/>
         <section ref="qcolor-obsolete.html" title="Obsolete members"/>
         <section ref="qcolor-qt3.html" title="Qt 3 support members"/>
@@ -2739,6 +2798,17 @@
         <keyword ref="qcontextmenuevent.html#y">y</keyword>
         <section ref="qcontextmenuevent-members.html" title="List of all members"/>
         <section ref="qcontextmenuevent-qt3.html" title="Qt 3 support members"/>
+    </section>
+    <section ref="qcopchannel.html" title="QCopChannel Class Reference">
+        <keyword ref="qcopchannel.html">QCopChannel</keyword>
+        <keyword ref="qcopchannel.html#channel">channel</keyword>
+        <keyword ref="qcopchannel.html#flush">flush</keyword>
+        <keyword ref="qcopchannel.html#isRegistered">isRegistered</keyword>
+        <keyword ref="qcopchannel.html#receive">receive</keyword>
+        <keyword ref="qcopchannel.html#received">received</keyword>
+        <keyword ref="qcopchannel.html#send">send</keyword>
+        <section ref="qcopchannel-members.html" title="List of all members"/>
+        <section ref="qcopchannel-qt3.html" title="Qt 3 support members"/>
     </section>
     <section ref="qcoreapplication.html" title="QCoreApplication Class Reference">
         <keyword ref="qcoreapplication.html">QCoreApplication</keyword>
@@ -3284,6 +3354,68 @@
         <keyword ref="qdbusvariant.html#variant">variant</keyword>
         <section ref="qdbusvariant-members.html" title="List of all members"/>
     </section>
+    <section ref="qdecoration.html" title="QDecoration Class Reference">
+        <keyword ref="qdecoration.html">QDecoration</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">DecorationRegion</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::TopRight</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::None</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Help</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::TopLeft</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Maximize</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Top</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Title</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Borders</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::All</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::BottomLeft</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Left</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::BottomRight</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Right</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Resize</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Close</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Menu</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Normalize</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Move</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Bottom</keyword>
+        <keyword ref="qdecoration.html#DecorationRegion-enum">QDecoration::Minimize</keyword>
+        <keyword ref="qdecoration.html#DecorationState-enum">DecorationState</keyword>
+        <keyword ref="qdecoration.html#DecorationState-enum">QDecoration::Normal</keyword>
+        <keyword ref="qdecoration.html#DecorationState-enum">QDecoration::Hover</keyword>
+        <keyword ref="qdecoration.html#DecorationState-enum">QDecoration::Disabled</keyword>
+        <keyword ref="qdecoration.html#DecorationState-enum">QDecoration::Pressed</keyword>
+        <keyword ref="qdecoration.html#buildSysMenu">buildSysMenu</keyword>
+        <keyword ref="qdecoration.html#menuTriggered">menuTriggered</keyword>
+        <keyword ref="qdecoration.html#paint">paint</keyword>
+        <keyword ref="qdecoration.html#region">region</keyword>
+        <keyword ref="qdecoration.html#regionAt">regionAt</keyword>
+        <keyword ref="qdecoration.html#regionClicked">regionClicked</keyword>
+        <keyword ref="qdecoration.html#regionDoubleClicked">regionDoubleClicked</keyword>
+        <keyword ref="qdecoration.html#startMove">startMove</keyword>
+        <keyword ref="qdecoration.html#startResize">startResize</keyword>
+        <section ref="qdecoration-members.html" title="List of all members"/>
+    </section>
+    <section ref="qdecorationdefault.html" title="QDecorationDefault Class Reference">
+        <keyword ref="qdecorationdefault.html">QDecorationDefault</keyword>
+        <keyword ref="qdecorationdefault.html#paint">paint</keyword>
+        <keyword ref="qdecorationdefault.html#paintButton">paintButton</keyword>
+        <keyword ref="qdecorationdefault.html#pixmapFor">pixmapFor</keyword>
+        <keyword ref="qdecorationdefault.html#region">region</keyword>
+        <keyword ref="qdecorationdefault.html#titleBarHeight">titleBarHeight</keyword>
+        <keyword ref="qdecorationdefault.html#windowTitleFor">windowTitleFor</keyword>
+        <keyword ref="qdecorationdefault.html#xpmForRegion">xpmForRegion</keyword>
+        <section ref="qdecorationdefault-members.html" title="List of all members"/>
+    </section>
+    <section ref="qdecorationfactory.html" title="QDecorationFactory Class Reference">
+        <keyword ref="qdecorationfactory.html">QDecorationFactory</keyword>
+        <keyword ref="qdecorationfactory.html#create">create</keyword>
+        <keyword ref="qdecorationfactory.html#keys">keys</keyword>
+        <section ref="qdecorationfactory-members.html" title="List of all members"/>
+    </section>
+    <section ref="qdecorationplugin.html" title="QDecorationPlugin Class Reference">
+        <keyword ref="qdecorationplugin.html">QDecorationPlugin</keyword>
+        <keyword ref="qdecorationplugin.html#create">create</keyword>
+        <keyword ref="qdecorationplugin.html#keys">keys</keyword>
+        <section ref="qdecorationplugin-members.html" title="List of all members"/>
+    </section>
     <section ref="qdesigneractioneditorinterface.html" title="QDesignerActionEditorInterface Class Reference">
         <keyword ref="qdesigneractioneditorinterface.html">QDesignerActionEditorInterface</keyword>
         <keyword ref="qdesigneractioneditorinterface.html#core">core</keyword>
@@ -3767,6 +3899,34 @@
         <section ref="qdir-obsolete.html" title="Obsolete members"/>
         <section ref="qdir-qt3.html" title="Qt 3 support members"/>
     </section>
+    <section ref="qdirectpainter.html" title="QDirectPainter Class Reference">
+        <keyword ref="qdirectpainter.html">QDirectPainter</keyword>
+        <keyword ref="qdirectpainter.html#SurfaceFlag-enum">SurfaceFlag</keyword>
+        <keyword ref="qdirectpainter.html#SurfaceFlag-enum">QDirectPainter::ReservedSynchronous</keyword>
+        <keyword ref="qdirectpainter.html#SurfaceFlag-enum">QDirectPainter::Reserved</keyword>
+        <keyword ref="qdirectpainter.html#SurfaceFlag-enum">QDirectPainter::NonReserved</keyword>
+        <keyword ref="qdirectpainter.html#allocatedRegion">allocatedRegion</keyword>
+        <keyword ref="qdirectpainter.html#endPainting">endPainting</keyword>
+        <keyword ref="qdirectpainter.html#flush">flush</keyword>
+        <keyword ref="qdirectpainter.html#frameBuffer">frameBuffer</keyword>
+        <keyword ref="qdirectpainter.html#geometry">geometry</keyword>
+        <keyword ref="qdirectpainter.html#linestep">linestep</keyword>
+        <keyword ref="qdirectpainter.html#lock">lock</keyword>
+        <keyword ref="qdirectpainter.html#lower">lower</keyword>
+        <keyword ref="qdirectpainter.html#raise">raise</keyword>
+        <keyword ref="qdirectpainter.html#regionChanged">regionChanged</keyword>
+        <keyword ref="qdirectpainter.html#requestedRegion">requestedRegion</keyword>
+        <keyword ref="qdirectpainter.html#screenDepth">screenDepth</keyword>
+        <keyword ref="qdirectpainter.html#screenHeight">screenHeight</keyword>
+        <keyword ref="qdirectpainter.html#screenWidth">screenWidth</keyword>
+        <keyword ref="qdirectpainter.html#setGeometry">setGeometry</keyword>
+        <keyword ref="qdirectpainter.html#setRegion">setRegion</keyword>
+        <keyword ref="qdirectpainter.html#startPainting">startPainting</keyword>
+        <keyword ref="qdirectpainter.html#unlock">unlock</keyword>
+        <keyword ref="qdirectpainter.html#winId">winId</keyword>
+        <section ref="qdirectpainter-members.html" title="List of all members"/>
+        <section ref="qdirectpainter-obsolete.html" title="Obsolete members"/>
+    </section>
     <section ref="qdiriterator.html" title="QDirIterator Class Reference">
         <keyword ref="qdiriterator.html">QDirIterator</keyword>
         <keyword ref="qdiriterator.html#IteratorFlag-enum">IteratorFlag</keyword>
@@ -4068,7 +4228,7 @@
         <keyword ref="qdomnode.html#lineNumber">lineNumber</keyword>
         <keyword ref="qdomnode.html#localName">localName</keyword>
         <keyword ref="qdomnode.html#namedItem">namedItem</keyword>
-        <keyword ref="qdomnode.html#namespaceURI">namespaceURI</keyword>
+        <keyword ref="qdomnode.html#namespaceURIx">namespaceURI</keyword>
         <keyword ref="qdomnode.html#nextSibling">nextSibling</keyword>
         <keyword ref="qdomnode.html#nextSiblingElement">nextSiblingElement</keyword>
         <keyword ref="qdomnode.html#nodeName">nodeName</keyword>
@@ -4953,6 +5113,28 @@
         <keyword ref="qfontdialog.html#getFont">getFont</keyword>
         <section ref="qfontdialog-members.html" title="List of all members"/>
     </section>
+    <section ref="qfontengineinfo.html" title="QFontEngineInfo Class Reference">
+        <keyword ref="qfontengineinfo.html">QFontEngineInfo</keyword>
+        <keyword ref="qfontengineinfo.html#family-prop">family</keyword>
+        <keyword ref="qfontengineinfo.html#family-prop">setFamily</keyword>
+        <keyword ref="qfontengineinfo.html#pixelSize-prop">pixelSize</keyword>
+        <keyword ref="qfontengineinfo.html#pixelSize-prop">setPixelSize</keyword>
+        <keyword ref="qfontengineinfo.html#style-prop">style</keyword>
+        <keyword ref="qfontengineinfo.html#style-prop">setStyle</keyword>
+        <keyword ref="qfontengineinfo.html#weight-prop">weight</keyword>
+        <keyword ref="qfontengineinfo.html#weight-prop">setWeight</keyword>
+        <keyword ref="qfontengineinfo.html#writingSystems-prop">writingSystems</keyword>
+        <keyword ref="qfontengineinfo.html#writingSystems-prop">setWritingSystems</keyword>
+        <keyword ref="qfontengineinfo.html#operator-eq">operator=</keyword>
+        <section ref="qfontengineinfo-members.html" title="List of all members"/>
+    </section>
+    <section ref="qfontengineplugin.html" title="QFontEnginePlugin Class Reference">
+        <keyword ref="qfontengineplugin.html">QFontEnginePlugin</keyword>
+        <keyword ref="qfontengineplugin.html#availableFontEngines">availableFontEngines</keyword>
+        <keyword ref="qfontengineplugin.html#create">create</keyword>
+        <keyword ref="qfontengineplugin.html#keys">keys</keyword>
+        <section ref="qfontengineplugin-members.html" title="List of all members"/>
+    </section>
     <section ref="qfontinfo.html" title="QFontInfo Class Reference">
         <keyword ref="qfontinfo.html">QFontInfo</keyword>
         <keyword ref="qfontinfo.html#bold">bold</keyword>
@@ -5114,12 +5296,26 @@
     </section>
     <section ref="qfsfileengine.html" title="QFSFileEngine Class Reference">
         <keyword ref="qfsfileengine.html">QFSFileEngine</keyword>
+        <keyword ref="qfsfileengine.html#caseSensitive">caseSensitive</keyword>
+        <keyword ref="qfsfileengine.html#copy">copy</keyword>
         <keyword ref="qfsfileengine.html#currentPath">currentPath</keyword>
         <keyword ref="qfsfileengine.html#drives">drives</keyword>
+        <keyword ref="qfsfileengine.html#fileName">fileName</keyword>
+        <keyword ref="qfsfileengine.html#fileTime">fileTime</keyword>
         <keyword ref="qfsfileengine.html#homePath">homePath</keyword>
+        <keyword ref="qfsfileengine.html#isRelativePath">isRelativePath</keyword>
+        <keyword ref="qfsfileengine.html#link">link</keyword>
+        <keyword ref="qfsfileengine.html#mkdir">mkdir</keyword>
         <keyword ref="qfsfileengine.html#open">open</keyword>
+        <keyword ref="qfsfileengine.html#owner">owner</keyword>
+        <keyword ref="qfsfileengine.html#ownerId">ownerId</keyword>
+        <keyword ref="qfsfileengine.html#remove">remove</keyword>
+        <keyword ref="qfsfileengine.html#rename">rename</keyword>
+        <keyword ref="qfsfileengine.html#rmdir">rmdir</keyword>
         <keyword ref="qfsfileengine.html#rootPath">rootPath</keyword>
         <keyword ref="qfsfileengine.html#setCurrentPath">setCurrentPath</keyword>
+        <keyword ref="qfsfileengine.html#setPermissions">setPermissions</keyword>
+        <keyword ref="qfsfileengine.html#setSize">setSize</keyword>
         <keyword ref="qfsfileengine.html#tempPath">tempPath</keyword>
         <section ref="qfsfileengine-members.html" title="List of all members"/>
     </section>
@@ -6383,6 +6579,7 @@
         <keyword ref="qhash.html#operator-eq">operator=</keyword>
         <keyword ref="qhash.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qhash.html#operator-5b-5d">operator[]</keyword>
+        <keyword ref="qhash.html#qHashx">qHash</keyword>
         <section ref="qhash-members.html" title="List of all members"/>
     </section>
     <section ref="qhashiterator.html" title="QHashIterator Class Reference">
@@ -6815,8 +7012,6 @@
         <keyword ref="qicon.html#pixmap">pixmap</keyword>
         <keyword ref="qicon.html#operator-QVariant">operator QVariant</keyword>
         <keyword ref="qicon.html#operator-eq">operator=</keyword>
-        <keyword ref="qicon.html#operator-lt-lt">operator&lt;&lt;</keyword>
-        <keyword ref="qicon.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qicon-members.html" title="List of all members"/>
         <section ref="qicon-obsolete.html" title="Obsolete members"/>
         <section ref="qicon-qt3.html" title="Qt 3 support members"/>
@@ -7299,6 +7494,18 @@
         <section ref="qitemselectionrange-members.html" title="List of all members"/>
         <section ref="qitemselectionrange-obsolete.html" title="Obsolete members"/>
     </section>
+    <section ref="qkbddriverfactory.html" title="QKbdDriverFactory Class Reference">
+        <keyword ref="qkbddriverfactory.html">QKbdDriverFactory</keyword>
+        <keyword ref="qkbddriverfactory.html#create">create</keyword>
+        <keyword ref="qkbddriverfactory.html#keys">keys</keyword>
+        <section ref="qkbddriverfactory-members.html" title="List of all members"/>
+    </section>
+    <section ref="qkbddriverplugin.html" title="QKbdDriverPlugin Class Reference">
+        <keyword ref="qkbddriverplugin.html">QKbdDriverPlugin</keyword>
+        <keyword ref="qkbddriverplugin.html#create">create</keyword>
+        <keyword ref="qkbddriverplugin.html#keys">keys</keyword>
+        <section ref="qkbddriverplugin-members.html" title="List of all members"/>
+    </section>
     <section ref="qkeyevent.html" title="QKeyEvent Class Reference">
         <keyword ref="qkeyevent.html">QKeyEvent</keyword>
         <keyword ref="qkeyevent.html#count">count</keyword>
@@ -7310,6 +7517,7 @@
         <keyword ref="qkeyevent.html#nativeScanCode">nativeScanCode</keyword>
         <keyword ref="qkeyevent.html#nativeVirtualKey">nativeVirtualKey</keyword>
         <keyword ref="qkeyevent.html#text">text</keyword>
+        <keyword ref="qkeyevent.html#operator-eq-eq">operator==</keyword>
         <section ref="qkeyevent-members.html" title="List of all members"/>
         <section ref="qkeyevent-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -8552,33 +8760,6 @@
         <keyword ref="qlocalsocket.html#waitForReadyRead">waitForReadyRead</keyword>
         <section ref="qlocalsocket-members.html" title="List of all members"/>
     </section>
-    <section ref="qmacpasteboardmime.html" title="QMacPasteboardMime Class Reference">
-        <keyword ref="qmacpasteboardmime.html">QMacPasteboardMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#all">all</keyword>
-        <keyword ref="qmacpasteboardmime.html#canConvert">canConvert</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertFromMime">convertFromMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertToMime">convertToMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertor">convertor</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertorName">convertorName</keyword>
-        <keyword ref="qmacpasteboardmime.html#flavorFor">flavorFor</keyword>
-        <keyword ref="qmacpasteboardmime.html#flavorToMime">flavorToMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#mimeFor">mimeFor</keyword>
-        <section ref="qmacpasteboardmime-members.html" title="List of all members"/>
-    </section>
-    <section ref="qmacstyle.html" title="QMacStyle Class Reference">
-        <keyword ref="qmacstyle.html">QMacStyle</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">FocusRectPolicy</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusEnabled</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusDefault</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusDisabled</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">WidgetSizePolicy</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeMini</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeDefault</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeSmall</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeLarge</keyword>
-        <section ref="qmacstyle-members.html" title="List of all members"/>
-        <section ref="qmacstyle-obsolete.html" title="Obsolete members"/>
-    </section>
     <section ref="qmainwindow.html" title="QMainWindow Class Reference">
         <keyword ref="qmainwindow.html">QMainWindow</keyword>
         <keyword ref="qmainwindow.html#DockOption-enum">DockOption</keyword>
@@ -8816,6 +8997,7 @@
         <keyword ref="qmenu.html#insertSeparator">insertSeparator</keyword>
         <keyword ref="qmenu.html#isEmpty">isEmpty</keyword>
         <keyword ref="qmenu.html#isTearOffMenuVisible">isTearOffMenuVisible</keyword>
+        <keyword ref="qmenu.html#macMenu">macMenu</keyword>
         <keyword ref="qmenu.html#menuAction">menuAction</keyword>
         <keyword ref="qmenu.html#popup">popup</keyword>
         <keyword ref="qmenu.html#setActiveAction">setActiveAction</keyword>
@@ -8841,6 +9023,7 @@
         <keyword ref="qmenubar.html#initStyleOption">initStyleOption</keyword>
         <keyword ref="qmenubar.html#insertMenu">insertMenu</keyword>
         <keyword ref="qmenubar.html#insertSeparator">insertSeparator</keyword>
+        <keyword ref="qmenubar.html#macMenu">macMenu</keyword>
         <keyword ref="qmenubar.html#setActiveAction">setActiveAction</keyword>
         <keyword ref="qmenubar.html#setDefaultAction">setDefaultAction</keyword>
         <keyword ref="qmenubar.html#triggered">triggered</keyword>
@@ -9164,6 +9347,18 @@
         <keyword ref="qmotifstyle.html#setUseHighlightColors">setUseHighlightColors</keyword>
         <keyword ref="qmotifstyle.html#useHighlightColors">useHighlightColors</keyword>
         <section ref="qmotifstyle-members.html" title="List of all members"/>
+    </section>
+    <section ref="qmousedriverfactory.html" title="QMouseDriverFactory Class Reference">
+        <keyword ref="qmousedriverfactory.html">QMouseDriverFactory</keyword>
+        <keyword ref="qmousedriverfactory.html#create">create</keyword>
+        <keyword ref="qmousedriverfactory.html#keys">keys</keyword>
+        <section ref="qmousedriverfactory-members.html" title="List of all members"/>
+    </section>
+    <section ref="qmousedriverplugin.html" title="QMouseDriverPlugin Class Reference">
+        <keyword ref="qmousedriverplugin.html">QMouseDriverPlugin</keyword>
+        <keyword ref="qmousedriverplugin.html#create">create</keyword>
+        <keyword ref="qmousedriverplugin.html#keys">keys</keyword>
+        <section ref="qmousedriverplugin-members.html" title="List of all members"/>
     </section>
     <section ref="qmouseevent.html" title="QMouseEvent Class Reference">
         <keyword ref="qmouseevent.html">QMouseEvent</keyword>
@@ -9694,6 +9889,7 @@
         <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmDpiY</keyword>
         <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmNumColors</keyword>
         <keyword ref="qpaintdevice.html#depth">depth</keyword>
+        <keyword ref="qpaintdevice.html#getDC">getDC</keyword>
         <keyword ref="qpaintdevice.html#height">height</keyword>
         <keyword ref="qpaintdevice.html#heightMM">heightMM</keyword>
         <keyword ref="qpaintdevice.html#logicalDpiX">logicalDpiX</keyword>
@@ -9704,7 +9900,7 @@
         <keyword ref="qpaintdevice.html#paintingActive">paintingActive</keyword>
         <keyword ref="qpaintdevice.html#physicalDpiX">physicalDpiX</keyword>
         <keyword ref="qpaintdevice.html#physicalDpiY">physicalDpiY</keyword>
-        <keyword ref="qpaintdevice.html#qwsDisplay">qwsDisplay</keyword>
+        <keyword ref="qpaintdevice.html#releaseDC">releaseDC</keyword>
         <keyword ref="qpaintdevice.html#width">width</keyword>
         <keyword ref="qpaintdevice.html#widthMM">widthMM</keyword>
         <section ref="qpaintdevice-members.html" title="List of all members"/>
@@ -10211,11 +10407,8 @@
     <section ref="qpixmap.html" title="QPixmap Class Reference">
         <keyword ref="qpixmap.html">QPixmap</keyword>
         <keyword ref="qpixmap.html#HBitmapFormat-enum">HBitmapFormat</keyword>
-        <keyword ref="qpixmap.html#HBitmapFormat-enum">QPixmap::PremultipliedAlpha</keyword>
-        <keyword ref="qpixmap.html#HBitmapFormat-enum">QPixmap::NoAlpha</keyword>
         <keyword ref="qpixmap.html#alphaChannel">alphaChannel</keyword>
         <keyword ref="qpixmap.html#cacheKey">cacheKey</keyword>
-        <keyword ref="qpixmap.html#clut">clut</keyword>
         <keyword ref="qpixmap.html#copy">copy</keyword>
         <keyword ref="qpixmap.html#createHeuristicMask">createHeuristicMask</keyword>
         <keyword ref="qpixmap.html#createMaskFromColor">createMaskFromColor</keyword>
@@ -10237,9 +10430,6 @@
         <keyword ref="qpixmap.html#load">load</keyword>
         <keyword ref="qpixmap.html#loadFromData">loadFromData</keyword>
         <keyword ref="qpixmap.html#mask">mask</keyword>
-        <keyword ref="qpixmap.html#numCols">numCols</keyword>
-        <keyword ref="qpixmap.html#qwsBits">qwsBits</keyword>
-        <keyword ref="qpixmap.html#qwsBytesPerLine">qwsBytesPerLine</keyword>
         <keyword ref="qpixmap.html#rect">rect</keyword>
         <keyword ref="qpixmap.html#save">save</keyword>
         <keyword ref="qpixmap.html#scaled">scaled</keyword>
@@ -10401,6 +10591,8 @@
         <keyword ref="qpoint.html#operator-2b-eq">operator+=</keyword>
         <keyword ref="qpoint.html#operator--eq">operator-=</keyword>
         <keyword ref="qpoint.html#operator-2f-eq">operator/=</keyword>
+        <keyword ref="qpoint.html#operator-2a">operator*</keyword>
+        <keyword ref="qpoint.html#operator-2b">operator+</keyword>
         <keyword ref="qpoint.html#operator-">operator-</keyword>
         <keyword ref="qpoint.html#operator-2f">operator/</keyword>
         <section ref="qpoint-members.html" title="List of all members"/>
@@ -10857,6 +11049,13 @@
         <keyword ref="qproxymodel.html#supportedDropActions">supportedDropActions</keyword>
         <section ref="qproxymodel-members.html" title="List of all members"/>
     </section>
+    <section ref="qproxyscreen.html" title="QProxyScreen Class Reference">
+        <keyword ref="qproxyscreen.html">QProxyScreen</keyword>
+        <keyword ref="qproxyscreen.html#initDevice">initDevice</keyword>
+        <keyword ref="qproxyscreen.html#screen">screen</keyword>
+        <keyword ref="qproxyscreen.html#setScreen">setScreen</keyword>
+        <section ref="qproxyscreen-members.html" title="List of all members"/>
+    </section>
     <section ref="qpushbutton.html" title="QPushButton Class Reference">
         <keyword ref="qpushbutton.html">QPushButton</keyword>
         <keyword ref="qpushbutton.html#autoDefault-prop">autoDefault</keyword>
@@ -11178,6 +11377,110 @@
         <keyword ref="qrunnable.html#run">run</keyword>
         <keyword ref="qrunnable.html#setAutoDelete">setAutoDelete</keyword>
         <section ref="qrunnable-members.html" title="List of all members"/>
+    </section>
+    <section ref="qscreen.html" title="QScreen Class Reference">
+        <keyword ref="qscreen.html">QScreen</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">ClassId</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::ProxyClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::DirectFBClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::LinuxFBClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::VFbClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::CustomClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::SvgalibClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::TransformedClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::VNCClass</keyword>
+        <keyword ref="qscreen.html#ClassId-enum">QScreen::MultiClass</keyword>
+        <keyword ref="qscreen.html#PixelType-enum">PixelType</keyword>
+        <keyword ref="qscreen.html#PixelType-enum">QScreen::BGRPixel</keyword>
+        <keyword ref="qscreen.html#PixelType-enum">QScreen::NormalPixel</keyword>
+        <keyword ref="qscreen.html#alloc">alloc</keyword>
+        <keyword ref="qscreen.html#base">base</keyword>
+        <keyword ref="qscreen.html#blank">blank</keyword>
+        <keyword ref="qscreen.html#blit">blit</keyword>
+        <keyword ref="qscreen.html#classId">classId</keyword>
+        <keyword ref="qscreen.html#clut">clut</keyword>
+        <keyword ref="qscreen.html#connect">connect</keyword>
+        <keyword ref="qscreen.html#createSurface">createSurface</keyword>
+        <keyword ref="qscreen.html#depth">depth</keyword>
+        <keyword ref="qscreen.html#deviceHeight">deviceHeight</keyword>
+        <keyword ref="qscreen.html#deviceWidth">deviceWidth</keyword>
+        <keyword ref="qscreen.html#disconnect">disconnect</keyword>
+        <keyword ref="qscreen.html#exposeRegion">exposeRegion</keyword>
+        <keyword ref="qscreen.html#height">height</keyword>
+        <keyword ref="qscreen.html#initDevice">initDevice</keyword>
+        <keyword ref="qscreen.html#instance">instance</keyword>
+        <keyword ref="qscreen.html#isInterlaced">isInterlaced</keyword>
+        <keyword ref="qscreen.html#isTransformed">isTransformed</keyword>
+        <keyword ref="qscreen.html#linestep">linestep</keyword>
+        <keyword ref="qscreen.html#mapFromDevice">mapFromDevice</keyword>
+        <keyword ref="qscreen.html#mapToDevice">mapToDevice</keyword>
+        <keyword ref="qscreen.html#numCols">numCols</keyword>
+        <keyword ref="qscreen.html#offset">offset</keyword>
+        <keyword ref="qscreen.html#onCard">onCard</keyword>
+        <keyword ref="qscreen.html#physicalHeight">physicalHeight</keyword>
+        <keyword ref="qscreen.html#physicalWidth">physicalWidth</keyword>
+        <keyword ref="qscreen.html#pixelFormat">pixelFormat</keyword>
+        <keyword ref="qscreen.html#pixelType">pixelType</keyword>
+        <keyword ref="qscreen.html#pixmapDepth">pixmapDepth</keyword>
+        <keyword ref="qscreen.html#pixmapLinestepAlignment">pixmapLinestepAlignment</keyword>
+        <keyword ref="qscreen.html#pixmapOffsetAlignment">pixmapOffsetAlignment</keyword>
+        <keyword ref="qscreen.html#region">region</keyword>
+        <keyword ref="qscreen.html#restore">restore</keyword>
+        <keyword ref="qscreen.html#save">save</keyword>
+        <keyword ref="qscreen.html#screenSize">screenSize</keyword>
+        <keyword ref="qscreen.html#setDirty">setDirty</keyword>
+        <keyword ref="qscreen.html#setMode">setMode</keyword>
+        <keyword ref="qscreen.html#setPixelFormat">setPixelFormat</keyword>
+        <keyword ref="qscreen.html#shutdownDevice">shutdownDevice</keyword>
+        <keyword ref="qscreen.html#solidFill">solidFill</keyword>
+        <keyword ref="qscreen.html#subScreenIndexAt">subScreenIndexAt</keyword>
+        <keyword ref="qscreen.html#subScreens">subScreens</keyword>
+        <keyword ref="qscreen.html#supportsDepth">supportsDepth</keyword>
+        <keyword ref="qscreen.html#totalSize">totalSize</keyword>
+        <keyword ref="qscreen.html#transformOrientation">transformOrientation</keyword>
+        <keyword ref="qscreen.html#width">width</keyword>
+        <keyword ref="qscreen.html#d-var">d</keyword>
+        <keyword ref="qscreen.html#data-var">data</keyword>
+        <keyword ref="qscreen.html#dh-var">dh</keyword>
+        <keyword ref="qscreen.html#dw-var">dw</keyword>
+        <keyword ref="qscreen.html#grayscale-var">grayscale</keyword>
+        <keyword ref="qscreen.html#h-var">h</keyword>
+        <keyword ref="qscreen.html#lstep-var">lstep</keyword>
+        <keyword ref="qscreen.html#mapsize-var">mapsize</keyword>
+        <keyword ref="qscreen.html#physHeight-var">physHeight</keyword>
+        <keyword ref="qscreen.html#physWidth-var">physWidth</keyword>
+        <keyword ref="qscreen.html#pixeltype-var">pixeltype</keyword>
+        <keyword ref="qscreen.html#screenclut-var">screenclut</keyword>
+        <keyword ref="qscreen.html#screencols-var">screencols</keyword>
+        <keyword ref="qscreen.html#size-var">size</keyword>
+        <keyword ref="qscreen.html#w-var">w</keyword>
+        <section ref="qscreen-members.html" title="List of all members"/>
+    </section>
+    <section ref="qscreencursor.html" title="QScreenCursor Class Reference">
+        <keyword ref="qscreencursor.html">QScreenCursor</keyword>
+        <keyword ref="qscreencursor.html#boundingRect">boundingRect</keyword>
+        <keyword ref="qscreencursor.html#hide">hide</keyword>
+        <keyword ref="qscreencursor.html#image">image</keyword>
+        <keyword ref="qscreencursor.html#initSoftwareCursor">initSoftwareCursor</keyword>
+        <keyword ref="qscreencursor.html#instance">instance</keyword>
+        <keyword ref="qscreencursor.html#isAccelerated">isAccelerated</keyword>
+        <keyword ref="qscreencursor.html#isVisible">isVisible</keyword>
+        <keyword ref="qscreencursor.html#move">move</keyword>
+        <keyword ref="qscreencursor.html#set">set</keyword>
+        <keyword ref="qscreencursor.html#show">show</keyword>
+        <section ref="qscreencursor-members.html" title="List of all members"/>
+    </section>
+    <section ref="qscreendriverfactory.html" title="QScreenDriverFactory Class Reference">
+        <keyword ref="qscreendriverfactory.html">QScreenDriverFactory</keyword>
+        <keyword ref="qscreendriverfactory.html#create">create</keyword>
+        <keyword ref="qscreendriverfactory.html#keys">keys</keyword>
+        <section ref="qscreendriverfactory-members.html" title="List of all members"/>
+    </section>
+    <section ref="qscreendriverplugin.html" title="QScreenDriverPlugin Class Reference">
+        <keyword ref="qscreendriverplugin.html">QScreenDriverPlugin</keyword>
+        <keyword ref="qscreendriverplugin.html#create">create</keyword>
+        <keyword ref="qscreendriverplugin.html#keys">keys</keyword>
+        <section ref="qscreendriverplugin-members.html" title="List of all members"/>
     </section>
     <section ref="qscriptable.html" title="QScriptable Class Reference">
         <keyword ref="qscriptable.html">QScriptable</keyword>
@@ -11921,7 +12224,6 @@
         <keyword ref="qsourcelocation.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq">operator=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="qsourcelocation.html#qHash">qHash</keyword>
         <section ref="qsourcelocation-members.html" title="List of all members"/>
     </section>
     <section ref="qspaceritem.html" title="QSpacerItem Class Reference">
@@ -12993,6 +13295,10 @@
         <keyword ref="qstringref.html#toString">toString</keyword>
         <keyword ref="qstringref.html#unicode">unicode</keyword>
         <keyword ref="qstringref.html#operator-eq">operator=</keyword>
+        <keyword ref="qstringref.html#operator-lt">operator&lt;</keyword>
+        <keyword ref="qstringref.html#operator-lt-eq">operator&lt;=</keyword>
+        <keyword ref="qstringref.html#operator-gt">operator&gt;</keyword>
+        <keyword ref="qstringref.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="qstringref-members.html" title="List of all members"/>
     </section>
     <section ref="qstyle.html" title="QStyle Class Reference">
@@ -17125,7 +17431,6 @@
         <keyword ref="qtransform.html#operator-2f-eq">operator/=</keyword>
         <keyword ref="qtransform.html#operator-eq">operator=</keyword>
         <keyword ref="qtransform.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="qtransform.html#operator-2a">operator*</keyword>
         <section ref="qtransform-members.html" title="List of all members"/>
     </section>
     <section ref="qtranslator.html" title="QTranslator Class Reference">
@@ -18526,17 +18831,6 @@
         <keyword ref="qwidgetitem.html#widget">widget</keyword>
         <section ref="qwidgetitem-members.html" title="List of all members"/>
     </section>
-    <section ref="qwindowsmime.html" title="QWindowsMime Class Reference">
-        <keyword ref="qwindowsmime.html">QWindowsMime</keyword>
-        <keyword ref="qwindowsmime.html#canConvertFromMime">canConvertFromMime</keyword>
-        <keyword ref="qwindowsmime.html#canConvertToMime">canConvertToMime</keyword>
-        <keyword ref="qwindowsmime.html#convertFromMime">convertFromMime</keyword>
-        <keyword ref="qwindowsmime.html#convertToMime">convertToMime</keyword>
-        <keyword ref="qwindowsmime.html#formatsForMime">formatsForMime</keyword>
-        <keyword ref="qwindowsmime.html#mimeForFormat">mimeForFormat</keyword>
-        <keyword ref="qwindowsmime.html#registerMimeType">registerMimeType</keyword>
-        <section ref="qwindowsmime-members.html" title="List of all members"/>
-    </section>
     <section ref="qwindowsstyle.html" title="QWindowsStyle Class Reference">
         <keyword ref="qwindowsstyle.html">QWindowsStyle</keyword>
         <section ref="qwindowsstyle-members.html" title="List of all members"/>
@@ -18692,6 +18986,208 @@
         <keyword ref="qwritelocker.html#relock">relock</keyword>
         <keyword ref="qwritelocker.html#unlock">unlock</keyword>
         <section ref="qwritelocker-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwscalibratedmousehandler.html" title="QWSCalibratedMouseHandler Class Reference">
+        <keyword ref="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</keyword>
+        <keyword ref="qwscalibratedmousehandler.html#calibrate">calibrate</keyword>
+        <keyword ref="qwscalibratedmousehandler.html#clearCalibration">clearCalibration</keyword>
+        <keyword ref="qwscalibratedmousehandler.html#readCalibration">readCalibration</keyword>
+        <keyword ref="qwscalibratedmousehandler.html#sendFiltered">sendFiltered</keyword>
+        <keyword ref="qwscalibratedmousehandler.html#setFilterSize">setFilterSize</keyword>
+        <keyword ref="qwscalibratedmousehandler.html#transform">transform</keyword>
+        <keyword ref="qwscalibratedmousehandler.html#writeCalibration">writeCalibration</keyword>
+        <section ref="qwscalibratedmousehandler-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsclient.html" title="QWSClient Class Reference">
+        <keyword ref="qwsclient.html">QWSClient</keyword>
+        <keyword ref="qwsclient.html#clientId">clientId</keyword>
+        <keyword ref="qwsclient.html#identity">identity</keyword>
+        <section ref="qwsclient-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsembedwidget.html" title="QWSEmbedWidget Class Reference">
+        <keyword ref="qwsembedwidget.html">QWSEmbedWidget</keyword>
+        <section ref="qwsembedwidget-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsevent.html" title="QWSEvent Class Reference">
+        <keyword ref="qwsevent.html">QWSEvent</keyword>
+        <keyword ref="qwsevent.html#Type-enum">Type</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::NoEvent</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::Creation</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::WindowOperation</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::SelectionClear</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::SelectionRequest</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::Region</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::ScreenTransformation</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::PropertyNotify</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::PropertyReply</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::Connected</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::Mouse</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::Focus</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::IMEvent</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::NEvent</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::QCopMessage</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::Embed</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::Key</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::SelectionNotify</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::MaxWindowRect</keyword>
+        <keyword ref="qwsevent.html#Type-enum">QWSEvent::IMQuery</keyword>
+        <section ref="qwsevent-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsglwindowsurface.html" title="QWSGLWindowSurface Class Reference">
+        <keyword ref="qwsglwindowsurface.html">QWSGLWindowSurface</keyword>
+        <keyword ref="qwsglwindowsurface.html#context">context</keyword>
+        <keyword ref="qwsglwindowsurface.html#setContext">setContext</keyword>
+        <section ref="qwsglwindowsurface-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsinputmethod.html" title="QWSInputMethod Class Reference">
+        <keyword ref="qwsinputmethod.html">QWSInputMethod</keyword>
+        <keyword ref="qwsinputmethod.html#UpdateType-enum">UpdateType</keyword>
+        <keyword ref="qwsinputmethod.html#UpdateType-enum">QWSInputMethod::FocusIn</keyword>
+        <keyword ref="qwsinputmethod.html#UpdateType-enum">QWSInputMethod::Destroyed</keyword>
+        <keyword ref="qwsinputmethod.html#UpdateType-enum">QWSInputMethod::Update</keyword>
+        <keyword ref="qwsinputmethod.html#UpdateType-enum">QWSInputMethod::Reset</keyword>
+        <keyword ref="qwsinputmethod.html#UpdateType-enum">QWSInputMethod::FocusOut</keyword>
+        <keyword ref="qwsinputmethod.html#filter">filter</keyword>
+        <keyword ref="qwsinputmethod.html#inputResolutionShift">inputResolutionShift</keyword>
+        <keyword ref="qwsinputmethod.html#mouseHandler">mouseHandler</keyword>
+        <keyword ref="qwsinputmethod.html#queryResponse">queryResponse</keyword>
+        <keyword ref="qwsinputmethod.html#reset">reset</keyword>
+        <keyword ref="qwsinputmethod.html#sendCommitString">sendCommitString</keyword>
+        <keyword ref="qwsinputmethod.html#sendEvent">sendEvent</keyword>
+        <keyword ref="qwsinputmethod.html#sendMouseEvent">sendMouseEvent</keyword>
+        <keyword ref="qwsinputmethod.html#sendPreeditString">sendPreeditString</keyword>
+        <keyword ref="qwsinputmethod.html#sendQuery">sendQuery</keyword>
+        <keyword ref="qwsinputmethod.html#setInputResolution">setInputResolution</keyword>
+        <keyword ref="qwsinputmethod.html#updateHandler">updateHandler</keyword>
+        <section ref="qwsinputmethod-members.html" title="List of all members"/>
+        <section ref="qwsinputmethod-obsolete.html" title="Obsolete members"/>
+    </section>
+    <section ref="qwskeyboardhandler.html" title="QWSKeyboardHandler Class Reference">
+        <keyword ref="qwskeyboardhandler.html">QWSKeyboardHandler</keyword>
+        <keyword ref="qwskeyboardhandler.html#beginAutoRepeat">beginAutoRepeat</keyword>
+        <keyword ref="qwskeyboardhandler.html#endAutoRepeat">endAutoRepeat</keyword>
+        <keyword ref="qwskeyboardhandler.html#processKeyEvent">processKeyEvent</keyword>
+        <keyword ref="qwskeyboardhandler.html#transformDirKey">transformDirKey</keyword>
+        <section ref="qwskeyboardhandler-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsmousehandler.html" title="QWSMouseHandler Class Reference">
+        <keyword ref="qwsmousehandler.html">QWSMouseHandler</keyword>
+        <keyword ref="qwsmousehandler.html#calibrate">calibrate</keyword>
+        <keyword ref="qwsmousehandler.html#clearCalibration">clearCalibration</keyword>
+        <keyword ref="qwsmousehandler.html#getCalibration">getCalibration</keyword>
+        <keyword ref="qwsmousehandler.html#limitToScreen">limitToScreen</keyword>
+        <keyword ref="qwsmousehandler.html#mouseChanged">mouseChanged</keyword>
+        <keyword ref="qwsmousehandler.html#pos">pos</keyword>
+        <keyword ref="qwsmousehandler.html#resume">resume</keyword>
+        <keyword ref="qwsmousehandler.html#setScreen">setScreen</keyword>
+        <keyword ref="qwsmousehandler.html#suspend">suspend</keyword>
+        <section ref="qwsmousehandler-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwspointercalibrationdata.html" title="QWSPointerCalibrationData Class Reference">
+        <keyword ref="qwspointercalibrationdata.html">QWSPointerCalibrationData</keyword>
+        <keyword ref="qwspointercalibrationdata.html#Location-enum">Location</keyword>
+        <keyword ref="qwspointercalibrationdata.html#Location-enum">QWSPointerCalibrationData::Center</keyword>
+        <keyword ref="qwspointercalibrationdata.html#Location-enum">QWSPointerCalibrationData::LastLocation</keyword>
+        <keyword ref="qwspointercalibrationdata.html#Location-enum">QWSPointerCalibrationData::BottomRight</keyword>
+        <keyword ref="qwspointercalibrationdata.html#Location-enum">QWSPointerCalibrationData::TopRight</keyword>
+        <keyword ref="qwspointercalibrationdata.html#Location-enum">QWSPointerCalibrationData::BottomLeft</keyword>
+        <keyword ref="qwspointercalibrationdata.html#Location-enum">QWSPointerCalibrationData::TopLeft</keyword>
+        <keyword ref="qwspointercalibrationdata.html#devPoints-var">devPoints</keyword>
+        <keyword ref="qwspointercalibrationdata.html#screenPoints-var">screenPoints</keyword>
+        <section ref="qwspointercalibrationdata-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsscreensaver.html" title="QWSScreenSaver Class Reference">
+        <keyword ref="qwsscreensaver.html">QWSScreenSaver</keyword>
+        <keyword ref="qwsscreensaver.html#restore">restore</keyword>
+        <keyword ref="qwsscreensaver.html#save">save</keyword>
+        <section ref="qwsscreensaver-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwsserver.html" title="QWSServer Class Reference">
+        <keyword ref="qwsserver.html">QWSServer</keyword>
+        <keyword ref="qwsserver.html#IMMouse-enum">IMMouse</keyword>
+        <keyword ref="qwsserver.html#IMMouse-enum">QWSServer::MouseOutside</keyword>
+        <keyword ref="qwsserver.html#IMMouse-enum">QWSServer::MouseMove</keyword>
+        <keyword ref="qwsserver.html#IMMouse-enum">QWSServer::MousePress</keyword>
+        <keyword ref="qwsserver.html#IMMouse-enum">QWSServer::MouseRelease</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">WindowEvent</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Hide</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Destroy</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Geometry</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Active</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Raise</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Create</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Name</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Show</keyword>
+        <keyword ref="qwsserver.html#WindowEvent-enum">QWSServer::Lower</keyword>
+        <keyword ref="qwsserver.html#addKeyboardFilter">addKeyboardFilter</keyword>
+        <keyword ref="qwsserver.html#backgroundBrush">backgroundBrush</keyword>
+        <keyword ref="qwsserver.html#clientWindows">clientWindows</keyword>
+        <keyword ref="qwsserver.html#closeKeyboard">closeKeyboard</keyword>
+        <keyword ref="qwsserver.html#closeMouse">closeMouse</keyword>
+        <keyword ref="qwsserver.html#enablePainting">enablePainting</keyword>
+        <keyword ref="qwsserver.html#instance">instance</keyword>
+        <keyword ref="qwsserver.html#isCursorVisible">isCursorVisible</keyword>
+        <keyword ref="qwsserver.html#keyboardHandler">keyboardHandler</keyword>
+        <keyword ref="qwsserver.html#markedText">markedText</keyword>
+        <keyword ref="qwsserver.html#mouseHandler">mouseHandler</keyword>
+        <keyword ref="qwsserver.html#newChannel">newChannel</keyword>
+        <keyword ref="qwsserver.html#openKeyboard">openKeyboard</keyword>
+        <keyword ref="qwsserver.html#openMouse">openMouse</keyword>
+        <keyword ref="qwsserver.html#processKeyEvent">processKeyEvent</keyword>
+        <keyword ref="qwsserver.html#refresh">refresh</keyword>
+        <keyword ref="qwsserver.html#removeKeyboardFilter">removeKeyboardFilter</keyword>
+        <keyword ref="qwsserver.html#removedChannel">removedChannel</keyword>
+        <keyword ref="qwsserver.html#resumeMouse">resumeMouse</keyword>
+        <keyword ref="qwsserver.html#screenSaverActivate">screenSaverActivate</keyword>
+        <keyword ref="qwsserver.html#screenSaverActive">screenSaverActive</keyword>
+        <keyword ref="qwsserver.html#sendIMEvent">sendIMEvent</keyword>
+        <keyword ref="qwsserver.html#sendIMQuery">sendIMQuery</keyword>
+        <keyword ref="qwsserver.html#sendKeyEvent">sendKeyEvent</keyword>
+        <keyword ref="qwsserver.html#setBackground">setBackground</keyword>
+        <keyword ref="qwsserver.html#setCurrentInputMethod">setCurrentInputMethod</keyword>
+        <keyword ref="qwsserver.html#setCursorVisible">setCursorVisible</keyword>
+        <keyword ref="qwsserver.html#setDefaultKeyboard">setDefaultKeyboard</keyword>
+        <keyword ref="qwsserver.html#setDefaultMouse">setDefaultMouse</keyword>
+        <keyword ref="qwsserver.html#setKeyboardHandler">setKeyboardHandler</keyword>
+        <keyword ref="qwsserver.html#setMaxWindowRect">setMaxWindowRect</keyword>
+        <keyword ref="qwsserver.html#setMouseHandler">setMouseHandler</keyword>
+        <keyword ref="qwsserver.html#setScreenSaver">setScreenSaver</keyword>
+        <keyword ref="qwsserver.html#setScreenSaverBlockLevel">setScreenSaverBlockLevel</keyword>
+        <keyword ref="qwsserver.html#setScreenSaverInterval">setScreenSaverInterval</keyword>
+        <keyword ref="qwsserver.html#setScreenSaverIntervals">setScreenSaverIntervals</keyword>
+        <keyword ref="qwsserver.html#suspendMouse">suspendMouse</keyword>
+        <keyword ref="qwsserver.html#windowAt">windowAt</keyword>
+        <keyword ref="qwsserver.html#windowEvent">windowEvent</keyword>
+        <section ref="qwsserver-members.html" title="List of all members"/>
+        <section ref="qwsserver-obsolete.html" title="Obsolete members"/>
+        <section ref="qwsserver-qt3.html" title="Qt 3 support members"/>
+    </section>
+    <section ref="qwswindow.html" title="QWSWindow Class Reference">
+        <keyword ref="qwswindow.html">QWSWindow</keyword>
+        <keyword ref="qwswindow.html#State-enum">State</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Raising</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Destroyed</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Hidden</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Lowering</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Showing</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Visible</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::NoState</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Hiding</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::Moving</keyword>
+        <keyword ref="qwswindow.html#State-enum">QWSWindow::ChangingGeometry</keyword>
+        <keyword ref="qwswindow.html#caption">caption</keyword>
+        <keyword ref="qwswindow.html#client">client</keyword>
+        <keyword ref="qwswindow.html#dirtyOnScreen">dirtyOnScreen</keyword>
+        <keyword ref="qwswindow.html#isFullyObscured">isFullyObscured</keyword>
+        <keyword ref="qwswindow.html#isOpaque">isOpaque</keyword>
+        <keyword ref="qwswindow.html#isVisible">isVisible</keyword>
+        <keyword ref="qwswindow.html#name">name</keyword>
+        <keyword ref="qwswindow.html#opacity">opacity</keyword>
+        <keyword ref="qwswindow.html#requestedRegion">requestedRegion</keyword>
+        <keyword ref="qwswindow.html#state">state</keyword>
+        <keyword ref="qwswindow.html#winId">winId</keyword>
+        <keyword ref="qwswindow.html#windowFlags">windowFlags</keyword>
+        <section ref="qwswindow-members.html" title="List of all members"/>
     </section>
     <section ref="qx11embedcontainer.html" title="QX11EmbedContainer Class Reference">
         <keyword ref="qx11embedcontainer.html">QX11EmbedContainer</keyword>
@@ -18863,7 +19359,7 @@
         <keyword ref="qxmlname.html#isNCName">isNCName</keyword>
         <keyword ref="qxmlname.html#isNull">isNull</keyword>
         <keyword ref="qxmlname.html#localName">localName</keyword>
-        <keyword ref="qxmlname.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlname.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlname.html#prefix">prefix</keyword>
         <keyword ref="qxmlname.html#toClarkName">toClarkName</keyword>
         <keyword ref="qxmlname.html#operator-not-eq">operator!=</keyword>
@@ -18986,7 +19482,7 @@
         <keyword ref="qxmlstreamattribute.html">QXmlStreamAttribute</keyword>
         <keyword ref="qxmlstreamattribute.html#isDefault">isDefault</keyword>
         <keyword ref="qxmlstreamattribute.html#name">name</keyword>
-        <keyword ref="qxmlstreamattribute.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlstreamattribute.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlstreamattribute.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamattribute.html#qualifiedName">qualifiedName</keyword>
         <keyword ref="qxmlstreamattribute.html#value">value</keyword>
@@ -19021,7 +19517,7 @@
     </section>
     <section ref="qxmlstreamnamespacedeclaration.html" title="QXmlStreamNamespaceDeclaration Class Reference">
         <keyword ref="qxmlstreamnamespacedeclaration.html">QXmlStreamNamespaceDeclaration</keyword>
-        <keyword ref="qxmlstreamnamespacedeclaration.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlstreamnamespacedeclaration.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#operator-eq">operator=</keyword>
@@ -19096,7 +19592,7 @@
         <keyword ref="qxmlstreamreader.html#lineNumber">lineNumber</keyword>
         <keyword ref="qxmlstreamreader.html#name">name</keyword>
         <keyword ref="qxmlstreamreader.html#namespaceDeclarations">namespaceDeclarations</keyword>
-        <keyword ref="qxmlstreamreader.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlstreamreader.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlstreamreader.html#notationDeclarations">notationDeclarations</keyword>
         <keyword ref="qxmlstreamreader.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamreader.html#processingInstructionData">processingInstructionData</keyword>
@@ -19712,13 +20208,6 @@
         <keyword ref="q3cstring.html#toUShort">toUShort</keyword>
         <keyword ref="q3cstring.html#upper">upper</keyword>
         <keyword ref="q3cstring.html#operator-eq">operator=</keyword>
-        <keyword ref="q3cstring.html#operator-not-eq">operator!=</keyword>
-        <keyword ref="q3cstring.html#operator-2b">operator+</keyword>
-        <keyword ref="q3cstring.html#operator-lt">operator&lt;</keyword>
-        <keyword ref="q3cstring.html#operator-lt-eq">operator&lt;=</keyword>
-        <keyword ref="q3cstring.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="q3cstring.html#operator-gt">operator&gt;</keyword>
-        <keyword ref="q3cstring.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="q3cstring-members.html" title="List of all members"/>
     </section>
     <section ref="q3databrowser.html" title="Q3DataBrowser Class Reference">
@@ -21608,7 +22097,7 @@
         <keyword ref="q3rangecontrol.html#addPage">addPage</keyword>
         <keyword ref="q3rangecontrol.html#bound">bound</keyword>
         <keyword ref="q3rangecontrol.html#directSetValue">directSetValue</keyword>
-        <keyword ref="q3rangecontrol.html#lineStep">lineStep</keyword>
+        <keyword ref="q3rangecontrol.html#lineStepx">lineStep</keyword>
         <keyword ref="q3rangecontrol.html#maxValue">maxValue</keyword>
         <keyword ref="q3rangecontrol.html#minValue">minValue</keyword>
         <keyword ref="q3rangecontrol.html#pageStep">pageStep</keyword>
@@ -23020,7 +23509,7 @@
         <keyword ref="qtglobal.html#uint-typedef">uint</keyword>
         <keyword ref="qtglobal.html#ulong-typedef">ulong</keyword>
         <keyword ref="qtglobal.html#ushort-typedef">ushort</keyword>
-        <keyword ref="qtglobal.html#qAbs">qAbs</keyword>
+        <keyword ref="qtglobal.html#qAbsx">qAbs</keyword>
         <keyword ref="qtglobal.html#qBound">qBound</keyword>
         <keyword ref="qtglobal.html#qCritical">qCritical</keyword>
         <keyword ref="qtglobal.html#qDebug">qDebug</keyword>
@@ -23033,8 +23522,8 @@
         <keyword ref="qtglobal.html#qFuzzyCompare-2">qFuzzyCompare</keyword>
         <keyword ref="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</keyword>
         <keyword ref="qtglobal.html#qMacVersion">qMacVersion</keyword>
-        <keyword ref="qtglobal.html#qMax">qMax</keyword>
-        <keyword ref="qtglobal.html#qMin">qMin</keyword>
+        <keyword ref="qtglobal.html#qMaxx">qMax</keyword>
+        <keyword ref="qtglobal.html#qMinx">qMin</keyword>
         <keyword ref="qtglobal.html#qRound64">qRound64</keyword>
         <keyword ref="qtglobal.html#qRound">qRound</keyword>
         <keyword ref="qtglobal.html#qToBigEndian">qToBigEndian</keyword>
@@ -23151,9 +23640,6 @@
     </section>
     <section ref="activeqt.html" title="ActiveQt Framework">
         <keyword ref="activeqt.html">ActiveQt Framework</keyword>
-    </section>
-    <section ref="licenses-gpl-exceptions-addendum.html" title="Addendum to the Trolltech GPL Exception Version 1.2">
-        <keyword ref="licenses-gpl-exceptions-addendum.html">Addendum to the Trolltech GPL Exception Version 1.2</keyword>
     </section>
     <section ref="qt-embedded-accel.html" title="Adding an Accelerated Graphics Driver to Qt for Embedded Linux">
         <keyword ref="qt-embedded-accel.html">Adding an Accelerated Graphics Driver to Qt for Embedded Linux</keyword>
@@ -23629,6 +24115,9 @@
     <section ref="qt-embedded-pointer.html" title="Qt for Embedded Linux Pointer Handling">
         <keyword ref="qt-embedded-pointer.html">Qt for Embedded Linux Pointer Handling</keyword>
     </section>
+    <section ref="index.html" title="Qt for Embedded Linux Reference Documentation">
+        <keyword ref="index.html">Qt for Embedded Linux Reference Documentation</keyword>
+    </section>
     <section ref="requirements-embedded-linux.html" title="Qt for Embedded Linux Requirements">
         <keyword ref="requirements-embedded-linux.html">Qt for Embedded Linux Requirements</keyword>
     </section>
@@ -23649,9 +24138,6 @@
     </section>
     <section ref="opensourceedition.html" title="Qt Open Source Edition">
         <keyword ref="opensourceedition.html">Qt Open Source Edition</keyword>
-    </section>
-    <section ref="index.html" title="Qt Reference Documentation (Open Source Edition)">
-        <keyword ref="index.html">Qt Reference Documentation (Open Source Edition)</keyword>
     </section>
     <section ref="stylesheet.html" title="Qt Style Sheets">
         <keyword ref="stylesheet.html">Qt Style Sheets</keyword>
@@ -23916,9 +24402,6 @@
     </section>
     <section ref="trademarks.html" title="Trademarks">
         <keyword ref="trademarks.html">Trademarks</keyword>
-    </section>
-    <section ref="license-gpl-exceptions.html" title="Trolltech GPL Exception Version 1.2">
-        <keyword ref="license-gpl-exceptions.html">Trolltech GPL Exception Version 1.2</keyword>
     </section>
     <section ref="codec-tscii.html" title="TSCII Text Codec">
         <keyword ref="codec-tscii.html">TSCII Text Codec</keyword>
