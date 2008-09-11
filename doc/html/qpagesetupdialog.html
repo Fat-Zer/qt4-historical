@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/dialogs/qpagesetupdialog_unix.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-linux-opensource-src-4.4.2/src/gui/dialogs/qpagesetupdialog_unix.cpp -->
 <head>
   <title>Qt 4.4: QPageSetupDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QPageSetupDialog" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -40,7 +39,7 @@
 <li><div class="fn"/>5 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
 <li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>14 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -55,7 +54,6 @@
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 <li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
@@ -70,10 +68,6 @@
 <p>See also <a href="qprinter.html">QPrinter</a> and <a href="qprintdialog.html">QPrintDialog</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QPageSetupDialog/PageSetupDialogOption" />
-<a name="//apple_ref/cpp/econst/QPageSetupDialog/None" />
-<a name="//apple_ref/cpp/econst/QPageSetupDialog/DontUseSheet" />
-<a name="//apple_ref/cpp/tdef/QPageSetupDialog/PageSetupDialogOptions" />
 <h3 class="flags"><a name="PageSetupDialogOption-enum"></a>enum QPageSetupDialog::PageSetupDialogOption<br />flags QPageSetupDialog::PageSetupDialogOptions</h3>
 <p>Used to specify options to the page setup dialog</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -85,26 +79,20 @@
 <p>The PageSetupDialogOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;PageSetupDialogOption&gt;. It stores an OR combination of PageSetupDialogOption values.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QPageSetupDialog/QPageSetupDialog" />
 <h3 class="fn"><a name="QPageSetupDialog"></a>QPageSetupDialog::QPageSetupDialog ( <a href="qprinter.html">QPrinter</a> * <i>printer</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a page setup dialog that configures <i>printer</i> with <i>parent</i> as the parent widget.</p>
-<a name="//apple_ref/cpp/instm/QPageSetupDialog/addEnabledOption" />
 <h3 class="fn"><a name="addEnabledOption"></a>void QPageSetupDialog::addEnabledOption ( <a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOption</a> <i>option</i> )</h3>
 <p>Adds the option <i>option</i> to the set of enabled options in this dialog.</p>
 <p>This function was introduced in Qt 4.4.</p>
-<a name="//apple_ref/cpp/instm/QPageSetupDialog/enabledOptions" />
 <h3 class="fn"><a name="enabledOptions"></a><a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOptions</a> QPageSetupDialog::enabledOptions () const</h3>
 <p>Returns the set of enabled options in this dialog.</p>
 <p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qpagesetupdialog.html#setEnabledOptions">setEnabledOptions</a>().</p>
-<a name="//apple_ref/cpp/instm/QPageSetupDialog/isOptionEnabled" />
 <h3 class="fn"><a name="isOptionEnabled"></a>bool QPageSetupDialog::isOptionEnabled ( <a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOption</a> <i>option</i> ) const</h3>
 <p>Returns true if the specified <i>option</i> is enabled; otherwise returns false</p>
 <p>This function was introduced in Qt 4.4.</p>
-<a name="//apple_ref/cpp/instm/QPageSetupDialog/printer" />
 <h3 class="fn"><a name="printer"></a><a href="qprinter.html">QPrinter</a> * QPageSetupDialog::printer ()</h3>
 <p>Returns the printer that was passed to the <a href="qpagesetupdialog.html">QPageSetupDialog</a> constructor.</p>
-<a name="//apple_ref/cpp/instm/QPageSetupDialog/setEnabledOptions" />
 <h3 class="fn"><a name="setEnabledOptions"></a>void QPageSetupDialog::setEnabledOptions ( <a href="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOptions</a> <i>options</i> )</h3>
 <p>Sets the set of options that should be enabled for the page setup dialog to <i>options</i>.</p>
 <p>This function was introduced in Qt 4.4.</p>

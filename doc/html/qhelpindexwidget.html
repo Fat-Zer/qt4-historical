@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/tools/assistant/lib/qhelpindexwidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-linux-opensource-src-4.4.2/tools/assistant/lib/qhelpindexwidget.cpp -->
 <head>
   <title>Qt 4.4: QHelpIndexWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QHelpIndexWidget" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -58,10 +57,9 @@
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>14 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 <li><div class="fn"/>2 protected functions inherited from <a href="qlistview.html#protected-functions">QListView</a></li>
 <li><div class="fn"/>33 protected functions inherited from <a href="qabstractitemview.html#protected-functions">QAbstractItemView</a></li>
 <li><div class="fn"/>16 protected functions inherited from <a href="qabstractscrollarea.html#protected-functions">QAbstractScrollArea</a></li>
@@ -78,17 +76,13 @@
 <p>The QHelpIndexWidget class provides a list view displaying the <a href="qhelpindexmodel.html">QHelpIndexModel</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QHelpIndexWidget/activateCurrentItem" />
 <h3 class="fn"><a name="activateCurrentItem"></a>void QHelpIndexWidget::activateCurrentItem ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Activates the current item which will result eventually in the emitting of a <a href="qhelpindexwidget.html#linkActivated">linkActivated</a>() or <a href="qhelpindexwidget.html#linksActivated">linksActivated</a>() signal.</p>
-<a name="//apple_ref/cpp/instm/QHelpIndexWidget/filterIndices" />
 <h3 class="fn"><a name="filterIndices"></a>void QHelpIndexWidget::filterIndices ( const <a href="qstring.html">QString</a> &amp; <i>filter</i>, const <a href="qstring.html">QString</a> &amp; <i>wildcard</i> = QString() )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Filters the indices according to <i>filter</i> or <i>wildcard</i>. The item with the best match is set as current item.</p>
 <p>See also <a href="qhelpindexmodel.html#filter">QHelpIndexModel::filter</a>().</p>
-<a name="//apple_ref/cpp/instm/QHelpIndexWidget/linkActivated" />
 <h3 class="fn"><a name="linkActivated"></a>void QHelpIndexWidget::linkActivated ( const <a href="qurl.html">QUrl</a> &amp; <i>link</i>, const <a href="qstring.html">QString</a> &amp; <i>keyword</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when an item is activated and its associated <i>link</i> should be shown. To know where the link belongs to, the <i>keyword</i> is given as a second paremeter.</p>
-<a name="//apple_ref/cpp/instm/QHelpIndexWidget/linksActivated" />
 <h3 class="fn"><a name="linksActivated"></a>void QHelpIndexWidget::linksActivated ( const <a href="qmap.html">QMap</a>&lt;<a href="qstring.html">QString</a>, <a href="qurl.html">QUrl</a>&gt; &amp; <i>links</i>, const <a href="qstring.html">QString</a> &amp; <i>keyword</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the item representing the <i>keyword</i> is activated and the item has more than one link associated. The <i>links</i> consist of the document title and their URL.</p>
 <p /><address><hr /><div align="center">

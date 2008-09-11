@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/xml/sax/qxml.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-linux-opensource-src-4.4.2/src/xml/sax/qxml.cpp -->
 <head>
   <title>Qt 4.4: QXmlSimpleReader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QXmlSimpleReader" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -80,13 +79,10 @@
 <pre> xmlReader.setFeature(&quot;http:<span class="comment">//xml.org/sax/features/namespace-prefixes&quot;, true);</span></pre>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QXmlSimpleReader/QXmlSimpleReader" />
 <h3 class="fn"><a name="QXmlSimpleReader"></a>QXmlSimpleReader::QXmlSimpleReader ()</h3>
 <p>Constructs a simple XML reader.</p>
-<a name="//apple_ref/cpp/instm/QXmlSimpleReader/~QXmlSimpleReader" />
 <h3 class="fn"><a name="dtor.QXmlSimpleReader"></a>QXmlSimpleReader::~QXmlSimpleReader ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the simple XML reader.</p>
-<a name="//apple_ref/cpp/instm/QXmlSimpleReader/parse" />
 <h3 class="fn"><a name="parse"></a>bool QXmlSimpleReader::parse ( const <a href="qxmlinputsource.html">QXmlInputSource</a> * <i>input</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Reads an XML document from <i>input</i> and parses it in one pass (non-incrementally). Returns true if the parsing was successful; otherwise returns false.</p>
 <p>Reimplemented from <a href="qxmlreader.html#parse">QXmlReader</a>.</p>
@@ -97,14 +93,12 @@
 <p>If <i>incremental</i> is true, the parser does not return false if it reaches the end of the <i>input</i> before reaching the end of the XML file. Instead, it stores the state of the parser so that parsing can be continued later when more data is available. In such a case, you can use the function <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>() to continue with parsing. This class stores a pointer to the input source <i>input</i> and the <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>() function tries to read from that input source. Therefore, you should not delete the input source <i>input</i> until you no longer need to call <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>().</p>
 <p>If this function is called with <i>incremental</i> set to true while an incremental parse is in progress, a new parsing session will be started, and the previous session will be lost.</p>
 <p>See also <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>() and <a href="qtcpsocket.html">QTcpSocket</a>.</p>
-<a name="//apple_ref/cpp/instm/QXmlSimpleReader/parseContinue" />
 <h3 class="fn"><a name="parseContinue"></a>bool QXmlSimpleReader::parseContinue ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Continues incremental parsing, taking input from the <a href="qxmlinputsource.html">QXmlInputSource</a> that was specified with the most recent call to <a href="qxmlsimplereader.html#parse">parse</a>(). To use this function, you <i>must</i> have called <a href="qxmlsimplereader.html#parse">parse</a>() with the incremental argument set to true.</p>
 <p>Returns false if a parsing error occurs; otherwise returns true, even if the end of the XML file has not been reached. You can continue parsing at a later stage by calling this function again when there is more data available to parse.</p>
 <p>Calling this function when there is no data available in the input source indicates to the reader that the end of the XML file has been reached. If the input supplied up to this point was not well-formed then a parsing error occurs, and false is returned. If the input supplied was well-formed, true is returned. It is important to end the input in this way because it allows you to reuse the reader to parse other XML files.</p>
 <p>Calling this function after the end of file has been reached, but without available data will cause false to be returned whether the previous input was well-formed or not.</p>
 <p>See also <a href="qxmlsimplereader.html#parse">parse</a>(), <a href="qxmlinputsource.html#data">QXmlInputSource::data</a>(), and <a href="qxmlinputsource.html#next">QXmlInputSource::next</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlSimpleReader/setFeature" />
 <h3 class="fn"><a name="setFeature"></a>void QXmlSimpleReader::setFeature ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Turns on the feature <i>name</i> if <i>enable</i> is true; otherwise turns it off.</p>
 <p>The <i>name</i> parameter must be one of the following strings:</p>

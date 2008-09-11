@@ -20,6 +20,8 @@
 #include "qprintpreviewdialog.h"
 #include "qprogressdialog.h"
 #include "qwizard.h"
+#include "qvfbhdr.h"
+#include "qwsembedwidget.h"
 #include "qgraphicsgridlayout.h"
 #include "qgraphicsitem.h"
 #include "qgraphicsitemanimation.h"

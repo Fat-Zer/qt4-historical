@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/styles/qstyleoption.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-linux-opensource-src-4.4.2/src/gui/styles/qstyleoption.cpp -->
 <head>
   <title>Qt 4.4: QStyleOptionProgressBarV2 Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QStyleOptionProgressBarV2" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -53,7 +52,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QStyleOptionProgressBarV2 class is used to describe the parameters necessary for drawing a progress bar in Qt 4.1 or above.</p>
-<p>An instance of this class has <a href="qstyleoption.html#type-varx">type</a> <a href="qstyleoption.html#OptionType-enum">SO_ProgressBar</a> and <a href="qstyleoption.html#version-var">version</a> 2.</p>
+<p>An instance of this class has <a href="qstyleoption.html#type-var">type</a> <a href="qstyleoption.html#OptionType-enum">SO_ProgressBar</a> and <a href="qstyleoption.html#version-var">version</a> 2.</p>
 <p>The type is used internally by <a href="qstyleoption.html">QStyleOption</a>, its subclasses, and <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to determine the type of style option. In general you do not need to worry about this unless you want to create your own <a href="qstyleoption.html">QStyleOption</a> subclass and your own styles. The version is used by <a href="qstyleoption.html">QStyleOption</a> subclasses to implement extensions without breaking compatibility. If you use <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>(), you normally don't need to check it.</p>
 <p>If you create your own <a href="qstyle.html">QStyle</a> subclass, you should handle both <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> and QStyleOptionProgressBarV2. One way to achieve this is to use the QStyleOptionProgressBarV2 copy constructor. For example:</p>
 <pre>     if (const QStyleOptionProgressBar *progressBarOption =
@@ -67,8 +66,6 @@
 <p>See also <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> and <a href="qstyleoption.html">QStyleOption</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QStyleOptionProgressBarV2/StyleOptionType" />
-<a name="//apple_ref/cpp/econst/QStyleOptionProgressBarV2/Type" />
 <h3 class="fn"><a name="StyleOptionType-enum"></a>enum QStyleOptionProgressBarV2::StyleOptionType</h3>
 <p>This enum is used to hold information about the type of the style option, and is defined for each <a href="qstyleoption.html">QStyleOption</a> subclass.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -77,8 +74,6 @@
 </table></p>
 <p>The type is used internally by <a href="qstyleoption.html">QStyleOption</a>, its subclasses, and <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to determine the type of style option. In general you do not need to worry about this unless you want to create your own <a href="qstyleoption.html">QStyleOption</a> subclass and your own styles.</p>
 <p>See also <a href="qstyleoptionprogressbarv2.html#StyleOptionVersion-enum">StyleOptionVersion</a>.</p>
-<a name="//apple_ref/cpp/tag/QStyleOptionProgressBarV2/StyleOptionVersion" />
-<a name="//apple_ref/cpp/econst/QStyleOptionProgressBarV2/Version" />
 <h3 class="fn"><a name="StyleOptionVersion-enum"></a>enum QStyleOptionProgressBarV2::StyleOptionVersion</h3>
 <p>This enum is used to hold information about the version of the style option, and is defined for each <a href="qstyleoption.html">QStyleOption</a> subclass.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -89,7 +84,6 @@
 <p>See also <a href="qstyleoptionprogressbarv2.html#StyleOptionType-enum">StyleOptionType</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QStyleOptionProgressBarV2/QStyleOptionProgressBarV2" />
 <h3 class="fn"><a name="QStyleOptionProgressBarV2"></a>QStyleOptionProgressBarV2::QStyleOptionProgressBarV2 ()</h3>
 <p>Constructs a <a href="qstyleoptionprogressbarv2.html">QStyleOptionProgressBarV2</a>, initializing he members variables to their default values.</p>
 <h3 class="fn"><a name="QStyleOptionProgressBarV2-2"></a>QStyleOptionProgressBarV2::QStyleOptionProgressBarV2 ( const <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> &amp; <i>other</i> )</h3>
@@ -98,23 +92,19 @@
 <p>See also <a href="qstyleoption.html#version-var">version</a>.</p>
 <h3 class="fn"><a name="QStyleOptionProgressBarV2-3"></a>QStyleOptionProgressBarV2::QStyleOptionProgressBarV2 ( const QStyleOptionProgressBarV2 &amp; <i>other</i> )</h3>
 <p>Constructs a copy of the <i>other</i> style option.</p>
-<a name="//apple_ref/cpp/instm/QStyleOptionProgressBarV2/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QStyleOptionProgressBarV2 &amp; QStyleOptionProgressBarV2::operator= ( const <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> &amp; <i>other</i> )</h3>
 <p>Assigns the <i>other</i> style option to this style option. The <i>other</i> style option can be either of the <a href="qstyleoptionprogressbarv2.html">QStyleOptionProgressBarV2</a> or <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> types.</p>
 <p>If the <i>other</i> style option's version is 1, the extra members (<a href="qstyleoptionprogressbarv2.html#orientation-var">orientation</a>, <a href="qstyleoptionprogressbarv2.html#invertedAppearance-var">invertedAppearance</a>, and <a href="qstyleoptionprogressbarv2.html#bottomToTop-var">bottomToTop</a>) are set to default values for this style option. If <i>other</i>'s version is 2, the extra members are simply copied to this style option.</p>
 <hr />
 <h2>Member Variable Documentation</h2>
-<a name="//apple_ref/cpp/data/QStyleOptionProgressBarV2/bottomToTop" />
 <h3 class="fn"><a name="bottomToTop-var"></a>bool QStyleOptionProgressBarV2::bottomToTop</h3>
 <p>This variable holds whether the text reads from bottom to top when the progress bar is vertical.</p>
 <p>The default value is false.</p>
 <p>See also <a href="qprogressbar.html#textDirection-prop">QProgressBar::textDirection</a>.</p>
-<a name="//apple_ref/cpp/data/QStyleOptionProgressBarV2/invertedAppearance" />
 <h3 class="fn"><a name="invertedAppearance-var"></a>bool QStyleOptionProgressBarV2::invertedAppearance</h3>
 <p>This variable holds whether the progress bar's appearance is inverted.</p>
 <p>The default value is false.</p>
 <p>See also <a href="qprogressbar.html#invertedAppearance-prop">QProgressBar::invertedAppearance</a>.</p>
-<a name="//apple_ref/cpp/data/QStyleOptionProgressBarV2/orientation" />
 <h3 class="fn"><a name="orientation-var"></a><a href="qt.html#Orientation-enum">Qt::Orientation</a> QStyleOptionProgressBarV2::orientation</h3>
 <p>This variable holds the progress bar's orientation (horizontal or vertical); the default orentation is Qt::Horizontal.</p>
 <p>See also <a href="qprogressbar.html#orientation-prop">QProgressBar::orientation</a>.</p>

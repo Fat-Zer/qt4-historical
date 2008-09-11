@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/painting/qpaintengine_raster.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-linux-opensource-src-4.4.2/src/gui/painting/qpaintengine_raster.cpp -->
 <head>
   <title>Qt 4.4: QCustomRasterPaintDevice Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QCustomRasterPaintDevice" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -31,11 +30,10 @@
 <li><div class="fn"/>virtual void * <b><a href="qcustomrasterpaintdevice.html#memory">memory</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>14 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
@@ -49,17 +47,13 @@
 <p>See also <a href="qrasterpaintengine.html">QRasterPaintEngine</a> and <a href="qpaintdevice.html">QPaintDevice</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QCustomRasterPaintDevice/QCustomRasterPaintDevice" />
 <h3 class="fn"><a name="QCustomRasterPaintDevice"></a>QCustomRasterPaintDevice::QCustomRasterPaintDevice ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Constructs a custom raster based paint device for the given top-level <i>widget</i>.</p>
-<a name="//apple_ref/cpp/instm/QCustomRasterPaintDevice/bytesPerLine" />
 <h3 class="fn"><a name="bytesPerLine"></a>int QCustomRasterPaintDevice::bytesPerLine () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the number of bytes per line in the framebuffer. Note that this number might be larger than the framebuffer width.</p>
-<a name="//apple_ref/cpp/instm/QCustomRasterPaintDevice/format" />
 <h3 class="fn"><a name="format"></a><a href="qimage.html#Format-enum">QImage::Format</a> QCustomRasterPaintDevice::format () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the format of the device's memory buffet.</p>
 <p>The default format is <a href="qimage.html#Format-enum">QImage::Format_ARGB32_Premultiplied</a>. The only other valid format is <a href="qimage.html#Format-enum">QImage::Format_RGB16</a>.</p>
-<a name="//apple_ref/cpp/instm/QCustomRasterPaintDevice/memory" />
 <h3 class="fn"><a name="memory"></a>void * QCustomRasterPaintDevice::memory () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a pointer to the paint device's memory buffer, or 0 if no such buffer exists.</p>
 <p /><address><hr /><div align="center">
