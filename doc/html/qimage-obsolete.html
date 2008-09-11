@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/image/qimage.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-x11-opensource-src-4.4.2/src/gui/image/qimage.cpp -->
 <head>
   <title>Qt 4.4: Obsolete Members for QImage</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -26,7 +26,6 @@
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QImage/serialNumber" />
 <h3 class="fn"><a name="serialNumber"></a>int QImage::serialNumber () const</h3>
 <p>Returns a number that identifies the contents of this <a href="qimage.html">QImage</a> object. Distinct <a href="qimage.html">QImage</a> objects can only have the same serial number if they refer to the same contents (but they don't have to).</p>
 <p>Use <a href="qimage.html#cacheKey">cacheKey</a>() instead.</p>
@@ -47,11 +46,9 @@
 <p>Returns the text recorded for the given <i>keywordAndLanguage</i>.</p>
 <p>Use <a href="qimage.html#text">text</a>() instead.</p>
 <p>The language the text is recorded in is no longer relevant since the text is always set using <a href="qstring.html">QString</a> and UTF-8 representation.</p>
-<a name="//apple_ref/cpp/instm/QImage/textLanguages" />
 <h3 class="fn"><a name="textLanguages"></a><a href="qstringlist.html">QStringList</a> QImage::textLanguages () const</h3>
 <p>Returns the language identifiers for which some texts are recorded. Note that if you want to iterate over the list, you should iterate over a copy.</p>
 <p>The language the text is recorded in is no longer relevant since the text is always set using <a href="qstring.html">QString</a> and UTF-8 representation.</p>
-<a name="//apple_ref/cpp/instm/QImage/textList" />
 <h3 class="fn"><a name="textList"></a><a href="qlist.html">QList</a>&lt;QImageTextKeyLang&gt; QImage::textList () const</h3>
 <p>Returns a list of QImageTextKeyLang objects that enumerate all the texts key/language pairs set for this image.</p>
 <p>Use <a href="qimage.html#textKeys">textKeys</a>() instead.</p>

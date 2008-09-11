@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qlayoutitem.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-x11-opensource-src-4.4.2/src/gui/kernel/qlayoutitem.cpp -->
 <head>
   <title>Qt 4.4: QSpacerItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSpacerItem" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -44,21 +43,17 @@
 <p>See also <a href="qlayout.html">QLayout</a>, <a href="qwidgetitem.html">QWidgetItem</a>, and <a href="qlayoutitem.html#spacerItem">QLayoutItem::spacerItem</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSpacerItem/QSpacerItem" />
 <h3 class="fn"><a name="QSpacerItem"></a>QSpacerItem::QSpacerItem ( int <i>w</i>, int <i>h</i>, <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>hPolicy</i> = QSizePolicy::Minimum, <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>vPolicy</i> = QSizePolicy::Minimum )</h3>
 <p>Constructs a spacer item with preferred width <i>w</i>, preferred height <i>h</i>, horizontal size policy <i>hPolicy</i> and vertical size policy <i>vPolicy</i>.</p>
 <p>The default values provide a gap that is able to stretch if nothing else wants the space.</p>
-<a name="//apple_ref/cpp/instm/QSpacerItem/changeSize" />
 <h3 class="fn"><a name="changeSize"></a>void QSpacerItem::changeSize ( int <i>w</i>, int <i>h</i>, <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>hPolicy</i> = QSizePolicy::Minimum, <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>vPolicy</i> = QSizePolicy::Minimum )</h3>
 <p>Changes this spacer item to have preferred width <i>w</i>, preferred height <i>h</i>, horizontal size policy <i>hPolicy</i> and vertical size policy <i>vPolicy</i>.</p>
 <p>The default values provide a gap that is able to stretch if nothing else wants the space.</p>
 <p>Note that if changeSize() is called after the spacer item has been added to a layout, it is necessary to invalidate the layout in order for the spacer item's new size to take effect.</p>
 <p>See also <a href="qlayoutitem.html#invalidate">QSpacerItem::invalidate</a>().</p>
-<a name="//apple_ref/cpp/instm/QSpacerItem/isEmpty" />
 <h3 class="fn"><a name="isEmpty"></a>bool QSpacerItem::isEmpty () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true.</p>
 <p>Reimplemented from <a href="qlayoutitem.html#isEmpty">QLayoutItem</a>.</p>
-<a name="//apple_ref/cpp/instm/QSpacerItem/spacerItem" />
 <h3 class="fn"><a name="spacerItem"></a>QSpacerItem * QSpacerItem::spacerItem ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a pointer to this object.</p>
 <p>Reimplemented from <a href="qlayoutitem.html#spacerItem">QLayoutItem</a>.</p>

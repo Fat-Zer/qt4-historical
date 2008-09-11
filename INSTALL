@@ -1,66 +1,21 @@
-                  INSTALLING Qt/All Source Version 4.4.2.
+                          INSTALLING Qt/X11 Version 4.4.2.
 
 1.  If you have the commercial edition of Qt, install your license
-    file as $HOME/.qt-license if you are on Unix. If you are on
-    Windows, copy the license file into your home directory
-    (this may be known as the userprofile environment variable) and
-    rename it to .qt-license. For example on Windows 2000,
-    %USERPROFILE% should be something like C:\Documents and
-    Settings\username.
+    file as $HOME/.qt-license.
 
     For the open source version you do not need a license file.
 
 2.  Unpack the archive if you have not done so already:
 
-    On Unix (X11 and Mac):
         cd /tmp
-        gunzip qt-all-opensource-src-4.4.2.tar.gz        # uncompress the archive
-        tar xvf qt-all-opensource-src-4.4.2.tar          # unpack it
+        gunzip qt-x11-opensource-src-4.4.2.tar.gz        # uncompress the archive
+        tar xvf qt-x11-opensource-src-4.4.2.tar          # unpack it
 
-    This creates the directory /tmp/qt-all-opensource-src-4.4.2 containing the files
+    This creates the directory /tmp/qt-x11-opensource-src-4.4.2 containing the files
     from the archive. We only support the GNU version of the tar
     archiving utility. Note that on some systems it is called gtar.
 
-    On Windows, uncompress the files into the directory you want Qt
-    installed, e.g. C:\Qt\4.4.2.
-
-    NOTE: The install path must not contain any spaces.
-
-4. Environment variables
-
-   In order to build and use Qt, the PATH environment variable needs
-   to be extended:
-
-        PATH               - to locate qmake, moc and other Qt tools
-
-   On Windows, this is done by adding c:\Qt\4.4.2\bin
-   to the PATH variable. On Unix, this is done by adding
-   /tmp/qt-all-opensource-src-4.4.2.
-
-   For newer versions of Windows, PATH can be extended through
-   "Control Panel->System->Advanced->Environment variables" and for
-   older versions by editing c:\autoexec.bat.
-
-   In .profile (if your Unix shell is bash), add the following lines:
-
-        PATH=/usr/local/Trolltech/Qt-4.4.2/bin:$PATH
-        export PATH
-
-   In .login (in case your Unix shell is csh or tcsh), add the following line:
-
-        setenv PATH /usr/local/Trolltech/Qt-4.4.2/bin:$PATH
-
-   If you use a different Unix shell, please modify your environment
-   variables accordingly.
-
-   For some X11 compilers that do not support rpath you must also
-   extended the LD_LIBRARY_PATH environment variable to include
-   /usr/local/Trolltech/Qt-4.4.2/lib. On Linux or Mac with GCC
-   this step is not needed.
-
-4.  Building
-
-4.1 Building on Unix
+3.  Building
 
     To configure the Qt library for your machine type, run the
     ./configure script in the package directory.
@@ -71,7 +26,7 @@
     -prefix-install option can be used to specify a "local"
     installation within the source directory.
 
-        cd /tmp/qt-all-opensource-src-4.4.2
+        cd /tmp/qt-x11-opensource-src-4.4.2
         ./configure
 
     Type "./configure -help" to get a list of all available options.
@@ -87,13 +42,7 @@
 
         su -c "make install"
 
-    and enter the root password. On some systems, you have to use the
-    sudo command as follows:
-
-        sudo make install
-
-    and enter your password, this requires that you have administrator access
-    to your machine.
+    and enter the root password.
 
     Note that on some systems the make utility is named differently,
     e.g. gmake. The configure script tells you which make utility to
@@ -107,34 +56,32 @@
 
     before running the configure script again.
 
-4.2 Building on Windows
+4.  Environment variables
 
-    To configure the Qt library for your machine type:
+    In order to use Qt, some environment variables needs to be
+    extended.
 
-        C:
-        cd \Qt\4.4.2
-        configure
+        PATH               - to locate qmake, moc and other Qt tools
 
-    Type "configure -help" to get a list of all available options.
+    This is done like this:
 
-    If you are using the "-direct3d" option, make sure that you have
-    the Direct3D SDK installed, and that you have run the
-    %DXSDK_DIR%\Utilities\Bin\dx_setenv.cmd command, before attempting
-    to run configure.
+    In .profile (if your shell is bash, ksh, zsh or sh), add the
+    following lines:
 
-    The actual commands needed to build Qt depends on your development
-    system. For Microsoft Visual Studio to create the library and
-    compile all the demos, examples, tools and tutorials type:
+        PATH=/usr/local/Trolltech/Qt-4.4.2/bin:$PATH
+        export PATH
 
-        nmake
+    In .login (in case your shell is csh or tcsh), add the following line:
 
-    If you need to reconfigure and rebuild Qt from the same location,
-    ensure that all traces of the previous configuration are removed
-    by entering the build directory and typing
+        setenv PATH /usr/local/Trolltech/Qt-4.4.2/bin:$PATH
 
-        nmake confclean
+    If you use a different shell, please modify your environment
+    variables accordingly.
 
-    before running the configure script again.
+    For compilers that do not support rpath you must also extended the
+    LD_LIBRARY_PATH environment variable to include
+    /usr/local/Trolltech/Qt-4.4.2/lib. On Linux with GCC this step
+    is not needed.
 
 5.  That's all. Qt is now installed.
 
