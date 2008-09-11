@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/porting4.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-mac-opensource-src-4.4.2/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Qt 4</title>
   <link rel="prev" href="porting.html" />
@@ -1624,7 +1624,7 @@
 <a name="qpaintdevice"></a>
 <h3>QPaintDevice</h3>
 <p>To reimplement painter backends one previously needed to reimplement the virtual function QPaintDevice::cmd(). This function is taken out and should is replaced with the function <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() and the abstract class <a href="qpaintengine.html">QPaintEngine</a>. <a href="qpaintengine.html">QPaintEngine</a> provides virtual functions for all drawing operations that can be performed on a painter backend.</p>
-<p><a href="qimage-qt3.html#bitBlt">bitBlt</a>() and copyBlt() are now only compatibility functions. Use <a href="qpainter.html#drawPixmap">QPainter::drawPixmap</a>() instead.</p>
+<p>bitBlt() and copyBlt() are now only compatibility functions. Use <a href="qpainter.html#drawPixmap">QPainter::drawPixmap</a>() instead.</p>
 <a name="qpaintdevicemetrics"></a>
 <h3>QPaintDeviceMetrics</h3>
 <p>All functions that used to be provided by the <tt>QPaintDeviceMetrics</tt> class have now been moved to <a href="qpaintdevice.html">QPaintDevice</a>.</p>
@@ -2375,7 +2375,7 @@
 <ul>
 <li>Q3Url::Q3Url(const <a href="q3url.html">Q3Url</a> &amp;, const <a href="qstring.html">QString</a> &amp;, bool) can be simulated by combining the URLs manually (using QString::operator+(), for example).</li>
 <li>Q3Url::setEncodedPathAndQuery(const <a href="qstring.html">QString</a> &amp;) is replaced by <a href="qurl.html#setPath">QUrl::setPath</a>() and <a href="qurl.html#setEncodedQuery">QUrl::setEncodedQuery</a>().</li>
-<li><a href="q3url.html#encodedPathAndQuery">Q3Url::encodedPathAndQuery</a>() is replaced by <a href="qurl.html#pathx">QUrl::path</a>() and <a href="qurl.html#encodedQuery">QUrl::encodedQuery</a>().</li>
+<li><a href="q3url.html#encodedPathAndQuery">Q3Url::encodedPathAndQuery</a>() is replaced by <a href="qurl.html#path">QUrl::path</a>() and <a href="qurl.html#encodedQuery">QUrl::encodedQuery</a>().</li>
 <li><a href="q3url.html#isLocalFile">Q3Url::isLocalFile</a>() can be simulated by checking that <a href="qurl-qt3.html#protocol">QUrl::protocol</a>() is &quot;file&quot;.</li>
 <li>Q3Url::toString(bool, bool) is replaced by QUrl::toString(int), where the <tt>int</tt> parameter specifies a combination of <a href="qurl.html#FormattingOption-enum">formatting options</a>.</li>
 </ul>
